@@ -13,7 +13,7 @@ function(doc) {
         var demande = doc.demandes[demandeKey];
 
         if(demande.statut != "VALIDE") {
-            emit([demande.demande, demande.statut, demande.produit_libelle, demande.libelle, demande.date, demandeKey, doc.identifiant], 1);
+            emit([demande.demande, demande.statut, demande.produit_libelle, demande.libelle, demande.date, demande.date_habilitation, demandeKey, doc.identifiant], 1);
         }
     }
 }

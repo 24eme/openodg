@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(56);
+$t = new lime_test(59);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -53,6 +53,7 @@ $t->is($demande->produit, $produitConfig->getHash(), "La hash produit est ".$pro
 $t->is($demande->libelle, $produitConfig->getLibelleComplet().": Vinificateur, Élaborateur", "Le libellé produit est ".$produitConfig->getLibelleComplet());
 $t->is($demande->activites->toArray(true, false), $activites, "Les activites sont bien stockées");
 $t->is($demande->date, $date, "La date du statut est ".$date);
+$t->is($demande->date_habilitation, $date, "La date d'habilitation est ".$date);
 $t->is($demande->demande, $demandeStatut, "La demande est ".$demandeStatut);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
@@ -80,6 +81,7 @@ $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est "
 
 $t->is($demande->getKey(), $keyDemande1, "La clé de la demande est ".$keyDemande1);
 $t->is($demande->date, $date, "La date du statut est ".$dateEnregistrement);
+$t->is($demande->date_habilitation, $date, "La date d'habilitation est ".$date);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
@@ -91,6 +93,7 @@ $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti
 $demandeLast = $habilitationLast->demandes->get($keyDemande1);
 $t->is($demandeLast->statut, 'ENREGISTREMENT', "La statut enregistrement a été créé tout seul");
 $t->is($demandeLast->date, $dateEnregistrement, "La date est celle d'aujourd'hui");
+$t->is($demandeLast->date_habilitation, $date, "La date d'habilitation est celle du passage au statut complet");
 $t->ok($habilitationLast->exist($demande->produit), " a été créé dans l'habilitation");
 $habilitationProduit = $habilitationLast->get($demande->produit);
 $t->is($habilitationProduit->activites->get($activites[0])->statut, "DEMANDE_HABILITATION", "La première activité est en attente d'habilitation");

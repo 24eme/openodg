@@ -27,7 +27,6 @@ class HabilitationClient extends acCouchdbClient {
 
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
-    const DEMANDE_DECLARANT = "DECLARANT";
 
     const STATUT_ARCHIVE = "ARCHIVE";
 
@@ -71,19 +70,16 @@ class HabilitationClient extends acCouchdbClient {
     );
 
     public static $demande_statut_habilitations = array(
-        array(
-            self::DEMANDE_HABILITATION => array(
-                'COMPLET' => 'DEMANDE_HABILITATION',
-                'VALIDE' => 'HABILITE',
-                'REFUSE' => 'REFUS',
-            ),
-            self::DEMANDE_RETRAIT => array(
-                'COMPLET' => 'DEMANDE_RETRAIT',
-                'VALIDE' => 'RETRAIT',
-                'REFUSE' => 'HABILITE',
-            ),
-        )
-
+        self::DEMANDE_HABILITATION => array(
+            'COMPLET' => 'DEMANDE_HABILITATION',
+            'VALIDE' => 'HABILITE',
+            'REFUSE' => 'REFUS',
+        ),
+        self::DEMANDE_RETRAIT => array(
+            'COMPLET' => 'DEMANDE_RETRAIT',
+            'VALIDE' => 'RETRAIT',
+            'REFUSE' => 'HABILITE',
+        ),
     );
 
     public static $activites_libelles = array(
@@ -326,12 +322,8 @@ class HabilitationClient extends acCouchdbClient {
             $demande->demande = $demandeStatut;
             $demande->getLibelle();
 
-            $demande->date = $date;
-            $demande->statut = $statut;
-            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" a été créée au statut \"".$demande->getStatutLibelle()."\"";
+            $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur, true);
 
-            $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
-            $historique->iddoc .= ":".$demande->getHash();
             $habilitation->save();
 
             $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
@@ -343,18 +335,32 @@ class HabilitationClient extends acCouchdbClient {
             $demande = $this->getDemande($identifiant, $keyDemande, $date);
             $habilitation = $demande->getDocument();
 
-            $demande->date = $date;
-            $demande->statut = $statut;
+            $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur);
 
-            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" est passée au statut \"".$demande->getStatutLibelle()."\"";
-
-            $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
-            $historique->iddoc .= ":".$demande->getHash();
             $habilitation->save();
 
             $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
 
             return $demande;
+        }
+
+        protected function updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur, $creation = false) {
+            $habilitation = $demande->getDocument();
+            $demande->date = $date;
+            $demande->statut = $statut;
+
+            if(!$demande->date_habilitation) {
+                $demande->date_habilitation = $demande->date;
+            }
+
+            if($this->getHabilitationStatutForDemande($demande->demande, $demande->statut)) {
+                $demande->date_habilitation = $demande->date;
+            }
+
+            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" ".(($creation) ? "a été créée" : "est passée")." au statut \"".$demande->getStatutLibelle()."\"";
+
+            $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
+            $historique->iddoc .= ":".$demande->getHash();
         }
 
         protected function postSaveDemande($demande, $commentaire, $auteur, $trigger) {
@@ -383,6 +389,18 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
+        protected function getHabilitationStatutForDemande($demandeType, $statut) {
+            if(!array_key_exists($demandeType, self::$demande_statut_habilitations)) {
+                return null;
+            }
+
+            if(!array_key_exists($statut, self::$demande_statut_habilitations[$demandeType])) {
+                return null;
+            }
+
+            return self::$demande_statut_habilitations[$demandeType][$statut];
+        }
+
         public function triggerDemandeStatutAndSave($demande, $date, $commentaire, $auteur) {
             if(!array_key_exists($demande->statut, self::$demande_statut_automatiques)) {
                 return;
@@ -394,11 +412,12 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         protected function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
-            if($demande->statut == "COMPLET") {
-                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), "DEMANDE_HABILITATION", $commentaire);
+            $statutHabilitation = $this->getHabilitationStatutForDemande($demande->demande, $demande->statut);
+            if(!$statutHabilitation) {
+
+                return;
             }
-            if($demande->statut == "VALIDE") {
-                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), "HABILITE", $commentaire);
-            }
+
+            $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), $statutHabilitation, $commentaire);
         }
     }
