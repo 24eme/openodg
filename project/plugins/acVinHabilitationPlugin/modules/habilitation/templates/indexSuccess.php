@@ -69,7 +69,7 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
                 <?php $active = isset($query[$facetNom]) && $query[$facetNom] == $itemNom; ?>
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
-                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::$demande_statut_libelles[$itemNom]; ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php endif ?></a>
+                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::$demande_statut_libelles[$itemNom]; ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php else: ?><?php echo $itemNom ?><?php endif ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
