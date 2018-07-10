@@ -7,36 +7,27 @@
         Demande :
     </div>
     <div class="col-xs-6">
-        <?php if(isset($form['demande'])): ?>
         <span class="text-danger"><?php echo $form['demande']->renderError() ?></span>
         <?php echo $form['demande']->render(array("data-placeholder" => "Séléctionnez une demande", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
-        <?php else: ?>
-            <p class="form-control-static"><?php echo $demande->getDemandeLibelle() ?></p>
-        <?php endif; ?>
     </div>
 </div>
-<?php endif; ?>
-<?php if(isset($form['donnees'])): ?>
     <hr />
-<?php if(isset($form['donnees']['produit'])): ?>
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">
         Produit :
     </div>
     <div class="col-xs-6">
-        <span class="text-danger"><?php echo $form['donnees']['produit']->renderError() ?></span>
-        <?php echo $form['donnees']['produit']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+        <span class="text-danger"><?php echo $form['produit']->renderError() ?></span>
+        <?php echo $form['produit']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
     </div>
 </div>
-<?php endif; ?>
-<?php if(isset($form['donnees']['activites'])): ?>
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">
         Activités :
     </div>
     <div class="col-xs-6">
-        <span class="text-danger"><?php echo $form['donnees']['activites']->renderError() ?></span>
-        <?php $activitesWidget = $form['donnees']['activites']; ?>
+        <span class="text-danger"><?php echo $form['activites']->renderError() ?></span>
+        <?php $activitesWidget = $form['activites']; ?>
             <?php foreach($activitesWidget->getWidget()->getChoices() as $key => $option): ?>
                 <div class="checkbox">
                     <label>
@@ -48,20 +39,6 @@
     </div>
 </div>
 <?php endif; ?>
-<?php foreach($form['donnees'] as $key => $formDonnee): ?>
-    <?php if(in_array($key, array('produit', 'activites'))): continue; endif; ?>
-    <div class="row form-group">
-        <span class="text-danger"><?php echo $formDonnee->renderError(); ?></span>
-        <div class="col-xs-4 control-label text-right">
-            <?php echo $formDonnee->renderLabelName(); ?>
-        </div>
-        <div class="col-xs-6">
-            <?php echo $formDonnee->render(array("placeholder" => "", "class" => "form-control", "required" => false)); ?>
-        </div>
-    </div>
-<?php endforeach; ?>
-<?php endif; ?>
-
 <hr />
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">

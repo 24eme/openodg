@@ -65,19 +65,13 @@ Habilitation:
                   statut: { }
                   date: { }
                   libelle: { }
-                  donnees:
-                    type: collection
-                    class: HabilitationDemandeDonnees
+                  produit: { }
+                  produit_libelle: { }
+                  activites:
+                    type: array_collection
                     definition:
                       fields:
                         *: { }
-                        activites:
-                          type: array_collection
-                          required: false
-                          definition:
-                            fields:
-                              *: { }
-                  demande: { }
       historique:
         type: array_collection
         definition:

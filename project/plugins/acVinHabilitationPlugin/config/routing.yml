@@ -16,7 +16,6 @@ habilitation_etablissement_selection:
   url: /habilitations-etablissement-selection
   param: { module: habilitation, action: etablissementSelection }
 
-
 habilitation_declarant:
   url: /habilitation/declarant/:identifiant
   param: { module: habilitation, action: declarant }

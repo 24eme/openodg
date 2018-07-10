@@ -73,7 +73,7 @@
 
     <?php if ($sf_user->isAdmin()): ?>
         <div class="text-right">
-        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', array('sf_subject' => $etablissement, 'type' => 'produit')) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification</a>
+        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification</a>
         </div>
     <?php endif; ?>
 

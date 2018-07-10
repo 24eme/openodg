@@ -24,7 +24,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->constructId();
     }
 
-    /*public function getDeclarant(){
+    public function getDeclarant(){
         $etablissement = EtablissementClient::getInstance()->find($this->identifiant);
         if(!$etablissement){
           return null;
@@ -55,7 +55,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         return $declarant;
 
-    }*/
+    }
 
     protected function initDocuments() {
         $this->historique = array();

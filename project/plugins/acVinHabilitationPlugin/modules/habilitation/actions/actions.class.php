@@ -170,13 +170,7 @@ class habilitationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
-        if($request->getParameter('type') == 'produit') {
-            $this->formDemandeCreation = new HabilitationDemandeCreationProduitForm($this->habilitation);
-        }
-
-        if($request->getParameter('type') == 'identification') {
-            $this->formDemandeCreation = new HabilitationDemandeCreationIdentificationForm($this->habilitation);
-        }
+        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
