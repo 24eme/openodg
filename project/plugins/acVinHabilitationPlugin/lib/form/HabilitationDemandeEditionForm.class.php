@@ -7,8 +7,6 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
         if($doc instanceof HabilitationDemande) {
             $this->demande = $doc;
             $doc = $doc->getDocument();
-            //$defaults['statut'] = $this->demande->statut;
-            //$defaults['date'] = date('d/m/Y');
         }
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
@@ -56,7 +54,8 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
                                                               $values['date'],
                                                               $values['statut'],
                                                               $values['commentaire'],
-                                                              ""
+                                                              "",
+                                                              true
                                                               );
 
         return $demande;

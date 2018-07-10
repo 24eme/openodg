@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(53);
+$t = new lime_test(56);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -71,13 +71,15 @@ $commentaire = "Après 3 relance";
 $auteur = "Syndicat";
 
 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $keyDemande1, $date, $statut, $commentaire, $auteur);
+$dateEnregistrement = (new DateTime("now - 2 month -15 day"))->format('Y-m-d');
+HabilitationClient::getInstance()->triggerDemandeStatutAndSave($demande, $dateEnregistrement, $commentaire, $auteur);
 $habilitation = $demande->getDocument();
 
 $idDocHabilitation = 'HABILITATION-'.$viti->identifiant.'-'.str_replace('-', '', $date);
 $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est ".$idDocHabilitation);
 
 $t->is($demande->getKey(), $keyDemande1, "La clé de la demande est ".$keyDemande1);
-$t->is($demande->date, $date, "La date du statut est ".$date);
+$t->is($demande->date, $date, "La date du statut est ".$dateEnregistrement);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
@@ -86,7 +88,9 @@ $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le comment
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
-
+$demandeLast = $habilitationLast->demandes->get($keyDemande1);
+$t->is($demandeLast->statut, 'ENREGISTREMENT', "La statut enregistrement a été créé tout seul");
+$t->is($demandeLast->date, $dateEnregistrement, "La date est celle d'aujourd'hui");
 $t->ok($habilitationLast->exist($demande->produit), " a été créé dans l'habilitation");
 $habilitationProduit = $habilitationLast->get($demande->produit);
 $t->is($habilitationProduit->activites->get($activites[0])->statut, "DEMANDE_HABILITATION", "La première activité est en attente d'habilitation");
@@ -231,3 +235,8 @@ $demande = $habilitation->demandes->get($demande->getKey());
 $t->is($demande->date, preg_replace("|([0-9]+)/([0-9]+)/([0-9]+)|", '\3-\2-\1', $values['date']), "La date a été enregistrée");
 $t->is($demande->statut, $values['statut'], "Le statut a été enregistrée");
 $t->is($habilitation->historique->get(0)->commentaire, $values['commentaire'], "Le commentaire a été enregistrée");
+
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+$demande = $habilitation->demandes->get($demande->getKey());
+
+$t->is($demande->statut, "ENREGISTREMENT", "Le statut enregistrement a été créé automatiquement");

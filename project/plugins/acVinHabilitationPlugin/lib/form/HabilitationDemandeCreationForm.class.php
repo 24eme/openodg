@@ -56,7 +56,8 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
             $values['statut'],
             $values['date'],
             $values['commentaire'],
-            ""
+            "",
+            true
         );
 
         return $demande;
