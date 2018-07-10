@@ -307,7 +307,7 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation->demandes->get($keyDemande);
         }
 
-        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur) {
+        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = false) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
@@ -324,28 +324,24 @@ class HabilitationClient extends acCouchdbClient {
             $demande->produit = $produitHash;
             $demande->activites = $activites;
             $demande->demande = $demandeStatut;
+            $demande->getLibelle();
+
             $demande->date = $date;
             $demande->statut = $statut;
-            $demande->getLibelle();
             $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" a été créée au statut \"".$demande->getStatutLibelle()."\"";
-
 
             $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
             $historique->iddoc .= ":".$demande->getHash();
             $habilitation->save();
 
-            $this->replicateDemandeAndSave($habilitation, $demande);
-            $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
+            $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
 
             return $demande;
-
         }
 
         public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = false) {
             $demande = $this->getDemande($identifiant, $keyDemande, $date);
             $habilitation = $demande->getDocument();
-
-            $prevStatutLibelle = $demande->statutLibelle;
 
             $demande->date = $date;
             $demande->statut = $statut;
@@ -356,17 +352,22 @@ class HabilitationClient extends acCouchdbClient {
             $historique->iddoc .= ":".$demande->getHash();
             $habilitation->save();
 
-            $this->replicateDemandeAndSave($habilitation, $demande);
+            $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
+
+            return $demande;
+        }
+
+        protected function postSaveDemande($demande, $commentaire, $auteur, $trigger) {
+            $this->replicateDemandeAndSave($demande);
             $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
 
             if($trigger) {
                 $this->triggerDemandeStatutAndSave($demande, date('Y-m-d'), $commentaire, $auteur);
             }
-
-            return $demande;
         }
 
-        protected function replicateDemandeAndSave($habilitation, $demande) {
+        protected function replicateDemandeAndSave($demande) {
+            $habilitation = $demande->getDocument();
             while($habilitationSuivante = $this->findNextByIdentifiantAndDate($habilitation->identifiant, $habilitation->date)) {
                 if(!$habilitationSuivante) {
                     break;
