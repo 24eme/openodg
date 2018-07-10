@@ -42,23 +42,48 @@ class HabilitationClient extends acCouchdbClient {
         'RELANCE_2' => "Relance n°2",
         'RELANCE_3' => "Relance n°3",
         'COMPLET' => "Complet",
+        'ENREGISTREMENT' => "Enregistrement",
         'TRANSMIS_CI' => "Transmis au Contrôle Interne",
-        'VALIDE_CI' => "Validé par le Contrôle Interne",
-        'REFUSE_CI' => "Refusé par le Contrôle Interne",
+        'TRAITE_CI' => "TRAITE par le Contrôle Interne",
         'TRANSMIS_OIVR' => "Transmis à l'OIVR",
-        'VALIDE_OIVR' => "Validé par l'OIVR",
-        'REFUSE_OIVR' => "Refusé par l'OIVR",
+        'AVIS_POSITIF_OIVR' => "Avis positif de l'OIVR",
+        'AVIS_NEGATIF_OIVR' => "Avis négatif de l'OIVR",
+        'TRANSMIS_ODG' => "Transmis à une autre ODG",
         'TRANSMIS_CERTIPAQ' => "Transmis à CERTIPAQ",
         'VALIDE_CERTIPAQ' => "Validé par CERTIPAQ",
         'REFUSE_CERTIPAQ' => "Refusé par CERTIPAQ",
-        'TRANSMIS_ODG' => "Transmis à l'ODG",
-        'VALIDE_ODG' => "Validé par l'ODG",
-        'REFUSE_ODG' => "Refusé par l'ODG",
         'TRANSMIS_INAO' => "Transmis à l'INAO",
         'VALIDE_INAO' => "Validé par l'INAO",
         'REFUSE_INAO' => "Refusé par l'INAO",
         'VALIDE' => "Validé",
         'REFUSE' => "Refusé",
+        'ANNULE' => "Annulé",
+    );
+
+    public static $demande_statut_automatiques = array(
+        'COMPLET' => 'ENREGISTREMENT',
+        'AVIS_POSITIF_OIVR' => 'TRANSMIS_INAO',
+        'AVIS_NEGATIF_OIVR' => 'TRANSMIS_INAO',
+        'VALIDE_INAO' => 'VALIDE',
+        'REFUSE_INAO' => 'REFUSE',
+        'VALIDE_CERTIPAQ' => 'VALIDE',
+        'REFUSE_CERTIPAQ' => 'REFUSE',
+    );
+
+    public static $demande_statut_habilitations = array(
+        array(
+            self::DEMANDE_HABILITATION => array(
+                'COMPLET' => 'DEMANDE_HABILITATION',
+                'VALIDE' => 'HABILITE',
+                'REFUSE' => 'REFUS',
+            ),
+            self::DEMANDE_RETRAIT => array(
+                'COMPLET' => 'DEMANDE_RETRAIT',
+                'VALIDE' => 'RETRAIT',
+                'REFUSE' => 'HABILITE',
+            ),
+        )
+
     );
 
     public static $activites_libelles = array(
@@ -316,7 +341,7 @@ class HabilitationClient extends acCouchdbClient {
 
         }
 
-        public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur) {
+        public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = false) {
             $demande = $this->getDemande($identifiant, $keyDemande, $date);
             $habilitation = $demande->getDocument();
 
@@ -333,6 +358,10 @@ class HabilitationClient extends acCouchdbClient {
 
             $this->replicateDemandeAndSave($habilitation, $demande);
             $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
+
+            if($trigger) {
+                $this->triggerDemandeStatutAndSave($demande, date('Y-m-d'), $commentaire, $auteur);
+            }
 
             return $demande;
         }
@@ -351,6 +380,16 @@ class HabilitationClient extends acCouchdbClient {
                 $habilitationSuivante->save();
                 $habilitation = $habilitationSuivante;
             }
+        }
+
+        public function triggerDemandeStatutAndSave($demande, $date, $commentaire, $auteur) {
+            if(!array_key_exists($demande->statut, self::$demande_statut_automatiques)) {
+                return;
+            }
+
+            $demande = $this->updateDemandeAndSave($demande->getDocument()->identifiant, $demande->getKey(), $date, self::$demande_statut_automatiques[$demande->statut], $commentaire, $auteur);
+
+            return $demande;
         }
 
         protected function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
