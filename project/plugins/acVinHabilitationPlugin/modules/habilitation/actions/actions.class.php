@@ -250,15 +250,16 @@ class habilitationActions extends sfActions {
     protected function buildSearchDemande(sfWebRequest $request, $sortKeys = array()) {
         $rows = acCouchdbManager::getClient()
                     ->group(true)
-                    ->group_level(2)
+                    ->group_level(3)
                     ->getView('habilitation', 'demandes')->rows;
 
         $this->facets = array(
             "Demande" => array(),
             "Statut" => array(),
+            "Produit" => array(),
         );
 
-        $facetToRowKey = array("Demande" => HabilitationDemandeView::KEY_DEMANDE, "Statut" => HabilitationDemandeView::KEY_STATUT);
+        $facetToRowKey = array("Demande" => HabilitationDemandeView::KEY_DEMANDE, "Statut" => HabilitationDemandeView::KEY_STATUT, "Produit" => HabilitationDemandeView::KEY_PRODUIT);
 
         $this->query = $request->getParameter('query', array());
         $this->docs = array();
@@ -293,7 +294,8 @@ class habilitationActions extends sfActions {
 
             }
             if($addition > 0 && $this->query && count($this->query)) {
-                $keys = array($row->key[HabilitationDemandeView::KEY_DEMANDE], $row->key[HabilitationDemandeView::KEY_STATUT]);
+                $keys = array($row->key[HabilitationDemandeView::KEY_DEMANDE], $row->key[HabilitationDemandeView::KEY_STATUT],
+                $row->key[HabilitationDemandeView::KEY_PRODUIT]);
                 $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
