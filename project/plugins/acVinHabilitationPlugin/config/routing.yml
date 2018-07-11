@@ -3,8 +3,8 @@ habilitation:
   param: { module: habilitation, action: index }
   class: HabilitationGeneralRoute
 
-habilitation_list:
-  url: /habilitation/list
+habilitation_suivi:
+  url: /habilitation/suivi
   param: { module: habilitation, action: list }
   class: HabilitationGeneralRoute
 
