@@ -1,10 +1,5 @@
 <?php use_helper('Date'); ?>
-<?php $query = ($query) ? $query->getRawValue() : $query;
-$activites_libelles = HabilitationClient::$activites_libelles;
-if(count(HabilitationConfiguration::getInstance()->getActivites())){
-    $activites_libelles = HabilitationConfiguration::getInstance()->getActivites();
-}
-?>
+<?php $query = ($query) ? $query->getRawValue() : $query; ?>
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>
@@ -45,7 +40,7 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
                         <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
                         <td><?php echo HabilitationClient::$demande_libelles[$doc->key[HabilitationDemandeView::KEY_DEMANDE]]; ?></td>
                         <td><?php echo $doc->key[HabilitationDemandeView::KEY_LIBELLE]; ?></td>
-                        <td><a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT], 'demande' => $doc->key[HabilitationDemandeView::KEY_DEMANDE_KEY], 'retour' => $sf_request->getUri())) ?>"><?php echo HabilitationClient::getInstance()->getLibelleStatut($doc->key[HabilitationDemandeView::KEY_STATUT]) ; ?></a></td>
+                        <td><a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT], 'demande' => $doc->key[HabilitationDemandeView::KEY_DEMANDE_KEY], 'retour' => $sf_request->getUri())) ?>"><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($doc->key[HabilitationDemandeView::KEY_STATUT]) ; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -81,7 +76,7 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
                 <?php $active = isset($query[$facetNom]) && $query[$facetNom] == $itemNom; ?>
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
-                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::$demande_statut_libelles[$itemNom]; ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php else: ?><?php echo $itemNom ?><?php endif ?></a>
+                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($itemNom); ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php else: ?><?php echo $itemNom ?><?php endif ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>

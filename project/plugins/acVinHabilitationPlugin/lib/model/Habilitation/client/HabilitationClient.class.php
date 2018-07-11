@@ -11,10 +11,8 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_ELABORATEUR = "ELABORATEUR";
     const ACTIVITE_CONDITIONNEUR = "CONDITIONNEUR";
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
-
     const ACTIVITE_PRODUCTEUR_MOUTS = "PRODUCTEUR_MOUTS";
     const ACTIVITE_ELEVEUR_DGC = "ELEVEUR_DGC";
-
 
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
@@ -24,62 +22,14 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_REFUS = "REFUS";
     const STATUT_RETRAIT = "RETRAIT";
     const STATUT_ANNULE = "ANNULÉ";
+    const STATUT_ARCHIVE = "ARCHIVE";
 
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
 
-    const STATUT_ARCHIVE = "ARCHIVE";
-
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
         self::DEMANDE_RETRAIT => "Retrait"
-    );
-
-    public static $demande_statut_libelles = array(
-        'DEPOT' => "Dépôt",
-        'RELANCE_1' => "Relance n°1",
-        'RELANCE_2' => "Relance n°2",
-        'RELANCE_3' => "Relance n°3",
-        'COMPLET' => "Complet",
-        'ENREGISTREMENT' => "Enregistrement",
-        'TRANSMIS_CI' => "Transmis au Contrôle Interne",
-        'TRAITE_CI' => "TRAITE par le Contrôle Interne",
-        'TRANSMIS_OIVR' => "Transmis à l'OIVR",
-        'AVIS_POSITIF_OIVR' => "Avis positif de l'OIVR",
-        'AVIS_NEGATIF_OIVR' => "Avis négatif de l'OIVR",
-        'TRANSMIS_ODG' => "Transmis à une autre ODG",
-        'TRANSMIS_CERTIPAQ' => "Transmis à CERTIPAQ",
-        'VALIDE_CERTIPAQ' => "Validé par CERTIPAQ",
-        'REFUSE_CERTIPAQ' => "Refusé par CERTIPAQ",
-        'TRANSMIS_INAO' => "Transmis à l'INAO",
-        'VALIDE_INAO' => "Validé par l'INAO",
-        'REFUSE_INAO' => "Refusé par l'INAO",
-        'VALIDE' => "Validé",
-        'REFUSE' => "Refusé",
-        'ANNULE' => "Annulé",
-    );
-
-    public static $demande_statut_automatiques = array(
-        'COMPLET' => 'ENREGISTREMENT',
-        'AVIS_POSITIF_OIVR' => 'TRANSMIS_INAO',
-        'AVIS_NEGATIF_OIVR' => 'TRANSMIS_INAO',
-        'VALIDE_INAO' => 'VALIDE',
-        'REFUSE_INAO' => 'REFUSE',
-        'VALIDE_CERTIPAQ' => 'VALIDE',
-        'REFUSE_CERTIPAQ' => 'REFUSE',
-    );
-
-    public static $demande_statut_habilitations = array(
-        self::DEMANDE_HABILITATION => array(
-            'COMPLET' => 'DEMANDE_HABILITATION',
-            'VALIDE' => 'HABILITE',
-            'REFUSE' => 'REFUS',
-        ),
-        self::DEMANDE_RETRAIT => array(
-            'COMPLET' => 'DEMANDE_RETRAIT',
-            'VALIDE' => 'RETRAIT',
-            'REFUSE' => 'HABILITE',
-        ),
     );
 
     public static $activites_libelles = array(
@@ -119,6 +69,49 @@ class HabilitationClient extends acCouchdbClient {
       return acCouchdbManager::getClient("Habilitation");
     }
 
+    public function getDemandeStatuts() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeStatuts();
+    }
+
+    public function getDemandeStatutLibelle($key) {
+        $statuts = HabilitationConfiguration::getInstance()->getDemandeStatuts();
+
+        if(!isset($statuts[$key])) {
+
+            return null;
+        }
+
+        return $statuts[$key];
+    }
+
+    public function getDemandeAutomatique() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeAutomatique();
+    }
+
+    public function getDemandeAutomatiqueStatut($statut) {
+
+        return $this->getDemandeAutomatique()[$statut];
+    }
+
+    public function getDemandeHabilitations() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeHabilitations();
+    }
+
+    public function getDemandeHabilitationsByTypeDemandeAndStatut($typeDemande, $statut) {
+        $habilitations = $this->getDemandeHabilitations();
+
+        if(!isset($habilitations[$typeDemande][$statut])) {
+            return null;
+        }
+
+        return $habilitations[$typeDemande][$statut];
+    }
+
+
+
     public function getLibelleActiviteToBeSorted($key) {
 
         if(!isset(self::$activites_libelles_to_be_sorted[$key])) {
@@ -147,9 +140,9 @@ class HabilitationClient extends acCouchdbClient {
             return self::$statuts_libelles[$key];
         }
 
-        if(isset(self::$demande_statut_libelles[$key])) {
+        if($this->getDemandeStatutLibelle($key)) {
 
-            return self::$demande_statut_libelles[$key];
+            return $this->getDemandeStatutLibelle($key);
         }
 
         return $key;
@@ -353,7 +346,7 @@ class HabilitationClient extends acCouchdbClient {
                 $demande->date_habilitation = $demande->date;
             }
 
-            if($this->getHabilitationStatutForDemande($demande->demande, $demande->statut)) {
+            if($this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut)) {
                 $demande->date_habilitation = $demande->date;
             }
 
@@ -389,30 +382,18 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
-        protected function getHabilitationStatutForDemande($demandeType, $statut) {
-            if(!array_key_exists($demandeType, self::$demande_statut_habilitations)) {
-                return null;
-            }
-
-            if(!array_key_exists($statut, self::$demande_statut_habilitations[$demandeType])) {
-                return null;
-            }
-
-            return self::$demande_statut_habilitations[$demandeType][$statut];
-        }
-
         public function triggerDemandeStatutAndSave($demande, $date, $commentaire, $auteur) {
-            if(!array_key_exists($demande->statut, self::$demande_statut_automatiques)) {
+            if(!array_key_exists($demande->statut, $this->getDemandeAutomatique())) {
                 return;
             }
 
-            $demande = $this->updateDemandeAndSave($demande->getDocument()->identifiant, $demande->getKey(), $date, self::$demande_statut_automatiques[$demande->statut], $commentaire, $auteur);
+            $demande = $this->updateDemandeAndSave($demande->getDocument()->identifiant, $demande->getKey(), $date, $this->getDemandeAutomatiqueStatut($demande->statut), $commentaire, $auteur);
 
             return $demande;
         }
 
         protected function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
-            $statutHabilitation = $this->getHabilitationStatutForDemande($demande->demande, $demande->statut);
+            $statutHabilitation = $this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut);
             if(!$statutHabilitation) {
 
                 return;
