@@ -60,7 +60,6 @@ class habilitationActions extends sfActions {
       return $this->redirect('habilitation_declarant', $this->form->getValue('etablissement'));
   }
 
-
   public function executeEtablissementSelection(sfWebRequest $request) {
       $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
       $form->bind($request->getParameter($form->getName()));
@@ -223,7 +222,15 @@ class habilitationActions extends sfActions {
     public function executeExport(sfWebRequest $request) {
         set_time_limit(-1);
         ini_set('memory_limit', '2048M');
-        $this->buildSearch($request, array(HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE));
+        $this->buildSearch($request,
+                          'habilitation',
+                          'activites',
+                          array("Statut" => HabilitationActiviteView::KEY_STATUT,
+                                "Activité" => HabilitationActiviteView::KEY_ACTIVITE,
+                                "Produit" => HabilitationActiviteView::KEY_PRODUIT_LIBELLE),
+                          array("Défaut" => array(HabilitationActiviteView::KEY_DATE => 1, HabilitationActiviteView::KEY_IDENTIFIANT => 1, HabilitationActiviteView::KEY_PRODUIT_LIBELLE => 1 , HabilitationActiviteView::KEY_ACTIVITE => 1)),
+                          true
+                          );
 
         $this->setLayout(false);
         $attachement = sprintf("attachment; filename=export_habilitations_%s.csv", date('YmdHis'));
@@ -318,6 +325,10 @@ class habilitationActions extends sfActions {
             }
             return true;
         });
+
+        if($nbResultatsParPage === true) {
+            return;
+        }
 
         $this->nbResultats = count($this->docs);
         $this->page = $request->getParameter('page', 1);
