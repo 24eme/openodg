@@ -65,13 +65,13 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
         <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         <h4>Trié par</h4>
         <div class="list-group">
-            <?php foreach($sorts as $key => $libelle): ?>
-                <a href="<?php echo url_for('habilitation', array('query' => $query, 'sort' => $key)) ?>" class="list-group-item <?php if($sort == $key): ?>active<?php endif; ?>"><?php echo $libelle ?></a>
+            <?php foreach($sorts as $libelle => $keys): ?>
+                <a href="<?php echo url_for('habilitation', array('query' => $query, 'sort' => $libelle)) ?>" class="list-group-item <?php if($sort == $libelle): ?>active<?php endif; ?>"><?php echo $libelle ?></a>
             <?php endforeach; ?>
         </div>
         <?php if($query && count($query) > 0): ?>
         <p>
-            <a href="<?php echo url_for('habilitation', array('query' => 0)) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
+            <a href="<?php echo url_for('habilitation') ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
         <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>

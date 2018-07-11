@@ -5,7 +5,7 @@ habilitation:
 
 habilitation_suivi:
   url: /habilitation/suivi
-  param: { module: habilitation, action: list }
+  param: { module: habilitation, action: suivi }
   class: HabilitationGeneralRoute
 
 habilitation_export:
