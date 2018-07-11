@@ -33,12 +33,12 @@
     <table style="margin-top: 30px;" class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
             <tr>
-                <th class="col-xs-2">Produits</th>
-                <th class="col-xs-1">Activités</th>
-                <th class="text-center col-xs-1">Statut</th>
+                <th class="col-xs-3">Produits</th>
+                <th class="col-xs-2">Activités</th>
+                <th class="text-center col-xs-2">Statut</th>
                 <th class="text-center col-xs-1">Date</th>
                 <th class="text-center col-xs-3">Commentaire</th>
-                <th class="text-center col-xs-1"><span id="ouvert" class="open-button glyphicon glyphicon-eye-open" style="cursor: pointer;" ></span></th>
+                <th class="text-center"><span id="ouvert" class="open-button glyphicon glyphicon-eye-open" style="cursor: pointer;" ></span></th>
             </tr>
         </thead>
         <tbody>
@@ -60,9 +60,9 @@
                       <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" <?php $rowDisplayed ?> ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
-                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?> col-xs-1" >
+                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" >
                         <?php if(isset($editForm)): ?>
-                        <a class="btn btn-sm btn-default" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a class="btn btn-xs btn-default invisible" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                         <?php endif; ?>
                       </td>
                 </tr>

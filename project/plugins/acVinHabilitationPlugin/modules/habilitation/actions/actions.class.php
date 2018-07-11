@@ -78,7 +78,7 @@ class habilitationActions extends sfActions {
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
         //$this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
-        //$this->editForm = new HabilitationEditionForm($this->habilitation);
+        $this->editForm = new HabilitationEditionForm($this->habilitation);
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
 
         $this->setTemplate('habilitation');
