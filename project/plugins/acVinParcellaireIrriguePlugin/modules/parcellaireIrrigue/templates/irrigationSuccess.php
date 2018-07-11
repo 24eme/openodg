@@ -96,8 +96,15 @@
 	</table>
     <?php  endforeach; ?>
 	<div class="row row-margin row-button">
-        <div class="col-xs-6"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigue->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
-        <div class="col-xs-6 text-right"><button type="button" class="btn btn-primary btn-upper"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigue->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4 text-center">
+            <?php if($parcellaireIrrigue->isValidee()): ?>
+                <a href="<?php echo url_for('parcellaireirrigue_export_pdf', $parcellaireIrrigue) ?>" class="btn btn-success">
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
+                </a>
+            <?php endif; ?>
+        </div>
+        <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
     <?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
