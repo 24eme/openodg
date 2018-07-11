@@ -44,13 +44,19 @@ EOF;
                         if(!$activite->statut) {
                             continue;
                         }
-                        $activites[] = HabilitationClient::getInstance()->getLibelleActiviteToBeSorted($activiteKey);
+                        $activites[$activiteKey] = $activiteKey;
                         $habilitationStatut = HabilitationClient::getInstance()->getLibelleStatut($activite->statut);
                     }
                 }
             }
 
-            sort($activites);
+            $activitesSorted = array();
+            foreach(HabilitationClient::getInstance()->getActivites() as $key => $libelle) {
+                if(!array_key_exists($key, $activites)) {
+                    continue;
+                }
+                $activitesSorted[] = $libelle;
+            }
 
             $ordre = null;
 
@@ -97,7 +103,7 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             $etablissement->fax.",".
             $etablissement->telephone_mobile.",".
             '"'.$etablissement->email.'",'.
-            preg_replace('/[0-9][0-9]_/', '', implode(";", $activites)).",". // Activité habilitation
+            preg_replace('/[0-9][0-9]_/', '', implode(";", $activitesSorted)).",". // Activité habilitation
             ','. //Reception ODG
             ','. //Enregistrement ODG
             ','. //Transmission AVPI

@@ -29,7 +29,7 @@ class HabilitationProduit extends BaseHabilitationProduit {
     public function initActivites()
     {
         $activitesNode = $this->add("activites");
-        foreach (HabilitationClient::$activites_libelles as $activite_key => $libelle) {
+        foreach (HabilitationClient::getInstance()->getActivites() as $activite_key => $libelle) {
           $activitesNode->add($activite_key);
         }
     }

@@ -32,28 +32,6 @@ class HabilitationClient extends acCouchdbClient {
         self::DEMANDE_RETRAIT => "Retrait"
     );
 
-    public static $activites_libelles = array(
-      /*
-       self::ACTIVITE_PRODUCTEUR => "Producteur de raisins",
-       */
-                                                  self::ACTIVITE_PRODUCTEUR => "Producteur",
-                                                  self::ACTIVITE_VINIFICATEUR => "Vinificateur",
-                                                  self::ACTIVITE_VRAC => "Détenteur de vin en vrac",
-                                                  self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
-                                                  self::ACTIVITE_ELABORATEUR => "Élaborateur",
-                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse"
-                                                  ,self::ACTIVITE_PRODUCTEUR_MOUTS => "Producteur de moût"
-                                                  ,self::ACTIVITE_ELEVEUR_DGC => "Eleveur de DGC"
-                                                );
-    public static $activites_libelles_to_be_sorted = array( self::ACTIVITE_PRODUCTEUR => "01_Producteur de raisins",
-                                                  self::ACTIVITE_VINIFICATEUR => "03_Vinificateur",
-                                                  self::ACTIVITE_VRAC => "05_Détenteur de vin en vrac",
-                                                  self::ACTIVITE_CONDITIONNEUR => "06_Conditionneur",
-                                                  self::ACTIVITE_ELABORATEUR => "99_Élaborateur",
-                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "99_Vente tireuse"
-                                                  ,self::ACTIVITE_PRODUCTEUR_MOUTS => "02_Producteur de moût"
-                                                  ,self::ACTIVITE_ELEVEUR_DGC => "04_Eleveur de DGC"
-                                                );
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
                                              self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
@@ -67,6 +45,11 @@ class HabilitationClient extends acCouchdbClient {
     public static function getInstance()
     {
       return acCouchdbManager::getClient("Habilitation");
+    }
+
+    public function getActivites() {
+
+        return HabilitationConfiguration::getInstance()->getActivites();
     }
 
     public function getDemandeStatuts() {
@@ -110,27 +93,14 @@ class HabilitationClient extends acCouchdbClient {
         return $habilitations[$typeDemande][$statut];
     }
 
-
-
-    public function getLibelleActiviteToBeSorted($key) {
-
-        if(!isset(self::$activites_libelles_to_be_sorted[$key])) {
-
-            return $key;
-        }
-
-        return self::$activites_libelles_to_be_sorted[$key];
-    }
-
-
     public function getLibelleActivite($key) {
 
-        if(!isset(self::$activites_libelles[$key])) {
+        if(!isset($this->getActivites()[$key])) {
 
             return $key;
         }
 
-        return self::$activites_libelles[$key];
+        return $this->getActivites()[$key];
     }
 
     public function getLibelleStatut($key) {

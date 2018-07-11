@@ -42,7 +42,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
         $activitesLibelle = array();
 
         foreach($this->activites as $activite) {
-            $activitesLibelle[] = HabilitationClient::$activites_libelles[$activite];
+            $activitesLibelle[] = HabilitationClient::getInstance()->getLibelleActivite($activite);
         }
 
         return $activitesLibelle;

@@ -40,7 +40,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
   }
 
   private function addHistoriqueActiviteChanges($old_statut,$statut,$commentaire){
-    $activite = HabilitationClient::$activites_libelles[$this->getKey()];
+    $activite = HabilitationClient::getInstance()->getLibelleActivite($this->getKey());
     $produitLibelle = $this->getParent()->getParent()->getLibelle();
     if($old_statut == $statut){
       $description = $produitLibelle." : pour l'activité \"".$activite."\", le commentaire a changé";

@@ -40,7 +40,7 @@ $t->is(count($habilitation->declaration), 1, "l'ajout de produit créer bien un 
 $produit = $habilitation->get($produitConfig->getHash());
 $t->ok($produit, "le produit ajouté a bien la hash choisie");
 $t->is($produit->getLibelle(), $produitConfig->getLibelleComplet(), "Le libellé du produit a été enregistré dans le doc");
-$t->is(count($produit->activites), 8, "La liste d'activité a été initialisé à 8");
+$t->is(count($produit->activites), count(HabilitationConfiguration::getInstance()->getActivites()), "La liste d'activité a été initialisé à ".count(HabilitationConfiguration::getInstance()->getActivites()));
 $t->is(count($habilitation->historique), 1, "l'ajout du produit a créé un historique");
 
 $activiteKey = HabilitationClient::ACTIVITE_PRODUCTEUR;
