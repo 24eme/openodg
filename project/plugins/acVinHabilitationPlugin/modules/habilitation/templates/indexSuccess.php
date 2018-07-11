@@ -18,13 +18,14 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
 
 <h3>Liste des demandes en cours</h3>
 <div class="row">
-    <div class="col-sm-9 col-xs-12">
+    <div class="col-sm-9 col-lg-10 col-xs-12">
         <table class="table table-bordered table-striped table-condensed">
             <thead>
                 <tr>
-                    <th class="col-xs-1 text-center">Date</th>
+                    <th class="col-xs-1 text-left">Date</th>
+                    <th class="col-xs-1 text-center">Nb jours</th>
                     <th class="col-xs-3">Opérateur</th>
-                    <th class="col-xs-2 text-center">Demande</th>
+                    <th class="col-xs-1 text-center">Demande</th>
                     <th class="col-xs-4 text-center">Libellé</th>
                     <th class="col-xs-2 text-center">Statut</th>
                 </tr>
@@ -33,9 +34,12 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
                 <?php foreach($docs as $doc):
                   $habilitation = HabilitationClient::getInstance()->find($doc->id);
                   $declarant = $habilitation->getDeclarant();
+                  $date = new DateTime($doc->key[HabilitationDemandeView::KEY_DATE]);
+                  $dateHabilitation = new DateTime($doc->key[HabilitationDemandeView::KEY_DATE_HABILITATION]);
                    ?>
                     <tr>
-                        <td class="text-center"><?php echo format_date($doc->key[HabilitationDemandeView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?></td>
+                        <td class="text-left"><?php echo $date->format('d/m/Y') ?></td>
+                        <td class="text-center"><?php echo $dateHabilitation->diff(new DateTime())->days ?></td>
                         <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
                         <td><?php echo HabilitationClient::$demande_libelles[$doc->key[HabilitationDemandeView::KEY_DEMANDE]]; ?></td>
                         <td><?php echo $doc->key[HabilitationDemandeView::KEY_LIBELLE]; ?></td>
@@ -55,8 +59,14 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
         </div>
     </div>
 
-    <div class="col-sm-3 col-xs-12">
+    <div class="col-sm-3 col-lg-2 col-xs-12">
         <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
+        <h4>Trié par</h4>
+        <div class="list-group">
+            <?php foreach($sorts as $key => $libelle): ?>
+                <a href="<?php echo url_for('habilitation', array('query' => $query, 'sort' => $key)) ?>" class="list-group-item <?php if($sort == $key): ?>active<?php endif; ?>"><?php echo $libelle ?></a>
+            <?php endforeach; ?>
+        </div>
         <?php if($query && count($query) > 0): ?>
         <p>
             <a href="<?php echo url_for('habilitation', array('query' => 0)) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>

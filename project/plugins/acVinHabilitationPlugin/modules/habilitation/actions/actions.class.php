@@ -259,6 +259,19 @@ class habilitationActions extends sfActions {
             "Produit" => array(),
         );
 
+        $this->sorts = array(
+            'RECENTE' => "Les plus récentes",
+            'ANCIENNE' => "Les plus anciennes",
+        );
+
+        $sortKeys = array(
+            'RECENTE' => array(HabilitationDemandeView::KEY_DATE => 1),
+            'ANCIENNE' => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1),
+        );
+
+        $this->sort = $request->getParameter('sort', 'RECENTE');
+        $sortKeysUsed = $sortKeys[$this->sort];
+
         $facetToRowKey = array("Demande" => HabilitationDemandeView::KEY_DEMANDE, "Statut" => HabilitationDemandeView::KEY_STATUT, "Produit" => HabilitationDemandeView::KEY_PRODUIT);
 
         $this->query = $request->getParameter('query', array());
@@ -304,18 +317,13 @@ class habilitationActions extends sfActions {
             }
         }
 
-
-        krsort($this->facets["Statut"]);
-        //ksort($this->facets["Activité"]);
-        //ksort($this->facets["Produit"]);
-
-        uasort($this->docs, function($a, $b) use ($sortKeys) {
-            foreach($sortKeys as $sortKey) {
+        uasort($this->docs, function($a, $b) use ($sortKeysUsed) {
+            foreach($sortKeysUsed as $sortKey => $sens) {
                 if($a->key[$sortKey] < $b->key[$sortKey]) {
-                    return true;
+                    return $sens > 0;
                 }
                 if($a->key[$sortKey] > $b->key[$sortKey]) {
-                    return false;
+                    return $sens < 0;
                 }
             }
             return true;
