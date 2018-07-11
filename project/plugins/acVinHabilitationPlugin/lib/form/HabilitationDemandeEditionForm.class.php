@@ -41,7 +41,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
 
     public function getStatuts(){
 
-        return array_merge(array("" => ""), HabilitationClient::$demande_statut_libelles);
+        return array_merge(array("" => ""), HabilitationClient::getInstance()->getDemandeStatuts());
     }
 
     public function save()

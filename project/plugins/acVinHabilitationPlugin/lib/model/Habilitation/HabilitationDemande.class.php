@@ -35,7 +35,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
     public function getStatutLibelle() {
 
-        return HabilitationClient::$demande_statut_libelles[$this->statut];
+        return HabilitationClient::getInstance()->getDemandeStatutLibelle($this->statut);
     }
 
     public function getActivitesLibelle() {
