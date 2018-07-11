@@ -21,12 +21,12 @@ class HabilitationConfiguration {
     }
 
     public function getActivites() {
-        if(!isset($this->configuration['demande']['activites'])) {
+        if(!isset($this->configuration['activites'])) {
 
             return array();
         }
 
-        return $this->configuration['demande']['activites'];
+        return $this->configuration['activites'];
     }
 
     public function getDemandeStatuts() {

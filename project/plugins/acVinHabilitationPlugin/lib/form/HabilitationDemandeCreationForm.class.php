@@ -41,7 +41,7 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
 
     public function getActivites(){
 
-        return array_merge(HabilitationClient::$activites_libelles);
+        return HabilitationClient::getInstance()->getActivites();
     }
 
     public function save()

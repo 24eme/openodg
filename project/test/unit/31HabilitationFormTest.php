@@ -84,8 +84,8 @@ $habilitation = HabilitationClient::getInstance()->getLastHabilitation($habilita
 
 $produit = $habilitation->get($produitConfig_0->getHash());
 $activiteKey = null;
-foreach(HabilitationClient::$activites_libelles as $key => $activiteLiebelle) {
-    $activiteKey = key(HabilitationClient::$activites_libelles);
+foreach(HabilitationClient::getInstance()->getActivites() as $key => $activiteLiebelle) {
+    $activiteKey = $key;
     break;
 }
 $activite = $produit->activites->get($activiteKey);
@@ -116,8 +116,8 @@ $habilitation = HabilitationClient::getInstance()->getLastHabilitation($habilita
 
 $produit = $habilitation->get($produitConfig_0->getHash());
 $activiteKey = null;
-foreach(HabilitationClient::$activites_libelles as $key => $activiteLiebelle) {
-    $activiteKey = key(HabilitationClient::$activites_libelles);
+foreach(HabilitationClient::getInstance()->getActivites() as $key => $activiteLibelle) {
+    $activiteKey = $key;
     break;
 }
 $activite = $produit->activites->get($activiteKey);
