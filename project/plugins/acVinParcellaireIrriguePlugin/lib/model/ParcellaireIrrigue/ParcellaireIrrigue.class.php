@@ -5,7 +5,7 @@
  */
 
 class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDeclaration {
-	
+
   protected $declarant_document = null;
 
   public function __construct() {
@@ -31,7 +31,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
       $id = $this->getTheoriticalId();
       $this->set('_id', $id);
   }
-  
+
   protected function initDocuments() {
       $this->declarant_document = new DeclarantDocument($this);
   }
@@ -53,7 +53,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
   }
-  
+
   public function initDoc($identifiant, $campagne, $date) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;
@@ -232,6 +232,10 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
     		}
     	}
     }
+
+	public function isValidee(){
+		return $this->validation || $this->validation_odg;
+	}
 
   /*** DECLARATION DOCUMENT ***/
 
