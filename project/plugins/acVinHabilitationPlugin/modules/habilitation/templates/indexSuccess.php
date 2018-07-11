@@ -15,8 +15,10 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
     </div>
 </div>
-
-<h3>Liste des demandes en cours</h3>
+<ul class="nav nav-tabs" style="margin-top: 20px; margin-bottom: 30px;">
+  <li class="active"><a href="<?php echo url_for('habilitation') ?>">Suivi des demandes</a></li>
+  <li><a href="<?php echo url_for('habilitation_suivi') ?>">Suivi des habilitations</a></li>
+</ul>
 <div class="row">
     <div class="col-sm-9 col-lg-10 col-xs-12">
         <table class="table table-bordered table-striped table-condensed">
