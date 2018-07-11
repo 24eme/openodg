@@ -98,8 +98,8 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($habilitation->demandes as $d): ?>
-            <tr style="<?php if($d->statut == "VALIDE"): ?>opacity: 0.5;<?php endif; ?>">
+            <?php foreach ($habilitation->getDemandesEnCours() as $d): ?>
+            <tr>
                 <td><?php echo $d->getDemandeLibelle() ?></td>
                 <td><?php echo $d->getLibelle() ?></td>
                 <td><?php echo Date::francizeDate($d->date); ?></td>
