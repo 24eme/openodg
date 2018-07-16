@@ -875,6 +875,10 @@
       if($('#ouvert:target').length) {
         $('.open-button').click();
       }
+
+        $('#voir_toutes_les_demandes').on('click', function() {
+            $('#tableaux_des_demandes tr.tohide').toggleClass('hidden');
+        });
     }
 
     $.initCoordonneesForms = function ()

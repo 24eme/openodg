@@ -262,14 +262,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         }
   }
 
-    public function getDemandesEnCours() {
+    public function getDemandesSortedOldToRecent() {
         $demandes = array();
 
         foreach($this->demandes as $key => $demande) {
-            if(!$demande->isOuvert()) {
-                continue;
-            }
-
             $demandes[$demande->date.$demande->getKey()] = $demande;
         }
 
