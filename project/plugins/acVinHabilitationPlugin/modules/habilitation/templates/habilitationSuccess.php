@@ -86,8 +86,9 @@
     <?php endif; ?>
 
     <hr />
-    <h3>Demandes en cours</h3>
-    <table class="table table-condensed table-bordered">
+
+    <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
+    <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
         <thead>
             <tr>
                 <th>Type</th>
@@ -98,8 +99,8 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($habilitation->getDemandesEnCours() as $d): ?>
-            <tr>
+            <?php foreach ($habilitation->getDemandesSortedOldToRecent() as $d): ?>
+            <tr class="<?php if(!$d->isOuvert()): ?>hidden tohide transparence-sm<?php endif; ?>">
                 <td><?php echo $d->getDemandeLibelle() ?></td>
                 <td><?php echo $d->getLibelle() ?></td>
                 <td><?php echo Date::francizeDate($d->date); ?></td>
