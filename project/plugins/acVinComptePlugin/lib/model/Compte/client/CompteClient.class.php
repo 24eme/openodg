@@ -257,10 +257,20 @@ class CompteClient extends acCouchdbClient {
         return CompteLoginView::getInstance()->findOneCompteByLogin($login, $hydrate);
     }
 
+    public static function triAlphaCompte($a, $b){
+        $a_data = $a->getData();
+        $a_val_cmp = ($a_data['doc']['compte_type'] == 'INTERLOCUTEUR')? $a_data['doc']['nom'].' '.$a_data['doc']['prenom'] : $a_data['doc']['societe_informations']['raison_sociale'];
+
+        $b_data = $b->getData();
+        $b_val_cmp = ($b_data['doc']['compte_type'] == 'INTERLOCUTEUR')? $b_data['doc']['nom'].' '.$b_data['doc']['prenom'] : $b_data['doc']['societe_informations']['raison_sociale'];
+        return strcmp($a_val_cmp,$b_val_cmp);
+    }
+
     public static function sortGroupes($a, $b) {
       if(is_array($a) && is_array($b)){
         return strcmp($a['nom'], $b['nom']);
       }
       return strcmp($a->id, $b->id);
     }
+
 }
