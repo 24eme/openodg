@@ -16,10 +16,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       $this->id_societe = $s->_id;
     }
     public function getSociete() {
-        if (!$this->societe) {
-          $this->societe = SocieteClient::getInstance()->findSingleton($this->id_societe);
-        }
-        return $this->societe;
+        return SocieteClient::getInstance()->findSingleton($this->id_societe);
     }
 
     public function getMasterCompte() {
@@ -62,6 +59,31 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     public static function transformTag($tag) {
         $tag = strtolower(KeyInflector::unaccent($tag));
         return preg_replace('/[^a-z0-9éàùèêëïç]+/', '_', $tag);
+    }
+
+    public static function transformAdressesToPostal($adresse, $adresseComplementaire) {
+    	$adresse_principale = explode('−', str_replace(';', '−', sfOutputEscaper::unescape($adresse)));
+    	$adresses_complementaires = explode('−', str_replace(';', '−', sfOutputEscaper::unescape($adresseComplementaire)));
+    	$adresses = array_merge($adresse_principale, $adresses_complementaires);
+    	$nbAdresses = count($adresses);
+    	$complement = '';
+    	for($i=0; $i<$nbAdresses; $i++) {
+    		if (!$adresses[$i]) {
+    			unset($adresses[$i]);
+    			continue;
+    		}
+    		$adresses[$i] = trim($adresses[$i]);
+    		if ($nbAdresses > 5) {
+    			$complement .= $adresses[$i].' ';
+    			if ($i>4) {
+    				unset($adresses[$i]);
+    			}
+    		}
+    	}
+    	if ($nbAdresses > 5) {
+    		$adresses[4] = $complement;
+    	}
+    	return $adresses;
     }
 
     public function addInGroupes($grp,$fct){
