@@ -114,13 +114,11 @@ class fichierActions extends sfActions
 				$this->years[$m[1]] = $m[1];
 			}
 			if ($this->year && (!isset($m[1]) || $m[1] != $this->year)) { continue; }
-			if (preg_match('/^([a-zA-Z]*)\-./', $doc->id, $m)) {
-				//if ($this->year && $m[1] == 'FICHIER') { $this->decreases++; continue; }
-				if (!isset($this->categories[$m[1]])) {
-					$this->categories[$m[1]] = 0;
-				}
-				$this->categories[$m[1]]++;
+			$categorie = $doc->key[PieceAllView::KEYS_CATEGORIE];
+			if (!isset($this->categories[$categorie])) {
+				$this->categories[$categorie] = 0;
 			}
+			$this->categories[$categorie]++;
 		}
 		ksort($this->categories);
 	}

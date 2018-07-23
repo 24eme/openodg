@@ -49,6 +49,20 @@
     </div>
 
     <div class="row">
+    	<div class="form-group <?php if($form['categorie']->hasError()): ?>has-error<?php endif; ?>">
+			<div class="col-xs-8 col-xs-offset-4">
+				<?php echo $form['categorie']->renderError() ?>
+			</div>
+			<div class="col-xs-3 col-xs-offset-1">
+				<?php echo $form['categorie']->renderLabel() ?>
+			</div>
+			<div class="col-xs-6">
+				<?php echo $form['categorie']->render(array('class' => 'form-control input', 'placeholder' => "Catégorie du document, par défaut : Fichier")) ?>
+			</div>
+		</div>
+    </div>
+
+    <div class="row">
     	<div class="form-group <?php if($form['visibilite']->hasError()): ?>has-error<?php endif; ?>">
 			<div class="col-xs-8 col-xs-offset-4">
 				<?php echo $form['visibilite']->renderError() ?>
@@ -95,7 +109,7 @@
     		</div>
     	</div>
     </div>
-	
+
 		<?php if ($urlCsv = Piece::getUrlGenerationCsvPiece($fichier->_id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 		<div class="row row-margin row-button text-center">
 			<a class="btn btn-default" href="<?php echo $urlCsv ?>" style="margin: 0 10px;"><span class="glyphicon glyphicon-file"></span> CSV Généré</a>

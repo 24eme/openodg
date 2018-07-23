@@ -9,6 +9,7 @@ class FichierForm extends BaseForm
 		$this->fichier = $fichier;
 		if (!$this->fichier->isNew()) {
 			$defaults['libelle'] = $this->fichier->getLibelle();
+			$defaults['categorie'] = $this->fichier->getCategorie();
 			$defaults['date_depot'] = $this->fichier->getDateDepotFormat();
 			$defaults['visibilite'] = ($this->fichier->getVisibilite())? 1 : null;
 		} else {
@@ -23,7 +24,8 @@ class FichierForm extends BaseForm
 
      	$this->setWidgets(array(
      		'file' => new sfWidgetFormInputFile(array('label' => 'Document')),
-     		'libelle' => new sfWidgetFormInputText(),
+			'libelle' => new sfWidgetFormInputText(),
+     		'categorie' => new sfWidgetFormInputText(),
      		'date_depot' => new sfWidgetFormInput(array(), array("data-date-defaultDate" => date('Y-m-d'))),
      		'visibilite' => new sfWidgetFormInputCheckbox()
      	));
@@ -31,6 +33,7 @@ class FichierForm extends BaseForm
      	$this->setValidators(array(
      		'file' => new sfValidatorFile(array('required' => $fileRequired, 'path' => sfConfig::get('sf_cache_dir'))),
      		'libelle' => new sfValidatorString(array('required' => true)),
+     		'categorie' => new sfValidatorString(array('required' => false)),
      		'date_depot' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)),
      		'visibilite' => new ValidatorBoolean()
      	));
@@ -38,6 +41,7 @@ class FichierForm extends BaseForm
      	$this->widgetSchema->setLabels(array(
      		'file' => ($fileRequired)? 'Fichier*' : 'Fichier',
      		'libelle' => 'Libellé du document*',
+     		'categorie' => 'Catégorie',
      		'date_depot' => 'Date dépôt*',
      		'visibilite' => 'Visible par le déclarant'
      	));
@@ -57,6 +61,7 @@ class FichierForm extends BaseForm
 
     	$this->fichier->setLibelle($this->getValue('libelle'));
     	$this->fichier->setDateDepot($this->getValue('date_depot'));
+    	$this->fichier->setCategorie($this->getValue('categorie'));
     	$this->fichier->setVisibilite(($this->getValue('visibilite'))? 1 : 0);
     	$isNew = false;
     	if ($this->fichier->isNew()) {

@@ -184,6 +184,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getDateDepot(),
     		'libelle' => $this->getLibelle().' '.$complement,
+    		'categorie' => $this->getCategorie(),
     		'visibilite' => $this->getVisibilite(),
     		'mime' => null,
     		'source' => null,
