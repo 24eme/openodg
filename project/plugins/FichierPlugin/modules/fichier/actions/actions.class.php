@@ -2,6 +2,21 @@
 
 class fichierActions extends sfActions
 {
+	public function executeIndex(sfWebRequest $request) {
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+	}
+
+	public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+
+            return $this->redirect('documents');
+        }
+
+        return $this->redirect('pieces_historique', $form->getEtablissement());
+    }
+
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
     	$fileParam = $request->getParameter('file', null);
