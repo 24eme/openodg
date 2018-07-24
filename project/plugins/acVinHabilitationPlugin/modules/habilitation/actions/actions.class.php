@@ -5,7 +5,13 @@ class habilitationActions extends sfActions {
 
   public function executeIndex(sfWebRequest $request)
   {
-      $this->buildSearch($request,
+        $filtre = $request->getParameter('filtre', null);
+        $filtres = array();
+        if($filtre) {
+            $filtres = array("Statut" => "/.*".$filtre.".*/");
+        }
+
+        $this->buildSearch($request,
                         'habilitation',
                         'demandes',
                         array("Demande" => HabilitationDemandeView::KEY_DEMANDE,
@@ -13,7 +19,8 @@ class habilitationActions extends sfActions {
                               "Produit" => HabilitationDemandeView::KEY_PRODUIT),
                         array("Les plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1),
                               "Les plus anciennes" => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1)),
-                        30
+                        30,
+                        $filtres
                         );
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
@@ -255,7 +262,7 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage) {
+    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array()) {
         $rows = acCouchdbManager::getClient()
                     ->group(true)
                     ->group_level(count($facets))
@@ -277,6 +284,16 @@ class habilitationActions extends sfActions {
         }
 
         foreach($rows as $row) {
+            $exclude = false;
+            foreach($filtres as $keyFiltre => $matchFiltre) {
+                if(!preg_match($matchFiltre, $row->key[$facets[$keyFiltre]])) {
+                    $exclude = true;
+                    break;
+                }
+            }
+            if($exclude) {
+                continue;
+            }
             $addition = 0;
             foreach($this->facets as $facetNom => $items) {
                 $find = true;
@@ -309,6 +326,17 @@ class habilitationActions extends sfActions {
                 ->endkey(array_merge($keys, array(array())))
                 ->reduce(false)
                 ->getView($viewCat, $viewName)->rows);
+            }
+        }
+
+        if(count($filtres)) {
+            foreach($this->docs as $key => $doc) {
+                foreach($filtres as $keyFiltre => $matchFiltre) {
+                    if(!preg_match($matchFiltre, $doc->key[$facets[$keyFiltre]])) {
+                        unset($this->docs[$key]);
+                        break;
+                    }
+                }
             }
         }
 
