@@ -30,11 +30,17 @@
 					    </tbody>
 					</table>
 					<?php endif; ?>
+					<?php if($form instanceof sfForm): ?>
                     <?php include_partial('habilitation/demandeForm', array('form' => $form, 'demande' => $demande)); ?>
-    		    </div>
+					<?php endif; ?>
+				</div>
                 <div class="modal-footer">
-                    <a class="btn btn-default btn pull-left" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>
-                    <button type="submit" class="btn btn-success btn pull-right">Valider le changement</button>
+					<?php if($form instanceof sfForm): ?>
+                    <a class="btn btn-default pull-left" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>
+                    <button type="submit" class="btn btn-success pull-right">Valider le changement</button>
+					<?php else: ?>
+						<a class="btn btn-default" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $etablissement) ?>">Fermer</a>
+					<?php endif; ?>
 				</div>
             </form>
         </div>

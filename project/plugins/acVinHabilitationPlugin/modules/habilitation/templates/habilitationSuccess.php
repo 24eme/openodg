@@ -100,12 +100,12 @@
         </thead>
         <tbody>
             <?php foreach ($habilitation->getDemandesSortedOldToRecent() as $d): ?>
-            <tr class="<?php if(!$d->isOuvert()): ?>hidden tohide transparence-sm<?php endif; ?>">
+            <tr class="<?php if(!$d->isOuvert() || ($filtre && !preg_match("/".$filtre."/", $d->getStatut()))): ?>hidden tohide<?php endif; ?> <?php if(!$d->isOuvert()): ?>transparence-sm<?php endif; ?>">
                 <td><?php echo $d->getDemandeLibelle() ?></td>
                 <td><?php echo $d->getLibelle() ?></td>
                 <td><?php echo Date::francizeDate($d->date); ?></td>
                 <td><?php echo $d->getStatutLibelle() ?></td>
-                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a><?php endif; ?></td>
+                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey(), 'filtre' => $filtre)) ?>">Voir<?php if(!$filtre || preg_match("/".$filtre."/", $d->getStatut())): ?>&nbsp;/&nbsp;Modifier<?php endif; ?></a><?php endif; ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

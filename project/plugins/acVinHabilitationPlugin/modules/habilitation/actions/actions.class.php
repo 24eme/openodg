@@ -84,6 +84,8 @@ class habilitationActions extends sfActions {
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
+        $this->filtre = $request->getParameter('filtre', null);
+
         //$this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
         $this->editForm = new HabilitationEditionForm($this->habilitation);
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
@@ -201,8 +203,15 @@ class habilitationActions extends sfActions {
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
-        $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande);
         $this->urlRetour = $request->getParameter('retour', false);
+        $this->filtre = $request->getParameter('filtre');
+        if($this->filtre && !preg_match("/".$this->filtre."/", $this->demande->getStatut())) {
+            $this->formDemandeEdition = false;
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande, array(), array('filtre' => $request->getParameter('filtre')));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
