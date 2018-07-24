@@ -42,6 +42,16 @@ class authActions extends sfActions {
           return $this->redirect('common_accueil');
     }
 
+    public function executeUsurpation(sfWebRequest $request) {
+        $compte = CompteClient::getInstance()->find("COMPTE-".$request->getParameter('identifiant'));
+        $societe = $compte->getSociete();
+        $this->getUser()->usurpationOn($societe->identifiant, $request->getReferer());
+
+        $etablissement = $societe->getEtablissementPrincipal();
+
+        return $this->redirect('common_accueil');
+    }
+
     public function executeDeconnexionUsurpation(sfWebRequest $request) {
         $url_back = $this->getUser()->usurpationOff();
 
