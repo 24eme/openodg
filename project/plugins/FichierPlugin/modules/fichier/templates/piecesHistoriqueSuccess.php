@@ -1,7 +1,8 @@
 <?php echo use_helper("Date"); ?>
 <ol class="breadcrumb">
-  <li><a href="<?php echo url_for('documents'); ?>">Documents</a></li>
-  <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+
+    <li><a href="<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
+    <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
 </ol>
 
 <div class="page-header">

@@ -1,2 +1,6 @@
 all:
-  upload: [[ADMIN]]
+  credentials: ADMIN
+get:
+  credentials: []
+piecesHistorique:
+  credentials: []

@@ -1,10 +1,9 @@
 <?php use_helper('Date') ?>
 
 <ol class="breadcrumb">
-  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
-  <li><a href="<?php echo url_for('pieces_historique', $etablissement) ?>">Documents</a></li>
-  <li class="active"><a href=""><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></a></li>
+  <li><a href="<?php echo url_for('documents'); ?>">Documents</a></li>
+  <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <li class="active"><a href=""><?php if($fichier->isNew()): ?>Ajout<?php else: ?>Modification<?php endif; ?> d'un document</a></li>
 </ol>
 
 <div class="page-header">
@@ -117,7 +116,7 @@
 		<?php endif; ?>
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-        	<a href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="annuler btn btn-default btn-danger">Annuler</a>
+        	<a href="<?php echo url_for('pieces_historique', $etablissement) ?>" class="annuler btn btn-default btn-danger">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper"><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></button>

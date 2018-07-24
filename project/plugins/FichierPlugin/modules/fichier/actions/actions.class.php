@@ -94,7 +94,7 @@ class fichierActions extends sfActions
     	}
 
     	$this->form->save();
-    	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('declaration_etablissement', $this->etablissement);
+    	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('pieces_historique', $this->etablissement);
     }
 
 	public function executePiecesHistorique(sfWebRequest $request) {
