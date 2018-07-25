@@ -4,6 +4,9 @@ class exportChaisCsvTask extends sfBaseTask
 {
 
     protected $chais = array();
+    protected $activitesCorespondance = array();
+
+    public static $activiteOrdre = array("Apport" => "0","Vinification" => "1","DGC" => "2","VC Stockage" => "3","VV Stockage" => "4");
 
     protected function configure()
     {
@@ -35,6 +38,7 @@ EOF;
         echo "Identifiant chais,Identifiant établissement,Type,Chais Activites,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET\n";
 $cpt = 0;
 
+        $this->activitesCorespondance = array_flip(EtablissementClient::$chaisAttributsInImport);
         if(!$withoutLiaisons){
             foreach($results->rows as $row) {
                 $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
@@ -51,29 +55,29 @@ $cpt = 0;
             if(isset($etablissement->chais)){
                 foreach($etablissement->chais as $numChai => $chai) {
                     $activites = array();
-                    foreach($chai->attributs as $a) {
-                        $activites[] = $a;
+                    foreach($chai->attributs as $aKey => $a) {
+                        $activites[] = $aKey;
                     }
                     sort($activites);
-                    $activites = implode(";", $activites);
-
+                    $activites = implode(";", $this->transformActivites($activites));
+                    $isArchivee = $this->isArchiveeChai($chai);
                     $adresses = explode(' − ', str_replace(array('"',','),array('',''),$chai->adresse));
                     $a_comp = (isset($adresses[1]))? $adresses[1] : "";
                     $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
-
-                    echo str_replace("ETABLISSEMENT-","",$etablissement->_id."/".$numChai).",".
-                    str_replace("ETABLISSEMENT-","",$etablissement->_id).",".
-                    "AUTRE,".
+                    $numChaiStr = $numChai+1;
+                    echo preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id)."/".$numChaiStr.",".
+                    preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id).",".
+                    "Autre,".
                     $activites.",".
                     trim(str_replace('"', '', $adresses[0])).",".
                     trim(str_replace('"', '', $a_comp)).",".
                     trim(str_replace('"', '', $a_comp1)).",".
                     $chai->code_postal.",".
-                    $chai->commune.",".
-                    $etablissement->raison_sociale.",".
+                    $this->protectIso($chai->commune).",".
+                    $this->protectIso($etablissement->raison_sociale).",".
                     $etablissement->telephone_bureau.",".
-                    ",,Faux,,,,,\n";
+                    ",,".$isArchivee.",,,,".$etablissement->siret."\n";
                     }
                 }
                 if(!$withoutLiaisons && isset($etablissement->liaisons_operateurs)){
@@ -89,41 +93,79 @@ $cpt = 0;
                         $chaiDistant = $this->chais[$keyL];
 
                         $activites = array();
-                        foreach($chaiDistant->attributs as $a) {
-                            $activites[] = $a;
-                        }
-                        sort($activites);
-                        $activites = implode(";", $activites);
 
                         $attributs = array();
                         foreach($liaison->attributs_chai as $attribut) {
                             $attributs[] = $attribut;
+                            $activites[] = $attribut;
                         }
+                        sort($activites);
+                        $activites = implode(";", $this->transformActivites($activites));
+
                         $adresses = explode(' − ', str_replace(array('"',','),array('',''),$chai->adresse));
                         $a_comp = (isset($adresses[1]))? $adresses[1] : "";
                         $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
                         sort($attributs);
                         $attributs = implode(";", $attributs);
+                        $type_chai = "Autre";
+                        if($attributs == EtablissementClient::CHAI_ATTRIBUT_APPORT){
+                            $type_chai = "Apporteur";
+                            $activites = "Apport";
+                        }
 
                         $adresses = explode(' − ', str_replace(array('"',','),array('',''),$chaiDistant->adresse));
                         $a_comp = (isset($adresses[1]))? $adresses[1] : "";
                         $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
-                        echo str_replace("ETABLISSEMENT-","",str_replace("/chais/","/",$keyL)).",".
-                        str_replace("ETABLISSEMENT-","",$etablissement->_id).",".
-                        $attributs.",".
+                        $identifiantsChais = array();
+
+                        if(!preg_match('/ETABLISSEMENT-CDP([0-9]+)01\/chais\/([0-9]+)$/',$keyL, $identifiantsChais)){
+                            throw new sfException("l'identifiant du chai n'est pas bon pour $keyL");
+                        }
+                        if(count($identifiantsChais) < 2){
+                            throw new sfException("l'identifiant du chai n'est pas bon pour $keyL");
+                        }
+
+                        $telephone = ($etablissement->telephone_mobile)? $etablissement->telephone_mobile : $etablissement->telephone_bureau;
+                        $isArchivee = $this->isArchiveeChai($chaiDistant);
+                        $numChaiStr = $identifiantsChais[2]+1;
+                        echo "CDP".$identifiantsChais[1]."/".$numChaiStr.",".
+                        preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id).",".
+                        $type_chai.",".
                         $activites.",".
                         trim(str_replace('"', '', $adresses[0])).",".
                         trim(str_replace('"', '', $a_comp)).",".
                         trim(str_replace('"', '', $a_comp1)).",".
                         $chaiDistant->code_postal.",".
-                        $chaiDistant->commune.",".
+                        $this->protectIso($chaiDistant->commune).",".
                         $etablissement->raison_sociale.",".
-                        $etablissement->telephone_bureau.",".
-                        ",,Faux,,,,,\n";
+                        $telephone.",".
+                        ",,".$isArchivee.",,,,".$etablissement->siret."\n";
                         }
                 }
         }
     }
+
+    private function transformActivites($activites){
+        $a_res = array();
+        foreach ($activites as $aKey => $a) {
+            $a_res[] = $this->activitesCorespondance[$a];
+        }
+        uasort($a_res, "exportChaisCsvTask::sortActivite");
+
+        return $a_res;
+        }
+
+        private function isArchiveeChai($chais){
+            return ($chais->archive)? 'Vrai' : 'Faux';
+        }
+
+        public static function sortActivite($a,$b){
+            return self::$activiteOrdre[$a] > self::$activiteOrdre[$b];
+        }
+
+        public function protectIso($str){
+            return str_replace(array('œ'),array(''),$str);
+        }
 }
