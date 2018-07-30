@@ -66,6 +66,7 @@ Habilitation:
                   date: { }
                   date_habilitation: { }
                   libelle: { }
+                  commentaire: { }
                   produit: { }
                   produit_libelle: { }
                   activites:

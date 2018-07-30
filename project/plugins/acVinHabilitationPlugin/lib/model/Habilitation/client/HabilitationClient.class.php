@@ -283,6 +283,7 @@ class HabilitationClient extends acCouchdbClient {
             $demande->produit = $produitHash;
             $demande->activites = $activites;
             $demande->demande = $demandeStatut;
+            $demande->commentaire = $commentaire;
             $demande->getLibelle();
 
             $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur, true);

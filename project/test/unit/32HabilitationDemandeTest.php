@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(62);
+$t = new lime_test(64);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -33,6 +33,7 @@ $t->comment("Création d'une demande");
 $date = (new DateTime("-6 month"))->format('Y-m-d');
 $statut = "DEPOT";
 $commentaire = "Envoyé par courrier";
+$premierCommentaire = $commentaire;
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR);
 
@@ -55,6 +56,7 @@ $t->is($demande->activites->toArray(true, false), $activites, "Les activites son
 $t->is($demande->date, $date, "La date du statut est ".$date);
 $t->is($demande->date_habilitation, $date, "La date d'habilitation est ".$date);
 $t->is($demande->demande, $demandeStatut, "La demande est ".$demandeStatut);
+$t->is($demande->commentaire, $commentaire, "La commentaire est ".$commentaire);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
@@ -82,6 +84,7 @@ $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est "
 $t->is($demande->getKey(), $keyDemande1, "La clé de la demande est ".$keyDemande1);
 $t->is($demande->date, $date, "La date du statut est ".$dateEnregistrement);
 $t->is($demande->date_habilitation, $date, "La date d'habilitation est ".$date);
+$t->is($demande->commentaire, $premierCommentaire, "La commentaire n'a pas bougé");
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
