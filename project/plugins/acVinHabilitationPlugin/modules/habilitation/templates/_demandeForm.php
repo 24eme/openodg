@@ -12,6 +12,7 @@
     </div>
 </div>
     <hr />
+<?php if(isset($form['produit']) && isset($form['activites'])): ?>
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">
         Produit :
@@ -38,8 +39,35 @@
         </ul>
     </div>
 </div>
-<?php endif; ?>
 <hr />
+<?php endif; ?>
+<?php if(!isset($form['produit']) && !isset($form['activite'])): ?>
+    <?php foreach($form->getDocument()->getProduitsHabilites() as $produit): ?>
+    <div class="row form-group">
+        <div class="col-xs-4 text-right control-label">
+            Produits :
+        </div>
+        <div class="col-xs-6">
+            <p class="form-control-static"><?php echo $produit->libelle; ?></p>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-xs-4 text-right control-label">
+            Activités :
+        </div>
+        <div class="col-xs-6">
+            <ul class="form-control-static list-unstyled">
+            <?php foreach($produit->getActivitesHabilites() as $activite): ?>
+                <li><?php echo $activite->getLibelle(); ?></li>
+            <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+    <hr />
+    <?php endforeach; ?>
+<?php endif; ?>
+<?php endif; ?>
+
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">
         Statut :

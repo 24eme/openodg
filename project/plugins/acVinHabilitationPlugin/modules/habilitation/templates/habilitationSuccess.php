@@ -15,7 +15,7 @@
 
 <div class="well">
     <?php if ($sf_user->isAdmin()): ?>
-<a style="margin-bottom: 30px;" class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_creation', array('sf_subject' => $etablissement, 'type' => 'identification')) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification</a>
+<a style="margin-bottom: 30px;" class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_globale', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification globale</a>
 <?php endif; ?>
 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject())); ?>
 </div>
@@ -159,6 +159,10 @@
 
 <?php if(isset($formDemandeCreation)): ?>
 <?php include_partial('habilitation/demandeCreationForm', array('form' => $formDemandeCreation, 'etablissement' => $etablissement)); ?>
+<?php endif; ?>
+
+<?php if(isset($formDemandeGlobale)): ?>
+<?php include_partial('habilitation/demandeGlobaleForm', array('form' => $formDemandeGlobale, 'etablissement' => $etablissement)); ?>
 <?php endif; ?>
 
 <?php if(isset($formDemandeEdition)): ?>

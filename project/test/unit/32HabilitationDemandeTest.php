@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(59);
+$t = new lime_test(62);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -243,3 +243,29 @@ $habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->id
 $demande = $habilitation->demandes->get($demande->getKey());
 
 $t->is($demande->statut, "ENREGISTREMENT", "Le statut enregistrement a été créé automatiquement");
+
+$t->comment("Création d'une demande d'habilitation globale");
+
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$form = new HabilitationDemandeGlobaleForm($habilitation);
+
+$defaults = $form->getDefaults();
+
+$t->is($defaults, array('_revision' => $habilitation->_rev), "Les valeurs par défaut du formulaire sont diponibles");
+
+$values = array(
+    '_revision' => $habilitation->_rev,
+    'demande' => 'HABILITATION',
+    'date' => (new DateTime("now"))->format('d/m/Y'),
+    'statut' => 'COMPLET',
+    'commentaire' => "Changement de CVI",
+);
+
+$form->bind($values);
+
+$t->ok($form->isValid(), "Le formulaire est valide");
+
+$demandes = $form->save();
+
+$t->is(count($demandes), count($habilitation->getProduitsHabilites()), "La form a générée autant de demande que de produit dans l'habilitation (".count($demandes).")");

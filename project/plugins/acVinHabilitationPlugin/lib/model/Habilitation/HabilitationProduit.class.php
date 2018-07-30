@@ -62,6 +62,19 @@ class HabilitationProduit extends BaseHabilitationProduit {
       return count($this->activites);
     }
 
+    public function getActivitesHabilites() {
+        $activites = array();
+        foreach ($this->activites as $key => $activite) {
+            if($activite->statut != HabilitationClient::STATUT_HABILITE){
+                continue;
+            }
+
+            $activites[$key] = $activite;
+        }
+
+        return $activites;
+    }
+
     public function getNbActivitesSaisies(){
       $cpt = 0;
       foreach ($this->activites as $key => $activite) {

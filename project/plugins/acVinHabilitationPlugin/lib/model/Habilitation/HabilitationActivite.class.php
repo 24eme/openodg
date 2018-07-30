@@ -18,6 +18,11 @@ class HabilitationActivite extends BaseHabilitationActivite {
       $this->commentaire = $commentaire;
   }
 
+    public function getLibelle() {
+
+        return HabilitationClient::getInstance()->getActivites()[$this->getKey()];
+    }
+
   public function getProduitHash() {
 
       return $this->getParent()->getParent()->getHash();

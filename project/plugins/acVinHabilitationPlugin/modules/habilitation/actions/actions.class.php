@@ -175,6 +175,29 @@ class habilitationActions extends sfActions {
         return $this->redirect('habilitation_declarant', $this->etablissement);
     }
 
+    public function executeDemandeGlobale(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+
+        $this->formDemandeGlobale = new HabilitationDemandeGlobaleForm($this->habilitation);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeGlobale->bind($request->getParameter($this->formDemandeCreation->getName()));
+
+        if (!$this->formDemandeGlobale->isValid()) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeGlobale->save();
+
+        return $this->redirect('habilitation_declarant', $this->etablissement);
+    }
+
     public function executeDemandeCreation(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);

@@ -56,6 +56,16 @@ habilitation_ajout:
   requirements:
     sf_method: [get, post]
 
+habilitation_demande_globale:
+  url: /habilitation/declarant/:identifiant/demande/globale
+  param: { module: habilitation, action: demandeGlobale }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 habilitation_demande_creation:
   url: /habilitation/declarant/:identifiant/demande/creation
   param: { module: habilitation, action: demandeCreation }

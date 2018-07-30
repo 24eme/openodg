@@ -82,6 +82,19 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->getConfiguration()->getProduitsCahierDesCharges();
     }
 
+    public function getProduitsHabilites() {
+        $produits = array();
+        foreach($this->getProduits() as $produit) {
+            if(!count($produit->getActivitesHabilites())) {
+                continue;
+            }
+
+            $produits[$produit->getHash()] = $produit;
+        }
+
+        return $produits;
+    }
+
     public function getProduits($onlyActive = true) {
         return $this->declaration->getProduits($onlyActive);
     }

@@ -9,7 +9,6 @@
 					<?php echo $demande->libelle ?>
                 </div>
                 <div class="modal-body">
-					<?php if(isset($demande)): ?>
 					<table class="table table-condensed table-bordered table-striped">
 					    <thead>
 					        <tr>
@@ -29,9 +28,9 @@
 							<?php endforeach; ?>
 					    </tbody>
 					</table>
-					<?php endif; ?>
 					<?php if($form instanceof sfForm): ?>
-                    <?php include_partial('habilitation/demandeForm', array('form' => $form, 'demande' => $demande)); ?>
+					<hr />
+					<?php include_partial('habilitation/demandeForm', array('form' => $form, 'demande' => $demande)); ?>
 					<?php endif; ?>
 				</div>
                 <div class="modal-footer">
