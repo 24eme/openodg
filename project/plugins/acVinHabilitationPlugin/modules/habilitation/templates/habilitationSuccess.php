@@ -85,8 +85,6 @@
         </div>
     <?php endif; ?>
 
-    <hr />
-
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
     <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
         <thead>
