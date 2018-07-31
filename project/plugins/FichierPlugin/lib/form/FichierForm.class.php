@@ -25,7 +25,7 @@ class FichierForm extends BaseForm
      	$this->setWidgets(array(
      		'file' => new sfWidgetFormInputFile(array('label' => 'Document')),
 			'libelle' => new sfWidgetFormInputText(),
-     		'categorie' => new sfWidgetFormInputText(),
+            'categorie' => new bsWidgetFormChoice(array('choices' => $this->getCategories())),
      		'date_depot' => new sfWidgetFormInput(array(), array("data-date-defaultDate" => date('Y-m-d'))),
      		'visibilite' => new sfWidgetFormInputCheckbox()
      	));
@@ -33,7 +33,7 @@ class FichierForm extends BaseForm
      	$this->setValidators(array(
      		'file' => new sfValidatorFile(array('required' => $fileRequired, 'path' => sfConfig::get('sf_cache_dir'))),
      		'libelle' => new sfValidatorString(array('required' => true)),
-     		'categorie' => new sfValidatorString(array('required' => false)),
+            'categorie' => new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getCategories()))),
      		'date_depot' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)),
      		'visibilite' => new ValidatorBoolean()
      	));
@@ -48,6 +48,11 @@ class FichierForm extends BaseForm
 
         $this->widgetSchema->setNameFormat('fichier[%s]');
     }
+
+	public function getCategories() {
+
+		return array_merge(array("" => ""), FichierClient::getInstance()->getCategories());
+	}
 
     public function save() {
 
