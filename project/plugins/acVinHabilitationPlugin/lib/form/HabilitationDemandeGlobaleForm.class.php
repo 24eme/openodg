@@ -29,7 +29,7 @@ class HabilitationDemandeGlobaleForm extends HabilitationDemandeCreationForm
                 $values['statut'],
                 $values['date'],
                 $values['commentaire'],
-                "",
+                null,
                 true
             );
             $demandes[] = $demande;

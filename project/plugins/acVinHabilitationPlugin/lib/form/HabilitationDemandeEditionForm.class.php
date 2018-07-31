@@ -60,7 +60,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
                                                               $values['date'],
                                                               $values['statut'],
                                                               $values['commentaire'],
-                                                              "",
+                                                              null,
                                                               true
                                                               );
 
