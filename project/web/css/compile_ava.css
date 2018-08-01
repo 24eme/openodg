@@ -2897,6 +2897,9 @@ input[type="button"].btn-block {
 .glyphicon-tree-deciduous:before {
   content: "\e200";
 }
+.glyphicon-duplicate:before {
+  content: "\e224";
+}
 .caret {
   display: inline-block;
   width: 0;
@@ -5913,7 +5916,7 @@ disabled look for disabled choices in the results dropdown
   display: none;
 }
 .select2-more-results.select2-active {
-  background: #f4f4f4 url('select2-spinner.gif') no-repeat 100%;
+  background: #f4f4f4 url('/css/lib/select2/select2-spinner.gif') no-repeat 100%;
 }
 .select2-more-results {
   background: #f4f4f4;
@@ -5986,7 +5989,7 @@ disabled look for disabled choices in the results dropdown
   background: transparent !important;
 }
 .select2-container-multi .select2-choices .select2-search-field input.select2-active {
-  background: #ffffff url('select2-spinner.gif') no-repeat 100% !important;
+  background: #ffffff url('/css/lib/select2/select2-spinner.gif') no-repeat 100% !important;
 }
 .select2-default {
   color: #999 !important;
