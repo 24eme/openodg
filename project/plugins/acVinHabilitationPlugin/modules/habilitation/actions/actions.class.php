@@ -186,7 +186,7 @@ class habilitationActions extends sfActions {
             return $this->executeDeclarant($request);
         }
 
-        $this->formDemandeGlobale->bind($request->getParameter($this->formDemandeCreation->getName()));
+        $this->formDemandeGlobale->bind($request->getParameter($this->formDemandeGlobale->getName()));
 
         if (!$this->formDemandeGlobale->isValid()) {
 
