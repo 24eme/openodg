@@ -51,7 +51,7 @@ class FichierForm extends BaseForm
 
 	public function getCategories() {
 
-		return array_merge(array("" => ""), FichierClient::getInstance()->getCategories());
+		return array_merge(array("" => "Fichier"), FichierClient::getInstance()->getCategories());
 	}
 
     public function save() {
