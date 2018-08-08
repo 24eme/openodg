@@ -17,9 +17,9 @@ if test -f $SEQ_FILE ; then
 since=$(cat $SEQ_FILE)
 fi
 
-curl -s "http://"$COUCHHOST":"$COUCHPORT"/"$COUCHBASE"/_changes?since="$since | grep COMPTE- | sed 's/{"seq"://' | sed 's/,"id":"/ /' | sed 's/".*//'  | while read seq compte ; do 
-	echo $seq > $SEQ_FILE
+curl -s "http://"$COUCHHOST":"$COUCHPORT"/"$COUCHBASE"/_changes?since="$since | grep COMPTE- | sed 's/{"seq"://' | sed 's/,"id":"/ /' | sed 's/".*//'  | while read seq compte ; do
 	php symfony compte:ldap-update $SYMFONYTASKOPTIONS $compte
+	echo $seq > $SEQ_FILE
 done
 
-rm $LOCK_FILE 
+rm $LOCK_FILE
