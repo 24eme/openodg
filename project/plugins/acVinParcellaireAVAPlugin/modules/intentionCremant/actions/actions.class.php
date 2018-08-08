@@ -9,6 +9,7 @@ class intentionCremantActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
         $this->intentionCremant = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()), ParcellaireClient::TYPE_COUCHDB_INTENTION_CREMANT);
+        $this->intentionCremant->initProduitFromLastParcellaire();
         $this->intentionCremant->save();
         return $this->redirect('parcellaire_edit', $this->intentionCremant);
     }
@@ -20,6 +21,7 @@ class intentionCremantActions extends sfActions {
 
         $this->intentionCremant = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()), ParcellaireClient::TYPE_COUCHDB_INTENTION_CREMANT);
         $this->intentionCremant->add('papier', 1);
+        $this->intentionCremant->initProduitFromLastParcellaire();
         $this->intentionCremant->save();
 
         return $this->redirect('parcellaire_edit', $this->intentionCremant);
