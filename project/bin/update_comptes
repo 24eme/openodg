@@ -1,0 +1,25 @@
+#!/bin/bash
+
+SEQ_FILE=log/update_compte.seq
+LOCK_FILE=/tmp/update_compte.lock
+
+cd $(dirname $0)/.. > /dev/null 2>&1
+if test -f $LOCK_FILE; then
+	exit 1;
+fi
+touch $LOCK_FILE;
+
+. bin/config.inc
+
+since="0"
+
+if test -f $SEQ_FILE ; then
+since=$(cat $SEQ_FILE)
+fi
+
+curl -s "http://"$COUCHHOST":"$COUCHPORT"/"$COUCHBASE"/_changes?since="$since | grep COMPTE- | sed 's/{"seq"://' | sed 's/,"id":"/ /' | sed 's/".*//'  | while read seq compte ; do 
+	echo $seq > $SEQ_FILE
+	php symfony compte:ldap-update $SYMFONYTASKOPTIONS $compte
+done
+
+rm $LOCK_FILE 
