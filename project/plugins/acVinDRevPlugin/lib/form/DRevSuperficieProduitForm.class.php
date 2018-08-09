@@ -29,6 +29,11 @@ class DRevSuperficieProduitForm extends acCouchdbObjectForm {
             $this->getWidget('has_stock_vci')->setAttribute('disabled', 'disabled');
         }
 
+        if (!$this->getObject()->getConfig()->hasRendementVciTotal()) {
+          unset($this->widgetSchema['has_stock_vci']);
+          unset($this->validatorSchema['has_stock_vci']);
+        }
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
