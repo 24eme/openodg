@@ -26,6 +26,14 @@ class habilitationActions extends sfActions {
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
+      $this->exportForm = new BaseForm();
+      $this->exportForm->setWidgets(array('date' => new sfWidgetFormInput(array(), array())));
+      $this->exportForm->setValidators(array(
+          'date' => new sfValidatorDate(
+              array('date_output' => 'Y-m-d',
+              'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
+              'required' => true)
+          )));
       if (!$request->isMethod(sfWebRequest::POST)) {
 
           return sfView::SUCCESS;
@@ -37,7 +45,31 @@ class habilitationActions extends sfActions {
 
           return sfView::SUCCESS;
       }
+
+
       return $this->redirect('habilitation_declarant', $this->form->getValue('etablissement'));
+  }
+
+
+  public function executeDemandesExport(sfWebRequest $request) {
+      set_time_limit(-1);
+      ini_set('memory_limit', '2048M');
+      $date = $request->getParameter('date');
+      if(!$date){
+         return $this->redirect('habilitation');
+      }
+      $d = DateTime::createFromFormat('d/m/Y',$date);
+      $this->buildSearch($request,
+                      'habilitation',
+                      'demandes',
+                      array("Date" => HabilitationDemandeView::KEY_DATE),
+                      array("Les plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1)),10000,
+                      array("Date" => "/".$d->format('Y-m-d')."/"),true
+                      );
+      $this->setLayout(false);
+      $attachement = sprintf("attachment; filename=export_demandes_%s.csv",$d->format('Y-m-d'));
+      $this->response->setContentType('text/csv');
+      $this->response->setHttpHeader('Content-Disposition',$attachement );
   }
 
   public function executeSuivi(sfWebRequest $request)
@@ -297,12 +329,12 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array()) {
+    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(),$without_group_by = false) {
 
-        $rows = acCouchdbManager::getClient()
-                    ->group(true)
-                    ->group_level(count($facets))
-                    ->getView($viewCat, $viewName)->rows;
+        $rows = acCouchdbManager::getClient()->group(true)->getView($viewCat, $viewName)->rows;
+        if(!$without_group_by){
+            $rows = acCouchdbManager::getClient()->group(true)->group_level(count($facets))->getView($viewCat, $viewName)->rows;
+        }
 
         $this->facets = array();
         foreach($facets as $libelle => $key) {
@@ -375,7 +407,7 @@ class habilitationActions extends sfActions {
                 }
             }
         }
-        
+
         $sortsKeyUsed = $this->sorts[$this->sort];
 
         uasort($this->docs, function($a, $b) use ($sortsKeyUsed) {
