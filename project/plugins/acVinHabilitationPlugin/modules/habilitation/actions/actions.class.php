@@ -19,6 +19,7 @@ class habilitationActions extends sfActions {
                               "Produit" => HabilitationDemandeView::KEY_PRODUIT),
                         array("Les plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1),
                               "Les plus anciennes" => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1)),
+
                         30,
                         $filtres
                         );
@@ -226,6 +227,7 @@ class habilitationActions extends sfActions {
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+
         $this->urlRetour = $request->getParameter('retour', false);
         $this->filtre = $request->getParameter('filtre');
         if($this->filtre && !preg_match("/".$this->filtre."/", $this->demande->getStatut())) {
@@ -235,6 +237,7 @@ class habilitationActions extends sfActions {
         }
 
         $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande, array(), array('filtre' => $request->getParameter('filtre')));
+
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -295,6 +298,7 @@ class habilitationActions extends sfActions {
     }
 
     protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array()) {
+
         $rows = acCouchdbManager::getClient()
                     ->group(true)
                     ->group_level(count($facets))
@@ -371,7 +375,7 @@ class habilitationActions extends sfActions {
                 }
             }
         }
-
+        
         $sortsKeyUsed = $this->sorts[$this->sort];
 
         uasort($this->docs, function($a, $b) use ($sortsKeyUsed) {

@@ -40,6 +40,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
     }
 
     public function getStatuts(){
+
         $statuts = HabilitationClient::getInstance()->getDemandeStatuts();
         foreach($statuts as $key => $libelle) {
             if($this->getOption('filtre') && !preg_match("/".$this->getOption('filtre')."/", $key)) {
@@ -60,7 +61,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
                                                               $values['date'],
                                                               $values['statut'],
                                                               $values['commentaire'],
-                                                              null,
+                                                              null,                                                              
                                                               true
                                                               );
 
