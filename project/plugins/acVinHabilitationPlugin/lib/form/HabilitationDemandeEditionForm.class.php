@@ -31,7 +31,8 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             'date' => new sfValidatorDate(
                 array('date_output' => 'Y-m-d',
                 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
-                'required' => true)),
+                'required' => true,
+                'max' => date("Y-m-d")),array('max' => 'La date doit être supérieure à la date du jour ('.date('d/m/Y').')')),
             'statut' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($statuts))),
             'commentaire' => new sfValidatorString(array("required" => false)),
         ));
@@ -61,7 +62,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
                                                               $values['date'],
                                                               $values['statut'],
                                                               $values['commentaire'],
-                                                              null,                                                              
+                                                              null,
                                                               true
                                                               );
 
