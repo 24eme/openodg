@@ -88,6 +88,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
     }
 
     public static function getRegions() {
+        if(!EtablissementClient::getRegions()){
+            return array();
+        }
         return EtablissementClient::getRegions();
     }
 
