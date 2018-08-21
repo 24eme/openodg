@@ -52,4 +52,18 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
         return $activitesLibelle;
     }
+
+    public function getlastCompletudeDemande(){
+            return HabilitationClient::getInstance()->findLastDemandeByStatut($this->getDocument()->identifiant,$this->getDocument()->date,"COMPLET",$this->getKey());
+
+    }
+
+    public function getNextStatut(){
+            $nextHabilitation = HabilitationClient::getInstance()->findNextByIdentifiantAndDate($this->getDocument()->identifiant,$this->getDocument()->date);
+            if(!$nextHabilitation) return null;
+            if(!$nextHabilitation->demandes->exist($this->getKey())) return null;
+            $nextDemande = $nextHabilitation->demandes->get($this->getKey());
+            return $nextDemande->statut;
+
+    }
 }

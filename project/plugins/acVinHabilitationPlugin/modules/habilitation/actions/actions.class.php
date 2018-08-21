@@ -59,13 +59,7 @@ class habilitationActions extends sfActions {
          return $this->redirect('habilitation');
       }
       $d = DateTime::createFromFormat('d/m/Y',$date);
-      $this->buildSearch($request,
-                      'habilitation',
-                      'demandes',
-                      array("Date" => HabilitationDemandeView::KEY_DATE),
-                      array("Les plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1)),10000,
-                      array("Date" => "/".$d->format('Y-m-d')."/"),true
-                      );
+      $this->rows = HabilitationDemandesExportView::getInstance()->getExportForDateAndStatut($d->format('Y-m-d'),"ENREGISTREMENT");
       $this->setLayout(false);
       $attachement = sprintf("attachment; filename=export_demandes_%s.csv",$d->format('Y-m-d'));
       $this->response->setContentType('text/csv');
@@ -396,7 +390,6 @@ class habilitationActions extends sfActions {
                 ->getView($viewCat, $viewName)->rows);
             }
         }
-
         if(count($filtres)) {
             foreach($this->docs as $key => $doc) {
                 foreach($filtres as $keyFiltre => $matchFiltre) {
@@ -425,7 +418,6 @@ class habilitationActions extends sfActions {
         if($nbResultatsParPage === true) {
             return;
         }
-
         $this->nbResultats = count($this->docs);
         $this->page = $request->getParameter('page', 1);
         $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
