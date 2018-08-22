@@ -86,7 +86,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
         }
 
-        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;;";
+        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
 
         $csv .= "\n";
 

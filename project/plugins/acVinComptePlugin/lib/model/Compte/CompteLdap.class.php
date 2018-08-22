@@ -18,9 +18,13 @@ class CompteLdap extends acVinLdap {
      */
     public function deleteCompte($compte, $verbose = 0) {
       if ($verbose) {
-	echo self::getIdentifiant($compte)." deleted\n";
+	       echo self::getIdentifiant($compte)." deleted\n";
       }
-        return $this->delete(self::getIdentifiant($compte));
+      $id = $compte;
+      if (!is_string($compte)) {
+        $id = self::getIdentifiant($compte);
+      }
+      return $this->delete($id);
     }
 
     protected static function getIdentifiant($compte) {

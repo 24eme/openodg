@@ -24,9 +24,9 @@ class DeclarationClient
             return 'ExportDRevCSV';
         }
 
-        if(class_exists("ParcellaireAffectationClient") && $type == ParcellaireAffectationClient::TYPE_MODEL) {
+        if(class_exists("ParcellaireClient") && $type == ParcellaireClient::TYPE_MODEL) {
 
-            return 'ExportParcellaireAffectationCSV';
+            return 'ExportParcellaireCSV';
         }
 
         if(class_exists("TirageClient") && $type == TirageClient::TYPE_MODEL) {
