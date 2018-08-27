@@ -22,12 +22,15 @@
 							<?php if(!preg_match("/".$demande->getKey()."/", $event->iddoc)): continue; endif; ?>
 					        <tr style="<?php if($demande->date == $event->date && $demande->statut = $event->statut): ?>font-weight: bold;<?php endif; ?>">
 					            <td><?php echo Date::francizeDate($event->date); ?></td>
+
 					            <td><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($event->statut); ?></td>
+
 					            <td><?php echo $event->commentaire; ?></td>
 					        </tr>
 							<?php endforeach; ?>
 					    </tbody>
 					</table>
+
 					<?php if($form instanceof sfForm): ?>
 					<hr />
 					<?php include_partial('habilitation/demandeForm', array('form' => $form, 'demande' => $demande)); ?>

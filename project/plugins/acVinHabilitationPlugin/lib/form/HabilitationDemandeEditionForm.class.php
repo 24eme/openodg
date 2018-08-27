@@ -31,7 +31,8 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             'date' => new sfValidatorDate(
                 array('date_output' => 'Y-m-d',
                 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
-                'required' => true)),
+                'required' => true,
+                'max' => date("Y-m-d")),array('max' => 'La date doit être inférieure à la date du jour ('.date('d/m/Y').')')),
             'statut' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($statuts))),
             'commentaire' => new sfValidatorString(array("required" => false)),
         ));
@@ -40,6 +41,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
     }
 
     public function getStatuts(){
+
         $statuts = HabilitationClient::getInstance()->getDemandeStatuts();
         foreach($statuts as $key => $libelle) {
             if($this->getOption('filtre') && !preg_match("/".$this->getOption('filtre')."/", $key)) {

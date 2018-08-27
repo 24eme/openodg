@@ -65,7 +65,6 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-
         $this->setDefault('adresse', $this->getObject()->getAdresse());
         $this->setDefault('code_postal', $this->getObject()->getCodePostal());
         $this->setDefault('commune', $this->getObject()->getCommune());
@@ -79,6 +78,22 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         $this->setDefault('telephone_mobile', $this->getObject()->getTelephoneMobile());
         $this->setDefault('fax', $this->getObject()->getFax());
         $this->setDefault('site_internet', $this->getObject()->getSiteInternet());
+
+        if($this->getObject()->isNew()){
+            $this->setDefault('adresse', $this->getObject()->getSociete()->getAdresse());
+            $this->setDefault('code_postal', $this->getObject()->getSociete()->getCodePostal());
+            $this->setDefault('commune', $this->getObject()->getSociete()->getCommune());
+            $this->setDefault('insee', $this->getObject()->getSociete()->getInsee());
+            $this->setDefault('pays', $this->getObject()->getSociete()->getPays());
+            $this->setDefault('adresse_complementaire', $this->getObject()->getSociete()->getAdresseComplementaire());
+
+            $this->setDefault('email', $this->getObject()->getSociete()->getEmail());
+            $this->setDefault('telephone_perso', $this->getObject()->getSociete()->getTelephonePerso());
+            $this->setDefault('telephone_bureau', $this->getObject()->getSociete()->getTelephoneBureau());
+            $this->setDefault('telephone_mobile', $this->getObject()->getSociete()->getTelephoneMobile());
+            $this->setDefault('fax', $this->getObject()->getSociete()->getFax());
+            $this->setDefault('site_internet', $this->getObject()->getSociete()->getSiteInternet());
+        }
 
         $defaultDroits = array();
         $compte = $this->getObject()->getMasterCompte();

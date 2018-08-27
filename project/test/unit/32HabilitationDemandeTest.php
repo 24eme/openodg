@@ -56,6 +56,7 @@ $t->is($demande->activites->toArray(true, false), $activites, "Les activites son
 $t->is($demande->date, $date, "La date du statut est ".$date);
 $t->is($demande->date_habilitation, $date, "La date d'habilitation est ".$date);
 $t->is($demande->demande, $demandeStatut, "La demande est ".$demandeStatut);
+
 $t->is($demande->commentaire, $commentaire, "La commentaire est ".$commentaire);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
@@ -84,7 +85,9 @@ $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est "
 $t->is($demande->getKey(), $keyDemande1, "La clé de la demande est ".$keyDemande1);
 $t->is($demande->date, $date, "La date du statut est ".$dateEnregistrement);
 $t->is($demande->date_habilitation, $date, "La date d'habilitation est ".$date);
+
 $t->is($demande->commentaire, $premierCommentaire, "La commentaire n'a pas bougé");
+
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
@@ -246,6 +249,7 @@ $habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->id
 $demande = $habilitation->demandes->get($demande->getKey());
 
 $t->is($demande->statut, "ENREGISTREMENT", "Le statut enregistrement a été créé automatiquement");
+
 
 $t->comment("Création d'une demande d'habilitation globale");
 

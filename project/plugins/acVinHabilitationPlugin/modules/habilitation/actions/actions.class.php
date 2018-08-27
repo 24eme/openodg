@@ -19,12 +19,21 @@ class habilitationActions extends sfActions {
                               "Produit" => HabilitationDemandeView::KEY_PRODUIT),
                         array("Les plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1),
                               "Les plus anciennes" => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1)),
+
                         30,
                         $filtres
                         );
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
+      $this->exportForm = new BaseForm();
+      $this->exportForm->setWidgets(array('date' => new sfWidgetFormInput(array(), array())));
+      $this->exportForm->setValidators(array(
+          'date' => new sfValidatorDate(
+              array('date_output' => 'Y-m-d',
+              'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
+              'required' => true)
+          )));
       if (!$request->isMethod(sfWebRequest::POST)) {
 
           return sfView::SUCCESS;
@@ -36,7 +45,25 @@ class habilitationActions extends sfActions {
 
           return sfView::SUCCESS;
       }
+
+
       return $this->redirect('habilitation_declarant', $this->form->getValue('etablissement'));
+  }
+
+
+  public function executeDemandesExport(sfWebRequest $request) {
+      set_time_limit(-1);
+      ini_set('memory_limit', '2048M');
+      $date = $request->getParameter('date');
+      if(!$date){
+         return $this->redirect('habilitation');
+      }
+      $d = DateTime::createFromFormat('d/m/Y',$date);
+      $this->rows = HabilitationDemandesExportView::getInstance()->getExportForDateAndStatut($d->format('Y-m-d'),"ENREGISTREMENT");
+      $this->setLayout(false);
+      $attachement = sprintf("attachment; filename=export_demandes_%s.csv",$d->format('Y-m-d'));
+      $this->response->setContentType('text/csv');
+      $this->response->setHttpHeader('Content-Disposition',$attachement );
   }
 
   public function executeSuivi(sfWebRequest $request)
@@ -226,6 +253,7 @@ class habilitationActions extends sfActions {
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+
         $this->urlRetour = $request->getParameter('retour', false);
         $this->filtre = $request->getParameter('filtre');
         if($this->filtre && !preg_match("/".$this->filtre."/", $this->demande->getStatut())) {
@@ -235,6 +263,7 @@ class habilitationActions extends sfActions {
         }
 
         $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande, array(), array('filtre' => $request->getParameter('filtre')));
+
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -294,11 +323,12 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array()) {
-        $rows = acCouchdbManager::getClient()
-                    ->group(true)
-                    ->group_level(count($facets))
-                    ->getView($viewCat, $viewName)->rows;
+    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(),$without_group_by = false) {
+
+        $rows = acCouchdbManager::getClient()->group(true)->getView($viewCat, $viewName)->rows;
+        if(!$without_group_by){
+            $rows = acCouchdbManager::getClient()->group(true)->group_level(count($facets))->getView($viewCat, $viewName)->rows;
+        }
 
         $this->facets = array();
         foreach($facets as $libelle => $key) {
@@ -360,7 +390,6 @@ class habilitationActions extends sfActions {
                 ->getView($viewCat, $viewName)->rows);
             }
         }
-
         if(count($filtres)) {
             foreach($this->docs as $key => $doc) {
                 foreach($filtres as $keyFiltre => $matchFiltre) {
@@ -389,7 +418,6 @@ class habilitationActions extends sfActions {
         if($nbResultatsParPage === true) {
             return;
         }
-
         $this->nbResultats = count($this->docs);
         $this->page = $request->getParameter('page', 1);
         $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);

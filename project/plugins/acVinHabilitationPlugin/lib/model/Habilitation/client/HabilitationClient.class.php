@@ -266,6 +266,24 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation->demandes->get($keyDemande);
         }
 
+        public function findLastDemandeByStatut($identifiant,$date,$statut,$demandeId){
+            $dateInf = DateTime::createFromFormat('Y-m-d',$date);
+            $dateInf->modify('-1 day');
+            $previousDate = $dateInf->format('Y-m-d');
+            $lastHabilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant,$previousDate);
+            if($lastHabilitation){
+                if($lastHabilitation->demandes->exist($demandeId)){
+                    $lastDemande = $lastHabilitation->demandes->get($demandeId);
+                    if($lastDemande->statut == $statut){
+                        return $lastDemande;
+                    }else{
+                        return $this->findLastDemandeByStatut($identifiant,$lastHabilitation->getDate(),$statut,$demandeId);
+                    }
+                }
+            }
+            return null;
+        }
+
         public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = false) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
@@ -283,6 +301,7 @@ class HabilitationClient extends acCouchdbClient {
             $demande->produit = $produitHash;
             $demande->activites = $activites;
             $demande->demande = $demandeStatut;
+
             $demande->commentaire = $commentaire;
             $demande->getLibelle();
 
