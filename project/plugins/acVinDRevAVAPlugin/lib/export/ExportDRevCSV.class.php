@@ -36,7 +36,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
         foreach($this->drev->declaration->getProduits() as $produit) {
             $libelle_complet = $produit->getLibelleComplet();
-            $csv .= sprintf("%s;Revendication;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet), $this->formatFloat($produit->superficie_revendique), $this->formatFloat($produit->volume_revendique), $mode);
+            $csv .= sprintf("%s;Revendication;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet), $this->formatFloat($produit->superficie_revendique + $produit->superficie_revendique_vtsgn), $this->formatFloat($produit->volume_revendique + $produit->volume_revendique_vtsgn), $mode);
             foreach($produit->getProduitsCepage() as $detail) {
                 $csv .= sprintf("%s;Revendication;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet)." ".trim($detail->getLibelle()), $this->formatFloat($detail->superficie_revendique_total), $this->formatFloat($detail->volume_revendique_total), $mode);
             }
