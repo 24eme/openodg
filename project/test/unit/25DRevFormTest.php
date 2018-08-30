@@ -87,8 +87,10 @@ $defaults = $form->getDefaults();
 
 $t->is($form['produits'][$produit_hash1]['recolte']['superficie_total']->getValue(), $produit1->recolte->superficie_total, "La superficie totale de la DR est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $produit1->superficie_revendique, "La superficie revendique est initialisé dans le form");
-$t->is($form['produits'][$produit_hash1]['has_stock_vci']->getValue(), true, "La checkbox de vci du premier produit est coché");
-$t->is($form['produits'][$produit_hash2]['has_stock_vci']->getValue(), false, "La checkbox de vci du 2ème produit n'est pas coché");
+#Ignore le test si la configuration ne permet pas de faire du VCI
+$t->is(!isset($form['produits'][$produit_hash1]['has_stock_vci']) || $form['produits'][$produit_hash1]['has_stock_vci']->getValue(), true, "La checkbox de vci du premier produit est coché");
+$t->is(isset($form['produits'][$produit_hash1]['has_stock_vci']) && $form['produits'][$produit_hash2]['has_stock_vci']->getValue(), false, "La checkbox de vci du 2ème produit n'est pas coché");
+
 $t->ok(!isset($form['produits'][$produit_hash1]['recolte']['volume_total']), "Le volume total de la DR n'est pas proposé dans le formulaire");
 $t->ok(!isset($form['produits'][$produit_hash1]['recolte']['recolte_nette']), "Le volume de récolte nette de la DR n'est pas proposé dans le formulaire");
 $t->ok(!isset($form['produits'][$produit_hash1]['recolte']['volume_sur_place']), "Le volume sur place de la DR n'est pas proposé dans le formulaire");
