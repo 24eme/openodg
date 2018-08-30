@@ -5,7 +5,7 @@
     <h2>Récupération des données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?></h2>
     <?php if (!$drev->hasDocumentDouanier()): ?>
     <p class="text-center" style="margin-top: 20px;">Traitement des données Prodouane en cours</p>
-    <p class="text-center"><img src="/images/douane2odgrhone.gif" alt="chargement en cours..." /></p>
+    <p class="text-center"><img src="/images/douane2<?php echo sfConfig::get("sf_app"); ?>.gif" alt="chargement en cours..." /></p>
 
     <form action="<?php echo url_for('drev_scrape_dr', $drev); ?>" method="get" id="form">
     	<div style="margin-top: 20px;" class="row row-margin row-button">
