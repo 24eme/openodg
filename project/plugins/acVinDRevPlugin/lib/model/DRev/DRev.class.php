@@ -43,6 +43,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected $mouvement_document = null;
     protected $version_document = null;
     protected $piece_document = null;
+    protected $csv_douanier = null;
 
     public function __construct() {
         parent::__construct();
@@ -59,6 +60,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->mouvement_document = new MouvementDocument($this);
         $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
+        $this->csv_douanier = null;
     }
 
     public function constructId() {
@@ -245,6 +247,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getCsvFromDocumentDouanier() {
+      if ($this->csv_douanier != null) {
+        return $this->csv_douanier;
+      }
     	if (!$this->hasDocumentDouanier()) {
     		return null;
     	}
@@ -255,15 +260,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		if ($docDouanier &&  $docDouanier->exist('donnees') && count($docDouanier->donnees) >= 1) {
     			$className = DeclarationClient::getInstance()->getExportCsvClassName($typeDocumentDouanier);
     			$csvOrigine = new $className($docDouanier, false);
-    			return $csvOrigine->getCsv();
-    		} else {
-    			return null;
+    			$this->csv_douanier = $csvOrigine->getCsv();
     		}
+        return $this->csv_douanier;
     	}
     	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->getDocumentDouanier());
     	$csvContent = $csvOrigine->convert();
     	if (!$csvContent) {
-    		return null;    		
+    		return null;
     	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
@@ -274,7 +278,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	}
     	file_put_contents($path.$filename, $csvContent);
     	$csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
-    	return $csv->getCsv();
+      $this->csv_douanier = $csv->getCsv();
+    	return $this->csv_douanier;
     }
 
     public function getFictiveFromDocumentDouanier() {
