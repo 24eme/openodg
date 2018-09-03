@@ -37,7 +37,7 @@
                     </td>
                     <td class="info"><?php echo $formProduit['recolte']['superficie_total']->render(array( 'placeholder' => "ha")) ?></td>
                     <td><?php echo $formProduit['superficie_revendique']->render(array( 'placeholder' => "ha")) ?></td>
-                    <td class="text-center pointer_checkbox"><?php echo $formProduit['has_stock_vci']->render() ?></td>
+                    <td class="text-center pointer_checkbox"><?php echo (isset($formProduit['has_stock_vci'])) ? $formProduit['has_stock_vci']->render() : ""; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
