@@ -45,7 +45,21 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
       }
 
       public function getProduits() {
-        return array();
+        $produits = array();
+        foreach ($this->declaration as $k => $p) {
+          $produits['declaration/'.$k] = $p;
+        }
+        return $produits;
+      }
+
+      public function getProduitDetails() {
+        $produits = array();
+        foreach ($this->declaration as $k => $p) {
+          foreach ($p->details as $key => $d) {
+            $produits[$d->getHash()] = $d;
+          }
+        }
+        return $produits;
       }
 
       public function getConfigProduits() {

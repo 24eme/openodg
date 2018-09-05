@@ -95,6 +95,8 @@ DRev:
                                               fields:
                                                 libelle: { }
                                                 volume_revendique: { type: float }
+                                                volume_revendique_recolte: { type: float, required: false }
+                                                volume_revendique_vci: { type: float, required: false }
                                                 volume_revendique_vtsgn: { type: float, required: false }
                                                 superficie_revendique: { type: float }
                                                 superficie_revendique_vtsgn: { type: float, required: false }

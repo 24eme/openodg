@@ -143,6 +143,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_attachments->exist('DR.csv');
     }
 
+    public function getLastRegistreVCI() {
+      return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
+    }
+
     public function initDoc($identifiant, $campagne) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;

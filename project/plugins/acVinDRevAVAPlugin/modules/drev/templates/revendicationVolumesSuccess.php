@@ -23,7 +23,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <h2>Revendication</h2>
 </div>
 
-<form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
+<form role="form" action="<?php echo url_for("drev_revendication_volumes", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
     <?php echo $form->renderHiddenFields(); ?>
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
@@ -76,7 +76,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         	<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?>
 				<a href="<?php echo url_for("drev_dr", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
 			<?php else: ?>
-        		<a href="<?php echo url_for("drev_revendication_superficies", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
+        		<a href="<?php echo url_for("drev_revendication_vci", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
         	<?php endif; ?>
         </div>
         <div class="col-xs-6 text-right">

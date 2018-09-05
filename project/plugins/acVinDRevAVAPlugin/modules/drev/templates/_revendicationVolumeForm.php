@@ -29,22 +29,22 @@
     <?php endif; ?>
     <?php endif; ?>
     <td class="text-center">
-        <?php if (isset($form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)])): ?>
+        <?php if (isset($form['volume_revendique'.(($vtsgn) ? "_vtsgn" :  '_recolte')])): ?>
         <?php
         $global_error_class = ((($global_error_class == 'error_field_to_focused') && $appellation_field == 'volume') ||
-        ('drev_produits[produits]' . $global_error_id == $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)]->renderName())) ?
+        ('drev_produits[produits]' . $global_error_id == $form['volume_revendique'.(($vtsgn) ? "_vtsgn" :  '_recolte')]->renderName())) ?
         'error_field_to_focused' : '';
         ?>
         <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
-            <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)]->renderError() ?>
+            <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : '_recolte')]->renderError() ?>
             <div class="col-xs-10 col-xs-offset-1">
-                <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)]->render(array('class' => 'disabled form-control text-right input-rounded num_float' . $global_error_class, 'placeholder' => "hl")) ?>
+                <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn"  : '_recolte')]->render(array('class' => 'disabled form-control text-right input-rounded num_float' . $global_error_class, 'placeholder' => "hl")) ?>
             </div>
         </div>
         <?php else: ?>
-            <?php echoFloat($produit->get("volume_revendique".(($vtsgn) ? "_vtsgn" : null))); ?> <small class="text-muted">hl</small>
+            <?php echoFloat($produit->get("volume_revendique".(($vtsgn) ? "_vtsgn"  : '_recolte'))); ?> <small class="text-muted">hl</small>
         <?php endif; ?>
     </td>
-    <td class="text-center"></td>
-    <td class="text-center"></td>    
+    <td class="text-center"><?php if ($produit->exist('volume_revendique_vci') && !$vtsgn) { echoFloat($produit->volume_revendique_vci); } ?></td>
+    <td class="text-center"><?php echoFloat($produit->volume_revendique); ?></td>
 </tr>
