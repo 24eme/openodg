@@ -23,6 +23,12 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <h2>Revendication</h2>
 </div>
 
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_superficies", $drev) ?>">Superficies</a></li>
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">VCI</a></li>
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_volumes", $drev) ?>">Volumes</a></li>
+</ul>
+
 <form role="form" action="<?php echo url_for("drev_revendication_superficies", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
     <?php echo $form->renderHiddenFields(); ?>
     <?php if ($hasError): ?>

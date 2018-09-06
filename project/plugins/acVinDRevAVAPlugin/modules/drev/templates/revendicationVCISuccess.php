@@ -17,6 +17,13 @@ endif;
 <div class="page-header">
     <h2>Revendication</h2>
 </div>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_superficies", $drev) ?>">Superficies</a></li>
+    <li class="active"><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">VCI</a></li>
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_volumes", $drev) ?>">Volumes</a></li>
+</ul>
+
 <?php if (isset($registrevci) && $registrevci) : ?>
 
 <form role="form" action="<?php echo url_for("drev_revendication_vci", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
