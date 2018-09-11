@@ -2,7 +2,7 @@
 Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Adresse complémentaire 1;Adresse complémentaire 2;Code postal Opérateur;Commune Opérateur;Email;Demande;Libellé activités;Produit;Statut;Date Statut;Statut précédent;Date précédent statut;Statut suivant;Date statut suivant;Id du doc;Clé de la demande
 <?php foreach ($rows as $row):
     $keysHash = explode(":", $row->key[HabilitationHistoriqueView::KEY_IDDOC]);
-    $hab = HabilitationClient::getInstance()->find($row->id);
+    $hab = HabilitationClient::getInstance()->getLastHabilitation($row->key[HabilitationHistoriqueView::KEY_IDENTIFIANT]);
     $demandeHash = $keysHash[1];
     $demande = $hab->get($demandeHash);
 
