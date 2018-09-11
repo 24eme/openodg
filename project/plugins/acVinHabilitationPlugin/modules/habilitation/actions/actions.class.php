@@ -26,14 +26,6 @@ class habilitationActions extends sfActions {
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
-      $this->exportForm = new BaseForm();
-      $this->exportForm->setWidgets(array('date' => new sfWidgetFormInput(array(), array())));
-      $this->exportForm->setValidators(array(
-          'date' => new sfValidatorDate(
-              array('date_output' => 'Y-m-d',
-              'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
-              'required' => true)
-          )));
       if (!$request->isMethod(sfWebRequest::POST)) {
 
           return sfView::SUCCESS;
@@ -51,20 +43,46 @@ class habilitationActions extends sfActions {
   }
 
 
-  public function executeDemandesExport(sfWebRequest $request) {
-      set_time_limit(-1);
-      ini_set('memory_limit', '2048M');
-      $date = $request->getParameter('date');
-      if(!$date){
-         return $this->redirect('habilitation');
-      }
-      $d = DateTime::createFromFormat('d/m/Y',$date);
-      $this->rows = HabilitationDemandesExportView::getInstance()->getExportForDateAndStatut($d->format('Y-m-d'),"ENREGISTREMENT");
-      $this->setLayout(false);
-      $attachement = sprintf("attachment; filename=export_demandes_%s.csv",$d->format('Y-m-d'));
-      $this->response->setContentType('text/csv');
-      $this->response->setHttpHeader('Content-Disposition',$attachement );
-  }
+    public function executeExportHistorique(sfWebRequest $request) {
+        set_time_limit(-1);
+        ini_set('memory_limit', '2048M');
+        $this->form = new BaseForm();
+        $this->form->setWidgets(array(
+            'statut' => new sfWidgetFormChoice(array('choices' => array_merge(array(''=>''), HabilitationClient::getInstance()->getDemandeStatuts()))),
+            'date' => new sfWidgetFormInput(array(), array())
+        ));
+        $this->form->setValidators(array(
+            'statut' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys(HabilitationClient::getInstance()->getDemandeStatuts()))),
+            'date' => new sfValidatorDate(
+                array('date_output' => 'Y-m-d',
+                'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
+                'required' => true)
+            )));
+
+        $this->form->getWidgetSchema()->setNameFormat('habilitation_export_historique[%s]');
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $date = $this->form->getValue('date');
+        $statut = $this->form->getValue('statut');
+
+        $this->rows = HabilitationHistoriqueView::getInstance()->getByDateAndStatut($date, $statut);
+        $this->setLayout(false);
+        $this->setTemplate('exportHistoriqueCSV');
+        $attachement = sprintf("attachment; filename=export_demandes_%s_%s.csv", $date, $statut);
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition', $attachement);
+    }
 
   public function executeSuivi(sfWebRequest $request)
   {

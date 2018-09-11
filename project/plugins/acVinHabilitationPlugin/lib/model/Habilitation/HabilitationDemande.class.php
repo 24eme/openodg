@@ -66,4 +66,59 @@ class HabilitationDemande extends BaseHabilitationDemande {
             return $nextDemande->statut;
 
     }
+
+    public function getHistoriques() {
+        $historiques = array();
+        foreach($this->getDocument()->historique as $h) {
+            if(!preg_match("/".$this->getKey()."/", $h->iddoc)) {
+                continue;
+            }
+            $historiques[] = $h;
+        }
+
+        return $historiques;
+    }
+
+    public function findHistoriqueByStatut($statut) {
+        $historiques = $this->getHistoriques();
+
+        foreach($historiques as $h) {
+            if($h->statut == $statut) {
+
+                return $h;
+            }
+        }
+    }
+
+    public function getHistoriquePrecedent($statut, $date) {
+        $historiques = $this->getHistoriques();
+
+        $prev = null;
+        foreach($historiques as $h) {
+            if($h->statut == $statut && $h->date == $date) {
+                return $prev;
+            }
+            $prev = $h;
+        }
+
+        return null;
+    }
+
+    public function getHistoriqueSuivant($statut, $date) {
+        $historiques = $this->getHistoriques();
+
+        $finded = true;
+        foreach($historiques as $h) {
+            if($finded == true) {
+
+                return $h;
+            }
+            if($h->statut == $statut && $h->date == $date) {
+                $finded = true;
+            }
+        }
+
+        return null;
+    }
+
 }

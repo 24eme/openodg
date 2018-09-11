@@ -57,22 +57,9 @@
     </div>
 
     <div class="col-sm-3 col-lg-2 col-xs-12">
-        <form method="post" action="<?php echo url_for("habilitation_demande_export"); ?>" role="form" class="form-horizontal" novalidate>
-            <h4>Exports demandes</h4>
-            <?php echo $exportForm->renderHiddenFields(); ?>
-            <?php echo $exportForm->renderGlobalErrors(); ?>
-            <div class="list-group" style="padding-bottom:10px;">
-                <span class="text-danger"><?php echo $exportForm['date']->renderError() ?></span>
-                <div class="input-group date-picker" style="padding-bottom:10px;">
-                    <?php echo $exportForm['date']->render(array('placeholder' => "Journée du", "required" => true ,"class" => "form-control")) ?>
-                    <div class="input-group-addon">
-                            <span class="glyphicon-calendar glyphicon"></span>
-                    </div>
-                </div>
-                <button type="submit" class="col-xs-12 btn btn-default btn">Exporter</button>
-            </div>
-        </form>
-        <br/>
+        <div class="list-group">
+            <a class="btn btn-default btn-block" href="<?php echo url_for('habilitation_export_historique') ?>">Export de l'historique</a>
+        </div>
         <div class="list-group">
             <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         </div>

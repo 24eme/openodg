@@ -86,7 +86,7 @@ habilitation_demande_edition:
   requirements:
     sf_method: [get, post]
 
-habilitation_demande_export:
-  url: /habilitation/demandes-exports
-  param: { module: habilitation, action: demandesExport }
+habilitation_export_historique:
+  url: /habilitation/export_historique
+  param: { module: habilitation, action: exportHistorique }
   class: HabilitationGeneralRoute
