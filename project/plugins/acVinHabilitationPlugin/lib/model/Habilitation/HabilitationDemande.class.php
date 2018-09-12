@@ -79,15 +79,24 @@ class HabilitationDemande extends BaseHabilitationDemande {
         return $historiques;
     }
 
-    public function findHistoriqueByStatut($statut) {
+    public function getHistoriqueFirstNext() {
         $historiques = $this->getHistoriques();
 
-        foreach($historiques as $h) {
-            if($h->statut == $statut) {
-
-                return $h;
-            }
+        if(!count($historiques)) {
+            return $this->getDocument()->getNext()->getHistoriqueFirstNext();
         }
+
+        return array_shift($historiques);
+    }
+
+    public function getHistoriqueLastPrevious() {
+        $historiques = $this->getHistoriques();
+
+        if(!count($historiques)) {
+            return $this->getDocument()->getPrevious()->getHistoriqueLastPrevious();
+        }
+
+        return array_pop($historiques);
     }
 
     public function getHistoriquePrecedent($statut, $date) {
@@ -95,10 +104,17 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
         $prev = null;
         foreach($historiques as $h) {
-            if($h->statut == $statut && $h->date == $date) {
+            if($prev && $h->statut == $statut && $h->date == $date) {
+
                 return $prev;
             }
             $prev = $h;
+        }
+
+        $habilitationPrecedente = $this->getDocument()->getPrevious();
+
+        if($habilitationPrecedente && $habilitationPrecedente->exist($this->getHash())) {
+            return $habilitationPrecedente->get($this->getHash())->getHistoriqueLastPrevious();
         }
 
         return null;
@@ -107,15 +123,21 @@ class HabilitationDemande extends BaseHabilitationDemande {
     public function getHistoriqueSuivant($statut, $date) {
         $historiques = $this->getHistoriques();
 
-        $finded = true;
+        $finded = false;
         foreach($historiques as $h) {
             if($finded == true) {
-
                 return $h;
             }
             if($h->statut == $statut && $h->date == $date) {
                 $finded = true;
             }
+        }
+
+        $habilitationSuivante = $this->getDocument()->getNext();
+
+        if($habilitationSuivante && $habilitationSuivante->exist($this->getHash())) {
+
+            return $habilitationSuivante->get($this->getHash())->getHistoriqueFirstNext();
         }
 
         return null;

@@ -189,6 +189,14 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
       return $precedente;
   }
+
+  public function getNext() {
+      $date = new DateTime($this->date);
+      $suivante = HabilitationClient::getInstance()->findNextByIdentifiantAndDate($this->identifiant, $date->format('Y-m-d'));
+
+      return $suivante;
+  }
+
   private function addHistoriqueNewProduit($complement){
       $this->addHistorique("Ajout du produit : ".$complement);
   }
