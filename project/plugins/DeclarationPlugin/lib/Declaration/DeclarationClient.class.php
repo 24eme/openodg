@@ -79,6 +79,11 @@ class DeclarationClient
             return 'ExportParcellaireIrrigableCSV';
         }
 
+        if(class_exists("RegistreVCIClient") && $type == RegistreVCIClient::TYPE_MODEL) {
+
+            return 'ExportRegistreVCICSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
