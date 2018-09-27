@@ -240,8 +240,8 @@ class drevActions extends sfActions {
 
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
 
+        $this->secure(DRevSecurity::EDITION, $this->drev);
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
@@ -253,7 +253,6 @@ class drevActions extends sfActions {
                   $this->drev->updateFromDRev($drev_previous);
             }
         }
-
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE))) {
             $this->drev->save();
         }
@@ -265,13 +264,11 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
                return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -360,6 +357,7 @@ class drevActions extends sfActions {
 
         $this->ajoutForm = new DRevAjoutAppellationForm($this->drev);
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+
 
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
