@@ -1,6 +1,6 @@
 <?php
 
-class FixCompteIdentifiantInterneTask extends sfBaseTask
+class FixCompteReSaveTask extends sfBaseTask
 {
 
     protected function configure()
@@ -16,8 +16,8 @@ class FixCompteIdentifiantInterneTask extends sfBaseTask
         ));
 
         $this->namespace = 'fix';
-        $this->name = 'compte-identifiant-interne';
-        $this->briefDescription = "Fixe de l'attribution de l'identifiant interne aux comptes";
+        $this->name = 'compte-resave';
+        $this->briefDescription = "Re sauve les comptes afin de resynchroniser des informations manquantes";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -35,21 +35,9 @@ EOF;
             return;
         }
 
-        if($compte->numero_archive) {
-            return;
-        }
-
-        if($compte->identifiant_interne) {
-
-            return;
-        }
-
-        if(!$compte->type_compte) {
-            return;
-        }
 
         $compte->save();
 
-        echo sprintf("UPDATE;%s;%s;%s:%s\n", $compte->_id, $compte->identifiant_interne, $compte->campagne_archive, $compte->numero_archive);
+        echo sprintf("UPDATE;%s;%s;%s\n", $compte->_id, $compte->region, $compte->societe_informations->siret);
     }
 }
