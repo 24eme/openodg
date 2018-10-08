@@ -6,7 +6,7 @@ class exportChaisCsvTask extends sfBaseTask
     protected $chais = array();
     protected $activitesCorespondance = array();
 
-    public static $activiteOrdre = array("Apport" => "0","Vinification" => "1","DGC" => "2","VC Stockage" => "3","VV Stockage" => "4");
+    public static $activiteOrdre = array("Apport" => "0","Vinification" => "1","DGC" => "2","VV Stockage" => "3","VC Stockage" => "4");
 
     protected function configure()
     {
@@ -61,7 +61,7 @@ $cpt = 0;
                     sort($activites);
                     $activites = implode(";", $this->transformActivites($activites));
                     $isArchivee = $this->isArchiveeChai($chai);
-                    $adresses = explode(' − ', str_replace(array('"',','),array('',''),$chai->adresse));
+                    $adresses = explode(' - ', str_replace(array('"',','),array('',''),$chai->adresse));
                     $a_comp = (isset($adresses[1]))? $adresses[1] : "";
                     $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
@@ -75,7 +75,7 @@ $cpt = 0;
                     trim(str_replace('"', '', $a_comp1)).",".
                     $chai->code_postal.",".
                     $this->protectIso($chai->commune).",".
-                    $this->protectIso($etablissement->raison_sociale).",".
+                    $this->transformNom($this->protectIso($etablissement->raison_sociale)).",".
                     $etablissement->telephone_bureau.",".
                     ",,".$isArchivee.",,,,".$etablissement->siret."\n";
                     }
@@ -114,7 +114,7 @@ $cpt = 0;
                             $activites = "Apport";
                         }
 
-                        $adresses = explode(' − ', str_replace(array('"',','),array('',''),$chaiDistant->adresse));
+                        $adresses = explode(' - ', str_replace(array('"',','),array('',''),$chaiDistant->adresse));
                         $a_comp = (isset($adresses[1]))? $adresses[1] : "";
                         $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
@@ -139,7 +139,7 @@ $cpt = 0;
                         trim(str_replace('"', '', $a_comp1)).",".
                         $chaiDistant->code_postal.",".
                         $this->protectIso($chaiDistant->commune).",".
-                        $etablissement->raison_sociale.",".
+                        $this->transformNom($etablissement->raison_sociale).",".
                         $telephone.",".
                         ",,".$isArchivee.",,,,".$etablissement->siret."\n";
                         }
@@ -167,5 +167,13 @@ $cpt = 0;
 
         public function protectIso($str){
             return str_replace(array('œ'),array(''),$str);
+        }
+
+        private function transformNom($nom_or_raison_sociale){
+            $matches = array();
+            if(preg_match("/(.+) (\(M\)|\(MME\)|\(MM\))$/",$nom_or_raison_sociale,$matches)){
+                return str_replace(array('(',')'),array('',''),$matches[2])." ".$matches[1];
+            }
+            return $nom_or_raison_sociale;
         }
 }
