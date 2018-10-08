@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(70);
+$t = new lime_test(71);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -132,6 +132,11 @@ $t->is($registre->lignes[7]->produit_libelle, 'AOC Crémant d\'Alsace', 'libelle
 
 $registre->superficies_facturables = 5;
 $registre->save();
+
+$t->comment("Export CSV");
+
+$export = new ExportRegistreVCICSV($registre);
+$t->is(count(explode("\n", $export->export())) -1 , 4, "L'export CSV a 4 lignes");
 
 $t->comment("Génération des mouvements de facturation");
 

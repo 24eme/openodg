@@ -25,4 +25,9 @@ class DRevConfiguration {
         return boolval($this->configuration['prelevements']);
     }
 
+    public function hasMentionsCompletaire() {
+
+        return boolval($this->configuration['mentions_complementaire']);
+    }
+
 }
