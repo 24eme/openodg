@@ -16,7 +16,7 @@ $nomModifieSociete = "société viti test contacts modifiées";
 $nomEtablissement = "établissement viti test contacts";
 $nomModifieEtablissement = "établissement viti test contacts modifiés";
 
-$t = new lime_test(35);
+$t = new lime_test(37);
 $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
@@ -87,16 +87,19 @@ $t->is($etbCompte->statut, CompteClient::STATUT_ACTIF, "Le compte est actif");
 $t->comment("Modification de la raison sociale de la société");
 
 $societe->raison_sociale = $nomModifieSociete;
+$societe->siret = "FR01234567891234";
 $societe->save();
 
 $t->is($societe->raison_sociale, $nomModifieSociete, "La raison sociale de la société est :  \"".$nomModifieSociete."\"");
 $t->is($societe->getMasterCompte()->nom, $societe->raison_sociale, "Le nom du compte et de la société sont identiques");
 $t->is($societe->getMasterCompte()->nom, $societe->getMasterCompte()->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte sont identiques");
 $t->isnt($societe->getMasterCompte()->_id, $etablissement->getMasterCompte()->_id, "La société et l'établissement ont des comptes bien séparés");
+$t->is($societe->siret, $societe->getMasterCompte()->societe_informations->siret, "Le siret de la société et de son compte rattaché sont identiques");
 
 $t->comment("Dissociation du compte d'établissement et de la société");
 
 $etablissement->adresse = "rue dulud";
+$etablissement->region = "PIERREFEU_83";
 $etablissement->save();
 
 $t->is($societe->raison_sociale, $nomModifieSociete, "La raison sociale de la société est toujours :  \"".$nomModifieSociete."\"");
@@ -104,6 +107,7 @@ $t->is($societe->getMasterCompte()->nom, $societe->raison_sociale, "Le nom du co
 $t->is($etablissement->nom, $nomEtablissement, "Le nom de l'établissement est : \"".$nomEtablissement."\"");
 $t->is($etablissement->getMasterCompte()->nom, $etablissement->nom, "Le nom du compte et de l'établissement sont identiques");
 $t->is($etablissement->getMasterCompte()->nom, $etablissement->getMasterCompte()->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte de l'établissement sont identiques");
+$t->is($etablissement->getMasterCompte()->region, $etablissement->region, "La \"region\" de l'établissement et de sont compte principale sont identiques");
 $t->ok(!in_array("etablissement", $societe->getMasterCompte()->tags->automatique->toArray(true, false)), "Le compte de la société ne possède plus le tag \"etablissement\"");
 $t->ok(in_array("etablissement", CompteClient::getInstance()->find($etablissement->getMasterCompte()->_id)->tags->automatique->toArray(true, false)), "Le compte ".$etablissement->getMasterCompte()->_id." de l'établissement possède le tag \"etablissement\"");
 
