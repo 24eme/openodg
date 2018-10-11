@@ -23,6 +23,14 @@
 						</div>
 					</div>
 					<?php endif; ?>
+					<?php if(isset($form['denomination_complementaire'])): ?>
+					<span class="error"><?php echo $form['denomination_complementaire']->renderError() ?></span>
+					<div class="form-group row">
+						<div class="col-xs-10 col-xs-offset-1">
+						<?php echo $form['denomination_complementaire']->render(array("placeholder" => "Saisissez une mention valorisante", "class" => "form-control", "required" => false)) ?>
+						</div>
+					</div>
+					<?php endif; ?>
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>

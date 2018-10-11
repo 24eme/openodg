@@ -2,4 +2,4 @@ all:
   configuration:
     drev:
       prelevements: false
-      mentions_complementaire: false
+      mentions_complementaire: true
