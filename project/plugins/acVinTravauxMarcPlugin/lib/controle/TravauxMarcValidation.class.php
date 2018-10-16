@@ -48,9 +48,9 @@ class TravauxMarcValidation extends DocumentValidation
         $precedentDocument = TravauxMarcClient::getInstance()->find(TravauxMarcClient::TYPE_COUCHDB."-".$this->document->identifiant."-".($this->document->campagne-1));
         $etablissement = $this->document->getEtablissementObject();
 
-        $ancienneAdresse = ($precedentDocument) ? $precedentDocument->adresse : $etablissement->adresse;
-        $ancienneCommune = ($precedentDocument) ? $precedentDocument->commune : $etablissement->commune;
-        $ancienneCodePostal = ($precedentDocument) ? $precedentDocument->code_postal : $etablissement->code_postal;
+        $ancienneAdresse = ($precedentDocument) ? $precedentDocument->adresse_distillation->adresse : $etablissement->adresse;
+        $ancienneCommune = ($precedentDocument) ? $precedentDocument->adresse_distillation->commune : $etablissement->commune;
+        $ancienneCodePostal = ($precedentDocument) ? $precedentDocument->adresse_distillation->code_postal : $etablissement->code_postal;
 
         if($this->document->adresse_distillation->adresse != $ancienneAdresse || $this->document->adresse_distillation->code_postal != $ancienneCodePostal || $this->document->adresse_distillation->commune != $ancienneCommune) {
             $this->addPoint(self::TYPE_WARNING, 'distillation_adresse_changement', "Distillation", $this->generateUrl('travauxmarc_distillation', $this->document));
