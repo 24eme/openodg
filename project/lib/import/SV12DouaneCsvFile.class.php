@@ -10,14 +10,9 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         while (($data = fgetcsv($handler)) !== FALSE) {
             $csv[] = self::clean($data);
         }
-        $etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
-		if ($etablissement && !$etablissement->isActif()) {
-			return;
-		}
-        $doc = array();
-        $cvi = null;
-        $rs = null;
-        $commune = null;
+        $this->cvi = null;
+        $this->raison_sociale = null;
+        $this->commune = null;
         $produits = array();
         $communeTiers = null;
         $libellesLigne = null;
@@ -28,16 +23,16 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         	if (is_array($values) && count($values) > 0) {
 
         		if (preg_match('/cvi:[\s]*([a-zA-Z-0-9]{10})/i', $values[0], $m)) {
-        			if ($cvi) {
+        			if ($this->cvi) {
         				$firstPage = false;
         			}
-        			$cvi = $m[1];
+        			$this->cvi = $m[1];
         		}
         		if (preg_match('/commune:[\s]*([a-zA-Z-0-9\s]*)$/i', $values[0], $m)) {
-        			$commune = $m[1];
+        			$this->commune = $m[1];
         		}
         		if (preg_match('/r.+capitulatif par fournisseur pour l\'evv[\s]*(.*)$/i', $values[0], $m)) {
-        			$rs = "\"".html_entity_decode($m[1])."\"";
+        			$this->raison_sociale = "\"".html_entity_decode($m[1])."\"";
         		}
         		if (isset($values[4]) && !empty($values[4]) && preg_match('/libell.+[\s]*du[\s]*produit/i', $values[4])) {
         			$libellesLigne = $values;
@@ -82,13 +77,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         	}
         }
 
-        $doc[] = SV12CsvFile::CSV_TYPE_SV12;
-        $doc[] = $this->campagne;
-        $doc[] = ($etablissement)? $etablissement->identifiant : null;
-        $doc[] = ($etablissement)? $etablissement->cvi : $cvi;
-        $doc[] = ($etablissement)? $etablissement->raison_sociale : $rs;
-        $doc[] = null;
-        $doc[] = ($etablissement)? $etablissement->siege->commune : $commune;
+        $doc = $this->getEtablissementRows();
 
         $csv = '';
         foreach ($produits as $p) {
