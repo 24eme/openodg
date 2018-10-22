@@ -284,7 +284,7 @@ class HabilitationClient extends acCouchdbClient {
             return null;
         }
 
-        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = false) {
+        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
@@ -314,7 +314,7 @@ class HabilitationClient extends acCouchdbClient {
             return $demande;
         }
 
-        public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = false) {
+        public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = true) {
             $demande = $this->getDemande($identifiant, $keyDemande, $date);
             $habilitation = $demande->getDocument();
 

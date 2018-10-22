@@ -37,7 +37,7 @@ $premierCommentaire = $commentaire;
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR);
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur, false);
 $habilitation = $demande->getDocument();
 
 $demande2 = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur);
@@ -74,7 +74,7 @@ $statut = "COMPLET";
 $commentaire = "Après 3 relance";
 $auteur = "Syndicat";
 
-$demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $keyDemande1, $date, $statut, $commentaire, $auteur);
+$demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $keyDemande1, $date, $statut, $commentaire, $auteur, false);
 $dateEnregistrement = (new DateTime("now - 2 month -15 day"))->format('Y-m-d');
 HabilitationClient::getInstance()->triggerDemandeStatutAndSave($demande, $dateEnregistrement, $commentaire, $auteur);
 $habilitation = $demande->getDocument();
@@ -152,7 +152,7 @@ $commentaire = "";
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR);
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire, $auteur);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire, $auteur, false);
 
 $habilitation = $demande->getDocument();
 $keyDemande2 = $demande->getKey();
@@ -169,7 +169,7 @@ $statut = "COMPLET";
 $commentaire = "Directement";
 $auteur = "Syndicat";
 
-$demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $keyDemande2, $date, $statut, $commentaire, $auteur);
+$demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $keyDemande2, $date, $statut, $commentaire, $auteur, false);
 $habilitation = $demande->getDocument();
 
 $idDocHabilitation = 'HABILITATION-'.$viti->identifiant.'-'.str_replace('-', '', $date);

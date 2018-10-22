@@ -46,6 +46,9 @@ EOF;
             $dateCompletude = $this->convertDateFr($data[14]);
             $dateEnregistrement = $this->convertDateFr($data[19]);
             $dateTransmissionOI = $this->convertDateFr($data[22]);
+            if($dateTransmissionOI == "SVA") {
+                $dateTransmissionOI = $dateEnregistrement;
+            }
             $dateDecision = $this->convertDateFr($data[26]);
             $activites = array();
             if($data[27]) {
@@ -79,30 +82,24 @@ EOF;
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateTransmissionOI, "TRANSMIS_".$pourqui, null, "import", false);
             }
 
-            if($dateDecision && $etatHabilitation == "habilité" && in_array($pourqui, array("ODG"))) {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_ODG", null, "import", false);
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", null, "import", false);
+            $organismeValidateur = "INAO";
+            if($pourqui == "CERTIPAQ") {
+                $organismeValidateur = "CERTIPAQ";
+            }
+            if($pourqui == "ODG") {
+                $organismeValidateur = "ODG";
             }
 
             if($dateDecision && $etatHabilitation == "habilité" && in_array($pourqui, array("CERTIPAQ"))) {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_CERTIPAQ", null, "import", false);
+                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_".$organismeValidateur, null, "import", false);
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", null, "import", false);
             }
 
             if($dateDecision && $etatHabilitation == "refus" && in_array($pourqui, array("OIVR", "CI"))) {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_INAO", null, "import", false);
+                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_". $organismeValidateur, null, "import", false);
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", null, "import", false);
             }
 
-            if($dateDecision && $etatHabilitation == "habilité" && in_array($pourqui, array("OIVR", "CI"))) {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_INAO", null, "import", false);
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", null, "import", false);
-            }
-
-            if($dateDecision && $etatHabilitation == "refus" && in_array($pourqui, array("OIVR", "CI"))) {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_INAO", null, "import", false);
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", null, "import", false);
-            }
         }
     }
 
