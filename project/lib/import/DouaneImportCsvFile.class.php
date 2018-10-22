@@ -41,4 +41,13 @@ class DouaneImportCsvFile {
 
         return null;
     }
+    public static function getTypeFromFile($file)  {
+      if (preg_match('/sv11/i', $file)) {
+        return 'SV11';
+      }
+      if (preg_match('/sv12/i', $file)) {
+        return 'SV12';
+      }
+      return 'DR';
+    }
 }
