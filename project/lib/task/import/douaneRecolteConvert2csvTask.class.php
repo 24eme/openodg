@@ -34,11 +34,12 @@ EOF;
         }
 
         $csvfile = $file;
-        try{
+        $infos = pathinfo($file);
+        $extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
+        if (strtolower($extension) == 'xls') {
           $csvfile = Fichier::convertXlsFile($file);
-
-        }catch(sfException $e){
-          echo "convertion impossible\n";
+        }elseif (strtolower($extension) != 'csv') {
+          throw new sfException("extention de ".$file."non géré");
         }
         $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($file), $csvfile);
         print $fichier->convert();
