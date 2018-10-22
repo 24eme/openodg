@@ -63,18 +63,18 @@ EOF;
             if($data[30]) {
                 $activites[] = HabilitationClient::ACTIVITE_VRAC;
             }
-            if($data[31]) {
+                if($data[31]) {
                 $activites[] = HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE;
             }
             $commentaire = $data[4];
             $pourqui = str_replace(array("CI_SYND", "CPAQ"), array("CI", "CERTIPAQ"), $data[20]);
-            print_r($data);
+            /*print_r($data);
             var_dump($identifiant);
             var_dump($produit);
             var_dump($activites);
             var_dump($dateDepot);
             var_dump($commentaire);
-            var_dump($pourqui);
+            var_dump($pourqui);*/
             $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, "HABILITATION", $produit, $activites, "DEPOT", $dateDepot, $commentaire, "import", false);
             $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateCompletude, "COMPLET", null, "import", false);
             $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
@@ -90,12 +90,12 @@ EOF;
                 $organismeValidateur = "ODG";
             }
 
-            if($dateDecision && $etatHabilitation == "habilité" && in_array($pourqui, array("CERTIPAQ"))) {
+            if($dateDecision && $etatHabilitation == "habilité") {
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_".$organismeValidateur, null, "import", false);
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", null, "import", false);
             }
 
-            if($dateDecision && $etatHabilitation == "refus" && in_array($pourqui, array("OIVR", "CI"))) {
+            if($dateDecision && $etatHabilitation == "refus") {
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_". $organismeValidateur, null, "import", false);
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", null, "import", false);
             }
