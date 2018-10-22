@@ -75,7 +75,9 @@ class DouaneImportCsvFile {
       }
       $doc[] = ($this->etablissement)? $this->etablissement->identifiant : null;
       $doc[] = ($this->etablissement)? $this->etablissement->cvi : ($this->cvi) ? $this->cvi : null;
-      $doc[] = ($this->etablissement)? $this->etablissement->raison_sociale : ($this->raison_sociale) ? $this->raison_sociale : null;
+      $rs = ($this->etablissement)? $this->etablissement->raison_sociale : ($this->raison_sociale) ? $this->raison_sociale : null;
+      $rs = '"'.preg_replace('/ -$/', '', trim(preg_replace('/  */', ' ', str_replace('"', ' - ', preg_replace('/"$/', '', preg_replace('/^"/', '', $rs)))))).'"';
+      $doc[] = $rs;
       $doc[] = null;
       $doc[] = ($this->etablissement)? $this->etablissement->siege->commune :($this->commune) ? $this->commune : null;
       return $doc;
