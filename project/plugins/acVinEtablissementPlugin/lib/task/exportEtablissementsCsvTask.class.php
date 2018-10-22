@@ -3,6 +3,16 @@
 class exportEtablissementsCsvTask extends sfBaseTask
 {
 
+    public static $statuts_libelles_export = array( HabilitationClient::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
+                                             HabilitationClient::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
+                                             HabilitationClient::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
+                                             HabilitationClient::STATUT_HABILITE => "Habilité",
+                                             HabilitationClient::STATUT_SUSPENDU => "Suspension d’habilitation",
+                                             HabilitationClient::STATUT_REFUS => "Refus d’habilitation",
+                                             HabilitationClient::STATUT_ANNULE => "Annulé",
+                                             HabilitationClient::STATUT_RETRAIT => "Retrait d’habilitation",
+                                             HabilitationClient::STATUT_ARCHIVE => "Archivé");
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -45,7 +55,7 @@ EOF;
                             continue;
                         }
                         $activites[] = HabilitationClient::getInstance()->getLibelleActiviteToBeSorted($activiteKey);
-                        $habilitationStatut = HabilitationClient::getInstance()->getLibelleStatut($activite->statut);
+                        $habilitationStatut = self::$statuts_libelles_export[$activite->statut];
                     }
                 }
             }

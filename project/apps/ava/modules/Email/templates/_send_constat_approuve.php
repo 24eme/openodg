@@ -8,4 +8,4 @@ En vous souhaitant bonne réception.
 
 Cordialement,
 
-Vicky CHAN FOOK TIN
+L'équipe de l'Appui Technique AVA-ODG
