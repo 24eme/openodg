@@ -39,45 +39,60 @@ EOF;
             }
 
             $data = str_getcsv($line, ';');
-            $identifiant = $data[2]."01";
-            $etatHabilitation = $data[25];
-            $produit = $this->convertProduit($data[3]);
-            $dateDepot = $this->convertDateFr($data[13]);
-            $dateCompletude = $this->convertDateFr($data[14]);
-            $dateEnregistrement = $this->convertDateFr($data[19]);
-            $dateTransmissionOI = $this->convertDateFr($data[22]);
-            if($dateTransmissionOI == "SVA") {
-                $dateTransmissionOI = $dateEnregistrement;
+            $identifiant = sprintf("%06d01", $data[5]);
+            $etatHabilitation = strtolower(trim($data[24]));
+            $produit = $this->convertProduit($data[0]);
+            $dateCompletude = $this->convertDateFr($data[1]);
+            $dateEnregistrement = $this->convertDateFr($data[2]);
+            $dateTransmissionOI = null;
+            $dateDecision = $this->convertDateFr($data[25]);
+            $typeDemande = HabilitationClient::DEMANDE_HABILITATION;
+            if($etatHabilitation == "retrait") {
+                $typeDemande = HabilitationClient::DEMANDE_RETRAIT;
             }
-            $dateDecision = $this->convertDateFr($data[26]);
+            if($dateDecision < $dateEnregistrement) {
+                $dateEnregistrement = $dateDecision;
+            }
+            if($dateDecision < $dateCompletude) {
+                $dateCompletude = $dateDecision;
+            }
+            if($dateEnregistrement < $dateCompletude) {
+                $dateEnregistrement = $dateCompletude;
+            }
+
             $activites = array();
-            if($data[27]) {
+            if($data[19]) {
                 $activites[] = HabilitationClient::ACTIVITE_PRODUCTEUR;
             }
-            if($data[28]) {
+            if($data[20]) {
                 $activites[] = HabilitationClient::ACTIVITE_VINIFICATEUR;
             }
-            if($data[29]) {
+            if($data[21]) {
                 $activites[] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
             }
-            if($data[30]) {
+            if($data[22]) {
                 $activites[] = HabilitationClient::ACTIVITE_VRAC;
             }
-                if($data[31]) {
+            if($data[23]) {
                 $activites[] = HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE;
             }
-            $commentaire = $data[4];
-            $pourqui = str_replace(array("CI_SYND", "CPAQ"), array("CI", "CERTIPAQ"), $data[20]);
-            /*print_r($data);
-            var_dump($identifiant);
-            var_dump($produit);
-            var_dump($activites);
-            var_dump($dateDepot);
-            var_dump($commentaire);
-            var_dump($pourqui);*/
-            $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, "HABILITATION", $produit, $activites, "DEPOT", $dateDepot, $commentaire, "import", false);
-            $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateCompletude, "COMPLET", null, "import", false);
+            $commentaire = $data[26];
+            $pourqui = null;
+            if(!$dateCompletude) {
+                echo "ERROR;Date de complétude;$line\n";
+                continue;
+            }
+            if(!$dateDecision) {
+                echo "ERROR;Date de décision;$line\n";
+                continue;
+            }
+            if(!EtablissementClient::getInstance()->find("ETABLISSEMENT-".$identifiant, acCouchdbClient::HYDRATE_JSON)) {
+                echo "ERROR;Établissement introuvable;$line\n";
+                continue;
+            }
+            $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
             $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
+
             if($pourqui && $dateTransmissionOI) {
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateTransmissionOI, "TRANSMIS_".$pourqui, null, "import", false);
             }
@@ -90,16 +105,16 @@ EOF;
                 $organismeValidateur = "ODG";
             }
 
-            if($dateDecision && $etatHabilitation == "habilité") {
+            if($dateDecision && in_array($etatHabilitation, array("habilité", "retrait"))) {
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_".$organismeValidateur, null, "import", false);
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", null, "import", false);
-            }
-
-            if($dateDecision && $etatHabilitation == "refus") {
+                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", $commentaire, "import", false);
+            } elseif($dateDecision && $etatHabilitation == "refus") {
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_". $organismeValidateur, null, "import", false);
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", null, "import", false);
-            }
+                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", $commentaire, "import", false);
+            } elseif($dateDecision) {
 
+                throw new Exception("Statut non connu \"".$etatHabilitation."\"");
+            }
         }
     }
 

@@ -348,9 +348,9 @@ class HabilitationClient extends acCouchdbClient {
 
         protected function postSaveDemande($demande, $commentaire, $auteur, $trigger) {
             $this->replicateDemandeAndSave($demande);
-            $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
 
             if($trigger) {
+                $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
                 $this->triggerDemandeStatutAndSave($demande, date('Y-m-d'), $commentaire, $auteur);
             }
         }
@@ -382,7 +382,7 @@ class HabilitationClient extends acCouchdbClient {
             return $demande;
         }
 
-        protected function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
+        public function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
             $statutHabilitation = $this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut);
             if(!$statutHabilitation) {
 

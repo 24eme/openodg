@@ -76,6 +76,7 @@ $auteur = "Syndicat";
 
 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $keyDemande1, $date, $statut, $commentaire, $auteur, false);
 $dateEnregistrement = (new DateTime("now - 2 month -15 day"))->format('Y-m-d');
+HabilitationClient::getInstance()->updateAndSaveHabilitationFromDemande($demande, $commentaire);
 HabilitationClient::getInstance()->triggerDemandeStatutAndSave($demande, $dateEnregistrement, $commentaire, $auteur);
 $habilitation = $demande->getDocument();
 
