@@ -67,6 +67,9 @@ class DouaneImportCsvFile {
       $doc = array();
       $doc[] = $this->getCsvType();
       $doc[] = $this->campagne;
+      if (!isset($this->etablissement)) {
+        $this->etablissement = null;
+      }
       if (!$this->etablissement) {
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
       }
