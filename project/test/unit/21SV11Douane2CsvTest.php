@@ -6,7 +6,7 @@ $csvConvert = $csv->convert();
 
 $lines = explode("\n", $csvConvert);
 
-$t = new lime_test((count($lines) - 1) * 5);
+$t = new lime_test((count($lines) - 1) * 6);
 
 $i = 0;
 foreach($lines as $line) {
@@ -20,6 +20,7 @@ foreach($lines as $line) {
     $t->is($line[SV11CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
     $t->is($line[SV11CsvFile::CSV_RECOLTANT_LIBELLE], "\"ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
     $t->is($line[SV11CsvFile::CSV_RECOLTANT_COMMUNE], "NEUILLY", "Le commune est NEUILLY");
+    $t->is($line[SV12CsvFile::CSV_PRODUIT_CERTIFICATION], "AOP", "certification trouvée pour ".$line[SV12CsvFile::CSV_PRODUIT_LIBELLE]);
 
     $i++;
 }

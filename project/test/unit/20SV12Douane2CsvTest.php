@@ -7,35 +7,28 @@ $csvConvert = $csv->convert();
 
 $lines = explode("\n", $csvConvert);
 
-$t = new lime_test((count($lines) - 1)*10);
+$t = new lime_test((count($lines) - 1)*11);
 if($application == "rhone") {
-$produit1 = "1B525";
-$produit2 = "1B541";
-$produit3 = "1R542";
-$produit4 = "1R526";
-$produit5 = "1B542";
+  $linesAObtenir = array(
+    array('produit' => "1B525", 'produit_libelle' => 'CONDRIEU', 'values' => array(2700, 0.4579, 19.42, 19.42)),
+    array('produit' => "1B541", 'produit_libelle' => 'Hermitage ou Ermitage bl', 'values' => array(850,0.1484,6.75,6.75)),
+    array('produit' => "1R542", 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(7000, 1.08, 54, 54)),
+    array('produit' => "1R526", 'produit_libelle' => 'CORNAS', 'values' => array(3000, 0.5495, 23, 23)),
+    array('produit' => "1B542", 'produit_libelle' => 'Crozes-Hermitage bl', 'values' => array(5000, 0.8866, 30.96, 30.96)),
+    array('produit' => "1R542", 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(5528, 0.72, 37.14, 37.14)),
+    array('produit' => "1B542", 'produit_libelle' => 'Crozes-Hermitage bl', 'values' => array(800, 0.255, 5.04, 5.04)),
+    array('produit' => "1R542", 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(15454, 2.2352, 112.86, 112.86)),
+    array('produit' => "1R542", 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(2000, 0.3234, 16, 16)),
+    array('produit' => "1R542", 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(2082, 0.312, 15, 15)),
+  );
 }
 
 if($application == "provence") {
-$produit1 = "1R582S";
-$produit2 = "1S582S";
-$produit3 = "1B582S";
-$produit4 = "1R595S";
-$produit5 = "1S595S";
+  $linesAObtenir = array(
+    array('produit' => "1S582S", 'produit_libelle' => 'Côtes de Provence rosé', 'values' => array(25105, 6.202, 180, 180))
+  );
 }
 
-$linesAObtenir = array(
-     array('produit' => $produit1, 'produit_libelle' => 'CONDRIEU', 'values' => array(2700, 0.4579, 19.42, 19.42)),
-     array('produit' => $produit2, 'produit_libelle' => 'Hermitage ou Ermitage bl', 'values' => array(850,0.1484,6.75,6.75)),
-     array('produit' => $produit3, 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(7000, 1.08, 54, 54)),
-     array('produit' => $produit4, 'produit_libelle' => 'CORNAS', 'values' => array(3000, 0.5495, 23, 23)),
-     array('produit' => $produit5, 'produit_libelle' => 'Crozes-Hermitage bl', 'values' => array(5000, 0.8866, 30.96, 30.96)),
-     array('produit' => $produit3, 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(5528, 0.72, 37.14, 37.14)),
-     array('produit' => $produit5, 'produit_libelle' => 'Crozes-Hermitage bl', 'values' => array(800, 0.255, 5.04, 5.04)),
-     array('produit' => $produit3, 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(15454, 2.2352, 112.86, 112.86)),
-     array('produit' => $produit3, 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(2000, 0.3234, 16, 16)),
-     array('produit' => $produit3, 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(2082, 0.312, 15, 15)),
-);
 
 $typesLigne = array(
     array("libelle" => "Quantité de VF", "numero" => "07"),
@@ -61,6 +54,7 @@ foreach($lines as $line) {
     $rest = fmod($i, 4);
     $valueAObtenir = $ligneAObtenir['values'][$rest];
 
+    $t->is($line[SV12CsvFile::CSV_PRODUIT_CERTIFICATION], "AOP", "certification trouvée pour ".$ligneAObtenir['produit']);
     $t->is($line[SV12CsvFile::CSV_PRODUIT_INAO], $ligneAObtenir['produit'], "Le code produit est ".$ligneAObtenir['produit']);
     $t->is($line[SV12CsvFile::CSV_PRODUIT_LIBELLE], $ligneAObtenir['produit_libelle'], "Le code produit est ".$ligneAObtenir['produit_libelle']);
     $t->is($line[SV12CsvFile::CSV_LIGNE_CODE], $typesLigne[$rest]['numero'], "Le numéro du type de la ligne est ".$typesLigne[$rest]['numero']);

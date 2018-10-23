@@ -22,12 +22,17 @@ class DRevConfiguration {
 
     public function hasPrelevements() {
 
-        return boolval($this->configuration['prelevements']);
+        return isset($this->configuration['prelevements']) && boolval($this->configuration['prelevements']);
     }
 
     public function hasMentionsCompletaire() {
 
-        return boolval($this->configuration['mentions_complementaire']);
+        return isset($this->configuration['mentions_complementaire']) && boolval($this->configuration['mentions_complementaire']);
+    }
+
+    public function hasDuplicateBio() {
+
+      return isset($this->configuration['duplicate_bio']) && boolval($this->configuration['duplicate_bio']);
     }
 
 }
