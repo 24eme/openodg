@@ -48,10 +48,10 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         		}
         		if ($firstPage && isset($values[4]) && !empty($values[4]) && !preg_match('/libell.+[\s]*du[\s]*produit/i', $values[4])) {
         			for ($v = 6; $v < 13; $v++) {
-        				if (!$values[$v]) {
+        				if (!isset($values[$v]) || !$values[$v]) {
         					continue;
         				}
-        				$p = $this->configuration->findProductByCodeDouane($values[6]);
+        				$p = $this->configuration->findProductByCodeDouane($values[3]);
         				if (!$p) {
         					$produit = array(null, null, null, null, null, null, null);
         				} else {
