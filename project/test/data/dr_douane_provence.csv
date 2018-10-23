@@ -13,7 +13,7 @@ DNR,7523700100,ACTUALYS JEAN                (NEUILLY),,,,,,,,,,,,
  8-0,"Récolte apportée en cave coopérative par l'adhérent.
 Volume obtenu",,,,,,,,,,,,,
  8-1,Acheteur n°7523700800 - CAVE COOP DE NEUILLY,,0,0,6.66,0,60.31,0.34,2.23,0.34,6.21,0.93,14.97,2.25
-9,Récolte en cave particulière. Volume obtenu,,105.18,0,0,0,3.76,0,0,0,0,0,0,0
+9,Récolte en cave particulière. Volume obtenu,,105.18,0,5,0,3.76,0,0,0,0,0,0,0
 ,Destination de la récolte non vendue,,,,,,,,,,,,,
 10,Volume en vinification,,105.18,0,6.66,0,64.07,0.34,2.23,0.34,6.21,0.93,14.97,2.25
 11,Volume en concentration,,0,0,0,0,0,0,0,0,0,0,0,0
@@ -26,7 +26,7 @@ Volume obtenu",,,,,,,,,,,,,
 17,Volume d'eau éliminé en cas d'enrichissement par concentration partielle,,0,0,0,0,0,0,0,0,0,0,0,0
 18,Volume substituable individuel (VSI),,0,0,0,0,0,0,0,0,0,0,0,0
 19,Volume complémentaire individuel (VCI),,2,0,0,0,0,0,0,0,0,0,0,0
-20,Nom du propriétaire bailleur à fruit,,,,,,SFEIR,,SFEIR,,SFEIR,,SFEIR,
-21,N°PPM du bailleur à fruit,,,,,,P21015999,,P21015999,,P21015999,,P21015999,
+20,Nom du propriétaire bailleur à fruit,,,,,,,,SFEIR,,SFEIR,,SFEIR,
+21,N°PPM du bailleur à fruit,,,,,,,,P21015999,,P21015999,,P21015999,
 22,Motif de non récolte,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,
