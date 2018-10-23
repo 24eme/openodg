@@ -1,28 +1,28 @@
 Identification de la déclaration,,,,,,,,,,,,,,
 DNR,7523700100,ACTUALYS JEAN                (NEUILLY),,,,,,,,,,,,
-1,Code produit,,1R545   ,,3B073 AO,,1R531S19,,3B073 AO,,3R071 AI,,3S071 CM,
-,Libelle produit,,Saint-Joseph rouge,,COL RHODANIENNES BL VIOGNIER B,,ARDECHE RG SYRAH N,,COL RHODANIENNES BL VIOGNIER B,,ARDECHE RG SYRAH N,,ARDECHE RS GAMAY N,
+1,Code produit,,1R545   ,,1R545   ,,1R531S19,,1R545   ,,1R531S19,,1R531S19,
+,Libelle produit,,Saint-Joseph rouge,,Saint-Joseph rouge,,ARDECHE RG SYRAH N,,Saint-Joseph rouge,,ARDECHE RG SYRAH N,,ARDECHE RG SYRAH N,
 2,Mention valorisante,,,,,,,,,,,,,
 3,Zone viticole de récolte,,C1A,,C1A,,C1A,,C1A,,C1A,,C1A,
-4,Superficie de récolte (Ha),,2.4786,,0.208,,0.8601,,0.0528,,0.0874,,0.2085,
+4,Superficie de récolte (Ha),,"2,4786",,208,,"0,8601",,"0,0528",,"0,0874",,"0,2085",
 5,Récolte totale,,Exploitant (Hl),Bailleur (Hl),Exploitant (Hl),Bailleur (Hl),Exploitant (Hl),Bailleur (Hl),Exploitant (Hl),Bailleur (Hl),Exploitant (Hl),Bailleur (Hl),Exploitant (Hl),Bailleur (Hl)
-,,,105.18,0,6.66,0,64.07,0.34,2.23,0.34,6.21,0.93,14.97,2.25
+,,,"105,18",0,"6,66",0,"64,07","0,34","2,23","0,34","6,21","0,93","14,97","2,25"
 ,Ventilation de la récolte (lies comprises),,,,,,,,,,,,,
  6-0,Récolte vendue sous forme de raisins. Volume de vins obtenu,,,,,,,,,,,,,
  7-0,Récolte vendue sous forme de moûts. Volume de moût obtenu,,,,,,,,,,,,,
  8-0,"Récolte apportée en cave coopérative par l'adhérent.
 Volume obtenu",,,,,,,,,,,,,
- 8-1,Acheteur n°7523700800 - CAVE COOP DE NEUILLY,,0,0,6.66,0,60.31,0.34,2.23,0.34,6.21,0.93,14.97,2.25
-9,Récolte en cave particulière. Volume obtenu,,105.18,0,0,0,3.76,0,0,0,0,0,0,0
+ 8-1,Acheteur n°7523700800 - CAVE COOP DE NEUILLY,,0,0,"6,66",0,"60,31","0,34","2,23","0,34","6,21","0,93","14,97","2,25"
+9,Récolte en cave particulière. Volume obtenu,,"105,18",0,0,0,"3,76",0,0,0,0,0,0,0
 ,Destination de la récolte non vendue,,,,,,,,,,,,,
-10,Volume en vinification,,105.18,0,6.66,0,64.07,0.34,2.23,0.34,6.21,0.93,14.97,2.25
+10,Volume en vinification,,"105,18",0,"6,66",0,"64,07","0,34","2,23","0,34","6,21","0,93","14,97","2,25"
 11,Volume en concentration,,0,0,0,0,0,0,0,0,0,0,0,0
 12,Volume autre destination,,0,0,0,0,0,0,0,0,0,0,0,0
 ,Ventilation des produits obtenus,,,,,,,,,,,,,
 13,Volume de MC ou MCR obtenu non utilisé,,0,0,0,0,0,0,0,0,0,0,0,0
 14,Volume de vin sans AO/IGP avec ou sans cépage,,0,0,0,0,0,0,0,0,0,0,0,0
-15,Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé,,104.1,0,6.66,0,64.63,0.34,2.23,0.34,6.27,0.94,14.85,2.23
-16,Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels,,3.03,0,0.13,0,1.29,0.01,0.04,0.01,0.12,0.02,0.3,0.05
+15,Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé,,"104,1",0,"6,66",0,"64,63","0,34","2,23","0,34","6,27","0,94","14,85","2,23"
+16,Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels,,"3,03",0,"0,13",0,"1,29","0,01","0,04","0,01","0,12","0,02","0,3","0,05"
 17,Volume d'eau éliminé en cas d'enrichissement par concentration partielle,,0,0,0,0,0,0,0,0,0,0,0,0
 18,Volume substituable individuel (VSI),,0,0,0,0,0,0,0,0,0,0,0,0
 19,Volume complémentaire individuel (VCI),,2,0,0,0,0,0,0,0,0,0,0,0
