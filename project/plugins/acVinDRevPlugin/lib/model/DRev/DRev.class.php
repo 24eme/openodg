@@ -264,20 +264,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		}
         return $this->csv_douanier;
     	}
-    	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->getDocumentDouanier());
+    	return $this->getCsvFromObjectDouanier(DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->getDocumentDouanier()));
+
+    }
+    public function getCsvFromObjectDouanier($csvOrigine) {
     	$csvContent = $csvOrigine->convert();
     	if (!$csvContent) {
     		return null;
     	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
-    	$filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
+    	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->campagne.'.csv';
     	if (!is_dir($path)) {
     		if (!mkdir($path)) {
     			throw new sfException('cannot create '.$path);
     		}
     	}
     	file_put_contents($path.$filename, $csvContent);
-    	$csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
+    	$csv = DouaneCsvFile::getNewInstanceFromType($csvOrigine->getCsvType(), $path.$filename);
       $this->csv_douanier = $csv->getCsv();
     	return $this->csv_douanier;
     }
@@ -337,6 +340,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $produitsImporte = array();
+        $has_bio = false;
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
@@ -347,7 +351,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	continue;
             }
 
-            $produit = $this->addProduit($produitConfig->getHash());
+            if (preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) && DRevConfiguration::getInstance()->hasDuplicateBio()) {
+              $produit = $this->addProduit($produitConfig->getHash(), "Agriculture Biologique");
+              $has_bio = true;
+            }else{
+              $produit = $this->addProduit($produitConfig->getHash());
+            }
 
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
                 $bailleurs[$produit->getHash()] = $produit->getHash();
@@ -408,13 +417,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         foreach ($this->declaration->getProduits() as $hash => $p) {
         	if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
-    			$todelete[$hash] = $hash;
-                continue;
+    			     $todelete[$hash] = $hash;
+               continue;
         	}
         }
 
         foreach ($todelete as $del) {
             $this->remove($del);
+        }
+        
+        if (!$has_bio && DRevConfiguration::getInstance()->hasDuplicateBio()) {
+            foreach ($this->declaration->getProduits() as $hash => $p) {
+                $produitBio = $this->addProduit($p->getParent()->getHash(), "Agriculture Biologique");
+            }
         }
 
         if($preserve) {

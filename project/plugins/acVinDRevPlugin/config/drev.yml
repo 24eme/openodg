@@ -3,3 +3,4 @@ all:
     drev:
       prelevements: false
       mentions_complementaire: false
+      duplicate_bio: false
