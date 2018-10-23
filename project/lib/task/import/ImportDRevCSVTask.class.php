@@ -119,29 +119,29 @@ EOF;
                 }else{
                     $produit->recolte->volume_total = $this->convertFloat($data[self::CSV_L15]);
                 }
+                $produit->recolte->recolte_nette = $this->convertFloat($data[self::CSV_L15]);
+                $produit->recolte->volume_sur_place = $this->convertFloat($data[self::CSV_L15]);
 
                 $produit->volume_revendique_total = $this->convertFloat($data[self::CSV_VOLUME]);
-
                 $produit->volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_VOLUME]);
-
-                $produit->recolte->volume_sur_place = $this->convertFloat($data[self::CSV_L15]);
             }else{
                 $produitPasBio = $drev->addProduit(self::$produitsKey[$data[self::CSV_PRODUIT]]);
                 echo "Ajout d'une revendication produit ".self::$produitsKey[$data[self::CSV_PRODUIT]]." à la drev $drev->_id \n";
                 $produitPasBio->superficie_revendique = $this->convertFloat($data[self::CSV_SURFACE]);
                 $produitPasBio->recolte->superficie_total = $this->convertFloat($data[self::CSV_SURFACE]);
-
                 $produitPasBio->volume_revendique_total = $this->convertFloat($data[self::CSV_VOLUME]) - $this->convertFloat($data[self::CSV_AB_VOl]);
 
                 if($this->convertFloat($data[self::CSV_VOLUME_BRUT])){
-                    $produit->recolte->volume_total = $this->convertFloat($data[self::CSV_VOLUME_BRUT]);
+                    $produitPasBio->recolte->volume_total = $this->convertFloat($data[self::CSV_VOLUME_BRUT]);
                 }else{
-                    $produit->recolte->volume_total = $this->convertFloat($data[self::CSV_L15]);
+                    $produitPasBio->recolte->volume_total = $this->convertFloat($data[self::CSV_L15]);
                 }
 
                 $produitPasBio->volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_VOLUME]);
 
+                $produitPasBio->recolte->recolte_nette = $this->convertFloat($data[self::CSV_L15]);
                 $produitPasBio->recolte->volume_sur_place = $this->convertFloat($data[self::CSV_L15]);
+                
 
                 $produit->volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_AB_VOl]);
                 $produit->volume_revendique_total = $this->convertFloat($data[self::CSV_AB_VOl]);
