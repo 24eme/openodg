@@ -90,7 +90,12 @@ EOF;
                 echo "ERROR;Établissement introuvable;$line\n";
                 continue;
             }
+            try {
             $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
+            } catch(Exception $e) {
+                echo "ERROR;".$e->getMessage().";$line\n";
+                continue;
+            }
             $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
 
             if($pourqui && $dateTransmissionOI) {
