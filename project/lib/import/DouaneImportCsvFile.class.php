@@ -63,6 +63,10 @@ class DouaneImportCsvFile {
       }
     }
 
+    public static cleanRaisonSociale($s) {
+      return '"'.preg_replace('/ -$/', '', trim(preg_replace('/  */', ' ', str_replace('"', ' - ', preg_replace('/"$/', '', preg_replace('/^"/', '', $rs)))))).'"';
+    }
+
     public function getEtablissementRows() {
       $doc = array();
       $doc[] = $this->getCsvType();
@@ -79,8 +83,7 @@ class DouaneImportCsvFile {
       $doc[] = ($this->etablissement)? $this->etablissement->identifiant : null;
       $doc[] = ($this->etablissement)? $this->etablissement->cvi : ($this->cvi) ? $this->cvi : null;
       $rs = ($this->etablissement)? $this->etablissement->raison_sociale : ($this->raison_sociale) ? $this->raison_sociale : null;
-      $rs = '"'.preg_replace('/ -$/', '', trim(preg_replace('/  */', ' ', str_replace('"', ' - ', preg_replace('/"$/', '', preg_replace('/^"/', '', $rs)))))).'"';
-      $doc[] = $rs;
+      $doc[] = self::cleanRaisonSociale($rs);
       $doc[] = null;
       $doc[] = ($this->etablissement)? $this->etablissement->siege->commune :($this->commune) ? $this->commune : null;
       return $doc;
