@@ -12,7 +12,7 @@ function(doc) {
     for(demandeKey in doc.demandes) {
         var demande = doc.demandes[demandeKey];
 
-        if(demande.statut != "VALIDE") {
+        if(demande.statut != "VALIDE" && demande.statut != "REFUSE") {
             emit([demande.demande, demande.statut, demande.produit_libelle, demande.libelle, demande.date, demande.date_habilitation, demandeKey, doc.identifiant], 1);
         }
     }
