@@ -83,7 +83,9 @@ class HabilitationDemande extends BaseHabilitationDemande {
         $historiques = $this->getHistoriques();
 
         if(!count($historiques)) {
-            return $this->getDocument()->getNext()->getHistoriqueFirstNext();
+            $next = $this->getDocument()->getNext();
+
+            return ($next && $next->exist($this->getHash())) ? $next->get($this->getHash())->getHistoriqueFirstNext() : null;
         }
 
         return array_shift($historiques);
@@ -93,7 +95,8 @@ class HabilitationDemande extends BaseHabilitationDemande {
         $historiques = $this->getHistoriques();
 
         if(!count($historiques)) {
-            return $this->getDocument()->getPrevious()->getHistoriqueLastPrevious();
+            $previous = $this->getDocument()->getPrevious();
+            return ($previous && $previous->exist($this->getHash())) ? $previous->get($this->getHash())->getHistoriqueLastPrevious() : null;
         }
 
         return array_pop($historiques);
@@ -114,6 +117,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
         $habilitationPrecedente = $this->getDocument()->getPrevious();
 
         if($habilitationPrecedente && $habilitationPrecedente->exist($this->getHash())) {
+
             return $habilitationPrecedente->get($this->getHash())->getHistoriqueLastPrevious();
         }
 
