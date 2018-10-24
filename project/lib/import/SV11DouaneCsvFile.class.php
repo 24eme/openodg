@@ -60,7 +60,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                             $produit[] = self::numerizeVal($values[$v], 2);
                         }
 	        			$produit[] = $values[1];
-	        			$produit[] = "\"".html_entity_decode($values[0])."\"";
+	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
 	        			$produits[] = $produit;

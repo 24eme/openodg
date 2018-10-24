@@ -203,7 +203,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = str_replace('.', ',', $donnee->valeur);
     			if ($donnee->tiers && $t = $etablissementClient->find($donnee->tiers)) {
     				$p[] = $t->cvi;
-    				$p[] = $t->raison_sociale;
+    				$p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
     				$p[] = null;
     				$p[] = $t->siege->commune;
     			} else {
