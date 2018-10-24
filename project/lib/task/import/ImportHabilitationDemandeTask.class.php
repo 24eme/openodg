@@ -90,6 +90,12 @@ EOF;
                 echo "ERROR;Établissement introuvable;$line\n";
                 continue;
             }
+
+            if(!in_array($etatHabilitation,     array("habilité", "refus", "retrait"))) {
+                echo "ERROR;Statut non connu $etatHabilitation;$line\n";
+                continue;
+            }
+
             try {
             $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
             } catch(Exception $e) {
@@ -117,8 +123,8 @@ EOF;
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_". $organismeValidateur, null, "import", false);
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", $commentaire, "import", false);
             } elseif($dateDecision) {
-
-                throw new Exception("Statut non connu \"".$etatHabilitation."\"");
+                echo "ERROR;Statut non connu $etatHabilitation;$line\n";
+                continue;
             }
         }
     }
