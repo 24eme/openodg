@@ -63,8 +63,8 @@ class DouaneImportCsvFile {
       }
     }
 
-    public static cleanRaisonSociale($s) {
-      return '"'.preg_replace('/ -$/', '', trim(preg_replace('/  */', ' ', str_replace('"', ' - ', preg_replace('/"$/', '', preg_replace('/^"/', '', $rs)))))).'"';
+    public static function cleanRaisonSociale($s) {
+      return '"'.preg_replace('/ -$/', '', trim(preg_replace('/  */', ' ', str_replace('"', ' - ', preg_replace('/"$/', '', preg_replace('/^"/', '', $s)))))).'"';
     }
 
     public function getEtablissementRows() {
