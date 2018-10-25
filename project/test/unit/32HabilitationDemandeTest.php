@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(64);
+$t = new lime_test(66);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -144,6 +144,12 @@ $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est "
 $habilitation = $demande->getDocument();
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->demandes->get($demande->getKey())->statut, "VALIDE", "Le statut final est toujour VALIDE");
+
+$habilitation = HabilitationClient::getInstance()->find("HABILITATION-".$viti->identifiant."-".str_replace("-", "", $dateEnregistrement));
+$demande = $habilitation->demandes->get($demande->getKey());
+
+$t->is($demande->getHistoriquePrecedent("ENREGISTREMENT", $dateEnregistrement)->statut, "COMPLET", "Le statut precedent est COMPLET");
+$t->is($demande->getHistoriqueSuivant("ENREGISTREMENT", $dateEnregistrement)->statut, "TRANSMIS_OIVR", "Le statut suivant est TRANSMIS_OIVR");
 
 $t->comment("Création d'une 2ème demande");
 

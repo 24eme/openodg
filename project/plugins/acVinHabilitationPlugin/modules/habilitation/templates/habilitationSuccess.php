@@ -165,5 +165,5 @@
 <?php endif; ?>
 
 <?php if(isset($formDemandeEdition)): ?>
-<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande, 'historique' => $historique, 'urlRetour' => $urlRetour)); ?>
+<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande, 'urlRetour' => $urlRetour)); ?>
 <?php endif; ?>

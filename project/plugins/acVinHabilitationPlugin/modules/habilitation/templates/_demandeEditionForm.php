@@ -18,8 +18,7 @@
 					        </tr>
 					    </thead>
 					    <tbody>
-							<?php foreach($historique as $event): ?>
-							<?php if(!preg_match("/".$demande->getKey()."/", $event->iddoc)): continue; endif; ?>
+							<?php foreach($demande->getFullHistorique() as $event): ?>
 					        <tr style="<?php if($demande->date == $event->date && $demande->statut = $event->statut): ?>font-weight: bold;<?php endif; ?>">
 					            <td><?php echo Date::francizeDate($event->date); ?></td>
 

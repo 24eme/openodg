@@ -53,23 +53,9 @@ class HabilitationDemande extends BaseHabilitationDemande {
         return $activitesLibelle;
     }
 
-    public function getlastCompletudeDemande(){
-            return HabilitationClient::getInstance()->findLastDemandeByStatut($this->getDocument()->identifiant,$this->getDocument()->date,"COMPLET",$this->getKey());
-
-    }
-
-    public function getNextStatut(){
-            $nextHabilitation = HabilitationClient::getInstance()->findNextByIdentifiantAndDate($this->getDocument()->identifiant,$this->getDocument()->date);
-            if(!$nextHabilitation) return null;
-            if(!$nextHabilitation->demandes->exist($this->getKey())) return null;
-            $nextDemande = $nextHabilitation->demandes->get($this->getKey());
-            return $nextDemande->statut;
-
-    }
-
-    public function getHistoriques() {
+    public function getFullHistorique() {
         $historiques = array();
-        foreach($this->getDocument()->historique as $h) {
+        foreach($this->getDocument()->getFullHistorique() as $h) {
             if(!preg_match("/".$this->getKey()."/", $h->iddoc)) {
                 continue;
             }
@@ -79,34 +65,10 @@ class HabilitationDemande extends BaseHabilitationDemande {
         return $historiques;
     }
 
-    public function getHistoriqueFirstNext() {
-        $historiques = $this->getHistoriques();
-
-        if(!count($historiques)) {
-            $next = $this->getDocument()->getNext();
-
-            return ($next && $next->exist($this->getHash())) ? $next->get($this->getHash())->getHistoriqueFirstNext() : null;
-        }
-
-        return array_shift($historiques);
-    }
-
-    public function getHistoriqueLastPrevious() {
-        $historiques = $this->getHistoriques();
-
-        if(!count($historiques)) {
-            $previous = $this->getDocument()->getPrevious();
-            return ($previous && $previous->exist($this->getHash())) ? $previous->get($this->getHash())->getHistoriqueLastPrevious() : null;
-        }
-
-        return array_pop($historiques);
-    }
-
     public function getHistoriquePrecedent($statut, $date) {
-        $historiques = $this->getHistoriques();
-
         $prev = null;
-        foreach($historiques as $h) {
+        $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);
+        foreach($habilitationLast->get($this->getHash())->getFullHistorique() as $h) {
             if($prev && $h->statut == $statut && $h->date == $date) {
 
                 return $prev;
@@ -114,34 +76,19 @@ class HabilitationDemande extends BaseHabilitationDemande {
             $prev = $h;
         }
 
-        $habilitationPrecedente = $this->getDocument()->getPrevious();
-
-        if($habilitationPrecedente && $habilitationPrecedente->exist($this->getHash())) {
-
-            return $habilitationPrecedente->get($this->getHash())->getHistoriqueLastPrevious();
-        }
-
         return null;
     }
 
     public function getHistoriqueSuivant($statut, $date) {
-        $historiques = $this->getHistoriques();
-
         $finded = false;
-        foreach($historiques as $h) {
+        $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);
+        foreach($habilitationLast->get($this->getHash())->getFullHistorique() as $h) {
             if($finded == true) {
                 return $h;
             }
             if($h->statut == $statut && $h->date == $date) {
                 $finded = true;
             }
-        }
-
-        $habilitationSuivante = $this->getDocument()->getNext();
-
-        if($habilitationSuivante && $habilitationSuivante->exist($this->getHash())) {
-
-            return $habilitationSuivante->get($this->getHash())->getHistoriqueFirstNext();
         }
 
         return null;
