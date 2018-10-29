@@ -4,6 +4,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "DRev";
     const TYPE_COUCHDB = "DREV";
+    const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
+    const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
 
     public static function getInstance()
     {
