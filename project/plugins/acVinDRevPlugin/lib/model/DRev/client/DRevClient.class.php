@@ -6,6 +6,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const TYPE_COUCHDB = "DREV";
     const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
     const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
+    const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
 
     public static $denominationsAuto = array(
         self::DENOMINATION_BIO_PARTIEL => "J'ai des produits en Bio",

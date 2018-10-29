@@ -351,8 +351,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	continue;
             }
 
-            if (preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) && DRevConfiguration::getInstance()->hasDuplicateBio()) {
-              $produit = $this->addProduit($produitConfig->getHash(), "Agriculture Biologique");
+            if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
+                  ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
+                ) {
+              $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
               $has_bio = true;
             }else{
               $produit = $this->addProduit($produitConfig->getHash());
@@ -425,10 +427,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($todelete as $del) {
             $this->remove($del);
         }
-        
-        if (!$has_bio && DRevConfiguration::getInstance()->hasDuplicateBio()) {
+
+        if (!$has_bio && DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_PARTIEL)) {
             foreach ($this->declaration->getProduits() as $hash => $p) {
-                $produitBio = $this->addProduit($p->getParent()->getHash(), "Agriculture Biologique");
+                $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
             }
         }
 
@@ -1371,6 +1373,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDate() {
       return $this->campagne.'-12-10';
+    }
+
+    public function hasDenominationAuto($const) {
+      return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
     }
 
     /**** FIN DE VERSION ****/
