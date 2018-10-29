@@ -13,6 +13,11 @@
             $('#row_form_exploitation').removeClass("hidden");
             $('#row_info_exploitation').addClass("hidden");
         });
+        if($('#drevDenominationAuto').length){
+            if($('#drevDenominationAuto').data("auto")){
+                $('#drevDenominationAuto').modal('show');
+            }
+        }
     }
 
     $.initPrelevement = function()
