@@ -7,6 +7,11 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
     const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
 
+    public static $denominationsAuto = array(
+        self::DENOMINATION_BIO_PARTIEL => "J'ai des produits en Bio",
+        self::DENOMINATION_BIO_TOTAL => 'Je ne possède que des produits Bio'
+    );
+
     public static function getInstance()
     {
 
