@@ -196,6 +196,8 @@ class drevActions extends sfActions {
 
         $this->form = new EtablissementForm($this->drev->declarant, array("use_email" => !$this->drev->isPapier()));
 
+        $this->denominationAutoForm = new DRevDenominationAutoForm($this->drev);
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -224,6 +226,23 @@ class drevActions extends sfActions {
         }
 
         return $this->redirect('drev_dr', $this->drev);
+    }
+
+    public function executeDenominationAuto(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->form = new DRevDenominationAutoForm($this->drev);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->drev->add('denomination_auto',$this->form->getValue('denomination_auto'));
+                $this->drev->save();
+                return $this->redirect('drev_exploitation', $this->drev);
+            }
+
+        }
+
+
+        return $this->redirect('drev_exploitation', $this->drev);
     }
 
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {

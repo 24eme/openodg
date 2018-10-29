@@ -3,4 +3,4 @@ all:
     drev:
       prelevements: false
       mentions_complementaire: true
-      duplicate_bio: true
+      denomination_auto: true
