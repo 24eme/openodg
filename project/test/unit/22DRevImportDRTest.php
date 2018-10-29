@@ -28,7 +28,7 @@ foreach ($csv as $line) {
   $produits[$line[DouaneCsvFile::CSV_PRODUIT_INAO]] = $line[DouaneCsvFile::CSV_PRODUIT_INAO];
 }
 
-$t->comment("test sur ".$drev->_id);
+$t->comment("test sur ".$drev->_id."(denomination automatique : ".DRevConfiguration::getInstance()->hasDenominationAuto().")");
 $nb_produits_csv = count(array_keys($produits));
 $t->is(count($drev->declaration), $nb_produits_csv, "bon nombre de produits");
 $nb = 0;
@@ -67,7 +67,11 @@ foreach ($drev->declaration as $hash => $details) {
 }
 $t->is($nb, $nb_produits_csv, "bon nombre de produits si l'option automatique bio total activée");
 $firstdetail = $details->first;
-$t->is($firstdetail->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "bonne dénomination de produit si l'option automatique bio total activée");
+if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
+  $t->is($firstdetail->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "bonne dénomination de produit si l'option automatique bio total activée");
+}else{
+  $t->is($firstdetail->denomination_complementaire, "", "bonne dénomination de produit si l'option automatique bio total activée");
+}
 
 $drev->delete();
 
@@ -90,7 +94,11 @@ $t->is($nb, $nb_produits_csv_doublons, "bon nombre de produits si l'option autom
 $adetail = $details->first;
 $t->isnt($adetail->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "dénomination complémentaire pour le produit non bio");
 $adetail = $details->last;
-$t->is($adetail->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "dénomination complémentaire pour le produit bio");
+if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
+  $t->is($adetail->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "dénomination complémentaire pour le produit bio");
+}else{
+  $t->is($adetail->denomination_complementaire, "", "dénomination complémentaire pour le produit bio");
+}
 
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
