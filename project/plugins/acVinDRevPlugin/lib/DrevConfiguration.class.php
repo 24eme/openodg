@@ -30,9 +30,9 @@ class DRevConfiguration {
         return isset($this->configuration['mentions_complementaire']) && boolval($this->configuration['mentions_complementaire']);
     }
 
-    public function hasDuplicateBio() {
+    public function hasDenominationAuto() {
 
-      return isset($this->configuration['duplicate_bio']) && boolval($this->configuration['duplicate_bio']);
+      return isset($this->configuration['denomination_auto']) && boolval($this->configuration['denomination_auto']);
     }
 
 }
