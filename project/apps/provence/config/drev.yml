@@ -1,0 +1,6 @@
+all:
+  configuration:
+    drev:
+      prelevements: false
+      mentions_complementaire: true
+      denomination_auto: true

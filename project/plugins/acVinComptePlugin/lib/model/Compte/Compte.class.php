@@ -205,9 +205,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->addTag('automatique', $this->getEtablissement()->famille);
             $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
             $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
+            $this->region = $this->getEtablissement()->region;
         }else{
             $this->etablissement_informations->cvi = null;
             $this->etablissement_informations->ppm = null;
+            $this->region = null;
         }
         if (!$this->isEtablissementContact() && !$this->isSocieteContact()) {
             $this->addTag('automatique', 'Interlocuteur');
@@ -225,6 +227,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->societe_informations->code_postal = $societe->siege->code_postal;
         $this->societe_informations->commune = $societe->siege->commune;
         $this->societe_informations->email = $societe->email;
+        $this->societe_informations->siret = $societe->siret;
 
         $this->societe_informations->fax = $societe->fax;
 
@@ -237,7 +240,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $this->isSameContactThanSociete()) {
             CompteGenerique::pullContact($this, $societe->getMasterCompte());
         }
-        
+
         if($this->exist('en_alerte') && $this->en_alerte){
             $this->addTag('automatique', 'en_alerte');
         }

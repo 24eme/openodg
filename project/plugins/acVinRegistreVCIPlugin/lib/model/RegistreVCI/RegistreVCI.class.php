@@ -276,4 +276,9 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return false;
       }
 
+      public function getValidation() {
+
+          return true;
+      }
+
 }

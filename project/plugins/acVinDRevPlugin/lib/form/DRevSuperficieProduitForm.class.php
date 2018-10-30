@@ -49,11 +49,13 @@ class DRevSuperficieProduitForm extends acCouchdbObjectForm {
 
         parent::doUpdateObject($values);
 
-        if($values['has_stock_vci'] && !$this->getObject()->hasVci()) {
-            $this->getObject()->vci->stock_precedent = 0;
-        }
-        if(!$values['has_stock_vci'] && !$this->getObject()->hasVci(true)) {
-        	$this->getObject()->vci->stock_precedent = null;
+        if($this->getObject()->getConfig()->hasRendementVciTotal()){
+            if($values['has_stock_vci'] && !$this->getObject()->hasVci()) {
+                $this->getObject()->vci->stock_precedent = 0;
+            }
+            if(!$values['has_stock_vci'] && !$this->getObject()->hasVci(true)) {
+            	$this->getObject()->vci->stock_precedent = null;
+            }
         }
     }
 

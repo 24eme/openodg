@@ -4,6 +4,14 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "DRev";
     const TYPE_COUCHDB = "DREV";
+    const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
+    const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
+    const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
+
+    public static $denominationsAuto = array(
+        self::DENOMINATION_BIO_PARTIEL => "J'ai des produits en Bio",
+        self::DENOMINATION_BIO_TOTAL => 'Je ne possède que des produits Bio'
+    );
 
     public static function getInstance()
     {
@@ -64,6 +72,14 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $drev->add('papier', 1);
         }
 
+        $previous_drev = self::findMasterByIdentifiantAndCampagne($identifiant, $campagne - 1 );
+        if ($previous_drev) {
+          foreach($previous_drev->getProduitsVci() as $produit) {
+            if ($produit->vci->stock_final) {
+              $drev->cloneProduit($produit);
+            }
+          }
+        }
         return $drev;
     }
 

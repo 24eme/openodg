@@ -20,6 +20,8 @@ class importDRevCSVTask extends sfBaseTask
     const CSV_L15                   = 11;
     const CSV_AB_VOl                = 12; // volume de BIO
 
+    protected $stockVCI2016 = array();
+
     protected static $produitsKey = array(
         "CDP BL" => "certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT",
         "CDP RG" => "certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT",
@@ -78,7 +80,7 @@ EOF;
 
     public function importLineDrev($data) {
 
-        $idEtb = $data[self::CSV_ID_OP].'01';
+        $idEtb = strtoupper($data[self::CSV_ID_OP]).'01';
         $etablissement = EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $idEtb));
         $campagne = $data[self::CSV_MILLESIME];
 
@@ -103,30 +105,72 @@ EOF;
         }
 
 
-        $bio = ($data[self::CSV_AB])? "Agriculture Biologique" : null;
 
-        $produit = $drev->addProduit(self::$produitsKey[$data[self::CSV_PRODUIT]],$bio);
         if($data[self::CSV_TYPE] == "DREV"){
-            echo "Ajout d'une revendication produit ".self::$produitsKey[$data[self::CSV_PRODUIT]]." à la drev $drev->_id \n";
+            $bio = ($data[self::CSV_AB])? "AB" : null;
+            $produit = $drev->addProduit(self::$produitsKey[$data[self::CSV_PRODUIT]],$bio);
+            if(!$bio || ($data[self::CSV_AB_VOl] == $data[self::CSV_L15])){
+                echo "Ajout d'une revendication produit ".self::$produitsKey[$data[self::CSV_PRODUIT]]." à la drev $drev->_id \n";
 
-            $produit->superficie_revendique = $this->convertFloat($data[self::CSV_SURFACE]);
-            $produit->recolte->superficie_total = $this->convertFloat($data[self::CSV_SURFACE]);
+                $produit->superficie_revendique = $this->convertFloat($data[self::CSV_SURFACE]);
+                $produit->recolte->superficie_total = $this->convertFloat($data[self::CSV_SURFACE]);
+                if($this->convertFloat($data[self::CSV_VOLUME_BRUT])){
+                    $produit->recolte->volume_total = $this->convertFloat($data[self::CSV_VOLUME_BRUT]);
+                }else{
+                    $produit->recolte->volume_total = $this->convertFloat($data[self::CSV_L15]);
+                }
+                $produit->recolte->recolte_nette = $this->convertFloat($data[self::CSV_L15]);
+                $produit->recolte->volume_sur_place = $this->convertFloat($data[self::CSV_L15]);
 
-            $produit->volume_revendique_total = $this->convertFloat($data[self::CSV_VOLUME]);
+                $produit->volume_revendique_total = $this->convertFloat($data[self::CSV_VOLUME]);
+                $produit->volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_VOLUME]);
+            }else{
+                $produitPasBio = $drev->addProduit(self::$produitsKey[$data[self::CSV_PRODUIT]]);
+                echo "Ajout d'une revendication produit ".self::$produitsKey[$data[self::CSV_PRODUIT]]." à la drev $drev->_id \n";
+                $produitPasBio->superficie_revendique = $this->convertFloat($data[self::CSV_SURFACE]);
+                $produitPasBio->recolte->superficie_total = $this->convertFloat($data[self::CSV_SURFACE]);
+                $produitPasBio->volume_revendique_total = $this->convertFloat($data[self::CSV_VOLUME]) - $this->convertFloat($data[self::CSV_AB_VOl]);
 
-            $volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_VOLUME_BRUT]);
-            if(!$volume_revendique_issu_recolte){
-                $volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_VOLUME]);
+                if($this->convertFloat($data[self::CSV_VOLUME_BRUT])){
+                    $produitPasBio->recolte->volume_total = $this->convertFloat($data[self::CSV_VOLUME_BRUT]);
+                }else{
+                    $produitPasBio->recolte->volume_total = $this->convertFloat($data[self::CSV_L15]);
+                }
+
+                $produitPasBio->volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_VOLUME]);
+
+                $produitPasBio->recolte->recolte_nette = $this->convertFloat($data[self::CSV_L15]);
+                $produitPasBio->recolte->volume_sur_place = $this->convertFloat($data[self::CSV_L15]);
+                
+
+                $produit->volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_AB_VOl]);
+                $produit->volume_revendique_total = $this->convertFloat($data[self::CSV_AB_VOl]);
+
             }
-            $produit->volume_revendique_issu_recolte = $volume_revendique_issu_recolte;
-
-            $produit->recolte->volume_sur_place = $this->convertFloat($data[self::CSV_L15]);
 
         }
         if($data[self::CSV_TYPE] == "VCI"){
+            $bio = ($data[self::CSV_AB])? "AB" : null;
+            $produit = $drev->addProduit(self::$produitsKey[$data[self::CSV_PRODUIT]],$bio);
             echo "Ajout du vci produit ".self::$produitsKey[$data[self::CSV_PRODUIT]]." à la drev $drev->_id \n";
-            $produit->vci->stock_precedent = 0;
-            $produit->vci->complement = $this->convertFloat($data[self::CSV_VOLUME]);
+            if($campagne == "2015"){
+                $produit->vci->stock_precedent = 0;
+                $volumeVci = $this->convertFloat($data[self::CSV_VOLUME]);
+                $produit->vci->constitue = $volumeVci;
+                $produit->vci->stock_final = $volumeVci;
+                $this->stockVCI2016[$idEtb.$produit->getHash()] = $volumeVci;
+            }
+            if($campagne == "2016"){
+                if(array_key_exists($idEtb.$produit->getHash(),$this->stockVCI2016)){
+                    $produit->vci->stock_precedent = $this->stockVCI2016[$idEtb.$produit->getHash()];
+                }else{
+                    $produit->vci->stock_precedent = 0;
+                    $volumeVci = $this->convertFloat($data[self::CSV_VOLUME]);
+                    $produit->vci->constitue = $volumeVci;
+                    $produit->vci->stock_final = $volumeVci;
+                }
+            }
+
         }
 
         $date_reception = DateTime::createFromformat("d/m/Y",$data[self::CSV_DATE_RECEPTION]);
