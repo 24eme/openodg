@@ -41,4 +41,52 @@ class DouaneImportCsvFile {
 
         return null;
     }
+    public static function getTypeFromFile($file)  {
+      if (preg_match('/sv11/i', $file)) {
+        return 'SV11';
+      }
+      if (preg_match('/sv12/i', $file)) {
+        return 'SV12';
+      }
+      return 'DR';
+    }
+
+    public function getCsvType() {
+      if (is_a($this, 'SV11DouaneCsvFile')) {
+        return "SV11";
+      }
+      if (is_a($this, 'SV12DouaneCsvFile')) {
+        return "SV12";
+      }
+      if (is_a($this, 'DRDouaneCsvFile')) {
+        return "DR";
+      }
+    }
+
+    public static function cleanRaisonSociale($s) {
+      return '"'.preg_replace('/ -$/', '', trim(preg_replace('/  */', ' ', str_replace('"', ' - ', preg_replace('/"$/', '', preg_replace('/^"/', '', $s)))))).'"';
+    }
+
+    public function getEtablissementRows() {
+      $doc = array();
+      $doc[] = $this->getCsvType();
+      $doc[] = $this->campagne;
+      if (!isset($this->etablissement)) {
+        $this->etablissement = null;
+      }
+      if (!$this->etablissement) {
+        $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
+      }
+      if (!$this->etablissement && $this->cvi) {
+        $this->etablissement = EtablissementClient::getInstance()->findByCvi($this->cvi);
+      }
+      $doc[] = ($this->etablissement)? $this->etablissement->identifiant : null;
+      $doc[] = ($this->etablissement)? $this->etablissement->cvi : ($this->cvi) ? $this->cvi : null;
+      $rs = ($this->etablissement)? $this->etablissement->raison_sociale : ($this->raison_sociale) ? $this->raison_sociale : null;
+      $doc[] = self::cleanRaisonSociale($rs);
+      $doc[] = null;
+      $doc[] = ($this->etablissement)? $this->etablissement->siege->commune :($this->commune) ? $this->commune : null;
+      return $doc;
+    }
+
 }
