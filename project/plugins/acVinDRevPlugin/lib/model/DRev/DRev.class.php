@@ -549,6 +549,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $produit->addDetailNode($lieu);
     }
 
+    public function cloneProduit($produit) {
+      $pclone = $this->declaration->add(preg_replace('/\/declaration\//', '', $produit->getParent()->getHash()))
+        ->add($produit->getKey());
+      $pclone->denomination_complementaire = $produit->denomination_complementaire;
+      $pclone->vci->stock_precedent = $produit->vci->stock_final;
+      return $pclone;
+    }
+
     public function cleanDoc() {
 
         $this->declaration->cleanNode();

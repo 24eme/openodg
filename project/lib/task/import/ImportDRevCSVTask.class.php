@@ -20,6 +20,17 @@ class importDRevCSVTask extends sfBaseTask
     const CSV_L15                   = 11;
     const CSV_AB_VOl                = 12; // volume de BIO
 
+
+
+    const CSVVCI_NOM_OP               = 0;
+    const CSVVCI_ID_OP                = 1;
+    const CSVVCI_CAMPAGNE             = 2;
+    const CSVVCI_VCICONSTITUE         = 3;
+    const CSVVCI_VCICOMPLEMENT        = 4;
+    const CSVVCI_VCIADETRUIRE         = 5;
+    const CSVVCI_VCIRAFRAICHI         = 6;
+    const CSVVCI_VCISTOCKNOUVEAU      = 7;
+
     protected $stockVCI2016 = array();
 
     protected static $produitsKey = array(
@@ -41,6 +52,7 @@ class importDRevCSVTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('file', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('fileVci', sfCommandArgument::REQUIRED, "Fichier csv pour l'import de la repartition vci seule")
         ));
 
         $this->addOptions(array(
@@ -66,15 +78,23 @@ EOF;
         $object = null;
         foreach(file($arguments['file']) as $line) {
             $line = str_replace("\n", "", $line);
-
             if(preg_match("/^\"IdDrev/", $line)) {
-
                 continue;
             }
 
             $data = str_getcsv($line, ';');
 
             $this->importLineDrev($data);
+        }
+        foreach(file($arguments['fileVci']) as $line) {
+            $line = str_replace("\n", "", $line);
+            if(preg_match("/^\"RECAPITULATIF VCI/", $line) || preg_match("/^\"Nom/", $line)) {
+
+                continue;
+            }
+
+            $data = str_getcsv($line, ';');
+            $this->importLineDrevCVI($data);
         }
     }
 
@@ -141,7 +161,7 @@ EOF;
 
                 $produitPasBio->recolte->recolte_nette = $this->convertFloat($data[self::CSV_L15]);
                 $produitPasBio->recolte->volume_sur_place = $this->convertFloat($data[self::CSV_L15]);
-                
+
 
                 $produit->volume_revendique_issu_recolte = $this->convertFloat($data[self::CSV_AB_VOl]);
                 $produit->volume_revendique_total = $this->convertFloat($data[self::CSV_AB_VOl]);
@@ -153,23 +173,11 @@ EOF;
             $bio = ($data[self::CSV_AB])? "AB" : null;
             $produit = $drev->addProduit(self::$produitsKey[$data[self::CSV_PRODUIT]],$bio);
             echo "Ajout du vci produit ".self::$produitsKey[$data[self::CSV_PRODUIT]]." à la drev $drev->_id \n";
-            if($campagne == "2015"){
-                $produit->vci->stock_precedent = 0;
-                $volumeVci = $this->convertFloat($data[self::CSV_VOLUME]);
-                $produit->vci->constitue = $volumeVci;
-                $produit->vci->stock_final = $volumeVci;
-                $this->stockVCI2016[$idEtb.$produit->getHash()] = $volumeVci;
-            }
-            if($campagne == "2016"){
-                if(array_key_exists($idEtb.$produit->getHash(),$this->stockVCI2016)){
-                    $produit->vci->stock_precedent = $this->stockVCI2016[$idEtb.$produit->getHash()];
-                }else{
-                    $produit->vci->stock_precedent = 0;
-                    $volumeVci = $this->convertFloat($data[self::CSV_VOLUME]);
-                    $produit->vci->constitue = $volumeVci;
-                    $produit->vci->stock_final = $volumeVci;
-                }
-            }
+            $produit->vci->stock_precedent = 0;
+            $volumeVci = $this->convertFloat($data[self::CSV_VOLUME]);
+            $produit->vci->constitue = $volumeVci;
+            $produit->vci->stock_final = $volumeVci;
+            $this->stockVCI2016[$idEtb.$produit->getHash()] = $volumeVci;
 
         }
 
@@ -177,6 +185,66 @@ EOF;
         $drev->add('validation',$date_reception->format('Y-m-d'));
         $drev->add('validation_odg',$date_reception->format('Y-m-d'));
         $drev->save();
+    }
+
+    public function importLineDrevCVI($data) {
+        $idEtb = strtoupper($data[self::CSVVCI_ID_OP])."01";
+        $campagne = $data[self::CSVVCI_CAMPAGNE];
+
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($idEtb,$campagne);
+        if($drev){
+            $produitsVCI = array();
+            $campagnes = array("2013","2014","2015","2016","2017","2018");
+            foreach ($campagnes as $c) {
+                $drevLocale = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($idEtb,$c);
+                if($drevLocale){
+                    foreach ($drevLocale->getProduits() as $key => $produit) {
+                        if($produit->hasVci()){
+                            $produitsVCI[$produit->getLibelleComplet()] = $produit->getHash();
+                        }
+                    }
+                }
+            }
+
+
+            if(count(array_keys($produitsVCI)) > 1){
+                echo "/!\ DREV ".$drev->_id." intraitable => VCI sur 2 produits\n";
+            }
+            $constitue = $data[self::CSVVCI_VCICONSTITUE];
+            $adetruire = $data[self::CSVVCI_VCIADETRUIRE];
+            $rafraichi = $data[self::CSVVCI_VCIRAFRAICHI];
+            $complement = $data[self::CSVVCI_VCICOMPLEMENT];
+
+            $stockNouveau = $data[self::CSVVCI_VCISTOCKNOUVEAU];
+
+            $drevPrec = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($idEtb,"".(intval($campagne)-1));
+
+            $vciProduit = $drev->declaration->add("certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT")->getOrAdd("DEFAUT")->vci;
+
+            if($drevPrec){
+                $vciPrecProduit = $drevPrec->declaration->add("certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT")->getOrAdd("DEFAUT")->vci;
+                if($vciPrecProduit->stock_final){
+                    $vciProduit->stock_precedent = $vciPrecProduit->stock_final;
+                }
+            }
+            $vciProduit->constitue = $this->convertFloat($constitue);
+            $vciProduit->complement = $this->convertFloat($complement);
+            $vciProduit->destruction = $this->convertFloat($adetruire);
+            $vciProduit->rafraichi = $this->convertFloat($rafraichi);
+            $drev->update();
+
+            echo "DREV ".$drev->_id." le stock final de VCI est de : ".$vciProduit->stock_final." [ $constitue | $adetruire | $rafraichi | $complement ]\n";
+            $coherent = ($vciProduit->stock_final == $this->convertFloat($data[self::CSVVCI_VCISTOCKNOUVEAU]));
+            if($coherent){
+                echo "GOOD : le stock final ".$this->convertFloat($data[self::CSVVCI_VCISTOCKNOUVEAU])." des données correscpond au stock calculé après UPDATE.\n";
+            }else{
+                echo "WRONG ".$drev->_id.": le stock final ".$this->convertFloat($data[self::CSVVCI_VCISTOCKNOUVEAU])." est différent de ".$vciProduit->stock_final." après UPDATE.\n";
+            }
+            $drev->save();
+        }else{
+            echo $idEtb." ".$campagne." pas de DREV \n";
+        }
+
     }
 
     public function convertFloat($value){
