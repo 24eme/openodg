@@ -23,6 +23,7 @@ class ConstatsClient extends acCouchdbClient {
     const RAISON_REFUS_PRESSURAGE_EN_COURS = 'PRESSURAGE_EN_COURS';
     const RAISON_REFUS_VENDANGES_MECANIQUE = 'VENDANGES_MECANIQUE';
     const RAISON_REFUS_PROBLEME = 'PROBLEME';
+    const RAISON_REFUS_VOLUME_INCOHERENT = 'VOLUME_INCOHERENT';
 
     public static $raisons_refus_libelle = array(
         self::RAISON_REFUS_ANNULE => 'Rendez-vous annulé',
@@ -32,6 +33,7 @@ class ConstatsClient extends acCouchdbClient {
         self::RAISON_REFUS_PRESSURAGE_EN_COURS => 'Pressurage en cours',
         self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendanges mécaniques',
         self::RAISON_REFUS_PROBLEME => 'Degré insuffisant/Autre constat accepté',
+        self::RAISON_REFUS_VOLUME_INCOHERENT => 'Volume incohérent',
     );
     public static $contenants_libelle = array(
         self::CONTENANT_BOTTICHE => 'Bottiche',

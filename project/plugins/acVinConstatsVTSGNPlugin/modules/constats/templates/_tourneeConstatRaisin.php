@@ -32,7 +32,7 @@
                 Vous devez saisir un type de contenant
             </div>
             <div class="col-xs-6">
-                <input placeholder="Nombre" id="nb_contenant_{{ keyConstatNode}}" ng-model="constat.nb_contenant" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                <input placeholder="Nombre" id="nb_contenant_{{ keyConstatNode}}" ng-model="constat.nb_contenant" type="number" lang="en" step="0.01" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
             <div class="col-xs-6">
                 <select class="form-control input-lg" ng-change="updateContenant(constat)" ng-model="constat.contenant" ng-options="contenant_key as contenant_libelle for (contenant_key, contenant_libelle) in contenants"><option value="" disabled="disabled" selected="selected">Contenant</option></select>
@@ -43,7 +43,7 @@
                 Valeur incohérente
             </div>
             <div class="col-xs-6">
-                <input placeholder="Degré potentiel" id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" min="10" max="32" />
+                <input placeholder="Degré potentiel" id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="number" lang="en" step="0.01" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" min="10" max="32" />
             </div>
             <div class="col-xs-6 lead">
             <p style="margin: 0;" class="form-control-static">° potentiel</p>

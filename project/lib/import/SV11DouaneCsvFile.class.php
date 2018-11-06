@@ -10,30 +10,25 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         while (($data = fgetcsv($handler)) !== FALSE) {
             $csv[] = self::clean($data);
         }
-        $etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
-		if ($etablissement && !$etablissement->isActif()) {
-			return;
-		}
         $doc = array();
-        $cvi = null;
-        $rs = null;
-        $commune = null;
         $produits = array();
+        $this->cvi = null;
+        $this->raison_sociale = null;
+        $this->commune = null;
         $communeTiers = null;
         $libellesLigne = null;
         $tabValues = array(3,4,9,10,11,12,13);
-
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
         		if (preg_match('/cvi:[\s]*([a-zA-Z-0-9]{10})/i', $values[0], $m)) {
-        			$cvi = $m[1];
+        			$this->cvi = $m[1];
         		}
         		if (preg_match('/commune:[\s]*([a-zA-Z-0-9\s]*)$/i', $values[0], $m)) {
-        			$commune = $m[1];
+        			$this->commune = $m[1];
         		}
         		if (preg_match('/r.+capitulatif par apporteur pour l\'evv[\s]*(.*)$/i', $values[0], $m)) {
-        			$rs = "\"".html_entity_decode($m[1])."\"";
+        			$this->raison_sociale = "\"".html_entity_decode($m[1])."\"";
         		}
         		if (isset($values[7]) && !empty($values[7]) && preg_match('/libell.+[\s]*du[\s]*produit/i', $values[7])) {
         			$libellesLigne = $values;
@@ -65,7 +60,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                             $produit[] = self::numerizeVal($values[$v], 2);
                         }
 	        			$produit[] = $values[1];
-	        			$produit[] = "\"".html_entity_decode($values[0])."\"";
+	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
 	        			$produits[] = $produit;
@@ -74,13 +69,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         	}
         }
 
-        $doc[] = SV11CsvFile::CSV_TYPE_SV11;
-        $doc[] = $this->campagne;
-        $doc[] = ($etablissement)? $etablissement->identifiant : null;
-        $doc[] = ($etablissement)? $etablissement->cvi : $cvi;
-        $doc[] = ($etablissement)? $etablissement->raison_sociale : $rs;
-        $doc[] = null;
-        $doc[] = ($etablissement)? $etablissement->siege->commune : $commune;
+        $doc = $this->getEtablissementRows();
 
         $csv = '';
         foreach ($produits as $p) {

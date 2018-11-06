@@ -26,6 +26,7 @@ DRev:
       papier: { required: false, type: integer }
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
+      denomination_auto: { required: false }
       version: {  }
       declarant:
         type: collection

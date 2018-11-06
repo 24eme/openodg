@@ -64,7 +64,7 @@ class declarationActions extends sfActions {
 
         if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
 
-            return $this->redirect("parcellaire_affectation_visualisation", array("id" => $doc_id));
+            return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
         }
 
         if($doc_type == "TIRAGE") {

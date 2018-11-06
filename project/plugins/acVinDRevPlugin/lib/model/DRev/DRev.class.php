@@ -43,6 +43,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected $mouvement_document = null;
     protected $version_document = null;
     protected $piece_document = null;
+    protected $csv_douanier = null;
 
     public function __construct() {
         parent::__construct();
@@ -59,6 +60,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->mouvement_document = new MouvementDocument($this);
         $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
+        $this->csv_douanier = null;
     }
 
     public function constructId() {
@@ -177,7 +179,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentDouanierType() {
-        if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
+        if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
 
             return DRCsvFile::CSV_TYPE_DR;
         }
@@ -245,6 +247,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getCsvFromDocumentDouanier() {
+      if ($this->csv_douanier != null) {
+        return $this->csv_douanier;
+      }
     	if (!$this->hasDocumentDouanier()) {
     		return null;
     	}
@@ -255,26 +260,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		if ($docDouanier &&  $docDouanier->exist('donnees') && count($docDouanier->donnees) >= 1) {
     			$className = DeclarationClient::getInstance()->getExportCsvClassName($typeDocumentDouanier);
     			$csvOrigine = new $className($docDouanier, false);
-    			return $csvOrigine->getCsv();
-    		} else {
-    			return null;
+    			$this->csv_douanier = $csvOrigine->getCsv();
     		}
+        return $this->csv_douanier;
     	}
-    	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->getDocumentDouanier());
+    	return $this->getCsvFromObjectDouanier(DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->getDocumentDouanier()));
+
+    }
+    public function getCsvFromObjectDouanier($csvOrigine) {
     	$csvContent = $csvOrigine->convert();
     	if (!$csvContent) {
-    		return null;    		
+    		return null;
     	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
-    	$filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
+    	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->campagne.'.csv';
     	if (!is_dir($path)) {
     		if (!mkdir($path)) {
     			throw new sfException('cannot create '.$path);
     		}
     	}
     	file_put_contents($path.$filename, $csvContent);
-    	$csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
-    	return $csv->getCsv();
+    	$csv = DouaneCsvFile::getNewInstanceFromType($csvOrigine->getCsvType(), $path.$filename);
+      $this->csv_douanier = $csv->getCsv();
+    	return $this->csv_douanier;
     }
 
     public function getFictiveFromDocumentDouanier() {
@@ -332,6 +340,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $produitsImporte = array();
+        $has_bio = false;
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
@@ -342,7 +351,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	continue;
             }
 
-            $produit = $this->addProduit($produitConfig->getHash());
+            if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
+                  ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
+                ) {
+              $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+              $has_bio = true;
+            }else{
+              $produit = $this->addProduit($produitConfig->getHash());
+            }
 
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
                 $bailleurs[$produit->getHash()] = $produit->getHash();
@@ -403,13 +419,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         foreach ($this->declaration->getProduits() as $hash => $p) {
         	if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
-    			$todelete[$hash] = $hash;
-                continue;
+    			     $todelete[$hash] = $hash;
+               continue;
         	}
         }
 
         foreach ($todelete as $del) {
             $this->remove($del);
+        }
+
+        if (!$has_bio && DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_PARTIEL)) {
+            foreach ($this->declaration->getProduits() as $hash => $p) {
+                $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+            }
         }
 
         if($preserve) {
@@ -525,6 +547,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->addProduit($produit->getProduitHash(), $add_appellation);
 
         return $produit->addDetailNode($lieu);
+    }
+
+    public function cloneProduit($produit) {
+      $pclone = $this->declaration->add(preg_replace('/\/declaration\//', '', $produit->getParent()->getHash()))
+        ->add($produit->getKey());
+      $pclone->denomination_complementaire = $produit->denomination_complementaire;
+      $pclone->vci->stock_precedent = $produit->vci->stock_final;
+      return $pclone;
     }
 
     public function cleanDoc() {
@@ -1351,6 +1381,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDate() {
       return $this->campagne.'-12-10';
+    }
+
+    public function hasDenominationAuto($const) {
+      return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
     }
 
     /**** FIN DE VERSION ****/
