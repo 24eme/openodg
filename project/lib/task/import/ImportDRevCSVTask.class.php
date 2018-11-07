@@ -31,6 +31,8 @@ class importDRevCSVTask extends sfBaseTask
     const CSVVCI_VCIRAFRAICHI         = 6;
     const CSVVCI_VCISTOCKNOUVEAU      = 7;
 
+    const SOCIETE_INCONNUE = "inconnu";
+
     protected $stockVCI2016 = array();
 
     protected static $produitsKey = array(
@@ -106,7 +108,8 @@ EOF;
 
         if(!$etablissement) {
             echo sprintf("!!! Etablissement %s does not exist \n", $idEtb);
-            return;
+            $this->createEtablissementAndSociete($data);
+            $etablissement = EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $idEtb));
         }
         if(!$campagne) {
             throw new sfException(sprintf("campagne %s non renseignée", $data[self::CSV_MILLESIME]));
@@ -184,6 +187,7 @@ EOF;
         $date_reception = DateTime::createFromformat("d/m/Y",$data[self::CSV_DATE_RECEPTION]);
         $drev->add('validation',$date_reception->format('Y-m-d'));
         $drev->add('validation_odg',$date_reception->format('Y-m-d'));
+        $drev->validate($date_reception->format('Y-m-d'));
         $drev->save();
     }
 
@@ -245,6 +249,38 @@ EOF;
             echo $idEtb." ".$campagne." pas de DREV \n";
         }
 
+    }
+
+    private function createEtablissementAndSociete($data){
+
+        $cdp = strtoupper($data[self::CSV_ID_OP]);
+        $newSoc = SocieteClient::getInstance()->find("SOCIETE-".$cdp);
+        if(!$newSoc){
+            $rs = self::SOCIETE_INCONNUE." ".$cdp;
+            $newSoc = SocieteClient::getInstance()->createSociete($rs);
+            $newSoc->identifiant = $cdp;
+            $newSoc->_id = "SOCIETE-".$cdp;
+            $newSoc->save();
+        }
+
+        echo "Creation de la société ".self::SOCIETE_INCONNUE." ".$cdp."\n";
+
+        $soc = SocieteClient::getInstance()->find($newSoc->_id);
+        $etb = $soc->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
+        $etb->save();
+        echo "Creation de l'etablissement ".$etb->_id."\n";
+
+        $soc = SocieteClient::getInstance()->find($newSoc->_id);
+        $soc->switchStatusAndSave();
+        $soc = SocieteClient::getInstance()->find($newSoc->_id);
+        $compte = $soc->getMasterCompte();
+        $compte->addTag('manuel',"Création import inconnu");
+        $compte->save();
+
+        $etb = EtablissementClient::getInstance()->find($etb->_id);
+        $compte = $etb->getMasterCompte();
+        $compte->addTag('manuel',"Création import inconnu");
+        $compte->save();
     }
 
     public function convertFloat($value){
