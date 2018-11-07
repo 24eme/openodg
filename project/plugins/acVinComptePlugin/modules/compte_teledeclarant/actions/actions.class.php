@@ -83,11 +83,8 @@ class compte_teledeclarantActions extends sfActions {
 
                 $this->getUser()->getAttributeHolder()->remove(self::SESSION_COMPTE_DOC_ID_CREATION);
                 $this->getUser()->signInOrigin($this->compte);
-                try {
-                    $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Confirmation de création de votre compte", $this->getPartial('compte_teledeclarant/creationEmail', array('compte' => $this->compte)));
-                } catch (Exception $e) {
-                    $this->getUser()->setFlash('error', "Problème de configuration : l'email n'a pu être envoyé");
-                }
+
+                $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Confirmation de création de votre compte", $this->getPartial('compte_teledeclarant/creationEmail', array('compte' => $this->compte)));
 
                 if ($this->form->hasUpdatedValues()) {
                     Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
@@ -144,11 +141,7 @@ class compte_teledeclarantActions extends sfActions {
                      $emailCible = $societe->getEtablissementPrincipal()->getEmailTeledeclaration();
                 }
 
-                try {
-                    $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Demande de mot de passe oublié", $this->getPartial('motDePasseOublieEmail', array('compte' => $compte, 'lien' => $lien)));
-                } catch (Exception $e) {
-                    $this->getUser()->setFlash('error', "Problème de configuration : l'email n'a pu être envoyé");
-                }
+                $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Demande de mot de passe oublié", $this->getPartial('motDePasseOublieEmail', array('compte' => $compte, 'lien' => $lien)));
                 $this->redirect('compte_teledeclarant_mot_de_passe_oublie_confirm');
             }
         }
