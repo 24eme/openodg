@@ -182,11 +182,13 @@ DRev:
                         detail_identifiant: {  }
                         detail_libelle: {  }
                         quantite: { type: float }
+                        taux: { }
                         facture: { type: integer }
                         facturable: { type: integer }
                         date: {  }
                         date_version: {  }
                         version: {  }
+                        categorie: {  }
       pieces:
         type: array_collection
         definition:

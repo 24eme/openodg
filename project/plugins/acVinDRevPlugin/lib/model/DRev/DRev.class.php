@@ -1061,11 +1061,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getMouvementsCalcule() {
         $mouvements = array();
-
         foreach($this->declaration->getProduits() as $produit) {
             $types_hash = array(
-                "superficie_revendique" => "Superficie revendiqué",
-                "volume_revendique_total" => "Volume net revendiqué total",
+                 "volume_revendique_total" => "Volume net revendiqué total"
             );
 
             foreach($types_hash as $type_hash => $libelle) {
@@ -1077,7 +1075,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
             }
         }
-
         return $mouvements;
     }
 
@@ -1103,8 +1100,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mouvement->quantite = $quantite;
         $mouvement->version = $this->getDocument()->getVersion();
         $mouvement->date = ($this->getDocument()->validation) ? ($this->getDocument()->validation) : date('Y-m-d');
+        $mouvement->add('taux',$produit->getConfig()->getDroitCVO($mouvement->date)->taux);
         $mouvement->date_version = $mouvement->date;
-
         return $mouvement;
     }
 

@@ -94,7 +94,7 @@ Objet : Dégustation conseil <?php echo str_replace(" ".$degustation->getMillesi
 <?php echo getExplicationsPDF($prelevement); ?>
 <p style="text-align: justify;">A votre disposition pour tout complément d'information, nous vous prions d'agréer, Madame, Monsieur, nos plus cordiales salutations.</p>
 <br/>
-<p style="text-align: justify;"><?php echo sfConfig::get('app_degustation_courrier_responsable'); ?><br />Responsable de l'appui technique de l'AVA</p>
+<p style="text-align: justify;">L'équipe de L'Appui Technique AVA-ODG</p>
 <p></p>
 <br/>
 <p style="font-weight: normal; font-size: 8pt;">Rappel du barème des notes :</p>

@@ -9,7 +9,7 @@ class DRevDenominationAutoForm extends acCouchdbObjectForm
             'denomination_auto' => new sfWidgetFormChoice(array('multiple' => false, 'expanded' => true,'choices' => $denominationAutoChoices, 'renderer_options' => array('formatter' => array($this, 'formatter'))))
         ));
         $this->widgetSchema->setLabels(array(
-            'denomination_auto' => 'Pour vous faciliter la saisie de cette Drev, merci de nous indiquez si vous revendiquez du bio :'
+            'denomination_auto' => 'Pour vous faciliter la saisie de cette Drev, merci de nous indiquer si vous revendiquez du bio :'
         ));
 
         $this->setValidators(array(
@@ -20,7 +20,7 @@ class DRevDenominationAutoForm extends acCouchdbObjectForm
 
     public function getDenominationAutoChoices()
     {
-        return array_merge(array("" => "Je n'ai aucun produit en Bio"),DrevClient::$denominationsAuto);
+        return array_merge(array("" => "Je n'ai pas de volume certifié en Bio"),DrevClient::$denominationsAuto);
     }
 
     public function formatter($widget, $inputs)

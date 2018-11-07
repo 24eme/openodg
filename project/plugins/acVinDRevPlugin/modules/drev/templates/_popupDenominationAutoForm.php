@@ -6,13 +6,13 @@
 			<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">Votre revendication comporte-t-elle des produits bio&nbsp;?</h4>
+						<h4 class="modal-title" id="myModalLabel">Êtes vous certifié en Agriculture Biologique&nbsp;?</h4>
 					</div>
 					<div class="modal-body">
 						<div class="row">
 							<div class="col-xs-12" style="font-weight: normal; ">
 								<br/>
-									<i>Pour vous faciliter la saisie de cette Drev, merci de nous indiquez si vous revendiquez du bio :</i>
+									<i>Pour vous faciliter la saisie de cette Drev, merci de nous indiquer si vous revendiquez du bio :</i>
 								<br/>
 							</div>
 						</div>
