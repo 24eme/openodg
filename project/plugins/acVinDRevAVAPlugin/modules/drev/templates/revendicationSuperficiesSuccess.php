@@ -25,7 +25,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_superficies", $drev) ?>">Superficies</a></li>
-    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">VCI</a></li>
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">Utilisation VCI</a></li>
     <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_volumes", $drev) ?>">Volumes</a></li>
 </ul>
 
@@ -58,7 +58,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                     <?php if($drev->declaration->hasVci()): ?>
-                    <th class="col-xs-1 text-center striped-success small">VCI</th>
+                    <th class="col-xs-1 text-center striped-success small">VCI constitué</th>
                     <?php endif ?>
                 <?php endif; ?>
                 <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Superficie&nbsp;Totale<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie totale en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>

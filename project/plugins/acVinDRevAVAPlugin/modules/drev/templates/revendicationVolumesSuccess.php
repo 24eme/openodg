@@ -25,7 +25,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 
 <ul class="nav nav-tabs" role="tablist">
     <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_superficies", $drev) ?>">Superficies</a></li>
-    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">VCI</a></li>
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">Utilisation VCI</a></li>
     <li class="active"><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_volumes", $drev) ?>">Volumes</a></li>
 </ul>
 

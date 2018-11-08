@@ -20,7 +20,7 @@ endif;
 
 <ul class="nav nav-tabs" role="tablist">
     <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_superficies", $drev) ?>">Superficies</a></li>
-    <li class="active"><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">VCI</a></li>
+    <li class="active"><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">Utilisation VCI</a></li>
     <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_volumes", $drev) ?>">Volumes</a></li>
 </ul>
 
@@ -41,18 +41,22 @@ endif;
     <?php endif; ?>
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
+        	<tr>
+                <th colspan="2" class="text-center col-xs-5"></th>
+                <th colspan="4" class="text-center">Revendication <?php echo $drev->campagne ?></th>
+            </tr>
             <tr>
-                <th>Appellation revendiquée</th>
-                <th class="text-center">Stock de VCI</th>
-                <th class="text-center">Destruction</th>
-                <th class="text-center">Revendiqués en complément de la récolte</th>
-                <th class="text-center">Substitution</th>
-                <th class="text-center">Rafraichis</th>
+                <th class="col-xs-4">Appellation revendiquée</th>
+                <th class="text-center col-xs-1">Stock VCI <?php echo $registrevci->campagne ?></th>
+                <th class="text-center manual-width small">Destruction</th>
+                <th class="text-center manual-width small">Complément de la récolte</th>
+                <th class="text-center manual-width small">Substitution</th>
+                <th class="text-center manual-width small">Rafraichis</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($form['cepages'] as $key => $embedForm): ?>
-                <?php $produit = $registrevci->get($key); ?>
+                <?php $produit = $drev->get($key)->getRawValue(); ?>
                 <?php include_partial("drev/revendicationVCIForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => false)); ?>
             <?php endforeach; ?>
         </tbody>

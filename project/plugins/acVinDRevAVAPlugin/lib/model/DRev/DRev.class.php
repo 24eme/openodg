@@ -77,6 +77,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->declaration->getProduits($onlyActive);
     }
+    
+    public function getProduitsVCI() {
+    	return $this->declaration->getProduitsVCI();
+    }
+    
+    public function calculateVolumeRevendiqueVCI()
+    {
+    	$vci = array();
+    	foreach ($this->getProduitsVci() as $produit) {
+    		if ($produit->stockage_identifiant) {
+    			continue;
+    		}
+    		if (!isset($vci[$produit->getCouleur()->getHash()])) {
+    			$vci[$produit->getCouleur()->getHash()] = 0;    			
+    		}
+    		$vci[$produit->getCouleur()->getHash()] += ($produit->complement > 0)? $produit->complement : 0;
+    	}
+    	foreach ($vci as $hash => $val) {
+    		$this->get($hash)->add('volume_revendique_vci', $val);
+    	}
+    }
 
     public function getConfigProduits() {
 
@@ -144,7 +165,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getLastRegistreVCI() {
-      return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
+      return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne -1));
     }
 
     public function initDoc($identifiant, $campagne) {
@@ -153,7 +174,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $etablissement = $this->getEtablissementObject();
         $this->declaration->add('certification')->add('genre');
     }
-
+	
+    public function populateVCIFromRegistre()
+    {
+    	if ($registre = $this->getLastRegistreVCI()) {
+    		foreach($registre->declaration as $key => $p) {
+    			$hash = $p->getHash();
+    			if (!preg_match('/\/couleur\//', $hash)) {
+    				$hash .= '/mention/lieu/couleur';
+    			}
+    			$node = $this->getOrAdd($hash);
+    			if (preg_match('/\/cepage_/', $hash)) {
+    				$node = $node->addDetailNode();
+    			}
+    			if ($node->getDefinition()->exist('vci')) {
+    				$node->add('vci', $p->details);
+    			}
+    		}
+    	}
+    }
     public function initAppellations() {
         foreach ($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
             $this->addAppellation($appellation->getHash());
@@ -205,6 +244,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->declaration->reorderByConf();
+        
+
+        $this->populateVCIFromRegistre();
     }
 
     public function updateFromDRev($drev) {

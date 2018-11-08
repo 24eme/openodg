@@ -38,6 +38,25 @@ class DRevCouleur extends BaseDRevCouleur
         return array($this->getHash() => $this);
     }
 
+    public function getCouleur() {
+
+        return $this;
+    }
+
+    public function getProduitsVCI()
+    {
+    	$produits = array();
+        foreach($this->getChildrenNode()->getChildrenNode() as $key => $item) {
+            $produits = array_merge($produits, $item->getProduitsVCI());
+        }
+    	if ($this->exist('vci')) {
+    		foreach ($this->vci as $subkey => $subitem) {
+    			$produits = array_merge($produits, array($subitem->getHash() => $subitem));
+    		}
+    	}
+        return $produits;
+    }
+
     public function getProduitHash() {
         if(!$this->getMention()->getConfig()->hasManyNoeuds()) {
 

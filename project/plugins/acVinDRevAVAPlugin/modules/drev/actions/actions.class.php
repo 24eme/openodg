@@ -265,7 +265,9 @@ class drevActions extends sfActions {
       $this->setRevendicationParameter($request);
       $this->registrevci = $this->drev->getLastRegistreVCI();
       if ($this->registrevci) {
-        $this->form = new DRevRevendicationVCIForm($this->registrevci);
+      	
+        $this->form = new DRevRevendicationVCIForm($this->drev);
+        
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -273,18 +275,7 @@ class drevActions extends sfActions {
                 return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
             }
             if ($this->form->isValid()) {
-                $vci = array();
-                foreach($this->form->getObject()->declaration as $k => $p) {
-                  if (!isset($vci[preg_replace('/\/[^\/]*$/', '', $p->getHash())])) {
-                    $vci[preg_replace('/\/[^\/]*$/', '', $p->getHash())] = 0;
-                  }
-                  $vci[preg_replace('/\/[^\/]*$/', '', $p->getHash())]  += $p->complement;
-                }
-                foreach ($vci as $key => $vci) {
-                  $this->drev->get($key)->add('volume_revendique_vci', $vci);
-                }
                 $this->form->save();
-                $this->drev->save();
                 if ($request->isXmlHttpRequest()) {
                     return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
                 }

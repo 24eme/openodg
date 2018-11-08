@@ -122,5 +122,21 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     public function canHaveSuperficieVinifiee() {
     	return ($this->exist('superficie_vinifiee'));
     }
+    
+    public function getProduitsVCI()
+    {
+    	$produits = array();
+    	if ($this->exist('vci')) {
+    		foreach ($this->vci as $subkey => $subitem) {
+    			$produits = array_merge($produits, array($subitem->getHash() => $subitem));
+    		}
+    	}
+    	return $produits;
+    }
+    
+    public function getLibelleComplet()
+    {
+    	return $this->getProduitLibelleComplet();
+    }
 
 }
