@@ -1,5 +1,5 @@
 <?php use_helper('Float') ?>
-<h3>Revendication VCI</h3>
+<h3>Utilisation VCI <?php echo $drev->campagne - 1 ?></h3>
 <table class="table table-striped">
         <thead>
             <tr>
