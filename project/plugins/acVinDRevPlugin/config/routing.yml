@@ -144,6 +144,16 @@ drev_exploitation:
   requirements:
     sf_method: [get, post]
 
+drev_denomination_auto:
+  url: /drev/denomination-auto/:id
+  param: { module: drev, action: denominationAuto }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_revendication_recapitulatif:
   url: /drev/drev_revendication-recapitulatif/:id
   param: { module: drev, action: revendicationRecapitulatif }
@@ -283,6 +293,16 @@ drev_controle_externe:
     type:     object
   requirements:
     sf_method: [get, post]
+
+drev_generatemouvements:
+  url: /drev/generatemouvements/:id
+  param: { module: drev, action: generateMouvements }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
 
 drev_validation:
   url: /drev/validation/:id

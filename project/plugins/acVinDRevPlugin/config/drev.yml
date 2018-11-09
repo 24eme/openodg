@@ -2,3 +2,5 @@ all:
   configuration:
     drev:
       prelevements: false
+      mentions_complementaire: false
+      denomination_auto: false

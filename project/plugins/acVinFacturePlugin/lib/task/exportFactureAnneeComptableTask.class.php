@@ -39,8 +39,8 @@ EOF;
         $annee_mois_debutStr = str_replace('-','', $annee_mois_debut);
         $annee_mois_finStr = str_replace('-','', $annee_mois_fin);
 
-        
-        $export = new ExportCSV();
+
+        $export = new ExportFactureCSV();
         $export->printHeaderAnneeComptable();
         foreach (FactureEtablissementView::getInstance()->getAllFacturesForCompta() as $vfacture) {
             $factureAnnee = substr($vfacture->value[FactureEtablissementView::VALUE_DATE_FACTURATION], 0, 4);

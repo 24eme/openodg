@@ -50,6 +50,7 @@ Compte:
       gecos: { required: false }
       lat: {  }
       lon: {  }
+      region: { }
       societe_informations:
         type: collection
         definition:
@@ -63,6 +64,7 @@ Compte:
             email: {  }
             telephone: { required: false }
             fax: {  }
+            siret: { }
       etablissement_informations:
         type: collection
         definition:

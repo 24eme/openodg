@@ -79,6 +79,11 @@ class DeclarationClient
             return 'ExportParcellaireIrrigableCSV';
         }
 
+        if(class_exists("RegistreVCIClient") && $type == RegistreVCIClient::TYPE_MODEL) {
+
+            return 'ExportRegistreVCICSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
@@ -159,13 +164,13 @@ class DeclarationClient
     }
 
     public function viewByIdentifiantCampagneAndType($identifiant, $campagne, $type) {
+        $campagne .= ''; #convertion to string
         $rows = acCouchdbManager::getClient()
                         ->startkey(array($identifiant, $campagne."", $type))
                         ->endkey(array($identifiant, $campagne."", $type, array()))
                         ->reduce(false)
                         ->getView("declaration", "identifiant")
                 ->rows;
-
         $drms = array();
 
         foreach ($rows as $row) {

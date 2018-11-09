@@ -196,6 +196,8 @@ class drevActions extends sfActions {
 
         $this->form = new EtablissementForm($this->drev->declarant, array("use_email" => !$this->drev->isPapier()));
 
+        $this->denominationAutoForm = new DRevDenominationAutoForm($this->drev);
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -226,6 +228,23 @@ class drevActions extends sfActions {
         return $this->redirect('drev_dr', $this->drev);
     }
 
+    public function executeDenominationAuto(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->form = new DRevDenominationAutoForm($this->drev);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->drev->add('denomination_auto',$this->form->getValue('denomination_auto'));
+                $this->drev->save();
+                return $this->redirect('drev_exploitation', $this->drev);
+            }
+
+        }
+
+
+        return $this->redirect('drev_exploitation', $this->drev);
+    }
+
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
@@ -240,8 +259,8 @@ class drevActions extends sfActions {
 
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
 
+        $this->secure(DRevSecurity::EDITION, $this->drev);
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
@@ -253,7 +272,6 @@ class drevActions extends sfActions {
                   $this->drev->updateFromDRev($drev_previous);
             }
         }
-
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE))) {
             $this->drev->save();
         }
@@ -265,13 +283,11 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
                return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -360,6 +376,7 @@ class drevActions extends sfActions {
 
         $this->ajoutForm = new DRevAjoutAppellationForm($this->drev);
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+
 
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
@@ -816,6 +833,23 @@ class drevActions extends sfActions {
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+    }
+
+    public function executeGenerateMouvements(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+
+        if(count($this->drev->mouvements)) {
+
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        $this->drev->generateMouvements();
+        $this->drev->save();
+
+        $this->getUser()->setFlash('notice', 'Les mouvements ont été générés');
+
+        return $this->redirect('drev_visualisation', $this->drev);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
