@@ -7,4 +7,8 @@
 <?php else: ?>
 <div style="margin-bottom: 5px;" class="col-xs-6 text-muted">Mot de passe déjà créé</div>
 <?php endif; ?>
+<?php if ($compte->exist('alternative_logins') && count($compte->alternative_logins)) : ?>
+<div style="margin-bottom: 5px;" class="col-xs-2  text-muted">Logins DéclarVins&nbsp;:</div>
+<div style="margin-bottom: 5px;" class="col-xs-3"><?php echo implode(' ', $compte->alternative_logins); ?></div>
+<?php endif; ?>
 </div>
