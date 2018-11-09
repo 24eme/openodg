@@ -45,9 +45,13 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function getProduitsVCI()
     {
-    	$produits = array();
-        foreach($this->getChildrenNode()->getChildrenNode() as $key => $item) {
-            $produits = array_merge($produits, $item->getProduitsVCI());
+        $produits = array();
+        foreach($this->getCepages() as $key => $cepage) {
+        	if ($cepage->exist('detail')) {
+	        	foreach ($cepage->detail as $key => $item) {
+	            	$produits = array_merge($produits, $item->getProduitsVCI());
+	        	}
+        	}
         }
     	if ($this->exist('vci')) {
     		foreach ($this->vci as $subkey => $subitem) {
@@ -228,6 +232,11 @@ class DRevCouleur extends BaseDRevCouleur
 
 		return $this->detail->vci_total || ($this->exist('detail_vtsgn') && $this->detail_vtsgn->vci_total > 0);
 	}
+	
+	public function hasVolumeRevendiqueVci() {
+		return ($this->exist('volume_revendique_vci') && $this->volume_revendique_vci > 0);
+	}
+	
 
     public function isProduit() {
 

@@ -508,6 +508,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = $date;
+        $this->updateRegistreVCI();
     }
 
     public function devalidate() {
@@ -518,6 +519,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->remove('mouvements');
         $this->add('mouvements');
+        $this->updateRegistreVCI(true);
+    }
+    
+    public function updateRegistreVCI($removeMvts = false) {
+    	if ($registreVCI = $this->getLastRegistreVCI()) {
+    		foreach ($this->getProduitsVci() as $produit) {
+    			$hash = str_replace('/vci/', '/details/', $produit->getHash());
+    			if (!preg_match('/\/cepage_/', $hash)) {
+    				$hash = str_replace('/mention/lieu/couleur', '', $hash);
+    			} else {
+    				$hash = str_replace('/detail/0', '', $hash);
+    			}
+    			if (!$registreVCI->exist($hash)) {
+    				continue;
+    			}
+    			$detail = $registreVCI->get($hash);
+    			$detail->addLigne('destruction', $produit->destruction);
+    			$detail->addLigne('complement', $produit->complement);
+    			$detail->addLigne('substitution', $produit->substitution);
+    			$detail->addLigne('rafraichi', $produit->rafraichi);
+    		}
+    		$registreVCI->save();
+    	}
     }
 
     public function validateOdg($date = null) {

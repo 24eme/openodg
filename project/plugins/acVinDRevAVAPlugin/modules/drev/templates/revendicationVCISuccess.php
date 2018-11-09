@@ -15,6 +15,12 @@ if (isset($form) && $form):
 endif;
 ?>
 <div class="page-header">
+    <?php if($drev->hasDR()): ?>
+        <a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>
+    <?php endif; ?>
+    <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
+        <a class="btn btn-warning btn-sm pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Récupérer les données de la Déclaration de Récolte</a>
+    <?php endif; ?>
     <h2>Revendication</h2>
 </div>
 
