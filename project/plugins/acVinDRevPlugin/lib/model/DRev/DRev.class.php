@@ -175,7 +175,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function hasDocumentDouanier() {
-        return ($this->getDocumentDouanier()) && $this->;
+        return ($this->getDocumentDouanier());
     }
 
     public function getDocumentDouanierType() {
