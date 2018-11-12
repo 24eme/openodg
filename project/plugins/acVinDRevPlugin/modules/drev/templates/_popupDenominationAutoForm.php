@@ -5,7 +5,7 @@
 			<?php echo $form->renderGlobalErrors(); ?>
 			<div class="modal-content">
 					<div class="modal-header">
-						<?php if(!$drev->exist('denomination_auto')): ?><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><?php endif; ?>
+						<?php if($drev->exist('denomination_auto')): ?><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><?php endif; ?>
 						<h4 class="modal-title" id="myModalLabel">Êtes vous certifié en Agriculture Biologique&nbsp;?</h4>
 					</div>
 					<div class="modal-body">
