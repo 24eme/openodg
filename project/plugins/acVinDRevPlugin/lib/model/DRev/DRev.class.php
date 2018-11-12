@@ -175,7 +175,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function hasDocumentDouanier() {
-        return ($this->getDocumentDouanier());
+        return ($this->getDocumentDouanier()) && $this->;
     }
 
     public function getDocumentDouanierType() {
@@ -316,14 +316,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function importFromDocumentDouanier($force = false) {
-      if (!$force & count($this->declaration)) {
+      if (!$force && count($this->declaration) && $this->declaration->getTotalTotalSuperficie()) {
         return false;
       }
       $csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
       	return false;
       }
-	  try {
+	    try {
         $this->importCSVDouane($csv);
         return true;
       } catch (Exception $e) { }
@@ -443,19 +443,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $p->superficie_revendique = $p->recolte->superficie_total;
             }
         }
-
         $this->updateFromPrecedente();
     }
 
     public function updateFromPrecedente()
     {
     	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne - 1))) {
-    		foreach ($precedente->declaration as $hash => $p) {
-    			if ($this->declaration->exist($hash)) {
-    				$produit = $this->declaration->get($hash);
-    				$produit->vci_stock_initial = $p->vci_stock_final;
-    			}
-    		}
+        foreach($precedente->getProduitsVci() as $produit) {
+          if ($produit->vci->stock_final) {
+            $this->cloneProduit($produit);
+          }
+        }
     	}
     }
 
