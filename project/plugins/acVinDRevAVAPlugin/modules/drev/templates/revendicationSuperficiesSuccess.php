@@ -23,7 +23,13 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <h2>Revendication</h2>
 </div>
 
-<form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_superficies", $drev) ?>">Superficies</a></li>
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_vci", $drev) ?>">Utilisation VCI</a></li>
+    <li class=""><a role="tab" class="ajax" href="<?php echo url_for("drev_revendication_volumes", $drev) ?>">Volumes</a></li>
+</ul>
+
+<form role="form" action="<?php echo url_for("drev_revendication_superficies", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
     <?php echo $form->renderHiddenFields(); ?>
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
@@ -52,20 +58,19 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                     <?php if($drev->declaration->hasVci()): ?>
-                    <th class="col-xs-1 text-center striped-success small">VCI</th>
+                    <th class="col-xs-1 text-center striped-success small">VCI constitué</th>
                     <?php endif ?>
                 <?php endif; ?>
                 <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Superficie&nbsp;Totale<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie totale en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Superficie&nbsp;Vinifiée<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie vinifiée en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Volume&nbsp;Revendiqué<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($form['produits'] as $key => $embedForm): ?>
                 <?php $produit = $drev->get($key); ?>
-                <?php include_partial("drev/revendicationForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => false)); ?>
+                <?php include_partial("drev/revendicationSuperficieForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => false)); ?>
                 <?php if(isset($embedForm['superficie_revendique_vtsgn']) || isset($embedForm['volume_revendique_vtsgn'])): ?>
-                    <?php include_partial("drev/revendicationForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => true)); ?>
+                    <?php include_partial("drev/revendicationSuperficieForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => true)); ?>
                 <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
@@ -87,7 +92,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
                 <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small><?php if($drev->isNonRecoltant()): ?>en saisissant les cépages<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small><?php if($drev->isNonRecoltant()): ?>en saisissant les cépages<?php else: ?>vers l'étape suivante de la revendication<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php endif; ?>
 
         </div>

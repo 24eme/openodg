@@ -194,15 +194,51 @@ class drevActions extends sfActions {
             return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
         }
 
-        $this->appellation = false;
-        if ($request->getParameter(('appellation'))) {
-            $this->appellation = $request->getParameter(('appellation'));
-            $this->appellation_field = substr(strrchr($this->appellation, '-'), 1);
-            $this->appellation_hash = str_replace('-', '/', str_replace('-' . $this->appellation_field, '', $this->appellation));
-        }
+        return $this->redirect('drev_revendication_superficies', $this->drev);
 
-        $this->form = new DRevRevendicationForm($this->drev);
+      }
+
+    private function setRevendicationParameter(sfWebRequest $request) {
+      $this->drev = $this->getRoute()->getDRev();
+      $this->secure(DRevSecurity::EDITION, $this->drev);
+
+      $this->appellation = false;
+      if ($request->getParameter(('appellation'))) {
+          $this->appellation = $request->getParameter(('appellation'));
+          $this->appellation_field = substr(strrchr($this->appellation, '-'), 1);
+          $this->appellation_hash = str_replace('-', '/', str_replace('-' . $this->appellation_field, '', $this->appellation));
+      }
+    }
+
+    public function executeRevendicationSuperficies(sfWebRequest $request) {
+        $this->setRevendicationParameter($request);
+        $this->form = new DRevRevendicationSuperficiesForm($this->drev);
         $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
+                return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+            }
+            if ($this->form->isValid()) {
+                $this->form->save();
+
+                if ($request->isXmlHttpRequest()) {
+
+                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+                }
+
+                if ($request->getParameter('redirect', null)) {
+                    return $this->redirect('drev_validation', $this->drev);
+                }
+                return $this->redirect('drev_revendication_vci', $this->drev);
+            }
+        }
+    }
+
+    public function executeRevendicationVolumes(sfWebRequest $request) {
+        $this->setRevendicationParameter($request);
+        $this->form = new DRevRevendicationVolumesForm($this->drev);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -223,6 +259,35 @@ class drevActions extends sfActions {
                 return $this->redirect('drev_degustation_conseil', $this->drev);
             }
         }
+    }
+
+    public function executeRevendicationVCI(sfWebRequest $request) {
+      $this->setRevendicationParameter($request);
+      $this->registrevci = $this->drev->getLastRegistreVCI();
+      if ($this->registrevci) {
+      	
+        $this->form = new DRevRevendicationVCIForm($this->drev);
+        
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
+                return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+            }
+            if ($this->form->isValid()) {
+                $this->form->save();
+                if ($request->isXmlHttpRequest()) {
+                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+                }
+
+                if ($request->getParameter('redirect', null)) {
+                    return $this->redirect('drev_validation', $this->drev);
+                }
+                return $this->redirect('drev_revendication_volumes', $this->drev);
+            }
+        }
+      }
+
     }
 
     public function executeRevendicationAjoutAppellation(sfWebRequest $request) {

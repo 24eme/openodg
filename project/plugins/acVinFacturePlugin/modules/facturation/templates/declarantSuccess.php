@@ -3,7 +3,7 @@
         <li><a href="<?php echo url_for('accueil'); ?>">Accueil</a></li>
     <?php endif; ?>
   <li><a href="<?php if($sf_user->isAdmin()): ?><?php echo url_for('facturation'); ?><?php else: ?><?php echo url_for('facturation_declarant', $compte); ?><?php endif; ?>">Facturation</a></li>
-  <li class="active"><a href=""><?php echo $compte->getNomAAfficher() ?> <?php echo  method_exists($compte, 'getIdentifiantAAfficher')? "(".$compte->getIdentifiantAAfficher().")" : ''; ?></a></li>
+  <li class="active"><a href=""><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
 </ol>
 
 <?php use_helper('Date'); ?>
