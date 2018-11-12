@@ -62,21 +62,4 @@
         </div>
         <?php endif; ?>
     </td>
-    <td class="text-center">
-        <?php if (isset($form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)])): ?>
-        <?php
-        $global_error_class = ((($global_error_class == 'error_field_to_focused') && $appellation_field == 'volume') ||
-        ('drev_produits[produits]' . $global_error_id == $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)]->renderName())) ?
-        'error_field_to_focused' : '';
-        ?>
-        <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
-            <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)]->renderError() ?>
-            <div class="col-xs-10 col-xs-offset-1">
-                <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : null)]->render(array('class' => 'disabled form-control text-right input-rounded num_float' . $global_error_class, 'placeholder' => "hl")) ?>
-            </div>
-        </div>
-        <?php else: ?>
-            <?php echoFloat($produit->get("volume_revendique".(($vtsgn) ? "_vtsgn" : null))); ?> <small class="text-muted">hl</small>
-        <?php endif; ?>
-    </td>
 </tr>
