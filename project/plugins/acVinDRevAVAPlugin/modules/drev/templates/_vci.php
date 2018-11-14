@@ -7,7 +7,7 @@
                 <th class="text-center col-md-2">Destruction</th>
                 <th class="text-center col-md-2">Complément de la récolte</th>
                 <th class="text-center col-md-2">Substitution</th>
-                <th class="text-center col-md-2">Rafraichis</th>
+                <th class="text-center col-md-2">Rafraichissement</th>
             </tr>
         </thead>
         <tbody>

@@ -28,6 +28,7 @@ class DRevRevendicationCepageVCIForm extends acCouchdbObjectForm {
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
+        $this->getObject()->updateStock();
     }
 
 }

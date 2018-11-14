@@ -46,6 +46,10 @@ class DRevValidation extends DocumentValidation {
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
         $this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'Votre semaine de prélèvement pour le contrôle externe ne peut pas précéder celle pour la dégustation conseil.');
+        
+        $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
+        $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
+        $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le complément de récolte par du vci dépasse le rendement autorisé");
 
         /*
          * Engagement
@@ -65,6 +69,12 @@ class DRevValidation extends DocumentValidation {
             $this->controleErrorRevendicationIncomplete($revendicationProduit);
             $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleEngagementPressoir($revendicationProduit);
+            
+            foreach ($revendicationProduit->getProduitsVCI() as $produitVCI) {
+            	$this->controleErrorRepartitionVCI($produitVCI);
+            	$this->controleErrorRendementTotalVCI($produitVCI);
+            	$this->controleErrorRendementVCI($produitVCI);
+            }
         }
 
         $this->controleWarningRevendicationLot();
@@ -360,6 +370,27 @@ class DRevValidation extends DocumentValidation {
         if (!$this->document->addPrelevement(DRev::CUVE_VTSGN) && $this->document->hasLots(true)) {
             $this->addPoint(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', '', $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
         }
+    }
+
+    protected function controleErrorRepartitionVCI($produitVCI) {
+        if ($produitVCI->getStockFinalCalcule() != 0) {
+        	var_dump($produitVCI->getStockFinalCalcule());
+            $this->addPoint(self::TYPE_ERROR, 'repartition_vci', sprintf("%s", $produitVCI->getLibelleComplet()), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
+        }
+    }
+    
+    protected function controleErrorRendementTotalVCI($produitVCI) {
+    	if(round($produitVCI->getCouleur()->getConfig()->getRendementVciTotal(), 2) < $produitVCI->getStockFinalCalcule()) {
+    		$point = $this->addPoint(self::TYPE_ERROR, 'vci_rendement_total', $produitVCI->getLibelleComplet(), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
+    		$vol = round($produitVCI->stock_final,2) - round($produitVCI->getCouleur()->getConfig()->getRendementVciTotal(), 2);
+    		$point->setMessage($point->getMessage() . " soit $vol hl");
+    	}
+    }
+    
+    protected function controleErrorRendementVCI($produitVCI) {
+    	if (round($produitVCI->getCouleur()->getConfig()->getRendementVciTotal(), 2) < $produitVCI->complement) {
+    		$this->addPoint(self::TYPE_ERROR, 'vci_complement', $produitVCI->getLibelleComplet(), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
+    	}
     }
 
 }

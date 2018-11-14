@@ -535,10 +535,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     				continue;
     			}
     			$detail = $registreVCI->get($hash);
-    			$detail->addLigne('destruction', $produit->destruction);
-    			$detail->addLigne('complement', $produit->complement);
-    			$detail->addLigne('substitution', $produit->substitution);
-    			$detail->addLigne('rafraichi', $produit->rafraichi);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'destruction', round($produit->destruction - $detail->destruction, 2), $detail->stockage_identifiant);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'complement', round($produit->complement - $detail->complement, 2), $detail->stockage_identifiant);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'substitution', round($produit->substitution - $detail->substitution, 2), $detail->stockage_identifiant);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'rafraichi', round($produit->rafraichi - $detail->rafraichi, 2), $detail->stockage_identifiant);
     		}
     		$registreVCI->save();
     	}

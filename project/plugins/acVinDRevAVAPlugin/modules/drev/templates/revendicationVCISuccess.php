@@ -57,7 +57,7 @@ endif;
                 <th class="text-center manual-width small">Destruction</th>
                 <th class="text-center manual-width small">Complément de la récolte</th>
                 <th class="text-center manual-width small">Substitution</th>
-                <th class="text-center manual-width small">Rafraichis</th>
+                <th class="text-center manual-width small">Rafraichissement</th>
             </tr>
         </thead>
         <tbody>
