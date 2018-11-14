@@ -1,9 +1,9 @@
 all:
   configuration:
     points_aides:
-      drev:        
+      drev:
         superficie_totale: "Inscrivez la superficie récoltée en ha indiquée dans votre déclaration douanière (Ligne 4)"
-        superficie_revendique: "La superficie revendiquée en ha correspond à la surface indiquée sur la déclaration douanière. En cas de production partielle en cave particulière, veuillez indiquer la surface proportionnelle au volume produit" " Inscrivez la surface vinifiée en ha en incluant les achats et en ôtant les ventes de raisin et moûts éventuels"
+        superficie_revendique:  "Inscrivez la surface vinifiée en ha en incluant les achats et en ôtant les ventes de raisin et moûts éventuels"
         possede_vci: "Cette case doit être obligatoirement cochée si vous avez du VCI en stock car elle permet d'activer le soufflet intitulé 'Répartition du VCI'"
         plafond_vci: "C'est le plafond de volume maximum autorisé de  VCI en hL. IL correspond au résultat de la surface * volume autorisé de VCI (hl) fixé par décret."
         stock_vci_precedent: "Le stock 2017 est indiqué dans le registre de suivi du VCI. Il correspond au stock de VCI 2017 à la date de la déclaration de revendication."
