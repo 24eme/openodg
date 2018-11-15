@@ -374,7 +374,6 @@ class DRevValidation extends DocumentValidation {
 
     protected function controleErrorRepartitionVCI($produitVCI) {
         if ($produitVCI->getStockFinalCalcule() != 0) {
-        	var_dump($produitVCI->getStockFinalCalcule());
             $this->addPoint(self::TYPE_ERROR, 'repartition_vci', sprintf("%s", $produitVCI->getLibelleComplet()), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
         }
     }

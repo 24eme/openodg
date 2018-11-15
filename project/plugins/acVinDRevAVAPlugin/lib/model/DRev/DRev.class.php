@@ -193,6 +193,34 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		}
     	}
     }
+
+
+    public function populateVCIFromProduits()
+    {
+    	foreach ($this->declaration->getProduitsCepage() as $h => $p) {
+    		if ($p->getConfig()->hasRendementVCI()) {
+    			if (preg_match('/appellation_CREMANT/', $h)) {
+    				$p = $p->getCouleur();
+    			}
+    			if (!$p->exist('vci')) {
+    				$vci = $p->add('vci');
+    				$node = $vci->add('_empty_');
+    				$node->stockage_libelle = "Cave particulière";
+    			}
+    		}
+    	}
+    }
+    
+    public function hasProduitsVCI()
+    {
+    	foreach ($this->declaration->getProduitsCepage() as $h => $p) {
+    		if ($p->getConfig()->hasRendementVCI()) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public function initAppellations() {
         foreach ($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
             $this->addAppellation($appellation->getHash());
@@ -523,6 +551,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
     
     public function updateRegistreVCI($removeMvts = false) {
+    	$registreVCI = $this->getLastRegistreVCI();
+    	if ($registreVCI && count($this->getProduitsVci()) > 0) {
+    		$registreVCI = RegistreVCIClient::getInstance()->createDoc($this->identifiant, $this->campagne-1);
+    	}
     	if ($registreVCI = $this->getLastRegistreVCI()) {
     		foreach ($this->getProduitsVci() as $produit) {
     			$hash = str_replace('/vci/', '/details/', $produit->getHash());
