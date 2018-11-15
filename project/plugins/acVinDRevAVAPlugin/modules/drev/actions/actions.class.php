@@ -231,7 +231,12 @@ class drevActions extends sfActions {
                 if ($request->getParameter('redirect', null)) {
                     return $this->redirect('drev_validation', $this->drev);
                 }
-                return $this->redirect('drev_revendication_vci', $this->drev);
+
+                if($this->drev->getLastRegistreVCI()) {
+                    return $this->redirect('drev_revendication_vci', $this->drev);
+                }
+
+                return $this->redirect('drev_revendication_volumes', $this->drev);
             }
         }
     }
