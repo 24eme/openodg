@@ -45,8 +45,8 @@ class DRevValidation extends DocumentValidation {
 
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
-        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'Votre semaine de prélèvement pour le contrôle externe ne peut pas précéder celle pour la dégustation conseil.');
-        
+        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'Votre semaine de prélèvement du contrôle externe doit être minimum 15 jours après celle de la dégustation conseil.');
+
         $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le complément de récolte par du vci dépasse le rendement autorisé");
@@ -335,7 +335,10 @@ class DRevValidation extends DocumentValidation {
         $prelevement = $this->document->prelevements->get(DRev::CUVE_ALSACE);
         $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
 
-        if ($prelevement->date && $degustation->date && $degustation->date <= $prelevement->date) {
+        $dateDegustationExterneMinimum = new DateTime($prelevement->date);
+        $dateDegustationExterneMinimum->modify('+ 15 day');
+
+        if ($prelevement->date && $degustation->date && $degustation->date < $dateDegustationExterneMinimum->format('Y-m-d')) {
             $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $degustation->libelle, $degustation->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
         }
     }
