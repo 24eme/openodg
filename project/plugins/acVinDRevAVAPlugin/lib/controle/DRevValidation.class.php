@@ -33,7 +33,7 @@ class DRevValidation extends DocumentValidation {
          * Error
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', 'Vous devez saisir la superficie pour vos produits revendiqués');
-        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie_vinifiee', 'Vous devez saisir la superficie vinifiee pour vos produits revendiqués');
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie_vinifiee', 'Vous devez saisir la superficie vinifiée pour vos produits revendiqués');
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', 'Vous devez saisir le volume pour vos produits revendiqués');
 
         $this->addControle(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', 'Le volume revendiqué ne peut pas être inférieur au volume sur place déduit des usages industriels de votre DR');
@@ -47,7 +47,7 @@ class DRevValidation extends DocumentValidation {
 
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
-        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'Votre semaine de prélèvement du contrôle externe doit être minimum 15 jours après celle de la dégustation conseil.');
+        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', '15 jours doivent séparer au minimum la semaine de prélèvement du contrôle externe de celle de la dégustation conseil');
 
         $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
