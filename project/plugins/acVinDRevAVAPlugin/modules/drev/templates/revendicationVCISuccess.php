@@ -37,8 +37,8 @@ endif;
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte si vous avez autorisé le transfert de vos données.
-    <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
+    <p>Ces informations ont été initialisées depuis votre registre VCI.
+    <br /><br />Veuillez indiquer l'utilisation de votre VCI 2017.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
