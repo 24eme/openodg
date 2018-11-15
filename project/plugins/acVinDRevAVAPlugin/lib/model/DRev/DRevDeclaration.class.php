@@ -41,4 +41,13 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return false;
 	}
 
+	public function hasVolumeRevendiqueVci() {
+		foreach($this->getProduits() as $produit) {
+			if($produit->hasVolumeRevendiqueVci()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

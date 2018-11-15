@@ -38,6 +38,37 @@ class DRevCouleur extends BaseDRevCouleur
         return array($this->getHash() => $this);
     }
 
+    public function getCouleur() {
+
+        return $this;
+    }
+
+    public function getProduitsVCI()
+    {
+        $produits = array();
+        foreach($this->getCepages() as $key => $cepage) {
+        	if ($cepage->exist('detail')) {
+	        	foreach ($cepage->detail as $key => $item) {
+	            	$produits = array_merge($produits, $item->getProduitsVCI());
+	        	}
+        	}
+        }
+    	if ($this->exist('vci')) {
+    		foreach ($this->vci as $subkey => $subitem) {
+    			$produits = array_merge($produits, array($subitem->getHash() => $subitem));
+    		}
+    	}
+        return $produits;
+    }
+    
+    public function getTotalConstitue() {
+    	$val = 0;
+    	foreach ($this->getProduitsVCI() as $p) {
+    		$val += $p->constitue;
+    	}
+    	return $val;
+    }
+
     public function getProduitHash() {
         if(!$this->getMention()->getConfig()->hasManyNoeuds()) {
 
@@ -209,6 +240,11 @@ class DRevCouleur extends BaseDRevCouleur
 
 		return $this->detail->vci_total || ($this->exist('detail_vtsgn') && $this->detail_vtsgn->vci_total > 0);
 	}
+	
+	public function hasVolumeRevendiqueVci() {
+		return ($this->exist('volume_revendique_vci') && $this->volume_revendique_vci > 0);
+	}
+	
 
     public function isProduit() {
 
@@ -236,5 +272,20 @@ class DRevCouleur extends BaseDRevCouleur
         return false;
     }
 
+		public function setVolumeRevendiqueVCI($v) {
+			parent::_set('volume_revendique_vci', $v);
+			if (!$this->exist('volume_revendique_recolte')){
+				return $this->setVolumeRevendique( $v);
+			}
+			return $this->setVolumeRevendique( $v + $this->get('volume_revendique_recolte'));
+		}
+
+		public function setVolumeRevendiqueRecolte($v) {
+			parent::_set('volume_revendique_recolte', $v);
+			if (!$this->exist('volume_revendique_vci')){
+				return $this->setVolumeRevendique( $v);
+			}
+			$this->setVolumeRevendique( $v + $this->get('volume_revendique_vci'));
+		}
 
 }
