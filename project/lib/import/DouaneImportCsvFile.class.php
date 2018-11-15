@@ -81,11 +81,18 @@ class DouaneImportCsvFile {
         $this->etablissement = EtablissementClient::getInstance()->findByCvi($this->cvi);
       }
       $doc[] = ($this->etablissement)? $this->etablissement->identifiant : null;
-      $doc[] = ($this->etablissement)? $this->etablissement->cvi : ($this->cvi) ? $this->cvi : null;
-      $rs = ($this->etablissement)? $this->etablissement->raison_sociale : ($this->raison_sociale) ? $this->raison_sociale : null;
-      $doc[] = self::cleanRaisonSociale($rs);
-      $doc[] = null;
-      $doc[] = ($this->etablissement)? $this->etablissement->siege->commune :($this->commune) ? $this->commune : null;
+      if ($this->etablissement) {
+        $doc[] = $this->etablissement->cvi ;
+        $doc[] = self::cleanRaisonSociale($this->etablissement->raison_sociale);
+        $doc[] = null;
+        $doc[] = $this->etablissement->siege->commune;
+      }else {
+        $doc[] = ($this->cvi) ? $this->cvi : null;
+        $rs = (isset($this->raison_sociale)) ? $this->raison_sociale : null;
+        $doc[] = self::cleanRaisonSociale($rs);
+        $doc[] = null;
+        $doc[] = (isset($this->commune)) ? $this->commune : null;
+      }
       return $doc;
     }
 

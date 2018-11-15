@@ -75,7 +75,7 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     public function isCleanable() {
         $this->updateTotal();
 
-        return !$this->volume_revendique_total && !$this->superficie_revendique_total;
+        return !$this->volume_revendique_total && !$this->superficie_revendique_total && !$this->exist('vci');
     }
 
     public function cleanNode() {
@@ -121,6 +121,34 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
 
     public function canHaveSuperficieVinifiee() {
     	return ($this->exist('superficie_vinifiee'));
+    }
+    
+    public function getProduitsVCI()
+    {
+    	$produits = array();
+    	if ($this->exist('vci')) {
+    		foreach ($this->vci as $subkey => $subitem) {
+    			$produits = array_merge($produits, array($subitem->getHash() => $subitem));
+    		}
+    	}
+    	return $produits;
+    }
+    
+    public function getLibelleComplet()
+    {
+    	return $this->getProduitLibelleComplet();
+    }
+
+
+    public function getTotalComplementVCI() {
+    	if ($this->exist('vci')) {
+    		$total = 0;
+    		foreach ($this->vci as $k => $v) {
+    			$total += $v->complement;
+    		}
+    		return $total;
+    	}
+    	return null;
     }
 
 }

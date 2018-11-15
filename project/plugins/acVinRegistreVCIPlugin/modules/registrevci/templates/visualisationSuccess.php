@@ -12,8 +12,8 @@
         <table class="table table-striped">
         <thead><tr>
             <th class="col-md-4">Produit</th>
-            <th class="text-center col-md-1">Constiuté</th>
-        	  <th class="text-center col-md-1">Rafraîchi</th>
+            <th class="text-center col-md-1">Constitué</th>
+        	  <th class="text-center col-md-1">Rafraichissement</th>
             <th class="text-center col-md-1">Complément</th>
             <th class="text-center col-md-1">Substitution</th>
             <th class="text-center col-md-1">Destruction</th>
@@ -25,7 +25,7 @@
     $strongbegin = '<strong>';
     $strongend = '</strong>';
     $superficiebegin = '<small class="text-mutted">';
-    $superficieend = ' ('.$p->getSuperficieFromDrev().' hl)</small>';
+    $superficieend = ' ('.$p->getSuperficieFromDrev().' ares)</small>';
   }
   ?>
       <tr>

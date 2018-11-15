@@ -13,22 +13,35 @@ class RegistreVCIProduitDetail extends BaseRegistreVCIProduitDetail {
     }
 
     public function setConstitue($v) {
-      throw new sfException('Not callable, use addMouvement');
+      $this->getParent()->getParent()->_set('constitue', $v);
+      return $this->_set('constitue', $v);
     }
     public function setRafraichi($v) {
-      throw new sfException('Not collable, use addMouvement');
+      $this->getParent()->getParent()->_set('rafraichi', $v);
+      return $this->_set('rafraichi', $v);
     }
     public function setComplement($v) {
-      throw new sfException('Not collable, use addMouvement');
+      $this->getParent()->getParent()->_set('complement', $v);
+      return $this->_set('complement', $v);
     }
     public function setSubstitue($v) {
-      throw new sfException('Not collable, use addMouvement');
+      $this->getParent()->getParent()->_set('substitue', $v);
+      return $this->_set('substitue', $v);
     }
     public function setDetruit($v) {
-      throw new sfException('Not collable, use addMouvement');
+      $this->getParent()->getParent()->_set('destruction', $v);
+      return $this->_set('destruction', $v);
     }
+
     public function setStockFinal($v) {
       throw new sfException('Not collable, use addMouvement');
+    }
+
+    public function getLibelleComplet() {
+      if (count($this->getParent()) > 1) {
+         return $this->getLibelleProduit().' - '.$this->getLibelle();
+      }
+      return $this->getLibelleProduit();
     }
 
     public function getLibelleProduit() {

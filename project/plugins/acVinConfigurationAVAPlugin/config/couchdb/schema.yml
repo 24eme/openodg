@@ -78,6 +78,8 @@ Configuration:
               definition:
                 fields:
                   rendement: { type: float }
+                  rendement_vci: { type: float }
+                  rendement_vci_total: { type: float }
                   libelle: { }
                   libelle_long: { required: false }
                   relations:
@@ -106,6 +108,8 @@ Configuration:
                     definition:
                       fields:
                         rendement: { type: float }
+                        rendement_vci: { type: float }
+                        rendement_vci_total: { type: float }
                         libelle: { }
                         libelle_long: { required: false }
                         relations:
@@ -179,6 +183,8 @@ Configuration:
                                     libelle: {  }
                                     libelle_long: { required: false }
                                     rendement: { type: float  }
+                                    rendement_vci: { type: float }
+                                    rendement_vci_total: { type: float }
                                     rendement_mention: { type: float  }
                                     relations:
                                       required: false
@@ -206,6 +212,8 @@ Configuration:
                                       definition:
                                         fields:
                                           rendement: {type: float}
+                                          rendement_vci: { type: float }
+                                          rendement_vci_total: { type: float }
                                           rendement_mention: { type: float  }
                                           rendement_appellation: { type: float }
                                           libelle: { }
@@ -243,6 +251,8 @@ Configuration:
                                               fields:
                                                 rendement_couleur: { type: float }
                                                 rendement: { type: float }
+                                                rendement_vci: { type: float }
+                                                rendement_vci_total: { type: float }
                                                 libelle: { }
                                                 libelle_long: { required: false }
                                                 drev: { type: integer, required: false }
@@ -303,6 +313,8 @@ Configuration:
                                                       libelle: {  }
                                                       libelle_long: { required: false }
                                                       rendement: { type: float }
+                                                      rendement_vci: { type: float }
+                                                      rendement_vci_total: { type: float }
                                                       min_quantite: {type: float, required: false}
                                                       max_quantite: {type: float, required: false}
                                                       exclude_total: {type: integer, required: false}
