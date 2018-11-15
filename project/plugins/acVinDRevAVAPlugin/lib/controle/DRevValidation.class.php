@@ -32,7 +32,9 @@ class DRevValidation extends DocumentValidation {
         /*
          * Error
          */
-        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', 'Vous devez saisir la superficie et le volume pour vos produits revendiqués');
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', 'Vous devez saisir la superficie pour vos produits revendiqués');
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie_vinifiee', 'Vous devez saisir la superficie vinifiee pour vos produits revendiqués');
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', 'Vous devez saisir le volume pour vos produits revendiqués');
 
         $this->addControle(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', 'Le volume revendiqué ne peut pas être inférieur au volume sur place déduit des usages industriels de votre DR');
 
@@ -45,8 +47,8 @@ class DRevValidation extends DocumentValidation {
 
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
-        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'Votre semaine de prélèvement pour le contrôle externe ne peut pas précéder celle pour la dégustation conseil.');
-        
+        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'Votre semaine de prélèvement du contrôle externe doit être minimum 15 jours après celle de la dégustation conseil.');
+
         $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le complément de récolte par du vci dépasse le rendement autorisé");
@@ -67,9 +69,12 @@ class DRevValidation extends DocumentValidation {
             $this->controleWarningDrSurface($revendicationProduit);
             $this->controleWarningDrVolume($revendicationProduit);
             $this->controleErrorRevendicationIncomplete($revendicationProduit);
+            if($revendicationProduit->exist('superficie_revendique_vtsgn')) {
+                $this->controleErrorRevendicationIncomplete($revendicationProduit, '_vtsgn', " VTSGN");
+            }
             $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleEngagementPressoir($revendicationProduit);
-            
+
             foreach ($revendicationProduit->getProduitsVCI() as $produitVCI) {
             	$this->controleErrorRepartitionVCI($produitVCI);
             	$this->controleErrorRendementTotalVCI($produitVCI);
@@ -266,16 +271,22 @@ class DRevValidation extends DocumentValidation {
         }
     }
 
-    protected function controleErrorRevendicationIncomplete($produit) {
+    protected function controleErrorRevendicationIncomplete($produit, $suffix = null, $suffixLibelle = null) {
         if ($this->document->isNonRecoltant()) {
 
             return;
         }
-        if (
-                ($produit->superficie_revendique !== null && $produit->volume_revendique === null) ||
-                ($produit->superficie_revendique === null && $produit->volume_revendique !== null)
-        ) {
-            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+
+        if ($produit->get('superficie_revendique'.$suffix) === null && $produit->get('volume_revendique'.$suffix) !== null) {
+            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet().$suffixLibelle, $this->generateUrl('drev_revendication_superficies', array('sf_subject' => $this->document)));
+        }
+
+        if ($produit->get('superficie_revendique'.$suffix) !== null && $produit->get('superficie_vinifiee'.$suffix) === null) {
+            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie_vinifiee', $produit->getLibelleComplet().$suffixLibelle, $this->generateUrl('drev_revendication_superficies', array('sf_subject' => $this->document)));
+        }
+
+        if ($produit->get('superficie_revendique'.$suffix) !== null && $produit->get('volume_revendique'.$suffix) === null) {
+            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet().$suffixLibelle, $this->generateUrl('drev_revendication_volumes', array('sf_subject' => $this->document)));
         }
     }
 
@@ -335,7 +346,10 @@ class DRevValidation extends DocumentValidation {
         $prelevement = $this->document->prelevements->get(DRev::CUVE_ALSACE);
         $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
 
-        if ($prelevement->date && $degustation->date && $degustation->date <= $prelevement->date) {
+        $dateDegustationExterneMinimum = new DateTime($prelevement->date);
+        $dateDegustationExterneMinimum->modify('+ 15 day');
+
+        if ($prelevement->date && $degustation->date && $degustation->date < $dateDegustationExterneMinimum->format('Y-m-d')) {
             $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $degustation->libelle, $degustation->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
         }
     }
@@ -348,8 +362,12 @@ class DRevValidation extends DocumentValidation {
 
         $prelevement = $this->document->prelevements->get($key);
 
-        if (!$prelevement->date) {
+        if (!$prelevement->date && preg_match("/".DRev::CUVE."/", $key)) {
             $this->addPoint(self::TYPE_ERROR, 'prelevement', sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
+        }
+
+        if (!$prelevement->date && preg_match("/".DRev::BOUTEILLE."/", $key)) {
+            $this->addPoint(self::TYPE_ERROR, 'prelevement', sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)));
         }
     }
 
