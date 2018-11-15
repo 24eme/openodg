@@ -210,7 +210,9 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->form->save();
+        if (DrevConfiguration::getInstance()->hasExploitationSave()) {
+          $this->form->save();
+        }
 
         if ($this->form->hasUpdatedValues() && !$this->drev->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->drev->getEtablissementObject(), $this->form->getUpdatedValues());
