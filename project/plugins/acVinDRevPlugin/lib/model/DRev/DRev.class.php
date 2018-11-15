@@ -1100,7 +1100,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mouvement->quantite = $quantite;
         $mouvement->version = $this->getDocument()->getVersion();
         $mouvement->date = ($this->getDocument()->validation) ? ($this->getDocument()->validation) : date('Y-m-d');
-        $mouvement->add('taux',$produit->getConfig()->getDroitCVO($mouvement->date)->taux);
         $mouvement->date_version = $mouvement->date;
         return $mouvement;
     }
