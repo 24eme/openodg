@@ -4,3 +4,4 @@ all:
       prelevements: false
       mentions_complementaire: false
       denomination_auto: false
+      exploitation_save: false
