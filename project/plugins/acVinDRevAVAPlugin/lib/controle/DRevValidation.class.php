@@ -52,6 +52,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le complément de récolte par du vci dépasse le rendement autorisé");
+        $this->addControle(self::TYPE_ERROR, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
 
         /*
          * Engagement
