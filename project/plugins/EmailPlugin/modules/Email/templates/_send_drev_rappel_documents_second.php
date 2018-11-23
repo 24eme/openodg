@@ -13,13 +13,7 @@ Rappel des documents restant à envoyer :
 - <?php echo DRevDocuments::getDocumentLibelle($document->getKey()) ?>
 
 <?php endforeach; ?>
-
-Le ou les document(s) annexes peuvent nous être envoyés par mail (<?php echo sfConfig::get('app_email_plugin_reply_to_adresse'); ?>) ou par voie postale :
-
-Association des Viticulteurs d'Alsace
-12 avenue de la Foire Aux Vins
-BP 91 225
-68012 Colmar Cedex
+Le ou les document(s) annexes peuvent nous être envoyés par mail (<<?php echo sfConfig::get('app_email_plugin_reply_to_adresse'); ?>>) ou par voie postale.
 <?php endif; ?>
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>

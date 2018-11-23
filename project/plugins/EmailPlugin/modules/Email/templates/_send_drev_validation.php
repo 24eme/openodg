@@ -1,6 +1,6 @@
 Bonjour,
 
-Votre déclaration de Revendication <?php echo $drev->campagne; ?> a bien été transmise au syndicat via le site syndicat-cotesdurhone.com.
+Votre déclaration de Revendication <?php echo $drev->campagne; ?> a bien été transmise au syndicat via le site votre syndicat.
 
 Cette validation sera définitive lorsque votre déclaration aura été vérifiée et que les éventuelles pièces à joindre seront parvenues à notre service.
 <?php if (count($drev->getOrAdd('documents')) > 0): ?>
