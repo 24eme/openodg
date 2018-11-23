@@ -2,7 +2,7 @@ Bonjour,
 
 Nous sommes toujours en attente du/des document(s) permettant de compléter votre déclaration de Revendication dématérialisée.
 
-Suivant ce qui est notifié dans le cahier des charges, nous vous rappelons que votre déclaration de Revendication doit nous parvenir « au minimum 15 jours avant la première sortie de produits du chai de vinification et au plus tard 60 jours après la date de mise en marché à destination du consommateur », soit le 15 février. 
+Suivant ce qui est notifié dans le cahier des charges, nous vous rappelons que votre déclaration de Revendication doit nous parvenir « au minimum 15 jours avant la première sortie de produits du chai de vinification et au plus tard 60 jours après la date de mise en marché à destination du consommateur », soit le 15 février.
 
 Nous vous encourageons à nous faire parvenir au plus vite le(s) élément(s) manquant(s), afin que nous puissions valider définitivement votre déclaration.
 <?php if (count($drev->getOrAdd('documents')) > 0): ?>
@@ -29,4 +29,4 @@ La validation définitive de votre déclaration de Revendication ne pourra se fa
 
 Bien cordialement,
 
-Le service Appui technique (via l'application de télédéclaration)
+<?php echo include_partial('Email/footerMail'); ?>

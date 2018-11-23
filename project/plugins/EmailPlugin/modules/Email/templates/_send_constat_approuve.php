@@ -8,4 +8,4 @@ En vous souhaitant bonne réception.
 
 Cordialement,
 
-L'équipe de l'Appui Technique AVA-ODG
+<?php echo include_partial('Email/footerMail'); ?>

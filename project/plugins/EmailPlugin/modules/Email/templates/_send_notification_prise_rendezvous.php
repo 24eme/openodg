@@ -9,4 +9,4 @@ Veuillez-vous rendre ici pour le planifier : <<?php echo sfContext::getInstance(
 
 Bien cordialement,
 
-L'application de télédéclaration pour le service Appui technique de l'AVA.
+<?php echo include_partial('Email/footerMail'); ?>
