@@ -183,10 +183,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			if (!preg_match('/\/couleur\//', $hash)) {
     				$hash .= '/mention/lieu/couleur';
     			}
-    			$node = $this->getOrAdd($hash);
-    			if (preg_match('/\/cepage_/', $hash)) {
-    				$node = $node->addDetailNode();
-    			}
+                if (!preg_match('/\/cepage_/', $hash)) {
+                    $node = $this->addProduit($hash);
+                } else {
+                    $node = $this->addProduitCepage($hash);
+                }
     			if ($node->getDefinition()->exist('vci')) {
     				$node->add('vci', $p->details);
     			}

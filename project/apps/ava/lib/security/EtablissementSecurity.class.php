@@ -30,7 +30,7 @@ class EtablissementSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DECLARANT_DREV, $droits) && !$this->etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)) {
+        if(in_array(self::DECLARANT_DREV, $droits) && !$this->etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR) && !count(RegistreVCIClient::getInstance()->getHistory($this->etablissement->identifiant, acCouchdbClient::HYDRATE_JSON))) {
 
             return false;
         }
