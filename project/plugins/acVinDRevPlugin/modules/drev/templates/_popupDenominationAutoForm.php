@@ -1,11 +1,11 @@
-<div class="modal fade" id="drevDenominationAuto" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true" <?php if(!$drev->exist('denomination_auto')): ?>data-auto="true"<?php endif; ?> >
+<div class="modal fade" id="drevDenominationAuto" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true" <?php if(!$drev->exist('denomination_auto')): ?>data-auto="true" data-backdrop="static" data-keyboard="false"<?php endif; ?> >
 	<div class="modal-dialog" role="document">
 		<form method="post" action="<?php echo $url ?>" role="form" class="form-horizontal">
 			<?php echo $form->renderHiddenFields(); ?>
 			<?php echo $form->renderGlobalErrors(); ?>
 			<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<?php if($drev->exist('denomination_auto')): ?><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><?php endif; ?>
 						<h4 class="modal-title" id="myModalLabel">Êtes vous certifié en Agriculture Biologique&nbsp;?</h4>
 					</div>
 					<div class="modal-body">

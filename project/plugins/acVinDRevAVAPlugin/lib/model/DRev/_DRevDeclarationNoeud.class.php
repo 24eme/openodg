@@ -72,6 +72,16 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
+    public function getProduitsVCI()
+    {
+        $produits = array();
+        foreach($this->getChildrenNode() as $key => $item) {
+            $produits = array_merge($produits, $item->getProduitsVCI());
+        }
+
+        return $produits;
+    }
+
     public function removeVolumeRevendique() {
 
         foreach($this->getProduits() as $produit) {

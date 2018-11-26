@@ -34,14 +34,17 @@
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; <?php if ($drev->canHaveSuperficieVinifiee()): ?><?php if(!$drev->isNonRecoltant()): ?>width: 280px;<?php else: ?>width: 400px;<?php endif; ?><?php else: ?><?php if(!$drev->isNonRecoltant()): ?>width: 400px;<?php else: ?>width: 520px;<?php endif; ?><?php endif; ?>">&nbsp;Appellation</th>
+        <th class="th" style="text-align: left; <?php if ($drev->canHaveSuperficieVinifiee()): ?><?php if(!$drev->isNonRecoltant()): ?><?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>width: 240px;<?php else: ?>width: 340px;<?php endif; ?><?php else: ?><?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>width: 340px;<?php else: ?>width: 440px;<?php endif; ?><?php endif; ?><?php else: ?><?php if(!$drev->isNonRecoltant()): ?><?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>width: 340px;<?php else: ?>width: 440px;<?php endif; ?><?php else: ?><?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>width: 420px;<?php else: ?>width: 520px;<?php endif; ?><?php endif; ?><?php endif; ?>">&nbsp;Appellation</th>
         <?php if(!$drev->isNonRecoltant()): ?>
-        <th class="th" style="text-align: center; width: 120px;">Superficie totale</th>
+        <th class="th" style="text-align: center; width: 100px;">Superficie<br />totale</th>
         <?php endif; ?>
         <?php if ($drev->canHaveSuperficieVinifiee()): ?>
-        <th class="th" style="text-align: center; width: 120px;">Superficie vinifiée</th>
+        <th class="th" style="text-align: center; width: 100px;">Superficie<br />vinifiée</th>
         <?php endif; ?>
-        <th class="th" style="text-align: center; width: 120px;">Volume revendiqué</th>
+        <?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>
+        <th class="th" style="text-align: center; width: 100px;">Volume<br />issu du VCI</th>
+        <?php endif ?>
+        <th class="th" style="text-align: center; width: 100px;">Volume<br />revendiqué</th>
     </tr>
     <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
         <?php if($produit->volume_revendique|| $produit->superficie_revendique || ($produit->exist('superficie_vinifiee') && $produit->superficie_vinifiee)): ?>
@@ -53,6 +56,11 @@
                 <?php if ($drev->canHaveSuperficieVinifiee()): ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->exist('superficie_vinifiee')): ?><?php echo sprintFloatFr($produit->superficie_vinifiee) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;<?php endif; ?>&nbsp;</td>
                 <?php endif; ?>
+			    <?php if($produit->hasVolumeRevendiqueVci()): ?>
+			    <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->exist('volume_revendique_vci')): ?><?php echo sprintFloatFr($produit->get('volume_revendique_vci')) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;<?php endif; ?>&nbsp;</td>
+			    <?php elseif($drev->declaration->hasVolumeRevendiqueVci()): ?>
+			    <td class="td" style="text-align:right;">&nbsp;</td>
+			    <?php endif; ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
             </tr>
         <?php endif; ?>
@@ -65,12 +73,39 @@
                 <?php if ($drev->canHaveSuperficieVinifiee()): ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->exist('superficie_vinifiee_vtsgn')): ?><?php echo sprintFloatFr($produit->superficie_vinifiee_vtsgn) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;<?php endif; ?>&nbsp;</td>
                 <?php endif; ?>
+                <?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>
+			    <td class="td" style="text-align:right;">&nbsp;</td>
+			    <?php endif; ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_vtsgn) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
             </tr>
         <?php endif; ?>
     <?php  endforeach; ?>
 </table>
 <br />
+
+<?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>
+<div><span class="h3">&nbsp;Revendication VCI&nbsp;</span></div>
+<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <tr>
+    	<th class="th" style="text-align: center; width: 240px;">Appellation</th>
+        <th class="th" style="text-align: center; width: 100px;">Destruction</th>
+        <th class="th" style="text-align: center; width: 100px;">Complément de la récolte</th>
+        <th class="th" style="text-align: center; width: 100px;">Substitution</th>
+        <th class="th" style="text-align: center; width: 100px;">Rafraichissement</th>
+    </tr>
+    <?php foreach ($drev->getProduitsVci() as $key => $produit): ?>
+            <tr>
+                <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?><br /><small class="text-muted">&nbsp;<?php echo $produit->stockage_libelle ?></small></td>
+                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->destruction) ?><?php if (!is_null($produit->destruction)): ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->complement) ?><?php if (!is_null($produit->complement)): ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->substitution) ?><?php if (!is_null($produit->substitution)): ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->rafraichi) ?><?php if (!is_null($produit->rafraichi)): ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            </tr>
+    <?php  endforeach; ?>
+</table>
+<br />
+<?php endif; ?>
+
 <br />
 <br />
 <table cellspacing=0 cellpadding=0>

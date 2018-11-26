@@ -15,5 +15,4 @@ Merci de bien vouloir nous signaler les éventuelles modifications apportées à
 
 Bonne journée.
 
-Le Syndicat Général des Vignerons réunis des Côtes du Rhône
-Gestiondesdonnees@syndicat-cotesdurhone.com
+<?php echo include_partial('Email/footerMail'); ?>
