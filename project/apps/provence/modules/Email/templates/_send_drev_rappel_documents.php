@@ -9,7 +9,13 @@ Rappel des documents restant à envoyer :
 - <?php echo DRevDocuments::getDocumentLibelle($document->getKey()) ?>
 
 <?php endforeach; ?>
-Le ou les document(s) annexes peuvent nous être envoyés par mail ou par voie postale.
+
+Le ou les document(s) annexes peuvent nous être envoyés par mail (<contact@odg-cotesdeprovence.com>) ou par voie postale :
+
+Syndicat des Vins Côtes de Provence
+DN7
+83460 Les Arcs
+CS 60093
 <?php endif; ?>
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>
