@@ -1,5 +1,5 @@
 <?php use_helper('Float') ?>
-<h3>Utilisation VCI <?php echo $drev->campagne - 1 ?></h3>
+<h3>Utilisation VCI <?php echo $drev->campagne - 1 ?> <?php if($drev->validation && $drev->getLastRegistreVCI()): ?><a href="<?php echo url_for('registrevci_visualisation', $drev->getLastRegistreVCI()) ?>"><small>(Voir le registre VCI <?php echo $drev->campagne - 1 ?>)</small></a><?php endif; ?></h3>
 <table class="table table-striped">
         <thead>
             <tr>
@@ -22,5 +22,3 @@
             <?php endforeach; ?>
         </tbody>
 </table>
-
-
