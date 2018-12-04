@@ -90,9 +90,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			continue;
     		}
     		if (!isset($vci[$produit->getCouleur()->getHash()])) {
-    			$vci[$produit->getCouleur()->getHash()] = 0;    			
+                $vci[$produit->getCouleur()->getHash()] = 0;
     		}
-    		$vci[$produit->getCouleur()->getHash()] += ($produit->complement > 0)? $produit->complement : 0;
+
+            $vci[$produit->getCouleur()->getHash()] += $produit->complement + $produit->substitution + $produit->rafraichi;
     	}
     	foreach ($vci as $hash => $val) {
     		$this->get($hash)->add('volume_revendique_vci', $val);
