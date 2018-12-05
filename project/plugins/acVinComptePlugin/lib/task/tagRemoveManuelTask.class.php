@@ -44,7 +44,7 @@ EOF;
           if(!$c){
               throw new sfException("Le compte ".$options['compteid']."n'existe pas en base");
           }
-          $tags_manuel = $c->get('tag')->get('manuel')->toArray(0,1);
+          $tags_manuel = $c->get('tags')->get('manuel')->toArray(0,1);
           $new_tags_manuel = array();
           foreach ($tags_manuel as $manuel) {
             if($manuel != $options['tag']){
@@ -52,11 +52,11 @@ EOF;
             }
           }
           if(!count($new_tags_manuel)){
-            $c->get('tag')->remove('manuel');
+            $c->get('tags')->remove('manuel');
           }else{
-            $c->get('tag')->set('manuel',$new_tags_manuel);
+            $c->get('tags')->set('manuel',$new_tags_manuel);
           }
-          var_dump($c->get('tag')->toArray(0,1));
+          var_dump($c->get('tags')->toArray(0,1));
         }
         throw new sfException("bad arguments");
     }
