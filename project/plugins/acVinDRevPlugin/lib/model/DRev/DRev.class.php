@@ -341,7 +341,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $produitsImporte = array();
         $has_bio = false;
-        foreach($csv as $line) {
+        foreach($csv as $k => $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
@@ -389,7 +389,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
-            	$produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+              if(!$this->hasAcheteurForProduit($csv,$k)){
+                $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+              }
+
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
 
@@ -444,6 +447,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         $this->updateFromPrecedente();
+    }
+
+    public function hasAcheteurForProduit($csv,$k){
+      $l = $csv[$k];
+      $codePrev = 0;
+      $code = $l[DRCsvFile::CSV_LIGNE_CODE];
+      while(($k >= 0) && ($code > $codePrev)){
+        $codePrev = $code;
+        $k--;
+        $l = $csv[$k];
+        $code = $l[DRCsvFile::CSV_LIGNE_CODE];
+        if($code == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR){
+          return boolval($line[SV12CsvFile::CSV_VALEUR]);
+        }
+      }
+      return false;
     }
 
     public function updateFromPrecedente()
