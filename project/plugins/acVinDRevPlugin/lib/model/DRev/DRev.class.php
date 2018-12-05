@@ -451,17 +451,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasAcheteurForProduit($csv,$k){
       $l = $csv[$k];
-      $codePrev = 0;
       $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-      while(($k >= 0) && ($code > $codePrev)){
-        $codePrev = $code;
-        $k--;
-        $l = $csv[$k];
-        $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-        if($code == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR){
-          return boolval($line[SV12CsvFile::CSV_VALEUR]);
-        }
-      }
+      $codePrev = $code * 2;
+      while(($k >= 0) && ($code < $codePrev)){
+         $codePrev = $code;
+         $k--;
+         $l = $csv[$k];
+         $code = $l[DRCsvFile::CSV_LIGNE_CODE];
+         if($code == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR){
+           return boolval($l [DRCsvFile::CSV_VALEUR]);
+         }
+       }
       return false;
     }
 
