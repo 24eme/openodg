@@ -19,7 +19,7 @@ class tagRemoveManuelTask extends sfBaseTask {
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-            new sfCommandOption('compteid', null, sfCommandOption::PARAMETER_OPTIONAL, 'id du compte', false),
+            new sfCommandOption('compteid', null, sfCommandOption::PARAMETER_REQUIRED, 'id du compte', false),
             new sfCommandOption('tag', null, sfCommandOption::PARAMETER_OPTIONAL, 'tag', false),
         ));
 
@@ -39,7 +39,7 @@ EOF;
 
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        if ($options['tag'] && $options['compteid']) {
+        if ($options['compteid']) {
           $c = CompteClient::getInstance()->find($options['compteid']);
           if(!$c){
               throw new sfException("Le compte ".$options['compteid']."n'existe pas en base");
@@ -47,14 +47,16 @@ EOF;
           $tags_manuel = $c->get('tags')->get('manuel')->toArray(0,1);
           $new_tags_manuel = array();
           foreach ($tags_manuel as $manuel) {
-            if($manuel != $options['tag']){
+            if(!$options['tag'] || ($manuel != $options['tag'])){
               $new_tags_manuel[] = $manuel;
             }
           }
+          $new_tags_manuel = array_unique($new_tags_manuel);
           if(!count($new_tags_manuel)){
             $c->get('tags')->remove('manuel');
           }else{
-            $c->get('tags')->set('manuel',$new_tags_manuel);
+            $c->get('tags')->remove('manuel');
+            $c->get('tags')->add('manuel',$new_tags_manuel);
           }
           $c->save();
         }else{
