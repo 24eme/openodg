@@ -754,6 +754,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($this->exist('etape')) {
             $this->etape = null;
         }
+        $this->envoi_oi = null;
     }
 
     public function validateOdg($date = null) {

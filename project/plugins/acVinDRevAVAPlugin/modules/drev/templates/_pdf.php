@@ -91,7 +91,7 @@
         <th class="th" style="text-align: center; width: 100px;">Destruction</th>
         <th class="th" style="text-align: center; width: 100px;">Complément de la récolte</th>
         <th class="th" style="text-align: center; width: 100px;">Substitution</th>
-        <th class="th" style="text-align: center; width: 100px;">Rafraichis</th>
+        <th class="th" style="text-align: center; width: 100px;">Rafraichissement</th>
     </tr>
     <?php foreach ($drev->getProduitsVci() as $key => $produit): ?>
             <tr>

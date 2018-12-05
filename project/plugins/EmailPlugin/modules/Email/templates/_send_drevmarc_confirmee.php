@@ -9,4 +9,4 @@ Vous pouvez aussi à tout moment revenir sur votre compte pour consulter votre d
 
 Bien Cordialement,
 
-Le service Appui technique (via l'application de télédéclaration)
+<?php echo include_partial('Email/footerMail'); ?>

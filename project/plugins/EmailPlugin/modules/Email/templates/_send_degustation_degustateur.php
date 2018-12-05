@@ -17,8 +17,6 @@ Afin d'optimiser vos déplacements, les autres dégustateurs conviés à cette d
 <?php foreach($degustation->degustateurs as $degustateursType): ?><?php foreach($degustateursType as $degustateur): ?>
 - <?php echo $degustateur->nom ?> (<?php echo $degustateur->commune ?>)<?php endforeach; ?><?php endforeach; ?>
 
-
-
 Bien cordialement,
 
-Le service Appui technique de l'AVA
+<?php echo include_partial('Email/footerMail'); ?>

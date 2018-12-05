@@ -90,9 +90,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			continue;
     		}
     		if (!isset($vci[$produit->getCouleur()->getHash()])) {
-    			$vci[$produit->getCouleur()->getHash()] = 0;    			
+                $vci[$produit->getCouleur()->getHash()] = 0;
     		}
-    		$vci[$produit->getCouleur()->getHash()] += ($produit->complement > 0)? $produit->complement : 0;
+
+            $vci[$produit->getCouleur()->getHash()] += $produit->complement + $produit->substitution + $produit->rafraichi;
     	}
     	foreach ($vci as $hash => $val) {
     		$this->get($hash)->add('volume_revendique_vci', $val);
@@ -183,16 +184,45 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			if (!preg_match('/\/couleur\//', $hash)) {
     				$hash .= '/mention/lieu/couleur';
     			}
-    			$node = $this->getOrAdd($hash);
-    			if (preg_match('/\/cepage_/', $hash)) {
-    				$node = $node->addDetailNode();
-    			}
+                if (!preg_match('/\/cepage_/', $hash)) {
+                    $node = $this->addProduit($hash);
+                } else {
+                    $node = $this->addProduitCepage($hash);
+                }
     			if ($node->getDefinition()->exist('vci')) {
     				$node->add('vci', $p->details);
     			}
     		}
     	}
     }
+
+
+    public function populateVCIFromProduits()
+    {
+    	foreach ($this->declaration->getProduitsCepage() as $h => $p) {
+    		if ($p->getConfig()->hasRendementVCI()) {
+    			if (preg_match('/appellation_CREMANT/', $h)) {
+    				$p = $p->getCouleur();
+    			}
+    			if (!$p->exist('vci')) {
+    				$vci = $p->add('vci');
+    				$node = $vci->add('_empty_');
+    				$node->stockage_libelle = "Cave particulière";
+    			}
+    		}
+    	}
+    }
+    
+    public function hasProduitsVCI()
+    {
+    	foreach ($this->declaration->getProduitsCepage() as $h => $p) {
+    		if ($p->getConfig()->hasRendementVCI()) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public function initAppellations() {
         foreach ($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
             $this->addAppellation($appellation->getHash());
@@ -523,6 +553,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
     
     public function updateRegistreVCI($removeMvts = false) {
+    	$registreVCI = $this->getLastRegistreVCI();
+    	if ($registreVCI && count($this->getProduitsVci()) > 0) {
+    		$registreVCI = RegistreVCIClient::getInstance()->createDoc($this->identifiant, $this->campagne-1);
+    	}
     	if ($registreVCI = $this->getLastRegistreVCI()) {
     		foreach ($this->getProduitsVci() as $produit) {
     			$hash = str_replace('/vci/', '/details/', $produit->getHash());
@@ -535,10 +569,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     				continue;
     			}
     			$detail = $registreVCI->get($hash);
-    			$detail->addLigne('destruction', $produit->destruction);
-    			$detail->addLigne('complement', $produit->complement);
-    			$detail->addLigne('substitution', $produit->substitution);
-    			$detail->addLigne('rafraichi', $produit->rafraichi);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'destruction', round($produit->destruction - $detail->destruction, 2), $detail->stockage_identifiant);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'complement', round($produit->complement - $detail->complement, 2), $detail->stockage_identifiant);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'substitution', round($produit->substitution - $detail->substitution, 2), $detail->stockage_identifiant);
+    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'rafraichi', round($produit->rafraichi - $detail->rafraichi, 2), $detail->stockage_identifiant);
     		}
     		$registreVCI->save();
     	}
