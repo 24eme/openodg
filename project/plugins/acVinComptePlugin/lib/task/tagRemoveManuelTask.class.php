@@ -56,9 +56,10 @@ EOF;
           }else{
             $c->get('tags')->set('manuel',$new_tags_manuel);
           }
-          var_dump($c->get('tags')->toArray(0,1));
+          $c->save();
+        }else{
+          throw new sfException("bad arguments");
         }
-        throw new sfException("bad arguments");
     }
 
 }
