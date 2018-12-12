@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class tagAddManuelTask extends sfBaseTask {
+class tagRemoveManuelTask extends sfBaseTask {
 
     protected function configure() {
 
@@ -19,20 +19,18 @@ class tagAddManuelTask extends sfBaseTask {
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-            new sfCommandOption('debug', null, sfCommandOption::PARAMETER_OPTIONAL, 'use only one code creation', '0'),
-            new sfCommandOption('compteid', null, sfCommandOption::PARAMETER_OPTIONAL, 'id du compte', false),
+            new sfCommandOption('compteid', null, sfCommandOption::PARAMETER_REQUIRED, 'id du compte', false),
             new sfCommandOption('tag', null, sfCommandOption::PARAMETER_OPTIONAL, 'tag', false),
-            new sfCommandOption('file', null, sfCommandOption::PARAMETER_OPTIONAL, 'import from file', false),
         ));
 
         $this->namespace = 'tag';
-        $this->name = 'addManuel';
+        $this->name = 'removeManuel';
         $this->briefDescription = '';
         $this->detailedDescription = <<<EOF
-The [maintenanceCompteStatut|INFO] task does things.
+The [removeManuel|INFO] task remove a manual tag in compte.
 Call it with:
 
-  [php symfony maintenance:update-comptes-with-droits|INFO]
+  [php symfony tag:removeManuel|INFO]
 EOF;
     }
 
@@ -41,28 +39,29 @@ EOF;
 
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        if ($options['tag'] && $options['compteid']) {
-            return $this->addTag($options['compteid'], $options['tag']);
-        }
-        if ($options['file']) {
-            foreach(file($options['file']) as $line) {
-                $args = split(';', $line);
-                $this->addTag($args[0], $args[1]);
+        if ($options['compteid']) {
+          $c = CompteClient::getInstance()->find($options['compteid']);
+          if(!$c){
+              throw new sfException("Le compte ".$options['compteid']."n'existe pas en base");
+          }
+          $tags_manuel = $c->get('tags')->get('manuel')->toArray(0,1);
+          $new_tags_manuel = array();
+          foreach ($tags_manuel as $manuel) {
+            if(!$options['tag'] || ($manuel != $options['tag'])){
+              $new_tags_manuel[] = $manuel;
             }
-            return ;
+          }
+          $new_tags_manuel = array_unique($new_tags_manuel);
+          if(!count($new_tags_manuel)){
+            $c->get('tags')->remove('manuel');
+          }else{
+            $c->get('tags')->remove('manuel');
+            $c->get('tags')->add('manuel',$new_tags_manuel);
+          }
+          $c->save();
+        }else{
+          throw new sfException("bad arguments");
         }
-        throw new sfException("bad arguments");
     }
-
-    private function addTag($compteid,  $tag) {
-        $compte = CompteClient::getInstance()->findByIdentifiant($compteid);
-        if (!$compte) {
-            echo "WARNING: compte $compteid not found\n";
-            return false;
-        }
-        $compte->addTag('manuel', $tag);
-        return $compte->save();
-    }
-
 
 }
