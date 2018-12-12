@@ -368,7 +368,8 @@ class phpCAS {
 
 		phpCAS :: traceBegin();
 		if (is_object($PHPCAS_CLIENT)) {
-			phpCAS :: error($PHPCAS_INIT_CALL['method'] . '() has already been called (at ' . $PHPCAS_INIT_CALL['file'] . ':' . $PHPCAS_INIT_CALL['line'] . ')');
+			phpCAS :: traceEnd();
+			return;
 		}
 		if (gettype($server_version) != 'string') {
 			phpCAS :: error('type mismatched for parameter $server_version (should be `string\')');
