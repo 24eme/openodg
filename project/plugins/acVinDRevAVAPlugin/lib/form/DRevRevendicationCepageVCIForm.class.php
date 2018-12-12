@@ -1,7 +1,7 @@
 <?php
 
 class DRevRevendicationCepageVCIForm extends acCouchdbObjectForm {
-	
+
     protected $stock_editable = false;
 
     public function __construct(acCouchdbJson $object, $stock_editable = false, $options = array(), $CSRFSecret = null) {
@@ -18,7 +18,7 @@ class DRevRevendicationCepageVCIForm extends acCouchdbObjectForm {
           'rafraichi' => new sfWidgetFormInputFloat()
         ));
         $this->widgetSchema->setLabels(array(
-            'stock_precedent' => 'Stock VCI '.$this->getObject()->getDocument()->campagne-1,
+            'stock_precedent' => 'Stock VCI '.((int) $this->getObject()->getDocument()->campagne-1),
             'destruction' => 'Volumes detruits avant le 31/12 (en hl))',
             'complement' => 'Volumes revendiqués en complément de la récolte (en hl)',
             'substitution' => 'Volumes substitués (en hl)',
@@ -32,7 +32,7 @@ class DRevRevendicationCepageVCIForm extends acCouchdbObjectForm {
             'substitution' => new sfValidatorNumber(array('required' => false)),
             'rafraichi' => new sfValidatorNumber(array('required' => false))
         ));
-        
+
         if (!$this->stock_editable) {
         	unset($this['stock_precedent']);
         }
