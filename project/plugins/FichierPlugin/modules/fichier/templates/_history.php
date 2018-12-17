@@ -1,7 +1,7 @@
 <?php echo use_helper("Date"); ?>
 <?php if(count($history) > 0): ?>
 <div class="page-header">
-<h2>Derniers documents <a href="<?php echo url_for('pieces_historique', $etablissement) ?>" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Voir tous les document</a></h2>
+<h2>Derniers documents <a href="<?php echo url_for('pieces_historique', $etablissement) ?>" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Voir tous les documents</a></h2>
 </div>
 
 <div class="row">

@@ -18,8 +18,9 @@ bash bin/download_all.sh $ANNEE sv12
 
 cd -
 
+echo "type;année;id interne;cvi;raison sociale;;commune;tiers;tiers id;categorie;genre;denomination;mention;lieu;couleur;cepage;inao;libelle;denomination complementaire;ligne numero;ligne libelle;ligne valeur;acheteur id;acheteur raison sociale;;" > $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
 find ~/prodouane_scrapy/documents/ -name '[ds][rv]*-'$ANNEE'*.xls' | while read xls ; do
   php symfony --application=provence douaneRecolte:convert2csv  $xls
-done > $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
+done >> $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
 
 mv $EXPORTDIR"/dr_"$ANNEE".csv.tmp" $EXPORTDIR"/dr_"$ANNEE".csv"
