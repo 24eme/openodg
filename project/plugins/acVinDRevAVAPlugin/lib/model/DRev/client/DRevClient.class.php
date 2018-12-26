@@ -83,6 +83,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $drev->initAppellations();
         }
 
+        $drev->populateVCIFromRegistre();
+
         return $drev;
     }
 
