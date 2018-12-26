@@ -194,6 +194,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			}
     		}
     	}
+
+        $this->declaration->reorderByConf();
     }
 
 
@@ -274,9 +276,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->declaration->reorderByConf();
-        
-
-        $this->populateVCIFromRegistre();
     }
 
     public function updateFromDRev($drev) {
