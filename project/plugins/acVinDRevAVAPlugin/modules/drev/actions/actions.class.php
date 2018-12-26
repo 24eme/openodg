@@ -268,6 +268,7 @@ class drevActions extends sfActions {
 
     public function executeRevendicationVCI(sfWebRequest $request) {
       $this->setRevendicationParameter($request);
+      $this->drev->populateVCIFromRegistre();
       $this->registrevci = $this->drev->getLastRegistreVCI();
       if ($this->registrevci) {
       	
