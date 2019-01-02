@@ -62,7 +62,7 @@
                 <div class="col-xs-8 text-left">
                     <?php
                     $lastYear = date('Y') - 1; $last3year = date('Y') - 3;
-                    $placeHolder = 'Inscivez ici le volume par millésime (par exemple : 15hl de '. $lastYear .', 13hl de '.  $last3year .')';?>
+                    $placeHolder = 'Inscrivez ici le volume par millésime (par exemple : 15hl de '. $lastYear .', 13hl de '.  $last3year .')';?>
                     <?php echo $form["millesime_ventilation"]->render(array('placeholder' =>  $placeHolder)); ?>
                 </div>
             </div>

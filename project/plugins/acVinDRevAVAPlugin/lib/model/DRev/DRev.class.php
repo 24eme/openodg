@@ -194,6 +194,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			}
     		}
     	}
+
+        $this->declaration->reorderByConf();
     }
 
 
@@ -274,9 +276,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->declaration->reorderByConf();
-        
-
-        $this->populateVCIFromRegistre();
     }
 
     public function updateFromDRev($drev) {
@@ -549,10 +548,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->remove('mouvements');
         $this->add('mouvements');
-        $this->updateRegistreVCI(true);
     }
-    
-    public function updateRegistreVCI($removeMvts = false) {
+
+    public function updateRegistreVCI() {
     	$registreVCI = $this->getLastRegistreVCI();
     	if ($registreVCI && count($this->getProduitsVci()) > 0) {
     		$registreVCI = RegistreVCIClient::getInstance()->createDoc($this->identifiant, $this->campagne-1);
