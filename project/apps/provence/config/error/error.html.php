@@ -15,7 +15,7 @@
 <meta name="robots" content="index,follow" />
 <meta name="content-language" content="fr-FR" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>DECLARATION - GAEC TERRISSE</title>
+        <title>Erreur</title>
 
         <link rel="shortcut icon" type="image/x-icon" href="/favico_provence.ico" />
         <link rel="icon" type="image/x-icon" href="/favico_provence.ico" />
@@ -88,7 +88,7 @@
 
                 <section id="content" class="container">
                   <h2>Une erreur est survenue</h2>
-                  <p>Nous sommes désolé pour la gène occasionnée.</p>
+                  <p>Nous sommes désolés pour la gêne occasionnée.</p>
                 </section>
 
                <footer id="footer" class="container hidden-xs hidden-sm text-center" role="contentinfo">
