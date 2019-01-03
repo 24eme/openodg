@@ -115,11 +115,10 @@
                     </h2>
                 </div>
                 <div class="panel-body form-chai">
-                    <?php $chai = $drev->chais->get(DRev::BOUTEILLE) ?>
-                    <?php if (!$formPrelevement): ?>
+                    <?php if (!$formPrelevement && $drev->chais->exist(DRev::BOUTEILLE)): ?>
                         <p>
-                            <?php echo $chai->adresse ?><br />
-                            <?php echo $chai->code_postal ?> <?php echo $chai->commune ?>
+                            <?php echo $drev->chais->get(DRev::BOUTEILLE)->adresse ?><br />
+                            <?php echo $drev->chais->get(DRev::BOUTEILLE)->code_postal ?> <?php echo $drev->chais->get(DRev::BOUTEILLE)->commune ?>
                         </p>
                     <?php endif; ?>
                     <?php if (isset($form['chai'])): ?>

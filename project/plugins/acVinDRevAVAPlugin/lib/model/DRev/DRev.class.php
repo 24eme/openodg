@@ -208,13 +208,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			}
     			if (!$p->exist('vci')) {
     				$vci = $p->add('vci');
-    				$node = $vci->add('_empty_');
+    				$node = $vci->add(RegistreVCIClient::LIEU_CAVEPARTICULIERE);
     				$node->stockage_libelle = "Cave particulière";
     			}
     		}
     	}
     }
-    
+
     public function hasProduitsVCI()
     {
     	foreach ($this->declaration->getProduitsCepage() as $h => $p) {
@@ -548,10 +548,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->remove('mouvements');
         $this->add('mouvements');
-        $this->updateRegistreVCI(true);
     }
-    
-    public function updateRegistreVCI($removeMvts = false) {
+
+    public function updateRegistreVCI() {
     	$registreVCI = $this->getLastRegistreVCI();
     	if ($registreVCI && count($this->getProduitsVci()) > 0) {
     		$registreVCI = RegistreVCIClient::getInstance()->createDoc($this->identifiant, $this->campagne-1);
@@ -568,10 +567,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     				continue;
     			}
     			$detail = $registreVCI->get($hash);
-    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'destruction', round($produit->destruction - $detail->destruction, 2), $detail->stockage_identifiant);
-    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'complement', round($produit->complement - $detail->complement, 2), $detail->stockage_identifiant);
-    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'substitution', round($produit->substitution - $detail->substitution, 2), $detail->stockage_identifiant);
-    			$registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'rafraichi', round($produit->rafraichi - $detail->rafraichi, 2), $detail->stockage_identifiant);
+                if(round($produit->destruction - $detail->destruction, 2)) {
+    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'destruction', round($produit->destruction - $detail->destruction, 2), $detail->stockage_identifiant);
+                }
+                if(round($produit->complement - $detail->complement, 2)) {
+    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'complement', round($produit->complement -  $detail->complement, 2), $detail->stockage_identifiant);
+                }
+                if(round($produit->substitution - $detail->substitution, 2)) {
+		            $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'substitution', round($produit->substitution - $detail->substitution, 2), $detail->stockage_identifiant);
+                }
+                if(round($produit->rafraichi - $detail->rafraichi, 2)) {
+			        $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'rafraichi', round($produit->rafraichi - $detail->rafraichi, 2), $detail->stockage_identifiant);
+                }
     		}
     		$registreVCI->save();
     	}
