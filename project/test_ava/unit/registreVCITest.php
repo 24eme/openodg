@@ -17,7 +17,7 @@ foreach(FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, 
     $facture->delete(false);
 }
 
-$campagne = (date('Y')-1)."";
+$campagne = (date('Y')-2)."";
 $societe = $compte;
 $compteIdentifiant = $societe->identifiant;
 
@@ -37,15 +37,15 @@ foreach($produits as $produit) {
     break;
 }
 
-$registre->addLigne($produit, RegistreVCIClient::MOUVEMENT_CONSTITUE, 10, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+$registre->addLigne($produit, RegistreVCIClient::MOUVEMENT_CONSTITUE, 30, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
 $produit_hash = preg_replace('/\/*declaration\/*/', '', $produit_hash);
-$t->is($registre->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->constitue, 10, "L'ajout d'un mouvement constitué génère un stock contitué");
-$t->is($registre->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_final, 10, "L'ajout d'un mouvement impacte le stock du detail");
-$t->is($registre->declaration->get($produit_hash)->constitue, 10, "L'ajout d'un mouvement constitué génère un stock contitué au niveau produit");
-$t->is($registre->declaration->get($produit_hash)->stock_final, 10, "L'ajout d'un mouvement impacte le stock du produit");
+$t->is($registre->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->constitue, 30, "L'ajout d'un mouvement constitué génère un stock contitué");
+$t->is($registre->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_final, 30, "L'ajout d'un mouvement impacte le stock du detail");
+$t->is($registre->declaration->get($produit_hash)->constitue, 30, "L'ajout d'un mouvement constitué génère un stock contitué au niveau produit");
+$t->is($registre->declaration->get($produit_hash)->stock_final, 30, "L'ajout d'un mouvement impacte le stock du produit");
 $t->is(count($registre->lignes), 1, 'a un mouvement');
-$t->is($registre->lignes[0]->volume, 10, 'volume enregistré dans le mouvemnt');
-$t->is($registre->lignes[0]->stock_resultant, 10, 'stock enregistré dans le mouvemnt');
+$t->is($registre->lignes[0]->volume, 30, 'volume enregistré dans le mouvemnt');
+$t->is($registre->lignes[0]->stock_resultant, 30, 'stock enregistré dans le mouvemnt');
 $t->is($registre->lignes[0]->date, $registre->campagne.'-10-15', 'date du mouvement à la date de dépot de la DR');
 $t->is($registre->lignes[0]->produit_hash, $produit_hash, 'hash produit');
 $t->is($registre->lignes[0]->produit_libelle, $produit->getLibelleComplet(), 'libelle produit');
@@ -62,7 +62,7 @@ $t->is($registre->declaration->get($produit_hash)->stock_final, 20, "L'ajout d'u
 $t->is(count($registre->lignes), 2, 'a un mouvement');
 $t->is($registre->lignes[1]->volume, 10, 'volume enregistré dans le mouvemnt');
 $t->is($registre->lignes[1]->stock_resultant, 20, 'stock enregistré dans le mouvemnt');
-$t->is($registre->lignes[1]->date, $registre->campagne.'-10-15', 'date du mouvement à la date de la fin de l\'année suivante');
+$t->is($registre->lignes[1]->date, ($registre->campagne + 1).'-12-31', 'date du mouvement à la date de dépot de la DR');
 
 $t->comment("substitution de VCI");
 $registre->addLigne($produit, RegistreVCIClient::MOUVEMENT_SUBSTITUTION, 10, RegistreVCIClient::LIEU_CAVEPARTICULIERE);

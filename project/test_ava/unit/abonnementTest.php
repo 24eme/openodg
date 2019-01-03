@@ -6,8 +6,8 @@ $t = new lime_test(20);
 
 $vitiCompte =  CompteClient::getInstance()->find('COMPTE-E7523700100');
 $dateFacturation = date('Y-m-d');
-$dateDebut = date("Y")."-01-01";
-$dateFin = date("Y")."-12-31";
+$dateDebut = (date("Y")-1)."-01-01";
+$dateFin = (date("Y")-1)."-12-31";
 $periode = str_replace("-", "", $dateDebut)."-".str_replace("-", "", $dateFin);
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-ABONNEMENT-".$periode);
 $templateCotisationCollection = $templateFacture->cotisations->getFirst();
