@@ -17,7 +17,7 @@
             </div>
     </div>
 </div>
-<?php if (class_exists("DRClient") && $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>
+<?php if (class_exists("DRClient") && ($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR  || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel panel-info">
         <div class="panel-heading">
