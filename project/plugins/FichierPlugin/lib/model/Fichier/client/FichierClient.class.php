@@ -61,7 +61,7 @@ class FichierClient extends acCouchdbClient {
     	$scrapyBin = sfConfig::get("app_scrapy_bin");
     	$t = strtolower($type);
     	$cvi = $etablissement->cvi;
-    	exec("bash $scrapyBin $t $annee $cvi > /dev/null 2>&1");
+    	exec("$scrapyBin $t $annee $cvi > /dev/null 2>&1");
     }
 
     private function getScrapyFiles($etablissement, $type, $annee)
