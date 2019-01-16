@@ -754,7 +754,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($this->exist('etape')) {
             $this->etape = null;
         }
-        $this->envoi_oi = null;
+        if($this->exist("envoi_oi")){
+         $this->envoi_oi = null;
+        }
     }
 
     public function validateOdg($date = null) {
@@ -1087,7 +1089,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             foreach($types_hash as $type_hash => $libelle) {
                 $mouvement = $this->createMouvementByProduitAndType($produit, $type_hash, $libelle);
                 if(!$mouvement) {
-
                     continue;
                 }
                 $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
@@ -1100,9 +1101,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $quantite = $produit->get($type_hash);
 
         if ($this->getDocument()->hasVersion() && $this->getDocument()->motherExist($produit->getHash() . '/' . $type_hash)) {
-            $quantite = $quantite - $this->getDocument()->motherGet($produit->getHash() . '/' . $type_hash);
+          $quantite = $quantite - $this->getDocument()->motherGet($produit->getHash() . '/' . $type_hash);
         }
-
         if (!$quantite) {
 
             return null;
