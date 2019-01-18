@@ -27,7 +27,8 @@ class compte_teledeclarantActions extends sfActions {
 
     const SESSION_COMPTE_DOC_ID_CREATION = '';
     const SESSION_COMPTE_DOC_ID_OUBLIE = '';
-
+    const SESSION_REDIRECTION_APRES_CREATION = 'redirect_to';
+    const PARAM_REDIRECTION = 'service';
 
     /**
      * Executes index action
@@ -36,6 +37,12 @@ class compte_teledeclarantActions extends sfActions {
      */
     public function executeFirst(sfWebRequest $request) {
         $this->form = new CompteLoginFirstForm();
+
+        $this->getUser()->getAttributeHolder()->remove(self::SESSION_REDIRECTION_APRES_CREATION);
+        if ($request->hasParameter(self::PARAM_REDIRECTION)) {
+            $this->getUser()->setAttribute(self::SESSION_REDIRECTION_APRES_CREATION, $request->getParameter(self::PARAM_REDIRECTION));
+        }
+
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
@@ -90,7 +97,10 @@ class compte_teledeclarantActions extends sfActions {
                     Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
                 }
 
-                return $this->redirect('common_homepage');
+                $urlback = $this->getUser()->getAttribute(self::SESSION_REDIRECTION_APRES_CREATION, null);
+                $this->getUser()->getAttributeHolder()->remove(self::SESSION_REDIRECTION_APRES_CREATION);
+
+                return ($urlback !== null) ? $this->redirect($urlback) : $this->redirect('common_homepage');
             }
         }
     }
@@ -115,7 +125,7 @@ class compte_teledeclarantActions extends sfActions {
                 $this->form->save();
 
                 if ($this->form->hasUpdatedValues()) {
-                	Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
+                    Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
                 }
 
                 $this->getUser()->setFlash('maj', 'Vos identifiants ont bien été mis à jour.');
@@ -138,7 +148,7 @@ class compte_teledeclarantActions extends sfActions {
                 if (!$societe->isTransaction()) {
                     $emailCible = $societe->getEmailTeledeclaration();
                 }else{
-                     $emailCible = $societe->getEtablissementPrincipal()->getEmailTeledeclaration();
+                    $emailCible = $societe->getEtablissementPrincipal()->getEmailTeledeclaration();
                 }
 
                 $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Demande de mot de passe oublié", $this->getPartial('motDePasseOublieEmail', array('compte' => $compte, 'lien' => $lien)));

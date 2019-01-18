@@ -96,4 +96,8 @@ class DouaneImportCsvFile {
       return $doc;
     }
 
+    public function setCampagne($c){
+      $this->campagne = $c;
+    }
+
 }
