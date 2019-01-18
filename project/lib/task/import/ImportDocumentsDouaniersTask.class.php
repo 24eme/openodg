@@ -96,7 +96,7 @@ EOF;
 
     protected function getDocumentDouanierType($etablissement)
     {
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $etablissement->famille == EtablissementFamilles::PRODUCTEUR_VINIFICATEUR) {
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
             return DRCsvFile::CSV_TYPE_DR;
         }
 
