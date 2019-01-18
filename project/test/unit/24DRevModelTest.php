@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(26);
+$t = new lime_test(28);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -66,11 +66,12 @@ $produit2 = $drev->get($produit_hash2);
 $produit3 = $drev->get($produit_hash3);
 
 $produit1->superficie_revendique = 200;
+$produit1->recolte->superficie_total = 200;
 $produit1->volume_revendique_issu_recolte = 80;
 
 $produit2->superficie_revendique = 150;
+$produit2->recolte->superficie_total = 150;
 $produit2->volume_revendique_issu_recolte = 110;
-
 $drev->save();
 
 $t->is(count($drev->getProduits()), 3, "La drev a 3 produits");
@@ -82,8 +83,11 @@ $t->comment("Validation");
 $drev->validate();
 $drev->save();
 
+$t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est toujours de 350");
+$t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est toujours de 190");
+
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
-$t->is(count($drev->mouvements->get($viti->identifiant)), 4, "La DRev a 6 mouvements");
+$t->is(count($drev->mouvements->get($viti->identifiant)), 2, "La DRev a 2 mouvements");
 
 $mouvement = $drev->mouvements->get($viti->identifiant)->getFirst();
 
@@ -105,8 +109,11 @@ $t->is($drevM1->_id, $drevMaster->_id, "La récupération de la drev master renv
 
 $produit1M1 = $drevM1->get($produit1->getHash());
 $produit1M1->superficie_revendique = 120;
+$produit1M1->recolte->superficie_total = 120;
+$produit1M1->volume_revendique_issu_recolte = 90;
+$produit1M1->volume_revendique_total = 90;
 
-$t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_revendique'), "La superficie vinifiee est marqué comme modifié par rapport à la précedente");
+$t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_revendique'), "La superficie vinifiee est marquée comme modifié par rapport à la précedente");
 
 $t->comment("Validation de la modificatrice");
 
@@ -114,6 +121,5 @@ $drevM1->validate();
 $drevM1->save();
 
 $t->is(count($drevM1->mouvements->get($viti->identifiant)), 1, "La DRev modificatrice a 1 un seul mouvement");
-
 $mouvementM1 = $drevM1->mouvements->get($viti->identifiant)->getFirst();
 $t->is($mouvementM1->quantite, $produit1M1->get($mouvementM1->type_hash) - $produit1->get($mouvementM1->type_hash), "La quantité du mouvement correspond à la différence entre les 2 DRev");
