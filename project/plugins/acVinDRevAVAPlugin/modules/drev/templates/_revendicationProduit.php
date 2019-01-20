@@ -39,7 +39,7 @@
                                 ?>
                                 <?php if ($produit_cepage->volume_revendique && !$vtsgn): ?>
                                 <tr>
-                                    <td class="col-md-<?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>4<?php else: ?>6<?php endif; ?> text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?></small></td>
+                                    <td class="col-md-<?php if($drev->hasProduitsVCI()): ?>4<?php else: ?>6<?php endif; ?> text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?></small></td>
                                     <?php if(!$drev->isNonRecoltant()): ?>
                                     <td class="text-center text-muted col-md-2">
                                         <?php if ($produit_cepage->superficie_revendique): ?>
@@ -60,7 +60,7 @@
                                 <?php $print = true; endif; ?>
                                 <?php if ($produit_cepage->volume_revendique_vt && $vtsgn): ?>
                                     <tr>
-                                        <td class="col-md-<?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>4<?php else: ?>6<?php endif; ?> text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - VT</small></td>
+                                        <td class="col-md-<?php if($drev->hasProduitsVCI()): ?>4<?php else: ?>6<?php endif; ?> text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - VT</small></td>
                                         <?php if(!$drev->isNonRecoltant()): ?>
                                         <td class="text-center text-muted col-md-2">
                                             <?php if ($produit_cepage->superficie_revendique_vt): ?>
@@ -79,7 +79,7 @@
                                 <?php $print = true; endif; ?>
                                 <?php if ($produit_cepage->volume_revendique_sgn && $vtsgn): ?>
                                     <tr>
-                                        <td class="col-md-<?php if($drev->declaration->hasVolumeRevendiqueVci()): ?>4<?php else: ?>6<?php endif; ?> text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - SGN</small></td>
+                                        <td class="col-md-<?php if($drev->hasProduitsVCI()): ?>4<?php else: ?>6<?php endif; ?> text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - SGN</small></td>
                                         <?php if(!$drev->isNonRecoltant()): ?>
                                         <td class="text-center text-muted col-md-2">
                                             <?php if ($produit_cepage->superficie_revendique_sgn): ?>
