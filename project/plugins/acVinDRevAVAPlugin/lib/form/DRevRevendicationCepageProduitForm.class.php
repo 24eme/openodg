@@ -46,7 +46,7 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
         }
 
         if ($this->getObject()->getConfig()->getRendementVci() > 0) {
-            $this->setWidget('has_stock_vci', new sfWidgetFormInputCheckbox(),);
+            $this->setWidget('has_stock_vci', new sfWidgetFormInputCheckbox());
             $this->setValidator('has_stock_vci', new sfValidatorBoolean(array('required' => false)));
 
             $this->setWidget('vci_constitue', new sfWidgetFormInputFloat());
@@ -59,6 +59,10 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $this->setDefault('has_stock_vci',  $this->getObject()->hasVci());
+
+        if(!$this->getObject()->exist('volume_revendique_recolte')) {
+           $this->setDefault('volume_revendique_recolte',  $this->getObject()->volume_revendique);
+       }
     }
 
     public function hasVtSgn() {
