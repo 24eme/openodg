@@ -105,8 +105,18 @@ class DRevCouleur extends BaseDRevCouleur
         return $produits;
     }
 
+	public function getVolumeRevendiqueRecolte() {
+		if(!$this->exist('volume_revendique_recolte') || is_null($this->_get('volume_revendique_recolte'))) {
+
+			return $this->volume_revendique;
+		}
+
+		return $this->_get('volume_revendique_recolte');
+	}
+
     public function updateFromCepage() {
-        $this->volume_revendique = 0;
+		$this->add('volume_revendique_recolte');
+        $this->volume_revendique_recolte = 0;
 		if($this->exist('volume_revendique_vtsgn')) {
 			$this->volume_revendique_vtsgn = 0;
 		}
@@ -123,7 +133,8 @@ class DRevCouleur extends BaseDRevCouleur
 
             $produit->updateTotal();
 
-			$this->volume_revendique += $produit->volume_revendique;
+			$this->volume_revendique_recolte += $produit->volume_revendique_recolte;
+
 			if($this->canHaveVtsgn()) {
 				$this->volume_revendique_vtsgn += $produit->volume_revendique_vt + $produit->volume_revendique_sgn;
 			}
@@ -236,15 +247,14 @@ class DRevCouleur extends BaseDRevCouleur
 		return $this->exist('superficie_vinifiee');
 	}
 
-	public function hasVci() {
+	public function hasVciRecolteConstitue() {
 
 		return $this->detail->vci_total || ($this->exist('detail_vtsgn') && $this->detail_vtsgn->vci_total > 0);
 	}
-	
+
 	public function hasVolumeRevendiqueVci() {
 		return ($this->exist('volume_revendique_vci') && $this->volume_revendique_vci > 0);
 	}
-	
 
     public function isProduit() {
 

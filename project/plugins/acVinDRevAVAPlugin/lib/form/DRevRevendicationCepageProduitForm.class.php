@@ -8,13 +8,13 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
         $this->vtsgn = $this->getObject()->getConfig()->hasVtsgn();
 
         $this->setWidgets(array(
-            'volume_revendique' => new sfWidgetFormInputFloat()));
+            'volume_revendique_recolte' => new sfWidgetFormInputFloat()));
 
         $this->widgetSchema->setLabels(array(
-            'volume_revendique' => 'Volume revendiqué (hl):'
+            'volume_revendique_recolte' => 'Volume revendiqué (hl):'
         ));
         $this->setValidators(array(
-            'volume_revendique' => new sfValidatorNumber(array('required' => false))
+            'volume_revendique_recolte' => new sfValidatorNumber(array('required' => false))
         ));
 
         if ($this->vtsgn) {
@@ -45,13 +45,20 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
             }
         }
 
-        if ($this->getObject()->exist('vci')) {
+        if ($this->getObject()->getConfig()->getRendementVci() > 0) {
+            $this->setWidget('has_stock_vci', new sfWidgetFormInputCheckbox(),);
+            $this->setValidator('has_stock_vci', new sfValidatorBoolean(array('required' => false)));
+
             $this->setWidget('vci_constitue', new sfWidgetFormInputFloat());
             $this->setValidator('vci_constitue', new sfValidatorNumber(array('required' => false)));
-            $this->setDefault('vci_constitue', $this->getObject()->vci->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->constitue);
         }
 
         $this->widgetSchema->setNameFormat('[%s]');
+    }
+
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $this->setDefault('has_stock_vci',  $this->getObject()->hasVci());
     }
 
     public function hasVtSgn() {
@@ -68,8 +75,10 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
             }
         }
         parent::doUpdateObject($values);
-        if (isset($values['vci_constitue']) && $values['vci_constitue'] > 0) {
-		$this->getObject()->vci->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->constitue = $values['vci_constitue'];
+        if(isset($values['has_stock_vci']) && $values['has_stock_vci']) {
+            $this->getObject()->activateVci();
+        } else {
+            $this->getObject()->deactivateVci();
         }
         $this->getObject()->getDocument()->calculateVolumeRevendiqueVCI();
     }

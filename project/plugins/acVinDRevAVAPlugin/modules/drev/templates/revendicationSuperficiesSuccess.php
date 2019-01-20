@@ -47,7 +47,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->hasDR()): ?>
             <tr>
                 <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>"></th>
-                <th colspan="<?php if($drev->declaration->hasVci()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte</th>
+                <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte</th>
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
             </tr>
             <?php endif; ?>
@@ -57,7 +57,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
-                    <?php if($drev->declaration->hasVci()): ?>
+                    <?php if($drev->declaration->hasVciRecolteConstitue()): ?>
                     <th class="col-xs-1 text-center striped-success small">VCI constitué</th>
                     <?php endif ?>
                 <?php endif; ?>
