@@ -268,12 +268,16 @@ class drevActions extends sfActions {
 
     public function executeRevendicationVCI(sfWebRequest $request) {
       $this->setRevendicationParameter($request);
+      if($this->drev->isNonRecoltant()) {
+
+          $this->redirect('drev_revendication_cepage_vci', $this->drev);
+      }
       $this->drev->populateVCIFromRegistre();
       $this->registrevci = $this->drev->getLastRegistreVCI();
       if ($this->registrevci) {
-      	
+
         $this->form = new DRevRevendicationVCIForm($this->drev);
-        
+
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -295,19 +299,17 @@ class drevActions extends sfActions {
       }
 
     }
-    
+
     public function executeRevendicationCepageVCI(sfWebRequest $request) {
     	$this->setRevendicationParameter($request);
-    	
-    	$this->drev->populateVCIFromProduits(); 
-    	
+
     	$this->noeud = $this->drev->get("declaration/certification/genre/");
-    	
+
     	$this->form = new DRevRevendicationVCIForm($this->drev, true);
-    	
+
     	if ($request->isMethod(sfWebRequest::POST)) {
     		$this->form->bind($request->getParameter($this->form->getName()));
-    	
+
     		if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
     			return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
     		}
@@ -369,10 +371,8 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $this->drev->populateVCIFromProduits();
-
         $this->noeud = $this->drev->get("declaration/certification/genre/" . $request->getParameter("hash"));
-        
+
         $this->form = new DRevRevendicationCepageForm($this->noeud);
         $this->ajoutForm = new DrevCepageAjoutProduitForm($this->noeud);
         $this->ajoutAppellationForm = new DRevRevendicationAjoutProduitForm($this->drev);
@@ -408,7 +408,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_revendication_cepage', $next_sister);
         } else {
 
-            return ($this->drev->hasProduitsVCI())? $this->redirect('drev_revendication_cepage_vci', $this->drev) : $this->redirect('drev_revendication_recapitulatif', $this->drev);
+            return (count($this->drev->getProduitsVCI()))? $this->redirect('drev_revendication_cepage_vci', $this->drev) : $this->redirect('drev_revendication_recapitulatif', $this->drev);
         }
     }
 

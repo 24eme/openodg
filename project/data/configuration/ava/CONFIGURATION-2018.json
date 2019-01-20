@@ -196,6 +196,8 @@
                    "appellation": "ALSACEBLANC",
                    "libelle": "AOC Alsace blanc",
                    "rendement": null,
+                   "rendement_vci": 5,
+                   "rendement_vci_total": 15,
                    "rendement_appellation": 80,
                    "mout": null,
                    "douane": {
@@ -4279,6 +4281,8 @@
                    "appellation": "CREMANT",
                    "libelle": "AOC Crémant d'Alsace",
                    "rendement": null,
+                   "rendement_vci": 5,
+               "rendement_vci_total": 15,
                    "rendement_appellation": 80,
                    "mout": 1,
                    "douane": {

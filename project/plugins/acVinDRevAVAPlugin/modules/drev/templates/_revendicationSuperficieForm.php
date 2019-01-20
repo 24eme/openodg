@@ -6,7 +6,7 @@
             <td class="striped-success"></td>
             <td class="striped-success"></td>
             <td class="striped-success"></td>
-            <?php if($drev->declaration->hasVci()): ?>
+            <?php if($drev->declaration->hasVciRecolteConstitue()): ?>
             <td class="striped-success"></td>
             <?php endif; ?>
         <?php else: ?>
@@ -19,7 +19,7 @@
             <td class="text-right striped-success small">
               <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->usages_industriels_total); ?>&nbsp;<small>hl</small>
             </td>
-            <?php if($drev->declaration->hasVci()): ?>
+            <?php if($drev->declaration->hasVciRecolteConstitue()): ?>
             <td class="text-right striped-success small">
                 <?php if ($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->vci_total): ?>
                     <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->vci_total); ?>&nbsp;<small>hl</small>

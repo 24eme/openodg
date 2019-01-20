@@ -12,6 +12,7 @@
         </thead>
         <tbody>
             <?php foreach ($drev->getProduitsVci() as $key => $produit): ?>
+            <?php if(!$produit->getTotalStockDebut()): continue; endif; ?>
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?> <small class="text-muted">-&nbsp;<?php echo $produit->stockage_libelle ?></small></td>
                 <td class="text-center"><?php echoFloat($produit->destruction); ?><?php if (!is_null($produit->destruction)): ?> <small class="text-muted">hl</small><?php endif; ?></td>

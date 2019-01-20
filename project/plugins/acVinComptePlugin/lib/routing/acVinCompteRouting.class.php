@@ -49,66 +49,66 @@ class acVinCompteRouting {
         $r->prependRoute('reglementation_generale_des_transactions',  new sfRoute('/contrats/reglementation_generale_des_transactions', array('module' => 'compte_teledeclarant', 'action' => 'reglementationGenerale')));
 
 
-  $r->prependRoute('compte_tags', new sfRoute('/compte/tags', array('module' => 'compte', 'action' => 'tags')));
+        $r->prependRoute('compte_tags', new sfRoute('/compte/tags', array('module' => 'compte', 'action' => 'tags')));
 
-  $r->prependRoute('compte_groupes', new sfRoute('/compte/groupes', array('module' => 'compte', 'action' => 'groupes')));
-	$r->prependRoute('compte_groupe', new sfRoute('/compte/groupe/:groupeName', array('module' => 'compte', 'action' => 'groupe')));
-	$r->prependRoute('compte_removegroupe', new SearchRoute('/compte/groupe/:groupeName/remove/:identifiant', array('module' => 'compte', 'action' => 'removegroupe')));
+        $r->prependRoute('compte_groupes', new sfRoute('/compte/groupes', array('module' => 'compte', 'action' => 'groupes')));
+        $r->prependRoute('compte_groupe', new sfRoute('/compte/groupe/:groupeName', array('module' => 'compte', 'action' => 'groupe')));
+        $r->prependRoute('compte_removegroupe', new SearchRoute('/compte/groupe/:groupeName/remove/:identifiant', array('module' => 'compte', 'action' => 'removegroupe')));
 
-	$r->prependRoute('compte_search', new SearchRoute('/compte/search', array('module' => 'compte', 'action' => 'search')));
-	$r->prependRoute('compte_recherche_avancee', new SearchRoute('/compte/search/advanced', array('module' => 'compte', 'action' => 'searchadvanced')));
-	$r->prependRoute('compte_search_csv', new SearchRoute('/compte/search/csv', array('module' => 'compte', 'action' => 'searchcsv')));
-	$r->prependRoute('compte_addtag', new SearchRoute('/compte/search/addtag', array('module' => 'compte', 'action' => 'addtag')));
-  $r->prependRoute('compte_addingroupe', new SearchRoute('/compte/addingroupe/:identifiant', array('module' => 'compte', 'action' => 'addingroupe')));
-	$r->prependRoute('compte_removetag', new SearchRoute('/compte/search/removetag', array('module' => 'compte', 'action' => 'removetag')));
+        $r->prependRoute('compte_search', new SearchRoute('/compte/search', array('module' => 'compte', 'action' => 'search')));
+        $r->prependRoute('compte_recherche_avancee', new SearchRoute('/compte/search/advanced', array('module' => 'compte', 'action' => 'searchadvanced')));
+        $r->prependRoute('compte_search_csv', new SearchRoute('/compte/search/csv', array('module' => 'compte', 'action' => 'searchcsv')));
+        $r->prependRoute('compte_addtag', new SearchRoute('/compte/search/addtag', array('module' => 'compte', 'action' => 'addtag')));
+        $r->prependRoute('compte_addingroupe', new SearchRoute('/compte/addingroupe/:identifiant', array('module' => 'compte', 'action' => 'addingroupe')));
+        $r->prependRoute('compte_removetag', new SearchRoute('/compte/search/removetag', array('module' => 'compte', 'action' => 'removetag')));
 
-  $r->prependRoute('compte_autocomplete_all', new sfRoute('/compte/autocomplete/:interpro_id/tous', array('module' => 'compte',
-      'action' => 'fullautocomplete')));
+        $r->prependRoute('compte_autocomplete_all', new sfRoute('/compte/autocomplete/:interpro_id/tous', array('module' => 'compte',
+            'action' => 'fullautocomplete')));
 
         $r->prependRoute('compte_ajout', new SocieteRoute('/compte/:identifiant/nouveau',
-                        array('module' => 'compte',
-                            'action' => 'ajout'),
-                        array('sf_method' => array('get', 'post')),
-                        array('model' => 'Societe',
-                            'type' => 'object')));
-                $r->prependRoute('compte_modification', new CompteRoute('/compte/:identifiant/modification',
-                        array('module' => 'compte',
-                            'action' => 'modification'),
-                        array('sf_method' => array('get', 'post')),
-                        array('model' => 'Compte',
-                            'type' => 'object')));
+            array('module' => 'compte',
+            'action' => 'ajout'),
+            array('sf_method' => array('get', 'post')),
+            array('model' => 'Societe',
+            'type' => 'object')));
+        $r->prependRoute('compte_modification', new CompteRoute('/compte/:identifiant/modification',
+            array('module' => 'compte',
+            'action' => 'modification'),
+            array('sf_method' => array('get', 'post')),
+            array('model' => 'Compte',
+            'type' => 'object')));
         $r->prependRoute('compte_visualisation', new CompteRoute('/compte/:identifiant/visualisation',
-                        array('module' => 'compte',
-                            'action' => 'visualisation'),
-                        array('sf_method' => array('get', 'post')),
-                        array('model' => 'Compte',
-                            'type' => 'object')));
+            array('module' => 'compte',
+            'action' => 'visualisation'),
+            array('sf_method' => array('get', 'post')),
+            array('model' => 'Compte',
+            'type' => 'object')));
         $r->prependRoute('compte_switch_statut', new CompteRoute('/compte/:identifiant/switchStatus',
-                        array('module' => 'compte',
-                            'action' => 'switchStatus'),
-                        array('sf_method' => array('get', 'post')),
-                        array('model' => 'Compte',
-                            'type' => 'object')));
+            array('module' => 'compte',
+            'action' => 'switchStatus'),
+            array('sf_method' => array('get', 'post')),
+            array('model' => 'Compte',
+            'type' => 'object')));
         $r->prependRoute('compte_switch_en_alerte', new CompteRoute('/compte/:identifiant/switchEnAlerte',
-                        array('module' => 'compte',
-                                'action' => 'switchAlerte'),
-                            array('sf_method' => array('get', 'post')),
-                            array('model' => 'Compte',
-                                  'type' => 'object')));
+            array('module' => 'compte',
+            'action' => 'switchAlerte'),
+            array('sf_method' => array('get', 'post')),
+            array('model' => 'Compte',
+            'type' => 'object')));
 
 
         $r->prependRoute('compte_interlocuteur_delete', new CompteRoute('/compte/:identifiant/suppression',
-                        array('module' => 'compte',
-                           'action' => 'interlocuteurDelete'),
-                        array('sf_method' => array('get', 'post')),
-                        array('model' => 'Compte',
-                              'type' => 'object')));
+            array('module' => 'compte',
+            'action' => 'interlocuteurDelete'),
+            array('sf_method' => array('get', 'post')),
+            array('model' => 'Compte',
+            'type' => 'object')));
         $r->prependRoute('compte_coordonnee_modification', new CompteRoute('/compte-coordonnee/:identifiant/modification',
-                        array('module' => 'compte',
-                            'action' => 'modificationCoordonnee'),
-                        array('sf_method' => array('get', 'post')),
-                        array('model' => 'Compte',
-                            'type' => 'object')));
+            array('module' => 'compte',
+            'action' => 'modificationCoordonnee'),
+            array('sf_method' => array('get', 'post')),
+            array('model' => 'Compte',
+            'type' => 'object')));
 
 
     }

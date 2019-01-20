@@ -169,6 +169,7 @@ DRev:
                                                                   volume_revendique_vt: { type: float }
                                                                   volume_revendique_sgn: { type: float }
                                                                   volume_revendique: { type: float }
+                                                                  volume_revendique_recolte: { type: float, required: false }
                                                                   volume_revendique_total: { type: float }
                                                                   superficie_vinifiee_total: { type: float, required: false }
                                                                   superficie_vinifiee: { type: float, required: false }
@@ -178,6 +179,7 @@ DRev:
                                                                   superficie_revendique_vt: { type: float }
                                                                   superficie_revendique_sgn: { type: float }
                                                                   superficie_revendique_total: { type: float }
+                                                                  vci_constitue: { type: float, required: false }
                                                                   lieu: {  }
                                                                   libelle: {  }
                                                                   vci:
