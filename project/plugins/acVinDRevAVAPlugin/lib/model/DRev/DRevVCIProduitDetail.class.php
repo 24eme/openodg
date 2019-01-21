@@ -26,7 +26,7 @@ class DRevVCIProduitDetail extends BaseDRevVCIProduitDetail {
     }
 
     public function getTotalStockDebut() {
-    	return round($this->stock_precedent, 2);
+    	return round($this->stock_precedent + $this->constitue, 2);
     }
 
     public function getStockFinalCalcule() {
