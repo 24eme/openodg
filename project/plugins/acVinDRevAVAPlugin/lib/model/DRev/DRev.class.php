@@ -189,7 +189,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 } else {
                     $node = $this->addProduitCepage($hash);
                 }
-    			if ($node->getDefinition()->exist('vci')) {
+    			if (!$node->exist('vci') && $node->getDefinition()->exist('vci')) {
     				$node->add('vci', $p->details);
     			}
     		}

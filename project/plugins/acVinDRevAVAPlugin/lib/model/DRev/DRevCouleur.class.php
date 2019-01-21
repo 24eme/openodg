@@ -274,7 +274,7 @@ class DRevCouleur extends BaseDRevCouleur
             return parent::isCleanable();
         }
 
-        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !$this->getTotalSuperficieVinifiee() && !count($this->getProduitsCepage())) {
+        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !$this->getTotalSuperficieVinifiee() && !count($this->getProduitsCepage()) && !$this->exist('vci')) {
 
             return true;
         }
