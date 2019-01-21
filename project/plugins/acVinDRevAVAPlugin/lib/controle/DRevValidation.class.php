@@ -278,7 +278,7 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        if ($produit->get('superficie_revendique'.$suffix) === null && !$produit->get('volume_revendique'.$suffix)) {
+        if ($produit->get('superficie_revendique'.$suffix) === null && $produit->get('volume_revendique'.$suffix) > 0) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet().$suffixLibelle, $this->generateUrl('drev_revendication_superficies', array('sf_subject' => $this->document)));
         }
 
