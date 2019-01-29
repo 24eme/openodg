@@ -189,11 +189,9 @@ class facturationActions extends sfActions
     public function executeLatex(sfWebRequest $request) {
         $this->setLayout(false);
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+        $this->compte = $this->getRoute()->getCompte();
 
-        if(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->facture->getCompte()->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
-
-            return $this->forwardSecure();
-        }
+        $this->forwardCompteSecure();
 
         if(!$this->facture) {
 
@@ -224,10 +222,7 @@ class facturationActions extends sfActions
     public function executeDeclarant(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
 
-        if(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
-
-            return $this->forwardSecure();
-        }
+        $this->forwardCompteSecure();
 
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
@@ -284,5 +279,17 @@ class facturationActions extends sfActions
     protected function getUniqueTemplateFactureName(){
       $cm = new CampagneManager(date('m-d'),CampagneManager::FORMAT_PREMIERE_ANNEE);
       return FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrentPrevious());
+    }
+
+    protected function forwardCompteSecure(){
+      if(!method_exists($this->getUser(),"getEtablissement")){
+          $etablissementPrincipal = $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal();
+          if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $etablissementPrincipal->identifiant){
+              return $this->forwardSecure();
+          }
+      }elseif(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
+
+          return $this->forwardSecure();
+      }
     }
 }
