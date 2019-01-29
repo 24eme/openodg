@@ -57,6 +57,9 @@ class FactureClient extends acCouchdbClient {
 
     public function getMouvementsByDocs($compteIdentifiant, $docs, $regenerate = false) {
         $mouvements = array();
+        if($docs && !is_array($docs)){
+          $docs = array($docs);
+        }
         foreach($docs as $doc) {
             if($regenerate) {
                 $doc->remove('mouvements');
@@ -64,7 +67,6 @@ class FactureClient extends acCouchdbClient {
             }
 
             $generated = false;
-
             if(!count($doc->mouvements)) {
                 $doc->generateMouvements();
                 $doc->save();
@@ -105,7 +107,10 @@ class FactureClient extends acCouchdbClient {
         $mouvementsAggreges = array();
 
         foreach($mouvements as $mouv) {
-            $key = $mouv->template.$mouv->categorie.$mouv->type_hash.$mouv->taux;
+          $key = $mouv->categorie.$mouv->type_hash.$mouv->taux;
+            if($mouv->exist("template")){
+              $key = $mouv->template.$key;
+            }
 
             if(!isset($mouvementsAggreges[$key])) {
                 $mouvementsAggreges[$key] = array(
@@ -114,6 +119,7 @@ class FactureClient extends acCouchdbClient {
                     "type_libelle" => $mouv->type_libelle,
                     "quantite" => $mouv->quantite,
                     "taux" => $mouv->taux,
+                    "tva" => $mouv->tva,
                     "origines" => array($mouv->getDocument()->_id => array($mouv->getKey())),
                 );
             } else {
@@ -142,6 +148,10 @@ class FactureClient extends acCouchdbClient {
         $facture->arguments = $arguments;
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
+        }
+
+        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+          return null;
         }
 
         return $facture;
@@ -290,11 +300,17 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function getComptesIdFilterWithParameters($arguments) {
-        $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
-
         $ids = array();
-        foreach($comptes as $compte) {
-          $ids[] = $compte->_id;
+        if(!$arguments['requete'] && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+          $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
+          foreach($comptes as $compte) {
+             $ids[] = $compte->id;
+          }
+        }else{
+          $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
+          foreach($comptes as $compte) {
+            $ids[] = $compte->_id;
+          }
         }
 
         return $ids;

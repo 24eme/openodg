@@ -25,6 +25,7 @@
     <?php echo $form->renderGlobalErrors(); ?>
     <div class="row">
         <div class="col-sm-8 col-xs-12">
+          <?php if(isset($form["modele"])): ?>
             <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["modele"]->renderError() ?>
                 <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
@@ -32,6 +33,7 @@
                 <?php echo $form["modele"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+          <?php endif; ?> 
             <div class="form-group <?php if($form["date_facturation"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date_facturation"]->renderError(); ?>
                 <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-4 control-label")); ?>

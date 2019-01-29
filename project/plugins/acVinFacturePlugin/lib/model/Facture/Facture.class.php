@@ -45,23 +45,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->emetteur = $configs[$this->region];
     }
 
-    public function getCoordonneesBancaire(){
-        $coordonneesBancaires = new stdClass();
-        switch ($this->region) {
-            case EtablissementClient::REGION_TOURS:
-            case EtablissementClient::REGION_ANGERS:
-                $coordonneesBancaires->banque = 'Crédit Agricole Touraine Poitou';
-                $coordonneesBancaires->bic = ' AGRIFRPP894';
-                $coordonneesBancaires->iban = ' FR76~1940~6370~1579~1722~5300~105';
-                break;
-            case EtablissementClient::REGION_NANTES:
-                $coordonneesBancaires->banque = 'Crédit Agricole Atlantique Vendée';
-                $coordonneesBancaires->bic = 'AGRIFRPP847';
-                $coordonneesBancaires->iban = 'FR76~1470~6000~1400~0000~2200~028';
-                break;
-        }
-        return $coordonneesBancaires;
-    }
 
     public function storeDatesCampagne($date_facturation = null) {
         $this->date_emission = date('Y-m-d');
@@ -83,7 +66,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->_id = FactureClient::getInstance()->getId($this->identifiant, $this->numero_facture);
     }
 
-    public function getNumeroInterloire() {
+    public function getNumeroOdg() {
         if($this->_get('numero_ava')) {
 
             return $this->_get('numero_ava');
@@ -98,6 +81,38 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function getTaxe() {
         return $this->total_ttc - $this->total_ht;
+    }
+
+    public function getLignesForPdf() {
+        if(!FactureConfiguration::getInstance()->isAggregateLignes()){
+          return $this->_get('lignes');
+        }
+        $libelles = array();
+        $detailsArr = array();
+        $produits_identifiants_analytiques = array();
+        $total_ht = 0.0;
+        $total_tva = 0.0;
+        $quantite = 0.0;
+        $prix_unitaire = 0.0;
+        foreach ($this->_get('lignes') as $keyLigne => $ligne) {
+          foreach ($ligne->details as $detail) {
+            $quantite = $detail->quantite;
+            $prix_unitaire += $detail->prix_unitaire;
+            $total_ht += $ligne->montant_ht;
+            $total_tva += $ligne->montant_tva;
+
+            $libelles[] =$ligne->libelle;
+            $produits_identifiants_analytiques[] =$ligne->produit_identifiant_analytique;
+          }
+        }
+        $ligneForPdf = new stdClass();
+        $ligneForPdf->quantite = $quantite;
+        $ligneForPdf->prix_unitaire = $prix_unitaire;
+        $ligneForPdf->montant_ht = $total_ht;
+        $ligneForPdf->montant_tva = $total_tva;
+        $ligneForPdf->libelle = implode(',',$libelles);
+        $ligneForPdf->$total_ht = implode(',',$produits_identifiants_analytiques);
+        return $ligneForPdf;
     }
 
     public function facturerMouvements() {
@@ -165,22 +180,24 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $ligne->updateTotaux();
         }
         foreach ($mouvements as $key => $mouvement) {
-            $configCollection = $template->cotisations->get($mouvement["categorie"]);
-            $config = $configCollection->details->get($mouvement["type_hash"]);
-            $ligne = $this->addLigne($configCollection);
-            foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
-                foreach($mouvKeys as $mouvKey) {
-                    $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
+            if($template->cotisations->exist($mouvement["categorie"])){
+                $configCollection = $template->cotisations->get($mouvement["categorie"]);
+                $config = $configCollection->details->get($mouvement["type_hash"]);
+                $ligne = $this->addLigne($configCollection);
+                foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
+                    foreach($mouvKeys as $mouvKey) {
+                        $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
+                    }
                 }
-            }
-            $d = $ligne->details->add();
-            $d->libelle = $mouvement["type_libelle"];
-            $d->quantite = $mouvement["quantite"];
-            $d->prix_unitaire = $mouvement["taux"];
-            $d->taux_tva = $config->tva;
+                $d = $ligne->details->add();
+                $d->libelle = $mouvement["type_libelle"];
+                $d->quantite = $mouvement["quantite"];
+                $d->prix_unitaire = $mouvement["taux"];
+                $d->taux_tva = $config->tva;
 
-            $ligne->updateTotaux();
-        }
+                $ligne->updateTotaux();
+            }
+      }
     }
 
     public function storeLignes($mouvements) {
@@ -286,51 +303,33 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-//    private function troncate($origine_libelle, $produit_libelle) {
-//        if ((strlen($produit_libelle) * 1.5 + strlen($origine_libelle)) > 124) {
-//            $max = 124 - (strlen($produit_libelle) * 1.5) - 4;
-//            $origine_libelle = substr($origine_libelle, 0, $max) . '...';
-//            if (strstr($origine_libelle, "(") !== FALSE)
-//                $origine_libelle.=')';
-//        }
-//        return $origine_libelle;
-//    }
+
 
     public function storePapillons() {
-        foreach ($this->lignes as $typeLignes) {
-            foreach ($typeLignes as $ligne) {
-                switch ($ligne->produit_type) {
-                    case FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_MOUTS:
-                    case FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_RAISINS:
-                        if (strstr($ligne->produit_hash, 'mentions/LIE/')) {
-                            $this->createOrUpdateEcheanceD($ligne);
-                            break;
-                        }
-                        if ($this->isContratPluriannuel($ligne))
-                            $this->createOrUpdateEcheanceC($ligne);
-                        else
-                            $this->createOrUpdateEcheanceB($ligne);
-                        break;
-                    case FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_ECART:
-                        $this->createOrUpdateEcheanceB($ligne);
-                        break;
-                    case FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_VINS:
-                    default :
-                        $this->createOrUpdateEcheanceA($ligne);
-                        break;
-                }
-            }
+      $papillons = FactureConfiguration::getInstance()->getEcheancesArray();
+      $nbPapillons = count($papillons);
+      $cpt = 0;
+      $cumul = 0.0;
+      foreach ($papillons as $pvalue) {
+        $cpt++;
+        $montant_papillon = $this->total_ttc / $pvalue["montant_division"];
+        if($cpt == $nbPapillons){
+          $montant_papillon = $this->total_ttc - $cumul;
         }
-    }
-
-    public function updateAvoir() {
-        if ($this->total_ht > 0) {
-            $this->storePapillons();
-        } else {
-            $this->removeCodesEcheances();
+        $montant_papillon_str = sprintf("%01.02f",$montant_papillon);
+        $cumul += floatval($montant_papillon_str);
+        $dateField = $pvalue["field"];
+        if($pvalue["calcul"]){
+          $d = $this->get($dateField);
+          $date_echeance = new DateTime($d);
+          $date_echeance->modify($pvalue["calcul"]);
+          $this->updateEcheance($pvalue["libelle"],$date_echeance->format("d.m.Y"),$montant_papillon_str);
         }
+        else{
+          $this->updateEcheance($pvalue["libelle"],$pvalue["libelle_date"],$montant_papillon_str);
+        }
+      }
     }
-
 
     private function removeCodesEcheances() {
         foreach ($this->getLignes() as $typeLigne) {
@@ -346,86 +345,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             throw new sfException("Le contrat de numéro $l->contrat_identifiant n'est pas valide.");
         return ($contrat->type_contrat == VracClient::TYPE_CONTRAT_PLURIANNUEL);
     }
-
-    public function createOrUpdateEcheanceC($ligne) {
-        $ligne->echeance_code = 'C';
-        $date = str_replace('-','',$this->date_facturation);
-
-        $d1 = date('Y') . '0331'; // 31/03/N
-        $d2 = date('Y') . '0630'; // 30/06/N
-        $d3 = date('Y') . '0930'; // 30/09/N
-
-        //if( date < 31/03/N) { 33% 31/03/N 33% 30/06/N et 33% 30/09/N }
-        if ($date < $d1) {
-            $this->updateEcheance('C', date('Y') . '-03-31', $ligne->montant_ht * (1/3));
-            $this->updateEcheance('C', date('Y') . '-06-30', $ligne->montant_ht * (1/3));
-            $this->updateEcheance('C', date('Y') . '-09-30', $ligne->montant_ht * (1/3));
-            return;
-        }
-
-        //if(01/04/N < date < 31/05/N)   { 50% au 30/06/N et 50% 30/09/N}
-        if ($date < $d2 ) {
-            $this->updateEcheance('C', date('Y') . '-06-30', $ligne->montant_ht * 0.5);
-            $this->updateEcheance('C', date('Y') . '-09-30', $ligne->montant_ht * 0.5);
-            return;
-        }
-
-        //if(30/06/N < date < 30/09/N) { 100% 30/09/N }
-        if ($date < $d3) {
-            $this->updateEcheance('C', date('Y') . '-09-30', $ligne->montant_ht);
-            return;
-        }
-
-        //Dépassement de délais -> 100% comptant
-        $this->createOrUpdateEcheanceE($ligne);
-    }
-
-    public function createOrUpdateEcheanceB($ligne) {
-        $ligne->echeance_code = 'B';
-        $date = str_replace('-','',$this->date_facturation);
-
-        $d1 = date('Y') . '0331'; // 31/03/N
-        $d2 = date('Y') . '0630'; // 30/06/N
-
-        //if( date < 31/03/N) { 50% 31/03/N 50% 30/06/N}
-        if ($date < $d1) {
-            $this->updateEcheance('B', date('Y') . '-03-31', $ligne->montant_ht * 0.5);
-            $this->updateEcheance('B', date('Y') . '-06-30', $ligne->montant_ht * 0.5);
-            return;
-        }
-        //if(01/04/N <= date < 30/06/N)   { 100% au 30/06 }
-        if ($date < $d2) {
-            $this->updateEcheance('B', date('Y') . '-06-30', $ligne->montant_ht);
-            return;
-        }
-
-        //Dépassement de délais -> 100% comptant
-        $this->createOrUpdateEcheanceE($ligne);
-    }
-
-    public function createOrUpdateEcheanceA($ligne) {
-        $ligne->echeance_code = 'A';
-        $this->updateEcheance('A', Date::getIsoDateFinDeMoisISO($this->date_facturation, 2), $ligne->montant_ht);
-    }
-
-
-    public function createOrUpdateEcheanceD($ligne) {
-        $ligne->echeance_code = 'D';
-        $date = date('Y') . '0930';
-        $dateEcheance = date('Y') . '-09-30';
-        if (str_replace('-','',$this->date_facturation) < $date){
-            $this->updateEcheance('D', $dateEcheance, $ligne->montant_ht);
-            return;
-        }
-        //Dépassement de délais -> 100% comptant
-        $this->createOrUpdateEcheanceE($ligne);
-    }
-
-    public function createOrUpdateEcheanceE($ligne) {
-        $ligne->echeance_code = 'E';
-        $this->updateEcheance('E', $this->date_facturation, $ligne->montant_ht);
-    }
-
 
     public function updateEcheance($echeance_code, $date, $montant_ht) {
         //Vérifie qu'il n'y a pas d'échéance à la même date avant de ajouter une nouvelle
@@ -517,6 +436,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function save() {
+        if ($this->total_ht > 0 && FactureConfiguration::getInstance()->hasEcheances()) {
+          $this->storePapillons();
+        }
         parent::save();
         $this->saveDocumentsOrigine();
     }
@@ -573,19 +495,19 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
 
         $this->archivage_document->preSave();
-        $this->numero_ava = $this->getNumeroInterloire();
+        $this->numero_ava = $this->getNumeroOdg();
     }
 
     public function storeDeclarant($doc) {
-    	$this->numero_adherent = $doc->identifiant_interne;
+    	$this->numero_adherent = ($doc->exist('identifiant_interne'))? $doc->identifiant_interne : $doc->identifiant;
         $declarant = $this->declarant;
         $declarant->nom = $doc->nom_a_afficher;
         //$declarant->num_tva_intracomm = $this->societe->no_tva_intracommunautaire;
         $declarant->adresse = $doc->adresse;
         $declarant->commune = $doc->commune;
         $declarant->code_postal = $doc->code_postal;
-        $declarant->raison_sociale = $doc->raison_sociale;
-		$this->code_comptable_client = preg_replace("/^[0]+/", "", $this->getCompte()->identifiant_interne);
+        $declarant->raison_sociale = ($doc->exist('raison_sociale'))? $doc->raison_sociale : $doc->societe_informations->raison_sociale;
+		$this->code_comptable_client = preg_replace("/^[0]+/", "", $this->numero_adherent);
     }
 
     public function isPayee() {

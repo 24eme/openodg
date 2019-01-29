@@ -80,7 +80,7 @@
             </div>
             <div class="panel-bottom">
                 <p>
-                    <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
+                    <a class="btn btn-lg btn-block btn-primary" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
                 </p>
             </div>
         </div>
