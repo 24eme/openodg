@@ -59,7 +59,34 @@
 <div class="page-header">
     <h2>Espace Facture</h2>
 </div>
-
+<?php if(count($mouvements)): ?>
+  <h3>Mouvements en attente de facturation</h3>
+  <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-2">Document</th>
+            <th class="col-xs-2">Campagne</th>
+            <th class="col-xs-4">Cotisation</th>
+            <th class="col-xs-2">Taux</th>
+            <th class="col-xs-1">Tva</th>
+            <th class="col-xs-1">Montant HT</th>
+        </tr>
+    </thead>
+    <tbody>
+  <?php foreach ($mouvements as $keyMvt => $mvt): ?>
+    <tr>
+        <td><?php echo $mvt->getDocument()->getType();?></td>
+        <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
+        <td>Cotisation <?php echo $mvt->categorie; ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux); ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->tva); ?>&nbsp;%</td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux * $mvt->quantite); ?>&nbsp;€</td>
+    </tr>
+  <?php endforeach; ?>
+  </tbody>
+</table>
+<?php endif; ?>
+<h3>Liste des factures</h3>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -95,6 +122,12 @@
                 <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
             </td>
         </tr>
-        <?php endforeach; ?>
+        <?php endforeach;
+          if(!count($factures)):
+        ?>
+        <tr>
+            <td colspan="<?php echo intval($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))+6 ?>">Aucune factures éditées</td>
+        </tr>
+      <?php endif; ?>
     </tbody>
 </table>

@@ -449,11 +449,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updateFromPrecedente();
     }
 
-    public function hasAcheteurForProduit($csv,$k){
+    public function hasAcheteurForProduit($csv,$k){      
       $l = $csv[$k];
       $code = $l[DRCsvFile::CSV_LIGNE_CODE];
       $codePrev = $code * 2;
-      while(($k >= 0) && ($code < $codePrev)){
+      while(($k > 0) && ($code < $codePrev)){
          $codePrev = $code;
          $k--;
          $l = $csv[$k];

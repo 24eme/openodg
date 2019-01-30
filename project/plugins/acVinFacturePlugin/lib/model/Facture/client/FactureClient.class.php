@@ -91,11 +91,9 @@ class FactureClient extends acCouchdbClient {
             $mouvs = $doc->mouvements->get($compteIdentifiant);
 
             foreach($mouvs as $m) {
-                if((!$m->isFacturable() || $m->facture) && !$force) {
-
+                if((!$m->isFacturable() || $m->facture)) {
                     continue;
                 }
-
                 $mouvements[] = $m;
             }
         }
@@ -119,9 +117,11 @@ class FactureClient extends acCouchdbClient {
                     "type_libelle" => $mouv->type_libelle,
                     "quantite" => $mouv->quantite,
                     "taux" => $mouv->taux,
-                    "tva" => $mouv->tva,
                     "origines" => array($mouv->getDocument()->_id => array($mouv->getKey())),
                 );
+                if($mouv->exist("tva")){
+                  $mouvementsAggreges[$key] = array_merge($mouvementsAggreges[$key],array("tva" => $mouv->tva));
+                }
             } else {
                 $mouvementsAggreges[$key]["type_libelle"] = $mouv->type_libelle;
                 $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;

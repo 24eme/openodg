@@ -227,7 +227,14 @@ class facturationActions extends sfActions
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
         $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
-        $this->form = new FacturationDeclarantForm(array(), array('modeles' => $this->templatesFactures,'uniqueTemplateFactureName' => $this->getUniqueTemplateFactureName()));
+        $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
+        $this->form = new FacturationDeclarantForm(array(), array('modeles' => $this->templatesFactures,'uniqueTemplateFactureName' => $this->uniqueTemplateFactureName));
+
+        $this->mouvements = array();
+
+        foreach ($this->templatesFactures as $key => $templateFacture) {
+          $this->mouvements = array_merge($templateFacture->getMouvements($this->compte->identifiant),$this->mouvements);
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -283,8 +290,7 @@ class facturationActions extends sfActions
 
     protected function forwardCompteSecure(){
       if(!method_exists($this->getUser(),"getEtablissement")){
-          $etablissementPrincipal = $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal();
-          if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $etablissementPrincipal->identifiant){
+          if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant){
               return $this->forwardSecure();
           }
       }elseif(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {

@@ -50,4 +50,11 @@ class FactureConfiguration {
       return isset($this->configuration['all_etablissements']) && $this->configuration['all_etablissements'];
     }
 
+    public function getPrefixCodeComptable(){
+      if(!isset($this->configuration['prefix_code_comptable']) || !$this->configuration['prefix_code_comptable']){
+        return "";
+      }
+      return $this->configuration['prefix_code_comptable'];
+    }
+
 }
