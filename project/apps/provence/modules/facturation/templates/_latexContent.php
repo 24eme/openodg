@@ -141,7 +141,7 @@
 <?php if(!$facture->isAvoir()): ?>
 	\vspace{1mm}
 \begin{flushright}
-\footnotesize{\textit{(*) La TVA de 20\% est uniquement calculée sur la base HT de la cotisation destinée à l'O.I soit 0.22 x le volume net revendiqué total}}
+\footnotesize{\textit{(*) La TVA de 20\% est uniquement calculée sur la base HT de la cotisation destinée à l'O.I (0.22 x le volume net revendiqué total)}}
 \end{flushright}~\\
 \normalsize{\underline{\textbf{Vous avez la possibilité de régler en une seule fois sous 30 jours où en respectant l'échéancier suivant :}}}
 \\ \\
