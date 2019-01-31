@@ -59,7 +59,7 @@
 <div class="page-header">
     <h2>Espace Facture</h2>
 </div>
-<?php if(count($mouvements)): ?>
+<?php if(count($mouvements) && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
   <h3>Mouvements en attente de facturation</h3>
   <table class="table table-bordered table-striped">
     <thead>
