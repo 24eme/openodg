@@ -1,7 +1,7 @@
 Captures d'écran de quelques interfaces
 ===============================
 
-Les interfaces d'OpenODG sont développées avec un soucis d'utilisabilité et d'ergonomie. Elles sont adaptées aux besoins des différents syndicats utilisateurs ainsi qu'à leur charte graphique.
+Les interfaces d'OpenODG sont développées avec le souci de l'utilisabilité et de l'ergonomie. Elles sont adaptées aux besoins des différents syndicats utilisateurs ainsi qu'à leur charte graphique.
 
 Consultez des captures d'écran pour différents modules developpés :
 
