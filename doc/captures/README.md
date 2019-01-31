@@ -9,4 +9,4 @@ Consultez des captures d'écran pour différents modules developpés :
  - [Déclaration de revendication](drev.md)
  - [Parcellaire et déclaration afférantes](parcellaire.md)
  - [Organisation des dégustations, prélèvements et tournées](tournees.md)
- - [Habilitation](habilitation.md)
+ - [Habilitations](habilitation.md)
