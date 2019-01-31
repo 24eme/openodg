@@ -112,7 +112,7 @@
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <td class="text-center">
                 <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement): ?>
-                  <a href="<?php echo url_for("facturation_avoir", array("id" => $facture->_id)) ?>" class="btn btn-default btn-sm">
+                  <a href="<?php echo url_for("facturation_avoir_defacturant", array("id" => $facture->_id)) ?>" class="btn btn-default btn-sm">
                         <span class="glyphicon glyphicon-repeat"></span> Créér un avoir
                     </a>
                 <?php endif; ?>

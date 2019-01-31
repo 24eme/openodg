@@ -138,6 +138,10 @@ class FactureClient extends acCouchdbClient {
     public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
+        // Attention le compte utilisé pour OpenOdg est celui de la société
+        if($compte->exist('id_societe')){
+          $compte = $compte->getSociete()->getMasterCompte();
+        }
         $facture->constructIds($compte);
         $facture->storeEmetteur();
         $facture->storeDeclarant($compte);
@@ -467,30 +471,31 @@ class FactureClient extends acCouchdbClient {
 
     public function defactureCreateAvoirAndSaveThem(Facture $f) {
       if (!$f->isRedressable()) {
-	return ;
+	       return ;
       }
       $avoir = clone $f;
-      $soc = SocieteClient::getInstance()->find($avoir->identifiant);
-      $avoir->constructIds($soc, $f->region);
+      $compte = CompteClient::getInstance()->find("COMPTE-".$avoir->identifiant);
+      $avoir->constructIds($compte, $f->region);
       $f->add('avoir',$avoir->_id);
       $f->save();
-      foreach($avoir->lignes as $type => $lignes) {
-	foreach($lignes as $id => $ligne) {
-	  $ligne->volume *= -1;
-	  $ligne->montant_ht *= -1;
-          $ligne->echeance_code = null;
-	}
+      foreach($avoir->lignes as $type => $ligne) {
+        $ligne->montant_ht *= -1;
+        $ligne->montant_tva *= -1;
+      	foreach($ligne->details as $id => $detail) {
+          $detail->quantite *= -1;
+      	  $detail->montant_ht *= -1;
+          $detail->montant_tva *= -1;
+      	}
       }
       $avoir->total_ttc *= -1;
       $avoir->total_ht *= -1;
+      $avoir->total_taxe *= -1;
       $avoir->remove('echeances');
       $avoir->add('echeances');
       $avoir->statut = self::STATUT_NONREDRESSABLE;
       $avoir->storeDatesCampagne(date('Y-m-d'));
       $avoir->numero_archive = null;
-      $avoir->numero_interloire = null;
       $avoir->versement_comptable = 0;
-      $avoir->add('taux_tva', round($f->getTauxTva(),2));
       $avoir->save();
       $f->defacturer();
       $f->save();

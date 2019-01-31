@@ -138,6 +138,7 @@
   \cline{2-3}
 \end{tabular}
 \end{center}
+<?php if(!$facture->isAvoir()): ?>
 	\vspace{1mm}
 \begin{flushright}
 \footnotesize{\textit{(*) La TVA de 20\% est uniquement calculée sur la base HT de la cotisation destinée à l'O.I soit 0.22 x le volume net revendiqué total}}
@@ -168,5 +169,5 @@
   \tabularnewline
   \hline
   \end{tabular}
-
+<?php endif; ?>
 \end{document}

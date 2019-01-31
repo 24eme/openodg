@@ -121,6 +121,20 @@ class facturationActions extends sfActions
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
+    public function executeAvoirdefacturant(sfWebRequest $request){
+      $this->baseFacture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+      if(!$this->baseFacture) {
+
+          return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
+      }
+
+      $this->facture = FactureClient::createAvoir($this->baseFacture);
+
+      $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture);
+      return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
+    }
+
     public function executeAvoir(sfWebRequest $request) {
         $this->baseFacture = FactureClient::getInstance()->find($request->getParameter('id'));
 
@@ -223,8 +237,11 @@ class facturationActions extends sfActions
         $this->compte = $this->getRoute()->getCompte();
 
         $this->forwardCompteSecure();
-
-        $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
+        $identifiant = $this->compte->identifiant;
+        if($this->compte->exist('id_societe')){
+          $identifiant = $this->compte->getSociete()->identifiant;
+        }
+        $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
         $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
         $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
@@ -290,7 +307,7 @@ class facturationActions extends sfActions
 
     protected function forwardCompteSecure(){
       if(!method_exists($this->getUser(),"getEtablissement")){
-          if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant){
+          if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
               return $this->forwardSecure();
           }
       }elseif(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {

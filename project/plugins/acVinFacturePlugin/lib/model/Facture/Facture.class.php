@@ -347,16 +347,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateEcheance($echeance_code, $date, $montant_ht) {
-        //Vérifie qu'il n'y a pas d'échéance à la même date avant de ajouter une nouvelle
-        foreach ($this->echeances as $echeance) {
-            if ($echeance->echeance_date == $date) {
-                $echeance->montant_ttc += $this->ttc($montant_ht);
-                if (strstr($echeance->echeance_code, $echeance_code) === FALSE)
-                    $echeance->echeance_code.=' + ' . $echeance_code;
+        if(count($this->echeances) >= count(FactureConfiguration::getInstance()->getEcheancesArray())){
                 return;
-            }
         }
-	//Ici on est sur qu'il n'y a pas d'échéance à cette date, alors on l'ajoute
+
         $echeance = new stdClass();
         $echeance->echeance_code = $echeance_code;
         $echeance->montant_ttc = $this->ttc($montant_ht);
