@@ -12,7 +12,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droit INAO",
-      "code_comptable": "706450",
+      "code_comptable": "706102",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
@@ -27,11 +27,11 @@
         }
       }
     },
-    "odg_provence": {
+    "odgprovence": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "ODG provence",
-      "code_comptable": "706450",
+      "code_comptable": "706100",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
@@ -50,7 +50,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation Juridique",
-      "code_comptable": "706450",
+      "code_comptable": "706103",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
@@ -69,7 +69,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation reversée à l'OI",
-      "code_comptable": "706450",
+      "code_comptable": "467030",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
