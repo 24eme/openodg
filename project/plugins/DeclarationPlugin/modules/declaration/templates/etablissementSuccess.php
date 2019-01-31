@@ -73,16 +73,14 @@
     <div class="col-sm-6 col-md-4 col-xs-12">
         <div class="block_declaration panel panel-success">
             <div class="panel-heading">
-                <h3>Vos Factures<br /><br /></h3>
+                <h3 class="panel-title">Vos Factures</h3>
             </div>
             <div class="panel-body">
                 <p>Accéder à l'espace de mise à disposition de vos factures en téléchargement<br /><br /><br /><br /><br /><br /></p>
-            </div>
-            <div class="panel-bottom">
-                <p>
-                    <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
-                </p>
-            </div>
+                <div style="margin-top: 50px;">
+                      <a class="btn btn-block btn-default" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
+                </div>
+            </div>            
         </div>
     </div>
 </div>

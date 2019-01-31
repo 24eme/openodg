@@ -681,4 +681,16 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return true;
     }
 
+    public function getNomAAfficher(){
+      return $this->getNom();
+    }
+
+    public function getIdentifiantAAfficher(){
+      return $this->getIdentifiant();
+    }
+
+    public function getRegionViticole(){
+      return strtoupper(sfContext::getInstance()->getConfiguration()->getApplication());
+    }
+
 }
