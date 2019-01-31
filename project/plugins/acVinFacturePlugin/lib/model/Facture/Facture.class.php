@@ -507,7 +507,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $declarant->commune = $doc->commune;
         $declarant->code_postal = $doc->code_postal;
         $declarant->raison_sociale = ($doc->exist('raison_sociale'))? $doc->raison_sociale : $doc->societe_informations->raison_sociale;
-		$this->code_comptable_client = preg_replace("/^[0]+/", "", $this->numero_adherent);
+		    $this->code_comptable_client = preg_replace("/^[0]+/", "", $this->numero_adherent);
+        $this->code_comptable_client =  (method_exists($doc,"getSociete") && $doc->getSociete()->exist("code_comptable_client") && $doc->getSociete()->code_comptable_client)? $doc->getSociete()->code_comptable_client : $doc->identifiant;
     }
 
     public function isPayee() {

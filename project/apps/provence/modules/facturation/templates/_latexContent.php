@@ -32,7 +32,7 @@
 
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
 \def\NUMFACTURE{<?php echo sprintf("%05d",$facture->numero_archive); ?>}
-\def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
+\def\NUMADHERENT{<?php echo $facture->code_comptable_client; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
 \def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
