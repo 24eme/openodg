@@ -1,21 +1,12 @@
 Captures d'écran de quelques interfaces
 ===============================
 
-Tournées de dégustation
-------------------------
+Les interfaces d'OpenODG sont développées avec un soucis d'utilisabilité et d'ergonomie. Elles sont adaptées aux besoins des différents syndicats utilisateurs ainsi qu'à leur charte graphique.
 
-![Organisation d'une tournée](organisation-tournee.jpg)
+Consultez des captures d'écran pour différents modules developpés :
 
-![Tournée mobile](tournee-mobile.jpg)
-
-![Tournée mobile saisie](tournee-mobile-saisie.jpg)
-
-Déclaration de Revendication
-----------------------------
-
-![Drev](drev.jpg)
-
-Déclaration du Parcellaire
---------------------------
-
-![Parcellaire](parcellaire.jpg)
+ - [Gestion des membres et des contacts](contacts.md)
+ - [Déclaration de revendication](drev.md)
+ - [Parcellaire et déclaration afférantes](parcellaire.md)
+ - [Organisation des dégustations, prélèvements et tournées](tournees.md)
+ - [Habilitation](habilitation.md)
