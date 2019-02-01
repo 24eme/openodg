@@ -21,6 +21,7 @@ endif;
 
 <?php include_component('drev', 'stepRevendication', array('drev' => $drev, 'noeud' => $noeud, 'step' => 'vci')) ?>
 
+<?php if(count($drev->getProduitsVCI())): ?>
 <form role="form" action="<?php echo url_for("drev_revendication_cepage_vci", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
     <?php echo $form->renderHiddenFields(); ?>
     <?php if ($hasError): ?>
@@ -56,7 +57,10 @@ endif;
             <?php endforeach; ?>
         </tbody>
     </table>
-    
+<?php else: //pas de registrevci ?>
+    <p>Aucun produit n'a été déclaré ayant du stock VCI.</p>
+<?php endif; ?>
+
     <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("drev_revendication_cepage", $drev->declaration->getAppellations()->getLast()) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a></div>
     <div class="col-xs-6 text-right">
