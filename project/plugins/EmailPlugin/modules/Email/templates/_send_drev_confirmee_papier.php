@@ -8,5 +8,4 @@ Pour toute question, n'hésitez pas à contacter votre syndicat.
 
 Bonne journée.
 
-Le Syndicat Général des Vignerons réunis des Côtes du Rhône
-Gestiondesdonnees@syndicat-cotesdurhone.com
+<?php echo include_partial('Email/footerMail'); ?>

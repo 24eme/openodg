@@ -45,6 +45,12 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
             }
         }
 
+        if ($this->getObject()->exist('vci')) {
+            $this->setWidget('vci_constitue', new sfWidgetFormInputFloat());
+            $this->setValidator('vci_constitue', new sfValidatorNumber(array('required' => false)));
+            $this->setDefault('vci_constitue', $this->getObject()->vci->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->constitue);
+        }
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
@@ -62,6 +68,10 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
             }
         }
         parent::doUpdateObject($values);
+        if (isset($values['vci_constitue']) && $values['vci_constitue'] > 0) {
+		$this->getObject()->vci->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->constitue = $values['vci_constitue'];
+        }
+        $this->getObject()->getDocument()->calculateVolumeRevendiqueVCI();
     }
 
 }

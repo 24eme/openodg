@@ -24,6 +24,7 @@ class DRevRevendicationProduitSuperficieForm extends acCouchdbObjectForm {
             $this->setValidator('superficie_revendique_vtsgn', new sfValidatorNumber(array('required' => false)));
             if ($this->getObject()->detail_vtsgn->superficie_total) {
                 unset($this->widgetSchema['superficie_revendique_vtsgn']);
+                unset($this->validatorSchema['superficie_revendique_vtsgn']);
             }
         }
 

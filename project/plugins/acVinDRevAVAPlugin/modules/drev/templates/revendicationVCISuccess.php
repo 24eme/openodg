@@ -37,8 +37,8 @@ endif;
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte si vous avez autorisé le transfert de vos données.
-    <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
+    <p>Ces informations ont été initialisées depuis votre registre VCI.
+    <br /><br />Veuillez indiquer l'utilisation de votre VCI 2017.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
@@ -48,16 +48,16 @@ endif;
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
         	<tr>
-                <th colspan="2" class="text-center col-xs-5"></th>
+                <th colspan="2" class="text-center"></th>
                 <th colspan="4" class="text-center">Revendication <?php echo $drev->campagne ?></th>
             </tr>
             <tr>
-                <th class="col-xs-4">Appellation revendiquée</th>
-                <th class="text-center col-xs-1">Stock VCI <?php echo $registrevci->campagne ?></th>
-                <th class="text-center manual-width small">Destruction</th>
-                <th class="text-center manual-width small">Complément de la récolte</th>
-                <th class="text-center manual-width small">Substitution</th>
-                <th class="text-center manual-width small">Rafraichis</th>
+                <th class="">Appellation revendiquée</th>
+                <th class="text-center manual-width small">Stock VCI <?php echo $registrevci->campagne ?></th>
+                <th class="text-center manual-width small" style="width: 118px; padding: 0 !important;">Destruction</th>
+                <th class="text-center manual-width small" style="width: 118px; padding: 0 !important;">Complément de la récolte</th>
+                <th class="text-center manual-width small" style="width: 118px; padding: 0 !important;">Substitution</th>
+                <th class="text-center manual-width small" style="width: 118px; padding: 0 !important;">Rafraichissement</th>
             </tr>
         </thead>
         <tbody>

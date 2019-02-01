@@ -60,6 +60,14 @@ class DRevCouleur extends BaseDRevCouleur
     	}
         return $produits;
     }
+    
+    public function getTotalConstitue() {
+    	$val = 0;
+    	foreach ($this->getProduitsVCI() as $p) {
+    		$val += $p->constitue;
+    	}
+    	return $val;
+    }
 
     public function getProduitHash() {
         if(!$this->getMention()->getConfig()->hasManyNoeuds()) {

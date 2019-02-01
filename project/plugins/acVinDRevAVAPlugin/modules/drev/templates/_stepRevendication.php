@@ -6,6 +6,9 @@
         <li class="text-center"><a class="ajax" role="tab" data-toggle="modal" data-target="#popupAjoutAppellationForm" href="" id="btn-popup"><span class="glyphicon glyphicon-plus-sign"></span></a></li>
     <?php endif; ?>
     <li  class="text-center pull-right <?php if(isset($step) && $step == 'recapitulatif'): ?>active<?php endif; ?>"><a class="ajax" role="tab" href="<?php echo url_for("drev_revendication_recapitulatif", $drev) ?>"><span class="glyphicon glyphicon-th-list"></span><br />Récap.</a></li>
+    <?php if ($drev->hasProduitsVCI()): ?>
+    <li  class="text-center pull-right <?php if(isset($step) && $step == 'vci'): ?>active<?php endif; ?>"><a class="ajax" role="tab" href="<?php echo url_for("drev_revendication_cepage_vci", $drev) ?>"><small>Utilisation</small><br />VCI</a></li>
+    <?php endif; ?>
 </ul>
 
 <?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_appellation_ajout', $drev), 'form' => $ajoutForm, 'html_id' => 'popupAjoutAppellationForm')); ?>

@@ -24,8 +24,14 @@
         <thead>
             <tr>
                 <th class="col-xs-6">Produits</th>
-                <th class="text-center col-xs-3">Superficie vinifiée <small class="text-muted">(ares)</small></th>
-                <th class="text-center col-xs-3">Volume revendiqué <small class="text-muted">(hl)</small></th>
+                <?php if (count($noeud->getProduitsVCI()) > 0): ?>
+                	<th class="text-center col-xs-2">Superficie vinifiée <small class="text-muted">(ares)</small></th>
+                	<th class="text-center col-xs-2">VCI constitué <small class="text-muted">(hl)</small></th>
+                	<th class="text-center col-xs-2">Volume revendiqué <small class="text-muted">(hl)</small></th>
+                <?php else: ?>
+                	<th class="text-center col-xs-3">Superficie vinifiée <small class="text-muted">(ares)</small></th>
+                	<th class="text-center col-xs-3">Volume revendiqué <small class="text-muted">(hl)</small></th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +49,18 @@
                         </div>
                         <?php endif; ?>
                     </td>
+                    <?php if (count($noeud->getProduitsVCI()) > 0): ?>
+                    <td class="text-center">
+                    	<?php if (isset($embedForm['vci_constitue'])): ?>
+                        <div class="form-group <?php if($embedForm['vci_constitue']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['vci_constitue']->renderError() ?>
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <?php echo $embedForm['vci_constitue']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </td>
+                    <?php endif; ?>
                     <td class="text-center">
                         <div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['volume_revendique']->renderError() ?>
@@ -50,7 +68,6 @@
                                 <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
                             </div>
                         </div>
-
                     </td>
                 </tr>
                 <?php if (isset($embedForm['volume_revendique_vt']) || isset($embedForm['volume_revendique_sgn'])): ?>
@@ -78,6 +95,9 @@
                     <?php else: ?>
                     <td></td>
                     <?php endif; ?>
+                    <?php if (count($noeud->getProduitsVCI()) > 0): ?>
+                    <td class="text-center"></td>
+                    <?php endif; ?>
                 </tr>
                 <tr style="height: 44px;">
                 	<td><?php echo $produit->getLibelle() ?> <span>SGN</span></td>
@@ -102,6 +122,9 @@
                     </td>
                     <?php else: ?>
                     <td></td>
+                    <?php endif; ?>
+                    <?php if (count($noeud->getProduitsVCI()) > 0): ?>
+                    <td class="text-center"></td>
                     <?php endif; ?>
                 </tr>
             <?php endif; ?>
@@ -133,7 +156,7 @@
 	        <?php elseif($noeud->getNextSister()): ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer <small>vers l'appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer <small>vers le récapitulatif</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer <small>vers <?php if ($drev->hasProduitsVCI()): ?>l'utilisation VCI<?php else: ?>le récapitulatif<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 	        <?php endif; ?>
         </div>
     </div>

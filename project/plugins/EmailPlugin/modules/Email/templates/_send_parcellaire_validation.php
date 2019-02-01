@@ -8,4 +8,4 @@ Vous trouverez votre document en pièce jointe de ce mail aux formats PDF et CSV
 
 Bien cordialement,
 
-Le service Appui technique (via l'application de télédéclaration)
+<?php echo include_partial('Email/footerMail'); ?>
