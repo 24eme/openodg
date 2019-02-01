@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(28);
+$t = new lime_test(30);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -10,6 +10,10 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
     $drev->delete(false);
+}
+
+foreach (TemplateFactureClient::getInstance()->findAll() as $templateFacture) {
+  $templateFacture->delete(false);
 }
 
 $campagne = (date('Y')-1)."";
@@ -87,15 +91,33 @@ $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendi
 $t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est toujours de 190");
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
-$t->is(count($drev->mouvements->get($viti->identifiant)), 2, "La DRev a 2 mouvements");
+$t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
 
-$mouvement = $drev->mouvements->get($viti->identifiant)->getFirst();
+$drev->devalidate();
+$t->is($drev->validation, NULL, "La DRev n'est plus validée");
 
-$t->ok($mouvement->produit_hash === $produit1->getHash() && $mouvement->produit_libelle === $produit1->getLibelleComplet(), "Le hash et le libellé du produit du mouvement sont corrects");
-$t->is($mouvement->quantite, $produit1->get($mouvement->type_hash), "La quantité du premier mouvement correspond à ce qui a été saisie dans la DRev");
+$templateFactureJson = file_get_contents(dirname(__FILE__).'/../data/template_facture_'.$application.'.json');
+$templateFacture = acCouchdbManager::getClient()->createDocumentFromData(json_decode($templateFactureJson));
+$templateFacture->save();
+
+$allTemplateFacture = TemplateFactureClient::getInstance()->findAll();
+
+$t->is(count($allTemplateFacture), 1, "Il existe un template de facture");
+
+$drev->validate();
+$drev->save();
+
+$mouvements = $drev->mouvements->get($viti->identifiant);
+$t->is(count($mouvements), 4, "La DRev a 4 mouvements");
+$mouvement = $mouvements->getFirst();
+$volume_revendique_totaux_drev = 0.0;
+foreach ($drev->declaration->getProduits() as $produit) {
+  $volume_revendique_totaux_drev += $produit->volume_revendique_total;
+}
+// $t->ok($mouvement->produit_hash === $produit1->getHash() && $mouvement->produit_libelle === $produit1->getLibelleComplet(), "Le hash et le libellé du produit du mouvement sont corrects");
+$t->is($mouvement->quantite,$volume_revendique_totaux_drev, "La quantité du premier mouvement correspond la somme des volume de la DRev");
 $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
-$t->ok($mouvement->date === $drev->validation && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
-
+$t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
 $t->comment("Génération d'une modificatrice");
 
 $drevM1 = $drev->generateModificative();
@@ -120,6 +142,10 @@ $t->comment("Validation de la modificatrice");
 $drevM1->validate();
 $drevM1->save();
 
-$t->is(count($drevM1->mouvements->get($viti->identifiant)), 1, "La DRev modificatrice a 1 un seul mouvement");
+$t->is(count($drevM1->mouvements->get($viti->identifiant)), 4, "La DRev modificatrice a 4 mouvements");
 $mouvementM1 = $drevM1->mouvements->get($viti->identifiant)->getFirst();
-$t->is($mouvementM1->quantite, $produit1M1->get($mouvementM1->type_hash) - $produit1->get($mouvementM1->type_hash), "La quantité du mouvement correspond à la différence entre les 2 DRev");
+$volume_revendique_totaux_drevM1 = 0.0;
+foreach ($drevM1->declaration->getProduits() as $produit) {
+  $volume_revendique_totaux_drevM1 += $produit->volume_revendique_total;
+}
+$t->is($mouvementM1->quantite, $volume_revendique_totaux_drevM1 - $volume_revendique_totaux_drev, "La quantité du mouvement correspond à la différence entre les 2 DRev");

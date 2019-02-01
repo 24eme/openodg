@@ -57,6 +57,9 @@ class FactureClient extends acCouchdbClient {
 
     public function getMouvementsByDocs($compteIdentifiant, $docs, $regenerate = false) {
         $mouvements = array();
+        if($docs && !is_array($docs)){
+          $docs = array($docs);
+        }
         foreach($docs as $doc) {
             if($regenerate) {
                 $doc->remove('mouvements');
@@ -64,7 +67,6 @@ class FactureClient extends acCouchdbClient {
             }
 
             $generated = false;
-
             if(!count($doc->mouvements)) {
                 $doc->generateMouvements();
                 $doc->save();
@@ -89,11 +91,9 @@ class FactureClient extends acCouchdbClient {
             $mouvs = $doc->mouvements->get($compteIdentifiant);
 
             foreach($mouvs as $m) {
-                if((!$m->isFacturable() || $m->facture) && !$force) {
-
+                if((!$m->isFacturable() || $m->facture)) {
                     continue;
                 }
-
                 $mouvements[] = $m;
             }
         }
@@ -105,7 +105,10 @@ class FactureClient extends acCouchdbClient {
         $mouvementsAggreges = array();
 
         foreach($mouvements as $mouv) {
-            $key = $mouv->template.$mouv->categorie.$mouv->type_hash.$mouv->taux;
+          $key = $mouv->categorie.$mouv->type_hash.$mouv->taux;
+            if($mouv->exist("template")){
+              $key = $mouv->template.$key;
+            }
 
             if(!isset($mouvementsAggreges[$key])) {
                 $mouvementsAggreges[$key] = array(
@@ -116,6 +119,9 @@ class FactureClient extends acCouchdbClient {
                     "taux" => $mouv->taux,
                     "origines" => array($mouv->getDocument()->_id => array($mouv->getKey())),
                 );
+                if($mouv->exist("tva")){
+                  $mouvementsAggreges[$key] = array_merge($mouvementsAggreges[$key],array("tva" => $mouv->tva));
+                }
             } else {
                 $mouvementsAggreges[$key]["type_libelle"] = $mouv->type_libelle;
                 $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
@@ -132,6 +138,10 @@ class FactureClient extends acCouchdbClient {
     public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
+        // Attention le compte utilisé pour OpenOdg est celui de la société
+        if($compte->exist('id_societe')){
+          $compte = $compte->getSociete()->getMasterCompte();
+        }
         $facture->constructIds($compte);
         $facture->storeEmetteur();
         $facture->storeDeclarant($compte);
@@ -142,6 +152,10 @@ class FactureClient extends acCouchdbClient {
         $facture->arguments = $arguments;
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
+        }
+
+        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+          return null;
         }
 
         return $facture;
@@ -290,11 +304,17 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function getComptesIdFilterWithParameters($arguments) {
-        $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
-
         $ids = array();
-        foreach($comptes as $compte) {
-          $ids[] = $compte->_id;
+        if(!$arguments['requete'] && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+          $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
+          foreach($comptes as $compte) {
+             $ids[] = $compte->id;
+          }
+        }else{
+          $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
+          foreach($comptes as $compte) {
+            $ids[] = $compte->_id;
+          }
         }
 
         return $ids;
@@ -451,30 +471,31 @@ class FactureClient extends acCouchdbClient {
 
     public function defactureCreateAvoirAndSaveThem(Facture $f) {
       if (!$f->isRedressable()) {
-	return ;
+	       return ;
       }
       $avoir = clone $f;
-      $soc = SocieteClient::getInstance()->find($avoir->identifiant);
-      $avoir->constructIds($soc, $f->region);
+      $compte = CompteClient::getInstance()->find("COMPTE-".$avoir->identifiant);
+      $avoir->constructIds($compte, $f->region);
       $f->add('avoir',$avoir->_id);
       $f->save();
-      foreach($avoir->lignes as $type => $lignes) {
-	foreach($lignes as $id => $ligne) {
-	  $ligne->volume *= -1;
-	  $ligne->montant_ht *= -1;
-          $ligne->echeance_code = null;
-	}
+      foreach($avoir->lignes as $type => $ligne) {
+        $ligne->montant_ht *= -1;
+        $ligne->montant_tva *= -1;
+      	foreach($ligne->details as $id => $detail) {
+          $detail->quantite *= -1;
+      	  $detail->montant_ht *= -1;
+          $detail->montant_tva *= -1;
+      	}
       }
       $avoir->total_ttc *= -1;
       $avoir->total_ht *= -1;
+      $avoir->total_taxe *= -1;
       $avoir->remove('echeances');
       $avoir->add('echeances');
       $avoir->statut = self::STATUT_NONREDRESSABLE;
       $avoir->storeDatesCampagne(date('Y-m-d'));
       $avoir->numero_archive = null;
-      $avoir->numero_interloire = null;
       $avoir->versement_comptable = 0;
-      $avoir->add('taux_tva', round($f->getTauxTva(),2));
       $avoir->save();
       $f->defacturer();
       $f->save();

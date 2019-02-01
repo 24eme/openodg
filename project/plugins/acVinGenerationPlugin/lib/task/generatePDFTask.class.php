@@ -28,7 +28,7 @@ Call it with:
   [php symfony GenerationGenerate|INFO]
 EOF;
   }
-  
+
   protected function execute($arguments = array(), $options = array())
   {
     sfContext::createInstance($this->configuration);
@@ -43,7 +43,7 @@ EOF;
 	$generationids = GenerationClient::getInstance()->getGenerationIdEnAttente();
     }
 
-    foreach ($generationids as $gid) { 
+    foreach ($generationids as $gid) {
       echo "Generation de $gid\n";
       try {
         	$generation = GenerationClient::getInstance()->find($gid);
