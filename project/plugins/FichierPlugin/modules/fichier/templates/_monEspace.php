@@ -46,7 +46,7 @@
                 <div style="margin-top: 50px; margin-bottom: 26px;">
                   <?php if($sv): ?>
                     <a class="btn btn-block btn-default" href="<?php echo url_for('csvgenerate_fichier', $sv); ?>">Télécharger les données liées à la déclaration</a>
-                    <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('upload_fichier', $sv);  ?>"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Détails du fichier</a>
+                    <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('upload_fichier', array('sf_subject' => $etablissement));  ?>?fichier_id=<?php echo $sv->_id; ?>"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Détails du fichier</a>
                 	<?php else: ?>
                     <p class="text-center">Le document n'a pas encore été récupéré pour cette campagne</p>
                 	<a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'type' => ($etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) ? 'SV11' : 'SV12')) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
