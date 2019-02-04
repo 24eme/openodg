@@ -60,6 +60,11 @@ class RegistreVCIClient extends acCouchdbClient implements FacturableClient {
 
     public function createDoc($identifiant, $campagne)
     {
+        if($registrePrecedent = $this->findMasterByIdentifiantAndCampagne($identifiant, ($campagne - 1))) {
+
+            return $registrePrecedent->generateSuivante();
+        }
+
         $registre = new RegistreVCI();
         $registre->initDoc($identifiant, $campagne);
         $etablissement = $registre->getEtablissementObject();
