@@ -42,6 +42,16 @@ facturation_avoir:
   requirements:
     sf_method: [get, post]
 
+facturation_avoir_defacturant:
+  url: /facturation/avoir-defacturant/:id
+  param: { module: facturation, action: avoirdefacturant }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 facturation_paiement:
   url: /facturation/paiement/:id
   param: { module: facturation, action: paiement }

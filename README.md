@@ -41,4 +41,4 @@ Aperçu de l'application pour l'Association des Viticulteurs d'Alsace
 
 ![Organisation d'une tournée](doc/captures/organisation-tournee.jpg)
 
-[Voir plus de captures d'écran de l'application](doc/captures/Interfaces.md)
+[Voir plus de captures d'écran de l'application](doc/captures/README.md)
