@@ -15,7 +15,9 @@ class AbonnementClient extends acCouchdbClient implements FacturableClient {
 
     public function findFacturable($identifiant, $periode) {
         $abonnement = $this->find(sprintf("ABONNEMENT-%s-%s", $identifiant, $periode));
-
+        if(!$abonnement){
+          return array();
+        }
         return array($abonnement->_id => $abonnement);
     }
 

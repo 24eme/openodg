@@ -32,7 +32,7 @@ class FactureLatex extends GenericLatex {
       $commune = KeyInflector::slugify($this->facture->declarant->commune);
       $nom = KeyInflector::slugify(EtablissementClient::cleanCivilite($this->facture->declarant->nom));
 
-      return  'facture_'.$commune.'_'.$nom.'_'.$this->facture->identifiant.'_'.str_replace('/', '-', $this->facture->numero_interloire).'_'.$this->facture->numero_facture.'_'.$this->facture->_rev;
+      return  'facture_'.str_replace('/', '-', $this->facture->numero_odg).'_'.$commune.'_'.$nom.'_'.$this->facture->identifiant.'_'.$this->facture->numero_facture.'_'.$this->facture->_rev;
   }
 
   public function getLatexFileNameWithoutExtention() {

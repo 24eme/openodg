@@ -338,6 +338,10 @@ class constatsActions extends sfActions {
         $this->constats = $this->getRoute()->getConstats();
         $this->constatNode = $request->getParameter('identifiantconstat');
 
+        if(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->constats->getCompte()->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
+
+            return $this->forwardSecure();
+        }
 
         $this->document = new ExportConstatPdf($this->constats, $this->constatNode, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
@@ -395,6 +399,12 @@ class constatsActions extends sfActions {
         $this->getUser()->setFlash('error', "Aucune tournée trouvée pour cet agent aujourd'hui");
 
         return $this->redirect('tournee_agent_accueil');
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
     }
 
 }

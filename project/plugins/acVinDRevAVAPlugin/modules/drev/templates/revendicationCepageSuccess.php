@@ -23,15 +23,13 @@
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
             <tr>
-                <th class="col-xs-6">Produits</th>
-                <?php if (count($noeud->getProduitsVCI()) > 0): ?>
-                	<th class="text-center col-xs-2">Superficie vinifiée <small class="text-muted">(ares)</small></th>
-                	<th class="text-center col-xs-2">VCI constitué <small class="text-muted">(hl)</small></th>
-                	<th class="text-center col-xs-2">Volume revendiqué <small class="text-muted">(hl)</small></th>
-                <?php else: ?>
-                	<th class="text-center col-xs-3">Superficie vinifiée <small class="text-muted">(ares)</small></th>
-                	<th class="text-center col-xs-3">Volume revendiqué <small class="text-muted">(hl)</small></th>
-                <?php endif; ?>
+                <th class="col-xs-<?php echo ($noeud->getConfig()->getRendementVci() > 0) ? "4" : "6"; ?>">Produits</th>
+                	<th class="text-center <?php echo ($noeud->getConfig()->getRendementVci() > 0) ? "2" : "3"; ?>">Superficie vinifiée <small class="text-muted">(ares)</small></th>
+                	<th class="text-center <?php echo ($noeud->getConfig()->getRendementVci() > 0) ? "2" : "3"; ?>">Volume revendiqué <br /> issu de la récolte <small class="text-muted">(hl)</small></th>
+                    <?php if($noeud->getConfig()->getRendementVci() > 0): ?>
+                        <th class="text-center col-xs-2">VCI constitué<br /> en <?php echo $drev->campagne ?> <small class="text-muted">(hl)</small></th>
+                        <th class="text-center col-xs-2">Possède du Stock<br /> VCI <?php echo ($drev->campagne - 1) ?> <small class="text-muted">(hl)</small></th>
+                    <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -43,32 +41,42 @@
                     	<?php if(isset($embedForm['superficie_vinifiee'])): ?>
                     	<div class="form-group <?php if($embedForm['superficie_vinifiee']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['superficie_vinifiee']->renderError() ?>
-                            <div class="col-xs-8 col-xs-offset-2">
+                            <div class="col-xs-10 col-xs-offset-1">
                                 <?php echo $embedForm['superficie_vinifiee']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
                             </div>
                         </div>
                         <?php endif; ?>
                     </td>
-                    <?php if (count($noeud->getProduitsVCI()) > 0): ?>
+                    <td class="text-center">
+                        <div class="form-group <?php if($embedForm['volume_revendique_recolte']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['volume_revendique_recolte']->renderError() ?>
+                            <div class="col-xs-10 col-xs-offset-1">
+                                <?php echo $embedForm['volume_revendique_recolte']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
+                            </div>
+                        </div>
+                    </td>
+                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
                     <td class="text-center">
                     	<?php if (isset($embedForm['vci_constitue'])): ?>
                         <div class="form-group <?php if($embedForm['vci_constitue']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['vci_constitue']->renderError() ?>
-                            <div class="col-xs-8 col-xs-offset-2">
+                            <div class="col-xs-10 col-xs-offset-1">
                                 <?php echo $embedForm['vci_constitue']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
                             </div>
                         </div>
                         <?php endif; ?>
                     </td>
-                    <?php endif; ?>
-                    <td class="text-center">
-                        <div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
-                            <?php echo $embedForm['volume_revendique']->renderError() ?>
-                            <div class="col-xs-8 col-xs-offset-2">
-                                <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
+                    <td class="text-center pointer_checkbox">
+                    	<?php if (isset($embedForm['has_stock_vci'])): ?>
+                        <div class="form-group <?php if($embedForm['has_stock_vci']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['has_stock_vci']->renderError() ?>
+                            <div class="col-xs-10 col-xs-offset-1">
+                                <?php echo $embedForm['has_stock_vci']->render() ?>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </td>
+                    <?php endif; ?>
                 </tr>
                 <?php if (isset($embedForm['volume_revendique_vt']) || isset($embedForm['volume_revendique_sgn'])): ?>
                 <tr style="height: 44px;">
@@ -77,7 +85,7 @@
                         <?php if(isset($embedForm['superficie_vinifiee_vt'])): ?>
                     	<div class="form-group <?php if($embedForm['superficie_vinifiee_vt']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['superficie_vinifiee_vt']->renderError() ?>
-                            <div class="col-xs-8 col-xs-offset-2">
+                            <div class="col-xs-10 col-xs-offset-1">
                                 <?php echo $embedForm['superficie_vinifiee_vt']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
                             </div>
                         </div>
@@ -87,7 +95,7 @@
                     <td class="text-center">
                     	<div class="form-group <?php if($embedForm['volume_revendique_vt']->hasError()): ?>has-error<?php endif; ?>">
                         	<?php echo $embedForm['volume_revendique_vt']->renderError() ?>
-                        	<div class="col-xs-8 col-xs-offset-2">
+                        	<div class="col-xs-10 col-xs-offset-1">
                             	<?php echo $embedForm['volume_revendique_vt']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
                             </div>
                         </div>
@@ -95,7 +103,8 @@
                     <?php else: ?>
                     <td></td>
                     <?php endif; ?>
-                    <?php if (count($noeud->getProduitsVCI()) > 0): ?>
+                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
+                    <td class="text-center"></td>
                     <td class="text-center"></td>
                     <?php endif; ?>
                 </tr>
@@ -105,7 +114,7 @@
                         <?php if(isset($embedForm['superficie_vinifiee_sgn'])): ?>
                     	<div class="form-group <?php if($embedForm['superficie_vinifiee_sgn']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['superficie_vinifiee_sgn']->renderError() ?>
-                            <div class="col-xs-8 col-xs-offset-2">
+                            <div class="col-xs-10 col-xs-offset-1">
                                 <?php echo $embedForm['superficie_vinifiee_sgn']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
                             </div>
                         </div>
@@ -115,7 +124,7 @@
                     <td class="text-center">
 						<div class="form-group <?php if($embedForm['volume_revendique_sgn']->hasError()): ?>has-error<?php endif; ?>">
 							<?php echo $embedForm['volume_revendique_sgn']->renderError() ?>
-							<div class="col-xs-8 col-xs-offset-2">
+							<div class="col-xs-10 col-xs-offset-1">
 								<?php echo $embedForm['volume_revendique_sgn']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
 							</div>
 						</div>
@@ -123,7 +132,8 @@
                     <?php else: ?>
                     <td></td>
                     <?php endif; ?>
-                    <?php if (count($noeud->getProduitsVCI()) > 0): ?>
+                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
+                    <td class="text-center"></td>
                     <td class="text-center"></td>
                     <?php endif; ?>
                 </tr>
@@ -134,7 +144,12 @@
                     <td>
                         <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit / cépage</button>
                     </td>
-                    <td></td><td></td>
+                    <td></td>
+                    <td></td>
+                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
+                        <td></td>
+                        <td></td>
+                    <?php endif; ?>
                 </tr>
             <?php endif; ?>
         </tbody>

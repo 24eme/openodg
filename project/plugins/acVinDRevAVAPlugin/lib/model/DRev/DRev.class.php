@@ -189,30 +189,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 } else {
                     $node = $this->addProduitCepage($hash);
                 }
-    			if ($node->getDefinition()->exist('vci')) {
+    			if (!$node->exist('vci') && $node->getDefinition()->exist('vci')) {
     				$node->add('vci', $p->details);
     			}
     		}
     	}
 
         $this->declaration->reorderByConf();
-    }
-
-
-    public function populateVCIFromProduits()
-    {
-    	foreach ($this->declaration->getProduitsCepage() as $h => $p) {
-    		if ($p->getConfig()->hasRendementVCI()) {
-    			if (preg_match('/appellation_CREMANT/', $h)) {
-    				$p = $p->getCouleur();
-    			}
-    			if (!$p->exist('vci')) {
-    				$vci = $p->add('vci');
-    				$node = $vci->add(RegistreVCIClient::LIEU_CAVEPARTICULIERE);
-    				$node->stockage_libelle = "Cave particulière";
-    			}
-    		}
-    	}
     }
 
     public function hasProduitsVCI()

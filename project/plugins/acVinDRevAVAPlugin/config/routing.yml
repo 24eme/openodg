@@ -195,8 +195,8 @@ drev_revendication_volumes:
     sf_method: [get, post]
 
 drev_revendication_vci:
-  url: /drev/vci/:id/:appellation
-  param: { module: drev, action: revendicationVCI, appellation: 0 }
+  url: /drev/vci/:id
+  param: { module: drev, action: revendicationVCI }
   class: DRevRoute
   options:
     model:    DRev
