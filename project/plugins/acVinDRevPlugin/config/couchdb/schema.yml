@@ -183,6 +183,7 @@ DRev:
                         detail_libelle: {  }
                         quantite: { type: float }
                         taux: { }
+                        tva: { }
                         facture: { type: integer }
                         facturable: { type: integer }
                         date: {  }

@@ -449,11 +449,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updateFromPrecedente();
     }
 
-    public function hasAcheteurForProduit($csv,$k){
+    public function hasAcheteurForProduit($csv,$k){      
       $l = $csv[$k];
       $code = $l[DRCsvFile::CSV_LIGNE_CODE];
       $codePrev = $code * 2;
-      while(($k >= 0) && ($code < $codePrev)){
+      while(($k > 0) && ($code < $codePrev)){
          $codePrev = $code;
          $k--;
          $l = $csv[$k];
@@ -1074,53 +1074,68 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     /**** MOUVEMENTS ****/
 
+    public function getTemplateFacture() {
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+    }
+
     public function getMouvements() {
 
         return $this->_get('mouvements');
     }
 
     public function getMouvementsCalcule() {
-        $mouvements = array();
-        foreach($this->declaration->getProduits() as $produit) {
-            $types_hash = array(
-                 "volume_revendique_total" => "Volume net revendiqué total"
-            );
+      $templateFacture = $this->getTemplateFacture();
+      if(!$templateFacture) {
+          return array();
+      }
 
-            foreach($types_hash as $type_hash => $libelle) {
-                $mouvement = $this->createMouvementByProduitAndType($produit, $type_hash, $libelle);
-                if(!$mouvement) {
-                    continue;
-                }
-                $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
-            }
-        }
-        return $mouvements;
-    }
+      $cotisations = $templateFacture->generateCotisations($this);
 
-    public function createMouvementByProduitAndType($produit, $type_hash, $type_libelle) {
-        $quantite = $produit->get($type_hash);
+      if($this->hasVersion()) {
+          $cotisationsPrec = $templateFacture->generateCotisations($this->getMother());
+      }
 
-        if ($this->getDocument()->hasVersion() && $this->getDocument()->motherExist($produit->getHash() . '/' . $type_hash)) {
-          $quantite = $quantite - $this->getDocument()->motherGet($produit->getHash() . '/' . $type_hash);
-        }
-        if (!$quantite) {
+      $identifiantCompte = $this->getIdentifiant();
 
-            return null;
-        }
+      $mouvements = array();
 
-        $mouvement = DRevMouvement::freeInstance($this->getDocument());
-        $mouvement->facture = 0;
-        $mouvement->facturable = 1;
-        $mouvement->produit_libelle = $produit->getLibelleComplet();
-        $mouvement->produit_hash = $produit->getHash();
-        $mouvement->type_hash = $type_hash;
-        $mouvement->type_libelle = $type_libelle;
-        $mouvement->quantite = $quantite;
-        $mouvement->version = $this->getDocument()->getVersion();
-        $mouvement->date = ($this->getDocument()->validation) ? ($this->getDocument()->validation) : date('Y-m-d');
-        $mouvement->add('taux',$produit->getConfig()->getDroitCVO($mouvement->date)->taux);
-        $mouvement->date_version = $mouvement->date;
-        return $mouvement;
+      $rienAFacturer = true;
+
+      foreach($cotisations as $cotisation) {
+          $mouvement = DRevMouvement::freeInstance($this);
+          $mouvement->categorie = $cotisation->getCollectionKey();
+          $mouvement->type_hash = $cotisation->getDetailKey();
+          $mouvement->type_libelle = $cotisation->getLibelle();
+          $mouvement->quantite = $cotisation->getQuantite();
+          $mouvement->taux = $cotisation->getPrix();
+          $mouvement->tva = $cotisation->getTva();
+          $mouvement->facture = 0;
+          $mouvement->facturable = 1;
+          $mouvement->date = $this->getCampagne().'-12-10';
+          $mouvement->date_version = $this->validation;
+          $mouvement->version = $this->version;
+
+          if(isset($cotisationsPrec[$cotisation->getHash()])) {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+          }
+
+          if($this->hasVersion() && !$mouvement->quantite) {
+              continue;
+          }
+
+          if($mouvement->quantite) {
+              $rienAFacturer = false;
+          }
+
+          $mouvements[$mouvement->getMD5Key()] = $mouvement;
+      }
+
+      if($rienAFacturer) {
+          return array($identifiantCompte => array());
+
+      }
+
+      return array($identifiantCompte => $mouvements);
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {

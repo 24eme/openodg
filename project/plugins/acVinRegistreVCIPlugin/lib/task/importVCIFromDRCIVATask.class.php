@@ -66,17 +66,22 @@ EOF;
             continue;
           }
 
+          if ($csv[self::DRCIVA_CVI_ACHETEUR] == $csv[self::DRCIVA_CVI_RECOLTANT]) {
+            $csv[self::DRCIVA_CVI_ACHETEUR] = '';
+          }
+
           if ($csv[self::DRCIVA_LIEU] == 'TOTAL') {
             @$vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['SUPERFICIE'] += $csv[self::DRCIVA_SUPERFICIE_TOTALE];
           }
           if (!$csv[self::DRCIVA_VCI_TOTAL]) {
             continue;
           }
-          if ($csv[self::DRCIVA_CVI_ACHETEUR] == $csv[self::DRCIVA_CVI_RECOLTANT]) {
-            $csv[self::DRCIVA_CVI_ACHETEUR] = '';
-          }
 
           $oldreporting = error_reporting(0);
+          if (($csv[self::DRCIVA_LIEU] == 'TOTAL') || ($csv[self::DRCIVA_CEPAGE] == 'TOTAL')) {
+              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][''][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['DONTVCI'] = $csv[self::DRCIVA_DONT_VCI];
+              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] += $csv[self::DRCIVA_DONT_VCI];
+          }
           if (($csv[self::DRCIVA_LIEU] != 'TOTAL') && ($csv[self::DRCIVA_CEPAGE] != 'TOTAL')) {
             $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] += $csv[self::DRCIVA_VCI_TOTAL];
             $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][$csv[self::DRCIVA_LIEU]][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['VOLUME_TOTAL'] += $csv[self::DRCIVA_VCI_TOTAL];
@@ -97,13 +102,18 @@ EOF;
               foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
                 foreach($vciacheteur as $cviacheteur => $vcicepage) {
                   foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                    $nb += 1;
+                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && !$unvci['DONTVCI'] && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
+                          $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] -= $unvci['VOLUME_TOTAL'];
+                          unset($vci[$recoltant][$appellation]['LIEU'][$lieu][$cviacheteur]);
+                          break;
+                      }
+                      $nb += 1;
                   }
                 }
               }
             }
             if ($nb > 2) {
-              $realvci[$recoltant] = $vciappellation;
+              $realvci[$recoltant] = $vci[$recoltant];
             }
         }
         //Enregistrement des données
@@ -133,7 +143,7 @@ EOF;
                   }
                   if ($nonsolvable) {
                     echo "NONSOLVABLE VCI";
-                    echo $unvci['RECOLTANT_NOM']."(".$unvci['HASH_PRODUIT'].") ".$unvci['VOLUME']." hl ".$unvci['ACHETEUR_NOM']."\n";
+                    echo $unvci['RECOLTANT_NOM']." ".$recoltant." (".$unvci['HASH_PRODUIT'].") ".$unvci['VOLUME']." hl ".$unvci['ACHETEUR_NOM']."\n";
                     continue;
                   }
                   if ($unvci['VOLUME'] * 1.0 > 0) {

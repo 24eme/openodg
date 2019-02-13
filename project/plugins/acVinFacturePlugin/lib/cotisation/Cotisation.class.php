@@ -32,6 +32,11 @@ class Cotisation
 		return $this->getConfig()->prix;
 	}
 
+	protected function getConfigTva() {
+
+		return $this->getConfig()->tva;
+	}
+
 	protected function getConfigLibelle() {
 
 		return $this->getConfig()->libelle;
@@ -77,6 +82,12 @@ class Cotisation
 	{
 
 		return round($this->getConfigPrix(), self::PRECISION + 1);
+	}
+
+	public function getTva()
+	{
+
+		return round($this->getConfigTva(), self::PRECISION + 1);
 	}
 
 	public function getTotal()
