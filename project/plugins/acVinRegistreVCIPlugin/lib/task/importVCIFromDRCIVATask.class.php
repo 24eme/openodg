@@ -122,6 +122,7 @@ EOF;
                 $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."",  $arguments['campagne']);
             } catch(Exception $e) {
                 echo $recoltant . " : " . $e->getMessage()."\n";
+                continue;
             }
             if (count($registre->lignes)) {
                 $registre->clear();
