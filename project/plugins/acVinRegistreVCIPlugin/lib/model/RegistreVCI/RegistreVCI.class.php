@@ -106,6 +106,34 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         $this->piece_document->generatePieces();
       }
 
+      public function generateSuivante() {
+          $registreSuivant = clone $this;
+
+          $registreSuivant->campagne = ($this->campagne + 1)."";
+          $registreSuivant->remove('lignes');
+          $registreSuivant->add('lignes');
+          $registreSuivant->remove('mouvements');
+          $registreSuivant->add('mouvements');
+          $registreSuivant->remove('pieces');
+          $registreSuivant->add('pieces');
+          $registreSuivant->superficies_facturables = null;
+
+          foreach($registreSuivant->getProduits() as $produit) {
+            $produit->clear();
+          }
+
+          foreach($this->getProduitDetails() as $detail) {
+            if($detail->stock_final !== 0) {
+             throw new Exception("Génération impossible, tout le stock de l'année précédente n'a pas été utilisé");
+            }
+
+            $detailSuivant = $registreSuivant->get($detail->getHash());
+            $detailSuivant->stock_precedent = $detail->rafraichi;
+          }
+
+          return $registreSuivant;
+      }
+
       public function getAllPieces() {
       	$title = 'Registre VCI';
       	return array(array(
