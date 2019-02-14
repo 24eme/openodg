@@ -118,12 +118,16 @@ EOF;
         }
         //Enregistrement des données
         foreach ($realvci as $recoltant => $vciappellation) {
-          $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."", $arguments['campagne']);
-          if (count($registre->lignes)) {
-            $registre->clear();
-            $registre->save();
-          }
-          foreach($vciappellation as $appellation => $vcilieu) {
+            try {
+                $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."",  $arguments['campagne']);
+            } catch(Exception $e) {
+                echo $recoltant . " : " . $e->getMessage()."\n";
+            }
+            if (count($registre->lignes)) {
+                $registre->clear();
+                $registre->save();
+            }
+            foreach($vciappellation as $appellation => $vcilieu) {
             $nonsolvable = 0;
             $totalappellation = $vcilieu['LIEU']['TOTAL']['']['CEPAGE'][''];
             if (!isset($totalappellation['VOLUME']) || !(sprintf('%0.2f', $totalappellation['VOLUME_TOTAL']) === sprintf('%0.2f', $totalappellation['VOLUME']))) {
