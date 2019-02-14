@@ -55,6 +55,10 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
     $this->_set('stock_final', $this->stock_final + $volume * RegistreVCIClient::MOUVEMENT_SENS($mouvement_type));
   }
 
+  public function setStockPrecedent($v) {
+      throw new sfException('Not callable, use setStockPrecedent in detail');
+  }
+
   public function setConstitue($v) {
     throw new sfException('Not callable, use addMouvement');
   }
@@ -126,6 +130,19 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
   }
   public function isProduitAppellation() {
     return (get_class($this->getConfig()) == 'ConfigurationAppellation');
+  }
+
+  public function clear() {
+      foreach ($this->details as $key => $detail) {
+          $detail->clear();
+      }
+      $this->_set('stock_precedent', null);
+      $this->_set('destruction', null);
+      $this->_set('complement', null);
+      $this->_set('substitution', null);
+      $this->_set('rafraichi', null);
+      $this->_set('constitue', null);
+      $this->_set('stock_final', null);
   }
 
 }

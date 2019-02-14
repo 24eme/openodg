@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(71);
+$t = new lime_test(86);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -160,3 +160,35 @@ $f->save();
 
 $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->is(count($f->lignes->vci->details), 1, "La ligne de facturation pour le VCI est présente");
+
+
+$t->comment("Génération du registre de l'année suivante");
+
+try {
+    $registreSuivant = $registre->generateSuivante();
+    $t->fail("La génération du registre ne doit pas fonctionner quand tout le stock n'est pas reparti");
+} catch (Exception $e) {
+    $t->pass("La génération du registre ne doit pas fonctionner quand tout le stock n'est pas reparti");
+}
+
+$registre->addLigne($produit, RegistreVCIClient::MOUVEMENT_CONSTITUE, 5, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+$registre->addLigne($produit_hash, RegistreVCIClient::MOUVEMENT_RAFRAICHI, 5, $registre->identifiant);
+$registre->addLigne($hash_cremant, RegistreVCIClient::MOUVEMENT_RAFRAICHI, 10, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+$registreSuivant = $registre->generateSuivante();
+$registreSuivant->save();
+
+$t->is($registreSuivant->campagne, $campagne + 1, "La campagne est la suivante : ".($campagne + 1));
+$t->is($registreSuivant->_id, "REGISTREVCI-".$registreSuivant->identifiant."-".($campagne + 1), "L'id est bien construit");
+$t->is(count($registreSuivant->mouvements), 0, "Aucun mouvement");
+$t->is(count($registreSuivant->lignes), 0, "Aucune ligne");
+$t->is(count($registreSuivant->pieces), 1, "Aucune pièce");
+$t->is($registreSuivant->superficies_facturables, null, "Superficie facturable nulle");
+$t->is($registreSuivant->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->destruction, null, "Le volume détruit du detail est null");
+$t->is($registreSuivant->declaration->get($produit_hash)->destruction, null, "Le volume détruit du produit est null");
+$t->is($registreSuivant->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->rafraichi, null, "Le volume refraichi du detail est null");
+$t->is($registreSuivant->declaration->get($produit_hash)->rafraichi, null, "Le volume refraichi du produit est null");
+
+$t->is($registreSuivant->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_precedent, 10, "Le stock debut du détail est égal au stock rafraichi de la campagne précédente");
+$t->is($registreSuivant->declaration->get($produit_hash)->stock_precedent, 15, "Le stock debut du produit est égal au stock rafraichi de la campagne précédente");
+$t->is($registreSuivant->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_final, $registreSuivant->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_precedent, "Le stock final du détail est égal au stock début");
+$t->is($registreSuivant->declaration->get($produit_hash)->stock_final, $registreSuivant->declaration->get($produit_hash)->stock_precedent, "Le stock final du produit est égal au stock début");

@@ -24,3 +24,4 @@ all:
           montant_division: 3.0
       all_etablissements: true
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
+      export_sage_width_txt: false
