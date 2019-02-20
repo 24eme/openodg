@@ -57,7 +57,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
 
     public function getCodeComtableClient() {
         if(!$this->_get('code_comptable_client') && class_exists("FactureConfiguration")) {
-            return FactureConfiguration::getInstance()->getPrefixCodeComptable().((int)$this->identifiant)."";
+            return FactureConfiguration::getInstance()->getPrefixCodeComptable().$this->identifiant."";
         }
 
         if(!$this->_get('code_comptable_client')) {
@@ -455,17 +455,19 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function getEmailTeledeclaration() {
+        if ($compteSociete = $this->getMasterCompte()) {
+	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
+	            return $compteSociete->societe_information->email;
+	        }
+	        return $compteSociete->email;
+        }
         if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
             return $this->teledeclaration_email;
         }
         if ($this->exist('email') && $this->email) {
             return $this->email;
         }
-        $compteSociete = $this->getMasterCompte();
-        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
-            return $compteSociete->societe_information->email;
-        }
-        return $compteSociete->email;
+        return null;
     }
 
     public function setEmailTeledeclaration($email) {

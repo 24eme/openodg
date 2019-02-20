@@ -1,5 +1,5 @@
 <?php
-class DRevRevendicationProduitsForm extends sfForm 
+class DRevRevendicationProduitsVolumesForm extends sfForm
 {
     protected $produits;
 
@@ -12,13 +12,13 @@ class DRevRevendicationProduitsForm extends sfForm
    	public function configure()
     {
         foreach ($this->produits as $hash => $produit) {
-            $form = new DRevRevendicationProduitForm($produit);
+            $form = new DRevRevendicationProduitVolumeForm($produit);
             $this->embedForm($hash, $form);
         }
-        
+
     }
 
-    public function doUpdateObject($values) 
+    public function doUpdateObject($values)
     {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
             unset($values[$key]['_revision']);
@@ -26,5 +26,5 @@ class DRevRevendicationProduitsForm extends sfForm
         }
     }
 
-    
+
 }

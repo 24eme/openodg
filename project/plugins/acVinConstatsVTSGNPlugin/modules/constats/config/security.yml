@@ -9,3 +9,6 @@ tourneeAgentRendezvous:
 
 tourneeAgentJsonRendezvous:
   credentials: [[ADMIN, TOURNEE]]
+
+constatPdf:
+  credentials: []

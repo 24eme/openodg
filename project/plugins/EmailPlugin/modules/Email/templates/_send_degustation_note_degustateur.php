@@ -7,4 +7,4 @@ Vous trouverez en pièce jointe les résultats de cette dégustation.
 
 Bien cordialement,
 
-Le service Appui technique de l'AVA
+<?php echo include_partial('Email/footerMail'); ?>

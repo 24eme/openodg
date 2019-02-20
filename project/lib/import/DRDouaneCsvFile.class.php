@@ -162,26 +162,25 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         return $csv;
     }
 
-    public static function convertByDonnees($dr) {
-    	if (!$dr->exist('donnees') || count($dr->donnees) < 1) {
+    public function convertByDonnees() {
+    	if (!$this->doc->exist('donnees') || count($this->doc->donnees) < 1) {
     		return null;
     	}
     	$csv = '';
     	$configuration = ConfigurationClient::getCurrent();
     	$categories = sfConfig::get('app_dr_categories');
-    	$etablissementClient = EtablissementClient::getInstance();
-    	$this->etablissement = $etablissementClient->find($dr->identifiant);
-      $this->campagne = $dr->campagne;
+    	$this->etablissement = EtablissementClient::getInstance()->find($this->doc->identifiant);
+      $this->campagne = $this->doc->campagne;
     	if (!$this->etablissement) {
     		return null;
     	}
 
     	$produits = array();
 
-    	foreach ($dr->donnees as $donnee) {
+    	foreach ($this->doc->donnees as $donnee) {
     		if ($produit = $configuration->declaration->get($donnee->produit)) {
     			$p = array();
-    			if ($donnee->bailleur && $b = $etablissementClient->find($donnee->bailleur)) {
+    			if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
     				$p[] = $b->raison_sociale;
     				$p[] = $b->ppm;
     			} else {
@@ -201,7 +200,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $donnee->categorie;
     			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
     			$p[] = str_replace('.', ',', $donnee->valeur);
-    			if ($donnee->tiers && $t = $etablissementClient->find($donnee->tiers)) {
+    			if ($donnee->tiers && $t = EtablissementClient::getInstance()->find($donnee->tiers)) {
     				$p[] = $t->cvi;
     				$p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
     				$p[] = null;

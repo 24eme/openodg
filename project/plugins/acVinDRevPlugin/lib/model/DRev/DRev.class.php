@@ -316,14 +316,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function importFromDocumentDouanier($force = false) {
-      if (!$force & count($this->declaration)) {
+      if (!$force && count($this->declaration) && $this->declaration->getTotalTotalSuperficie()) {
         return false;
       }
       $csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
       	return false;
       }
-	  try {
+	    try {
         $this->importCSVDouane($csv);
         return true;
       } catch (Exception $e) { }
@@ -341,7 +341,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $produitsImporte = array();
         $has_bio = false;
-        foreach($csv as $line) {
+        foreach($csv as $k => $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
@@ -389,7 +389,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
-            	$produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+              if(!$this->hasAcheteurForProduit($csv,$k)){
+                $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+              }
+
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
 
@@ -443,19 +446,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $p->superficie_revendique = $p->recolte->superficie_total;
             }
         }
-
         $this->updateFromPrecedente();
+    }
+
+    public function hasAcheteurForProduit($csv,$k){      
+      $l = $csv[$k];
+      $code = $l[DRCsvFile::CSV_LIGNE_CODE];
+      $codePrev = $code * 2;
+      while(($k > 0) && ($code < $codePrev)){
+         $codePrev = $code;
+         $k--;
+         $l = $csv[$k];
+         $code = $l[DRCsvFile::CSV_LIGNE_CODE];
+         if($code == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR){
+           return boolval($l [DRCsvFile::CSV_VALEUR]);
+         }
+       }
+      return false;
     }
 
     public function updateFromPrecedente()
     {
     	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne - 1))) {
-    		foreach ($precedente->declaration as $hash => $p) {
-    			if ($this->declaration->exist($hash)) {
-    				$produit = $this->declaration->get($hash);
-    				$produit->vci_stock_initial = $p->vci_stock_final;
-    			}
-    		}
+        foreach($precedente->getProduitsVci() as $produit) {
+          if ($produit->vci->stock_final) {
+            $this->cloneProduit($produit);
+          }
+        }
     	}
     }
 
@@ -736,6 +753,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->validation_odg = null;
         if($this->exist('etape')) {
             $this->etape = null;
+        }
+        if($this->exist("envoi_oi")){
+         $this->envoi_oi = null;
         }
     }
 
@@ -1054,58 +1074,68 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     /**** MOUVEMENTS ****/
 
+    public function getTemplateFacture() {
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+    }
+
     public function getMouvements() {
 
         return $this->_get('mouvements');
     }
 
     public function getMouvementsCalcule() {
-        $mouvements = array();
+      $templateFacture = $this->getTemplateFacture();
+      if(!$templateFacture) {
+          return array();
+      }
 
-        foreach($this->declaration->getProduits() as $produit) {
-            $types_hash = array(
-                "superficie_revendique" => "Superficie revendiqué",
-                "volume_revendique_total" => "Volume net revendiqué total",
-            );
+      $cotisations = $templateFacture->generateCotisations($this);
 
-            foreach($types_hash as $type_hash => $libelle) {
-                $mouvement = $this->createMouvementByProduitAndType($produit, $type_hash, $libelle);
-                if(!$mouvement) {
+      if($this->hasVersion()) {
+          $cotisationsPrec = $templateFacture->generateCotisations($this->getMother());
+      }
 
-                    continue;
-                }
-                $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
-            }
-        }
+      $identifiantCompte = $this->getIdentifiant();
 
-        return $mouvements;
-    }
+      $mouvements = array();
 
-    public function createMouvementByProduitAndType($produit, $type_hash, $type_libelle) {
-        $quantite = $produit->get($type_hash);
+      $rienAFacturer = true;
 
-        if ($this->getDocument()->hasVersion() && $this->getDocument()->motherExist($produit->getHash() . '/' . $type_hash)) {
-            $quantite = $quantite - $this->getDocument()->motherGet($produit->getHash() . '/' . $type_hash);
-        }
+      foreach($cotisations as $cotisation) {
+          $mouvement = DRevMouvement::freeInstance($this);
+          $mouvement->categorie = $cotisation->getCollectionKey();
+          $mouvement->type_hash = $cotisation->getDetailKey();
+          $mouvement->type_libelle = $cotisation->getLibelle();
+          $mouvement->quantite = $cotisation->getQuantite();
+          $mouvement->taux = $cotisation->getPrix();
+          $mouvement->tva = $cotisation->getTva();
+          $mouvement->facture = 0;
+          $mouvement->facturable = 1;
+          $mouvement->date = $this->getCampagne().'-12-10';
+          $mouvement->date_version = $this->validation;
+          $mouvement->version = $this->version;
 
-        if (!$quantite) {
+          if(isset($cotisationsPrec[$cotisation->getHash()])) {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+          }
 
-            return null;
-        }
+          if($this->hasVersion() && !$mouvement->quantite) {
+              continue;
+          }
 
-        $mouvement = DRevMouvement::freeInstance($this->getDocument());
-        $mouvement->facture = 0;
-        $mouvement->facturable = 1;
-        $mouvement->produit_libelle = $produit->getLibelleComplet();
-        $mouvement->produit_hash = $produit->getHash();
-        $mouvement->type_hash = $type_hash;
-        $mouvement->type_libelle = $type_libelle;
-        $mouvement->quantite = $quantite;
-        $mouvement->version = $this->getDocument()->getVersion();
-        $mouvement->date = ($this->getDocument()->validation) ? ($this->getDocument()->validation) : date('Y-m-d');
-        $mouvement->date_version = $mouvement->date;
+          if($mouvement->quantite) {
+              $rienAFacturer = false;
+          }
 
-        return $mouvement;
+          $mouvements[$mouvement->getMD5Key()] = $mouvement;
+      }
+
+      if($rienAFacturer) {
+          return array($identifiantCompte => array());
+
+      }
+
+      return array($identifiantCompte => $mouvements);
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {

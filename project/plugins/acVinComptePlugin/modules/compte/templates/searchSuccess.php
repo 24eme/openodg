@@ -64,7 +64,7 @@
                 <div class="col-xs-8">
                     <?php if($data['doc']['compte_type'] == 'INTERLOCUTEUR'): ?><small class="text-muted"><span class="glyphicon glyphicon-calendar"></span> <?php if(isset($societe_informations['raison_sociale'])): echo $societe_informations['raison_sociale']; endif; ?></small><br/><?php endif; ?>
                     <span class="lead"><span class="<?php echo comptePictoCssClass($data['doc']) ?>"></span></span>
-                    <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo $data['doc']['nom_a_afficher']; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
+                    <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo ($data['doc']['nom_a_afficher'])? $data['doc']['nom_a_afficher'] : "inconnu"; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
                     <?php if (isset($data['doc']['en_alerte']) && $data['doc']['en_alerte']) echo ' ⛔'; ?>
                     </span>
                </div><div class="col-xs-4 text-right">

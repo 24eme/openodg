@@ -30,14 +30,23 @@ class DRevDeclaration extends BaseDRevDeclaration
 		}
 	}
 
-	public function hasVci() {
+	public function hasVciRecolteConstitue() {
 		foreach($this->getProduits() as $produit) {
-			if($produit->hasVci()) {
+			if($produit->hasVciRecolteConstitue()) {
 
 				return true;
 			}
 		}
 
+		return false;
+	}
+
+	public function hasVolumeRevendiqueVci() {
+		foreach($this->getProduits() as $produit) {
+			if($produit->hasVolumeRevendiqueVci()) {
+				return true;
+			}
+		}
 		return false;
 	}
 

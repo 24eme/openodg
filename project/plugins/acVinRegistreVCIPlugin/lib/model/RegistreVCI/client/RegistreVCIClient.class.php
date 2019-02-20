@@ -14,7 +14,7 @@ class RegistreVCIClient extends acCouchdbClient implements FacturableClient {
     const LIEU_CAVEPARTICULIERE = 'CAVEPARTICULIERE';
 
     public static function MOUVEMENT_SENS($m) {
-      $sens = array(self::MOUVEMENT_CONSTITUE => 1, self::MOUVEMENT_RAFRAICHI => 1, self::MOUVEMENT_COMPLEMENT => -1, self::MOUVEMENT_DESTRUCTION => -1, self::MOUVEMENT_SUBSTITUTION => -1);
+      $sens = array(self::MOUVEMENT_CONSTITUE => 1, self::MOUVEMENT_RAFRAICHI => -1, self::MOUVEMENT_COMPLEMENT => -1, self::MOUVEMENT_DESTRUCTION => -1, self::MOUVEMENT_SUBSTITUTION => -1);
       return $sens[$m];
     }
 
@@ -60,6 +60,11 @@ class RegistreVCIClient extends acCouchdbClient implements FacturableClient {
 
     public function createDoc($identifiant, $campagne)
     {
+        if($registrePrecedent = $this->findMasterByIdentifiantAndCampagne($identifiant, ($campagne - 1))) {
+
+            return $registrePrecedent->generateSuivante();
+        }
+
         $registre = new RegistreVCI();
         $registre->initDoc($identifiant, $campagne);
         $etablissement = $registre->getEtablissementObject();

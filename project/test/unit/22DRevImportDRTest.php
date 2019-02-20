@@ -3,6 +3,7 @@
 sfContext::createInstance($configuration);
 
 $t = new lime_test(13);
+$t->comment("test Import DR avec denomination automatique à ".DRevConfiguration::getInstance()->hasDenominationAuto());
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 //Suppression des DRev précédentes
@@ -28,7 +29,7 @@ foreach ($csv as $line) {
   $produits[$line[DouaneCsvFile::CSV_PRODUIT_INAO]] = $line[DouaneCsvFile::CSV_PRODUIT_INAO];
 }
 
-$t->comment("test sur ".$drev->_id."(denomination automatique : ".DRevConfiguration::getInstance()->hasDenominationAuto().")");
+$t->comment("test sur ".$drev->_id);
 $nb_produits_csv = count(array_keys($produits));
 $t->is(count($drev->declaration), $nb_produits_csv, "bon nombre de produits");
 $nb = 0;

@@ -210,7 +210,9 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->form->save();
+        if (DrevConfiguration::getInstance()->hasExploitationSave()) {
+          $this->form->save();
+        }
 
         if ($this->form->hasUpdatedValues() && !$this->drev->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->drev->getEtablissementObject(), $this->form->getUpdatedValues());
@@ -261,8 +263,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
 
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if ($this->needDrDouane()) {
-
+        if ($this->needDrDouane() && !$this->getUser()->isAdmin()) {
         	return $this->redirect('drev_dr_upload', $this->drev);
         }
 
@@ -833,6 +834,23 @@ class drevActions extends sfActions {
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+    }
+
+    public function executeGenerateMouvements(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+
+        if(count($this->drev->mouvements)) {
+
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        $this->drev->generateMouvements();
+        $this->drev->save();
+
+        $this->getUser()->setFlash('notice', 'Les mouvements ont été générés');
+
+        return $this->redirect('drev_visualisation', $this->drev);
     }
 
     public function executeVisualisation(sfWebRequest $request) {

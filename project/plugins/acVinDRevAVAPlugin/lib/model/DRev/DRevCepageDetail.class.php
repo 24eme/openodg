@@ -64,7 +64,19 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
         return $this->getCepage()->getProduitHash();
     }
 
+    public function getVolumeRevendiqueRecolte() {
+        if(!$this->exist('volume_revendique_recolte') || is_null($this->_get('volume_revendique_recolte'))) {
+
+            return $this->volume_revendique;
+        }
+
+        return $this->_get('volume_revendique_recolte');
+    }
+
     public function updateTotal() {
+        if($this->exist('volume_revendique_recolte') && !is_null($this->volume_revendique_recolte)) {
+            $this->volume_revendique = $this->volume_revendique_recolte + $this->getVolumeRevendiqueVci();
+        }
         $this->volume_revendique_total = round($this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt, 2);
         $this->superficie_revendique_total = round($this->superficie_revendique + $this->superficie_revendique_sgn + $this->superficie_revendique_vt, 2);
         if($this->canHaveSuperficieVinifiee()) {
@@ -75,7 +87,7 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     public function isCleanable() {
         $this->updateTotal();
 
-        return !$this->volume_revendique_total && !$this->superficie_revendique_total;
+        return !$this->volume_revendique_total && !$this->superficie_revendique_total && !$this->exist('vci');
     }
 
     public function cleanNode() {
@@ -121,6 +133,80 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
 
     public function canHaveSuperficieVinifiee() {
     	return ($this->exist('superficie_vinifiee'));
+    }
+    
+    public function getProduitsVCI()
+    {
+    	$produits = array();
+    	if ($this->exist('vci')) {
+    		foreach ($this->vci as $subkey => $subitem) {
+    			$produits = array_merge($produits, array($subitem->getHash() => $subitem));
+    		}
+    	}
+    	return $produits;
+    }
+
+    public function getLibelleComplet()
+    {
+    	return $this->getProduitLibelleComplet();
+    }
+
+    public function getVolumeRevendiqueVci() {
+        if(!$this->hasVci()) {
+            return;
+        }
+
+        $total = 0;
+        foreach ($this->vci as $k => $v) {
+            $total += $v->complement + $v->substitution + $v->rafraichi;
+        }
+
+        return round($total, 2);
+    }
+
+    public function hasVci() {
+
+        return $this->exist('vci');
+    }
+
+    public function getNoeudVci() {
+        if (!$this->getConfig()->hasRendementVCI()) {
+            return;
+        }
+        if (preg_match('/appellation_CREMANT/', $this->getHash())) {
+
+            return $this->getCouleur();
+        }
+
+        return $this;
+    }
+
+    public function activateVci() {
+        $noeud = $this->getNoeudVci();
+
+        if(!$noeud) {
+            return;
+        }
+        if ($noeud->exist('vci')) {
+            return;
+        }
+
+        $vci = $noeud->add('vci');
+        $node = $vci->add(RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+        $node->stockage_libelle = "Cave particulière";
+    }
+
+    public function deactivateVci() {
+        $noeud = $this->getNoeudVci();
+        if(!$noeud) {
+
+            return;
+        }
+        if (!$noeud->exist('vci')) {
+
+            return;
+        }
+        $noeud->remove('vci');
     }
 
 }

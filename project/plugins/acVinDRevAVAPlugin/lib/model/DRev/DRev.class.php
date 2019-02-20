@@ -77,6 +77,28 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->declaration->getProduits($onlyActive);
     }
+    
+    public function getProduitsVCI() {
+    	return $this->declaration->getProduitsVCI();
+    }
+    
+    public function calculateVolumeRevendiqueVCI()
+    {
+    	$vci = array();
+    	foreach ($this->getProduitsVci() as $produit) {
+    		if ($produit->stockage_identifiant) {
+    			continue;
+    		}
+    		if (!isset($vci[$produit->getCouleur()->getHash()])) {
+                $vci[$produit->getCouleur()->getHash()] = 0;
+    		}
+
+            $vci[$produit->getCouleur()->getHash()] += $produit->complement + $produit->substitution + $produit->rafraichi;
+    	}
+    	foreach ($vci as $hash => $val) {
+    		$this->get($hash)->add('volume_revendique_vci', $val);
+    	}
+    }
 
     public function getConfigProduits() {
 
@@ -143,13 +165,49 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_attachments->exist('DR.csv');
     }
 
+    public function getLastRegistreVCI() {
+      return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne -1));
+    }
+
     public function initDoc($identifiant, $campagne) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
         $etablissement = $this->getEtablissementObject();
         $this->declaration->add('certification')->add('genre');
     }
+	
+    public function populateVCIFromRegistre()
+    {
+    	if ($registre = $this->getLastRegistreVCI()) {
+    		foreach($registre->declaration as $key => $p) {
+    			$hash = $p->getHash();
+    			if (!preg_match('/\/couleur\//', $hash)) {
+    				$hash .= '/mention/lieu/couleur';
+    			}
+                if (!preg_match('/\/cepage_/', $hash)) {
+                    $node = $this->addProduit($hash);
+                } else {
+                    $node = $this->addProduitCepage($hash);
+                }
+    			if (!$node->exist('vci') && $node->getDefinition()->exist('vci')) {
+    				$node->add('vci', $p->details);
+    			}
+    		}
+    	}
 
+        $this->declaration->reorderByConf();
+    }
+
+    public function hasProduitsVCI()
+    {
+    	foreach ($this->declaration->getProduitsCepage() as $h => $p) {
+    		if ($p->getConfig()->hasRendementVCI()) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public function initAppellations() {
         foreach ($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
             $this->addAppellation($appellation->getHash());
@@ -462,6 +520,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = $date;
+        $this->updateRegistreVCI();
     }
 
     public function devalidate() {
@@ -472,6 +531,40 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->remove('mouvements');
         $this->add('mouvements');
+    }
+
+    public function updateRegistreVCI() {
+    	$registreVCI = $this->getLastRegistreVCI();
+    	if ($registreVCI && count($this->getProduitsVci()) > 0) {
+    		$registreVCI = RegistreVCIClient::getInstance()->createDoc($this->identifiant, $this->campagne-1);
+    	}
+    	if ($registreVCI = $this->getLastRegistreVCI()) {
+    		foreach ($this->getProduitsVci() as $produit) {
+    			$hash = str_replace('/vci/', '/details/', $produit->getHash());
+    			if (!preg_match('/\/cepage_/', $hash)) {
+    				$hash = str_replace('/mention/lieu/couleur', '', $hash);
+    			} else {
+    				$hash = str_replace('/detail/0', '', $hash);
+    			}
+    			if (!$registreVCI->exist($hash)) {
+    				continue;
+    			}
+    			$detail = $registreVCI->get($hash);
+                if(round($produit->destruction - $detail->destruction, 2)) {
+    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'destruction', round($produit->destruction - $detail->destruction, 2), $detail->stockage_identifiant);
+                }
+                if(round($produit->complement - $detail->complement, 2)) {
+    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'complement', round($produit->complement -  $detail->complement, 2), $detail->stockage_identifiant);
+                }
+                if(round($produit->substitution - $detail->substitution, 2)) {
+		            $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'substitution', round($produit->substitution - $detail->substitution, 2), $detail->stockage_identifiant);
+                }
+                if(round($produit->rafraichi - $detail->rafraichi, 2)) {
+			        $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'rafraichi', round($produit->rafraichi - $detail->rafraichi, 2), $detail->stockage_identifiant);
+                }
+    		}
+    		$registreVCI->save();
+    	}
     }
 
     public function validateOdg($date = null) {

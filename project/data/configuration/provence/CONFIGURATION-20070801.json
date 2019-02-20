@@ -35,6 +35,12 @@
                            "douane": [
                            ],
                            "cvo": [
+                               {
+                                  "date": "2001-01-01",
+                                  "taux": 1.38,
+                                  "code": "CVO",
+                                  "libelle": "Cvo"
+                                }
                            ]
                        }
                    }

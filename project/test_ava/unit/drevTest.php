@@ -21,7 +21,7 @@ foreach(FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, 
     $facture->delete(false);
 }
 
-$campagne = (date('Y')-1)."";
+$campagne = (date('Y')-2)."";
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
 $societe = $compte;
 

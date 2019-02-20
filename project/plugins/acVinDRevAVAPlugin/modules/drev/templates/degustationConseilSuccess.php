@@ -77,7 +77,7 @@
                     </h2>
                 </div>
                 <div class="panel-body form-chai">
-                    <?php $chai = $drev->chais->get(DRev::CUVE) ?>
+                    <?php $chai = $drev->chais->getOrAdd(DRev::CUVE) ?>
                     <?php if (!$formPrelevement): ?>
                         <p>
                             <?php echo $chai->adresse ?><br />

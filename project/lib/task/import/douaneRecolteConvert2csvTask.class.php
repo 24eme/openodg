@@ -42,6 +42,11 @@ EOF;
           throw new sfException("extention de ".$file."non géré");
         }
         $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($file), $csvfile);
+        $m = array();
+        preg_match("/[a-zA-Z0-9]+-([0-9]{4})-.+/",$file,$m);
+        if(count($m) > 1){
+          $fichier->setCampagne($m[1]);
+        }
         print $fichier->convert();
     }
 

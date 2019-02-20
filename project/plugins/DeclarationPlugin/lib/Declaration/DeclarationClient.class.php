@@ -166,8 +166,8 @@ class DeclarationClient
     public function viewByIdentifiantCampagneAndType($identifiant, $campagne, $type) {
         $campagne .= ''; #convertion to string
         $rows = acCouchdbManager::getClient()
-                        ->startkey(array($identifiant, $campagne, $type))
-                        ->endkey(array($identifiant, $campagne, $type, array()))
+                        ->startkey(array($identifiant, $campagne."", $type))
+                        ->endkey(array($identifiant, $campagne."", $type, array()))
                         ->reduce(false)
                         ->getView("declaration", "identifiant")
                 ->rows;

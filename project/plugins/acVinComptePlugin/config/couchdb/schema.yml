@@ -50,7 +50,7 @@ Compte:
       gecos: { required: false }
       lat: {  }
       lon: {  }
-      region: { }
+      region: { required: false }
       societe_informations:
         type: collection
         definition:

@@ -7,4 +7,4 @@ Vous pouvez à tout moment revenir sur votre compte pour consulter ou imprimer v
 
 Bien cordialement,
 
-Le service Appui technique (via l'application de télédéclaration)
+<?php echo include_partial('Email/footerMail'); ?>

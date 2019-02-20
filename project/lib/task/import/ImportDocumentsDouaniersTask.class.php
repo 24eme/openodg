@@ -96,7 +96,7 @@ EOF;
 
     protected function getDocumentDouanierType($etablissement)
     {
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
             return DRCsvFile::CSV_TYPE_DR;
         }
 
@@ -104,7 +104,7 @@ EOF;
             return SV11CsvFile::CSV_TYPE_SV11;
         }
 
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR) {
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT) {
             return SV12CsvFile::CSV_TYPE_SV12;
         }
         return null;

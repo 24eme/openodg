@@ -7,9 +7,6 @@
         <p>
         Vous n'êtes pas autorisé à accéder à cette page.
         </p>
-        <p>
-        Si vous provenez de la plateforme vinsalsace.pro il est possible que votre compte n'ait pas encore été créé. Dans ce cas n'hésitez pas à nous contacter.
-        </p>
     </div>
 </div>
 
