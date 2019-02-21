@@ -74,8 +74,14 @@ class HabilitationClient extends acCouchdbClient {
     }
 
     public function getDemandeAutomatiqueStatut($statut) {
+        $statuts = $this->getDemandeAutomatique();
 
-        return $this->getDemandeAutomatique()[$statut];
+        if(!isset($statuts[$statut])) {
+
+            return null;
+        }
+
+        return $statuts[$statut];
     }
 
     public function getDemandeHabilitations() {

@@ -1,5 +1,5 @@
 <?php use_helper('Orthographe'); ?>
-<div class="modal fade modal-page" aria-labelledby="Modifier la demande" aria-hidden="true">
+<div class="modal fade modal-page modal-demande" aria-labelledby="Modifier la demande" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
             <form method="post" action="" role="form" class="form-horizontal">
@@ -19,7 +19,7 @@
 					    </thead>
 					    <tbody>
 							<?php foreach($demande->getFullHistorique() as $event): ?>
-					        <tr style="<?php if($demande->date == $event->date && $demande->statut = $event->statut): ?>font-weight: bold;<?php endif; ?>">
+					        <tr style="<?php if($demande->date == $event->date && $demande->statut == $event->statut): ?>font-weight: bold;<?php endif; ?>">
 					            <td><?php echo Date::francizeDate($event->date); ?></td>
 
 					            <td><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($event->statut); ?></td>

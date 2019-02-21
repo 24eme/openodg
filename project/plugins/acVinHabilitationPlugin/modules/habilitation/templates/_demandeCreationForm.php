@@ -1,4 +1,4 @@
-<div class="modal fade modal-page" aria-labelledby="Créer une demande" aria-hidden="true">
+<div class="modal fade modal-page modal-demande" aria-labelledby="Créer une demande" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form method="post" action="" role="form" class="form-horizontal" novalidate>

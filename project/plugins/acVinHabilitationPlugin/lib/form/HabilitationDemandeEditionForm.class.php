@@ -46,7 +46,13 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
         foreach($statuts as $key => $libelle) {
             if($this->getOption('filtre') && !preg_match("/".$this->getOption('filtre')."/", $key)) {
                 unset($statuts[$key]);
+                continue;
             }
+
+            if(HabilitationClient::getInstance()->getDemandeAutomatiqueStatut($key)) {
+                $statuts[$key] .= ' ('.HabilitationClient::getInstance()->getDemandeStatutLibelle(HabilitationClient::getInstance()->getDemandeAutomatiqueStatut($key)).')';
+            }
+
         }
 
         return array_merge(array("" => ""), $statuts);

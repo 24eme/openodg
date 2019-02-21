@@ -74,7 +74,7 @@
     </div>
     <div class="col-xs-6">
         <span class="text-danger"><?php echo $form['statut']->renderError() ?></span>
-        <?php echo $form['statut']->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+        <?php echo $form['statut']->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete select2-statut", "required" => true)) ?>
     </div>
 </div>
 <div class="row form-group">
