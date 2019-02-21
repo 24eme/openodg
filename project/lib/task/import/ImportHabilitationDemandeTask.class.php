@@ -97,33 +97,34 @@ EOF;
             }
 
             try {
-            $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
+                $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
+
+                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
+
+                if($pourqui && $dateTransmissionOI) {
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateTransmissionOI, "TRANSMIS_".$pourqui, null, "import", false);
+                }
+
+                $organismeValidateur = "INAO";
+                if($pourqui == "CERTIPAQ") {
+                    $organismeValidateur = "CERTIPAQ";
+                }
+                if($pourqui == "ODG") {
+                    $organismeValidateur = "ODG";
+                }
+
+                if($dateDecision && in_array($etatHabilitation, array("habilité", "retrait"))) {
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_".$organismeValidateur, null, "import", false);
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", $commentaire, "import", false);
+                } elseif($dateDecision && $etatHabilitation == "refus") {
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_". $organismeValidateur, null, "import", false);
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", $commentaire, "import", false);
+                } elseif($dateDecision) {
+                    echo "ERROR;Statut non connu $etatHabilitation;$line\n";
+                    continue;
+                }
             } catch(Exception $e) {
                 echo "ERROR;".$e->getMessage().";$line\n";
-                continue;
-            }
-            $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
-
-            if($pourqui && $dateTransmissionOI) {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateTransmissionOI, "TRANSMIS_".$pourqui, null, "import", false);
-            }
-
-            $organismeValidateur = "INAO";
-            if($pourqui == "CERTIPAQ") {
-                $organismeValidateur = "CERTIPAQ";
-            }
-            if($pourqui == "ODG") {
-                $organismeValidateur = "ODG";
-            }
-
-            if($dateDecision && in_array($etatHabilitation, array("habilité", "retrait"))) {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE_".$organismeValidateur, null, "import", false);
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "VALIDE", $commentaire, "import", false);
-            } elseif($dateDecision && $etatHabilitation == "refus") {
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE_". $organismeValidateur, null, "import", false);
-                $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateDecision, "REFUSE", $commentaire, "import", false);
-            } elseif($dateDecision) {
-                echo "ERROR;Statut non connu $etatHabilitation;$line\n";
                 continue;
             }
         }
