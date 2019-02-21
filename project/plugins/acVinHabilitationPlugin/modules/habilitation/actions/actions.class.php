@@ -8,7 +8,7 @@ class habilitationActions extends sfActions {
         $filtre = $request->getParameter('filtre', null);
         $filtres = array();
         if($filtre) {
-            $filtres = array("Statut" => "/.*".$filtre.".*/");
+            //$filtres = array("Statut" => "/.*".$filtre.".*/");
         }
 
         $this->buildSearch($request,
@@ -129,10 +129,13 @@ class habilitationActions extends sfActions {
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        $this->filtre = $request->getParameter('filtre', null);
+        if(!$this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $this->filtre = $request->getParameter('filtre');
+        }
 
-        //$this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
-        $this->editForm = new HabilitationEditionForm($this->habilitation);
+        if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+            $this->editForm = new HabilitationEditionForm($this->habilitation);
+        }
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
 
         $this->setTemplate('habilitation');
@@ -273,15 +276,16 @@ class habilitationActions extends sfActions {
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
 
         $this->urlRetour = $request->getParameter('retour', false);
-        $this->filtre = $request->getParameter('filtre');
-        if($this->filtre && !preg_match("/".$this->filtre."/", $this->demande->getStatut())) {
+        if(!$this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $this->filtre = $request->getParameter('filtre');
+        }
+        if($this->filtre && !preg_match("/".$this->filtre."/i", $this->demande->getStatut())) {
             $this->formDemandeEdition = false;
 
             return $this->executeDeclarant($request);
         }
 
-        $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande, array(), array('filtre' => $request->getParameter('filtre')));
-
+        $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande, array(), array('filtre' => $this->filtre));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

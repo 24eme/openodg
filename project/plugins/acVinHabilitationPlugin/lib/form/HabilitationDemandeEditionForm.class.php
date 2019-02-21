@@ -44,7 +44,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
 
         $statuts = HabilitationClient::getInstance()->getDemandeStatuts();
         foreach($statuts as $key => $libelle) {
-            if($this->getOption('filtre') && !preg_match("/".$this->getOption('filtre')."/", $key)) {
+            if($this->getOption('filtre') && !preg_match("/".$this->getOption('filtre')."/i", $key)) {
                 unset($statuts[$key]);
                 continue;
             }
