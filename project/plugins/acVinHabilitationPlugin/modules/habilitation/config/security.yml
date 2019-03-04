@@ -3,3 +3,15 @@ all:
 
 ajout:
   credentials: ADMIN
+
+edition:
+  credentials: ADMIN
+
+demandeGlobale:
+  credentials: ADMIN
+
+demandeCreation:
+  credentials: ADMIN
+
+export:
+  credentials: ADMIN

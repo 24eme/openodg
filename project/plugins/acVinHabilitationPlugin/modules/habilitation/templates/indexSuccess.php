@@ -10,10 +10,10 @@
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
     </div>
 </div>
-<ul class="nav nav-tabs" style="margin-top: 20px; margin-bottom: 30px;">
+<!--<ul class="nav nav-tabs" style="margin-top: 20px; margin-bottom: 30px;">
   <li class="active"><a href="<?php echo url_for('habilitation') ?>">Suivi des demandes</a></li>
   <li><a href="<?php echo url_for('habilitation_suivi') ?>">Suivi des habilitations</a></li>
-</ul>
+</ul>-->
 <div class="row">
     <div class="col-sm-9 col-lg-10 col-xs-12">
         <table class="table table-bordered table-striped table-condensed">
@@ -43,8 +43,15 @@
                         <td><a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT], 'demande' => $doc->key[HabilitationDemandeView::KEY_DEMANDE_KEY], 'retour' => $sf_request->getUri())) ?>"><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($doc->key[HabilitationDemandeView::KEY_STATUT]) ; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if(!$nbResultats): ?>
+                    <tr>
+                        <td colspan="6" class="text-center"><em>Aucune demande</em></td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
+
         </table>
+        <?php if($nbPage > 0): ?>
         <div class="text-center">
             <ul class="pagination" style="margin-top: 0;">
                 <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
@@ -54,6 +61,7 @@
                 <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
         </div>
+        <?php endif; ?>
     </div>
 
     <div class="col-sm-3 col-lg-2 col-xs-12">
