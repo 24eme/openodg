@@ -28,7 +28,7 @@ class ExportRegistreVCICSV implements InterfaceDeclarationExportCsv {
             $csv .= self::getHeaderCsv();
         }
 
-        $ligne_base = sprintf("%s;\"%s\";\"%s\";%s;%s;\"%s\";%s;%s", $this->registre->campagne, $this->etablissement->cvi, $this->etablissement->siret, $this->etablissement->raison_sociale, $this->etablissement->adresse, $this->etablissement->code_postal, $this->etablissement->commune, $this->etablissement->email);
+        $ligne_base = sprintf("%s;\"%s\";\"%s\";%s;%s;\"%s\";%s;%s", $this->registre->campagne, ($this->etablissement) ? $this->etablissement->cvi : $this->registre->identifiant, $this->etablissement->siret, $this->etablissement->raison_sociale, $this->etablissement->adresse, $this->etablissement->code_postal, $this->etablissement->commune, $this->etablissement->email);
 
         foreach($this->registre->declaration as $produit) {
             foreach($produit->details as $detail) {
