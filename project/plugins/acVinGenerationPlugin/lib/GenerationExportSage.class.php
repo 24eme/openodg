@@ -22,10 +22,13 @@ class GenerationExportSage extends GenerationAbstract
         $classExportCompteCsv = "ExportCompteCSV_".$application;
 
         if(!class_exists($classExportFactureCsv)){
-          $classExportFactureCsv = "ExportFactureCSV";
+
+            throw new sfException("La classe $classExportFactureCsv n'existe pas");
         }
-        if(!class_exists($classExportFactureCsv)){
-          $classExportCompteCsv = "ExportCompteCSV";
+
+        if(!class_exists($classExportCompteCsv)){
+
+            throw new sfException("La classe $classExportCompteCsv n'existe pas");
         }
 
         if(!count($this->generation->documents)) {
