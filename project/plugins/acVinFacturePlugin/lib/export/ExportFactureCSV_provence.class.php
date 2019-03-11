@@ -1,6 +1,6 @@
 <?php
 
-class ExportFactureCSVProvence implements InterfaceDeclarationExportCsv {
+class ExportFactureCSV_provence implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
