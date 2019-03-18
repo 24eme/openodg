@@ -3,7 +3,11 @@
 class Anonymization {
 
     public static function hideIfNeeded($s) {
-        return preg_replace('/[^ @\.]/', 'X', $s);
+        if (getenv('ANONYMIZATION_HIDE')) {
+            return preg_replace('/[^ @\.]/', 'X', $s);
+        }else{
+            return $s;
+        }
     }
 
 }
