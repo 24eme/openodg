@@ -693,4 +693,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return strtoupper(sfContext::getInstance()->getConfiguration()->getApplication());
     }
 
+    public function getCodeComptable(){
+      return $this->getSociete()->getCodeComptable();
+    }
+
 }

@@ -12,6 +12,19 @@ class RegistreVCIProduitDetail extends BaseRegistreVCIProduitDetail {
       return $this;
     }
 
+    public function setStockPrecedent($v) {
+        if(!is_null($this->stock_final)) {
+
+            throw new Excetion("This method can be set only if stock final is not set");
+
+        }
+        $this->getParent()->getParent()->_set('stock_precedent', $this->getParent()->getParent()->stock_precedent +  $v);
+        $this->getParent()->getParent()->_set('stock_final', $this->getParent()->getParent()->stock_precedent);
+
+        $this->_set('stock_final', $v);
+        return $this->_set('stock_precedent', $v);
+    }
+
     public function setConstitue($v) {
       $this->getParent()->getParent()->_set('constitue', $v);
       return $this->_set('constitue', $v);
@@ -49,6 +62,16 @@ class RegistreVCIProduitDetail extends BaseRegistreVCIProduitDetail {
     }
     public function getLibelle() {
       return $this->stockage_libelle;
+    }
+
+    public function clear() {
+        $this->_set('stock_precedent', null);
+        $this->_set('destruction', null);
+        $this->_set('complement', null);
+        $this->_set('substitution', null);
+        $this->_set('rafraichi', null);
+        $this->_set('constitue', null);
+        $this->_set('stock_final', null);
     }
 
 }

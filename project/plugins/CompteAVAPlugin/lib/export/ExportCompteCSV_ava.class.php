@@ -5,7 +5,7 @@
  *
  * @author mathurin
  */
-class ExportCompteCSV implements InterfaceDeclarationExportCsv {
+class ExportCompteCSV_ava implements InterfaceDeclarationExportCsv {
 
     protected $compte = null;
     protected $header = false;
@@ -21,7 +21,7 @@ class ExportCompteCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function getFileName() {
-        
+
         return $this->compte->_id . '_' . $this->compte->_rev . '.csv';
     }
 
@@ -31,7 +31,7 @@ class ExportCompteCSV implements InterfaceDeclarationExportCsv {
             $csv .= self::getHeaderCsv();
         }
 
-        $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n", 
+        $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
                             $this->compte->getCodeComptable(),
                             $this->compte->nom_a_afficher,
                             "CLIENT",
@@ -51,7 +51,7 @@ class ExportCompteCSV implements InterfaceDeclarationExportCsv {
                             $this->compte->email,
                             "https://declaration.ava-aoc.fr/compte-visualisation/".$this->compte->_id
                           );
-    
+
         return $csv;
     }
 

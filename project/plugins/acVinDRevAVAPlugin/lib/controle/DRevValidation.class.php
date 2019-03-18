@@ -76,10 +76,13 @@ class DRevValidation extends DocumentValidation {
             $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleEngagementPressoir($revendicationProduit);
 
+            $stockVCIFinal = 0;
             foreach ($revendicationProduit->getProduitsVCI() as $produitVCI) {
-            	$this->controleErrorRepartitionVCI($produitVCI);
-            	$this->controleErrorRendementTotalVCI($produitVCI);
-            	$this->controleErrorRendementVCI($produitVCI);
+                $stockVCIFinal += $produitVCI->getStockFinalCalcule();
+            }
+
+            if ($stockVCIFinal != 0) {
+                $this->addPoint(self::TYPE_ERROR, 'repartition_vci', sprintf("%s", $revendicationProduit->getLibelleComplet()), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
             }
         }
 
@@ -389,26 +392,6 @@ class DRevValidation extends DocumentValidation {
         if (!$this->document->addPrelevement(DRev::CUVE_VTSGN) && $this->document->hasLots(true)) {
             $this->addPoint(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', '', $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
         }
-    }
-
-    protected function controleErrorRepartitionVCI($produitVCI) {
-        if ($produitVCI->getStockFinalCalcule() != 0) {
-            $this->addPoint(self::TYPE_ERROR, 'repartition_vci', sprintf("%s", $produitVCI->getLibelleComplet()), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
-        }
-    }
-    
-    protected function controleErrorRendementTotalVCI($produitVCI) {
-    	if(round($produitVCI->getCouleur()->getConfig()->getRendementVciTotal(), 2) < $produitVCI->getStockFinalCalcule()) {
-    		$point = $this->addPoint(self::TYPE_ERROR, 'vci_rendement_total', $produitVCI->getLibelleComplet(), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
-    		$vol = round($produitVCI->stock_final,2) - round($produitVCI->getCouleur()->getConfig()->getRendementVciTotal(), 2);
-    		$point->setMessage($point->getMessage() . " soit $vol hl");
-    	}
-    }
-    
-    protected function controleErrorRendementVCI($produitVCI) {
-    	if (round($produitVCI->getCouleur()->getConfig()->getRendementVciTotal(), 2) < $produitVCI->complement) {
-    		$this->addPoint(self::TYPE_ERROR, 'vci_complement', $produitVCI->getLibelleComplet(), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
-    	}
     }
 
 }

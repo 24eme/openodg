@@ -6,7 +6,7 @@ $routing = clone ProjectConfiguration::getAppRouting();
 $context = sfContext::createInstance($configuration);
 $context->set('routing', $routing);
 
-$t = new lime_test(61);
+$t = new lime_test(62);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -188,6 +188,11 @@ $t->ok($f->lignes->get('odg_ava')->origine_mouvements->exist($drev->_id), "Les o
 $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "La superifcie vinifiée prise en compte dans la facture est de ".$drev->declaration->getTotalSuperficieVinifiee()." ha");
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
 $t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La volume revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalVolumeRevendique()." hl");
+
+$t->comment("Export csv de la facture");
+
+$export = new ExportFactureCSV_ava($f, false);
+$t->is(count(explode("\n", $export->exportFacture())), 10, "L'export fait 10 lignes");
 
 $t->comment("Envoi de la facture par mail");
 
