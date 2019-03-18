@@ -15,16 +15,29 @@ class DRevDeclarant extends BaseDRevDeclarant {
             $this->siret = $this->getDocument()->getEtablissementObject()->siret;
         }
 
-        return $this->_get('siret');
+        return Anonymization::hideIfNeeded($this->_get('siret'));
     }
 
     public function getTelephone() {
         if($this->exist('telephone') && $this->_get('telephone')) {
 
-            return $this->_get('telephone');
+            return  Anonymization::hideIfNeeded($this->_get('telephone'));
         }
 
-        return ($this->_get('telephone_bureau')) ? $this->_get('telephone_bureau') : $this->_get('telephone_mobile');
+        return ($this->_get('telephone_bureau')) ?  Anonymization::hideIfNeeded($this->_get('telephone_bureau')) :  Anonymization::hideIfNeeded($this->_get('telephone_mobile'));
+    }
+
+    public function getTelephoneMobile() {
+        return Anonymization::hideIfNeeded($this->_get('telephone_mobile'));
+    }
+    public function getTelephoneBureau() {
+        return Anonymization::hideIfNeeded($this->_get('telephone_bureau'));
+    }
+    public function getFax() {
+        return Anonymization::hideIfNeeded($this->_get('fax'));
+    }
+    public function getEmail() {
+        return Anonymization::hideIfNeeded($this->_get('email'));
     }
 
 }
