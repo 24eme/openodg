@@ -138,15 +138,11 @@ class declarationActions extends sfActions {
 
         $this->query = $request->getParameter('query', array());
         $this->docs = array();
-
-        if(!$this->query || !count($this->query)) {
-            $this->docs = acCouchdbManager::getClient()
-            ->reduce(false)
-            ->getView('declaration', 'tous')->rows;
-        }
+        $nbDocs = 0;
 
         foreach($rows as $row) {
             $addition = 0;
+            $nbDocs += $row->value;
             foreach($this->facets as $facetNom => $items) {
                 $find = true;
                 if($this->query) {
@@ -174,6 +170,17 @@ class declarationActions extends sfActions {
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
                 ->reduce(false)
+                ->getView('declaration', 'tous')->rows);
+            }
+        }
+
+        if(!$this->query || !count($this->query)) {
+            $pas = 10000;
+            for($i = 0; $i < $nbDocs; $i = $i + $pas) {
+                $this->docs = array_merge($this->docs , acCouchdbManager::getClient()
+                ->reduce(false)
+                ->skip($i)
+                ->limit($pas)
                 ->getView('declaration', 'tous')->rows);
             }
         }

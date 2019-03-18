@@ -1,6 +1,6 @@
 <?php
 
-class ExportFactureCSV implements InterfaceDeclarationExportCsv {
+class ExportFactureCSV_ava implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
@@ -46,7 +46,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
     public function getLibelleFacture() {
 
-        return (($this->facture->isAvoir()) ? "Avoir" : "Facture") . " n°" . $this->facture->numero_interloire;
+        return (($this->facture->isAvoir()) ? "Avoir" : "Facture") . " n°" . $this->facture->getNumeroOdg();
     }
 
     public function exportFacture() {
@@ -74,11 +74,11 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
                 $commentaire = $matches[1];
             }
 
-            $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_ht) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
+            $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_ht) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
 
             $csv .= "\n";
             if($l->montant_tva) {
-                $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';'.$this->getSageCompteGeneral($l).';;;;' . (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_tva) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
+                $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$this->getSageCompteGeneral($l).';;;;' . (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_tva) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
 
                 $csv .= "\n";
             }
@@ -86,7 +86,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
         }
 
-        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
+        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
 
         $csv .= "\n";
 
@@ -102,9 +102,9 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         }
 
         if($this->facture->isPayee()) {
-            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->numero_interloire . ';'.$this->getLibelleFacture().';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';CREDIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;".$this->facture->reglement_paiement;
+            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';CREDIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;".$this->facture->reglement_paiement;
             $csv .= "\n";
-            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->numero_interloire . ';'.$this->getLibelleFacture().';511150;;;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
+            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';511150;;;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
             $csv .= "\n";
         }
 

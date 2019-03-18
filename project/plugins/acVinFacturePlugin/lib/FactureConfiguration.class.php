@@ -57,4 +57,11 @@ class FactureConfiguration {
       return $this->configuration['prefix_code_comptable'];
     }
 
+    public function hasExportSageWithTxt(){
+      if(!isset($this->configuration['export_sage_width_txt']) || !$this->configuration['export_sage_width_txt']){
+        return "";
+      }
+      return $this->configuration['export_sage_width_txt'];
+    }
+
 }
