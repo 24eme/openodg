@@ -618,7 +618,15 @@ class degustationActions extends sfActions {
         $this->degustations = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
         foreach($this->degustations as $degustation) {
-            $json[] = $degustation->toJson();
+            $degustationJson = $degustation->toJson();
+            $degustationJson->raison_sociale = Anonymization::hideIfNeeded($degustationJson->raison_sociale);
+            $degustationJson->adresse = Anonymization::hideIfNeeded($degustationJson->adresse);
+            $degustationJson->telephone_mobile = Anonymization::hideIfNeeded($degustationJson->telephone_mobile);
+            $degustationJson->telephone_bureau = Anonymization::hideIfNeeded($degustationJson->telephone_bureau);
+            $degustationJson->telephone_prive = Anonymization::hideIfNeeded($degustationJson->telephone_prive);
+            $degustationJson->email = Anonymization::hideIfNeeded($degustationJson->email);
+
+            $json[] = $degustationJson;
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
