@@ -10,6 +10,7 @@ Parcellaire:
       source: { }
       declarant:
         type: collection
+        class: ParcellaireDeclarant
         definition:
           fields:
             nom: { }

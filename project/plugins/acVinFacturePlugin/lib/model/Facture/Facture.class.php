@@ -513,15 +513,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public function getMontantPaiement() {
         if(!is_null($this->_get('montant_paiement'))) {
 
-            return $this->_get('montant_paiement');
+            return Anonymization::hideIfNeeded($this->_get('montant_paiement'));
         }
 
         if($this->isPayee() && !$this->isAvoir()) {
 
-            return $this->_get('total_ttc');
+            return Anonymization::hideIfNeeded($this->_get('total_ttc'));
         }
 
-        return $this->_get('montant_paiement');
+        return Anonymization::hideIfNeeded($this->_get('montant_paiement'));
     }
 
     public function getCodeComptableClient() {
@@ -641,8 +641,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public static function isPieceEditable($admin = false) {
     	return false;
     }
-
     /**** FIN DES PIECES ****/
 
+    public function getTotalHt() {
+        return Anonymization::hideIfNeeded($this->_get('total_ht'));
+    }
+    public function getTotalTtc() {
+        return Anonymization::hideIfNeeded($this->_get('total_ttc'));
+    }
+    public function getTotalTaxe() {
+        return Anonymization::hideIfNeeded($this->_get('total_taxe'));
+    }
 
 }
