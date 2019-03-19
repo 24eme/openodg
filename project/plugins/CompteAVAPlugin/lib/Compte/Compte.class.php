@@ -95,6 +95,11 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         return preg_replace("/^[0]+/", "", $this->identifiant_interne);
     }
 
+    public function getRaisonSociale() {
+
+        return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
+    }
+
     public function getNomAAfficher() {
 
         return Anonymization::hideIfNeeded($this->_get('nom_a_afficher'));

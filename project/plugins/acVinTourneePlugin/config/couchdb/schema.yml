@@ -76,6 +76,7 @@ Tournee:
           fields:
              '*':
               type: collection
+              class: TourneeRendezVous
               definition:
                 fields:
                   heure: { }
