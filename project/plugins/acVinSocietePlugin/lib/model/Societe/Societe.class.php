@@ -581,4 +581,8 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return Anonymization::hideIfNeeded($this->_get('siret'));
     }
 
+    public function getRaisonSociale() {
+        return Anaymization::hideIfNeeded($this->_get('raison_sociale'));
+    }
+
 }

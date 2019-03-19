@@ -62,7 +62,7 @@
 			<div class="list-group-item <?php if ($data['doc']['statut'] != 'ACTIF') echo 'disabled'; ?> <?php if (isset($data['doc']['en_alerte']) && $data['doc']['en_alerte']) echo 'en_alerte'; ?>">
                 <div class="row">
                 <div class="col-xs-8">
-                    <?php if($data['doc']['compte_type'] == 'INTERLOCUTEUR'): ?><small class="text-muted"><span class="glyphicon glyphicon-calendar"></span> <?php if(isset($societe_informations['raison_sociale'])): echo $societe_informations['raison_sociale']; endif; ?></small><br/><?php endif; ?>
+                    <?php if($data['doc']['compte_type'] == 'INTERLOCUTEUR'): ?><small class="text-muted"><span class="glyphicon glyphicon-calendar"></span> <?php if(isset($societe_informations['raison_sociale'])): echo Anonymization::hideIfNeeded($societe_informations['raison_sociale']); endif; ?></small><br/><?php endif; ?>
                     <span class="lead"><span class="<?php echo comptePictoCssClass($data['doc']) ?>"></span></span>
                     <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo ($data['doc']['nom_a_afficher'])? $data['doc']['nom_a_afficher'] : "inconnu"; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
                     <?php if (isset($data['doc']['en_alerte']) && $data['doc']['en_alerte']) echo ' ⛔'; ?>
@@ -71,24 +71,24 @@
 <?php if(isset($societe_informations['type']) && $societe_informations['type']): ?><small class="text-muted label label-primary"><?php echo $societe_informations['type'] ?></small><?php endif; if ($data['doc']['statut'] != 'ACTIF') echo ' &nbsp; <small class="text-muted label label-default">'.CompteClient::$statutsLibelles[$data['doc']['statut']].'</small>'; ?>
                 </div>
                 <div class="col-xs-6">
-                    <?php echo $data['doc']['adresse']; ?> <?php if ($data['doc']['adresse_complementaire']): ?><small>(<?php echo $data['doc']['adresse_complementaire']; ?>)</small><?php endif; ?><br />
+                    <?php echo Anonymization::hideIfNeeded($data['doc']['adresse']); ?> <?php if ($data['doc']['adresse_complementaire']): ?><small>(<?php echo Anonymization::hideIfNeeded($data['doc']['adresse_complementaire']); ?>)</small><?php endif; ?><br />
                     <?php echo $data['doc']['code_postal']; ?> <?php echo $data['doc']['commune']; ?><br />
 
                 </div>
                 <div class="col-xs-6">
                     <ul class="list-unstyled" style="margin-bottom: 0;">
                         <?php if($data['doc']['telephone_bureau']): ?>
-                        <li>Bureau : <a href="callto:<?php echo $data['doc']['telephone_bureau'] ?>"><?php echo $data['doc']['telephone_bureau'] ?></a></li>
+                        <li>Bureau : <a href="callto:<?php echo Anonymization::hideIfNeeded($data['doc']['telephone_bureau']); ?>"><?php echo Anonymization::hideIfNeeded($data['doc']['telephone_bureau']); ?></a></li>
                         <?php endif; ?>
                         <?php if($data['doc']['telephone_mobile']): ?>
-                        <li>Mobile : <a href="callto:<?php echo $data['doc']['telephone_mobile'] ?>"><?php echo $data['doc']['telephone_mobile'] ?></a></li>
+                        <li>Mobile : <a href="callto:<?php echo Anonymization::hideIfNeeded($data['doc']['telephone_mobile']); ?>"><?php echo Anonymization::hideIfNeeded($data['doc']['telephone_mobile']); ?></a></li>
                         <?php endif; ?>
                         <?php if($data['doc']['telephone_perso']): ?>
-                        <li>Perso : <a href="callto:<?php echo $data['doc']['telephone_perso'] ?>"><?php echo $data['doc']['telephone_perso'] ?></a></li>
+                        <li>Perso : <a href="callto:<?php echo Anonymization::hideIfNeeded($data['doc']['telephone_perso']); ?>"><?php echo Anonymization::hideIfNeeded($data['doc']['telephone_perso']); ?></a></li>
                         <?php endif; ?>
                         <?php if($data['doc']['email']):
                             foreach (explode(';',$data['doc']['email']) as $email): ?>
-                            <li><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
+                            <li><a href="mailto:<?php echo Anonymization::hideIfNeeded($email); ?>"><?php echo Anonymization::hideIfNeeded($email); ?></a></li>
                         <?php endforeach; ?>
                         <?php endif; ?>
                     </ul>
