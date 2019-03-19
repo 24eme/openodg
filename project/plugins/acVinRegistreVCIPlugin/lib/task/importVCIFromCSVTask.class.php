@@ -96,7 +96,7 @@ EOF;
             }
 
             $registre->save();
-            echo "Registre mise à jour : stock fin ".$produitDetail->stock_final." hl\n";
+            echo "Registre mise à jour ".$registre->_id." : stock fin ".$produitDetail->stock_final." hl\n";
         }
     }
 

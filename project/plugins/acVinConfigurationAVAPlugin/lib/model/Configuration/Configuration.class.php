@@ -2,11 +2,13 @@
 
 class Configuration extends BaseConfiguration {
 
+    protected $identifyLibelleProduct = array();
+
     public function getProduits() {
 
         return $this->declaration->getProduits();
     }
-    
+
     public function getTemplatesFactures()
     {
     	$factures = array();
