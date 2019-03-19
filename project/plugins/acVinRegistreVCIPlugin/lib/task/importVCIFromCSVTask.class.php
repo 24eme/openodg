@@ -69,20 +69,34 @@ EOF;
 
             if(!$produit->exist('details/'.$cvi)) {
                 echo "Registre stockage non trouvé : ".$cvi."\n";
-                print_r($produit->toArray(true, false));
                 continue;
             }
 
             $produitDetail = $produit->get('details/'.$cvi);
 
             if($produitDetail->destruction == $data[12] && $produitDetail->complement == $data[13] && $produitDetail->substitution == $data[14] && $produitDetail->rafraichi == $data[15] && $produitDetail->constitue == $data[16]) {
-                echo "Registre déjà ok\n";
+                //echo "Registre déjà ok\n";
                 continue;
             }
-            
-            echo "Registre mise à jour\n";
-            // print_r($produit->toArray(true, false));
-            // print_r($data);
+
+            if($data[12] && $produitDetail->destruction != $data[12]) {
+                $registre->addLigne($confProduit->getHash(), 'destruction', $data[12], $cvi);
+            }
+            if($data[13] && $produitDetail->complement != $data[13]) {
+                $registre->addLigne($confProduit->getHash(), 'complement', $data[13], $cvi);
+            }
+            if($data[14] && $produitDetail->complement != $data[14]) {
+                $registre->addLigne($confProduit->getHash(), 'substitution', $data[14], $cvi);
+            }
+            if($data[15] && $produitDetail->rafraichi != $data[15]) {
+                $registre->addLigne($confProduit->getHash(), 'rafraichi', $data[15], $cvi);
+            }
+            if($data[16] && $produitDetail->constitue != $data[16]) {
+                $registre->addLigne($confProduit->getHash(), 'constitue', $data[16], $cvi);
+            }
+
+            $registre->save();
+            echo "Registre mise à jour : stock fin ".$produitDetail->stock_final." hl\n";
         }
     }
 
