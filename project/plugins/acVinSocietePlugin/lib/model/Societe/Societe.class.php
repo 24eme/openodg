@@ -339,7 +339,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         if ($this->siege->exist("adresse_complementaire")) {
             $a .= ' ; ' . $this->siege->adresse_complementaire;
         }
-        return $a;
+        return Anonymization::hideIfNeeded($a);
     }
 
 // A VIRER
@@ -461,15 +461,15 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     public function getEmailTeledeclaration() {
         if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
-	            return $compteSociete->societe_information->email;
+	            return Anonymization::hideIfNeeded($compteSociete->societe_information->email);
 	        }
-	        return $compteSociete->email;
+	        return Anonymization::hideIfNeeded($compteSociete->email);
         }
         if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return $this->teledeclaration_email;
+            return Anonymization::hideIfNeeded($this->teledeclaration_email);
         }
         if ($this->exist('email') && $this->email) {
-            return $this->email;
+            return Anonymization::hideIfNeeded($this->email);
         }
         return null;
     }
@@ -577,5 +577,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $this->getCompte($this->compte_societe);
     }
 
+    public function getSiret() {
+        return Anonymization::hideIfNeeded($this->_get('siret'));
+    }
+
+    public function getRaisonSociale() {
+        return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
+    }
 
 }

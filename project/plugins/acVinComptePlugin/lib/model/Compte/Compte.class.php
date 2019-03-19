@@ -530,11 +530,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getAdresse() {
-        return $this->_get('adresse');
+        return Anonymization::hideIfNeeded($this->_get('adresse'));
     }
 
     public function getAdresseComplementaire() {
-        return $this->_get('adresse_complementaire');
+        return Anonymization::hideIfNeeded($this->_get('adresse_complementaire'));
     }
 
     public function getCommune() {
@@ -550,26 +550,26 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getEmail() {
-        return $this->_get('email');
+        return Anonymization::hideIfNeeded($this->_get('email'));
     }
     public function getEmails(){
         return explode(';',$this->email);
     }
 
     public function getTelephoneBureau() {
-        return $this->_get('telephone_bureau');
+        return Anonymization::hideIfNeeded($this->_get('telephone_bureau'));
     }
 
     public function getTelephonePerso() {
-        return $this->_get('telephone_perso');
+        return Anonymization::hideIfNeeded($this->_get('telephone_perso'));
     }
 
     public function getTelephoneMobile() {
-        return $this->_get('telephone_mobile');
+        return Anonymization::hideIfNeeded($this->_get('telephone_mobile'));
     }
 
     public function getFax() {
-        return $this->_get('fax');
+        return Anonymization::hideIfNeeded($this->_get('fax'));
     }
 
     public function getDistances($lat1, $lon1, $lat2, $lon2)
@@ -681,6 +681,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return true;
     }
 
+    public function getNomAAfficher(){
+      return Anonymization::hideIfNeeded($this->getNom());
+    }
 
     public function getIdentifiantAAfficher(){
       return $this->getIdentifiant();

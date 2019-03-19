@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseDRevPiece
- *
- * Base model for DRevPiece
+ * BaseParcellaireIrrigablePiece
+ * 
+ * Base model for ParcellaireIrrigablePiece
 
  * @property string $identifiant
  * @property string $date_depot
@@ -10,6 +10,7 @@
  * @property string $mime
  * @property integer $visibilite
  * @property string $source
+ * @property acCouchdbJson $fichiers
 
  * @method string getIdentifiant()
  * @method string setIdentifiant()
@@ -23,14 +24,16 @@
  * @method integer setVisibilite()
  * @method string getSource()
  * @method string setSource()
-
+ * @method acCouchdbJson getFichiers()
+ * @method acCouchdbJson setFichiers()
+ 
  */
 
 abstract class BaseParcellaireIrrigablePiece extends Piece {
-
+                
     public function configureTree() {
        $this->_root_class_name = 'ParcellaireIrrigable';
        $this->_tree_class_name = 'ParcellaireIrrigablePiece';
     }
-
+                
 }

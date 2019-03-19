@@ -162,7 +162,7 @@ class EtablissementAllView extends acCouchdbView
 			$libelle = '';
 
 			if ($nom = $row->key[self::KEY_NOM]) {
-				$libelle .= $nom;
+				$libelle .= Anonymization::hideIfNeeded($nom);
 			}
 
 			$libelle .= ' ('.$row->key[self::KEY_IDENTIFIANT];
