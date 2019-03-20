@@ -201,4 +201,14 @@ class Constat extends BaseConstat {
         }
     }
 
+    public function getEmail(){
+        return Anonymization::hideIfNeeded($this->_get('email'));
+    }
+    public function getAdresse() {
+        return Anonymization::hideIfNeeded($this->_get('adresse'));
+    }
+    public function getRaisonSociale() {
+        return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
+    }
+
 }

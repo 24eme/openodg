@@ -2,11 +2,13 @@
 
 class Configuration extends BaseConfiguration {
 
+    protected $identifyLibelleProduct = array();
+
     public function getProduits() {
 
         return $this->declaration->getProduits();
     }
-    
+
     public function getTemplatesFactures()
     {
     	$factures = array();
@@ -89,6 +91,37 @@ class Configuration extends BaseConfiguration {
     public function getRecolte() {
 
       return $this->getDeclaration();
+    }
+
+    public function identifyProductByLibelle($libelle) {
+        if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
+
+            return $this->identifyLibelleProduct[$libelle];
+        }
+
+        $libelleSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($libelle)));
+
+        foreach($this->declaration->getProduits() as $produit) {
+            $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
+            //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
+            if($libelleSlugify == $libelleProduitSlugify) {
+                $this->identifyLibelleProduct[$libelle] = $produit;
+
+                return $produit;
+            }
+        }
+
+        foreach($this->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationAppellation") as $produit) {
+            $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
+
+            if($libelleSlugify == $libelleProduitSlugify) {
+                $this->identifyLibelleProduct[$libelle] = $produit;
+
+                return $produit;
+            }
+        }
+
+        return false;
     }
 
     public function identifyProduct($appellation, $lieu, $cepage, $type_declaration = null) {

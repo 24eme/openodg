@@ -52,6 +52,7 @@ Compte:
           fields:
             '*':
               type: collection
+              class: CompteChai
               definition:
                 fields:
                   adresse: { }

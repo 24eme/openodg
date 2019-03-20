@@ -81,6 +81,12 @@ class constatsActions extends sfActions {
             $rdvConstats = array();
 
             $rdvJson = $rendezvous->toJson();
+            $rdvJson->compte_raison_sociale = Anonymization::hideIfNeeded($rdvJson->compte_raison_sociale);
+            $rdvJson->compte_adresse = Anonymization::hideIfNeeded($rdvJson->compte_adresse);
+            $rdvJson->compte_telephone_mobile = Anonymization::hideIfNeeded($rdvJson->compte_telephone_mobile);
+            $rdvJson->compte_telephone_bureau = Anonymization::hideIfNeeded($rdvJson->compte_telephone_bureau);
+            $rdvJson->compte_telephone_prive = Anonymization::hideIfNeeded($rdvJson->compte_telephone_prive);
+            $rdvJson->compte_email = Anonymization::hideIfNeeded($rdvJson->compte_email);
             $rdvJson->nb_non_saisis = 0;
             $rdvJson->nb_refuses = 0;
             $rdvJson->nb_approuves = 0;

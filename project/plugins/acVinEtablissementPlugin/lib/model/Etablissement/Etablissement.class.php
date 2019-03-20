@@ -473,7 +473,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     	if (!$this->_get('siret')) {
     		$this->siret = $this->getSociete()->getSiret();
     	}
-    	return $this->_get('siret');
+    	return Anonymization::hideIfNeeded($this->_get('siret'));
     }
 
 
@@ -495,6 +495,21 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
     public function getStatutLibelle(){
       return CompteClient::$statutsLibelles[$this->getStatut()];
+    }
+
+    public function getRaisonSociale() {
+        return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
+    }
+
+    public function getNom() {
+        return Anonymization::hideIfNeeded($this->_get('nom'));
+    }
+
+    public function getAdresse() {
+        return Anonymization::hideIfNeeded($this->_get('adresse'));
+    }
+    public function getAdresseComplementaire() {
+        return Anonymization::hideIfNeeded($this->_get('adresse_complementaire'));
     }
 
 }
