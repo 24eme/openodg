@@ -28,8 +28,7 @@
             </thead>
             <tbody>
                 <?php foreach($docs as $doc):
-                  $habilitation = HabilitationClient::getInstance()->find($doc->id);
-                  $declarant = $habilitation->getDeclarant();
+                  $declarant = EtablissementClient::getInstance()->findByIdentifiant($doc->key[HabilitationActiviteView::KEY_IDENTIFIANT], acCouchdbClient::HYDRATE_JSON);
                    ?>
                     <tr>
                         <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>

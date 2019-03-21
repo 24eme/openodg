@@ -346,8 +346,7 @@ class habilitationActions extends sfActions {
     }
 
     protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(),$without_group_by = false) {
-
-        $rows = acCouchdbManager::getClient()->group(true)->getView($viewCat, $viewName)->rows;
+        $rows = array();
         if(!$without_group_by){
             $rows = acCouchdbManager::getClient()->group(true)->group_level(count($facets))->getView($viewCat, $viewName)->rows;
         }
@@ -411,6 +410,9 @@ class habilitationActions extends sfActions {
                 ->reduce(false)
                 ->getView($viewCat, $viewName)->rows);
             }
+        }
+        foreach($this->facets as $facetNom => $items) {
+            arsort($this->facets[$facetNom]);
         }
         if(count($filtres)) {
             foreach($this->docs as $key => $doc) {
