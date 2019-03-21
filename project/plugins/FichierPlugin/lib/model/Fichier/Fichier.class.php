@@ -205,8 +205,9 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 			return null;
 		}
 
-		$fichier = FichierClient::getInstance()->find($id);
-    	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $fichier->_id, 'sf_subject' => $fichier->getEtablissementObject()));
+        $identifiant = preg_replace("/^.+-(.+)-.+$/", '\1', $id);
+
+    	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $id, 'identifiant' => $identifiant));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
@@ -214,8 +215,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 			return null;
 		}
 
-		$fichier = FichierClient::getInstance()->find($id);
-    	return sfContext::getInstance()->getRouting()->generate('csvgenerate_fichier', $fichier);
+    	return sfContext::getInstance()->getRouting()->generate('csvgenerate_fichier', array('id' => $id));
     }
 
     public static function isVisualisationMasterUrl($admin = false) {
