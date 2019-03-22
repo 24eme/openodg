@@ -62,6 +62,10 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
     {
         $values = $this->getValues();
 
+        if($this->demande->date > $values['date']) {
+            throw new Exception("Il n'est pas possible de mettre un statut à une date inférieur");
+        }
+
         $demande = HabilitationClient::getInstance()->updateDemandeAndSave(
                                                               $this->getDocument()->identifiant,
                                                               $this->demande->getKey(),
