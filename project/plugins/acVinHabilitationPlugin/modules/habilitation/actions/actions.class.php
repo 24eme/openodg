@@ -301,7 +301,13 @@ class habilitationActions extends sfActions {
             return $this->executeDeclarant($request);
         }
 
-        $this->formDemandeEdition->save();
+        try {
+            $this->formDemandeEdition->save();
+        } catch (Exception $e) {
+            $this->getUser()->setFlash('erreur', $e->getMessage());
+            
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
 
         if($this->urlRetour) {
 
