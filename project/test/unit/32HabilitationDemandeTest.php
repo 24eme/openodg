@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(66);
+$t = new lime_test(67);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -77,7 +77,7 @@ $auteur = "Syndicat";
 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $keyDemande1, $date, $statut, $commentaire, $auteur, false);
 $dateEnregistrement = (new DateTime("now - 2 month -15 day"))->format('Y-m-d');
 HabilitationClient::getInstance()->updateAndSaveHabilitationFromDemande($demande, $commentaire);
-HabilitationClient::getInstance()->triggerDemandeStatutAndSave($demande, $dateEnregistrement, $commentaire, $auteur);
+HabilitationClient::getInstance()->triggerDemandeStatutAndSave($demande, $commentaire, $auteur, $dateEnregistrement);
 $habilitation = $demande->getDocument();
 
 $idDocHabilitation = 'HABILITATION-'.$viti->identifiant.'-'.str_replace('-', '', $date);
@@ -101,7 +101,7 @@ $demandeLast = $habilitationLast->demandes->get($keyDemande1);
 $t->is($demandeLast->statut, 'ENREGISTREMENT', "La statut enregistrement a été créé tout seul");
 $t->is($demandeLast->date, $dateEnregistrement, "La date est celle d'aujourd'hui");
 $t->is($demandeLast->date_habilitation, $date, "La date d'habilitation est celle du passage au statut complet");
-$t->ok($habilitationLast->exist($demande->produit), " a été créé dans l'habilitation");
+$t->ok($habilitationLast->exist($demande->produit), "Le produit a été créé dans l'habilitation");
 $habilitationProduit = $habilitationLast->get($demande->produit);
 $t->is($habilitationProduit->activites->get($activites[0])->statut, "DEMANDE_HABILITATION", "La première activité est en attente d'habilitation");
 $t->is($habilitationProduit->activites->get($activites[0])->date, $date, "La première activité à pour date ".$date);
@@ -109,8 +109,8 @@ $t->is($habilitationProduit->activites->get($activites[0])->commentaire, $commen
 
 $t->comment("Validation de la 1ère demande");
 
-$date = (new DateTime("now"))->format('Y-m-d');
-$statut = "VALIDE";
+$date = (new DateTime("now -3 day "))->format('Y-m-d');
+$statut = "VALIDE_INAO";
 $commentaire = "Cool";
 $auteur = "Syndicat";
 
@@ -255,6 +255,7 @@ $t->is($habilitation->historique->get(0)->commentaire, $values['commentaire'], "
 $habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $demande = $habilitation->demandes->get($demande->getKey());
 
+$t->is($demande->date, date('Y-m-d'), "La date est celle du jour");
 $t->is($demande->statut, "ENREGISTREMENT", "Le statut enregistrement a été créé automatiquement");
 
 

@@ -362,7 +362,7 @@ class HabilitationClient extends acCouchdbClient {
 
             if($trigger) {
                 $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
-                $this->triggerDemandeStatutAndSave($demande, date('Y-m-d'), $commentaire, $auteur);
+                $this->triggerDemandeStatutAndSave($demande, $commentaire, $auteur);
             }
         }
 
@@ -383,12 +383,22 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
-        public function triggerDemandeStatutAndSave($demande, $date, $commentaire, $auteur) {
+        public function triggerDemandeStatutAndSave($demande, $commentaire, $auteur, $date = null) {
             if(!array_key_exists($demande->statut, $this->getDemandeAutomatique())) {
                 return;
             }
 
-            $demande = $this->updateDemandeAndSave($demande->getDocument()->identifiant, $demande->getKey(), $date, $this->getDemandeAutomatiqueStatut($demande->statut), $commentaire, $auteur);
+            $statutAutomatique = $this->getDemandeAutomatiqueStatut($demande->statut);
+
+            if(!$date && $this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $statutAutomatique)) {
+                $date = $demande->date;
+            }
+
+            if(!$date) {
+                $date = date('Y-m-d');
+            }
+
+            $demande = $this->updateDemandeAndSave($demande->getDocument()->identifiant, $demande->getKey(), $date, $statutAutomatique, $commentaire, $auteur);
 
             return $demande;
         }
