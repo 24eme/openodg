@@ -56,4 +56,9 @@ class HabilitationConfiguration {
         return $this->configuration['demande']['habilitations'];
     }
 
+    public function getDemandeStatutsFerme() {
+
+        return array('VALIDE', 'REFUSE', 'ANNULE');
+    }
+
 }

@@ -15,6 +15,9 @@
     $(document).ready(function()
     {
         $.initHabilitationDemande();
+        $('#habilitation_voirtout').on('change', function() {
+            document.location.href=$(this).attr('data-href');
+        });
     });
 
 })(jQuery);

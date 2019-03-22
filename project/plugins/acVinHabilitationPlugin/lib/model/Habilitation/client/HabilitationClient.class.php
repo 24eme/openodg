@@ -57,6 +57,11 @@ class HabilitationClient extends acCouchdbClient {
         return HabilitationConfiguration::getInstance()->getDemandeStatuts();
     }
 
+    public function getStatutsFerme() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeStatutsFerme();
+    }
+
     public function getDemandeStatutLibelle($key) {
         $statuts = HabilitationConfiguration::getInstance()->getDemandeStatuts();
 

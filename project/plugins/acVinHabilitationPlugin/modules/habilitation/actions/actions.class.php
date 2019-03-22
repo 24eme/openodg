@@ -7,19 +7,21 @@ class habilitationActions extends sfActions {
   {
         $filtre = $request->getParameter('filtre', null);
         $filtres = array();
-        if($filtre) {
-            //$filtres = array("Statut" => "/.*".$filtre.".*/");
+
+        $this->voirtout = (bool) $request->getParameter('voirtout');
+        if(!$this->voirtout) {
+            $filtres["Statut"] = "/^(?!".implode("$|", HabilitationClient::getInstance()->getStatutsFerme())."$)/";
         }
 
         $this->buildSearch($request,
                         'habilitation',
                         'demandes',
-                        array("Demande" => HabilitationDemandeView::KEY_DEMANDE,
+                        array(
                               "Statut" => HabilitationDemandeView::KEY_STATUT,
+                              "Demande" => HabilitationDemandeView::KEY_DEMANDE,
                               "Produit" => HabilitationDemandeView::KEY_PRODUIT),
                         array("Les plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1),
                               "Les plus anciennes" => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1)),
-
                         30,
                         $filtres
                         );
@@ -345,10 +347,13 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(),$without_group_by = false) {
+    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(), $without_group_by = false) {
         $rows = array();
         if(!$without_group_by){
-            $rows = acCouchdbManager::getClient()->group(true)->group_level(count($facets))->getView($viewCat, $viewName)->rows;
+            $rows = acCouchdbManager::getClient()
+                ->group(true)
+                ->group_level(max($facets) + 1)
+                ->getView($viewCat, $viewName)->rows;
         }
 
         $this->facets = array();

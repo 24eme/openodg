@@ -40,7 +40,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
     public function isOuvert() {
 
-        return !(in_array($this->statut, array('VALIDE', 'REFUSE', 'ANNULE')));
+        return !(in_array($this->statut, HabilitationClient::getInstance()->getStatutsFerme()));
     }
 
     public function getActivitesLibelle() {

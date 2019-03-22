@@ -10,10 +10,10 @@
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
     </div>
 </div>
-<ul class="nav nav-tabs" style="margin-top: 20px; margin-bottom: 30px;">
+<!--<ul class="nav nav-tabs" style="margin-top: 20px; margin-bottom: 30px;">
   <li class="active"><a href="<?php echo url_for('habilitation') ?>">Suivi des demandes</a></li>
   <li><a href="<?php echo url_for('habilitation_suivi') ?>">Suivi des habilitations</a></li>
-</ul>
+</ul>-->
 <div class="row">
     <div class="col-sm-9 col-lg-10 col-xs-12">
         <table class="table table-bordered table-striped table-condensed">
@@ -33,7 +33,7 @@
                   $date = new DateTime($doc->key[HabilitationDemandeView::KEY_DATE]);
                   $dateHabilitation = new DateTime($doc->key[HabilitationDemandeView::KEY_DATE_HABILITATION]);
                    ?>
-                    <tr>
+                    <tr class="<?php if(in_array($doc->key[HabilitationDemandeView::KEY_STATUT], HabilitationClient::getInstance()->getStatutsFerme())): ?>transparence-sm<?php endif; ?>">
                         <td class="text-left"><?php echo $date->format('d/m/Y') ?></td>
                         <td class="text-center"><?php echo $dateHabilitation->diff(new DateTime())->days ?></td>
                         <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
@@ -64,17 +64,22 @@
     </div>
 
     <div class="col-sm-3 col-lg-2 col-xs-12">
-        <div class="list-group">
+        <!--<div class="list-group">
             <a class="btn btn-default btn-block" href="<?php echo url_for('habilitation_export_historique') ?>">Export de l'historique</a>
-        </div>
+        </div>-->
         <div class="list-group">
             <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         </div>
         <h4>Trié par</h4>
         <div class="list-group">
             <?php foreach($sorts as $libelle => $keys): ?>
-                <a href="<?php echo url_for('habilitation', array('query' => $query, 'sort' => $libelle)) ?>" class="list-group-item <?php if($sort == $libelle): ?>active<?php endif; ?>"><?php echo $libelle ?></a>
+                <a href="<?php echo url_for('habilitation', array('query' => $query, 'sort' => $libelle, 'voirtout' => $voirtout*1)) ?>" class="list-group-item <?php if($sort == $libelle): ?>active<?php endif; ?>"><?php echo $libelle ?></a>
             <?php endforeach; ?>
+        </div>
+        <div class="checkbox" style="margin-bottom: 20px;">
+            <label>
+                <input data-href="<?php echo url_for('habilitation', array('voirtout' => (!$voirtout)*1)) ?>" id="habilitation_voirtout" <?php if($voirtout): ?>checked="checked"<?php endif; ?> type="checkbox" value="1" /> Demandes terminées
+            </label>
         </div>
         <?php if($query && count($query) > 0): ?>
         <p>
@@ -88,7 +93,7 @@
                 <?php $active = isset($query[$facetNom]) && $query[$facetNom] == $itemNom; ?>
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
-                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($itemNom); ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php else: ?><?php echo $itemNom ?><?php endif ?></a>
+                <a href="<?php echo url_for('habilitation', array('query' => $params, 'sort' => $sort, 'voirtout' => $voirtout*1)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($itemNom); ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php else: ?><?php echo $itemNom ?><?php endif ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
