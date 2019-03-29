@@ -67,15 +67,15 @@ $confFile = dirname(__FILE__).'/../config.inc';
 if (file_exists($confFile)) {
 if (($handle = fopen($confFile, "r")) !== false) {
     while (($line = fgets($handle)) !== false) {
-        if (strpos($line, "COUCHDBDOMAIN") !== false) {
+        if (strpos($line, "COUCHDBDOMAIN") === 0) {
             $tab = explode('=', $line);
             $config['domaine'] = str_replace(array(PHP_EOL, ' '), '', $tab[1]);
         }
-        if (strpos($line, "COUCHDBPORT") !== false) {
+        if (strpos($line, "COUCHDBPORT") === 0) {
             $tab = explode('=', $line);
             $config['port'] = str_replace(array(PHP_EOL, ' '), '', $tab[1]);
         }
-        if (strpos($line, "COUCHDBBASE") !== false) {
+        if (strpos($line, "COUCHDBBASE") === 0) {
             $tab = explode('=', $line);
             $config['base'] = str_replace(array(PHP_EOL, ' '), '', $tab[1]);
         }
