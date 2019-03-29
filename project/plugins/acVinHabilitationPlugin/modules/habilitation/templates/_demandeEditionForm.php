@@ -24,7 +24,7 @@
 
 					            <td><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($event->statut); ?></td>
 
-					            <td><?php echo $event->commentaire; ?></td>
+					            <td><?php echo $event->commentaire; ?> <?php if($demande->date == $event->date && $demande->statut == $event->statut): ?><a class="btn btn-default pull-right btn-xs" href="<?php echo url_for('habilitation_demande_suppression_derniere', array('identifiant' => $demande->getDocument()->identifiant, 'demande' => $demande->getKey(), 'date_statut' => $demande->date."_".$demande->statut)) ?>"><small class="glyphicon glyphicon-remove"></small></a><?php endif; ?></td>
 					        </tr>
 							<?php endforeach; ?>
 					    </tbody>

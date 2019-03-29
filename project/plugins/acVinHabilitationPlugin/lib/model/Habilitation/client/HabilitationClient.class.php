@@ -277,24 +277,6 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation->demandes->get($keyDemande);
         }
 
-        public function findLastDemandeByStatut($identifiant,$date,$statut,$demandeId){
-            $dateInf = DateTime::createFromFormat('Y-m-d',$date);
-            $dateInf->modify('-1 day');
-            $previousDate = $dateInf->format('Y-m-d');
-            $lastHabilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant,$previousDate);
-            if($lastHabilitation){
-                if($lastHabilitation->demandes->exist($demandeId)){
-                    $lastDemande = $lastHabilitation->demandes->get($demandeId);
-                    if($lastDemande->statut == $statut){
-                        return $lastDemande;
-                    }else{
-                        return $this->findLastDemandeByStatut($identifiant,$lastHabilitation->getDate(),$statut,$demandeId);
-                    }
-                }
-            }
-            return null;
-        }
-
         public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
@@ -357,6 +339,51 @@ class HabilitationClient extends acCouchdbClient {
             $historique->iddoc .= ":".$demande->getHash();
         }
 
+        public function deleteDemandeLastStatutAndSave($identifiant, $keyDemande) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+
+            $demande = $this->getDemande($identifiant, $keyDemande, $habilitation->demandes->get($keyDemande)->date);
+
+            if($this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut)) {
+                //return;
+            }
+
+            $historiquePrec = $demande->getHistoriquePrecedent($demande->statut, $demande->date);
+
+            if(!$historiquePrec) {
+
+                return;
+            }
+
+            $keyHistoriqueToDelete = null;
+            foreach($demande->getDocument()->historique as $h) {
+                if($h->iddoc != $demande->getDocument()->_id.":".$demande->getHash()) {
+                    continue;
+                }
+                if($h->statut != $demande->statut)  {
+                    continue;
+                }
+
+                $keyHistoriqueToDelete = $h->getKey();
+                break;
+            }
+
+            if($keyHistoriqueToDelete !== null) {
+                $demande->getDocument()->historique->remove($keyHistoriqueToDelete);
+            }
+
+            $demande->statut = $historiquePrec->statut;
+            $demande->date = $historiquePrec->date;
+            $demande->commentaire = $historiquePrec->commentaire;
+            $demande->getDocument()->save();
+
+            if($historiquePrec->iddoc != $demande->getDocument()->_id.":".$demande->getHash()) {
+                $demande = $this->getDemande($identifiant, $keyDemande, $historiquePrec->date);
+            }
+
+            $this->replicateDemandeAndSave($demande, true);
+        }
+
         protected function postSaveDemande($demande, $commentaire, $auteur, $trigger) {
             $this->replicateDemandeAndSave($demande);
 
@@ -366,14 +393,14 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
-        protected function replicateDemandeAndSave($demande) {
+        protected function replicateDemandeAndSave($demande, $force = false) {
             $habilitation = $demande->getDocument();
             while($habilitationSuivante = $this->findNextByIdentifiantAndDate($habilitation->identifiant, $habilitation->date)) {
                 if(!$habilitationSuivante) {
                     break;
                 }
 
-                if($habilitationSuivante->demandes->exist($demande->getKey()) && $habilitationSuivante->demandes->get($demande->getKey())->date > $demande->date) {
+                if($habilitationSuivante->demandes->exist($demande->getKey()) && $habilitationSuivante->demandes->get($demande->getKey())->date > $demande->date && !$force) {
                     break;
                 }
 

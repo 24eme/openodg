@@ -317,6 +317,22 @@ class habilitationActions extends sfActions {
         return $this->redirect('habilitation_declarant', $this->etablissement);
     }
 
+    public function executeDemandeSuppressionDerniere(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+
+        if($this->demande->date."_".$this->demande->statut != $request->getParameter('date_statut')) {
+
+            throw new Exception("La date et le statut n'existe pas");
+        }
+
+        HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->etablissement->identifiant, $request->getParameter('demande'));
+
+        return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->etablissement->identifiant, 'demande' => $request->getParameter('demande')));
+    }
+
     public function executeExport(sfWebRequest $request) {
         set_time_limit(-1);
         ini_set('memory_limit', '2048M');

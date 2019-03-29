@@ -90,3 +90,13 @@ habilitation_export_historique:
   url: /habilitation/export_historique
   param: { module: habilitation, action: exportHistorique }
   class: HabilitationGeneralRoute
+
+habilitation_demande_suppression_derniere:
+  url: /habilitation/declarant/:identifiant/demande/suppression_derniere/:demande/:date_statut
+  param: { module: habilitation, action: demandeSuppressionDerniere }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]

@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(67);
+$t = new lime_test(71);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -110,6 +110,7 @@ $t->is($habilitationProduit->activites->get($activites[0])->commentaire, $commen
 $t->comment("Validation de la 1ère demande");
 
 $date = (new DateTime("now -3 day "))->format('Y-m-d');
+$dateValidation1 = $date;
 $statut = "VALIDE_INAO";
 $commentaire = "Cool";
 $auteur = "Syndicat";
@@ -154,6 +155,7 @@ $t->is($demande->getHistoriqueSuivant("ENREGISTREMENT", $dateEnregistrement)->st
 $t->comment("Création d'une 2ème demande");
 
 $date = (new DateTime("-8 month"))->format('Y-m-d');
+$dateDepot2 = $date;
 $statut = "DEPOT";
 $commentaire = "";
 $auteur = "Syndicat";
@@ -185,9 +187,22 @@ $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est "
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->demandes->get($demande->getKey())->toArray(true, false), $demande->toArray(true, false), "La changement de la demande a bien été repliquée sur l'habilitation la plus récente");
 
-$t->comment("Création d'une demande d'habilitation produit par formulaire");
+$t->comment("Suppression du dernier statut d'une demande");
 
-$habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($viti->identifiant, $keyDemande1);
+
+$habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$t->is($habilitationLast->demandes->get($keyDemande1)->statut, 'VALIDE_INAO', "Le statut est VALIDE_INAO");
+$t->is($habilitationLast->demandes->get($keyDemande1)->date, $dateValidation1, "La date est celle du statut VALIDE_INAO");
+
+HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($viti->identifiant, $keyDemande2);
+
+$habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$t->is($habilitationLast->demandes->get($keyDemande2)->statut, 'DEPOT', "Le statut est DEPOT");
+$t->is($habilitationLast->demandes->get($keyDemande2)->date, $dateDepot2, "La date est celle du statut DEPOT");
+
 
 $form = new HabilitationDemandeCreationForm($habilitation);
 
