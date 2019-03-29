@@ -25,7 +25,12 @@ class Rendezvous extends BaseRendezvous {
 
         return $tournee->getFirstAgent()->nom;
     }
-    
+
+    public function getNomAgentOrigine() {
+
+        return Anonymization::hideIfNeeded($this->_get('nom_agent_origine'));
+    }
+
     public function getCompte() {
         return CompteClient::getInstance()->findByIdentifiant($this->identifiant);
     }
@@ -69,6 +74,25 @@ class Rendezvous extends BaseRendezvous {
         }
 
         return $tournee->getAgentUniqueObj();
+    }
+
+    public function getTelephoneBureau(){
+        return Anonymization::hideIfNeeded($this->_get('telephone_bureau'));
+    }
+    public function getTelephoneMobile(){
+        return Anonymization::hideIfNeeded($this->_get('telephone_mobile'));
+    }
+	public function getTelephonePrive(){
+		return Anonymization::hideIfNeeded($this->_get('telephone_prive'));
+	}
+    public function getEmail(){
+        return Anonymization::hideIfNeeded($this->_get('email'));
+    }
+    public function getAdresse() {
+        return Anonymization::hideIfNeeded($this->_get('adresse'));
+    }
+    public function getRaisonSociale() {
+        return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
     }
 
     protected function preSave() {

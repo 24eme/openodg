@@ -13,6 +13,7 @@ class DouaneRecolteConvert2csvTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add CSV header', false),
         ));
 
         $this->namespace = 'douaneRecolte';
@@ -40,6 +41,9 @@ EOF;
           $csvfile = Fichier::convertXlsFile($file);
         }elseif (strtolower($extension) != 'csv') {
           throw new sfException("extention de ".$file."non géré");
+        }
+        if (isset($options['header']) && $options['header']) {
+            echo "type;année;id interne;cvi;raison sociale;réservé;commune;tiers;tiers id;categorie;genre;denomination;mention;lieu;couleur;cepage;inao;libelle;denomination complementaire;ligne numero;ligne libelle;ligne valeur;acheteur id;acheteur raison sociale;réservé;ville apporteur (sv)\n";
         }
         $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($file), $csvfile);
         $m = array();

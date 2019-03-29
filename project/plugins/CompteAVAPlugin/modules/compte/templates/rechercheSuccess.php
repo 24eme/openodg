@@ -37,30 +37,30 @@
             <?php foreach ($results as $res): ?>
             <?php $data = $res->getData(); ?>
                 <a style="<?php if($data['statut'] != CompteClient::STATUT_ACTIF): ?>opacity: 0.6<?php endif ?>" href="<?php echo url_for('compte_visualisation', array("id" => $data["_id"])); ?>" class="list-group-item">
-                    <h3 class="list-group-item-heading"><?php echo $data['nom_a_afficher']; ?> <?php if($data['cvi'] || $data['siren']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siren']): ?> / <?php endif; ?><?php if($data['siren']): ?><?php echo $data['siren'] ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
+                    <h3 class="list-group-item-heading"><?php echo Anonymization::hideIfNeeded($data['nom_a_afficher']); ?> <?php if($data['cvi'] || $data['siren']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siren']): ?> / <?php endif; ?><?php if($data['siren']): ?><?php echo Anonymization::hideIfNeeded($data['siren']) ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
                     <p class="list-group-item-text">
                     <div class="pull-right">
                      <?php if ($data['telephone_bureau']):?>
-                                    <abbr class="text-muted" title="Mobile"><i>Bureau</abbr>&nbsp;:</i>&nbsp;&nbsp;<?php echo $data['telephone_bureau'] ?><br />
+                                    <abbr class="text-muted" title="Mobile"><i>Bureau</abbr>&nbsp;:</i>&nbsp;&nbsp;<?php echo Anonymization::hideIfNeeded($data['telephone_bureau']) ?><br />
                                 <?php endif; ?>
                                 <?php if ($data['telephone_mobile']):?>
-                                    <abbr class="text-muted" title="Mobile"><i>Mobile</abbr>&nbsp;:</i>&nbsp;&nbsp;&nbsp;<?php echo $data['telephone_mobile'] ?><br />
+                                    <abbr class="text-muted" title="Mobile"><i>Mobile</abbr>&nbsp;:</i>&nbsp;&nbsp;&nbsp;<?php echo Anonymization::hideIfNeeded($data['telephone_mobile']) ?><br />
                                 <?php endif; ?>
                                 <?php if ($data['telephone_prive']):?>
-                                    <abbr class="text-muted" title="Privé"><i>Privé</abbr>&nbsp;:</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $data['telephone_prive'] ?><br />
+                                    <abbr class="text-muted" title="Privé"><i>Privé</abbr>&nbsp;:</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo Anonymization::hideIfNeeded($data['telephone_prive']) ?><br />
                                 <?php endif; ?>
                     </div>
                     <div>
                             <?php if($data['adresse_complement_destinataire']): ?>
-                                <?php echo $data['adresse_complement_destinataire']; ?><br />
+                                <?php echo Anonymization::hideIfNeeded($data['adresse_complement_destinataire']); ?><br />
                             <?php endif; ?>
-                            <?php echo $data['adresse']; ?><br />
+                            <?php echo Anonymization::hideIfNeeded($data['adresse']); ?><br />
                             <?php if($data['adresse_complement_lieu']): ?>
-                                <?php echo $data['adresse_complement_lieu']; ?><br />
+                                <?php echo Anonymization::hideIfNeeded($data['adresse_complement_lieu']); ?><br />
                             <?php endif; ?>
                             <?php echo $data['code_postal']; ?>&nbsp;<?php echo $data['commune']; ?><br />
                             <?php if ($data['email']):?>
-                                <span class="glyphicon glyphicon-envelope"></span>&nbsp;<?php echo $data['email'] ?><br />
+                                <span class="glyphicon glyphicon-envelope"></span>&nbsp;<?php echo Anonymization::hideIfNeeded($data['email']) ?><br />
                             <?php endif; ?>
                             <?php $tags_contact = (isset($data['tags'])) ? array_merge($data['tags']['attributs']->getRawValue(), $data['tags']['manuels']->getRawValue()) : array(); ?>
                             <?php if(count($tags_contact) > 0): ?>

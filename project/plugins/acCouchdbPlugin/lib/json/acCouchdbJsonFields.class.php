@@ -364,7 +364,7 @@ abstract class acCouchdbJsonFields {
                 return $this->getDefinition()->get($key)->getName();
             }
         } else {
-            throw new acCouchdbException(sprintf('field inexistant : %s (%s)', $key, $this->getHash()));
+            throw new acCouchdbException(sprintf('field inexistant : %s:%s/%s (%s)', $this->getDocument()->_id, $this->getHash(), $key));
         }
     }
 
@@ -383,7 +383,7 @@ abstract class acCouchdbJsonFields {
         if ($this->_exist($key)) {
             return $key;
         } else {
-            throw new acCouchdbException(sprintf('field inexistant : %s', $key));
+            throw new acCouchdbException(sprintf('field inexistant : %s:%s/%s', $this->getDocument()->_id, $this->getHash(), $key));
         }
     }
 
@@ -399,7 +399,7 @@ abstract class acCouchdbJsonFields {
         if ($this->_exist($key)) {
             return $this->_fields[self::formatFieldKey($key)];
         } else {
-            throw new acCouchdbException(sprintf('field inexistant : %s (%s%s)', $key, $this->_definition_model, $this->getHash()));
+            throw new acCouchdbException(sprintf('field inexistant : %s:%s/%s', $this->getDocument()->_id, $this->getHash(), $key));
         }
     }
 
@@ -407,7 +407,7 @@ abstract class acCouchdbJsonFields {
         if ($this->_exist($key)) {
             return $this->_fields[$key];
         } else {
-            throw new acCouchdbException(sprintf('field inexistant : %s (%s%s)', $key, $this->_definition_model, $this->getHash()));
+            throw new acCouchdbException(sprintf('field inexistant : %s:%s/%s', $this->getDocument()->_id, $this->getHash(), $key));
         }
     }
 
@@ -461,7 +461,7 @@ abstract class acCouchdbJsonFields {
 	    return $field;
         }
         if (!$this->exist($key)) {
-           throw new acCouchdbException(sprintf('field inexistant : %s (%s%s)', $key, $this->_definition_model, $this->getHash()));
+            throw new acCouchdbException(sprintf('field inexistant : %s:%s/%s', $this->getDocument()->_id, $this->getHash(), $key));
         }
         if ($this->isArray()) {
             $this->_fields[$key] = $data_or_object;

@@ -7,17 +7,33 @@ class GenerationExportSage extends GenerationAbstract
         $this->generation->add('documents');*/
 
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS);
+        $hasExportSageWithTxt = FactureConfiguration::getInstance()->hasExportSageWithTxt();
 
-        $sagefile = "generation/".$this->generation->date_emission."_sage.txt";
+        $sagefile = ($hasExportSageWithTxt)? "generation/".$this->generation->date_emission."_sage.txt" : "";
+
         $facturesfile = "generation/".$this->generation->date_emission."_factures.csv";
         $clientsfile = "generation/".$this->generation->date_emission."_clients.csv";
-        
+
         $handle_factures = fopen(sfConfig::get('sf_web_dir')."/".$facturesfile, 'a');
         $handle_clients = fopen(sfConfig::get('sf_web_dir')."/".$clientsfile, 'a');
 
+        $application = ucfirst(sfConfig::get('sf_app'));
+        $classExportFactureCsv = "ExportFactureCSV_".$application;
+        $classExportCompteCsv = "ExportCompteCSV_".$application;
+
+        if(!class_exists($classExportFactureCsv)){
+
+            throw new sfException("La classe $classExportFactureCsv n'existe pas");
+        }
+
+        if(!class_exists($classExportCompteCsv)){
+
+            throw new sfException("La classe $classExportCompteCsv n'existe pas");
+        }
+
         if(!count($this->generation->documents)) {
-            fwrite($handle_factures, ExportFactureCSV::getHeaderCsv());
-            fwrite($handle_clients, ExportCompteCSV::getHeaderCsv());
+            fwrite($handle_factures, $classExportFactureCsv::getHeaderCsv());
+            fwrite($handle_clients, $classExportCompteCsv::getHeaderCsv());
         }
 
         $batch_size = 500;
@@ -30,17 +46,16 @@ class GenerationExportSage extends GenerationAbstract
                 throw new sfException(sprintf("Document %s introuvable", $vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]));
             }
 
-            $export = new ExportFactureCSV($facture, false);
+            $export = new $classExportFactureCsv($facture, false);
 
             if(!$facture->versement_comptable) {
-
                 fwrite($handle_factures, $export->exportFacture());
                 $this->generation->documents->add(null, $facture->_id);
                 $facture->versement_comptable = 1;
                 $facture->save();
             }
 
-            if($facture->versement_comptable && !$facture->versement_comptable_paiement && $facture->isPayee( )) {
+            if($facture->versement_comptable && !$facture->versement_comptable_paiement && $facture->isPayee()) {
                 fwrite($handle_factures, $export->exportPaiement());
                 $this->generation->documents->add(null, str_replace("FACTURE-", "PAIEMENT-", $facture->_id));
                 $facture->versement_comptable_paiement = 1;
@@ -52,7 +67,7 @@ class GenerationExportSage extends GenerationAbstract
                 throw new sfException(sprintf("Document COMPTE-%s introuvable", $facture->identifiant));
             }
 
-            $export = new ExportCompteCSV($compte, false);
+            $export = new $classExportCompteCsv($compte, false);
 
             fwrite($handle_clients, $export->export());
             $batch_i++;
@@ -67,21 +82,30 @@ class GenerationExportSage extends GenerationAbstract
         fclose($handle_factures);
         fclose($handle_clients);
 
-        file_put_contents(sfConfig::get('sf_web_dir')."/".$sagefile, shell_exec(sprintf("bash %s/bin/facture/csv2sage.sh %s %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$clientsfile, sfConfig::get('sf_web_dir')."/".$facturesfile)));
+        if($hasExportSageWithTxt){
+          file_put_contents(sfConfig::get('sf_web_dir')."/".$sagefile, shell_exec(sprintf("bash %s/bin/facture/csv2sage.sh %s %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$clientsfile, sfConfig::get('sf_web_dir')."/".$facturesfile)));
+        }else{
+          $clientsfileIbm437Content = shell_exec(sprintf("cat %s | iconv -f UTF8 -t IBM437//TRANSLIT", sfConfig::get('sf_web_dir')."/".$clientsfile));
+          file_put_contents(sfConfig::get('sf_web_dir')."/".$clientsfile, $clientsfileIbm437Content);
+
+          $facturesfileIbm437Content = shell_exec(sprintf("cat %s | iconv -f UTF8 -t IBM437//TRANSLIT", sfConfig::get('sf_web_dir')."/".$facturesfile));
+          file_put_contents(sfConfig::get('sf_web_dir')."/".$facturesfile, $facturesfileIbm437Content);
+        }
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
 
         if(count($this->generation->documents)) {
-            $this->generation->add('fichiers')->add(urlencode("/".$sagefile), 'Export SAGE');
+            if($hasExportSageWithTxt){
+              $this->generation->add('fichiers')->add(urlencode("/".$sagefile), 'Export SAGE');
+            }
             $this->generation->add('fichiers')->add(urlencode("/".$facturesfile), 'Export CSV des factures');
             $this->generation->add('fichiers')->add(urlencode("/".$clientsfile), 'Export CSV des clients');
         }
-
         $this->generation->save();
     }
 
     public function getDocumentName() {
-        
+
         return 'Sage';
     }
 
-} 
+}

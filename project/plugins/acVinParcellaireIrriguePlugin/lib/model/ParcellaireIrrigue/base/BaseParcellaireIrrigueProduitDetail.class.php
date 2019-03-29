@@ -18,6 +18,7 @@
  * @property string $campagne_plantation
  * @property string $materiel
  * @property string $ressource
+ * @property string $irrigation
  * @property string $date_irrigation
 
  * @method float getSuperficie()
@@ -48,6 +49,8 @@
  * @method string setMateriel()
  * @method string getRessource()
  * @method string setRessource()
+ * @method string getIrrigation()
+ * @method string setIrrigation()
  * @method string getDateIrrigation()
  * @method string setDateIrrigation()
  
