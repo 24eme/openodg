@@ -319,11 +319,10 @@ class habilitationActions extends sfActions {
 
     public function executeDemandeSuppressionDerniere(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
 
-        if($this->demande->date."_".$this->demande->statut != $request->getParameter('date_statut')) {
+        if($this->demande->date != $request->getParameter('date') || $this->demande->statut != $request->getParameter('statut')) {
 
             throw new Exception("La date et le statut n'existe pas");
         }
@@ -331,6 +330,38 @@ class habilitationActions extends sfActions {
         HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->etablissement->identifiant, $request->getParameter('demande'));
 
         return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->etablissement->identifiant, 'demande' => $request->getParameter('demande')));
+    }
+
+    public function executeDemandeModificationCommentaire(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, $request->getParameter('date'));
+
+        if(!$request->getParameter('commentaire')) {
+
+            throw new Exception("Le commentaire est requis");
+        }
+
+        foreach($habilitation->historique as $h) {
+            if($h->iddoc != $habilitation->_id.":/demandes/".$request->getParameter('demande')) {
+                continue;
+            }
+
+            if($h->statut != $request->getParameter('statut')) {
+                echo $statut."\n";
+                continue;
+            }
+
+            if($h->date != $request->getParameter('date')) {
+                echo $statut."\n";
+                continue;
+            }
+
+            $h->commentaire = $request->getParameter('commentaire');
+            $habilitation->save();
+            break;
+        }
+
+        return $this->redirect('habilitation_demande_edition', array('identifiant' => $etablissement->identifiant, 'demande' => $request->getParameter('demande')));
     }
 
     public function executeExport(sfWebRequest $request) {

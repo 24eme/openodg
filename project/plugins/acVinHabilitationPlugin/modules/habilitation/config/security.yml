@@ -13,5 +13,11 @@ demandeGlobale:
 demandeCreation:
   credentials: ADMIN
 
+demandeSuppressionDerniere:
+  credentials: ADMIN
+
+demandeModificationCommentaire:
+  credentials: ADMIN
+
 export:
   credentials: ADMIN
