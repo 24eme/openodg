@@ -13,9 +13,10 @@
  * @property string $validation_odg
  * @property string $campagne
  * @property string $date
+ * @property string $lecture_seule
  * @property string $signataire
  * @property integer $papier
- * @property acCouchdbJson $declarant
+ * @property ParcellaireIrrigueDeclarant $declarant
  * @property ParcellaireIrrigueDeclaration $declaration
  * @property string $observations
 
@@ -37,12 +38,14 @@
  * @method string setCampagne()
  * @method string getDate()
  * @method string setDate()
+ * @method string getLectureSeule()
+ * @method string setLectureSeule()
  * @method string getSignataire()
  * @method string setSignataire()
  * @method integer getPapier()
  * @method integer setPapier()
- * @method acCouchdbJson getDeclarant()
- * @method acCouchdbJson setDeclarant()
+ * @method ParcellaireIrrigueDeclarant getDeclarant()
+ * @method ParcellaireIrrigueDeclarant setDeclarant()
  * @method ParcellaireIrrigueDeclaration getDeclaration()
  * @method ParcellaireIrrigueDeclaration setDeclaration()
  * @method string getObservations()

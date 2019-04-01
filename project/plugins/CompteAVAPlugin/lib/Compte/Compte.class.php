@@ -95,6 +95,51 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         return preg_replace("/^[0]+/", "", $this->identifiant_interne);
     }
 
+    public function getRaisonSociale() {
+
+        return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
+    }
+
+    public function getNomAAfficher() {
+
+        return Anonymization::hideIfNeeded($this->_get('nom_a_afficher'));
+    }
+
+    public function getAdresse() {
+
+        return Anonymization::hideIfNeeded($this->_get('adresse'));
+    }
+
+    public function getEmail() {
+
+        return Anonymization::hideIfNeeded($this->_get('email'));
+    }
+
+    public function getTelephoneBureau() {
+
+        return Anonymization::hideIfNeeded($this->_get('telephone_bureau'));
+    }
+
+    public function getTelephoneMobile() {
+
+        return Anonymization::hideIfNeeded($this->_get('telephone_mobile'));
+    }
+
+    public function getTelephonePrive() {
+
+        return Anonymization::hideIfNeeded($this->_get('telephone_prive'));
+    }
+
+    public function getFax() {
+
+        return Anonymization::hideIfNeeded($this->_get('fax'));
+    }
+
+    public function getSiret() {
+
+        return Anonymization::hideIfNeeded($this->_get('siret'));
+    }
+
     public function updateNomAAfficher() {
         $this->nom_a_afficher = "";
 

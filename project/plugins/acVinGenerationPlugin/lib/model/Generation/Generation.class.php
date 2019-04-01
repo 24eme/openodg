@@ -50,14 +50,18 @@ class Generation extends BaseGeneration {
   public function regenerate() {
       $this->somme = 0;
       $documents = array_merge($this->documents->toArray(true, false), $this->add('documents_regenerate')->toArray(true, false));
-      $this->add('documents_regenerate', $documents); 
+      $this->add('documents_regenerate', $documents);
       $this->remove('documents');
       $this->add('documents');
       $this->reload();
   }
-  
+
   public function __toString() {
      return GenerationClient::getInstance()->getDateFromIdGeneration($this->_id);
   }
-  
+
+  public function getSomme() {
+      return Anonymization::hideIfNeeded($this->_get('somme'));
+  }
+
 }

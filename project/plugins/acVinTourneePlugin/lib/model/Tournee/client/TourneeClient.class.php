@@ -164,15 +164,15 @@ class TourneeClient extends acCouchdbClient {
             foreach ($tourneeObj->rendezvous as $rendezvousId => $rdv) {
                 $rendezvous = RendezvousClient::getInstance()->find($rendezvousId);
                 $nbRendezvous++;
-                if ($rendezvous->isRendezvousRaisin()) {
+                if ($rendezvous && $rendezvous->isRendezvousRaisin()) {
                     $tourneesObj->tourneesJournee[$tournee->agent_unique]->nbRdvRaisin++;
                     $tourneesObj->nbTotalRdvRaisin++;
                 }
-                if ($rendezvous->isRendezvousVolume()) {
+                if ($rendezvous && $rendezvous->isRendezvousVolume()) {
                     $tourneesObj->tourneesJournee[$tournee->agent_unique]->nbRdvVolume++;
                     $tourneesObj->nbTotalRdvVolume++;
                 }
-                if ($rendezvous->isRealise()) {
+                if ($rendezvous && $rendezvous->isRealise()) {
                     $nbRealise++;
                     $nbRendezvousRealise++;
                 }

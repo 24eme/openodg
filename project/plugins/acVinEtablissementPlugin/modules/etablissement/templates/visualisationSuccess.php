@@ -120,7 +120,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                         if($etablissement->exist('chais')):
                             foreach($etablissement->chais as $num => $chai): ?>
                                 <tr>
-                                    <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
+                                    <td><strong><?php echo Anonymization::hideIfNeeded($chai->nom); ?></strong><br /><?php echo Anonymization::hideIfNeeded($chai->adresse); ?><br />
                                     <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                     <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
                                     <td><?php if($chai->partage): ?>Partagé<br /><?php endif; ?><?php if($chai->archive): ?>Archivé<?php endif; ?></td>
@@ -131,7 +131,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
                             <?php if($chai = $liaison->getChai()): ?>
                             <tr>
-                                <td><strong><?php echo $chai->nom ?></strong> (<a href="<?php echo url_for('etablissement_visualisation', $chai->getDocument()) ?>"><?php echo $chai->getDocument()->nom ?></a>)<br /><?php echo $chai->adresse ?><br />
+                                <td><strong><?php echo Anonymization::hideIfNeeded($chai->nom); ?></strong> (<a href="<?php echo url_for('etablissement_visualisation', $chai->getDocument()) ?>"><?php echo $chai->getDocument()->nom ?></a>)<br /><?php echo Anonymization::hideIfNeeded($chai->adresse); ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                 <td>
                                     <?php foreach ($liaison->attributs_chai as $attribut_chai): ?>
@@ -167,7 +167,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
                             <tr>
                                 <td><?php echo $liaison->getTypeLiaisonLibelle() ?></td>
-                                <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
+                                <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a></td>
                                 <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
                                 <td class="text-center"><a onclick="return confirm('Étes vous sûr de vouloir supprimer la relations ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
                             </tr>

@@ -13,7 +13,7 @@
 
 <?php if($generation->libelle): ?>
 <p class="text-center lead">
-    <?php echo $generation->libelle; ?>
+    <?php echo Anonymization::hideIfNeeded($generation->libelle); ?>
 </p>
 <?php endif; ?>
 

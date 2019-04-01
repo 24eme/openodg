@@ -22,7 +22,7 @@
             <?php foreach($agents as $agent): ?>
             <?php $exist = $tournee->agents->exist($agent->_id); ?>
             <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
-                <div class="col-xs-5"><?php echo $agent->nom_a_afficher ?> <br /><small class="text-muted"><?php echo $agent->adresse ?> <?php echo $agent->commune ?></small></div>
+                <div class="col-xs-5"><?php echo Anonymization::hideIfNeeded($agent->nom_a_afficher) ?> <br /><small class="text-muted"><?php echo Anonymization::hideIfNeeded($agent->adresse) ?> <?php echo $agent->commune ?></small></div>
                 <div class="col-xs-6">
                     <select name="agents[<?php echo $agent->_id ?>][]" <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete <?php if(!$exist): ?>hidden<?php endif; ?>">
                         <option></option>

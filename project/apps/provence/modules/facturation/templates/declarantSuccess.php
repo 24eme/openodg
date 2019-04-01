@@ -108,7 +108,7 @@
             <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
             <td><?php if(!$facture->isAvoir()): ?><?php echo $facture->getTemplate()->libelle ?><?php endif; ?></td>
-            <td class="text-right"><?php echo echoFloat($facture->total_ttc); ?>&nbsp;€</td>
+            <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <td class="text-center">
                 <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement): ?>

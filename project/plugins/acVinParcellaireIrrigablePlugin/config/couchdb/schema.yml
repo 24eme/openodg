@@ -14,6 +14,7 @@ ParcellaireIrrigable:
       papier: { required: false, type: integer }
       declarant:
         type: collection
+        class: ParcellaireIrrigableDeclarant
         definition:
           fields:
             nom: { }
