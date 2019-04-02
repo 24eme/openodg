@@ -3,7 +3,7 @@
    "type": "TemplateFacture",
    "campagne": "2018",
    "template": "AOC",
-   "libelle": "2018 - AOC Alsace",
+   "libelle": "2019 - AOC Alsace",
    "docs": [
        "DRev",
        "RegistreVCI"
@@ -621,20 +621,6 @@
                        "DRev"
                    ]
                },
-               "COMPTE-S006231": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 4,
-                   "tva": 0,
-                   "tranche": 100,
-                   "depart": 0,
-                   "complement": 0,
-                   "libelle": "Cotisation syndicat viticole KIENTZHEIM-KAYSERSBERG",
-                   "callback": "getSurfaceFacturable",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ]
-               },
                "COMPTE-S006233": {
                    "modele": "CotisationTrancheFixe",
                    "prix": 3,
@@ -741,20 +727,6 @@
                    "depart": 0,
                    "complement": 0,
                    "libelle": "Cotisation syndicat viticole SCHERWILLER",
-                   "callback": "getSurfaceFacturable",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ]
-               },
-               "COMPTE-S006259": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 4,
-                   "tva": 0,
-                   "tranche": 100,
-                   "depart": 0,
-                   "complement": 0,
-                   "libelle": "Cotisation syndicat viticole SIGOLSHEIM",
                    "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
                    "docs": [
@@ -1622,7 +1594,21 @@
                    "docs": [
                        "DRev"
                    ]
-               }
+               },
+               "COMPTE-S014383": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 4,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole KAYSERSBERG VIGNOBLE",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
            },
            "callback": "getSyndicatsViticole"
        },
