@@ -50,8 +50,9 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
       public function getDateOuverture($type = self::TYPE_COUCHDB) {
           if ($type == self::TYPE_COUCHDB) {
               $dates = sfConfig::get('app_dates_ouverture_parcellaire_irrigable');
-          } else {
-            throw new sfException("Le type de parcellaire $type n'existe pas");
+          }
+          if (!is_array($dates) || !isset($dates['debut']) || !isset($dates['fin'])) {
+              return array('debut'=>'1900-01-01', 'fin' => '9999-12-31');
           }
           return $dates;
       }
