@@ -37,11 +37,26 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
           return $parcellaireIrrigable;
       }
 
-      public function getHistory($identifiant, $type = self::TYPE_COUCHDB, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-          $campagne_from = "0000";
-          $campagne_to = "9999";
+      public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+          return $this->findPreviousByIdentifiantAndDate($identifiant, $max_annee, $hydrate);
+      }
 
-          $id = "$type-%s-%s";
+      public function findPreviousByIdentifiantAndDate($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $h = $this->getHistory($identifiant, $max_annee, $hydrate);
+          if (!count($h)) {
+            return null;
+          }
+          $h = $h->getDocs();
+          end($h);
+          $doc = $h[key($h)];
+          return $doc;
+      }
+
+      public function getHistory($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $campagne_from = "0000";
+          $campagne_to = $max_annee;
+
+          $id = self::TYPE_COUCHDB.'-%s-%s';
           return $this->startkey(sprintf($id, $identifiant, $campagne_from))
                           ->endkey(sprintf($id, $identifiant, $campagne_to))
                           ->execute($hydrate);
