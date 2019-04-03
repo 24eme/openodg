@@ -124,9 +124,8 @@ EOF;
                 echo $recoltant . " : " . $e->getMessage()."\n";
                 continue;
             }
-            if (count($registre->lignes)) {
-                $registre->clear();
-                $registre->save();
+            if (!$registre->isNew()) {
+                continue;
             }
             foreach($vciappellation as $appellation => $vcilieu) {
             $nonsolvable = 0;
@@ -163,12 +162,12 @@ EOF;
             }
           }
           echo "Superficie facturable : ".$registre->superficies_facturables."\n";
-          if ($registre->exist('lignes') && count($registre->lignes)) {
-            $registre->save();
-            echo $registre->_id." savé\n";
-            }elseif($registre->_id){
-            $registre->delete();
+          if ((!$registre->exist('lignes') || !count($registre->lignes)) && !$registre->getStockFinalTotal() && !$registre->getStockPrecedentTotal()) {
+              continue;
           }
+
+          $registre->save();
+          echo $registre->_id." savé\n";
         }
     }
 }
