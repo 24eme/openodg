@@ -306,6 +306,24 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return $this->mouvement_document->isNonFactures();
       }
 
+      public function getStockFinalTotal() {
+          $stockFinal = 0;
+          foreach($this->getProduitDetails() as $detail) {
+              $stockFinal += $detail->stock_final;
+          }
+
+          return $stockFinal;
+      }
+
+      public function getStockPrecedentTotal() {
+          $stockPrecedent = 0;
+          foreach($this->getProduitDetails() as $detail) {
+              $stockPrecedent += $detail->stock_precedent;
+          }
+
+          return $stockPrecedent;
+      }
+
       public function clearMouvements(){
           $this->remove('mouvements');
           $this->add('mouvements');
