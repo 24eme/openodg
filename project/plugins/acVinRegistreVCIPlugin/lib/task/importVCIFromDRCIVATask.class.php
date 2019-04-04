@@ -162,8 +162,9 @@ EOF;
               continue;
           }
 
-          if(!DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($recoltant."", $arguments['campagne'], acCouchdbClient::HYDRATE_JSON)) {
-              echo "Pas de DRev : ".$recoltant."\n";
+          $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($recoltant."", $arguments['campagne'], acCouchdbClient::HYDRATE_JSON);
+          if(!$drev || !$drev->validation_odg) {
+              echo "Pas de drev ou pas validé : ".$recoltant."\n";
               continue;
           }
 
