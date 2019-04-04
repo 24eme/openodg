@@ -161,6 +161,12 @@ EOF;
           if ((!$registre->exist('lignes') || !count($registre->lignes)) && !$registre->getStockFinalTotal() && !$registre->getStockPrecedentTotal()) {
               continue;
           }
+
+          if(!DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($recoltant."", $arguments['campagne'], acCouchdbClient::HYDRATE_JSON)) {
+              echo "Pas de DRev : ".$recoltant."\n";
+              continue;
+          }
+
           echo "Superficie facturable : ".$registre->superficies_facturables."\n";
 
           $registre->save();
