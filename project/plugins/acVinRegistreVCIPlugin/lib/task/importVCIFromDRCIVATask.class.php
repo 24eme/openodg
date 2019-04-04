@@ -99,7 +99,7 @@ EOF;
               foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
                 foreach($vciacheteur as $cviacheteur => $vcicepage) {
                   foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                      if($cepage == "TOTAL" && isset($vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI']) && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && !$unvci['DONTVCI'] && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
+                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
                           $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] -= $unvci['VOLUME_TOTAL'];
                           unset($vci[$recoltant][$appellation]['LIEU'][$lieu][$cviacheteur]);
                           break;
