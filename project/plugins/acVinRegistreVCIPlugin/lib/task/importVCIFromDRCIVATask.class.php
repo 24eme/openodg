@@ -73,9 +73,6 @@ EOF;
           if ($csv[self::DRCIVA_LIEU] == 'TOTAL') {
             @$vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['SUPERFICIE'] += $csv[self::DRCIVA_SUPERFICIE_TOTALE];
           }
-          if (!$csv[self::DRCIVA_VCI_TOTAL]) {
-            continue;
-          }
 
           $oldreporting = error_reporting(0);
           if (($csv[self::DRCIVA_LIEU] == 'TOTAL') || ($csv[self::DRCIVA_CEPAGE] == 'TOTAL')) {
@@ -102,7 +99,7 @@ EOF;
               foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
                 foreach($vciacheteur as $cviacheteur => $vcicepage) {
                   foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && !$unvci['DONTVCI'] && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
+                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
                           $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] -= $unvci['VOLUME_TOTAL'];
                           unset($vci[$recoltant][$appellation]['LIEU'][$lieu][$cviacheteur]);
                           break;
@@ -161,10 +158,10 @@ EOF;
               }
             }
           }
-          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
           if ((!$registre->exist('lignes') || !count($registre->lignes)) && !$registre->getStockFinalTotal() && !$registre->getStockPrecedentTotal()) {
               continue;
           }
+          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
 
           $registre->save();
           echo $registre->_id." savé\n";
