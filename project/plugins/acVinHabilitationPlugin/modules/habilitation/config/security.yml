@@ -13,8 +13,5 @@ demandeGlobale:
 demandeCreation:
   credentials: ADMIN
 
-demandeSuppressionDerniere:
-  credentials: ADMIN
-
 export:
   credentials: ADMIN

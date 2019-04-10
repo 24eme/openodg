@@ -327,6 +327,15 @@ class habilitationActions extends sfActions {
             throw new Exception("La date et le statut n'existe pas");
         }
 
+        if(!$filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $filtre = $request->getParameter('filtre');
+        }
+
+        if($filtre && !preg_match("/".$filtre."/i", $request->getParameter('statut'))) {
+
+            return $this->forwardSecure();
+        }
+
         HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->etablissement->identifiant, $request->getParameter('demande'));
 
         return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->etablissement->identifiant, 'demande' => $request->getParameter('demande')));
