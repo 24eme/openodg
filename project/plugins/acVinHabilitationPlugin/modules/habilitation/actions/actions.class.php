@@ -341,6 +341,15 @@ class habilitationActions extends sfActions {
             throw new Exception("Le commentaire est requis");
         }
 
+        if(!$filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $filtre = $request->getParameter('filtre');
+        }
+
+        if($filtre && !preg_match("/".$filtre."/i", $request->getParameter('statut'))) {
+
+            return $this->forwardSecure();
+        }
+
         foreach($habilitation->historique as $h) {
             if($h->iddoc != $habilitation->_id.":/demandes/".$request->getParameter('demande')) {
                 continue;

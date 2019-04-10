@@ -16,8 +16,5 @@ demandeCreation:
 demandeSuppressionDerniere:
   credentials: ADMIN
 
-demandeModificationCommentaire:
-  credentials: ADMIN
-
 export:
   credentials: ADMIN
