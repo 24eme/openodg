@@ -15,7 +15,7 @@ class HabilitationEditionForm extends acCouchdbForm
             }
             $defaults['statut_'.$idWidgets] = $activite->statut;
             $defaults['date_'.$idWidgets] = $date;
-            $defaults['commentaire'.$idWidgets] = $activite->commentaire;
+            $defaults['commentaire_'.$idWidgets] = $activite->commentaire;
           }
         }
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
