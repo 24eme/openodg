@@ -8,7 +8,7 @@ class RegistreVCIRoute extends EtablissementRoute implements InterfaceDeclaratio
         $this->registre = RegistreVCIClient::getInstance()->find($parameters['id']);
         if (!$this->registre) {
 
-            throw new sfError404Exception(sprintf('No DRev found with the id "%s".', $parameters['id']));
+            throw new sfError404Exception(sprintf('No registre vci found with the id "%s".', $parameters['id']));
         }
         return $this->registre;
     }
