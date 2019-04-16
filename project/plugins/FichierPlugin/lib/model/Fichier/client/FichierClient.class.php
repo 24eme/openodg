@@ -48,20 +48,36 @@ class FichierClient extends acCouchdbClient {
 
     private function scrapeFiles($etablissement, $type, $annee)
     {
-    	$types = array(DRCsvFile::CSV_TYPE_DR, SV11CsvFile::CSV_TYPE_SV11, SV12CsvFile::CSV_TYPE_SV12);
+        $types = array(
+            DRCsvFile::CSV_TYPE_DR,
+            SV11CsvFile::CSV_TYPE_SV11,
+            SV12CsvFile::CSV_TYPE_SV12,
+            ParcellaireCsvFile::CSV_TYPE_PARCELLAIRE
+        );
+
     	if (!in_array($type, $types)) {
     		throw new sfException("$type is not allowed for scrapy file");
     	}
-    	if (!preg_match('/^[0-9]{4}$/', $annee)) {
-    		throw new sfException("$annee is not a valid year for scrapy file");
-    	}
-    	if (!$etablissement->cvi || !preg_match('/^[0-9A]{5}[0-9A-Z]{5}$/i', $etablissement->cvi)) {
-    		throw new sfException("CVI : ".$etablissement->cvi." is not a valid cvi for scrapy file");
-    	}
-    	$scrapyBin = sfConfig::get("app_scrapy_bin");
-    	$t = strtolower($type);
-    	$cvi = $etablissement->cvi;
-    	exec("$scrapyBin $t $annee $cvi > /dev/null 2>&1");
+
+        $scrapybin = sfConfig::get("app_scrapy_bin");
+        $scrapydocs = sfConfig::get("app_scrapy_documents");
+
+        if (!preg_match('/^[0-9]{4}$/', $annee)) {
+            throw new sfException("$annee is not a valid year for scrapy file");
+        }
+
+        if (!$etablissement->cvi || !preg_match('/^[0-9A]{5}[0-9A-Z]{5}$/i', $etablissement->cvi)) {
+            throw new sfException("CVI : ".$etablissement->cvi." is not a valid cvi for scrapy file");
+        }
+
+        $t = strtolower($type);
+        $cvi = $etablissement->cvi;
+        exec("$scrapybin/download_douane.sh $t $annee $cvi > /dev/null 2>&1");
+
+        if ($type === ParcellaireCsvFile::CSV_TYPE_PARCELLAIRE
+            && file_exists($scrapydocs.'/'.$t.'-'.$cvi.'-parcellaire.html')) {
+            exec("python $scrapybin/../posttraitement/parcellaire_to_csv.py $cvi");
+        }
     }
 
     private function getScrapyFiles($etablissement, $type, $annee)
@@ -76,6 +92,13 @@ class FichierClient extends acCouchdbClient {
     	return $files;
     }
 
+    /**
+     * Retourne une instance d'un client en fonction du type
+     *
+     * @param string $type Le type de document
+     *
+     * @return Un client
+     */
     public function getClientFromType($type)
     {
     	switch ($type) {
@@ -88,6 +111,9 @@ class FichierClient extends acCouchdbClient {
     		case 'SV12':
     			$client = SV12Client::getInstance();
     			break;
+            case 'PARCELLAIRE':
+                $client = ParcellaireClient::getInstance();
+                break;
     		default:
     			$client = null;
     	}

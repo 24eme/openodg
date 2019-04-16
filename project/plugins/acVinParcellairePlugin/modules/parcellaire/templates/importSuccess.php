@@ -1,0 +1,4 @@
+<?php if ($msg): ?>
+    <?= $msg ?>
+<?php else: ?>
+<?php endif ?>

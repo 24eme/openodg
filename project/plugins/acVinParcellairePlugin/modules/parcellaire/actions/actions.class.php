@@ -48,6 +48,19 @@ class parcellaireActions extends sfActions {
         $this->setTemplate('parcellaire');
     }
 
+    public function executeImport(sfWebRequest $request) {
+        $this->msg = '';
+        $this->success = false;
+        $etablissement = $this->getRoute()->getEtablissement();
+
+        try {
+            FichierClient::getInstance()
+                ->scrapeAndSaveFiles($etablissement, ParcellaireCsvFile::CSV_TYPE_PARCELLAIRE, date('Y'));
+        } catch (sfException $e) {
+            $this->msg = $e->getMessage();
+        }
+    }
+
     protected function secureEtablissement($etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
 
