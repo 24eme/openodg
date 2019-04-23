@@ -49,7 +49,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             }
             $csv .= sprintf("%s;Revendication;%s;%s;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet), $this->formatFloat($superficie), $this->formatFloat($superficie_vinifiee), $this->formatFloat($volume_vci), $this->formatFloat($volume), $mode);
             foreach($produit->getProduitsCepage() as $detail) {
-                $csv .= sprintf("%s;Revendication;%s;%s;;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet)." ".trim($detail->getLibelle()), $this->formatFloat($detail->superficie_revendique_total), $this->formatFloat($detail->volume_revendique_total), $mode);
+                $csv .= sprintf("%s;Revendication;%s;%s;;;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet)." ".trim($detail->getLibelle()), $this->formatFloat($detail->superficie_revendique_total), $this->formatFloat($detail->volume_revendique_total), $mode);
             }
         }
 
@@ -60,7 +60,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
                 $chai = $prelevement->getChai();
                 $csv .= sprintf("%s;%s;%s;;;;;%s;%s;%s;%s;%s;%s\n", $ligne_base, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $chai->adresse, $chai->code_postal, $chai->commune, $mode);
                 foreach($prelevement->lots as $lot) {
-                    $csv .= sprintf("%s;%s;%s;;;%s;;%s;%s;%s;%s;%s;%s\n", $ligne_base, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $this->formatFloat($lot->volume_revendique), $prelevement->date, $lot->nb_hors_vtsgn, $chai->adresse, $chai->code_postal, $chai->commune, $mode);
+                    $csv .= sprintf("%s;%s;%s;;;;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $this->formatFloat($lot->volume_revendique), $prelevement->date, $lot->nb_hors_vtsgn, $chai->adresse, $chai->code_postal, $chai->commune, $mode);
                 }
             }
         }
