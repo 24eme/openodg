@@ -169,6 +169,15 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $total;
     }
 
+    public function getTotalVolumeRevendiqueVCI()
+    {
+    	$total = 0;
+        foreach($this->getChildrenNode() as $key => $item) {
+            $total += $item->getTotalVolumeRevendiqueVCI();
+        }
+        return $total;
+    }
+
 	public function getTotalSuperficieVinifiee()
     {
     	$total = 0;
