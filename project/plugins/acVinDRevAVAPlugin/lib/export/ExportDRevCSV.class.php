@@ -7,7 +7,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Produit;Superficie revendiqué;Volume revendiqué;prelevement à partir du;nombre de lots;Adresse du chai;Code postal du Chai;Commune du Chai;Type de déclaration\n";
+        return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Produit;Superficie revendiqué;Superficie Vinifiee;Volume revendiqué issu du VCI;Volume revendiqué;prelevement à partir du;nombre de lots;Adresse du chai;Code postal du Chai;Commune du Chai;Type de déclaration\n";
     }
 
     public function __construct($drev, $header = true) {
@@ -37,27 +37,30 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
         foreach($this->drev->declaration->getProduits() as $produit) {
             $libelle_complet = $produit->getLibelleComplet();
             $superficie = $produit->superficie_revendique;
+            $superficie_vinifiee = $produit->superficie_vinifiee;
+            $volume_vci = ($produit->exist('volume_revendique_vci')) ? $produit->volume_revendique_vci : 0;
             $volume = $produit->volume_revendique;
+
             if($produit->exist('superficie_revendique_vtsgn')) {
                 $superficie += $produit->superficie_revendique_vtsgn;
             }
             if($produit->exist('volume_revendique_vtsgn')) {
                 $volume += $produit->volume_revendique_vtsgn;
             }
-            $csv .= sprintf("%s;Revendication;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet), $this->formatFloat($superficie), $this->formatFloat($volume), $mode);
+            $csv .= sprintf("%s;Revendication;%s;%s;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet), $this->formatFloat($superficie), $this->formatFloat($superficie_vinifiee), $this->formatFloat($volume_vci), $this->formatFloat($volume), $mode);
             foreach($produit->getProduitsCepage() as $detail) {
-                $csv .= sprintf("%s;Revendication;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet)." ".trim($detail->getLibelle()), $this->formatFloat($detail->superficie_revendique_total), $this->formatFloat($detail->volume_revendique_total), $mode);
+                $csv .= sprintf("%s;Revendication;%s;%s;;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet)." ".trim($detail->getLibelle()), $this->formatFloat($detail->superficie_revendique_total), $this->formatFloat($detail->volume_revendique_total), $mode);
             }
         }
 
-        $csv .= sprintf("%s;Revendication;TOTAL;%s;%s;;;;;;%s\n", $ligne_base, $this->formatFloat($this->drev->declaration->getTotalTotalSuperficie()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendique()), $mode);
+        $csv .= sprintf("%s;Revendication;TOTAL;%s;%s;%s;%s;;;;;%s\n", $ligne_base, $this->formatFloat($this->drev->declaration->getTotalTotalSuperficie()), $this->formatFloat($this->drev->declaration->getTotalSuperficieVinifiee()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendiqueVCI()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendique()), $mode);
 
         foreach($this->drev->getPrelevementsOrdered(null, true) as $prelevementsOrdered) {
             foreach ($prelevementsOrdered->prelevements as $prelevement) {
                 $chai = $prelevement->getChai();
-                $csv .= sprintf("%s;%s;%s;;;%s;%s;%s;%s;%s;%s\n", $ligne_base, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $chai->adresse, $chai->code_postal, $chai->commune, $mode);
+                $csv .= sprintf("%s;%s;%s;;;;;%s;%s;%s;%s;%s;%s\n", $ligne_base, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $chai->adresse, $chai->code_postal, $chai->commune, $mode);
                 foreach($prelevement->lots as $lot) {
-                    $csv .= sprintf("%s;%s;%s;;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $this->formatFloat($lot->volume_revendique), $prelevement->date, $lot->nb_hors_vtsgn, $chai->adresse, $chai->code_postal, $chai->commune, $mode);
+                    $csv .= sprintf("%s;%s;%s;;;%s;;%s;%s;%s;%s;%s;%s\n", $ligne_base, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $this->formatFloat($lot->volume_revendique), $prelevement->date, $lot->nb_hors_vtsgn, $chai->adresse, $chai->code_postal, $chai->commune, $mode);
                 }
             }
         }
