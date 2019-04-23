@@ -53,7 +53,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             }
         }
 
-        $csv .= sprintf("%s;Revendication;TOTAL;%s;%s;%s;%s;;;;;%s\n", $ligne_base, $this->formatFloat($this->drev->declaration->getTotalTotalSuperficie()), $this->formatFloat($this->drev->declaration->getTotalSuperficieVinifiee()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendiqueVCI()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendique()), $mode);
+        $csv .= sprintf("%s;Revendication;TOTAL;%s;%s;%s;%s;;;;;;%s\n", $ligne_base, $this->formatFloat($this->drev->declaration->getTotalTotalSuperficie()), $this->formatFloat($this->drev->declaration->getTotalSuperficieVinifiee()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendiqueVCI()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendique()), $mode);
 
         foreach($this->drev->getPrelevementsOrdered(null, true) as $prelevementsOrdered) {
             foreach ($prelevementsOrdered->prelevements as $prelevement) {
