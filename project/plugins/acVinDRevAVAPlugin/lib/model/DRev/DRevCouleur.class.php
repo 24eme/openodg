@@ -164,7 +164,7 @@ class DRevCouleur extends BaseDRevCouleur
 	public function getTotalVolumeRevendiqueVCI()
 	{
 
-		return $this->exist('volume_revendique_vci') ? $produit->volume_revendique_vci : 0;
+		return $this->exist('volume_revendique_vci') ? $this->volume_revendique_vci : 0;
 	}
 
     public function getTotalSuperficieVinifiee()
