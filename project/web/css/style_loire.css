@@ -1,169 +1,109 @@
 body {
-    background: #fff;
-}
-
-
-#header {
-    background: #f8f8f8;
-}
-
-#menu_navigation {
-    margin-bottom: 0;
-}
-
-#menu_navigation .container {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-#menu_navigation ul.navbar-nav li a {
-    font-size: 17px;
-    color: #9f0038;
-}
-
-#menu_navigation ul.navbar-nav li#nav_item_operateur.disabled {
-    opacity: 0.3;
-}
-
-#menu_navigation ul.navbar-nav li a {
-    /*border-top: 6px solid #f4ecf1;*/
-}
-
-#menu_navigation ul.navbar-nav li.active a {
-    background: #fff !important;
-    border-bottom: 6px solid #9f0038;
-}
-
-a, .btn-link {
-    color: #9f0038;
-}
-
-a:hover {
-    color: #80002d;
-}
-
-#header .container {
-    padding: 0;
+    background: url('../images/bg/bg_provence.jpg') 50% 0 no-repeat fixed;
+    background-size: cover;
 }
 
 #content {
     background: #fff;
+}
+
+#header {
+    background: transparent;
+}
+
+#content {
+    padding-bottom: 15px;
     padding-top: 15px;
-    padding-bottom: 20px;
-    border-radius: 2px;
+    border: 0px solid #e8e3dc;
+    border-top: 4px solid #c50069;
+}
+
+#header {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+#footer {
+    margin-top: 20px;
+}
+
+#footer a {
+    color: #333333;
 }
 
 #menu_navigation {
-    background: #fff;
+    margin-bottom: 0;
+    border-radius: 0;
+    border: none;
+    font-size: 16px;
+}
+
+#menu_navigation .container {
+
 }
 
 .page-header {
-    margin-top: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-h2 {
-    font-size: 26px;
+h2, h3{
+    color: #c50069;
 }
 
-h2, h3 {
-    margin-top: 0px;
+.panel-body > h2  {
+    margin-top: 5px;
 }
 
 h3 {
-    font-size: 22px;
-}
-
-.page-header h2 {
-    margin-bottom: 0px;
+    margin-top: 10px;
 }
 
 .breadcrumb {
-    background: #fdf9fa;
-    border: 1px solid #ffe9ef;
+    margin-bottom: 10px;
 }
 
-.btn-primary {
-    background: #9f0038;
-    border-color: #9f0038;
+.select2-container.form-control {
+    padding: 0;
+    margin: 0;
 }
 
-.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
-    background: #82002e;
-    border-color: #82002e;
-}
-.panel-primary {
-    border-color: #9f0038;
-}
-.panel-primary .panel-heading {
-    border-color: #9f0038;
-    background: #9f0038;
+.select2-container .select2-choices .select2-search-field input, .select2-container .select2-choice {
+    border-radius: 0 !important;
 }
 
-.list-group-item.active, .list-group-item.active:hover {
-    background: #9f0038;
-    border-color: #9f0038;
+.select2-container .select2-choice {
+    height: 38px;
 }
 
-.list-group-item.active-bordered {
-    border-left: 6px solid #9f0038 !important;
+.input-group-sm .select2-container .select2-choice {
+    height: 32px;
 }
 
-.panel-primary-bordered-right {
-    border-right: 6px solid #9f0038;
+.select2-container .select2-choice .select2-arrow b, .select2-container .select2-choice div b {
+    background-position: 0 5px;
 }
 
-.list-group-item.active a {
-    color: inherit;
+.input-group-sm .select2-container .select2-choice .select2-arrow b, .select2-container .select2-choice div b {
+    background-position: 0 3px;
 }
 
-.list-group-item.active .text-muted {
-    color: inherit;
+.select2-search input {
+    border-radius: 0;
 }
 
-.list-group-item.active .badge {
-    color: #9f0038;
+.select2-results .select2-no-results, .select2-results .select2-searching, .select2-results .select2-selection-limit {
+    background-color: #f8f3e8;
 }
 
-.label-primary {
-    background: #9f0038;
+.select2-results .select2-highlighted {
+    color: white;
+    background-color: #c50069;
 }
 
 .nav-step {
-    background: #fff;
-    border: none;
     counter-reset: steps;
-    border-bottom: 1px solid #80002d;
-    font-size: 14px;
-}
-
-.nav-step ul.navbar-nav li, .nav-step ul.navbar-nav li:hover {
-    background: #c36d7f ;
-    border-top: 1px solid #80002d;
-    position: relative;
-    top: 1px;
-    color: #fff;
-}
-
-.nav-step ul.navbar-nav li {
-    border-right: 1px solid #80002d;
-    border-bottom: 1px solid #80002d;
-}
-
-.nav-step ul.navbar-nav li:first-child {
-    border-left: 1px solid #80002d;
-}
-
-.nav-step ul.navbar-nav li a, .nav-step ul.navbar-nav li a:hover {
-    color: inherit;
-}
-
-.nav-step ul.navbar-nav li.active a, .nav-step ul.navbar-nav li.active a:hover {
-    background: #fff;
-    color: #80002d;
-}
-
-.nav-step ul.navbar-nav li.active {
-    border-bottom: 1px solid #fff;
+    font-size: 15px;
 }
 
 .nav-step ul.navbar-nav li a::before {
@@ -173,25 +113,44 @@ h3 {
     border-radius: 50%;
     counter-increment: steps;
     content: counter(steps);
-    margin-right: 5px;
-    line-height: 16px;
+    margin-right: 8px;
+    line-height: 20px;
     height: 20px;
     width: 20px;
     text-align: center;
+    font-size: 14px;
 }
 
-.nav-step ul.navbar-nav li.disabled a, .nav-step ul.navbar-nav li.disabled a:hover {
-    color: #9a4b58;
-    background: #d7afb6;
-    opacity: 0.9;
+.nav-step ul.navbar-nav li {
+    border-right: 1px solid #dbd3c8;
 }
 
-#drLignes .col-lg-1, #drLignes .col-lg-10, #drLignes .col-lg-11, #drLignes .col-lg-12, #drLignes .col-lg-2, #drLignes .col-lg-3, #drLignes .col-lg-4, #drLignes .col-lg-5, #drLignes .col-lg-6, #drLignes .col-lg-7, #drLignes .col-lg-8, #drLignes .col-lg-9, #drLignes .col-md-1, #drLignes .col-md-10, #drLignes .col-md-11, #drLignes .col-md-12, #drLignes .col-md-2, #drLignes .col-md-3, #drLignes .col-md-4, #drLignes .col-md-5, #drLignes .col-md-6, #drLignes .col-md-7, #drLignes .col-md-8, #drLignes .col-md-9, #drLignes .col-sm-1, #drLignes .col-sm-10, #drLignes .col-sm-11, #drLignes .col-sm-12, #drLignes .col-sm-2, #drLignes .col-sm-3, #drLignes .col-sm-4, #drLignes .col-sm-5, #drLignes .col-sm-6, #drLignes .col-sm-7, #drLignes .col-sm-8, #drLignes .col-sm-9, #drLignes .col-xs-1, #drLignes .col-xs-10, #drLignes .col-xs-11, #drLignes .col-xs-12, #drLignes .col-xs-2, #drLignes .col-xs-3, #drLignes .col-xs-4, #drLignes .col-xs-5, #drLignes .col-xs-6, #drLignes .col-xs-7, #drLignes .col-xs-8, #drLignes .col-xs-9 {
-	padding-right: 2px !important;
-	padding-left: 2px !important;
+.nav-step ul.navbar-nav li:first-child {
+    border-left: 1px solid #dbd3c8;
 }
 
-#drLignes .form-control, #drLignes .select2-search-field input, #drLignes .select2-container .select2-choice > .select2-chosen {
-	padding-right: 5px !important;
-	padding-left: 5px !important;
+.list-group-item.active-bordered {
+    border-left: 6px solid #c50069 !important;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #c50069;
+}
+
+#header header {background-color:#ffffff; background-image: url('/images/provence_grappe.png'); background-position: right; background-repeat: no-repeat; margin-top: 0px; margin-bottom: 20px; padding:0px 0;position:relative}
+#header header #titre {margin: 10px 160px 0 70px;}
+#header header h1 { margin-left: 155px; color: #fff; font-size: 25px; text-align: center;margin: 20px 0 0 0; padding: 0;}
+#header header #logo{float:left;}
+
+.strong {font-weight: bold;}
+
+.tableParcellaire th {
+	text-align: center !important;
+}
+
+.alert-danger a.alert-link {
+	text-decoration: underline;
+}
+.alert-danger a.alert-link:hover, .alert-danger a.alert-link:focus  {
+	text-decoration: none;
 }
