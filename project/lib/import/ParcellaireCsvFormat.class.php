@@ -19,4 +19,5 @@ final class ParcellaireCsvFormat
     const CSV_CAMPAGNE = 14;
     const CSV_ECART_PIED = 15;
     const CSV_ECART_RANG = 16;
+    const CSV_FAIRE_VALOIR = 17;
 }
