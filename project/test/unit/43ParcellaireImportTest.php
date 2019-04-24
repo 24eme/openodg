@@ -67,6 +67,6 @@ $t->is($parcelle->idu, $code_commune."000AY0036" , "Le code IDU est ".$code_comm
 array_shift($parcelles);
 $parcelle3 = array_shift($parcelles);
 $t->is($parcelle3->getKey(), "SIRAH-N-2001-2002-PARIS-AM-152-00-MARSEILLE", "La clé de la parcelle 3 est bien construite");
-$t->is($parcelle3->getProduit()->getLibelle(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est $configProduit[1]->getLibelleComplet()");
+$t->is($parcelle3->getProduit()->getLibelle(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
