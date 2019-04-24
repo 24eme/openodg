@@ -13,11 +13,11 @@
 @gray-light:             lighten(#000, 60%);   // #999
 @gray-lighter:           lighten(#000, 93.5%); // #eee
 
-@brand-primary:         #c80064;
+@brand-primary:         #504f4f;
 @brand-success:         #83a44d;
-@brand-info:            #11BDC5;
-@brand-warning:         #f0ad4e;
-@brand-danger:          #C40007;
+@brand-info:            #89b9e5;
+@brand-warning:         #fab52b;
+@brand-danger:          #ca0814;
 
 
 //== Scaffolding
@@ -122,13 +122,13 @@
 // Default background color used for all tables.
 @table-bg:                      transparent;
 // Background color used for `.table-striped`.
-@table-bg-accent:               #f8f3e8;
+@table-bg-accent:               #f7f7f7;
 // Background color used for `.table-hover`.
 @table-bg-hover:                #e8e2d2;
 @table-bg-active:               @table-bg-hover;
 
 // Border color for table and cell borders.
-@table-border-color:            #dcd2c3;
+@table-border-color:            #e3e2e2;
 
 
 //== Buttons
@@ -138,7 +138,7 @@
 @btn-font-weight:                normal;
 
 @btn-default-color:              #333;
-@btn-default-bg:                 #fff;
+@btn-default-bg:                 #fafafa;
 @btn-default-border:             #ccc;
 
 @btn-primary-color:              #fff;
@@ -318,11 +318,11 @@
 @navbar-default-border:            darken(@navbar-default-bg, 6.5%);
 
 // Navbar links
-@navbar-default-link-color:                #5f4816;
+@navbar-default-link-color:                #3e3e3e;
 @navbar-default-link-hover-color:          darken(@navbar-default-link-color, 10%);
 @navbar-default-link-hover-bg:             transparent;
 @navbar-default-link-active-color:         #fff;
-@navbar-default-link-active-bg:            #c80064;
+@navbar-default-link-active-bg:            #ca5153;
 @navbar-default-link-disabled-color:       fade(@navbar-default-link-color, 35%);
 @navbar-default-link-disabled-bg:          transparent;
 
@@ -451,7 +451,7 @@
 @state-success-border:           darken(spin(@state-success-bg, -10), 5%);
 
 @state-info-text:                darken(@state-info-bg, 60%);
-@state-info-bg:                  #f8f3e8;
+@state-info-bg:                  fade(@brand-info, 40%);
 @state-info-border:              darken(spin(@state-info-bg, -10), 5%);
 
 @state-warning-text:             darken(@brand-warning, 20%);
