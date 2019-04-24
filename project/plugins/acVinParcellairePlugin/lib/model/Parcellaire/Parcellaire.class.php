@@ -53,6 +53,7 @@ class Parcellaire extends BaseParcellaire {
 
         if(!$exist) {
             $this->declaration->reorderByConf();
+            $produit->getLibelle();
         }
 
         return $this->get($produit->getHash());
@@ -69,9 +70,7 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = 0, $strictNumOrdre = false) {
-        $config = $this->getConfiguration()->get($hashProduit);
-        $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
-        $produit->getLibelle();
+        $produit = $this->addProduit($hashProduit);
         return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
     }
 
