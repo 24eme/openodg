@@ -37,23 +37,18 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
         foreach($this->drev->declaration->getProduits() as $produit) {
             $libelle_complet = $produit->getLibelleComplet();
             $superficie = $produit->superficie_revendique;
+            $superficie_vtsgn = ($produit->exist('superficie_revendique_vtsgn')) ? $produit->superficie_revendique_vtsgn : 0;
             $superficie_vinifiee = $produit->superficie_vinifiee;
+            $superficie_vinifiee_vtsgn = ($produit->exist('superficie_vinifiee_vtsgn')) ? $produit->superficie_vinifiee_vtsgn : 0;
             $volume_vci = ($produit->exist('volume_revendique_vci')) ? $produit->volume_revendique_vci : 0;
             $volume = $produit->volume_revendique;
+            $volume_vtsgn = ($produit->exist('volume_revendique_vtsgn')) ? $produit->volume_revendique_vtsgn : 0;
 
-            if($produit->exist('superficie_revendique_vtsgn')) {
-                $superficie += $produit->superficie_revendique_vtsgn;
-            }
-            if($produit->exist('volume_revendique_vtsgn')) {
-                $volume += $produit->volume_revendique_vtsgn;
-            }
             $csv .= sprintf("%s;Revendication;%s;%s;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet), $this->formatFloat($superficie), $this->formatFloat($superficie_vinifiee), $this->formatFloat($volume_vci), $this->formatFloat($volume), $mode);
-            foreach($produit->getProduitsCepage() as $detail) {
-                $csv .= sprintf("%s;Revendication;%s;%s;;;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet)." ".trim($detail->getLibelle()), $this->formatFloat($detail->superficie_revendique_total), $this->formatFloat($detail->volume_revendique_total), $mode);
+            if($superficie_vtsgn || $volume_vtsgn || $superficie_vinifiee_vtsgn) {
+                $csv .= sprintf("%s;Revendication;%s;%s;%s;%s;%s;;;;;;%s\n", $ligne_base, trim($libelle_complet). " VT/SGN", $this->formatFloat($superficie_vtsgn), $this->formatFloat($superficie_vinifiee_vtsgn), "", $this->formatFloat($volume_vtsgn), $mode);
             }
         }
-
-        $csv .= sprintf("%s;Revendication;TOTAL;%s;%s;%s;%s;;;;;;%s\n", $ligne_base, $this->formatFloat($this->drev->declaration->getTotalTotalSuperficie()), $this->formatFloat($this->drev->declaration->getTotalSuperficieVinifiee()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendiqueVCI()), $this->formatFloat($this->drev->declaration->getTotalVolumeRevendique()), $mode);
 
         foreach($this->drev->getPrelevementsOrdered(null, true) as $prelevementsOrdered) {
             foreach ($prelevementsOrdered->prelevements as $prelevement) {
