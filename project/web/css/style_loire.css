@@ -15,7 +15,7 @@ body {
     padding-bottom: 15px;
     padding-top: 15px;
     border: 0px solid #e8e3dc;
-    border-top: 4px solid #c50069;
+    border-top: 4px solid #504f4f;
 }
 
 #header {
@@ -42,13 +42,17 @@ body {
 
 }
 
+table thead {
+    background-color: #ecebeb;
+}
+
 .page-header {
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
 h2, h3{
-    color: #c50069;
+    color: #504f4f;
 }
 
 .panel-body > h2  {
@@ -98,7 +102,7 @@ h3 {
 
 .select2-results .select2-highlighted {
     color: white;
-    background-color: #c50069;
+    background-color: #504f4f;
 }
 
 .nav-step {
@@ -130,11 +134,11 @@ h3 {
 }
 
 .list-group-item.active-bordered {
-    border-left: 6px solid #c50069 !important;
+    border-left: 6px solid #504f4f !important;
 }
 
 .panel-primary-bordered-right {
-    border-right: 6px solid #c50069;
+    border-right: 6px solid #504f4f;
 }
 
 #header header {background-color:#ffffff; background-image: url('/images/provence_grappe.png'); background-position: right; background-repeat: no-repeat; margin-top: 0px; margin-bottom: 20px; padding:0px 0;position:relative}
