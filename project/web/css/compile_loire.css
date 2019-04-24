@@ -1916,7 +1916,7 @@ fieldset[disabled] .btn {
 .btn-default {
   color: #333333;
   background-color: #fafafa;
-  border-color: #cccccc;
+  border-color: #e2e2e2;
 }
 .btn-default:hover,
 .btn-default:focus,
@@ -1925,7 +1925,7 @@ fieldset[disabled] .btn {
 .open .dropdown-toggle.btn-default {
   color: #333333;
   background-color: #e6e6e6;
-  border-color: #adadad;
+  border-color: #c3c3c3;
 }
 .btn-default:active,
 .btn-default.active,
@@ -1948,7 +1948,7 @@ fieldset[disabled] .btn-default:active,
 .btn-default[disabled].active,
 fieldset[disabled] .btn-default.active {
   background-color: #fafafa;
-  border-color: #cccccc;
+  border-color: #e2e2e2;
 }
 .btn-default .badge {
   color: #fafafa;
