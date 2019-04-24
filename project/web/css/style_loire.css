@@ -1,6 +1,5 @@
 body {
-    background: url('../images/bg/bg_provence.jpg') 50% 0 no-repeat fixed;
-    background-size: cover;
+    background: url('https://teledeclaration.vinsvaldeloire.pro/images/fonds/bg_bouteilles.png') -32px 0;
 }
 
 #content {
@@ -8,10 +7,11 @@ body {
 }
 
 #header {
-    background: transparent;
+    background: #fff;
 }
 
 #content {
+    margin-top: 30px;
     padding-bottom: 15px;
     padding-top: 15px;
     border: 0px solid #e8e3dc;
