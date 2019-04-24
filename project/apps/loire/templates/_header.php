@@ -1,9 +1,11 @@
 <header id="header">
-    <div class="container" style="position: relative; background-color: #002b6f; text-align: center;">
+    <div class="container" style="position: relative; background-color: #fff; text-align: center;">
     	<a href="<?php echo url_for('accueil') ?>">
-        	<img style="height: 80px; border-left: 2px solid #fff;" class="pull-right" src="/images/logo_odgrhone.png" />
-        	<img style="height: 80px;" class="pull-left" src="/images/bg/bg_rhone_site.jpg" />
-        	<span style="color: #fff; font-size: 20px; padding-right: 130px; padding-top: 7px; display: inline-block;"><span style="color: #fff; font-size: 17px;">Espace professionnel<br /></span><span style="color: #fff">syndicat-cotesdurhone<strong style="color: #9f0038;">.</strong><span style="color: #9b9b9b">com</span></span></span>
+        	<img style="height: 33px; margin-top: 24px;" class="pull-left" src="https://teledeclaration.vinsvaldeloire.pro/images/visuels/logo_vinsdeloire_new2.png" />
+            <img style="height: 80px;" class="pull-right" src="https://teledeclaration.vinsvaldeloire.pro/data/logo_vrac_pdf.jpg" />
+            <div style="margin-left: 250px; border-left: #555353 1px solid;padding: 10px 0;margin-top: 15px;"">
+        	<span style="color: #555353; font-size: 20px; padding-top: 3px;">Espace des professionnels du Vignoble du Val de Loire</span>
+            </div>
     	</a>
     </div>
 </header>
