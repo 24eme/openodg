@@ -132,6 +132,7 @@ class ParcellaireCsvFile
                 $new_parcelle->ecart_rang = (float) $parcelle[$f::CSV_ECART_RANG];
                 $new_parcelle->ecart_pieds = (float) $parcelle[$f::CSV_ECART_PIED];
                 $new_parcelle->superficie = (float) $parcelle[$f::CSV_SUPERFICIE];
+                $new_parcelle->superficie_cadastrale = (float) $parcelle[$f::CSV_SUPERFICIE_CADASTRALE];
 
                 $savoir_faire = '';
                 if (in_array($parcelle[$f::CSV_FAIRE_VALOIR], ParcellaireClient::$modes_savoirfaire)) {
