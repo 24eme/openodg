@@ -16,8 +16,9 @@ final class ParcellaireCsvFormat
     const CSV_PRODUIT = 11;
     const CSV_CEPAGE = 12;
     const CSV_SUPERFICIE = 13;
-    const CSV_CAMPAGNE = 14;
-    const CSV_ECART_PIED = 15;
-    const CSV_ECART_RANG = 16;
-    const CSV_FAIRE_VALOIR = 17;
+    const CSV_SUPERFICIE_CADASTRALE = 14;
+    const CSV_CAMPAGNE = 15;
+    const CSV_ECART_PIED = 16;
+    const CSV_ECART_RANG = 17;
+    const CSV_FAIRE_VALOIR = 18;
 }
