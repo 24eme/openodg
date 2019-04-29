@@ -5,6 +5,7 @@ class importScrapedouaneforparcellaireTask extends sfBaseTask
     const EXIT_CODE_ETABLISSEMENT_INCONNU = 1;
     const EXIT_CODE_CVI_INCONNU = 2;
     const EXIT_CODE_ERREUR_LECTURE = 4;
+    const EXIT_CODE_GENERATION_PARCELLE = 8;
 
     protected function configure()
     {
@@ -76,10 +77,14 @@ EOF;
             exit(self::EXIT_CODE_ERREUR_LECTURE);
         }
 
-        $new_parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
-
         // Mettre en forme le fichier via la classe
-        $new_parcellaire->convert();
+        try {
+            $new_parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
+            $new_parcellaire->convert();
+        } catch (Exception $e) {
+            $this->logSection('parcelle', $e->getMessage());
+            exit(self::EXIT_CODE_GENERATION_PARCELLE);
+        }
 
         // Vérifier s'il y a une différence avec le document actuel
         $old_parcellaire = ParcellaireClient::getInstance()->getLast($arguments['compte']);
