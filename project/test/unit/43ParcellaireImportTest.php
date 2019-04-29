@@ -24,9 +24,9 @@ $code_commune = key($communes);
 $numero_ordre_key = "00";
 
 $array = [
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1','2017-2018','100','250'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'Sirah N','0.6','2006-2007','200','150'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'Sirah N','1.1','2001-2002','100','250']
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'Sirah N','0.6', '0.7', '2006-2007','200','150', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'Sirah N','1.1', '1.1', '2001-2002','100','250', 'Propriétaire']
 ];
 
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd')."-");
