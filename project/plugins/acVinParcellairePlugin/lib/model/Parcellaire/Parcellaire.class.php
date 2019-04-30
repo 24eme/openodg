@@ -50,15 +50,14 @@ class Parcellaire extends BaseParcellaire {
         $exist = $this->exist('declaration/'.$hashToAdd);
 
         $produit = $this->add('declaration')->add($hashToAdd);
-
         if(!$exist) {
             $this->declaration->reorderByConf();
-            $produit->getLibelle();
-        }
+            $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+          }
 
         return $this->get($produit->getHash());
-    }
 
+  }
     public function getConfigProduits() {
 
         return $this->getConfiguration()->declaration->getProduits();
