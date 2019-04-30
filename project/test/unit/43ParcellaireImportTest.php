@@ -25,8 +25,8 @@ $numero_ordre_key = "00";
 
 $array = [
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', 'Propriétaire'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'Sirah N','0.6', '0.7', '2006-2007','200','150', 'Propriétaire'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'Sirah N','1.1', '1.1', '2001-2002','100','250', 'Propriétaire']
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'GRENACHE N','1.1', '1.1', '2001-2002','100','250', 'Fermier']
 ];
 
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd')."-");
@@ -66,7 +66,7 @@ $t->is($parcelle->idu, $code_commune."000AY0036" , "Le code IDU est ".$code_comm
 
 array_shift($parcelles);
 $parcelle3 = array_shift($parcelles);
-$t->is($parcelle3->getKey(), "SIRAH-N-2001-2002-PARIS-AM-152-00-MARSEILLE", "La clé de la parcelle 3 est bien construite");
+$t->is($parcelle3->getKey(), "GRENACHE-N-2001-2002-PARIS-AM-152-00-MARSEILLE", "La clé de la parcelle 3 est bien construite");
 $t->is($parcelle3->getProduit()->getLibelle(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
