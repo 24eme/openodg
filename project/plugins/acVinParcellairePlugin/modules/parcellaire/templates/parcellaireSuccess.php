@@ -15,7 +15,7 @@
 <?php endif; ?>
 <?php if($parcellaire): ?>
 <div class="page-header no-border">
-    <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?></h2>
+<h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
 </div>
 <?php endif;?>
 
