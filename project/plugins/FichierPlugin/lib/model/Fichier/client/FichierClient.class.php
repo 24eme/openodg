@@ -20,6 +20,81 @@ class FichierClient extends acCouchdbClient {
         return $fichier;
     }
 
+    /**
+     * Scrape le site des douanes via le scrapy
+     *
+     * @param string $cvi Le numéro du CVI à scraper
+     *
+     * @throws Exception Si aucun CVI trouvé
+     * @return string Le fichier le plus récent
+     */
+    public function scrapeParcellaire($cvi)
+    {
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapybin = sfConfig::get('app_scrapy_bin');
+
+        exec("$scrapybin/download_parcellaire.sh $cvi 2> /dev/null");
+        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'-*.csv');
+        if (empty($files)) {
+            throw new Exception("Le scraping n'a retourné aucun résultat");
+        }
+
+        return array_pop($files);
+    }
+
+    /**
+     * Prend un chemin de fichier en paramètre et le transforme en Parcellaire
+     * Vérifie que le nouveau parcellaire est différent du courant avant de le
+     * sauver
+     *
+     * @param string $path Le chemin du fichier
+     * @param string &$error Le potentiel message d'erreur de retour
+     *
+     * @return bool
+     */
+    public function saveParcellaire($path, &$error)
+    {
+        try {
+            $csv = new Csv($path);
+            $parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
+            $parcellaire->convert();
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            return false;
+        }
+
+        $current = ParcellaireClient::getInstance()->getLast(
+            $parcellaire->getParcellaire()->identifiant
+        );
+
+        if (! $current) {
+            $parcellaire->save();
+            return true;
+        }
+
+        $new_parcelles = $parcellaire->getParcellaire()->getParcelles();
+        $new_produits = $parcellaire->getParcellaire()->declaration;
+
+        if (count($current->getParcelles()) !== count($new_parcelles) ||
+            count($current->declaration) !== count($new_produits))
+        {
+            $parcellaire->save();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Scrape le site des douanes pour récupérer des documents administratifs
+     * et les converti en document CouchDB
+     *
+     * @param Etablissement $etablissement Un objet CouchDB Etablissement
+     * @param string $type Le type de document à scraper
+     * @param string $annee L'année de création du document
+     *
+     * @return false|Un document
+     */
     public function scrapeAndSaveFiles($etablissement, $type, $annee)
     {
     	$this->scrapeFiles($etablissement, $type, $annee);
@@ -73,11 +148,6 @@ class FichierClient extends acCouchdbClient {
         $t = strtolower($type);
         $cvi = $etablissement->cvi;
         exec("$scrapybin/download_douane.sh $t $annee $cvi > /dev/null 2>&1");
-
-        if ($type === ParcellaireCsvFile::CSV_TYPE_PARCELLAIRE
-            && file_exists($scrapydocs.'/'.$t.'-'.$cvi.'-parcellaire.html')) {
-            exec("python $scrapybin/../posttraitement/parcellaire_to_csv.py $cvi");
-        }
     }
 
     private function getScrapyFiles($etablissement, $type, $annee)
