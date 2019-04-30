@@ -85,6 +85,13 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->getLieuNode()->getLibelle();
     }
 
+    public function setModeSavoirfaire($mode)
+    {
+        if (in_array($mode, ParcellaireClient::$modes_savoirfaire)) {
+            $this->add('mode_savoirfaire', array_search($mode, ParcellaireClient::$modes_savoirfaire));
+        }
+    }
+
     public function getParcelleIdentifiant() {
         return sprintf('%s %03s %03s', $this->commune, $this->section, $this->numero_parcelle);
     }

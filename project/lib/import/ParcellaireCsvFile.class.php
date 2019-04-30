@@ -47,7 +47,7 @@ class ParcellaireCsvFile
         $this->etablissement = $etablissement->identifiant;
         $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate(
             $this->etablissement,
-            $this->date_maj,
+            date('Y-m-d'),
             'PRODOUANE'
         );
     }
@@ -137,11 +137,7 @@ class ParcellaireCsvFile
                 $new_parcelle->superficie = (float) $parcelle[$f::CSV_SUPERFICIE];
                 $new_parcelle->superficie_cadastrale = (float) $parcelle[$f::CSV_SUPERFICIE_CADASTRALE];
 
-                $savoir_faire = '';
-                if (in_array($parcelle[$f::CSV_FAIRE_VALOIR], ParcellaireClient::$modes_savoirfaire)) {
-                    $savoir_faire = array_search($parcelle[$f::CSV_FAIRE_VALOIR], ParcellaireClient::$modes_savoirfaire);
-                    $new_parcelle->mode_savoirfaire = $savoir_faire;
-                }
+                $new_parcelle->setModeSavoirfaire($parcelle[$f::CSV_FAIRE_VALOIR]);
 
                 if (! $this->check($new_parcelle)) {
                     throw new Exception("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
@@ -158,11 +154,11 @@ class ParcellaireCsvFile
      */
     private function check(ParcellaireParcelle $parcelle)
     {
-        return $parcelle->hasProblemCepageAutorise()
-            && $parcelle->hasProblemEcartPieds()
-            && $parcelle->hasProblemExpirationCepage()
-            && $parcelle->getSuperficie()
-            && $parcelle->isAffectee();
+        return ! $parcelle->hasProblemCepageAutorise()
+            && ! $parcelle->hasProblemEcartPieds()
+            && ! $parcelle->hasProblemExpirationCepage()
+            && $parcelle->getSuperficie();
+            //&& $parcelle->isAffectee();
     }
 
     /**

@@ -100,8 +100,8 @@ EOF;
             if (count($old_parcelles) !== count($new_parcelles) ||
                 count($old_produits) !== count($new_produits))
             {
-                $this->logSection('import', "Sauvegarde du nouveau parcellaire");
                 $new_parcellaire->save();
+                $this->logSection('import', "Sauvegarde du nouveau parcellaire");
             } else {
                 $this->logSection('import', "Le parcellaire semble le même");
             }
