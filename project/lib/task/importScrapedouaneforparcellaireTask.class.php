@@ -107,6 +107,7 @@ EOF;
             }
         } else {
             $this->logSection('import', "Il n'y a pas de parcellaire existant");
+            $new_parcellaire->save();
         }
     }
 }
