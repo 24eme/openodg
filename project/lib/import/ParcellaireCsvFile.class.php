@@ -129,15 +129,14 @@ class ParcellaireCsvFile
                     $parcelle[$f::CSV_COMMUNE],
                     $parcelle[$f::CSV_SECTION],
                     $parcelle[$f::CSV_NUMERO_PARCELLE],
-                    $parcelle[$f::CSV_LIEU_DIT],
+                    $parcelle[$f::CSV_LIEU_DIT]
                 );
 
                 $new_parcelle->ecart_rang = (float) $parcelle[$f::CSV_ECART_RANG];
                 $new_parcelle->ecart_pieds = (float) $parcelle[$f::CSV_ECART_PIED];
                 $new_parcelle->superficie = (float) $parcelle[$f::CSV_SUPERFICIE];
                 $new_parcelle->superficie_cadastrale = (float) $parcelle[$f::CSV_SUPERFICIE_CADASTRALE];
-
-                $new_parcelle->setModeSavoirfaire($parcelle[$f::CSV_FAIRE_VALOIR]);
+                $new_parcelle->set('mode_savoirfaire',$parcelle[$f::CSV_FAIRE_VALOIR]);
 
                 if (! $this->check($new_parcelle)) {
                     throw new Exception("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
