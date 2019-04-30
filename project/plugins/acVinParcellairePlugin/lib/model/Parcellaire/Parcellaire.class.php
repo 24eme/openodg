@@ -73,6 +73,23 @@ class Parcellaire extends BaseParcellaire {
         return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
     }
 
+    public function countSameParcelle($commune, $section, $numero_parcelle, $lieu){
+        $sameParcelle = 0;
+
+        foreach ($this->declaration as $produitKey => $produitParcelles) {
+          foreach ($produitParcelles->detail as $pKey => $parcelleExists) {
+            if(($parcelleExists->commune == $commune) &&
+                ($parcelleExists->section == $section) &&
+                ($parcelleExists->numero_parcelle == $numero_parcelle) &&
+                ($parcelleExists->lieu == $lieu)){
+                  $sameParcelle++;
+                }
+          }
+        }
+        return $sameParcelle;
+
+    }
+
     public function getDateFr() {
 
         $date = new DateTime($this->date);
