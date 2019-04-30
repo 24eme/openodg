@@ -55,16 +55,10 @@ EOF;
         $scrapybin = sfConfig::get('app_scrapy_bin');
         $scrapydocs = sfConfig::get('app_scrapy_documents');
 
-        $exit_code = 0;
-        $output = [];
-        exec($scrapybin.'/download_parcellaire.sh '.$cvi.' 2> /dev/null', $output, $exit_code);
-        if ($exit_code !== 0) {
-            throw new Exception("Problème dans l'execution de scrapy [errcode: $exit_code]");
-        }
-
         $files = glob($scrapydocs.'/parcellaire-'.$cvi.'-*.csv');
         if (empty($files)) {
-            throw new Exception("Le cvi ${cvi} n'a pas de parcelle");
+            $this->logSection('cvi', "Le cvi ${cvi} n'a pas de parcelle");
+            exit(16);
         }
 
         $most_recent_file = array_pop($files);
