@@ -15,9 +15,17 @@
 <?php endif; ?>
 <?php if($parcellaire): ?>
 <div class="page-header no-border">
-<h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
+    <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
 </div>
+<a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right">
+    <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane</a>
 <?php endif;?>
+
+<?php if ($sf_user->hasFlash('erreur_import')): ?>
+<div class="alert alert-danger" role="alert">
+    <strong>Erreur.</strong> <?= $sf_user->getFlash('erreur_import') ?>
+</div>
+<?php endif; ?>
 
 <?php if(isset($form)): ?>
 <div class="row row-margin">
