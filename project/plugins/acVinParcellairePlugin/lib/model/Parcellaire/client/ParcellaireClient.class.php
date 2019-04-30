@@ -50,6 +50,62 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
+    /**
+     * Scrape le site des douanes via le scrapy
+     *
+     * @param string $cvi Le numéro du CVI à scraper
+     *
+     * @throws Exception Si aucun CVI trouvé
+     * @return string Le fichier le plus récent
+     */
+    public function scrapeParcellaire($cvi)
+    {
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapybin = sfConfig::get('app_scrapy_bin');
+
+        exec("$scrapybin/download_parcellaire.sh $cvi");
+        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'-*.csv');
+        if (empty($files)) {
+            throw new Exception("Le scraping n'a retourné aucun résultat");
+        }
+
+        return array_pop($files);
+    }
+
+    /**
+     * Prend un chemin de fichier en paramètre et le transforme en Parcellaire
+     * Vérifie que le nouveau parcellaire est différent du courant avant de le
+     * sauver
+     *
+     * @param string $path Le chemin du fichier
+     * @param string &$error Le potentiel message d'erreur de retour
+     *
+     * @return bool
+     */
+    public function saveParcellaire($path, &$error)
+    {
+        try {
+            $csv = new Csv($path);
+            $parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
+            $parcellaire->convert();
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            return false;
+        }
+
+        $current = $this->getLast(
+            $parcellaire->getParcellaire()->identifiant
+        );
+
+        if (! $current || $current->source === 'INAO') {
+            $parcellaire->save();
+            return true;
+        } else {
+            //TODO: Checker si il est différent
+            return false;
+        }
+    }
+
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
 
