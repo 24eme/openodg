@@ -17,8 +17,8 @@ class importScrapedouaneforparcellaireTask extends sfBaseTask
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
-            new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             // add your own options here
+            new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
         $this->namespace        = 'import';
@@ -53,7 +53,7 @@ EOF;
         }
 
         $scrapybin = sfConfig::get('app_scrapy_bin');
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapydocs = '/tmp'; //sfConfig::get('app_scrapy_documents');
 
         $files = glob($scrapydocs.'/parcellaire-'.$cvi.'-*.csv');
         if (empty($files)) {
@@ -95,13 +95,13 @@ EOF;
                 count($old_produits) !== count($new_produits))
             {
                 $new_parcellaire->save();
-                $this->logSection('import', "Sauvegarde du nouveau parcellaire");
+                $this->logSection('import', sprintf("Sauvegarde du nouveau parcellaire (prédédent : %s) : %s",$old_parcellaire->_id,$new_parcellaire->getParcellaire()->_id));
             } else {
                 $this->logSection('import', "Le parcellaire semble le même");
             }
         } else {
-            $this->logSection('import', "Il n'y a pas de parcellaire existant");
             $new_parcellaire->save();
+            $this->logSection('import', sprintf("Sauvegarde du nouveau parcellaire (aucun précédent) : %s",$new_parcellaire->getParcellaire()->_id));
         }
     }
 }

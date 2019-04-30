@@ -87,9 +87,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function setModeSavoirfaire($mode)
     {
-        if (in_array($mode, ParcellaireClient::$modes_savoirfaire)) {
-            $this->add('mode_savoirfaire', array_search($mode, ParcellaireClient::$modes_savoirfaire));
-        }
+      if (!$this->exist('mode_savoirfaire')){
+        $this->_add('mode_savoirfaire');
+      }
+      return $this->_set('mode_savoirfaire',array_search($mode, ParcellaireClient::$modes_savoirfaire));
     }
 
     public function getParcelleIdentifiant() {
