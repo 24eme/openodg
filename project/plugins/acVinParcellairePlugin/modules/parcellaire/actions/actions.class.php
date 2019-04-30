@@ -48,6 +48,34 @@ class parcellaireActions extends sfActions {
         $this->setTemplate('parcellaire');
     }
 
+    public function executeScrape(sfWebRequest $request)
+    {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+    }
+
+    public function executeImport(sfWebRequest $request)
+    {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $parcellaire_client = ParcellaireClient::getInstance();
+
+        try {
+            $error = '';
+            $msg = '';
+            $file = $parcellaire_client->scrapeParcellaire($this->etablissement->cvi);
+            if (! $parcellaire_client->saveParcellaire($file, $error)) {
+                $msg = $error;
+            }
+        } catch (Exception $e) {
+            $msg = $e->getMessage();
+        }
+
+        if (! empty($msg)) {
+            $this->getUser()->setFlash('erreur_import', $msg);
+        }
+
+        $this->redirect('parcellaire_declarant', $this->etablissement);
+    }
+
     protected function secureEtablissement($etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
 

@@ -1,0 +1,4 @@
+all:
+  configuration:
+    communes:
+      "84000": "AVIGNON",

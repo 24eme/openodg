@@ -37,8 +37,8 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
           return $parcellaireIrrigue;
       }
 
-      public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-          return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99', $hydrate);
+      public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+          return $this->findPreviousByIdentifiantAndDate($identifiant, $max_annee.'-99-99', $hydrate);
       }
 
       public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -77,5 +77,12 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
       public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
           $dates = $this->getDateOuverture($type);
           return $dates['fin'];
+      }
+
+      public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
+          if (is_null($date)) {
+              $date = date('Y-m-d');
+          }
+          return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
       }
 }
