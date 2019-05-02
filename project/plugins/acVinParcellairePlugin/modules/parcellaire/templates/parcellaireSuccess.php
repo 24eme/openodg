@@ -25,7 +25,6 @@
       <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane
   </a>
   <?php endif;?>
-<?php endif;?>
 
 <?php if ($sf_user->hasFlash('erreur_import')): ?>
 <div class="alert alert-danger" role="alert">
