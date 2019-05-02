@@ -171,30 +171,37 @@ class EtablissementClient extends acCouchdbClient {
         return parent::find($this->getId($id_or_identifiant), $hydrate, $force_return_ls);
     }
 
-    public function findByAccises($no_accises) {
-        return $this->findByCvi($no_accises);
+    public function findByAccises($no_accises, $with_suspendu = false) {
+        return $this->findByCvi($no_accises, $with_suspendu);
     }
 
-    public function findByCvi($cvi) {
-      return $this->findByCviOrAcciseOrPPM($cvi);
+    public function findByCvi($cvi, $with_suspendu = false) {
+      return $this->findByCviOrAcciseOrPPM($cvi, $with_suspendu);
     }
 
-    public function findByPPM($ppm) {
-      return $this->findByCviOrAcciseOrPPM($ppm);
+    public function findByPPM($ppm, $with_suspendu = false) {
+      return $this->findByCviOrAcciseOrPPM($ppm, $with_suspendu);
     }
 
-    public function findByAccise($accise) {
-      return $this->findByCviOrAcciseOrPPM($accise);
+    public function findByAccise($accise, $with_suspendu = false) {
+      return $this->findByCviOrAcciseOrPPM($accise, $with_suspendu);
     }
 
-    public function findByCviOrAcciseOrPPM($cvi_or_accise_or_ppm){
+    public function findByCviOrAcciseOrPPM($cvi_or_accise_or_ppm, $with_suspendu = false){
       $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi_or_accise_or_ppm));
 
       if (!count($rows)) {
           return null;
       }
 
-      return $this->find($rows[0]->id);
+      foreach ($row as $r) {
+          $e = $this->find($r->id);
+          if (!$with_suspendu && $e->isSuspendu()) {
+              continue;
+          }
+          return $e;
+      }
+      return null;
     }
 
     public function getId($id_or_identifiant) {
