@@ -17,8 +17,11 @@
 <div class="page-header no-border">
     <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
 </div>
-<a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right">
-    <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane</a>
+  <?php if(!$sf_user->hasTeledeclaration()): ?>
+  <a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right" style="margin-bottom: 10px;">
+      <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane
+  </a>
+  <?php endif;?>
 <?php endif;?>
 
 <?php if ($sf_user->hasFlash('erreur_import')): ?>
