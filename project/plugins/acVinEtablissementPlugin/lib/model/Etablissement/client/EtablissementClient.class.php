@@ -194,7 +194,7 @@ class EtablissementClient extends acCouchdbClient {
           return null;
       }
 
-      foreach ($row as $r) {
+      foreach ($rows as $r) {
           $e = $this->find($r->id);
           if (!$with_suspendu && $e->isSuspendu()) {
               continue;
