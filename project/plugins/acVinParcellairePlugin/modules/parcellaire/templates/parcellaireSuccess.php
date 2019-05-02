@@ -20,8 +20,12 @@
     <h2>Parcellaire</h2>
     <?php endif;?>
 </div>
-    <a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right">
-        <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane</a>
+  <?php if(!$sf_user->hasTeledeclaration()): ?>
+  <a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right" style="margin-bottom: 10px;">
+      <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane
+  </a>
+  <?php endif;?>
+<?php endif;?>
 
 <?php if ($sf_user->hasFlash('erreur_import')): ?>
 <div class="alert alert-danger" role="alert">
