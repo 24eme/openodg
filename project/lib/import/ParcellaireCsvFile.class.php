@@ -153,11 +153,8 @@ class ParcellaireCsvFile
      */
     private function check(ParcellaireParcelle $parcelle)
     {
-        return ! $parcelle->hasProblemCepageAutorise()
-            && ! $parcelle->hasProblemEcartPieds()
-            && ! $parcelle->hasProblemExpirationCepage()
-            && $parcelle->getSuperficie();
-            //&& $parcelle->isAffectee();
+
+        return $parcelle->getSuperficie();
     }
 
     /**
