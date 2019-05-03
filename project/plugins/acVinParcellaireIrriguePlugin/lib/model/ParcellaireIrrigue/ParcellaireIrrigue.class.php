@@ -64,7 +64,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   }
 
   public function storeParcelles() {
-  	if ($parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find(ParcellaireIrrigableCLient::TYPE_COUCHDB.'-' . $this->identifiant . '-' . $this->campagne)) {
+  	if ($parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant, $this->campagne)) {
   		foreach ($parcellaireIrrigable->declaration as $key => $parcelle) {
   			$item = $this->declaration->add($key);
   			$item->libelle = $parcelle->libelle;

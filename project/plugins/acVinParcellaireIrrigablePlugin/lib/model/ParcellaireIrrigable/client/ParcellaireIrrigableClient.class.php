@@ -37,11 +37,26 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
           return $parcellaireIrrigable;
       }
 
-      public function getHistory($identifiant, $type = self::TYPE_COUCHDB, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-          $campagne_from = "0000";
-          $campagne_to = "9999";
+      public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+          return $this->findPreviousByIdentifiantAndDate($identifiant, $max_annee, $hydrate);
+      }
 
-          $id = "$type-%s-%s";
+      public function findPreviousByIdentifiantAndDate($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $h = $this->getHistory($identifiant, $max_annee, $hydrate);
+          if (!count($h)) {
+            return null;
+          }
+          $h = $h->getDocs();
+          end($h);
+          $doc = $h[key($h)];
+          return $doc;
+      }
+
+      public function getHistory($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $campagne_from = "0000";
+          $campagne_to = $max_annee;
+
+          $id = self::TYPE_COUCHDB.'-%s-%s';
           return $this->startkey(sprintf($id, $identifiant, $campagne_from))
                           ->endkey(sprintf($id, $identifiant, $campagne_to))
                           ->execute($hydrate);
@@ -50,8 +65,9 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
       public function getDateOuverture($type = self::TYPE_COUCHDB) {
           if ($type == self::TYPE_COUCHDB) {
               $dates = sfConfig::get('app_dates_ouverture_parcellaire_irrigable');
-          } else {
-            throw new sfException("Le type de parcellaire $type n'existe pas");
+          }
+          if (!is_array($dates) || !isset($dates['debut']) || !isset($dates['fin'])) {
+              return array('debut'=>'1900-01-01', 'fin' => '9999-12-31');
           }
           return $dates;
       }
