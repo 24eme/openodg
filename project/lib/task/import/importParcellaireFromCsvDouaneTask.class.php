@@ -1,6 +1,6 @@
 <?php
 
-class importScrapedouaneforparcellaireTask extends sfBaseTask
+class importParcellaireFromCsvDouaneTask extends sfBaseTask
 {
     const EXIT_CODE_ETABLISSEMENT_INCONNU = 1;
     const EXIT_CODE_CVI_INCONNU = 2;
@@ -12,7 +12,7 @@ class importScrapedouaneforparcellaireTask extends sfBaseTask
     {
         // add your own arguments here
         $this->addArguments(array(
-            new sfCommandArgument('path', sfCommandArgument::REQUIRED, 'Le numéro de compte'),
+            new sfCommandArgument('path', sfCommandArgument::REQUIRED, "Le path vers le fichier d'import"),
         ));
 
         $this->addOptions(array(
@@ -23,13 +23,13 @@ class importScrapedouaneforparcellaireTask extends sfBaseTask
         ));
 
         $this->namespace        = 'import';
-        $this->name             = 'scrape-douane-for-parcellaire';
+        $this->name             = 'parcellaire-from-csv-douane';
         $this->briefDescription = '';
         $this->detailedDescription = <<<EOF
-The [import:scrape-douane-for-parcellaire|INFO] task does things.
+The [import:-douane-for-parcellaire|INFO] Importe un parcellaire depuis un fichier d'import en csv.
 Call it with:
 
-  [php symfony import:scrape-douane-for-parcellaire|INFO]
+  [php symfony import:parcellaire-from-csv-douane|INFO]
 EOF;
     }
 
