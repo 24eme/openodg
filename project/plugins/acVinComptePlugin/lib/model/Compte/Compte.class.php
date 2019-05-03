@@ -701,7 +701,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getNomAAfficher(){
-      return Anonymization::hideIfNeeded($this->getNom());
+      return Anonymization::hideIfNeeded($this->_get('nom_a_afficher'));
     }
 
     public function getIdentifiantAAfficher(){

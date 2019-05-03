@@ -27,3 +27,21 @@ parcellaire_visualisation:
     type:     object
   requirements:
     sf_method: [get, post]
+
+parcellaire_scrape_douane:
+  url: /parcellaire/scrape/:identifiant
+  param: { module: parcellaire, action: scrape }
+  class: ParcellaireDeclarantRoute
+  options:
+    model: Etablissement
+    type: object
+  requirements:
+    sf_method: get
+
+parcellaire_import_csv:
+  url: /parcellaire/import/:identifiant
+  param: { module: parcellaire, action: import }
+  class: ParcellaireDeclarantRoute
+  options:
+    model: Etablissement
+    type: object

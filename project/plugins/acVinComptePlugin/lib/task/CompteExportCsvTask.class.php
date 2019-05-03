@@ -57,7 +57,10 @@ EOF;
             if($compte->tags && $compte->tags->automatique){
               foreach ($compte->tags->automatique as $t) {
                 if($t == "cooperative"){
-                  $cooperative = "1";
+                    $cooperative = "1";
+                }
+                if($t == "negociant_vinificateur"){
+                    $cooperative = "2";
                 }
               }
             }
