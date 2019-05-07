@@ -93,17 +93,8 @@ class ParcellaireClient extends acCouchdbClient {
             return false;
         }
 
-        $current = $this->getLast(
-            $parcellaire->getParcellaire()->identifiant
-        );
-
-        if (! $current || $current->source === 'INAO') {
-            $parcellaire->save();
-            return true;
-        } else {
-            //TODO: Checker si il est différent
-            return false;
-        }
+        $parcellaire->save();
+        return true;
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
