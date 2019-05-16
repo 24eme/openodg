@@ -40,7 +40,7 @@
         </div>
 		<div class="panel-body">
 			<p>Vous devez valider votre identification des parcelles irrigables pour pouvoir identifier vos parcelles irriguées.</p>
-			<div style="margin-top: 50px;"></div>
+			<div style="margin-top: 97px;"></div>
 		</div>
     </div>
 </div>

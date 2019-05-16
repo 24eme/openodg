@@ -13,11 +13,24 @@
   <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
 </ol>
 <?php endif; ?>
-<?php if($parcellaire): ?>
 <div class="page-header no-border">
-    <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?></h2>
+    <?php if($parcellaire): ?>
+    <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
+    <?php else: ?>
+    <h2>Parcellaire</h2>
+    <?php endif;?>
 </div>
-<?php endif;?>
+  <?php if(!$sf_user->hasTeledeclaration()): ?>
+  <a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right" style="margin-bottom: 10px;">
+      <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane
+  </a>
+  <?php endif;?>
+
+<?php if ($sf_user->hasFlash('erreur_import')): ?>
+<div class="alert alert-danger" role="alert">
+    <strong>Erreur.</strong> <?= $sf_user->getFlash('erreur_import') ?>
+</div>
+<?php endif; ?>
 
 <?php if(isset($form)): ?>
 <div class="row row-margin">
