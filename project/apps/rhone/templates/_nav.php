@@ -59,7 +59,9 @@
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
                     <li class="<?php if($route instanceof InterfaceExportRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('export'); ?>">Génération</a></li>
-                    <li><a href="/exports">Export</a></li>
+                    <?php if(sfConfig::get('app_export_webpath', null)): ?>
+                    <li><a href="<?php echo sfConfig::get('app_export_webpath', null) ?>">Export</a></li>
+                    <?php endif; ?>
                   </ul>
                 </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
