@@ -176,3 +176,10 @@ Societe:
               definition:
                 fields:
                   '*': { }
+
+      legal_signature:
+        required: false
+        type: collection
+        definition:
+          fields:
+            '*': {}
