@@ -31,13 +31,13 @@ class HttpAuth2ADSecurityFilter extends sfBasicSecurityFilter
       $rights = $ad->getDescription($_SERVER['PHP_AUTH_USER']);
     }catch(Exception $e) {
       if (!sfConfig::get('app_ad_basebn')) {
-          $rights = sfConfig::get('app_no_ad_rights', 'admin');
+          $rights = sfConfig::get('app_no_ad_rights', 'ADMIN');
       }
     }
     if (isset($_SERVER['PHP_AUTH_USER'])) {
            $user->setAttribute('AUTH_USER', $_SERVER['PHP_AUTH_USER']);
     }else{
-           $user->setAttribute('AUTH_USER',  sfConfig::get('app_no_ad_rights', 'admin'));
+           $user->setAttribute('AUTH_USER',  sfConfig::get('app_no_ad_rights', 'ADMIN'));
     }
 
     $user->setAttribute('AUTH_DESC', $rights);
@@ -51,6 +51,7 @@ class HttpAuth2ADSecurityFilter extends sfBasicSecurityFilter
 
     $compte->_id = "COMPTE-".$identifiant;
     $compte->identifiant = $identifiant;
+    $compte->add('login', $identifiant);
 
     $compte->add("droits", array($right, Roles::OPERATEUR));
 
