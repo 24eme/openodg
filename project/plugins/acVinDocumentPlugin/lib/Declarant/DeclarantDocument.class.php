@@ -54,13 +54,13 @@ class DeclarantDocument
             $declarant->code_postal = $etablissement->siege->code_postal;
         }
 
-        if($etablissement->exist("adresse")) {
+        if($etablissement->exist("adresse") && ($etablissement->adresse || $etablissement->commune || $etablissement->code_postal)) {
             $declarant->adresse = $etablissement->adresse;
         }
-        if($etablissement->exist("commune")) {
+        if($etablissement->exist("commune") && ($etablissement->adresse || $etablissement->commune || $etablissement->code_postal)) {
             $declarant->commune = $etablissement->commune;
         }
-        if($etablissement->exist("code_postal")) {
+        if($etablissement->exist("code_postal") && ($etablissement->adresse || $etablissement->commune || $etablissement->code_postal)) {
             $declarant->code_postal = $etablissement->code_postal;
         }
 
