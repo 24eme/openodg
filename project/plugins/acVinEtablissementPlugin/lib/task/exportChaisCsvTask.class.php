@@ -36,7 +36,6 @@ EOF;
 
         $withoutLiaisons = (isset($options['without-liaisons']) && $options['without-liaisons']);
         echo "Identifiant chais,Identifiant établissement,Type,Chais Activites,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET\n";
-$cpt = 0;
 
         $this->activitesCorespondance = array_flip(EtablissementClient::$chaisAttributsInImport);
         if(!$withoutLiaisons){
@@ -50,7 +49,13 @@ $cpt = 0;
             }
         }
 
+        $cpt = 0;
         foreach($results->rows as $row) {
+            $cpt++;
+            if($cpt > 500) {
+                sleep(1);
+                $cpt = 0;
+            }
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             if(isset($etablissement->chais)){
                 foreach($etablissement->chais as $numChai => $chai) {
