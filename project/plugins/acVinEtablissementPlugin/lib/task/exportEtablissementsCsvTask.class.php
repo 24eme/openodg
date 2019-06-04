@@ -40,7 +40,13 @@ EOF;
 
         echo "IdOp,IdTitre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut\n";
 
+       $cpt = 0;
         foreach($results->rows as $row) {
+           $cpt++;
+            if($cpt > 250) {
+                sleep(3);
+                $cpt = 0;
+            }
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             $societe = SocieteClient::getInstance()->find($etablissement->id_societe, acCouchdbClient::HYDRATE_JSON);
             $compte = CompteClient::getInstance()->find($etablissement->compte, acCouchdbClient::HYDRATE_JSON);

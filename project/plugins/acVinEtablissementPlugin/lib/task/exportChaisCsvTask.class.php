@@ -39,7 +39,13 @@ EOF;
 
         $this->activitesCorespondance = array_flip(EtablissementClient::$chaisAttributsInImport);
         if(!$withoutLiaisons){
+           $cpt = 0;
             foreach($results->rows as $row) {
+               $cpt++;
+               if($cpt > 500) {
+                       sleep(3);
+                       $cpt = 0;
+               }
                 $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
                 if(isset($etablissement->chais)){
                     foreach($etablissement->chais as $numChai => $chai) {
@@ -53,7 +59,7 @@ EOF;
         foreach($results->rows as $row) {
             $cpt++;
             if($cpt > 500) {
-                sleep(1);
+                sleep(3);
                 $cpt = 0;
             }
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
