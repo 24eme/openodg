@@ -68,6 +68,11 @@ class HabilitationDemande extends BaseHabilitationDemande {
     public function getHistoriquePrecedent($statut, $date) {
         $prev = null;
         $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);
+
+        if(!$habilitationLast->exist($this->getHash())) {
+
+            return null;
+        }
         foreach($habilitationLast->get($this->getHash())->getFullHistorique() as $h) {
             if($prev && $h->statut == $statut && $h->date == $date) {
 
@@ -82,6 +87,12 @@ class HabilitationDemande extends BaseHabilitationDemande {
     public function getHistoriqueSuivant($statut, $date) {
         $finded = false;
         $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);
+
+        if(!$habilitationLast->exist($this->getHash())) {
+
+            return null;
+        }
+        
         foreach($habilitationLast->get($this->getHash())->getFullHistorique() as $h) {
             if($finded == true) {
                 return $h;
