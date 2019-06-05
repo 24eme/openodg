@@ -1,6 +1,6 @@
 <?php
 
-class exportHabilitationDemandesCsvTask extends sfBaseTask
+class exportHabilitationDemandesPublipostageCsvTask extends sfBaseTask
 {
 
     protected function configure()
@@ -12,8 +12,8 @@ class exportHabilitationDemandesCsvTask extends sfBaseTask
         ));
 
         $this->namespace = 'export';
-        $this->name = 'habilitation-historique';
-        $this->briefDescription = "Export de l'historique des habilitations";
+        $this->name = 'habilitation-demandes-publipostage';
+        $this->briefDescription = "Export de l'historique des demandes d'habilitations pour publipostage";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -26,9 +26,12 @@ EOF;
 
         $rows = HabilitationHistoriqueView::getInstance()->getAll();
 
-        echo "Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Adresse complémentaire 1;Adresse complémentaire 2;Code postal Opérateur;Commune Opérateur;Email;Téléphone Bureau;Téléphone Mobile;Demande;Libellé activités;Produit;Statut;Date Statut;Statut précédent;Date précédent statut;Statut suivant;Date statut suivant;Id du doc;Clé de la demande";
+        echo "Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Adresse complémentaire 1;Adresse complémentaire 2;Code postal Opérateur;Commune Opérateur;Email;Téléphone Bureau;Téléphone Mobile;Demande;Libellé activités;Produit;Statut;Date Statut;Statut précédent;Date précédent statut;Statut suivant;Date statut suivant;Id du doc;Clé de la demande\n";
 
         foreach ($rows as $row) {
+            if (strpos($row->key[HabilitationHistoriqueView::KEY_IDDOC], 'demandes') === false) {
+                continue;
+            }
             $keysHash = explode(":", $row->key[HabilitationHistoriqueView::KEY_IDDOC]);
             $hab = HabilitationClient::getInstance()->find($row->id);
             $demandeHash = $keysHash[1];
