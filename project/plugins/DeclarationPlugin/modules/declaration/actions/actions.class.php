@@ -11,7 +11,7 @@ class declarationActions extends sfActions {
         $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
 
         if(class_exists("EtablissementChoiceForm")) {
-            $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+            $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array(), true);
         } elseif(class_exists("LoginForm")) {
             $this->form = new LoginForm();
         }
@@ -95,7 +95,7 @@ class declarationActions extends sfActions {
     }
 
     public function executeEtablissementSelection(sfWebRequest $request) {
-        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array(), true);
         $form->bind($request->getParameter($form->getName()));
         if (!$form->isValid()) {
 
@@ -111,7 +111,7 @@ class declarationActions extends sfActions {
         $this->secureEtablissement($this->etablissement);
 
         if(class_exists("EtablissementChoiceForm")) {
-            $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
+            $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
 
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());

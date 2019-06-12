@@ -77,16 +77,17 @@ class ParcellaireClient extends acCouchdbClient {
      * Vérifie que le nouveau parcellaire est différent du courant avant de le
      * sauver
      *
+     * @param Etablissement $etablissement L'établissement à mettre à jour
      * @param string $path Le chemin du fichier
      * @param string &$error Le potentiel message d'erreur de retour
      *
      * @return bool
      */
-    public function saveParcellaire($path, &$error)
+    public function saveParcellaire(Etablissement $etablissement, $path, &$error)
     {
         try {
             $csv = new Csv($path);
-            $parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
+            $parcellaire = new ParcellaireCsvFile($etablissement, $csv, new ParcellaireCsvFormat);
             $parcellaire->convert();
         } catch (Exception $e) {
             $error = $e->getMessage();
