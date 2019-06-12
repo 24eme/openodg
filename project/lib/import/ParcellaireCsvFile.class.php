@@ -26,25 +26,30 @@ class ParcellaireCsvFile
     /**
      * Constructeur.
      *
+     * @param Etablissement $etablissement L'établissement à mettre à jour
      * @param Csv $file Le csv
+     * @param ParcellaireCsvFormat $format Le format du fichier CSV
+     *
      * @throws Exception Si le CVI n'est rattaché à aucun établissement
      */
-    public function __construct(Csv $file, ParcellaireCsvFormat $format)
+    public function __construct(Etablissement $etablissement, Csv $file, ParcellaireCsvFormat $format)
     {
+        $this->etablissement = $etablissement->identifiant;
         $this->file = $file;
         $this->format = $format;
 
         $split = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
         $this->cvi = $split[1];
         $this->date_maj = $split[2];
-        $etablissement = EtablissementClient::getInstance()
-                            ->findByCvi($this->cvi);
 
-        if ($etablissement === null) {
-            throw new Exception("Le cvi n'est rattaché a aucun établissement");
+        if ($etablissement->cvi !== $this->cvi) {
+            $m = sprintf("Les cvi de l'établissement et du fichier ne correspondent pas : %s ≠ %s",
+                $etablissement->cvi,
+                $this->cvi
+            );
+            throw new Exception($m);
         }
 
-        $this->etablissement = $etablissement->identifiant;
         $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate(
             $this->etablissement,
             date('Y-m-d'),
