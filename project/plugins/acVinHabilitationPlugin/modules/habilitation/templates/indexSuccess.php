@@ -10,10 +10,7 @@
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
     </div>
 </div>
-<!--<ul class="nav nav-tabs" style="margin-top: 20px; margin-bottom: 30px;">
-  <li class="active"><a href="<?php echo url_for('habilitation') ?>">Suivi des demandes</a></li>
-  <li><a href="<?php echo url_for('habilitation_suivi') ?>">Suivi des habilitations</a></li>
-</ul>-->
+
 <div class="row">
     <div class="col-sm-9 col-lg-10 col-xs-12">
         <table class="table table-bordered table-striped table-condensed">
@@ -64,9 +61,6 @@
     </div>
 
     <div class="col-sm-3 col-lg-2 col-xs-12">
-        <!--<div class="list-group">
-            <a class="btn btn-default btn-block" href="<?php echo url_for('habilitation_export_historique') ?>">Export de l'historique</a>
-        </div>-->
         <div class="list-group">
             <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         </div>
@@ -97,5 +91,9 @@
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
+        <hr />
+        <div class="list-group">
+            <a href="<?php echo url_for('habilitation_export_historique', array('date' => date('y-m-d'))) ?>"><small>Exporter l'historique du jour</small></a>
+        </div>
     </div>
 </div>

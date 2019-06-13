@@ -46,44 +46,16 @@ class habilitationActions extends sfActions {
 
 
     public function executeExportHistorique(sfWebRequest $request) {
-        set_time_limit(-1);
-        ini_set('memory_limit', '2048M');
-        $this->form = new BaseForm();
-        $this->form->setWidgets(array(
-            'statut' => new sfWidgetFormChoice(array('choices' => array_merge(array(''=>''), HabilitationClient::getInstance()->getDemandeStatuts()))),
-            'date' => new sfWidgetFormInput(array(), array())
-        ));
-        $this->form->setValidators(array(
-            'statut' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys(HabilitationClient::getInstance()->getDemandeStatuts()))),
-            'date' => new sfValidatorDate(
-                array('date_output' => 'Y-m-d',
-                'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
-                'required' => true)
-            )));
+        $export = new ExportHabilitationDemandesPublipostageCSV($request->getParameter('date'));
 
-        $this->form->getWidgetSchema()->setNameFormat('habilitation_export_historique[%s]');
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-
-        $date = $this->form->getValue('date');
-        $statut = $this->form->getValue('statut');
-
-        $this->rows = HabilitationHistoriqueView::getInstance()->getByDateAndStatut($date, $statut);
         $this->setLayout(false);
-        $this->setTemplate('exportHistoriqueCSV');
-        $attachement = sprintf("attachment; filename=export_demandes_%s_%s.csv", $date, $statut);
+
+        $attachement = sprintf("attachment; filename=export_demandes_%s.csv", $request->getParameter('date'));
+        $this->response->setContent($export->export());
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition', $attachement);
+
+        return sfView::NONE;
     }
 
   public function executeSuivi(sfWebRequest $request)

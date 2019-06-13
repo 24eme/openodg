@@ -28,6 +28,12 @@ class HabilitationHistoriqueView extends acCouchdbView
         return $this->client->getView($this->design, $this->view)->rows;
     }
 
+    public function getByDate($date){
+        return $this->client->startkey(array($date))
+                    ->endkey(array($date,array()))
+                    ->getView($this->design, $this->view)->rows;
+    }
+
     public function getByDateAndStatut($date,$statut){
         return $this->client->startkey(array($date,$statut))
     				->endkey(array($date,$statut,array()))
