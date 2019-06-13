@@ -87,7 +87,7 @@ if (count($config) != 3) {
     $config = null;
 }
 
-echo "Libelle Appellation;Date depot DI;Date Enregistrement DI;N CVI;N SIRET;Cle identite;Nom ou raison sociale de l'operateur;Adresse 1;Adresse 2;Adresse 3;CP;Commune;Telephone;Telecopie;Email;Responsable 1;Qualite responsable1;Responsable 2;Qualite responsable 2;Producteurs de raisins ou de mouts;Vinificateur/elaborateur;Conditionneur/ donneur d'ordre;Achat et vente de vins en vrac (entre operateurs);Vente de vins a la tireuse;Etat de l'habilitation;Date de décision;Observations\n";
+echo "Libelle Appellation;Date depot DI;Date Enregistrement DI;N CVI;N SIRET;Cle identite;Nom ou raison sociale de l'operateur;Adresse 1;Adresse 2;Adresse 3;CP;Commune;Telephone;Telecopie;Email;Activité;Etat de l'habilitation;Date de décision;Observations\n";
 if (($handle = fopen($csv, "r")) !== false) {
     while (($datas = fgetcsv($handle, 0, ";")) !== false) {
         if (count($datas) != 12) {
@@ -97,40 +97,36 @@ if (($handle = fopen($csv, "r")) !== false) {
             continue;
         }
         $types = explode(',', $datas[11]);
-        $producteur = (in_array('PRODUCTEUR', $types))? 1 : null;
-        $vinificateur = (in_array('VINIFICATEUR', $types))? 1 : null;
-        $conditionneur = (in_array('CONDITIONNEUR', $types))? 1 : null;
-        $vrac = (in_array('VRAC', $types))? 1 : null;
-        $tireuse = (in_array('VENTE_A_LA_TIREUSE', $types))? 1 : null;
-        
 
-        $key = $datas[2].'-'. $datas[7].'-'. $datas[9];
-        
-        if (!isset($dates[$key])) {
-            continue;
-        }
-        
-        $depot = $dates[$key]['depot'];
-        $enregistrement = $dates[$key]['enregistrement'];
-        $decision = $dates[$key]['decision'];
-        
-        if ($config && !isset($etablissements[$datas[2]])) {
-            $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/ETABLISSEMENT-".$datas[2]);
-            if ($content !== false) {
-                $etablissements[$datas[2]] = json_decode(file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/ETABLISSEMENT-".$datas[2]));
+        foreach($types as $type) {
+            $key = $datas[2].'-'. $datas[7].'-'. $datas[9];
+
+            if (!isset($dates[$key])) {
+                continue;
             }
+
+            $depot = $dates[$key]['depot'];
+            $enregistrement = $dates[$key]['enregistrement'];
+            $decision = $dates[$key]['decision'];
+
+            if ($config && !isset($etablissements[$datas[2]])) {
+                $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/ETABLISSEMENT-".$datas[2]);
+                if ($content !== false) {
+                    $etablissements[$datas[2]] = json_decode(file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/ETABLISSEMENT-".$datas[2]));
+                }
+            }
+
+            if (!$etablissement = $etablissements[$datas[2]]) {
+                continue;
+            }
+
+            $adresses = explode(' - ', str_replace(array('"',','),array('',''), $etablissement->siege->adresse));
+            $a = (isset($adresses[0]))? $adresses[0] : "";
+            $a_comp = (isset($adresses[1]))? $adresses[1] : "";
+            $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
+
+            echo $datas[10].";".$depot->format('d/m/Y').";".$enregistrement->format('d/m/Y').";".$etablissement->cvi.";".$etablissement->siret.";".$datas[2].";".$etablissement->raison_sociale.";".$a.";".$a_comp.";".$a_comp1.";".$etablissement->siege->code_postal.";".$etablissement->siege->commune.";".$etablissement->telephone_bureau.";".$etablissement->fax.";".$etablissement->email.";".$type.";".$datas[7].";".$decision->format('d/m/Y').";".$datas[4]."\n";
         }
-        
-        if (!$etablissement = $etablissements[$datas[2]]) {
-            continue;
-        }
-        
-        $adresses = explode(' - ', str_replace(array('"',','),array('',''), $etablissement->siege->adresse));
-        $a = (isset($adresses[0]))? $adresses[0] : "";
-        $a_comp = (isset($adresses[1]))? $adresses[1] : "";
-        $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
-        
-        echo $datas[10].";".$depot->format('d/m/Y').";".$enregistrement->format('d/m/Y').";".$etablissement->cvi.";".$etablissement->siret.";".$datas[2].";".$etablissement->raison_sociale.";".$a.";".$a_comp.";".$a_comp1.";".$etablissement->siege->code_postal.";".$etablissement->siege->commune.";".$etablissement->telephone_bureau.";".$etablissement->fax.";".$etablissement->email.";;;;;$producteur;$vinificateur;$conditionneur;$vrac;$tireuse;".$datas[7].";".$decision->format('d/m/Y').";".$datas[4]."\n";
     }
     fclose($handle);
 }
