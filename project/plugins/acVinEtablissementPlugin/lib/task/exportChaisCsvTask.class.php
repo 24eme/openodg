@@ -98,7 +98,7 @@ EOF;
                         }
                         $keyL = $liaison->id_etablissement.$liaison->hash_chai;
                         if(!array_key_exists($keyL,$this->chais)){
-                            throw new sfException("Le chai $keyL n'a pas été réfenrencé");
+                            throw new sfException("Le chai $keyL n'a pas été réferencé");
                         }
 
                         $chaiDistant = $this->chais[$keyL];
@@ -177,7 +177,7 @@ EOF;
         }
 
         public function protectIso($str){
-            return str_replace(array('œ'),array(''),$str);
+            return str_replace(array('œ'),array('oe'),$str);
         }
 
         private function transformNom($nom_or_raison_sociale){

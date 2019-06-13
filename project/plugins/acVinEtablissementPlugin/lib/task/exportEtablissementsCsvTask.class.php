@@ -108,8 +108,8 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             $societe->identifiant.",".
             $intitule.",".
             $this->protectIso($raisonSociale).",".
-            str_replace(array('"',','),array('',''), $etablissement->adresse).",".
-            str_replace(',', '',$adresse_complementaire).",".
+            str_replace(array('"',',', ';'), array('','', ''), $etablissement->adresse).",".
+            str_replace(array('"',',', ';'), array('','', ''), $adresse_complementaire).",".
             implode(' − ', $adresses_complementaires).",".
             $etablissement->code_postal.",".
             $this->protectIso($etablissement->commune).",".
@@ -125,7 +125,7 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             ','. //Transmission AVPI
             ','. //Date Habilitation
             ','. //date archivage
-            '"'.str_replace('"', "''", str_replace(',', ' / ', $this->protectIso($etablissement->commentaire))).'",'.
+            '"'.str_replace('"', "''", str_replace(array(',', ';'), array(' / ', ' / '), $this->protectIso($etablissement->commentaire))).'",'.
             $habilitationStatut.",". // Etat
             "Faux,", //demande AVPI
             $ordre.",". // Ordre
