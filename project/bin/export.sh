@@ -4,20 +4,20 @@
 
 mkdir $EXPORTDIR 2> /dev/null
 
-php symfony export:etablissements-csv $SYMFONYTASKOPTIONS | sort > $EXPORTDIR/etablissements.csv.part
-cat $EXPORTDIR/etablissements.csv.part | grep -E "^IdOp" > $EXPORTDIR/etablissements.csv.sorted.part
-cat $EXPORTDIR/etablissements.csv.part | grep -Ev "^IdOp" >> $EXPORTDIR/etablissements.csv.sorted.part
+php symfony export:etablissements-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/etablissements.csv.part
+cat $EXPORTDIR/etablissements.csv.part | sort | grep -E "^IdOp" > $EXPORTDIR/etablissements.csv.sorted.part
+cat $EXPORTDIR/etablissements.csv.part | sort | grep -Ev "^IdOp" >> $EXPORTDIR/etablissements.csv.sorted.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/etablissements.csv.sorted.part > $EXPORTDIR/etablissements.en.csv
 cat $EXPORTDIR/etablissements.en.csv | sed 's/;/ø/g' | awk -F ',' 'BEGIN { OFS=";" }{ $1=$1; print $0 }' | sed 's/ø/,/g' > $EXPORTDIR/etablissements.csv
 rm $EXPORTDIR/etablissements.csv.part $EXPORTDIR/etablissements.csv.sorted.part
-ln -s etablissements.en.csv $EXPORTDIR/etablissements.iso8859.csv # Pour l'AVPI en provence
+ln -s etablissements.en.csv $EXPORTDIR/etablissements.iso8859.csv 2> /dev/null # Pour l'AVPI en provence
 
 #php symfony export:chais-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/chais.csv.part
 echo "test"
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/chais.csv.part > $EXPORTDIR/chais.en.csv
 cat $EXPORTDIR/chais.en.csv | sed 's/;/ø/g' | awk -F ',' 'BEGIN { OFS=";" }{ $1=$1; print $0 }' | sed 's/ø/,/g' > $EXPORTDIR/chais.csv
 rm $EXPORTDIR/chais.csv.part
-ln -s chais.en.csv $EXPORTDIR/chais.iso8859.csv # Pour l'AVPI en provence
+ln -s chais.en.csv $EXPORTDIR/chais.iso8859.csv 2> /dev/null # Pour l'AVPI en provence
 
 bash bin/export_docs.sh DRev > $EXPORTDIR/drev.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev.csv.part > $EXPORTDIR/drev.csv
