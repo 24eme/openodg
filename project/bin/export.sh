@@ -1,8 +1,5 @@
 #!/bin/bash
 
-cd $(dirname $0)/..
-BASEDIR=$(pwd)
-
 . bin/config.inc
 
 mkdir $EXPORTDIR 2> /dev/null
@@ -52,6 +49,6 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_publipostag
 rm $EXPORTDIR/habilitation_demandes_publipostage.csv.part
 
 if test "$METABASE_SQLITE"; then
-    python $BASEDIR"/bin/csv2sql.py" $METABASE_SQLITE".tmp" $EXPORTDIR
+    python bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
 fi
