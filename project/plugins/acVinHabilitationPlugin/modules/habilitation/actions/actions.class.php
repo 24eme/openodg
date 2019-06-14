@@ -51,7 +51,7 @@ class habilitationActions extends sfActions {
         $this->setLayout(false);
 
         $attachement = sprintf("attachment; filename=export_demandes_%s.csv", $request->getParameter('date'));
-        $this->response->setContent($export->export());
+        $this->response->setContent(utf8_decode($export->export()));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition', $attachement);
 
