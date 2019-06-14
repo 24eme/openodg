@@ -15,6 +15,10 @@ sys.stderr.write("habilitation.csv\n")
 csv = pd.read_csv("habilitation.csv", encoding='iso-8859-1', delimiter=";", index_col=False)
 csv.to_sql('habilitation', con=engine, if_exists='replace')
 
+sys.stderr.write("habilitation_demandes.csv\n")
+csv = pd.read_csv("habilitation_demandes.csv", encoding='iso-8859-1', delimiter=";", index_col=False)
+csv.to_sql('habilitation_demandes', con=engine, if_exists='replace')
+
 sys.stderr.write("drev.csv\n")
 csv = pd.read_csv("drev.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
 csv.to_sql('drev', con=engine, if_exists='replace')
