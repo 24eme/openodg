@@ -23,7 +23,8 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        
+
+        echo "Date;Statut;Identifiant;Description;Commentaire;Auteur;Id Demande;Id Habilitation;Type;Date habilitation;Hash Produit;Libelle Produit;Activite\n";
         $rows = HabilitationHistoriqueView::getInstance()->getAll();
         foreach($rows as $row) {
             if (preg_match('/demandes/', $row->key[HabilitationHistoriqueView::KEY_IDDOC])) {
