@@ -49,6 +49,6 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_publipostag
 rm $EXPORTDIR/habilitation_demandes_publipostage.csv.part
 
 if test "$METABASE_SQLITE"; then
-    python bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
+    python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
 fi
