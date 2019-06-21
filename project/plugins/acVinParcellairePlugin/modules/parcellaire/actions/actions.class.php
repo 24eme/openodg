@@ -62,7 +62,7 @@ class parcellaireActions extends sfActions {
             $error = '';
             $msg = '';
             $file = $parcellaire_client->scrapeParcellaire($this->etablissement->cvi);
-            if (! $parcellaire_client->saveParcellaire($file, $error)) {
+            if (! $parcellaire_client->saveParcellaire($this->etablissement, $file, $error)) {
                 $msg = $error;
             }
         } catch (Exception $e) {

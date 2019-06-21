@@ -38,9 +38,15 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "IdOp,IdTitre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut\n";
+        echo "Identifiant,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut\n";
 
+       $cpt = 0;
         foreach($results->rows as $row) {
+           $cpt++;
+            if($cpt > 250) {
+                sleep(3);
+                $cpt = 0;
+            }
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             $societe = SocieteClient::getInstance()->find($etablissement->id_societe, acCouchdbClient::HYDRATE_JSON);
             $compte = CompteClient::getInstance()->find($etablissement->compte, acCouchdbClient::HYDRATE_JSON);
@@ -54,13 +60,19 @@ EOF;
                         if(!$activite->statut) {
                             continue;
                         }
-                        $activites[] = HabilitationClient::getInstance()->getLibelleActiviteToBeSorted($activiteKey);
+                        $activites[$activiteKey] = $activiteKey;
                         $habilitationStatut = self::$statuts_libelles_export[$activite->statut];
                     }
                 }
             }
 
-            sort($activites);
+            $activitesSorted = array();
+            foreach(HabilitationClient::getInstance()->getActivites() as $key => $libelle) {
+                if(!array_key_exists($key, $activites)) {
+                    continue;
+                }
+                $activitesSorted[] = $libelle;
+            }
 
             $ordre = null;
 
@@ -96,8 +108,8 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             $societe->identifiant.",".
             $intitule.",".
             $this->protectIso($raisonSociale).",".
-            str_replace(array('"',','),array('',''), $etablissement->adresse).",".
-            str_replace(',', '',$adresse_complementaire).",".
+            str_replace(array('"',',', ';'), array('','', ''), $etablissement->adresse).",".
+            str_replace(array('"',',', ';'), array('','', ''), $adresse_complementaire).",".
             implode(' − ', $adresses_complementaires).",".
             $etablissement->code_postal.",".
             $this->protectIso($etablissement->commune).",".
@@ -107,13 +119,13 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             $etablissement->fax.",".
             $etablissement->telephone_mobile.",".
             '"'.$etablissement->email.'",'.
-            preg_replace('/[0-9][0-9]_/', '', implode(";", $activites)).",". // Activité habilitation
+            preg_replace('/[0-9][0-9]_/', '', implode(";", $activitesSorted)).",". // Activité habilitation
             ','. //Reception ODG
             ','. //Enregistrement ODG
             ','. //Transmission AVPI
             ','. //Date Habilitation
             ','. //date archivage
-            '"'.str_replace('"', "''", str_replace(',', ' / ', $this->protectIso($etablissement->commentaire))).'",'.
+            '"'.str_replace('"', "''", str_replace(array(',', ';'), array(' / ', ' / '), $this->protectIso($etablissement->commentaire))).'",'.
             $habilitationStatut.",". // Etat
             "Faux,", //demande AVPI
             $ordre.",". // Ordre

@@ -3,6 +3,11 @@ habilitation:
   param: { module: habilitation, action: index }
   class: HabilitationGeneralRoute
 
+habilitation_suivi:
+  url: /habilitation/suivi
+  param: { module: habilitation, action: suivi }
+  class: HabilitationGeneralRoute
+
 habilitation_export:
   url: /habilitation/export
   param: { module: habilitation, action: export }
@@ -10,7 +15,6 @@ habilitation_export:
 habilitation_etablissement_selection:
   url: /habilitations-etablissement-selection
   param: { module: habilitation, action: etablissementSelection }
-
 
 habilitation_declarant:
   url: /habilitation/declarant/:identifiant
@@ -47,7 +51,62 @@ habilitation_ajout:
   param: { module: habilitation, action: ajout }
   class: EtablissementRoute
   options:
-    model:    Habilitation
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_demande_globale:
+  url: /habilitation/declarant/:identifiant/demande/globale
+  param: { module: habilitation, action: demandeGlobale }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_demande_creation:
+  url: /habilitation/declarant/:identifiant/demande/creation
+  param: { module: habilitation, action: demandeCreation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_demande_edition:
+  url: /habilitation/declarant/:identifiant/demande/edition/:demande
+  param: { module: habilitation, action: demandeEdition }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_export_historique:
+  url: /habilitation/export_historique/:date
+  param: { module: habilitation, action: exportHistorique }
+  class: HabilitationGeneralRoute
+
+habilitation_demande_suppression_derniere:
+  url: /habilitation/declarant/:identifiant/demande/suppression_derniere/:demande/:date/:statut
+  param: { module: habilitation, action: demandeSuppressionDerniere }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_demande_commentaire_modification:
+  url: /habilitation/declarant/:identifiant/demande/commentaire_modification/:demande/:date/:statut
+  param: { module: habilitation, action: demandeModificationCommentaire }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get, post]

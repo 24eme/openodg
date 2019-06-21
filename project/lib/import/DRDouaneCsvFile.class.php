@@ -6,13 +6,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	if (!$this->filePath) {
     		throw new sfException("La cible du fichier n'est pas spécifiée.");
     	}
-        $handler = fopen($this->filePath, 'r');
 
-        $csv = array();
+        $csvFile = new CsvFile($this->filePath);
+        $csv = $csvFile->getCsv();
 
-        while (($data = fgetcsv($handler)) !== FALSE) {
-            $csv[] = self::clean($data);
-        }
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
 	      if ($this->etablissement && !$this->etablissement->isActif()) {
 		        return;

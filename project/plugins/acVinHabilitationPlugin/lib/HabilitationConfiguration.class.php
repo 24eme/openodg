@@ -20,13 +20,45 @@ class HabilitationConfiguration {
         $this->configuration = sfConfig::get('habilitation_configuration_habilitation', array());
     }
 
-    public function hasPrelevements() {
+    public function getActivites() {
+        if(!isset($this->configuration['activites'])) {
 
-        return boolval($this->configuration['prelevements']);
+            return array();
+        }
+
+        return $this->configuration['activites'];
     }
 
-    public function getActivites(){
-        return sfConfig::get('habilitation_configuration_activites', array());
+    public function getDemandeStatuts() {
+        if(!isset($this->configuration['demande']['statuts'])) {
+
+            return array();
+        }
+
+        return $this->configuration['demande']['statuts'];
+    }
+
+    public function getDemandeAutomatique() {
+        if(!isset($this->configuration['demande']['automatique'])) {
+
+            return array();
+        }
+
+        return $this->configuration['demande']['automatique'];
+    }
+
+    public function getDemandeHabilitations() {
+        if(!isset($this->configuration['demande']['habilitations'])) {
+
+            return array();
+        }
+
+        return $this->configuration['demande']['habilitations'];
+    }
+
+    public function getDemandeStatutsFerme() {
+
+        return array('VALIDE', 'REFUSE', 'ANNULE');
     }
 
 }

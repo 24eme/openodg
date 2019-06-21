@@ -11,10 +11,8 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_ELABORATEUR = "ELABORATEUR";
     const ACTIVITE_CONDITIONNEUR = "CONDITIONNEUR";
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
-
     const ACTIVITE_PRODUCTEUR_MOUTS = "PRODUCTEUR_MOUTS";
     const ACTIVITE_ELEVEUR_DGC = "ELEVEUR_DGC";
-
 
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
@@ -24,32 +22,16 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_REFUS = "REFUS";
     const STATUT_RETRAIT = "RETRAIT";
     const STATUT_ANNULE = "ANNULÉ";
-
-
     const STATUT_ARCHIVE = "ARCHIVE";
 
-    public static $activites_libelles = array(
-      /*
-       self::ACTIVITE_PRODUCTEUR => "Producteur de raisins",
-       */
-                                                  self::ACTIVITE_PRODUCTEUR => "Producteur",
-                                                  self::ACTIVITE_VINIFICATEUR => "Vinificateur",
-                                                  self::ACTIVITE_VRAC => "Détenteur de vin en vrac",
-                                                  self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
-                                                  self::ACTIVITE_ELABORATEUR => "Élaborateur",
-                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse"
-                                                  ,self::ACTIVITE_PRODUCTEUR_MOUTS => "Producteur de moût"
-                                                  ,self::ACTIVITE_ELEVEUR_DGC => "Eleveur de DGC"
-                                                );
-    public static $activites_libelles_to_be_sorted = array( self::ACTIVITE_PRODUCTEUR => "01_Producteur de raisins",
-                                                  self::ACTIVITE_VINIFICATEUR => "03_Vinificateur",
-                                                  self::ACTIVITE_VRAC => "05_Détenteur de vin en vrac",
-                                                  self::ACTIVITE_CONDITIONNEUR => "06_Conditionneur",
-                                                  self::ACTIVITE_ELABORATEUR => "99_Élaborateur",
-                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "99_Vente tireuse"
-                                                  ,self::ACTIVITE_PRODUCTEUR_MOUTS => "02_Producteur de moût"
-                                                  ,self::ACTIVITE_ELEVEUR_DGC => "04_Eleveur de DGC"
-                                                );
+    const DEMANDE_HABILITATION = "HABILITATION";
+    const DEMANDE_RETRAIT = "RETRAIT";
+
+    public static $demande_libelles = array(
+        self::DEMANDE_HABILITATION => "Habilitation",
+        self::DEMANDE_RETRAIT => "Retrait"
+    );
+
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
                                              self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
@@ -58,7 +40,6 @@ class HabilitationClient extends acCouchdbClient {
                                              self::STATUT_REFUS => "Refus",
                                              self::STATUT_ANNULE => "Annulé",
                                              self::STATUT_RETRAIT => "Retrait",
-
                                             self::STATUT_ARCHIVE => "Archivé");
 
     public static function getInstance()
@@ -66,35 +47,86 @@ class HabilitationClient extends acCouchdbClient {
       return acCouchdbManager::getClient("Habilitation");
     }
 
-    public function getLibelleActiviteToBeSorted($key) {
+    public function getActivites() {
 
-        if(!isset(self::$activites_libelles_to_be_sorted[$key])) {
-
-            return $key;
-        }
-
-        return self::$activites_libelles_to_be_sorted[$key];
+        return HabilitationConfiguration::getInstance()->getActivites();
     }
 
+    public function getDemandeStatuts() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeStatuts();
+    }
+
+    public function getStatutsFerme() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeStatutsFerme();
+    }
+
+    public function getDemandeStatutLibelle($key) {
+        $statuts = HabilitationConfiguration::getInstance()->getDemandeStatuts();
+
+        if(!isset($statuts[$key])) {
+
+            return null;
+        }
+
+        return $statuts[$key];
+    }
+
+    public function getDemandeAutomatique() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeAutomatique();
+    }
+
+    public function getDemandeAutomatiqueStatut($statut) {
+        $statuts = $this->getDemandeAutomatique();
+
+        if(!isset($statuts[$statut])) {
+
+            return null;
+        }
+
+        return $statuts[$statut];
+    }
+
+    public function getDemandeHabilitations() {
+
+        return HabilitationConfiguration::getInstance()->getDemandeHabilitations();
+    }
+
+    public function getDemandeHabilitationsByTypeDemandeAndStatut($typeDemande, $statut) {
+        $habilitations = $this->getDemandeHabilitations();
+
+        if(!isset($habilitations[$typeDemande][$statut])) {
+            return null;
+        }
+
+        return $habilitations[$typeDemande][$statut];
+    }
 
     public function getLibelleActivite($key) {
 
-        if(!isset(self::$activites_libelles[$key])) {
+        if(!isset($this->getActivites()[$key])) {
 
             return $key;
         }
 
-        return self::$activites_libelles[$key];
+        return $this->getActivites()[$key];
     }
 
     public function getLibelleStatut($key) {
 
-        if(!isset(self::$statuts_libelles[$key])) {
+        if(isset(self::$statuts_libelles[$key])) {
 
-            return $key;
+            return self::$statuts_libelles[$key];
         }
 
-        return self::$statuts_libelles[$key];
+        if($this->getDemandeStatutLibelle($key)) {
+
+            return $this->getDemandeStatutLibelle($key);
+        }
+
+        return $key;
     }
 
         public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -229,7 +261,7 @@ class HabilitationClient extends acCouchdbClient {
 
             $dateCourante = $date;
             while($habilitationSuivante = $this->findNextByIdentifiantAndDate($etablissementIdentifiant, $dateCourante)) {
-                if(!$habilitationSuivante || $habilitationSuivante->_id <= $habilitation->_id) {
+                if(!$habilitationSuivante) {
                     break;
                 }
 
@@ -237,5 +269,174 @@ class HabilitationClient extends acCouchdbClient {
                 $habilitationSuivante->save();
                 $dateCourante = $habilitationSuivante->date;
             }
+        }
+
+        public function getDemande($identifiant, $keyDemande, $date) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+
+            return $habilitation->demandes->get($keyDemande);
+        }
+
+        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+            $baseKey = $identifiant."-".str_replace("-", "", $date);
+            $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
+            ksort($demandesKey);
+            $i = 1;
+            foreach($demandesKey as $demandeKey) {
+                if($demandeKey == sprintf($baseKey."%02d", $i)) {
+                    $i++;
+                }
+            }
+            $key = sprintf($baseKey."%02d", $i);
+            $demande = $habilitation->demandes->add($key);
+
+            $demande->produit = $produitHash;
+            $demande->activites = $activites;
+            $demande->demande = $demandeStatut;
+
+            $demande->commentaire = $commentaire;
+            $demande->getLibelle();
+
+            $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur, true);
+
+            $habilitation->save();
+
+            $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
+
+            return $demande;
+        }
+
+        public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = true) {
+            $demande = $this->getDemande($identifiant, $keyDemande, $date);
+            $habilitation = $demande->getDocument();
+
+            $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur);
+
+            $habilitation->save();
+
+            $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
+
+            return $demande;
+        }
+
+        protected function updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur, $creation = false) {
+            $habilitation = $demande->getDocument();
+            $demande->date = $date;
+            $demande->statut = $statut;
+
+            if(!$demande->date_habilitation) {
+                $demande->date_habilitation = $demande->date;
+            }
+
+            if($this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut)) {
+                $demande->date_habilitation = $demande->date;
+            }
+
+            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" ".(($creation) ? "a été créée" : "est passée")." au statut \"".$demande->getStatutLibelle()."\"";
+
+            $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
+            $historique->iddoc .= ":".$demande->getHash();
+        }
+
+        public function deleteDemandeLastStatutAndSave($identifiant, $keyDemande) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+
+            $demande = $this->getDemande($identifiant, $keyDemande, $habilitation->demandes->get($keyDemande)->date);
+
+            if($this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut)) {
+                //return;
+            }
+
+            $historiquePrec = $demande->getHistoriquePrecedent($demande->statut, $demande->date);
+
+            if(!$historiquePrec) {
+
+                return;
+            }
+
+            $keyHistoriqueToDelete = null;
+            foreach($demande->getDocument()->historique as $h) {
+                if($h->iddoc != $demande->getDocument()->_id.":".$demande->getHash()) {
+                    continue;
+                }
+                if($h->statut != $demande->statut)  {
+                    continue;
+                }
+
+                $keyHistoriqueToDelete = $h->getKey();
+                break;
+            }
+
+            if($keyHistoriqueToDelete !== null) {
+                $demande->getDocument()->historique->remove($keyHistoriqueToDelete);
+            }
+
+            $demande->statut = $historiquePrec->statut;
+            $demande->date = $historiquePrec->date;
+            $demande->commentaire = $historiquePrec->commentaire;
+            $demande->getDocument()->save();
+
+            if($historiquePrec->iddoc != $demande->getDocument()->_id.":".$demande->getHash()) {
+                $demande = $this->getDemande($identifiant, $keyDemande, $historiquePrec->date);
+            }
+
+            $this->replicateDemandeAndSave($demande, true);
+        }
+
+        protected function postSaveDemande($demande, $commentaire, $auteur, $trigger) {
+            $this->replicateDemandeAndSave($demande);
+
+            if($trigger) {
+                $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
+                $this->triggerDemandeStatutAndSave($demande, $commentaire, $auteur);
+            }
+        }
+
+        protected function replicateDemandeAndSave($demande, $force = false) {
+            $habilitation = $demande->getDocument();
+            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($habilitation->identifiant, $habilitation->date)) {
+                if(!$habilitationSuivante) {
+                    break;
+                }
+
+                if($habilitationSuivante->demandes->exist($demande->getKey()) && $habilitationSuivante->demandes->get($demande->getKey())->date > $demande->date && !$force) {
+                    break;
+                }
+
+                $habilitationSuivante->demandes->add($demande->getKey(), $demande);
+                $habilitationSuivante->save();
+                $habilitation = $habilitationSuivante;
+            }
+        }
+
+        public function triggerDemandeStatutAndSave($demande, $commentaire, $auteur, $date = null) {
+            if(!array_key_exists($demande->statut, $this->getDemandeAutomatique())) {
+                return;
+            }
+
+            $statutAutomatique = $this->getDemandeAutomatiqueStatut($demande->statut);
+
+            if(!$date && $this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $statutAutomatique)) {
+                $date = $demande->date;
+            }
+
+            if(!$date) {
+                $date = date('Y-m-d');
+            }
+
+            $demande = $this->updateDemandeAndSave($demande->getDocument()->identifiant, $demande->getKey(), $date, $statutAutomatique, $commentaire, $auteur);
+
+            return $demande;
+        }
+
+        public function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
+            $statutHabilitation = $this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut);
+            if(!$statutHabilitation) {
+
+                return;
+            }
+
+            $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), $statutHabilitation, $commentaire);
         }
     }

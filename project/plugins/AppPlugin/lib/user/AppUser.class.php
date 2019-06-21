@@ -25,8 +25,8 @@ class AppUser extends sfBasicSecurityUser {
 
         if ($compte && $compte->exist('droits')) {
             foreach ($compte->droits as $droit) {
-                $roles = Roles::getRoles($droit);
-                $this->addCredentials($roles);
+                $droitTab = explode(":", $droit);
+                $this->addCredentials(Roles::getRoles($droitTab[0]));
             }
         }
     }

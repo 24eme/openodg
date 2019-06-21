@@ -13,7 +13,7 @@ class FichierRoute extends sfObjectRoute {
         return $this->fichier;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object = null) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

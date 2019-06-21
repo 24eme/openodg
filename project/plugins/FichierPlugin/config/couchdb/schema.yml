@@ -19,6 +19,7 @@ Fichier:
       date_depot: { }
       date_import: { }
       libelle: { }
+      categorie: { }
       mime: { required: false }
       visibilite: { type: integer }
       papier: { required: false, type: integer }
@@ -35,6 +36,7 @@ Fichier:
                   identifiant: { }
                   date_depot: { }
                   libelle: { }
+                  categorie: { }
                   mime: { }
                   visibilite: { type: integer }
                   source: { }

@@ -459,7 +459,25 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return false;
         }
         $droits = $this->get('droits')->toArray(0, 1);
+        foreach($droits as $key => $droit) {
+            $droitTab = explode(":", $droit);
+            $droits[$key] = $droitTab[0];
+        }
+
         return in_array($droit, $droits);
+    }
+
+
+    public function getDroitValue($droit) {
+        foreach($this->droits as $d) {
+            $droitTab = explode(":", $d);
+            if($droit != $droitTab[0]) {
+                continue;
+            }
+            return isset($droitTab[1]) ? $droitTab[1] : null;
+        }
+
+        return null;
     }
 
     public function getDroits() {
@@ -615,6 +633,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
         $file = file_get_contents($url);
         $result = json_decode($file);
+
         if(!count($result)){
             return false;
         }

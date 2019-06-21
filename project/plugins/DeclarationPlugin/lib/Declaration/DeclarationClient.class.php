@@ -46,7 +46,7 @@ class DeclarationClient
 
         if(class_exists("FactureClient") && $type == FactureClient::TYPE_MODEL) {
 
-            return 'ExportFactureCSV';
+            return 'ExportFactureCSV_'.ucfirst(sfConfig::get('sf_app'));
         }
 
         if(class_exists("TravauxMarcClient") && $type == TravauxMarcClient::TYPE_MODEL) {
