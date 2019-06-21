@@ -30,6 +30,9 @@ EOF;
 
         $doc = null;
         $object = null;
+
+       $batch_max=50;
+       $i = 0;
         foreach(file($arguments['file']) as $line) {
             $line = str_replace("\n", "", $line);
 
@@ -125,8 +128,14 @@ EOF;
                 }
             } catch(Exception $e) {
                 echo "ERROR;".$e->getMessage().";$line\n";
+               sleep(3);
                 continue;
             }
+           if($i > $batch_max) {
+               $i = 0;
+               sleep(3);
+           }
+           $i++;
         }
     }
 
