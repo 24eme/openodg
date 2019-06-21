@@ -20,15 +20,17 @@
     <h2>Parcellaire</h2>
     <?php endif;?>
 </div>
-  <?php if(!$sf_user->hasTeledeclaration()): ?>
+<?php if(!$sf_user->hasTeledeclaration()): ?>
+<div class="clearfix">
   <a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right" style="margin-bottom: 10px;">
       <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane
   </a>
-  <?php endif;?>
+</div>
+<?php endif;?>
 
 <?php if ($sf_user->hasFlash('erreur_import')): ?>
 <div class="alert alert-danger" role="alert">
-    <strong>Erreur.</strong> <?= $sf_user->getFlash('erreur_import') ?>
+    <strong>Erreur :</strong> <?= $sf_user->getFlash('erreur_import') ?>
 </div>
 <?php endif; ?>
 
