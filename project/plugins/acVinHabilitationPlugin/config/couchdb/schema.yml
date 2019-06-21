@@ -52,6 +52,28 @@ Habilitation:
                               date: {  }
                               commentaire: {  }
                               statut: {  }
+      demandes:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: HabilitationDemande
+              definition:
+                fields:
+                  demande: { }
+                  statut: { }
+                  date: { }
+                  date_habilitation: { }
+                  libelle: { }
+                  commentaire: { }
+                  produit: { }
+                  produit_libelle: { }
+                  activites:
+                    type: array_collection
+                    definition:
+                      fields:
+                        *: { }
       historique:
         type: array_collection
         definition:
@@ -66,3 +88,4 @@ Habilitation:
                   auteur: {  }
                   description: {  }
                   commentaire: {  }
+                  statut: { }

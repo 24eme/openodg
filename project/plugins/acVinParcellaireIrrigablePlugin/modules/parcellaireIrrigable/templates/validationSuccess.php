@@ -66,7 +66,7 @@
 	<?php include_partial('parcellaireIrrigable/popupConfirmationValidation', array('form' => $form)); ?>
 	<?php endif; ?>
 </form>
-<?php if($form["signataire"]->hasError()): ?>
+<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">
 $('#parcellaireirrigable-confirmation-validation').modal('show')
 </script>

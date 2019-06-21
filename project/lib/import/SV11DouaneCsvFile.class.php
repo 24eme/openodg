@@ -5,11 +5,9 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
     public function convert() {
         $handler = fopen($this->filePath, 'r');
 
-        $csv = array();
+        $csvFile = new CsvFile($this->filePath);
+        $csv = $csvFile->getCsv();
 
-        while (($data = fgetcsv($handler)) !== FALSE) {
-            $csv[] = self::clean($data);
-        }
         $doc = array();
         $produits = array();
         $this->cvi = null;

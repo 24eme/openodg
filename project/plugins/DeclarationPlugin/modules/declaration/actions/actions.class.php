@@ -121,14 +121,6 @@ class declarationActions extends sfActions {
         }
     }
 
-    public function executeUsurpation(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
-        $societe = $this->etablissement->getSociete();
-
-        $this->getUser()->usurpationOn($societe->identifiant, $request->getReferer());
-        $this->redirect('declaration_etablissement', array('identifiant' => $societe->getEtablissementPrincipal()->identifiant));
-    }
-
     protected function buildSearch(sfWebRequest $request) {
         $rows = acCouchdbManager::getClient()
                     ->group(true)

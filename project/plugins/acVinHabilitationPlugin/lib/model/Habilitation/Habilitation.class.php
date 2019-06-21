@@ -82,6 +82,19 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->getConfiguration()->getProduitsCahierDesCharges();
     }
 
+    public function getProduitsHabilites() {
+        $produits = array();
+        foreach($this->getProduits() as $produit) {
+            if(!count($produit->getActivitesHabilites())) {
+                continue;
+            }
+
+            $produits[$produit->getHash()] = $produit;
+        }
+
+        return $produits;
+    }
+
     public function getProduits($onlyActive = true) {
         return $this->declaration->getProduits($onlyActive);
     }
@@ -176,15 +189,24 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
       return $precedente;
   }
+
+  public function getNext() {
+      $date = new DateTime($this->date);
+      $suivante = HabilitationClient::getInstance()->findNextByIdentifiantAndDate($this->identifiant, $date->format('Y-m-d'));
+
+      return $suivante;
+  }
+
   private function addHistoriqueNewProduit($complement){
       $this->addHistorique("Ajout du produit : ".$complement);
   }
 
-  public function addHistorique($description, $commentaire = '', $auteur = '') {
+  public function addHistorique($description, $commentaire = '', $auteur = '', $statut = null) {
     $historiqueRow = $this->get('historique')->add(null);
     $historiqueRow->iddoc = $this->_id;
     $historiqueRow->date = $this->getDate();
     $historiqueRow->auteur = $auteur;
+    $historiqueRow->statut = $statut;
     try {
       if (!$auteur && sfContext::getInstance() && sfContext::getInstance()->getUser() && sfContext::getInstance()->getUser()->getCompte()) {
         $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
@@ -193,6 +215,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     $historiqueRow->description = $description;
     $historiqueRow->commentaire = $commentaire;
 
+    return $historiqueRow;
   }
 
   public function getFullHistoriqueReverse(){
@@ -259,6 +282,18 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
             $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $statut, $commentaire, $date);
         }
   }
+
+    public function getDemandesSortedOldToRecent() {
+        $demandes = array();
+
+        foreach($this->demandes as $key => $demande) {
+            $demandes[$demande->date.$demande->getKey()] = $demande;
+        }
+
+        ksort($demandes);
+
+        return $demandes;
+    }
 
     public function save() {
         $this->constructId();
