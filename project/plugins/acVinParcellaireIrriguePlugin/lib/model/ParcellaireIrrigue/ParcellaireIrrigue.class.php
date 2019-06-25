@@ -7,6 +7,7 @@
 class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDeclaration {
 
   protected $declarant_document = null;
+  protected $piece_document = null;
 
   public function __construct() {
       parent::__construct();
@@ -34,6 +35,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
   protected function initDocuments() {
       $this->declarant_document = new DeclarantDocument($this);
+      $this->piece_document = new PieceDocument($this);
   }
 
   public function storeDeclarant() {
@@ -231,11 +233,18 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
     			$last->save();
     		}
     	}
+        $this->piece_document->generatePieces();
     }
 
 	public function isValidee(){
 		return $this->validation || $this->validation_odg;
 	}
+
+    public function getDateFr() {
+        $date = new DateTime($this->date);
+
+        return $date->format('d/m/Y');
+    }
 
   /*** DECLARATION DOCUMENT ***/
 
@@ -264,5 +273,41 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
       return $this->_get('validation_odg');
   }
     /*** FIN DECLARATION DOCUMENT ***/
+
+    public function getAllPieces() {
+        $complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+        return (!$this->getValidation())? array() : array(array(
+            'identifiant' => $this->getIdentifiant(),
+            'date_depot' => $this->getValidation(),
+            'libelle' => 'Identification des parcelles irriguées au '.$this->getDateFr().' '.$complement,
+            'mime' => Piece::MIME_PDF,
+            'visibilite' => 1,
+            'source' => null
+        ));
+    }
+
+    public function generatePieces() {
+        return $this->piece_document->generatePieces();
+    }
+
+    public function generateUrlPiece($source = null) {
+        return sfContext::getInstance()->getRouting()->generate('parcellaireirrigue_export_pdf', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+        return null;
+    }
+
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+        return null;
+    }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+        return false;
+    }
+
+    public static function isPieceEditable($admin = false) {
+        return false;
+    }
 
 }
