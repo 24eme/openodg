@@ -47,16 +47,17 @@ EOF;
             $produit = $this->convertProduit($data[0]);
             $dateCompletude = $this->convertDateFr($data[1]);
             $dateEnregistrement = $this->convertDateFr($data[2]);
-            $dateTransmissionOI = null;
+            $dateTransmissionOI = $this->convertDateFr($data[15]);
             $dateDecision = $this->convertDateFr($data[25]);
             $typeDemande = HabilitationClient::DEMANDE_HABILITATION;
+
             if($etatHabilitation == "retrait") {
                 $typeDemande = HabilitationClient::DEMANDE_RETRAIT;
             }
-            if($dateDecision < $dateEnregistrement) {
+            if($dateDecision && $dateDecision < $dateEnregistrement) {
                 $dateEnregistrement = $dateDecision;
             }
-            if($dateDecision < $dateCompletude) {
+            if($dateDecision && $dateDecision < $dateCompletude) {
                 $dateCompletude = $dateDecision;
             }
             if($dateEnregistrement < $dateCompletude) {
@@ -80,31 +81,37 @@ EOF;
                 $activites[] = HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE;
             }
             $commentaire = $data[26];
-            $pourqui = null;
-            if(!$dateCompletude) {
-                echo "ERROR;Date de complétude;$line\n";
-                continue;
-            }
-            if(!$dateDecision) {
-                echo "ERROR;Date de décision;$line\n";
-                continue;
-            }
+            $pourqui = $data[13];
             if(!EtablissementClient::getInstance()->find("ETABLISSEMENT-".$identifiant, acCouchdbClient::HYDRATE_JSON)) {
                 echo "ERROR;Établissement introuvable;$line\n";
                 continue;
             }
-
-            if(!in_array($etatHabilitation,     array("habilité", "refus", "retrait"))) {
+            if(!$dateCompletude) {
+                echo "ERROR;Date de complétude;$line\n";
+                continue;
+            }
+            if(!$dateDecision && $etatHabilitation) {
+                echo "ERROR;Date de décision;$line\n";
+                continue;
+            }
+            if(!$produit) {
+                echo "ERROR;Produit;$line\n";
+                continue;
+            }
+            if($dateDecision && !in_array($etatHabilitation, array("habilité", "refus", "retrait"))) {
                 echo "ERROR;Statut non connu $etatHabilitation;$line\n";
                 continue;
             }
 
             try {
                 $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
-
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
 
-                if($pourqui && $dateTransmissionOI) {
+                if($pourqui) {
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "TRANSMIS_".$pourqui, null, "import", false);
+                }
+
+                if($pourqui && !preg_match("/^OI/", $pourqui) && $dateTransmissionOI) {
                     $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateTransmissionOI, "TRANSMIS_".$pourqui, null, "import", false);
                 }
 
