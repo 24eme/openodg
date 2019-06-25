@@ -12,7 +12,7 @@ if ! test "$DOC" ; then
 fi
 
 header=1
-curl -s http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE"/_all_docs?startkey_docid="$DOC"-&endkey_docid="$DOC"-ZZZZZZ" | awk -F '"' '{print $4}' | grep $DOC | while read doc ; do
-	php symfony declaration:export-csv $SYMFONYTASKOPTIONS --header=$header $doc
+curl -s http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE"/_design/declaration/_view/export?reduce=true&group_level=2" | awk -F '"' '{print $4 " " $6}' | grep "^$DOC " | while read doc ; do
+	php symfony declarations:export-csv $SYMFONYTASKOPTIONS --header=$header $doc
 	header=0
 done

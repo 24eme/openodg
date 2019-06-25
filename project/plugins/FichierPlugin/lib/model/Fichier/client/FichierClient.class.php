@@ -120,4 +120,11 @@ class FichierClient extends acCouchdbClient {
     	}
     	return $client;
     }
+
+    public function getCategories() {
+
+        return array(
+            "Identification" => "Identification"
+        );
+    }
 }

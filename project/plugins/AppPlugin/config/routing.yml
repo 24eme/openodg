@@ -7,6 +7,10 @@ auth_logout:
   url: /logout
   param: { module: auth, action: logout }
 
+auth_usurpation:
+  url: /usurpation/:identifiant
+  param: { module: auth, action: usurpation }
+
 auth_deconnexion_usurpation:
   url: /deconnexion_usurpation
   param: { module: auth, action: deconnexionUsurpation }

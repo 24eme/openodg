@@ -94,7 +94,11 @@ class CompteClient extends acCouchdbClient {
           $elasticaFacet->setSize(250);
           $q->addFacet($elasticaFacet);
 
-          $index = acElasticaManager::getType('COMPTE');
+          try {
+              $index = acElasticaManager::getType('COMPTE');
+          } catch(Exception $e) {
+              return array();
+          }
           $resset = $index->search($q);
           $results = $resset->getResults();
           $this->facets = $resset->getFacets();
@@ -119,7 +123,11 @@ class CompteClient extends acCouchdbClient {
       $elasticaFacet->setField('doc.groupes.nom');
       $elasticaFacet->setSize(250);
       $q->addFacet($elasticaFacet);
-      $index = acElasticaManager::getType('COMPTE');
+      try {
+          $index = acElasticaManager::getType('COMPTE');
+      } catch(Exception $e) {
+          return array();
+      }
       $resset = $index->search($q);
       $facets = $resset->getFacets();
 

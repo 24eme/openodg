@@ -23,7 +23,7 @@
 							Activité :
 						</div>
 						<div class="col-xs-6 text-left form-control-static">
-							<strong><?php echo HabilitationClient::$activites_libelles[$details->getKey()]; ?></strong>
+							<strong><?php echo HabilitationClient::getInstance()->getLibelleActivite($details->getKey()); ?></strong>
 						</div>
 					</div>
 					<div class="row form-group">

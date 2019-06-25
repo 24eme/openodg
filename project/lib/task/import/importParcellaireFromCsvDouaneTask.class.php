@@ -1,6 +1,6 @@
 <?php
 
-class importScrapedouaneforparcellaireTask extends sfBaseTask
+class importParcellaireFromCsvDouaneTask extends sfBaseTask
 {
     const EXIT_CODE_ETABLISSEMENT_INCONNU = 1;
     const EXIT_CODE_CVI_INCONNU = 2;
@@ -12,7 +12,7 @@ class importScrapedouaneforparcellaireTask extends sfBaseTask
     {
         // add your own arguments here
         $this->addArguments(array(
-            new sfCommandArgument('path', sfCommandArgument::REQUIRED, 'Le numéro de compte'),
+            new sfCommandArgument('path', sfCommandArgument::REQUIRED, "Le path vers le fichier d'import"),
         ));
 
         $this->addOptions(array(
@@ -23,13 +23,13 @@ class importScrapedouaneforparcellaireTask extends sfBaseTask
         ));
 
         $this->namespace        = 'import';
-        $this->name             = 'scrape-douane-for-parcellaire';
+        $this->name             = 'parcellaire-from-csv-douane';
         $this->briefDescription = '';
         $this->detailedDescription = <<<EOF
-The [import:scrape-douane-for-parcellaire|INFO] task does things.
+The [import:-douane-for-parcellaire|INFO] Importe un parcellaire depuis un fichier d'import en csv.
 Call it with:
 
-  [php symfony import:scrape-douane-for-parcellaire|INFO]
+  [php symfony import:parcellaire-from-csv-douane|INFO]
 EOF;
     }
 
@@ -53,7 +53,7 @@ EOF;
         $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
 
         if (! $etablissement instanceof Etablissement) {
-            $this->logSection('etablissement', sprintf("L'établissement de cvi : %s n'existe pas dans la base de donnée ",$cvi));
+            echo sprintf("L'établissement de cvi : %s n'existe pas dans la base de donnée ",$cvi)."\n";
             exit(self::EXIT_CODE_ETABLISSEMENT_INCONNU);
         }
 
@@ -70,7 +70,7 @@ EOF;
             $new_parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
             $new_parcellaire->convert();
         } catch (Exception $e) {
-            $this->logSection('parcelle', $e->getMessage());
+            echo $e->getMessage()."\n";
             exit(self::EXIT_CODE_GENERATION_PARCELLE);
         }
 
@@ -89,13 +89,13 @@ EOF;
                 count($old_produits) !== count($new_produits))
             {
                 $new_parcellaire->save();
-                $this->logSection('import', sprintf("Sauvegarde du nouveau parcellaire (prédédent : %s) : %s",$old_parcellaire->_id,$new_parcellaire->getParcellaire()->_id));
+                echo sprintf("Sauvegarde du nouveau parcellaire (prédédent : %s) : %s",$old_parcellaire->_id,$new_parcellaire->getParcellaire()->_id)."\n";
             } else {
-                $this->logSection('import', sprintf("Le parcellaire semble le même : %s pas de réimport",$old_parcellaire->_id));
+                echo sprintf("Le parcellaire semble le même : %s pas de réimport",$old_parcellaire->_id)."\n";
             }
         } else {
             $new_parcellaire->save();
-            $this->logSection('import', sprintf("Sauvegarde du nouveau parcellaire (aucun précédent) : %s",$new_parcellaire->getParcellaire()->_id));
+            echo sprintf("Sauvegarde du nouveau parcellaire (aucun précédent) : %s",$new_parcellaire->getParcellaire()->_id)."\n";
         }
     }
 }

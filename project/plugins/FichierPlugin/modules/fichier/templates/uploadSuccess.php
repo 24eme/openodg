@@ -1,10 +1,9 @@
 <?php use_helper('Date') ?>
 
 <ol class="breadcrumb">
-  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
-  <li><a href="<?php echo url_for('pieces_historique', $etablissement) ?>">Documents</a></li>
-  <li class="active"><a href=""><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></a></li>
+  <li><a href="<?php echo url_for('documents'); ?>">Documents</a></li>
+  <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <li class="active"><a href=""><?php if($fichier->isNew()): ?>Ajout<?php else: ?>Modification<?php endif; ?> d'un document</a></li>
 </ol>
 
 <div class="page-header">
@@ -44,6 +43,20 @@
 						<span class="glyphicon-calendar glyphicon"></span>
 					</div>
 				</div>
+			</div>
+		</div>
+    </div>
+
+    <div class="row">
+    	<div class="form-group <?php if($form['categorie']->hasError()): ?>has-error<?php endif; ?>">
+			<div class="col-xs-8 col-xs-offset-4">
+				<?php echo $form['categorie']->renderError() ?>
+			</div>
+			<div class="col-xs-3 col-xs-offset-1">
+				<?php echo $form['categorie']->renderLabel() ?>
+			</div>
+			<div class="col-xs-6">
+				<?php echo $form['categorie']->render(array('class' => 'form-control input', 'placeholder' => "Catégorie du document, par défaut : Fichier")) ?>
 			</div>
 		</div>
     </div>
@@ -95,7 +108,7 @@
     		</div>
     	</div>
     </div>
-	
+
 		<?php if ($urlCsv = Piece::getUrlGenerationCsvPiece($fichier->_id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 		<div class="row row-margin row-button text-center">
 			<a class="btn btn-default" href="<?php echo $urlCsv ?>" style="margin: 0 10px;"><span class="glyphicon glyphicon-file"></span> CSV Généré</a>
@@ -103,7 +116,7 @@
 		<?php endif; ?>
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-        	<a href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="annuler btn btn-default btn-danger">Annuler</a>
+        	<a href="<?php echo url_for('pieces_historique', $etablissement) ?>" class="annuler btn btn-default btn-danger">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper"><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></button>

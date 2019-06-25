@@ -17,7 +17,7 @@ class fixFactureCodeComptableTask extends sfBaseTask
 
         $this->namespace = 'fix';
         $this->name = 'facture-code-comptable';
-        $this->briefDescription = "Permet d'ajouter les codes comptables aux factures";
+        $this->briefDescription = "Permet de corriger les codes comptables clients";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -35,19 +35,9 @@ EOF;
             throw new sfException(sprintf("Facture introuvable %s", $arguments['doc_id']));
         }
 
-        // Set date échéance
-        $date_facturation_object = new DateTime($f->date_facturation);
-        $f->date_echeance = $date_facturation_object->modify('+30 days')->format('Y-m-d');
-        $f->code_comptable_client = preg_replace("/^[0]+/", "", $f->getCompte()->identifiant_interne);
-
-        // Set code comptable produit
-        
-        $template = $f->getTemplate();
-        foreach($f->lignes as $ligne_key => $ligne) {
-            $ligne->produit_identifiant_analytique = $template->cotisations->get($ligne_key)->code_comptable;
-        }
-
+        $f->code_comptable_client = preg_replace("/^[0]+/", "", $f->numero_adherent);
         $f->save();
+
         echo sprintf("SUCCESS;Facture mise à jour %s\n", $f->_id);
     }
 }
