@@ -37,7 +37,7 @@ foreach ($array as $line) {
 fclose($handle);
 
 $csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($csv_test, new ParcellaireCsvFormat);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 

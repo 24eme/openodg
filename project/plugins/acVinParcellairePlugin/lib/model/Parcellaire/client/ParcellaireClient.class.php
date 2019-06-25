@@ -77,33 +77,25 @@ class ParcellaireClient extends acCouchdbClient {
      * Vérifie que le nouveau parcellaire est différent du courant avant de le
      * sauver
      *
+     * @param Etablissement $etablissement L'établissement à mettre à jour
      * @param string $path Le chemin du fichier
      * @param string &$error Le potentiel message d'erreur de retour
      *
      * @return bool
      */
-    public function saveParcellaire($path, &$error)
+    public function saveParcellaire(Etablissement $etablissement, $path, &$error)
     {
         try {
             $csv = new Csv($path);
-            $parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
+            $parcellaire = new ParcellaireCsvFile($etablissement, $csv, new ParcellaireCsvFormat);
             $parcellaire->convert();
         } catch (Exception $e) {
             $error = $e->getMessage();
             return false;
         }
 
-        $current = $this->getLast(
-            $parcellaire->getParcellaire()->identifiant
-        );
-
-        if (! $current || $current->source === 'INAO') {
-            $parcellaire->save();
-            return true;
-        } else {
-            //TODO: Checker si il est différent
-            return false;
-        }
+        $parcellaire->save();
+        return true;
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {

@@ -1,6 +1,6 @@
 <?php
 
-class ImportParcellaireFromCsvTask extends sfBaseTask
+class ImportParcellaireFromCsvInaoTask extends sfBaseTask
 {
 
     protected $file_path = null;
@@ -69,8 +69,8 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
         ));
 
         $this->namespace = 'import';
-        $this->name = 'parcellaire-from-csv';
-        $this->briefDescription = "Importe le parcellaire depuis le CSV d'une annee";
+        $this->name = 'parcellaire-from-csv-inao';
+        $this->briefDescription = "Importe le parcellaire depuis le CSV d'une annee au format INAO";
         $this->detailedDescription = <<<EOF
 EOF;
     }
