@@ -28,6 +28,11 @@ class commonActions extends sfActions {
             return $this->forwardSecure();
         }
 
+        if($request->getParameter('redirect', null) == 'documents') {
+
+            return $this->redirect('pieces_historique', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
+        }
+
         return $this->redirect('declaration_etablissement', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
     }
 

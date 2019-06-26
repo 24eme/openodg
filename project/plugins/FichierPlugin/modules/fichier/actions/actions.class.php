@@ -6,6 +6,15 @@ class fichierActions extends sfActions
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 	}
 
+	public function executeMesdocuments(sfWebRequest $request) {
+
+		if(!$this->getUser()->hasTeledeclaration()) {
+			return $this->forwardSecure();
+		}
+
+		return $this->redirect('accueil', array('redirect' => 'documents'));
+	}
+
 	public function executeEtablissementSelection(sfWebRequest $request) {
         $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $form->bind($request->getParameter($form->getName()));
