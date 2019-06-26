@@ -11,6 +11,10 @@ documents:
   param: { module: fichier, action: index }
   class: DocumentsRoute
 
+mesdocuments:
+  url: /mesdocuments
+  param: { module: fichier, action: mesdocuments }
+
 documents_etablissement_selection:
   url: /documents-etablissement-selection
   param: { module: fichier, action: etablissementSelection }
