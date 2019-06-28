@@ -20,10 +20,16 @@ class habilitationActions extends sfActions {
                               "Statut" => HabilitationDemandeView::KEY_STATUT,
                               "Demande" => HabilitationDemandeView::KEY_DEMANDE,
                               "Produit" => HabilitationDemandeView::KEY_PRODUIT),
-                        array("Les plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1),
-                              "Les plus anciennes" => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1)),
+                        array("Plus urgentes" => array(HabilitationDemandeView::KEY_NBJOURS => 1, HabilitationDemandeView::KEY_IDENTIFIANT => -1),
+                              "Moins urgentes" => array(HabilitationDemandeView::KEY_NBJOURS => -1, HabilitationDemandeView::KEY_IDENTIFIANT => -1),
+                              "Plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1),
+                              "Plus anciennes" => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1)),
                         30,
-                        $filtres
+                        $filtres,
+                        function(&$item, $key) {
+                            $dateHabilitation = new DateTime($item->key[HabilitationDemandeView::KEY_DATE_HABILITATION]);
+                            $item->key[HabilitationDemandeView::KEY_NBJOURS] = $dateHabilitation->diff(new DateTime())->days;
+                        }
                         );
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
@@ -389,7 +395,7 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(), $without_group_by = false) {
+    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(), $traitements = null, $without_group_by = false) {
         $rows = array();
         if(!$without_group_by){
             $rows = acCouchdbManager::getClient()
@@ -461,6 +467,11 @@ class habilitationActions extends sfActions {
         foreach($this->facets as $facetNom => $items) {
             arsort($this->facets[$facetNom]);
         }
+
+        if($traitements !== null) {
+            array_walk($this->docs, $traitements);
+        }
+
         if(count($filtres)) {
             foreach($this->docs as $key => $doc) {
                 foreach($filtres as $keyFiltre => $matchFiltre) {
