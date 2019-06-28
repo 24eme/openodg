@@ -11,6 +11,7 @@ class HabilitationDemandeView extends acCouchdbView
     const KEY_DEMANDE_KEY = 6;
     const KEY_IDENTIFIANT = 7;
     const KEY_COMMENTAIRE = 8;
+    const KEY_NBJOURS = 9;
 
     public static function getInstance() {
 

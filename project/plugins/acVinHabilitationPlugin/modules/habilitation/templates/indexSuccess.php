@@ -27,12 +27,11 @@
             <tbody>
                 <?php foreach($docs as $doc):
                      $declarant = EtablissementClient::getInstance()->findByIdentifiant($doc->key[HabilitationDemandeView::KEY_IDENTIFIANT], acCouchdbClient::HYDRATE_JSON);
-                  $date = new DateTime($doc->key[HabilitationDemandeView::KEY_DATE]);
-                  $dateHabilitation = new DateTime($doc->key[HabilitationDemandeView::KEY_DATE_HABILITATION]);
+                     $date = new DateTime($doc->key[HabilitationDemandeView::KEY_DATE]);
                    ?>
                     <tr class="<?php if(in_array($doc->key[HabilitationDemandeView::KEY_STATUT], HabilitationClient::getInstance()->getStatutsFerme())): ?>transparence-sm<?php endif; ?>">
                         <td class="text-left"><?php echo $date->format('d/m/Y') ?></td>
-                        <td class="text-center"><?php echo $dateHabilitation->diff(new DateTime())->days ?></td>
+                        <td class="text-center"><?php echo $doc->key[HabilitationDemandeView::KEY_NBJOURS]; ?></td>
                         <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
                         <td><?php echo HabilitationClient::$demande_libelles[$doc->key[HabilitationDemandeView::KEY_DEMANDE]]; ?></td>
                         <td><?php echo $doc->key[HabilitationDemandeView::KEY_LIBELLE]; ?></td>
@@ -93,7 +92,7 @@
         <?php endforeach; ?>
         <hr />
         <div class="list-group">
-            <a href="<?php echo url_for('habilitation_export_historique', array('date' => date('Y-m-d'))) ?>"><small>Exporter l'historique du jour</small></a>
+            <a href="<?php echo url_for('habilitation_export_historique', array('dateFrom' => date('Y-m-d'), 'dateTo' => date('Y-m-d'))) ?>"><small>Exporter l'historique du jour</small></a>
         </div>
     </div>
 </div>

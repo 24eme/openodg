@@ -1,7 +1,8 @@
 <?php
 
 class ExportHabilitationDemandesPublipostageCSV {
-    protected $date = null;
+    protected $dateFrom = null;
+    protected $dateTo = null;
     protected $header = null;
 
     public static function getHeaderCsv() {
@@ -9,8 +10,9 @@ class ExportHabilitationDemandesPublipostageCSV {
         return "Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Adresse complémentaire 1;Adresse complémentaire 2;Code postal Opérateur;Commune Opérateur;Email;Téléphone Bureau;Téléphone Mobile;Demande;Libellé activités;Produit;Statut;Date Statut;Statut précédent;Date précédent statut;Statut suivant;Date statut suivant;Id du doc;Clé de la demande\n";
     }
 
-    public function __construct($date = null, $header = true) {
-        $this->date = $date;
+    public function __construct($dateFrom = null, $dateTo = null, $header = true) {
+        $this->dateFrom = $dateFrom;
+        $this->dateTo = $dateTo;
         $this->header = $header;
     }
 
@@ -21,8 +23,8 @@ class ExportHabilitationDemandesPublipostageCSV {
         } elseif($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        if($this->date) {
-            $rows = HabilitationHistoriqueView::getInstance()->getByDate($this->date);
+        if($this->dateFrom) {
+            $rows = HabilitationHistoriqueView::getInstance()->getByDate($this->dateFrom, $this->dateTo);
         } else {
             $rows = HabilitationHistoriqueView::getInstance()->getAll();
         }

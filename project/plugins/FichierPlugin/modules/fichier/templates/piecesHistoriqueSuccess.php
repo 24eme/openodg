@@ -8,21 +8,20 @@
 <div class="page-header">
     <h2>
     	Historique des documents
-        <form class="form-inline pull-right col-xs-3">
-		  <div class="form-group">
-		    <select class="form-control select2 select2SubmitOnChange select2autocomplete input-sm text-right" id="year" name="annee">
-		    	<option value="0">Toutes années</option>
-		    	<?php foreach ($years as $y): ?>
-		    	<option value="<?php echo $y ?>"<?php if($y == $year): ?> selected="selected"<?php endif; ?>><?php echo $y ?></option>
-		    	<?php endforeach; ?>
-		    </select>
-		  </div>
-		</form>
+        <a class="btn btn-sm btn-primary pull-right" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
     </h2>
 </div>
 
 
 <div class="list-group">
+    <form class="pull-right">
+        <select class="form-control select2 select2SubmitOnChange select2autocomplete input-md text-right pull-right" id="year" name="annee">
+            <option value="0">Toutes années</option>
+            <?php foreach ($years as $y): ?>
+            <option value="<?php echo $y ?>"<?php if($y == $year): ?> selected="selected"<?php endif; ?>><?php echo $y ?></option>
+            <?php endforeach; ?>
+        </select>
+    </form>
 <?php if(count($history) > 0): ?>
 	<ul class="nav nav-pills" style="margin: 0 0 20px 0;">
 		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) - $decreases ?></a></li>
