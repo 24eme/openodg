@@ -40,17 +40,16 @@ class habilitationActions extends sfActions {
           return sfView::SUCCESS;
       }
 
-
       return $this->redirect('habilitation_declarant', $this->form->getValue('etablissement'));
   }
 
 
     public function executeExportHistorique(sfWebRequest $request) {
-        $export = new ExportHabilitationDemandesPublipostageCSV($request->getParameter('date'));
+        $export = new ExportHabilitationDemandesPublipostageCSV($request->getParameter('dateFrom'), $request->getParameter('dateTo'));
 
         $this->setLayout(false);
 
-        $attachement = sprintf("attachment; filename=export_demandes_%s.csv", $request->getParameter('date'));
+        $attachement = sprintf("attachment; filename=export_demandes_%s_%s.csv", $request->getParameter('dateFrom'), $request->getParameter('dateTo'));
         $this->response->setContent(utf8_decode($export->export()));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition', $attachement);

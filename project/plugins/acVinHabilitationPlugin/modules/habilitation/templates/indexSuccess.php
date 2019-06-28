@@ -93,7 +93,7 @@
         <?php endforeach; ?>
         <hr />
         <div class="list-group">
-            <a href="<?php echo url_for('habilitation_export_historique', array('date' => date('Y-m-d'))) ?>"><small>Exporter l'historique du jour</small></a>
+            <a href="<?php echo url_for('habilitation_export_historique', array('dateFrom' => date('Y-m-d'), 'dateTo' => date('Y-m-d'))) ?>"><small>Exporter l'historique du jour</small></a>
         </div>
     </div>
 </div>

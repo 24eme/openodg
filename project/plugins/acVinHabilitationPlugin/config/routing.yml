@@ -87,7 +87,7 @@ habilitation_demande_edition:
     sf_method: [get, post]
 
 habilitation_export_historique:
-  url: /habilitation/export_historique/:date
+  url: /habilitation/export_historique/:dateFrom/:dateTo
   param: { module: habilitation, action: exportHistorique }
   class: HabilitationGeneralRoute
 
