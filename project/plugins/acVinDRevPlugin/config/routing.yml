@@ -154,16 +154,6 @@ drev_denomination_auto:
   requirements:
     sf_method: [get, post]
 
-drev_revendication_recapitulatif:
-  url: /drev/drev_revendication-recapitulatif/:id
-  param: { module: drev, action: revendicationRecapitulatif }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
 drev_revendication_ajout:
   url: /drev/revendication/:id/ajout
   param: { module: drev, action: revendicationAjoutProduit }
@@ -173,16 +163,6 @@ drev_revendication_ajout:
     type:     object
   requirements:
     sf_method: [get, post]
-
-drev_revendication_appellation_ajout:
-  url: /drev/revendication/:id/appellation_ajout
-  param: { module: drev, action: revendicationAjoutAppellation }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [post]
 
 drev_revendication_superficie:
   url: /drev/revendication_superficie/:id/:appellation
@@ -217,76 +197,6 @@ drev_revendication:
 drev_vci:
   url: /drev/vci/:id/:appellation
   param: { module: drev, action: vci, appellation: 0 }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-drev_revendication_cepage:
-  url: /drev/revendication/:id/cepage/:hash
-  param: { module: drev, action: revendicationCepage }
-  class: DRevNoeudRoute
-  options:
-    model:    DRevAppellation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-drev_revendication_cepage_ajout:
-  url: /drev/revendication/:id/cepage/:hash/ajout
-  param: { module: drev, action: revendicationCepageAjoutProduit }
-  class: DRevNoeudRoute
-  options:
-    model:    DRevAppellation
-    type:     object
-  requirements:
-    sf_method: [post]
-
-drev_revendication_cepage_suppression:
-  url: /drev/revendication/:id/cepage/:hash/suppression
-  param: { module: drev, action: revendicationCepageSuppressionProduit }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get]
-
-drev_degustation_conseil:
-  url: /drev/degustation-conseil/:id
-  param: { module: drev, action: degustationConseil }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-drev_lots:
-  url: /drev/lots/:id/:prelevement
-  param: { module: drev, action: lots }
-  class: DRevPrelevementRoute
-  options:
-    model:    DRevPrelevement
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-drev_lots_ajout:
-  url: /drev/lots/:id/:prelevement/ajout
-  param: { module: drev, action: lotsAjoutProduit }
-  class: DRevPrelevementRoute
-  options:
-    model:    DRevPrelevement
-    type:     object
-  requirements:
-    sf_method: [post]
-
-drev_controle_externe:
-  url: /drev/controle-externe/:id
-  param: { module: drev, action: controleExterne }
   class: DRevRoute
   options:
     model:    DRev
