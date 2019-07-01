@@ -130,4 +130,8 @@ class DRevProduit extends BaseDRevProduit
 		return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
 	}
 
+	public function getRendementEffectif(){
+		return $this->volume_revendique_total / $this->superficie_revendique;
+	}
+
 }

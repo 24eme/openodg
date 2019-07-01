@@ -15,7 +15,7 @@
     <tbody>
         <?php foreach ($drev->declaration->getProduits() as $produit) : ?>
             <tr>
-                <td><?php echo $produit->getLibelleComplet() ?></td>
+                <td><?php echo $produit->getLibelleComplet() ?><small class="pull-right">&nbsp;(<?php echo round($produit->getRendementEffectif(), 2); ?> hl/ha)</small></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_toral') ?>"><?php if($produit->volume_revendique_total !== null): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
