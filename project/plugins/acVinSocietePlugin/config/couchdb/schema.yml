@@ -70,6 +70,15 @@ Societe:
                 fields:
                   nom: {}
                   ordre: {}
+      sepa:
+        required: false
+        type: collection
+        definition:
+          fields:
+            nom_bancaire: {  }
+            iban: {  }
+            bic: {  }
+            date_activation: {  }
       etablissements :
         type: collection
         definition:
