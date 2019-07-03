@@ -354,10 +354,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
                   ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
                 ) {
-              $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+              $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, $line[DRCsvFile::CSV_COLONNE_ID]);
               $has_bio = true;
             }else{
-              $produit = $this->addProduit($produitConfig->getHash());
+              $produit = $this->addProduit($produitConfig->getHash(), null, $line[DRCsvFile::CSV_COLONNE_ID]);
             }
 
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
@@ -419,14 +419,53 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produit->vci->constitue = $produitRecolte->vci_constitue;
             }
         }
-
+        //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
         	if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
     			     $todelete[$hash] = $hash;
                continue;
         	}
         }
+        foreach ($todelete as $del) {
+            $this->remove($del);
+        }
+        $todelete = array();
 
+        //Supprime les colonnes pour ne proposer qu'un aggréga par produit
+        $my_produits = $this->declaration->getProduits();
+        foreach ($my_produits as $hash => $p) {
+            $hash_produit = $p->getParent()->getHash();
+            $produit = $this->addProduit($hash_produit, $p->denomination_complementaire);
+            $produitRecolte = $produit->add("recolte");
+
+            if ($p->recolte->volume_sur_place) {
+                $produitRecolte->volume_sur_place += $p->recolte->volume_sur_place;
+            }
+            if ($p->recolte->volume_sur_place_revendique) {
+                $produitRecolte->volume_sur_place_revendique += $p->recolte->volume_sur_place_revendique;
+            }
+            if ($p->recolte->usages_industriels_sur_place) {
+                $produitRecolte->usages_industriels_sur_place += $p->recolte->usages_industriels_sur_place;
+            }
+            if ($p->recolte->usages_industriels_total) {
+                $produitRecolte->usages_industriels_total += $p->recolte->usages_industriels_total;
+            }
+            if ($p->recolte->volume_total) {
+                $produitRecolte->volume_total += $p->recolte->volume_total;
+            }
+            if ($p->recolte->superficie_total) {
+                $produitRecolte->superficie_total += $p->recolte->superficie_total;
+            }
+            if ($p->recolte->recolte_nette) {
+                $produitRecolte->recolte_nette += $p->recolte->recolte_nette;
+            }
+            if ($p->recolte->vci_constitue) {
+                $produitRecolte->vci_constitue += $p->recolte->vci_constitue;
+            }
+            $produit->vci->constitue = $produitRecolte->vci_constitue;
+
+            $todelete[$hash] = $hash;
+        }
         foreach ($todelete as $del) {
             $this->remove($del);
         }
@@ -535,11 +574,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $appellation;
     }
 
-    public function addProduit($hash, $denominationComplementaire = null) {
+    public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
-        if($denominationComplementaire){
-            $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire))), 0, 7);
+        if($denominationComplementaire || $hidden_denom){
+            $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }
 
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
