@@ -45,7 +45,7 @@
                     <td><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?></td>
                     <td>&nbsp;</td>
                     <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->destination_date.")" : ''; ?></td>
+                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
                 </tr>
                 <?php $volume += $lot->volume ; endforeach; ?>
                 <tr>
