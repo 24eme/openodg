@@ -54,6 +54,12 @@ class DRevLotForm extends acCouchdbObjectForm
     {
         $produits = array();
         foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
+            if(!$produit->isRevendicationParLots()) {
+                continue;
+            }
+            if (!$produit->isActif()) {
+                continue;
+            }
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
         return array_merge(array('' => ''), $produits);
