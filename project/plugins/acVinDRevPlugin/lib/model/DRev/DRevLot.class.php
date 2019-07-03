@@ -19,7 +19,7 @@ class DRevLot extends BaseDRevLot
     }
 
     public function getProduitLibelle() {
-		if(!$this->_get('produit_libelle')) {
+		if(!$this->_get('produit_libelle') && $this->produit_hash) {
 			$this->produit_libelle = $this->getConfig()->getLibelleComplet();
 		}
 

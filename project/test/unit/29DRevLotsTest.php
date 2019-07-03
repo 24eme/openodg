@@ -58,6 +58,7 @@ $t->comment("Création d'un lot");
 $lot = $drev->addLot();
 
 $lot->millesime = $campagne;
+$lot->numero = "1";
 $lot->volume = 30.4;
 $lot->destination = null;
 $lot->date = ($campagne+1).'-04-15';
@@ -70,6 +71,7 @@ $drev = DRevClient::getInstance()->find("DREV-".$viti->identifiant."-".$campagne
 $lot = $drev->lots->getFirst();
 
 $t->is(count($drev->lots), 1, "Le lot a été ajouté");
+$t->is($lot->numero, "1", "Le numéro de lot est 1");
 $t->is($lot->millesime, $campagne, "Le millésime est ".$campagne);
 $t->is($lot->volume, 30.4, "Le volume est 30.4");
 $t->is($lot->date, ($campagne+1).'-04-15', "La date est ".($campagne+1).'-04-15');
@@ -85,7 +87,8 @@ $defaults = $form->getDefaults();
 $t->is($defaults["_revision"], $drev->_rev, "La revision du doc est indiqué par défaut");
 $t->is($defaults["lots"][0]["volume"], $lot->volume, "Le volume du premier lot est prérempli");
 $t->is($defaults["lots"][0]["date"], $lot->getDateFr(), "La date est prérempli au format français");
-$t->is($defaults["lots"][0]["millesime"], $campagne, "Le millésime est prérempli");
+$t->is($defaults["lots"][0]["millesime"], $lot->millesime, "Le millésime est prérempli");
+$t->is($defaults["lots"][0]["numero"], $lot->numero, "Le numéro est prérempli");
 
 $values = $defaults;
 
@@ -94,6 +97,7 @@ $values['lots'][0]["date"] = "15/05/".($campagne+1);
 $values['lots'][0]["millesime"] = ($campagne-2)."";
 $values['lots'][0]["produit_hash"] = $produit2->getConfig()->getHash();
 $values['lots'][0]["destination"] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
+$values['lots'][0]["numero"] = "A";
 
 $form->bind($values);
 
@@ -114,3 +118,4 @@ $t->is($lot->date, ($campagne+1).'-05-15', "La date est ".($campagne+1).'-05-15'
 $t->is($lot->produit_hash, $produit2->getConfig()->getHash(), "La hash produit a été changé");
 $t->is($lot->produit_libelle, $produit2->getConfig()->getLibelleComplet(), "Le libellé produit est ".$produit2->getConfig()->getLibelleComplet());
 $t->is($lot->destination, DRevClient::LOT_DESTINATION_VRAC_FRANCE, "La destination est ".DRevClient::LOT_DESTINATION_VRAC_FRANCE);
+$t->is($lot->numero, "A", "Le numero est A");

@@ -327,6 +327,7 @@ class drevActions extends sfActions {
             $this->drev->save();
         }
 
+        $this->drev->addLot();
         $this->form = new DRevLotsForm($this->drev);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -342,6 +343,10 @@ class drevActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($request->getParameter('submit') == 'add') {
+            return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
+        }
 
         return $this->redirect('drev_revendication', $this->drev);
     }

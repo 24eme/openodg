@@ -20,15 +20,17 @@ class DRevLotForm extends acCouchdbObjectForm
         $this->setWidget('volume', new bsWidgetFormInputFloat());
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
 
-        $this->setWidget('millesime', new bsWidgetFormInputInteger());
+        $this->setWidget('millesime', new bsWidgetFormInput());
         $this->setValidator('millesime', new sfValidatorInteger(array('required' => false)));
+
+        $this->setWidget('numero', new bsWidgetFormInput());
+        $this->setValidator('numero', new sfValidatorString(array('required' => false)));
 
         $this->setWidget('date', new bsWidgetFormInput());
         $this->setValidator('date', new sfValidatorDate(
             array('date_output' => 'Y-m-d',
             'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
-            'required' => true,
-            'max' => date("Y-m-d")),array('max' => 'La date doit être inférieure à la date du jour ('.date('d/m/Y').')')));
+            'required' => false)));
 
         $this->setWidget('produit_hash', new sfWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));;
@@ -45,7 +47,7 @@ class DRevLotForm extends acCouchdbObjectForm
 
     public function getDestinations()
     {
-        return DRevClient::$lotDestinations;
+        return array_merge(array("" => ""), DRevClient::$lotDestinations);
     }
 
     public function getProduits()
