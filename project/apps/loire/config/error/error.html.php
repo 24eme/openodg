@@ -61,34 +61,14 @@
 
 
  <section id="content" class="container">
- 
 
-                <div class="page-header no-border">
 
-                <h2><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;&nbsp;Une erreur est survenue</h2>
-            </div>
+       <center>
+           <p>
+               <img height="381" width="680" src="/images/loire_500.jpg"/>
+           </p>
+       </center>
 
-            <div class="row">
-                <div class="col-xs-12">
-                    <p>
-                    Nous sommes désolés et vous prions de nous contacter afin de nous signaler et détailler le probleme.
-                    </p>
-                    <p>
-                    Nous tâcherons alors de le résoudre dans les plus brefs délais. 
-                    </p>
-                </div>
-            </div>
-
-            <div class="row row-margin row-button">
-                <div class="col-xs-4">
-                    <a href="/" class="btn btn-primary btn-sm btn-upper btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner à mes déclarations</a>
-                    <a style="margin-top: 10px;" href="javascript:history.back()" class="btn btn-default btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner à la page précédente</a>
-                </div>
-                <div class="col-xs-4">
-                    
-                </div>
-            </div>
- 
  </section>
 
 
