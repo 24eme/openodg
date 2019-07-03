@@ -215,6 +215,8 @@
 
         if(window.location.hash == "#dernier") {
             $('#form_drev_lots .bloc-lot:last input:first').focus();
+        } else {
+            $('#form_drev_lots .bloc-lot:first input:first').focus();
         }
     }
 

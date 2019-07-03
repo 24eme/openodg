@@ -16,7 +16,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         self::DENOMINATION_BIO_TOTAL => 'Tous mes volumes sont certifiés en Bio'
     );
 
-    public static $lotDestinations = array(
+    public static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",

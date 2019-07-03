@@ -629,12 +629,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function cleanDoc() {
-
         $this->declaration->cleanNode();
         $this->cleanLots();
     }
 
     public function cleanLots() {
+        if(!$this->exist('lots')) {
+            return;
+        }
         $keysToRemove = array();
         foreach($this->lots as $keyLot => $lot) {
             if(!$lot->isCleanable()) {
@@ -658,6 +660,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit->volume_revendique_issu_recolte = 0;
         }
         foreach($this->lots as $lot) {
+            if(!$lot->produit_hash) {
+                continue;
+            }
             $produit = $this->addProduit($lot->produit_hash);
             $produit->volume_revendique_issu_recolte += $lot->volume;
         }
@@ -690,7 +695,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $date = date('Y-m-d');
         }
 
-        $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = $date;
         $this->generateMouvements();
@@ -837,12 +841,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $this->prelevements->remove($key);
-        }
-    }
-
-    public function updatePrelevements() {
-        foreach($this->prelevements as $prelevement) {
-            $prelevement->updatePrelevement();
         }
     }
 

@@ -41,10 +41,10 @@ class DRevLot extends BaseDRevLot
         return true;
     }
 
-    public function getDateFr()
+    public function getDestinationDateFr()
     {
 
-        return Date::francizeDate($this->date);
+        return Date::francizeDate($this->destination_date);
     }
 
 
