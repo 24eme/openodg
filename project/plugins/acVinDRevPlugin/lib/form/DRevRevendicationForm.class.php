@@ -3,14 +3,7 @@ class DRevRevendicationForm extends acCouchdbObjectForm
 {
 	public function configure()
     {
-				$produits = array();
-				foreach ($this->getObject()->declaration->getProduits()	 as $key => $produit) {
-					if(!$produit->getConfig()->isRevendicationParLots()){
-						$produits[$key] =	$produit;
-					}
-				}
-
-        $this->embedForm('produits', new DRevRevendicationProduitsForm($produits, array(), $this->getOptions()));
+        $this->embedForm('produits', new DRevRevendicationProduitsForm($this->getObject()->declaration->getProduitsWithoutLots(), array(), $this->getOptions()));
         //$this->validatorSchema->setPostValidator(new DRevRevendicationProduitValidator());
         $this->widgetSchema->setNameFormat('drev_produits[%s]');
     }
