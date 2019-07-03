@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(21);
+$t = new lime_test(30);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -27,10 +27,16 @@ $drev->save();
 
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
+    if(!$produit->isRevendicationParLots()) {
+        continue;
+    }
     $produit_hash1 = $produit->getHash();
     break;
 }
 foreach($produits as $produit) {
+    if(!$produit->isRevendicationParLots()) {
+        continue;
+    }
     if($produit_hash1 == $produit->getHash()) {
         continue;
     }
@@ -38,8 +44,7 @@ foreach($produits as $produit) {
     break;
 }
 
-$madenomination = "Denomination de test";
-$produit1 = $drev->addProduit($produit_hash1, $madenomination);
+$produit1 = $drev->addProduit($produit_hash1);
 $produit2 = $drev->addProduit($produit_hash2);
 
 $produit_hash1 = $produit1->getHash();
@@ -80,6 +85,18 @@ $t->is($lot->produit_hash, $produit1->getConfig()->getHash(), "Le hash produit p
 $t->is($lot->produit_libelle, $produit1->getConfig()->getLibelleComplet(), "Le libelle produit est ".$produit1->getConfig()->getLibelleComplet());
 $t->is($lot->destination, DRevClient::LOT_DESTINATION_VRAC_EXPORT, "La destination est ".DRevClient::LOT_DESTINATION_VRAC_EXPORT);
 
+$drev->addLot();
+$t->is(count($drev->lots), 2, "Le lot a été ajouté");
+$drev->cleanLots();
+$t->is(count($drev->lots), 1, "Le clean a supprimé le dernier lot ajouté car il était vide");
+
+$drev->lotsImpactRevendication();
+$t->is($drev->get($produit_hash1)->volume_revendique_issu_recolte, 30.4, "Le volume a été impacté dans la revendication");
+$drev->save();
+
+$drev->lotsImpactRevendication();
+$t->is($drev->get($produit_hash1)->volume_revendique_issu_recolte, 30.4, "Le volume a été n'a pas été ré-impacté dans la revendication");
+
 $t->comment("Formulaire lots");
 
 $form = new DRevLotsForm($drev);
@@ -119,3 +136,5 @@ $t->is($lot->produit_hash, $produit2->getConfig()->getHash(), "La hash produit a
 $t->is($lot->produit_libelle, $produit2->getConfig()->getLibelleComplet(), "Le libellé produit est ".$produit2->getConfig()->getLibelleComplet());
 $t->is($lot->destination, DRevClient::LOT_DESTINATION_VRAC_FRANCE, "La destination est ".DRevClient::LOT_DESTINATION_VRAC_FRANCE);
 $t->is($lot->numero, "A", "Le numero est A");
+$t->is($drev->get($produit_hash1)->volume_revendique_issu_recolte, 0, "Le volument de revendentication du produit ".$produit1->getConfig()->getLibelleComplet()." a été synchronisé par rapport aux lots");
+$t->is($drev->get($produit_hash2)->volume_revendique_issu_recolte, 5, "Le volument de revendentication du produit ".$produit2->getConfig()->getLibelleComplet()." a été synchronisé par rapport aux lots");

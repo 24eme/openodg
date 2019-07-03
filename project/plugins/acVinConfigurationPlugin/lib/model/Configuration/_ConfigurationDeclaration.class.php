@@ -1049,4 +1049,15 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     /**** DR ****/
 
+    public function isRevendicationParLots() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->isRevendicationParLots()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

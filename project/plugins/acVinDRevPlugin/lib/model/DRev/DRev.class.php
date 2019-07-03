@@ -86,14 +86,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getProduitsVci();
     }
 
+    public function getProduitsLots() {
+
+        return $this->declaration->getProduitsLots();
+    }
+
     public function getConfigProduits() {
 
         return $this->getConfiguration()->declaration->getProduits();
-    }
-
-    public function getConfigProduitsLots() {
-
-        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
     public function mustDeclareCepage() {
@@ -619,9 +619,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->cleanLots();
     }
 
+    public function cleanLots() {
+        $keysToRemove = array();
+        foreach($this->lots as $keyLot => $lot) {
+            if(!$lot->isCleanable()) {
+                continue;
+            }
+            $keysToRemove[] = $keyLot;
+        }
+
+        foreach($keysToRemove as $key) {
+            $this->lots->remove($key);
+        }
+    }
+
     public function addLot() {
 
         return $this->add('lots')->add();
+    }
+
+    public function lotsImpactRevendication() {
+        foreach($this->getProduitsLots() as $produit) {
+            $produit->volume_revendique_issu_recolte = 0;
+        }
+        foreach($this->lots as $lot) {
+            $produit = $this->addProduit($lot->produit_hash);
+            $produit->volume_revendique_issu_recolte += $lot->volume;
+        }
     }
 
     public function storeDeclarant() {

@@ -24,7 +24,7 @@ class EtablissementSecurity implements SecurityInterface {
         }
 
         /*** DECLARANT ***/
-        if(!$this->user->isAdmin() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->etablissement->identifiant)) {
+        if(!$this->user->isAdmin() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->etablissement->identifiant) && !$this->user->hasTeledeclarationDrevAdmin()) {
 
             return false;
         }
