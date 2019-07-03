@@ -73,7 +73,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['destination']->renderLabel("Destination", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                   <?php echo $lot['destination']->render(); ?>
                             </div>
                         </div>
