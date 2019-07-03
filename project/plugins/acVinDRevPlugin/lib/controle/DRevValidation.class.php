@@ -51,8 +51,10 @@ class DRevValidation extends DocumentValidation
     {
     	$produits = array();
         foreach ($this->document->getProduits() as $hash => $produit) {
-            $this->controleRevendication($produit);
-            $this->controleVci($produit);
+            if(!$produit->getConfig()->isRevendicationParLots()){
+              $this->controleRevendication($produit);
+              $this->controleVci($produit);
+            }
             $produits[$hash] = $produit;
         }
         $this->controleNeant();
