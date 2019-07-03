@@ -14,6 +14,9 @@
     <?php echo $form->renderGlobalErrors(); ?>
 
     <?php foreach($form['lots'] as $key => $lot): ?>
+        <?php if($key == count($form['lots']) - 1): ?>
+        <a name="dernier"></a>
+        <?php endif; ?>
         <div class="panel panel-default bloc-lot">
             <div class="panel-body" style="padding-bottom: 0;">
                 <div class="row">
@@ -80,13 +83,15 @@
             </div>
         </div>
     <?php endforeach; ?>
-
+    <div class="text-center">
+        <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
+    </div>
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-            <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
+
         </div>
         <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>

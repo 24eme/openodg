@@ -345,7 +345,7 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if($request->getParameter('submit') == 'add') {
-            return $this->redirect('drev_lots', $this->drev);
+            return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
         return $this->redirect('drev_revendication', $this->drev);

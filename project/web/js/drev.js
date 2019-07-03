@@ -212,6 +212,10 @@
         $('#form_drev_lots select').on('focus', function() { checkBlocsLot()});
         $('#form_drev_lots input').on('blur', function() { checkBlocsLot()});
         $('#form_drev_lots select').on('blur', function() { checkBlocsLot()});
+
+        if(window.location.hash == "#dernier") {
+            $('#form_drev_lots .bloc-lot:last input:first').focus();
+        }
     }
 
     /* =================================================================================== */
