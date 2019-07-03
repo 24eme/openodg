@@ -364,15 +364,6 @@ class drevActions extends sfActions {
             $this->drev->save();
         }
 
-        /*if ($this->drev->isNonRecoltant()) {
-            if (!count($this->drev->declaration->getAppellations())) {
-
-                return $this->redirect('drev_revendication_recapitulatif', $this->drev);
-            }
-
-            return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
-        }*/
-
         $this->appellation = false;
         if ($request->getParameter(('appellation'))) {
             $this->appellation = $request->getParameter(('appellation'));
@@ -438,6 +429,11 @@ class drevActions extends sfActions {
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
+        }
+
+        if(count($this->drev->declaration->getProduitsLots()) > 0) {
+
+            return $this->redirect('drev_lots', $this->drev);
         }
 
         if(!count($this->drev->getProduitsVci())) {
