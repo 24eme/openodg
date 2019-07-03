@@ -32,10 +32,10 @@ class DRevLotForm extends acCouchdbObjectForm
             'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
             'required' => false)));
 
-        $this->setWidget('produit_hash', new sfWidgetFormChoice(array('choices' => $produits)));
+        $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));;
 
-        $this->setWidget('destination', new sfWidgetFormChoice(array('choices' => $this->getDestinations())));
+        $this->setWidget('destination', new bsWidgetFormChoice(array('choices' => $this->getDestinations())));
         $this->setValidator('destination', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinations()))));
 
         $this->widgetSchema->setNameFormat('[%s]');
@@ -54,6 +54,12 @@ class DRevLotForm extends acCouchdbObjectForm
     {
         $produits = array();
         foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
+            if(!$produit->isRevendicationParLots()) {
+                continue;
+            }
+            if (!$produit->isActif()) {
+                continue;
+            }
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
         return array_merge(array('' => ''), $produits);

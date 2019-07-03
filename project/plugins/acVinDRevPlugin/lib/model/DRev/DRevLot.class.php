@@ -26,6 +26,17 @@ class DRevLot extends BaseDRevLot
 		return $this->_get('produit_libelle');
 	}
 
+    public function isCleanable() {
+        foreach($this as $value) {
+            if($value) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function getDateFr()
     {
 

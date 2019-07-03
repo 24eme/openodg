@@ -580,6 +580,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->cleanLots();
     }
 
+    public function cleanLots() {
+        $keysToRemove = array();
+        foreach($this->lots as $keyLot => $lot) {
+            if(!$lot->isCleanable()) {
+                continue;
+            }
+            $keysToRemove[] = $keyLot;
+        }
+
+        foreach($keysToRemove as $key) {
+            $this->lots->remove($key);
+        }
+    }
+
     public function addLot() {
 
         return $this->add('lots')->add();

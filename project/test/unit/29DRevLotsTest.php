@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(21);
+$t = new lime_test(26);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -79,6 +79,11 @@ $t->is($lot->getDateFr(), '15/04/'.($campagne+1), "La date est 15/04/".($campagn
 $t->is($lot->produit_hash, $produit1->getConfig()->getHash(), "Le hash produit produit est ".$produit1->getConfig()->getHash());
 $t->is($lot->produit_libelle, $produit1->getConfig()->getLibelleComplet(), "Le libelle produit est ".$produit1->getConfig()->getLibelleComplet());
 $t->is($lot->destination, DRevClient::LOT_DESTINATION_VRAC_EXPORT, "La destination est ".DRevClient::LOT_DESTINATION_VRAC_EXPORT);
+
+$drev->addLot();
+$t->is(count($drev->lots), 2, "Le lot a été ajouté");
+$drev->cleanLots();
+$t->is(count($drev->lots), 1, "Le clean a supprimé le dernier lot ajouté car il était vide");
 
 $t->comment("Formulaire lots");
 
