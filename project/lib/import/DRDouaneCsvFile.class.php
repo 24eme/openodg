@@ -84,6 +84,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         					}
         				}
         			}
+                    for ($i = 2; $i < count($csv[$key+1]); $i++) {
+                        if ($i%2) {
+                            $coloneid[$i]   = intval($i / 2);
+                            $coloneid[$i+1] = intval($i / 2);
+                        }
+                    }
         			continue;
         		}
         		if(preg_match("/[6-8]{1}-0/", $values[0])) {
@@ -152,15 +158,15 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $doc = $this->getEtablissementRows();
         foreach ($produits as $k => $p) {
 	        foreach ($exploitant[$k] as $sk => $e) {
-	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e)."\n";
+	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k]."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
-	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk])."\n";
+	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$coloneid[$k]."\n";
 	        		unset($bailleur[$k][$sk]);
 	        	}
 	        }
 	        if (isset($baillage[$k]) && isset($bailleur[$k])) {
 	        	foreach ($bailleur[$k] as $b) {
-	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b)."\n";
+	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b).';'.$coloneid[$k]."\n";
 	        	}
 	        }
         }
