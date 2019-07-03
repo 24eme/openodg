@@ -52,7 +52,6 @@ class AppUser extends sfBasicSecurityUser {
              throw new sfException("Le compte est nul : ".$login_or_compte);
           }
         }
-        throw new sfException("Le compte est nul : ".$login_or_compte);
 
         $this->setAttribute(self::SESSION_COMPTE_LOGIN, $login, $namespace);
 
