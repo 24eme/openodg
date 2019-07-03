@@ -475,7 +475,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($p->recolte->vci_constitue) {
                 $produitRecolte->vci_constitue += $p->recolte->vci_constitue;
             }
-            $produit->vci->constitue = $produitRecolte->vci_constitue;
+            if ($produitRecolte->vci_constitue) {
+                $produit->vci->constitue = $produitRecolte->vci_constitue;
+            }
 
             $todelete[$hash] = $hash;
         }
