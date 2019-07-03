@@ -86,14 +86,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getProduitsVci();
     }
 
+    public function getProduitsLots() {
+
+        return $this->declaration->getProduitsLots();
+    }
+
     public function getConfigProduits() {
 
         return $this->getConfiguration()->declaration->getProduits();
-    }
-
-    public function getConfigProduitsLots() {
-
-        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
     public function mustDeclareCepage() {

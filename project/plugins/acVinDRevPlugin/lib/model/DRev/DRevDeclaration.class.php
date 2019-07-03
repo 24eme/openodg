@@ -83,6 +83,20 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $produitsVci;
     }
 
+	public function getProduitsLots()
+    {
+        $produitsVci = array();
+        $produits = $this->getProduits();
+        foreach($produits as $produit) {
+            if(!$produit->getConfig()->isRevendicationParLots()) {
+                continue;
+            }
+            $produitsVci[$produit->getHash()] = $produit;
+        }
+
+        return $produitsVci;
+    }
+
     public function hasVciDetruit()
     {
     	$has = false;
