@@ -42,7 +42,15 @@ class AppUser extends sfBasicSecurityUser {
         }
 
         if(!$compte) {
-            throw new sfException("Le compte est nul : ".$login_or_compte);
+          $societe = SocieteClient::getInstance()->findByIdentifiantSociete($login_or_compte);
+          if(!$societe){
+             throw new sfException("Le compte est nul : ".$login_or_compte);
+          }
+          $compte = $societe->getMasterCompte();
+          $login = $compte->identifiant;
+          if(!$compte){
+             throw new sfException("Le compte est nul : ".$login_or_compte);
+          }
         }
 
         $this->setAttribute(self::SESSION_COMPTE_LOGIN, $login, $namespace);
@@ -80,7 +88,7 @@ class AppUser extends sfBasicSecurityUser {
 
     protected function getCompteByNamespace($namespace) {
         $id_or_doc = $this->getAttribute(self::SESSION_COMPTE_DOC, null, $namespace);
-        
+
         if (!$id_or_doc) {
             return null;
         }
@@ -89,23 +97,23 @@ class AppUser extends sfBasicSecurityUser {
 
             return $id_or_doc;
         }
-        
+
         if (preg_match('/^COMPTE-'.self::CREDENTIAL_ADMIN.'$/', $id_or_doc)) {
         	return $this->getAdminFictifCompte();
         }
 
         return CompteClient::getInstance()->find($id_or_doc);
     }
-    
+
     public function getAdminFictifCompte() {
     	$compte = new Compte();
-    
+
     	$compte->_id = "COMPTE-".self::CREDENTIAL_ADMIN;
     	$compte->identifiant = self::CREDENTIAL_ADMIN;
     	$compte->add('login', self::CREDENTIAL_ADMIN);
-    
+
     	$compte->add("droits", array(self::CREDENTIAL_ADMIN));
-    
+
     	return $compte;
     }
 

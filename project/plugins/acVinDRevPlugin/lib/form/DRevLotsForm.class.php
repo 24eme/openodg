@@ -1,18 +1,32 @@
 <?php
-class DRevLotsForm extends acCouchdbObjectForm 
+class DRevLotsForm extends acCouchdbForm
 {
+
+	public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+      parent::__construct($doc, $defaults, $options, $CSRFSecret);
+	  $doc->add('lots');
+    }
+
 	public function configure()
     {
-        $this->embedForm('lots', new DRevLotsProduitsForm($this->getObject()->lots));
-		$this->mergePostValidator(new DRevLotsValidator());
+		$formLots = new BaseForm();
+
+		foreach($this->getDocument()->lots as $lot) {
+			$formLots->embedForm($lot->getKey(), new DRevLotForm($lot));
+		}
+
+        $this->embedForm('lots', $formLots);
+
         $this->widgetSchema->setNameFormat('drev_lots[%s]');
     }
-    
-    public function doUpdateObject($values) 
-    {
-        parent::doUpdateObject($values);
-        foreach ($this->getEmbeddedForms() as $key => $embedForm) {
-        	$embedForm->doUpdateObject($values[$key]);
+
+	public function save() {
+		$values = $this->getValues();
+		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+			$embedForm->doUpdateObject($values['lots'][$key]);
         }
-    }
+		
+		$this->getDocument()->save();
+	}
+
 }

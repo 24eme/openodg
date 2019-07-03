@@ -182,6 +182,42 @@
 
     }
 
+    $.initLots = function() {
+        if ($('#form_drev_lots').length == 0)
+        {
+            return;
+        }
+
+        var checkBlocsLot = function() {
+            $('#form_drev_lots .bloc-lot').each(function() {
+                var saisi = false;
+                $(this).find('input, select').each(function() {
+                    if($(this).val() || $(this).is(":focus")  ) {
+                        saisi = true;
+                    }
+                });
+                if(!saisi) {
+                    $(this).addClass('transparence-sm');
+                } else {
+                    $(this).removeClass('transparence-sm');
+                }
+            });
+
+        }
+
+        checkBlocsLot();
+        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot()});
+        $('#form_drev_lots select').on('change', function() { checkBlocsLot()});
+        $('#form_drev_lots input').on('focus', function() { checkBlocsLot()});
+        $('#form_drev_lots select').on('focus', function() { checkBlocsLot()});
+        $('#form_drev_lots input').on('blur', function() { checkBlocsLot()});
+        $('#form_drev_lots select').on('blur', function() { checkBlocsLot()});
+
+        if(window.location.hash == "#dernier") {
+            $('#form_drev_lots .bloc-lot:last input:first').focus();
+        }
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -196,7 +232,7 @@
         $.initRevendicationFadeRow();
         $.initRevendicationEventsFadeInOut();
         $.initControleExterne();
-
+        $.initLots();
         $.initRecapEventsAccordion();
         $.initValidationDeclaration();
 
