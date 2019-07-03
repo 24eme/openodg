@@ -53,7 +53,7 @@
                     <td><strong><?php echo $lot->getConfigProduit()->getCouleur()->getLibelleComplet(); ?></strong><small class="pull-right">&nbsp;(<?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha)</small></td>
                     <td class="text-right"><strong><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong></td>
                     <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong> / <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-left"><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small></td>
+                    <td class="text-center"><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
