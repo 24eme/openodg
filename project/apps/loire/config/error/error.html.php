@@ -49,14 +49,89 @@
         <!-- ####### PLEASE KEEP ####### -->
 
         <header id="header">
-            <div class="container" style="position: relative; background-color: #fff; text-align: center;">
-            	<a href="#">
-                	<img style="height: 33px; margin-top: 24px;" class="pull-left" src="https://teledeclaration.vinsvaldeloire.pro/images/visuels/logo_vinsdeloire_new2.png" />
-                    <img style="height: 80px;" class="pull-right" src="https://teledeclaration.vinsvaldeloire.pro/data/logo_vrac_pdf.jpg" />
-                    <div style="margin-left: 250px; border-left: #555353 1px solid;padding: 10px 0;margin-top: 15px;">
-                	<span style="color: #555353; font-size: 20px; padding-top: 3px;">Espace des professionnels du Vignoble du Val de Loire</span>
-                    </div>
-            	</a>
+            <div class="contenu">
+                <h1 id="logo">
+                    <a title="Vins de Loire - Retour à l'accueil" href="/">
+                        <img src="https://teledeclaration.vinsvaldeloire.pro/images/visuels/logo_vinsdeloire_new2.png" alt="">
+                    </a>
+                </h1>
+                <div class="conteneur_nav">
+                    <span class="baseline">Espace des professionnels du Vignoble du Val de Loire</span>
+                    <nav id="navigation">
+            <ul>
+
+                        <li class="actif">
+                <a href="/drm" target="_self">
+                    DRM        </a>
+            </li>
+
+                        <li class="">
+                <a href="/vrac/recherche/80103301" target="_self">
+                    Contrats        </a>
+            </li>
+
+                        <li class="">
+                <a href="/facture/etablissement/80103301" target="_self">
+                    Facture        </a>
+            </li>
+
+
+
+
+                                  <li><a href="/odg/declarations/80103301">DRev</a></li>
+
+                        <li class="">
+                <a href="/sv12/80103301" target="_self">
+                    SV12        </a>
+            </li>
+
+                        <li class="">
+                <a href="/ds/80103301" target="_self">
+                    DS        </a>
+            </li>
+
+                        <li class="">
+                <a href="/stocks/80103301" target="_self">
+                    Stocks        </a>
+            </li>
+
+                        <li class="">
+                <a href="/alerte/80103301/recherche" target="_self">
+                    Alertes        </a>
+            </li>
+
+                        <li class="">
+                <a href="/relance/80103301" target="_self">
+                    Relance        </a>
+            </li>
+
+                                <li class="">
+                <a href="/etablissement/80103301/visualisation" target="_self">
+                    Contacts        </a>
+            </li>
+
+
+
+
+
+
+                <!-- Actions utilisateur pour tablette et mobile -->
+
+                            <li class="hidden_desk visible_tab"><a class="admin" href="/produits">Admin</a></li>
+
+
+                                            <li class="hidden_desk visible_tab"><a class="deconnexion" href="/logout">Déconnexion</a></li>
+                                </ul>
+        </nav>
+                </div>
+
+                            <button class="btn_menu" type="button">Menu</button>
+
+                <h1 class="logo_civdl">
+                    <a title="CIVDL - Retour à l'accueil" href="/">
+                        <img src="https://teledeclaration.vinsvaldeloire.pro/data/logo_vrac_pdf.jpg" alt="">
+                    </a>
+                </h1>
             </div>
         </header>
 
