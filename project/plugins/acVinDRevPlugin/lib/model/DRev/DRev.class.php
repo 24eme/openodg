@@ -81,6 +81,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getProduits($onlyActive);
     }
 
+    public function getProduitsWithoutLots(){
+      return $this->declaration->getProduitsWithoutLots();
+    }
+
     public function getProduitsVci() {
 
         return $this->declaration->getProduitsVci();
@@ -449,7 +453,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updateFromPrecedente();
     }
 
-    public function hasAcheteurForProduit($csv,$k){      
+    public function hasAcheteurForProduit($csv,$k){
       $l = $csv[$k];
       $code = $l[DRCsvFile::CSV_LIGNE_CODE];
       $codePrev = $code * 2;
