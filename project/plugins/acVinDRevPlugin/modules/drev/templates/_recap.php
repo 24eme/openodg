@@ -54,5 +54,3 @@
         </tbody>
     </table>
 <?php endif; ?>
-
-<?php include_partial('drev/prelevements', array('drev' => $drev)); ?>
