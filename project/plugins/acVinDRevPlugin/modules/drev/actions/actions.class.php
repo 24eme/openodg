@@ -314,6 +314,38 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication', $this->drev);
     }
 
+    public function executeLots(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if ($this->needDrDouane()) {
+
+            return $this->redirect('drev_dr_upload', $this->drev);
+        }
+
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_LOTS))) {
+            $this->drev->save();
+        }
+
+        $this->form = new DRevLotsForm($this->drev);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('drev_revendication', $this->drev);
+    }
+
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);

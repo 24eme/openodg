@@ -7,10 +7,19 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
     const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
     const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
+    const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
+    const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
+    const LOT_DESTINATION_CONDITIONNEMENT = 'CONDITIONNEMENT';
 
     public static $denominationsAuto = array(
         self::DENOMINATION_BIO_PARTIEL => "Une partie de mes volumes sont certifiés en Bio",
         self::DENOMINATION_BIO_TOTAL => 'Tous mes volumes sont certifiés en Bio'
+    );
+
+    public static $lotDestinations = array(
+        DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
+        DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
+        DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
     );
 
     public static function getInstance()

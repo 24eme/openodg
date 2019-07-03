@@ -215,6 +215,16 @@ drev_vci:
   requirements:
     sf_method: [get, post]
 
+drev_lots:
+  url: /drev/lots/:id/:appellation
+  param: { module: drev, action: lots, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_generatemouvements:
   url: /drev/generatemouvements/:id
   param: { module: drev, action: generateMouvements }
