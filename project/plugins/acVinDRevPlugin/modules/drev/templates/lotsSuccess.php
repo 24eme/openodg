@@ -61,18 +61,18 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['destination']->renderLabel("Destination", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['destination_type']->renderLabel("Destination", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-6">
-                                  <?php echo $lot['destination']->render(); ?>
+                                  <?php echo $lot['destination_type']->render(); ?>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['date']->renderLabel("Date", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['destination_date']->renderLabel("Date", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
                                 <div class="input-group date-picker">
-                                    <?php echo $lot['date']->render(array('placeholder' => "Date")); ?>
+                                    <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
                                     <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
                                 </div>
                             </div>
