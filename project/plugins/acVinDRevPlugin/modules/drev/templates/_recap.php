@@ -23,6 +23,38 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?php if($drev->exist('lots') && count($drev->lots)): ?>
+    <h3>Gestion du VCI</h3>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="col-xs-1">Lot</th>
+                <th class="text-center col-xs-5">Produit (millesiume)</th>
+                <th class="text-center col-xs-2">Volume</th>
+                <th class="text-center col-xs-4">Destination (date)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($drev->getLotsByCouleur() as $couleur => $lots) :
+                $volume = 0;
+                foreach ($lots as  $lot) : ?>
+                <tr>
+                    <td><?php echo $lot->numero; ?></td>
+                    <td><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?></td>
+                    <td class="text-right"><?php echo echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+                    <td class="text-center"><?php echo $lot->destination; echo ($lot->date) ? " (".$lot->date.")" : ''; ?></td>
+                </tr>
+                <?php $volume += $lot->volume ; endforeach; ?>
+                <tr>
+                    <th>Total</th>
+                    <th><?php echo $lot->getConfigProduit()->getCouleur()->getLibelleComplet(); ?></th>
+                    <th class="text-right"><?php echo echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></th>
+                    <th class="text-center">&nbsp;</th>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endif; ?>
 <?php if(count($drev->declaration->getProduitsVci())): ?>
     <h3>Gestion du VCI</h3>
     <table class="table table-bordered table-striped">

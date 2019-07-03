@@ -6,6 +6,10 @@
 
 class DRevLot extends BaseDRevLot
 {
+    public function getConfigProduit() {
+            return $this->getConfig();
+    }
+
     public function getConfig() {
 
         return $this->getDocument()->getConfiguration()->get($this->produit_hash);
