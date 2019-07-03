@@ -248,7 +248,6 @@ h3 {
   content: '';
 }
 #header #navigation {
-  float: left;
   line-height: 33px;
   position: relative;
 }

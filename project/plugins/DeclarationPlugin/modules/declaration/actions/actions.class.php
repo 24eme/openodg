@@ -116,6 +116,9 @@ class declarationActions extends sfActions {
         if($usurpation && $login){
             $this->getUser()->usurpationOn($login, $request->getReferer());
         }
+        if($this->getUser()->hasCredential('teledeclaration_drev_admin')){
+          $this->getUser()->addCredential("ADMIN");
+        }
         $this->etablissement = $this->getRoute()->getEtablissement();
 
         $this->secureEtablissement($this->etablissement);
