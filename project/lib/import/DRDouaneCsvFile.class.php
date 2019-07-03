@@ -23,12 +23,14 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $libelleLigne = null;
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
+                //Récupération des infos du déclarant depuis l'entête
         		if (preg_match('/dnr/i', $values[0])) {
         			$this->cvi = (isset($values[1]))? $values[1] : null;
         			$this->raison_sociale = (isset($values[2]))? "\"".html_entity_decode(trim(preg_replace('/^(.+)\(.+\)$/', '\1', $values[2])))."\"" : null;
         			$this->commune = (isset($values[2]))? trim(preg_replace('/^.+\((.+)\)$/', '\1', $values[2])) : null;
         			continue;
         		}
+                //Récupération des infos du produit (sur L1 => le code INAO)
         		if ($values[0] == 1) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
@@ -43,6 +45,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
+                //Récupération des infos du libellé du produit
         		if (!$values[0] && preg_match('/libelle produit/i', $values[1])) {
         			for ($i = 2; $i < count($values); $i++) {
         				if (isset($produits[$i])) {
@@ -51,6 +54,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
+                //Récupération de la mention valorisante
         		if ($values[0] == 2) {
         			for ($i = 2; $i < count($values); $i++) {
         				if (isset($produits[$i])) {
@@ -59,6 +63,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
+                //Récupération de la superficie (qui n'est que les colonne exploitant)
         		if ($values[0] == 4) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
@@ -67,6 +72,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
+                //Récupération de la récolte totale - L5 (avec un décalage car il y a un ligne extra pour l'exploitant et le bailleur)
         		if ($values[0] == 5) {
         			for ($i = 2; $i < count($csv[$key+1]); $i++) {
         				if ($i%2) {
@@ -84,6 +90,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			$libelleLigne = self::cleanStr($values[1]);
         			continue;
         		}
+                //Livraison en négoce ou coop
         		if (preg_match("/[6-8]{1}-[1-9]+/", $values[0])) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
@@ -97,6 +104,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
+                //Les volumes
         		if (is_numeric($values[0]) && $values[0] > 8 && $values[0] < 20) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
@@ -110,7 +118,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
-
+                //info bailleur
         		if ($values[0] == 20 || $values[0] == 21) {
         			for ($i = 2; $i < count($values); $i++) {
         				if (isset($values[$i]) && $values[$i]) {
