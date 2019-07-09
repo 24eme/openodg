@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin())): ?>
+<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin() || !$sf_user->hasTeledeclarationDrevAdmin())): ?>
     <?php return; ?>
 <?php endif; ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
@@ -18,7 +18,7 @@
                     <?php endif; ?>
                 </div>
             </div>
-        <?php elseif ($drev && (DRevClient::getInstance()->isOpen() || $sf_user->isAdmin())): ?>
+        <?php elseif ($drev && (DRevClient::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin())): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication de cette année a été débutée sans avoir été validée.</p>
                 <div style="margin-top: 50px;">
