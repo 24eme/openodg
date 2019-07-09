@@ -6,16 +6,16 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-4">Appellation revendiquée</th>
-            <th class="col-xs-3 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
-            <th class="col-xs-3 text-center">Volume revendiqué net total<br /><small class="text-muted">(hl)</small></th>
-            <th class="col-xs-2 text-center">Dont VCI<br /><small class="text-muted">(hl)</small></th>
+            <th class="col-xs-5">Appellation revendiquée</th>
+            <th class="col-xs-2 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
+            <th class="col-xs-2 text-center">Volume revendiqué<br />net total <small class="text-muted">(hl)</small></th>
+            <th class="col-xs-3 text-center">Dont VCI<br /><small class="text-muted">(hl)</small></th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($drev->declaration->getProduits() as $produit) : ?>
+        <?php foreach ($drev->declaration->getProduitsWithoutLots() as $produit) : ?>
             <tr>
-                <td><?php echo $produit->getLibelleComplet() ?><small class="pull-right">&nbsp;(<?php echo round($produit->getRendementEffectif(), 2); ?> hl/ha)</small></td>
+                <td><?php echo $produit->getLibelleComplet() ?><small class="pull-right">&nbsp;(<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha)</small></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_toral') ?>"><?php if($produit->volume_revendique_total !== null): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
@@ -24,32 +24,36 @@
     </tbody>
 </table>
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
-    <h3>Gestion du VCI</h3>
+    <h3>Déclaration des lots</h3>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-5">Produit (millesiume)</th>
+                <th class="text-center col-xs-4">Produit (millesime)</th>
+                <th class="text-center col-xs-2">Superficie</th>
                 <th class="text-center col-xs-2">Volume</th>
-                <th class="text-center col-xs-4">Destination (date)</th>
+                <th class="text-center col-xs-3">Destination (date)</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($drev->getLotsByCouleur() as $couleur => $lots) :
                 $volume = 0;
+                $synthese_revendication = $drev->summerizeProduitsByCouleur();
                 foreach ($lots as  $lot) : ?>
                 <tr>
                     <td><?php echo $lot->numero; ?></td>
                     <td><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?></td>
-                    <td class="text-right"><?php echo echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->destination_date.")" : ''; ?></td>
+                    <td>&nbsp;</td>
+                    <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
                 </tr>
                 <?php $volume += $lot->volume ; endforeach; ?>
                 <tr>
-                    <th>Total</th>
-                    <th><?php echo $lot->getConfigProduit()->getCouleur()->getLibelleComplet(); ?></th>
-                    <th class="text-right"><?php echo echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></th>
-                    <th class="text-center">&nbsp;</th>
+                    <td><strong>Total</strong></td>
+                    <td><strong><?php echo $lot->getConfigProduit()->getCouleur()->getLibelleComplet(); ?></strong><small class="pull-right">&nbsp;(<?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha)</small></td>
+                    <td class="text-right"><strong><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong></td>
+                    <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong> / <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small class="text-muted">&nbsp;hl</small></td>
+                    <td class="text-center"><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -60,14 +64,14 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="col-xs-4">Appellation revendiquée</th>
-                <th class="text-center col-xs-1">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="col-xs-3">Appellation revendiquée</th>
+                <th class="text-center col-xs-2">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">A détruire<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-1">Complément<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-1">Substitution<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Complémt<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Substitué<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-1">Constitué&nbsp;<?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-1">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Constitué<br /><?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-2">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
             </tr>
         </thead>
         <tbody>

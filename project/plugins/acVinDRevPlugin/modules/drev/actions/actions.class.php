@@ -431,7 +431,7 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_dr_upload', $this->drev);
         }
 
-        if(count($this->drev->declaration->getProduitsLots()) > 0) {
+        if(!count($this->drev->getProduitsVci()) && count($this->drev->declaration->getProduitsLots()) > 0) {
 
             return $this->redirect('drev_lots', $this->drev);
         }
