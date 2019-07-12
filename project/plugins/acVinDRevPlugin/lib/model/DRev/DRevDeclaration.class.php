@@ -38,7 +38,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 		foreach($hash_to_delete as $hash) {
 			$this->getDocument()->remove($hash);
 		}
-	
+
 		$hash_to_delete = array();
 		foreach($this as $children) {
 			if(count($children) > 0) {
@@ -69,12 +69,36 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $produits;
     }
 
+	public function getProduitsWithoutLots(){
+		$produits = array();
+		foreach ($this->getProduits()	 as $key => $produit) {
+			if(!$produit->getConfig()->isRevendicationParLots()){
+				$produits[$key] =	$produit;
+			}
+		}
+		return $produits;
+	}
+
     public function getProduitsVci()
     {
         $produitsVci = array();
         $produits = $this->getProduits();
         foreach($produits as $produit) {
             if(!$produit->hasVci()) {
+                continue;
+            }
+            $produitsVci[$produit->getHash()] = $produit;
+        }
+
+        return $produitsVci;
+    }
+
+	public function getProduitsLots()
+    {
+        $produitsVci = array();
+        $produits = $this->getProduits();
+        foreach($produits as $produit) {
+            if(!$produit->getConfig()->isRevendicationParLots()) {
                 continue;
             }
             $produitsVci[$produit->getHash()] = $produit;

@@ -160,3 +160,187 @@ h3 {
 .alert-danger a.alert-link:hover, .alert-danger a.alert-link:focus  {
 	text-decoration: none;
 }
+
+/**
+ * Header
+ ******************************************/
+ .visible_desk {
+   display: block !important;
+ }
+ .hidden_desk {
+   display: none !important;
+ }
+#header {
+ display: block;
+}
+#header {
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  margin: 0 0 30px;
+  padding: 15px 0 15px;
+  min-height: 100px;
+}
+#header .contenu {
+  zoom: 1;
+  min-height: 1px;
+  margin: 0 auto;
+  width: 1170px;
+  position: relative;
+}
+#header .contenu:before,
+#header .contenu:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header .contenu:after {
+  clear: both;
+}
+#header .contenu:before,
+#header .contenu:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header .contenu:after {
+  clear: both;
+}
+#header #logo {
+  float: left;
+  margin: 10px 0 0;
+}
+#header .logo_civdl {
+  float: right;
+  border-left: 1px solid #9a9a9a;
+}
+#header .logo_civdl img {
+  height: 60px;
+  margin: 0 10px;
+}
+#header .baseline {
+  font-family: Helvetica, Arial, sans-serif;
+  color: #555353;
+  display: inline-block;
+  font-size: 20px;
+  margin: 0 0 10px;
+}
+#header .conteneur_nav {
+  float: left;
+  margin: 0 0 0 15px;
+  padding: 0 15px;
+  position: relative;
+  width: 656px;
+}
+#header .conteneur_nav:before {
+  bottom: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 10px;
+  border-left: 1px solid #9a9a9a;
+  height: 50px;
+  content: '';
+}
+#header #navigation {
+  line-height: 33px;
+  position: relative;
+}
+#header #navigation ul {
+  zoom: 1;
+  min-height: 1px;
+  list-style: none;
+  display: block;
+  padding-left: 0;
+}
+#header #navigation ul:before,
+#header #navigation ul:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header #navigation ul:after {
+  clear: both;
+}
+#header #navigation ul:before,
+#header #navigation ul:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header #navigation ul:after {
+  clear: both;
+}
+#header #navigation li {
+  background: url(https://teledeclaration.vinsvaldeloire.pro/images/fonds/bg_navigation_sep.png) 0 center no-repeat;
+  float: left;
+  padding: 0 2px 0 3px;
+}
+#header #navigation li.actif {
+  font-weight: bold;
+}
+#header #navigation li a {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  padding: 1px 4px;
+}
+#header #navigation li a:hover,
+#header #navigation li a:focus {
+  text-decoration: none;
+}
+#header #navigation li.actif a,
+#header #navigation li a:hover,
+#header #navigation li a:focus {
+  border: 1px solid #9d3032;
+  background: #ca5153;
+  color: #fff;
+  padding: 0 3px;
+}
+#header .btn_menu {
+  background: url('https://teledeclaration.vinsvaldeloire.pro/images/pictos/pi_menu.png') no-repeat;
+  display: none;
+  float: right;
+  height: 20px;
+  margin: 25px 0 0;
+  overflow: hidden;
+  text-indent: 100%;
+  white-space: nowrap;
+  width: 26px;
+}
+#header #actions_utilsateur {
+  float: right;
+  margin: 5px 10px;
+  font-size: 12px;
+}
+#header #actions_utilsateur a {
+  display: block;
+  margin: 10px 0;
+  padding: 0 0 0 20px;
+  position: relative;
+}
+#header #actions_utilsateur a:before {
+  bottom: auto;
+  left: 0;
+  position: absolute;
+  right: auto;
+  top: 4px;
+  height: 0px;
+  width: 0px;
+  border-style: solid;
+  border-width: 6px 0 6px 7px;
+  border-color: transparent transparent transparent #3e3e3e;
+  display: inline-block;
+  content: '';
+}

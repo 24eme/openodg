@@ -6,68 +6,46 @@
 
 class DRevLot extends BaseDRevLot
 {
+    public function getConfigProduit() {
+            return $this->getConfig();
+    }
+
     public function getConfig() {
 
-        return $this->getDocument()->getConfiguration()->get($this->hash_produit);
+        return $this->getDocument()->getConfiguration()->get($this->produit_hash);
     }
 
-    public function getPrelevement() {
-
-        return $this->getParent()->getParent();
-    }
-
-    public function getLibelle() {
-        if(is_null($this->_get('libelle'))) {
-            $libelle = '';
-            if ($this->getConfig()->getLieu()->libelle) {
-                $libelle .= $this->getConfig()->getLieu()->libelle.' - ';
-            }
-            if($this->getConfig()->exist('libelle_long')) {
-                 $libelle .= $this->getConfig()->libelle_long;
-            } else {
-                 $libelle .= $this->getConfig()->libelle; 
-            }
-            $this->_set('libelle', $libelle);
+    public function setProduitHash($hash) {
+        if($hash != $this->_get('produit_hash')) {
+            $this->produit_libelle = null;
         }
-
-        return $this->_get('libelle');
+        parent::_set('produit_hash', $hash);
     }
 
-    public function hasVtsgn()
-    {
-        return ($this->nb_vtsgn)? true : false;
-    }
-    
-    public function hasHorsVtsgn()
-    {
-        return ($this->nb_hors_vtsgn)? true : false;
-    }
-    
-    public function hasLots($vtsgn = false, $horsvtsgn = false)
-    {
-        if ($vtsgn != $horsvtsgn) {
-            if ($vtsgn) {
-                return $this->hasVtsgn();
-            }
-            if ($horsvtsgn) {
-                return $this->hasHorsVtsgn();
-            }
-        }
-        return ($this->hasVtsgn() || $this->hasHorsVtsgn())? true : false;
-    }
-    
+    public function getProduitLibelle() {
+		if(!$this->_get('produit_libelle') && $this->produit_hash) {
+			$this->produit_libelle = $this->getConfig()->getLibelleComplet();
+		}
+
+		return $this->_get('produit_libelle');
+	}
+
     public function isCleanable() {
-        if($this->nb_hors_vtsgn > 0) {
-            return false;
+        foreach($this as $value) {
+            if($value) {
+
+                return false;
+            }
         }
 
         return true;
     }
 
-    public function hasConfigVtsgn() {
+    public function getDestinationDateFr()
+    {
 
-        return !$this->exist('no_vtsgn') || !$this->get('no_vtsgn');
-
+        return Date::francizeDate($this->destination_date);
     }
+
 
 }

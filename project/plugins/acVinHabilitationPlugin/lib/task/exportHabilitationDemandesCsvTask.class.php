@@ -34,6 +34,7 @@ EOF;
                     if (is_array($key)) {
                         $key = implode(',', str_replace(',', '-', $key));
                     }
+                    $key = preg_replace('/"/', '\"', $key);
                     echo str_replace(';', '-', $key);
                     $i++;
                     if ($i < $nb) {

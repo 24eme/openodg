@@ -810,7 +810,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function isActif()
     {
-    	return ($this->getRendement() == -1 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;
+    	return ($this->getRendement() <= 0 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;
     }
 
     public function getRendementDrev() {
@@ -1048,5 +1048,16 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     /**** DR ****/
+
+    public function isRevendicationParLots() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->isRevendicationParLots()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }

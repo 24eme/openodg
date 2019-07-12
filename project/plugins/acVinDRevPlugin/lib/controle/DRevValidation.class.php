@@ -49,11 +49,15 @@ class DRevValidation extends DocumentValidation
 
     public function controle()
     {
-    	$produits = array();
+    	  $produits = array();
+        foreach ($this->document->getProduitsWithoutLots() as $hash => $produit) {
+              $this->controleRevendication($produit);
+              $this->controleVci($produit);
+        }
+
         foreach ($this->document->getProduits() as $hash => $produit) {
-            $this->controleRevendication($produit);
-            $this->controleVci($produit);
-            $produits[$hash] = $produit;
+
+          $produits[$hash] = $produit;
         }
         $this->controleNeant();
         $this->controleEngagementVCI();
@@ -132,7 +136,7 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->superficie_revendique > 0) {
-	        if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 2) > round($produit->getConfig()->getRendement(), 2)) {
+	        if($produit->getConfig()->getRendement() !== null && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendement(), 2)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
         } else{
