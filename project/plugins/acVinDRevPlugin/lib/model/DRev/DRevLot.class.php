@@ -6,6 +6,10 @@
 
 class DRevLot extends BaseDRevLot
 {
+    public function getConfigProduit() {
+            return $this->getConfig();
+    }
+
     public function getConfig() {
 
         return $this->getDocument()->getConfiguration()->get($this->produit_hash);
@@ -26,10 +30,21 @@ class DRevLot extends BaseDRevLot
 		return $this->_get('produit_libelle');
 	}
 
-    public function getDateFr()
+    public function isCleanable() {
+        foreach($this as $value) {
+            if($value) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getDestinationDateFr()
     {
 
-        return Date::francizeDate($this->date);
+        return Date::francizeDate($this->destination_date);
     }
 
 

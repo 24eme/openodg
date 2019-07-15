@@ -81,19 +81,49 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getProduits($onlyActive);
     }
 
+    public function getProduitsWithoutLots(){
+      return $this->declaration->getProduitsWithoutLots();
+    }
+
     public function getProduitsVci() {
 
         return $this->declaration->getProduitsVci();
     }
 
+    public function getProduitsLots() {
+
+        return $this->declaration->getProduitsLots();
+    }
+
+    public function summerizeProduitsByCouleur() {
+        $couleurs = array();
+        foreach($this->getProduits() as $h => $p) {
+            $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
+            if (!isset($couleurs[$couleur])) {
+                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0);
+            }
+            $couleurs[$couleur]['volume_total'] += $p->recolte->volume_sur_place;
+            $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
+        }
+        return $couleurs;
+    }
+
+    public function getLotsByCouleur() {
+        $couleurs = array();
+        foreach ($this->lots as $lot) {
+            $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
+            if (!isset($couleurs[$couleur])) {
+                $couleurs[$couleur] = array();
+            }
+            $couleurs[$couleur][] = $lot;
+        }
+        return $couleurs;
+    }
+
+
     public function getConfigProduits() {
 
         return $this->getConfiguration()->declaration->getProduits();
-    }
-
-    public function getConfigProduitsLots() {
-
-        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
     public function mustDeclareCepage() {
@@ -354,10 +384,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
                   ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
                 ) {
-              $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+              $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, $line[DRCsvFile::CSV_COLONNE_ID]);
               $has_bio = true;
             }else{
-              $produit = $this->addProduit($produitConfig->getHash());
+              $produit = $this->addProduit($produitConfig->getHash(), null, $line[DRCsvFile::CSV_COLONNE_ID]);
             }
 
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
@@ -419,14 +449,55 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produit->vci->constitue = $produitRecolte->vci_constitue;
             }
         }
-
+        //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
         	if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
     			     $todelete[$hash] = $hash;
                continue;
         	}
         }
+        foreach ($todelete as $del) {
+            $this->remove($del);
+        }
+        $todelete = array();
 
+        //Supprime les colonnes pour ne proposer qu'un aggréga par produit
+        $my_produits = $this->declaration->getProduits();
+        foreach ($my_produits as $hash => $p) {
+            $hash_produit = $p->getParent()->getHash();
+            $produit = $this->addProduit($hash_produit, $p->denomination_complementaire);
+            $produitRecolte = $produit->add("recolte");
+
+            if ($p->recolte->volume_sur_place) {
+                $produitRecolte->volume_sur_place += $p->recolte->volume_sur_place;
+            }
+            if ($p->recolte->volume_sur_place_revendique) {
+                $produitRecolte->volume_sur_place_revendique += $p->recolte->volume_sur_place_revendique;
+            }
+            if ($p->recolte->usages_industriels_sur_place) {
+                $produitRecolte->usages_industriels_sur_place += $p->recolte->usages_industriels_sur_place;
+            }
+            if ($p->recolte->usages_industriels_total) {
+                $produitRecolte->usages_industriels_total += $p->recolte->usages_industriels_total;
+            }
+            if ($p->recolte->volume_total) {
+                $produitRecolte->volume_total += $p->recolte->volume_total;
+            }
+            if ($p->recolte->superficie_total) {
+                $produitRecolte->superficie_total += $p->recolte->superficie_total;
+            }
+            if ($p->recolte->recolte_nette) {
+                $produitRecolte->recolte_nette += $p->recolte->recolte_nette;
+            }
+            if ($p->recolte->vci_constitue) {
+                $produitRecolte->vci_constitue += $p->recolte->vci_constitue;
+            }
+            if ($produitRecolte->vci_constitue) {
+                $produit->vci->constitue = $produitRecolte->vci_constitue;
+            }
+
+            $todelete[$hash] = $hash;
+        }
         foreach ($todelete as $del) {
             $this->remove($del);
         }
@@ -449,7 +520,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updateFromPrecedente();
     }
 
-    public function hasAcheteurForProduit($csv,$k){      
+    public function hasAcheteurForProduit($csv,$k){
       $l = $csv[$k];
       $code = $l[DRCsvFile::CSV_LIGNE_CODE];
       $codePrev = $code * 2;
@@ -535,11 +606,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $appellation;
     }
 
-    public function addProduit($hash, $denominationComplementaire = null) {
+    public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
-        if($denominationComplementaire){
-            $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire))), 0, 7);
+        if($denominationComplementaire || $hidden_denom){
+            $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }
 
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
@@ -575,14 +646,43 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function cleanDoc() {
-
         $this->declaration->cleanNode();
         $this->cleanLots();
+    }
+
+    public function cleanLots() {
+        if(!$this->exist('lots')) {
+            return;
+        }
+        $keysToRemove = array();
+        foreach($this->lots as $keyLot => $lot) {
+            if(!$lot->isCleanable()) {
+                continue;
+            }
+            $keysToRemove[] = $keyLot;
+        }
+
+        foreach($keysToRemove as $key) {
+            $this->lots->remove($key);
+        }
     }
 
     public function addLot() {
 
         return $this->add('lots')->add();
+    }
+
+    public function lotsImpactRevendication() {
+        foreach($this->getProduitsLots() as $produit) {
+            $produit->volume_revendique_issu_recolte = 0;
+        }
+        foreach($this->lots as $lot) {
+            if(!$lot->produit_hash) {
+                continue;
+            }
+            $produit = $this->addProduit($lot->produit_hash);
+            $produit->volume_revendique_issu_recolte += $lot->volume;
+        }
     }
 
     public function storeDeclarant() {
@@ -612,7 +712,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $date = date('Y-m-d');
         }
 
-        $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = $date;
         $this->generateMouvements();
@@ -759,12 +858,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $this->prelevements->remove($key);
-        }
-    }
-
-    public function updatePrelevements() {
-        foreach($this->prelevements as $prelevement) {
-            $prelevement->updatePrelevement();
         }
     }
 

@@ -49,11 +49,15 @@ class DRevValidation extends DocumentValidation
 
     public function controle()
     {
-    	$produits = array();
+    	  $produits = array();
+        foreach ($this->document->getProduitsWithoutLots() as $hash => $produit) {
+              $this->controleRevendication($produit);
+              $this->controleVci($produit);
+        }
+
         foreach ($this->document->getProduits() as $hash => $produit) {
-            $this->controleRevendication($produit);
-            $this->controleVci($produit);
-            $produits[$hash] = $produit;
+
+          $produits[$hash] = $produit;
         }
         $this->controleNeant();
         $this->controleEngagementVCI();

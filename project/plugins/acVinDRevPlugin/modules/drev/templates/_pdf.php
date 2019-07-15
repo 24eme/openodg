@@ -35,7 +35,7 @@
         <th class="th" style="text-align: center; width: 170px;">Volume revendiqué net total</th>
         <th class="th" style="text-align: center; width: 170px;">Dont VCI</th>
     </tr>
-    <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
+    <?php foreach($drev->declaration->getProduitsWithoutLots() as $produit): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->superficie_revendique): ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ha</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
@@ -102,4 +102,25 @@ Les produits déclarés sont du millésime du VCI
     <em>Ne conditionne pas de volume pour ce millésime.</em>
     <?php endif; ?>
     <?php endif; ?>
+<?php endif; ?>
+
+<?php if($drev->exist('lots') && count($drev->lots)): ?>
+<br /><br />
+<div><span class="h3">&nbsp;Declaration des lots&nbsp;</span></div>
+<table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <tr>
+        <th class="th" style="text-align: left; width: 50px">&nbsp;Lot</th>
+        <th class="th" style="text-align: left; width: 325px">&nbsp;Appellation (millésime)</th>
+        <th class="th" style="text-align: center; width: 150px">Volume</th>
+        <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
+    </tr>
+<?php foreach($drev->lots as $lot): ?>
+    <tr>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero ?></td>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)</td>
+        <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+        <td class="td" style="text-align: center;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
+    </tr>
+<?php endforeach; ?>
+</table>
 <?php endif; ?>

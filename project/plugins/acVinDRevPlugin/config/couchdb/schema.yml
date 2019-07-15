@@ -110,8 +110,8 @@ DRev:
                   numero: { }
                   millesime: { }
                   volume: { type: float }
-                  date: { }
-                  destination: { }
+                  destination_type: { }
+                  destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
       documents:
