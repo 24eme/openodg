@@ -56,6 +56,8 @@ php symfony export:habilitation-demandes-publipostage $SYMFONYTASKOPTIONS > web/
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_publipostage.csv.part > $EXPORTDIR/habilitation_demandes_publipostage.csv
 rm $EXPORTDIR/habilitation_demandes_publipostage.csv.part
 
+find $EXPORTDIR -type f -empty -delete
+
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
