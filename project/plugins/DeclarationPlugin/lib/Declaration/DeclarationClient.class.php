@@ -79,6 +79,11 @@ class DeclarationClient
             return 'ExportParcellaireIrrigableCSV';
         }
 
+        if(class_exists("ParcellaireIrrigueClient") && $type == ParcellaireIrrigueClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireIrrigueCSV';
+        }
+
         if(class_exists("RegistreVCIClient") && $type == RegistreVCIClient::TYPE_MODEL) {
 
             return 'ExportRegistreVCICSV';
