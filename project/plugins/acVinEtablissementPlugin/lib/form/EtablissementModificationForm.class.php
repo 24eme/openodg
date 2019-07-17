@@ -88,6 +88,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
     }
 
     public static function getRegions() {
+
         return array_merge(array("" => ""),EtablissementClient::getRegions());
     }
 

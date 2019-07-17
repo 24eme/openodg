@@ -6,9 +6,10 @@ class PieceAllView extends acCouchdbView
 	const KEYS_VISIBILITE = 0;
     const KEYS_IDENTIFIANT = 1;
     const KEYS_DATE_DEPOT = 2;
-    const KEYS_LIBELLE = 3;
-    const KEYS_MIME = 4;
-    const KEYS_SOURCE = 5;
+    const KEYS_CATEGORIE = 3;
+    const KEYS_LIBELLE = 4;
+    const KEYS_MIME = 5;
+    const KEYS_SOURCE = 6;
 
     const VALUES_KEY = 0;
     const VALUES_FICHIERS = 1;

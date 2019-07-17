@@ -8,6 +8,16 @@ class commonActions extends sfActions {
             return $this->redirect('declaration');
         }
 
+        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
+
+            return $this->redirect('declaration');
+        }
+	
+	if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
+
+            return $this->redirect('declaration');
+        }
+
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_TOURNEE)) {
 
             return $this->redirect('tournee_agent_accueil');
@@ -26,6 +36,11 @@ class commonActions extends sfActions {
         if(!$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()) {
 
             return $this->forwardSecure();
+        }
+
+        if($request->getParameter('redirect', null) == 'documents') {
+
+            return $this->redirect('pieces_historique', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
         }
 
         return $this->redirect('declaration_etablissement', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());

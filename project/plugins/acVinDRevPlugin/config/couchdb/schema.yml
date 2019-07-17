@@ -92,38 +92,28 @@ DRev:
                               recolte_nette: { type: float }
                               vci_constitue: { type: float }
       prelevements:
+        required: false
         type: collection
+        definition:
+          fields:
+            '*': { }
+      lots:
+        required: false
+        type: array_collection
         definition:
           fields:
             '*':
               type: collection
-              class: DRevPrelevement
+              class: DRevLot
               definition:
                 fields:
-                  total_lots: {  }
-                  date: {  }
-                  date_precedente: { required: false }
-                  libelle_produit: {  }
-                  libelle_produit_type: {  }
-                  libelle_date: {  }
-                  libelle: {  }
-                  lots:
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          class: DRevLot
-                          definition:
-                            fields:
-                              nb_vtsgn: {   }
-                              nb_hors_vtsgn: {  }
-                              libelle: {  }
-                              libelle_produit: { required: false }
-                              hash_produit: {  }
-                              vtsgn: { }
-                              volume_revendique: { type: float }
-                              no_vtsgn: { type: integer, required: false }
+                  numero: { }
+                  millesime: { }
+                  volume: { type: float }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
       documents:
         required: false
         class: DRevDocuments

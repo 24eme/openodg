@@ -3,6 +3,11 @@
 class declarationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
+      $usurpation = $request->getParameter('usurpation',null);
+      $login = $request->getParameter('login',null);
+      if($usurpation && $login){
+          $this->getUser()->usurpationOn($login, $request->getReferer());
+      }
         $this->buildSearch($request);
         $nbResultatsParPage = 15;
         $this->nbResultats = count($this->docs);
@@ -106,6 +111,12 @@ class declarationActions extends sfActions {
     }
 
     public function executeEtablissement(sfWebRequest $request) {
+        $usurpation = $request->getParameter('usurpation',null);
+        $login = $request->getParameter('login',null);
+        if($usurpation && $login){
+            $this->getUser()->usurpationOn($login, $request->getReferer());
+        }
+
         $this->etablissement = $this->getRoute()->getEtablissement();
 
         $this->secureEtablissement($this->etablissement);
@@ -119,14 +130,6 @@ class declarationActions extends sfActions {
 
             return $this->forwardSecure();
         }
-    }
-
-    public function executeUsurpation(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
-        $societe = $this->etablissement->getSociete();
-
-        $this->getUser()->usurpationOn($societe->identifiant, $request->getReferer());
-        $this->redirect('declaration_etablissement', array('identifiant' => $societe->getEtablissementPrincipal()->identifiant));
     }
 
     protected function buildSearch(sfWebRequest $request) {

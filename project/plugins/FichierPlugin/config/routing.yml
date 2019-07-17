@@ -6,10 +6,23 @@ get_piece:
 
 # FICHIER
 
+documents:
+  url: /documents
+  param: { module: fichier, action: index }
+  class: DocumentsRoute
+
+mesdocuments:
+  url: /mesdocuments
+  param: { module: fichier, action: mesdocuments }
+
+documents_etablissement_selection:
+  url: /documents-etablissement-selection
+  param: { module: fichier, action: etablissementSelection }
+
 pieces_historique:
-  url: /historique-documents/:identifiant
+  url: /documents/:identifiant
   param: { module: fichier, action: piecesHistorique }
-  class: DeclarationDeclarantRoute
+  class: DocumentsDeclarantRoute
   options:
     model:    Etablissement
     type:     object

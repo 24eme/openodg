@@ -52,11 +52,13 @@ class HabilitationAjoutProduitForm extends acCouchdbForm
 
     public function hasProduits()
     {
+
         return (count($this->getProduits()) > 1);
     }
 
     public function getActivites(){
-      return array_merge( HabilitationClient::$activites_libelles);
+
+        return HabilitationClient::getInstance()->getActivites();
     }
 
     public function getStatuts(){

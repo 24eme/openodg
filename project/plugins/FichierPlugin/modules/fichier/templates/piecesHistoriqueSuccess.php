@@ -1,28 +1,29 @@
 <?php echo use_helper("Date"); ?>
 <ol class="breadcrumb">
-  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
-  <li class="active"><a href="<?php echo url_for('pieces_historique', $etablissement) ?>">Documents</a></li>
+
+    <li><a href="<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
+    <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
 </ol>
 
 <div class="page-header">
     <h2>
     	Historique des documents
-        <form class="form-inline pull-right col-xs-3">
-		  <div class="form-group">
-		    <select class="form-control select2 select2SubmitOnChange select2autocomplete input-sm text-right" id="year" name="annee">
-		    	<option value="0">Toutes années</option>
-		    	<?php foreach ($years as $y): ?>
-		    	<option value="<?php echo $y ?>"<?php if($y == $year): ?> selected="selected"<?php endif; ?>><?php echo $y ?></option>
-		    	<?php endforeach; ?>
-		    </select>
-		  </div>
-		</form>
+        <?php if ($sf_user->isAdmin()): ?>
+        <a class="btn btn-sm btn-primary pull-right" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
+        <?php endif; ?>
     </h2>
 </div>
 
 
 <div class="list-group">
+    <form class="pull-right">
+        <select class="form-control select2 select2SubmitOnChange select2autocomplete input-md text-right pull-right" id="year" name="annee">
+            <option value="0">Toutes années</option>
+            <?php foreach ($years as $y): ?>
+            <option value="<?php echo $y ?>"<?php if($y == $year): ?> selected="selected"<?php endif; ?>><?php echo $y ?></option>
+            <?php endforeach; ?>
+        </select>
+    </form>
 <?php if(count($history) > 0): ?>
 	<ul class="nav nav-pills" style="margin: 0 0 20px 0;">
 		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) - $decreases ?></a></li>
@@ -30,12 +31,8 @@
         <li<?php if ($category && $category == $categorie):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtolower($categorie))); ?>&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nbDoc ?></a></li>
 		<?php endforeach; ?>
 	</ul>
-	<?php
-		foreach ($history as $document):
-			if ($category && preg_match('/^([a-zA-Z]*)\-./', $document->id, $m)) {
-				if ($m[1] != $category) { continue; }
-			}
-	?>
+	<?php foreach ($history as $document): ?>
+		<?php if ($category && $document->key[PieceAllView::KEYS_CATEGORIE] != $category) { continue; } ?>
 	<div class="list-group-item col-xs-12">
 		<span class="col-sm-2 col-xs-12">
 			<?php echo (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $document->key[PieceAllView::KEYS_DATE_DEPOT]))? format_date($document->key[PieceAllView::KEYS_DATE_DEPOT], "dd/MM/yyyy", "fr_FR") : null; ?>

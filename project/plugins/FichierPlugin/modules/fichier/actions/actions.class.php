@@ -2,6 +2,30 @@
 
 class fichierActions extends sfActions
 {
+	public function executeIndex(sfWebRequest $request) {
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+	}
+
+	public function executeMesdocuments(sfWebRequest $request) {
+
+		if(!$this->getUser()->hasTeledeclaration()) {
+			return $this->forwardSecure();
+		}
+
+		return $this->redirect('accueil', array('redirect' => 'documents'));
+	}
+
+	public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+
+            return $this->redirect('documents');
+        }
+
+        return $this->redirect('pieces_historique', $form->getEtablissement());
+    }
+
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
     	$fileParam = $request->getParameter('file', null);
@@ -79,7 +103,7 @@ class fichierActions extends sfActions
     	}
 
     	$this->form->save();
-    	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('declaration_etablissement', $this->etablissement);
+    	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('pieces_historique', $this->etablissement);
     }
 
 	public function executePiecesHistorique(sfWebRequest $request) {
@@ -99,13 +123,11 @@ class fichierActions extends sfActions
 				$this->years[$m[1]] = $m[1];
 			}
 			if ($this->year && (!isset($m[1]) || $m[1] != $this->year)) { continue; }
-			if (preg_match('/^([a-zA-Z]*)\-./', $doc->id, $m)) {
-				//if ($this->year && $m[1] == 'FICHIER') { $this->decreases++; continue; }
-				if (!isset($this->categories[$m[1]])) {
-					$this->categories[$m[1]] = 0;
-				}
-				$this->categories[$m[1]]++;
+			$categorie = $doc->key[PieceAllView::KEYS_CATEGORIE];
+			if (!isset($this->categories[$categorie])) {
+				$this->categories[$categorie] = 0;
 			}
+			$this->categories[$categorie]++;
 		}
 		ksort($this->categories);
 	}

@@ -78,7 +78,8 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-5">
-			       <a href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+
+			 <a href="<?php echo (count($drev->getProduitsLots()) > 0) ? url_for('drev_lots', $drev) : ((count($drev->getProduitsLots()) > 0) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-3">
 			       <a href="<?php echo url_for('drev_revendication_reset', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-refresh"></span> recalculer les volumes</a>

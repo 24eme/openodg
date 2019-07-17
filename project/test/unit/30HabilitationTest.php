@@ -4,14 +4,14 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(31);
+$t = new lime_test(32);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
-//Suppression des DRev précédentes
+//Suppression des habilitations précédentes
 foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
-  $drev = HabilitationClient::getInstance()->find($k);
-  $drev->delete(false);
+  $habilitation = HabilitationClient::getInstance()->find($k);
+  $habilitation->delete(false);
 }
 
 $t->comment("Création d'un doc dans le passé");
@@ -40,7 +40,7 @@ $t->is(count($habilitation->declaration), 1, "l'ajout de produit créer bien un 
 $produit = $habilitation->get($produitConfig->getHash());
 $t->ok($produit, "le produit ajouté a bien la hash choisie");
 $t->is($produit->getLibelle(), $produitConfig->getLibelleComplet(), "Le libellé du produit a été enregistré dans le doc");
-$t->is(count($produit->activites), 8, "La liste d'activité a été initialisé à 8");
+$t->is(count($produit->activites), count(HabilitationConfiguration::getInstance()->getActivites()), "La liste d'activité a été initialisé à ".count(HabilitationConfiguration::getInstance()->getActivites()));
 $t->is(count($habilitation->historique), 1, "l'ajout du produit a créé un historique");
 
 $activiteKey = HabilitationClient::ACTIVITE_PRODUCTEUR;
@@ -59,6 +59,7 @@ $habProduit->updateHabilitation($activiteKey, HabilitationClient::STATUT_HABILIT
 $habilitation->save();
 $t->is($habProduit->activites[$activiteKey]->statut, HabilitationClient::STATUT_HABILITE, "le statut de l'activité a été changée");
 $t->is(count($habilitation->historique), 3, "la modification de l'activité a été enregistrée dans l'historique");
+$t->is($habilitation->historique[2]->statut, HabilitationClient::STATUT_HABILITE, "Le statut est écrit dans l'historique");
 
 $t->comment('Habilitation à une autre date');
 $date = '2010-10-01';

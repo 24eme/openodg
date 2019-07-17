@@ -25,6 +25,7 @@ all:
     to_notification: ["email@email.fr"]
     signature: "Signature de mail\nSignature de mail"
   url:
+    header: "https://url_header"
     civa: "https://url_civa"
     compte_mot_de_passe: "https://url_compte_civa_pour_modifier_mdp"
     compte_creation: "http://url_compte_creation"
@@ -119,3 +120,4 @@ all:
   donnees_viticoles:
     regions:
       "": ""
+  export_webpath: null

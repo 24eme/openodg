@@ -18,3 +18,19 @@
 .dropdown-menu {
   z-index: 10000;
 }
+
+.transparence-md {
+    opacity: 0.4;
+}
+
+.transparence-lg {
+    opacity: 0.2;
+}
+
+.transparence-sm {
+    opacity: 0.60;
+}
+
+.transparence-xs {
+    opacity: 0.80;
+}

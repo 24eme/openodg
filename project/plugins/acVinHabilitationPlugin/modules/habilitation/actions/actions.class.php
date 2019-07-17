@@ -5,15 +5,75 @@ class habilitationActions extends sfActions {
 
   public function executeIndex(sfWebRequest $request)
   {
-      $this->buildSearch($request);
-      $nbResultatsParPage = 30;
-      $this->nbResultats = count($this->docs);
-      if (!$this->nbResultats && !($request->getParameter('query') === '0')) {
-        return $this->redirect('habilitation/index?query=0');
+        $filtre = $request->getParameter('filtre', null);
+        $filtres = array();
+
+        $this->voirtout = (bool) $request->getParameter('voirtout');
+        if(!$this->voirtout) {
+            $filtres["Statut"] = "/^(?!".implode("$|", HabilitationClient::getInstance()->getStatutsFerme())."$)/";
+        }
+
+        $this->buildSearch($request,
+                        'habilitation',
+                        'demandes',
+                        array(
+                              "Statut" => HabilitationDemandeView::KEY_STATUT,
+                              "Demande" => HabilitationDemandeView::KEY_DEMANDE,
+                              "Produit" => HabilitationDemandeView::KEY_PRODUIT),
+                        array("Plus urgentes" => array(HabilitationDemandeView::KEY_NBJOURS => 1, HabilitationDemandeView::KEY_IDENTIFIANT => -1),
+                              "Moins urgentes" => array(HabilitationDemandeView::KEY_NBJOURS => -1, HabilitationDemandeView::KEY_IDENTIFIANT => -1),
+                              "Plus récentes" => array(HabilitationDemandeView::KEY_DATE => 1),
+                              "Plus anciennes" => array(HabilitationDemandeView::KEY_DATE_HABILITATION => -1)),
+                        30,
+                        $filtres,
+                        function(&$item, $key) {
+                            $dateHabilitation = new DateTime($item->key[HabilitationDemandeView::KEY_DATE_HABILITATION]);
+                            $item->key[HabilitationDemandeView::KEY_NBJOURS] = $dateHabilitation->diff(new DateTime())->days;
+                        }
+                        );
+
+      $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+
+      if (!$request->isMethod(sfWebRequest::POST)) {
+
+          return sfView::SUCCESS;
       }
-      $this->page = $request->getParameter('page', 1);
-      $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
-      $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
+
+      $this->form->bind($request->getParameter($this->form->getName()));
+
+      if(!$this->form->isValid()) {
+
+          return sfView::SUCCESS;
+      }
+
+      return $this->redirect('habilitation_declarant', $this->form->getValue('etablissement'));
+  }
+
+
+    public function executeExportHistorique(sfWebRequest $request) {
+        $export = new ExportHabilitationDemandesPublipostageCSV($request->getParameter('dateFrom'), $request->getParameter('dateTo'));
+
+        $this->setLayout(false);
+
+        $attachement = sprintf("attachment; filename=export_demandes_%s_%s.csv", $request->getParameter('dateFrom'), $request->getParameter('dateTo'));
+        $this->response->setContent(utf8_decode($export->export()));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition', $attachement);
+
+        return sfView::NONE;
+    }
+
+  public function executeSuivi(sfWebRequest $request)
+  {
+      $this->buildSearch($request,
+                        'habilitation',
+                        'activites',
+                        array("Statut" => HabilitationActiviteView::KEY_STATUT,
+                              "Activité" => HabilitationActiviteView::KEY_ACTIVITE,
+                              "Produit" => HabilitationActiviteView::KEY_PRODUIT_LIBELLE),
+                        array("Défaut" => array(HabilitationActiviteView::KEY_DATE => 1, HabilitationActiviteView::KEY_IDENTIFIANT => 1, HabilitationActiviteView::KEY_PRODUIT_LIBELLE => 1 , HabilitationActiviteView::KEY_ACTIVITE => 1)),
+                        30
+                        );
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
@@ -30,7 +90,6 @@ class habilitationActions extends sfActions {
       }
       return $this->redirect('habilitation_declarant', $this->form->getValue('etablissement'));
   }
-
 
   public function executeEtablissementSelection(sfWebRequest $request) {
       $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
@@ -49,8 +108,13 @@ class habilitationActions extends sfActions {
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
-        $this->editForm = new HabilitationEditionForm($this->habilitation);
+        if(!$this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $this->filtre = $request->getParameter('filtre');
+        }
+
+        if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+            $this->editForm = new HabilitationEditionForm($this->habilitation);
+        }
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
 
         $this->setTemplate('habilitation');
@@ -138,10 +202,175 @@ class habilitationActions extends sfActions {
         return $this->redirect('habilitation_declarant', $this->etablissement);
     }
 
+    public function executeDemandeGlobale(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+
+        $this->formDemandeGlobale = new HabilitationDemandeGlobaleForm($this->habilitation);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeGlobale->bind($request->getParameter($this->formDemandeGlobale->getName()));
+
+        if (!$this->formDemandeGlobale->isValid()) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeGlobale->save();
+
+        return $this->redirect('habilitation_declarant', $this->etablissement);
+    }
+
+    public function executeDemandeCreation(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+
+        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeCreation->bind($request->getParameter($this->formDemandeCreation->getName()));
+
+        if (!$this->formDemandeCreation->isValid()) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeCreation->save();
+
+        return $this->redirect('habilitation_declarant', $this->etablissement);
+    }
+
+    public function executeDemandeEdition(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->historique = $this->habilitation->getFullHistorique();
+        $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+
+        $this->urlRetour = $request->getParameter('retour', false);
+        if(!$this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $this->filtre = $request->getParameter('filtre');
+        }
+        if($this->filtre && !preg_match("/".$this->filtre."/i", $this->demande->getStatut())) {
+            $this->formDemandeEdition = false;
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande, array(), array('filtre' => $this->filtre));
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        $this->formDemandeEdition->bind($request->getParameter($this->formDemandeEdition->getName()));
+
+        if (!$this->formDemandeEdition->isValid()) {
+
+            return $this->executeDeclarant($request);
+        }
+
+        try {
+            $this->formDemandeEdition->save();
+        } catch (Exception $e) {
+            $this->getUser()->setFlash('erreur', $e->getMessage());
+            
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
+
+        if($this->urlRetour) {
+
+            return $this->redirect($this->urlRetour);
+        }
+
+        return $this->redirect('habilitation_declarant', $this->etablissement);
+    }
+
+    public function executeDemandeSuppressionDerniere(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+
+        if($this->demande->date != $request->getParameter('date') || $this->demande->statut != $request->getParameter('statut')) {
+
+            throw new Exception("La date et le statut n'existe pas");
+        }
+
+        if(!$filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $filtre = $request->getParameter('filtre');
+        }
+
+        if($filtre && !preg_match("/".$filtre."/i", $request->getParameter('statut'))) {
+
+            return $this->forwardSecure();
+        }
+
+        HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->etablissement->identifiant, $request->getParameter('demande'));
+
+        return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->etablissement->identifiant, 'demande' => $request->getParameter('demande')));
+    }
+
+    public function executeDemandeModificationCommentaire(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, $request->getParameter('date'));
+
+        if(!$request->getParameter('commentaire')) {
+
+            throw new Exception("Le commentaire est requis");
+        }
+
+        if(!$filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+            $filtre = $request->getParameter('filtre');
+        }
+
+        if($filtre && !preg_match("/".$filtre."/i", $request->getParameter('statut'))) {
+
+            return $this->forwardSecure();
+        }
+
+        foreach($habilitation->historique as $h) {
+            if($h->iddoc != $habilitation->_id.":/demandes/".$request->getParameter('demande')) {
+                continue;
+            }
+
+            if($h->statut != $request->getParameter('statut')) {
+                echo $statut."\n";
+                continue;
+            }
+
+            if($h->date != $request->getParameter('date')) {
+                echo $statut."\n";
+                continue;
+            }
+
+            $h->commentaire = $request->getParameter('commentaire');
+            $habilitation->save();
+            break;
+        }
+
+        return $this->redirect('habilitation_demande_edition', array('identifiant' => $etablissement->identifiant, 'demande' => $request->getParameter('demande')));
+    }
+
     public function executeExport(sfWebRequest $request) {
         set_time_limit(-1);
         ini_set('memory_limit', '2048M');
-        $this->buildSearch($request, array(HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE));
+        $this->buildSearch($request,
+                          'habilitation',
+                          'activites',
+                          array("Statut" => HabilitationActiviteView::KEY_STATUT,
+                                "Activité" => HabilitationActiviteView::KEY_ACTIVITE,
+                                "Produit" => HabilitationActiviteView::KEY_PRODUIT_LIBELLE),
+                          array("Défaut" => array(HabilitationActiviteView::KEY_DATE => 1, HabilitationActiviteView::KEY_IDENTIFIANT => 1, HabilitationActiviteView::KEY_PRODUIT_LIBELLE => 1 , HabilitationActiviteView::KEY_ACTIVITE => 1)),
+                          true
+                          );
 
         $this->setLayout(false);
         $attachement = sprintf("attachment; filename=export_habilitations_%s.csv", date('YmdHis'));
@@ -166,36 +395,47 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch(sfWebRequest $request, $sortKeys = array(HabilitationActiviteView::KEY_DATE, HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE)) {
-        $rows = acCouchdbManager::getClient()
-                    ->group(true)
-                    ->group_level(3)
-                    ->getView('habilitation', 'activites')->rows;
+    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(), $traitements = null, $without_group_by = false) {
+        $rows = array();
+        if(!$without_group_by){
+            $rows = acCouchdbManager::getClient()
+                ->group(true)
+                ->group_level(max($facets) + 1)
+                ->getView($viewCat, $viewName)->rows;
+        }
 
-        $this->facets = array(
-            "Statut" => array(),
-            "Activité" => array(),
-            "Produit" => array(),
-        );
-
-        $facetToRowKey = array("Statut" => HabilitationActiviteView::KEY_STATUT, "Activité" => HabilitationActiviteView::KEY_ACTIVITE, "Produit" => HabilitationActiviteView::KEY_PRODUIT_LIBELLE);
-
-        $this->query = $request->getParameter('query', array("Statut" => HabilitationClient::STATUT_DEMANDE_HABILITATION));
+        $this->facets = array();
+        foreach($facets as $libelle => $key) {
+            $this->facets[$libelle] = array();
+        }
+        $this->sorts = $sorts;
+        $this->sort = $request->getParameter('sort', key($this->sorts));
+        $this->query = $request->getParameter('query', array());
         $this->docs = array();
 
         if(!$this->query || !count($this->query)) {
             $this->docs = acCouchdbManager::getClient()
             ->reduce(false)
-            ->getView('habilitation', 'activites')->rows;
+            ->getView($viewCat, $viewName)->rows;
         }
 
         foreach($rows as $row) {
+            $exclude = false;
+            foreach($filtres as $keyFiltre => $matchFiltre) {
+                if(!preg_match($matchFiltre, $row->key[$facets[$keyFiltre]])) {
+                    $exclude = true;
+                    break;
+                }
+            }
+            if($exclude) {
+                continue;
+            }
             $addition = 0;
             foreach($this->facets as $facetNom => $items) {
                 $find = true;
                 if($this->query) {
                     foreach($this->query as $queryKey => $queryValue) {
-                        if($queryValue != $row->key[$facetToRowKey[$queryKey]]) {
+                        if($queryValue != $row->key[$facets[$queryKey]]) {
                             $find = false;
                             break;
                         }
@@ -204,7 +444,7 @@ class habilitationActions extends sfActions {
                 if(!$find) {
                     continue;
                 }
-                $facetKey = $facetToRowKey[$facetNom];
+                $facetKey = $facets[$facetNom];
                 if(!array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
                     $this->facets[$facetNom][$row->key[$facetKey]] = 0;
                 }
@@ -213,30 +453,57 @@ class habilitationActions extends sfActions {
 
             }
             if($addition > 0 && $this->query && count($this->query)) {
-                $keys = array($row->key[HabilitationActiviteView::KEY_STATUT], $row->key[HabilitationActiviteView::KEY_ACTIVITE], $row->key[HabilitationActiviteView::KEY_PRODUIT_LIBELLE]);
+                $keys = array();
+                foreach($facets as $libelle => $key) {
+                    $keys[] = $row->key[$key];
+                }
                 $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
                 ->reduce(false)
-                ->getView('habilitation', 'activites')->rows);
+                ->getView($viewCat, $viewName)->rows);
+            }
+        }
+        foreach($this->facets as $facetNom => $items) {
+            arsort($this->facets[$facetNom]);
+        }
+
+        if($traitements !== null) {
+            array_walk($this->docs, $traitements);
+        }
+
+        if(count($filtres)) {
+            foreach($this->docs as $key => $doc) {
+                foreach($filtres as $keyFiltre => $matchFiltre) {
+                    if(!preg_match($matchFiltre, $doc->key[$facets[$keyFiltre]])) {
+                        unset($this->docs[$key]);
+                        break;
+                    }
+                }
             }
         }
 
-        krsort($this->facets["Statut"]);
-        ksort($this->facets["Activité"]);
-        ksort($this->facets["Produit"]);
+        $sortsKeyUsed = $this->sorts[$this->sort];
 
-        uasort($this->docs, function($a, $b) use ($sortKeys) {
-            foreach($sortKeys as $sortKey) {
+        uasort($this->docs, function($a, $b) use ($sortsKeyUsed) {
+            foreach($sortsKeyUsed as $sortKey => $sens) {
                 if($a->key[$sortKey] < $b->key[$sortKey]) {
-                    return true;
+                    return $sens > 0;
                 }
                 if($a->key[$sortKey] > $b->key[$sortKey]) {
-                    return false;
+                    return $sens < 0;
                 }
             }
             return true;
         });
+
+        if($nbResultatsParPage === true) {
+            return;
+        }
+        $this->nbResultats = count($this->docs);
+        $this->page = $request->getParameter('page', 1);
+        $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
+        $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
     }
 
 }

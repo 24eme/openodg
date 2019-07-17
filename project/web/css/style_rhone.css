@@ -87,6 +87,10 @@ h3 {
     border-color: #9f0038;
 }
 
+.bg-primary {
+    background: #9f0038;
+}
+
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
     background: #82002e;
     border-color: #82002e;

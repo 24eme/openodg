@@ -18,6 +18,11 @@ class HabilitationActivite extends BaseHabilitationActivite {
       $this->commentaire = $commentaire;
   }
 
+    public function getLibelle() {
+
+        return HabilitationClient::getInstance()->getActivites()[$this->getKey()];
+    }
+
   public function getProduitHash() {
 
       return $this->getParent()->getParent()->getHash();
@@ -40,7 +45,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
   }
 
   private function addHistoriqueActiviteChanges($old_statut,$statut,$commentaire){
-    $activite = HabilitationClient::$activites_libelles[$this->getKey()];
+    $activite = HabilitationClient::getInstance()->getLibelleActivite($this->getKey());
     $produitLibelle = $this->getParent()->getParent()->getLibelle();
     if($old_statut == $statut){
       $description = $produitLibelle." : pour l'activité \"".$activite."\", le commentaire a changé";
@@ -49,7 +54,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
     }else{
       $description = $produitLibelle." : activité \"".$activite."\", statut changé de \"".HabilitationClient::$statuts_libelles[$old_statut]."\" à \"".HabilitationClient::$statuts_libelles[$statut]."\"";
     }
-    $this->getDocument()->addHistorique($description, $commentaire);
+    $this->getDocument()->addHistorique($description, $commentaire, null, $statut);
   }
 
 }

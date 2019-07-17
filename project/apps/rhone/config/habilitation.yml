@@ -1,0 +1,50 @@
+all:
+  configuration:
+    habilitation:
+      activites:
+         PRODUCTEUR: "Producteur"
+         VINIFICATEUR: "Vinificateur"
+         VRAC: "Vrac"
+         CONDITIONNEUR: "Conditionneur"
+         ELABORATEUR: "Élaborateur"
+         VENTE_A_LA_TIREUSE: "Vente tireuse"
+      demande:
+        statuts:
+          DEPOT: "Dépôt"
+          RELANCE_1: "Relance n°1"
+          RELANCE_2: "Relance n°2"
+          RELANCE_3: "Relance n°3"
+          COMPLET: "Complet"
+          ENREGISTREMENT: "Enregistrement"
+          TRANSMIS_CI: "Transmis au Contrôle Interne"
+          TRAITE_CI: "Traité par le Contrôle Interne"
+          TRANSMIS_OIVR: "Transmis à l'OIVR"
+          AVIS_POSITIF_OIVR: "Avis positif de l'OIVR"
+          AVIS_NEGATIF_OIVR: "Avis négatif de l'OIVR"
+          TRANSMIS_ODG: "Transmis à une autre ODG"
+          TRANSMIS_CERTIPAQ: "Transmis à CERTIPAQ"
+          VALIDE_CERTIPAQ: "Validé par CERTIPAQ"
+          REFUSE_CERTIPAQ: "Refusé par CERTIPAQ"
+          TRANSMIS_INAO: "Transmis à l'INAO"
+          VALIDE_INAO: "Validé par l'INAO"
+          REFUSE_INAO: "Refusé par l'INAO"
+          VALIDE: "Validé"
+          REFUSE: "Refusé"
+          ANNULE: "Annulé"
+        automatique:
+          COMPLET: ENREGISTREMENT
+          AVIS_POSITIF_OIVR: TRANSMIS_INAO
+          AVIS_NEGATIF_OIVR: TRANSMIS_INAO
+          VALIDE_INAO: VALIDE
+          REFUSE_INAO: REFUSE
+          VALIDE_CERTIPAQ: VALIDE
+          REFUSE_CERTIPAQ: REFUSE
+        habilitations:
+          HABILITATION:
+            COMPLET: DEMANDE_HABILITATION
+            VALIDE: HABILITE
+            REFUSE: REFUS
+          RETRAIT:
+            COMPLET: DEMANDE_RETRAIT
+            VALIDE: RETRAIT
+            REFUSE: HABILITE

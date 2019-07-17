@@ -222,4 +222,9 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     }
     /* FIN DR */
 
+    public function isRevendicationParLots() {
+
+        return preg_match("/IGP/", $this->getHash());
+    }
+
 }
