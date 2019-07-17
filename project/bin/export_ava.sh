@@ -21,7 +21,7 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR
 rm $EXPORTDIR/parcellaire.csv.part
 
 bash bin/export_docs.sh TravauxMarc > $EXPORTDIR/travaux_marc.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/travauxmarc.csv.part > $EXPORTDIR/travaux_marc.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/travaux_marc.csv.part > $EXPORTDIR/travaux_marc.csv
 rm $EXPORTDIR/travaux_marc.csv.part
 
 bash bin/export_docs.sh Tirage > $EXPORTDIR/tirage.csv.part
@@ -35,3 +35,13 @@ rm $EXPORTDIR/registre_vci.csv.part
 bash bin/export_docs.sh Constats > $EXPORTDIR/constats.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/constats.csv.part > $EXPORTDIR/constats.csv
 rm $EXPORTDIR/constats.csv.part
+
+echo "campagne;categorie;nombre opérateurs;superficie totale" > $EXPORTDIR/facture_stats.csv.part;
+cat web/exports/facture.csv | iconv -f ISO88591//TRANSLIT -t UTF-8 | cut -d ";" -f 18,19 | sed -r 's/_.+;/;/' | grep "TEMPLATE" | sort | uniq | while read ligne; do
+    TEMPLATE=$(echo $ligne | cut -d ";" -f 1);
+    CATEGORIE=$(echo $ligne | cut -d ";" -f 2);
+    echo -n "$TEMPLATE;$CATEGORIE;"
+    cat web/exports/facture.csv | grep "$TEMPLATE" | iconv -f ISO88591//TRANSLIT -t UTF-8 | cut -d ";" -f 10,11,14,19,21 | sed -r 's/FACTURE-([A-Z0-9]+)-[0-9]+/\1/' | grep "$CATEGORIE" | awk -F ';' '{ coefficient = 1; if($1 == "DEBIT") { coefficient = -1 } totalfacture[$3] += $2*coefficient; totalsuperficie[$3] += $5*coefficient } END { total_superficie = 0; nb = 0; for (key in totalfacture) { if(totalfacture[key] > 0) { total_superficie += totalsuperficie[key]; nb++;  }} printf("%d;%0.2f\n", nb, total_superficie) }' >> $EXPORTDIR/facture_stats.csv.part;
+done;
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/facture_stats.csv.part > $EXPORTDIR/facture_stats.csv
+rm $EXPORTDIR/facture_stats.csv.part
