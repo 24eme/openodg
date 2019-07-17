@@ -26,6 +26,9 @@ if (($handle = fopen($csv, "r")) !== false) {
         if (count($datas) != 12) {
             continue;
         }
+	if (!preg_match("/^[0-9]+/", $datas[0])) {
+	    continue;
+	}
         $hash = generateHash($datas);
         $historique[$hash] = new DateTime($datas[0]);
     }
@@ -91,6 +94,9 @@ echo "Libelle Appellation;Date depot DI;Date Enregistrement DI;N CVI;N SIRET;Cle
 if (($handle = fopen($csv, "r")) !== false) {
     while (($datas = fgetcsv($handle, 0, ";")) !== false) {
         if (count($datas) != 12) {
+            continue;
+        }
+	if (!preg_match("/^[0-9]+/", $datas[0])) {
             continue;
         }
         if ($datas[1] != 'VALIDE') {
