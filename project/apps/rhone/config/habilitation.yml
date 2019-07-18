@@ -44,7 +44,9 @@ all:
             COMPLET: DEMANDE_HABILITATION
             VALIDE: HABILITE
             REFUSE: REFUS
+            ANNULE: ANNULÉ
           RETRAIT:
             COMPLET: DEMANDE_RETRAIT
             VALIDE: RETRAIT
             REFUSE: HABILITE
+            ANNULE: ANNULÉ
