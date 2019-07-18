@@ -8,6 +8,7 @@ class CsvFile
   private $separator = null;
   protected $csvdata = null;
   private $ignore = null;
+  protected $isFileTmp = false;
 
   public function getFileName() {
     return $this->file;
@@ -26,6 +27,7 @@ class CsvFile
     if (preg_match('/^http/', $file)) {
         $fileTmp = stream_get_meta_data(tmpfile())['uri'];
         file_put_contents($fileTmp, file_get_contents($file));
+        $this->isFileTmp = true;
         $file = $fileTmp;
     }
 
@@ -73,6 +75,10 @@ class CsvFile
       }
     }
     fclose($handler);
+
+    if($this->isFileTmp) {
+        unlink($this->file);
+    }
     return $this->csvdata;
   }
 
@@ -84,6 +90,15 @@ class CsvFile
     }
     $ret = exec('file -i '.$file);
     $charset = substr($ret, strpos($ret,'charset='));
+    if(isset($fileTmp)) {
+        unlink($fileTmp)
+    }
     return str_replace('charset=','',$charset);
   }
+
+    public function __destruct() {
+        if($this->isFileTmp) {
+            unlink($this->file);
+        }
+    }
 }
