@@ -91,7 +91,7 @@ class CsvFile
     $ret = exec('file -i '.$file);
     $charset = substr($ret, strpos($ret,'charset='));
     if(isset($fileTmp)) {
-        unlink($fileTmp)
+        unlink($fileTmp);
     }
     return str_replace('charset=','',$charset);
   }
