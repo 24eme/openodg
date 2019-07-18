@@ -98,7 +98,7 @@ class CsvFile
   }
 
     public function __destruct() {
-        if($this->isFileTmp && $this->file) {
+        if($this->isFileTmp && $this->file && file_exists($this->file)) {
             unlink($this->file);
         }
     }
