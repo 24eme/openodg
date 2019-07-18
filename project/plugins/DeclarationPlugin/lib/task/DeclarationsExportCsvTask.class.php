@@ -16,6 +16,8 @@ class DeclarationsExportCsvTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
+            new sfCommandOption('sleep_second', null, sfCommandOption::PARAMETER_REQUIRED, 'secont to wait', false),
+            new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', false),
         ));
 
         $this->namespace = 'declarations';
@@ -38,6 +40,18 @@ EOF;
 
         $ids = DeclarationClient::getInstance()->getIds($arguments['type'], $arguments['campagne']);
 
+
+        $sleepSecond = false;
+        if($options['sleep_second']) {
+            $sleepSecond = $options['sleep_second']*1;
+        }
+
+        $sleepStep = false;
+        if($options['sleep_step']) {
+            $sleepStep = $options['sleep_step']*1;
+        }
+
+        $step = 0;
         foreach($ids as $id) {
             $doc = DeclarationClient::getInstance()->find($id);
             $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
@@ -51,6 +65,11 @@ EOF;
             }
 
             echo $export->export();
+            $step++;
+            if($sleepStep && $sleepSecond && $step > $sleepStep) {
+                sleep($sleepSecond);
+                $step = 0;
+            }
         }
 
 
