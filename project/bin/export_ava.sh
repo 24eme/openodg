@@ -32,7 +32,7 @@ bash bin/export_docs.sh RegistreVCI > $EXPORTDIR/registre_vci.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/registre_vci.csv.part > $EXPORTDIR/registre_vci.csv
 rm $EXPORTDIR/registre_vci.csv.part
 
-bash bin/export_docs.sh Constats > $EXPORTDIR/constats.csv.part
+bash bin/export_docs.sh Constats 5 > $EXPORTDIR/constats.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/constats.csv.part > $EXPORTDIR/constats.csv
 rm $EXPORTDIR/constats.csv.part
 
