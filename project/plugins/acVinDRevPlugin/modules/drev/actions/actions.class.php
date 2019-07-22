@@ -475,6 +475,10 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
+        if(count($this->drev->declaration->getProduitsLots()) > 0){
+            return $this->redirect('drev_lots', $this->drev);
+        }
+
         return $this->redirect('drev_revendication', $this->drev);
 
     }
