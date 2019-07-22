@@ -20,6 +20,7 @@ class DRevLot extends BaseDRevLot
             $this->produit_libelle = null;
         }
         parent::_set('produit_hash', $hash);
+        $this->getProduitLibelle();
     }
 
     public function getProduitLibelle() {
