@@ -20,6 +20,7 @@ class DRevLot extends BaseDRevLot
             $this->produit_libelle = null;
         }
         parent::_set('produit_hash', $hash);
+        $this->getProduitLibelle();
     }
 
     public function getProduitLibelle() {
@@ -31,7 +32,11 @@ class DRevLot extends BaseDRevLot
 	}
 
     public function isCleanable() {
-        foreach($this as $value) {
+        foreach($this as $key => $value) {
+            if($key == 'millesime' && $value = $this->getDocument()->getCampagne()) {
+
+                continue;
+            }
             if($value) {
 
                 return false;

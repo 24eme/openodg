@@ -265,12 +265,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $etablissement = $this->getEtablissementObject();
     }
 
-    public function initAppellations() {
-        foreach ($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
-            $this->addAppellation($appellation->getHash());
-        }
-    }
-
     public function getCSV() {
         $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
         return $csv->getCsv();
@@ -587,25 +581,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function addAppellation($hash) {
-        $config = $this->getConfiguration()->get($hash);
-        $appellation = $this->getOrAdd($config->hash);
-        $appellation->getLibelle();
-        $config_produits = $appellation->getConfigProduits();
-        if (count($config_produits) == 1) {
-            reset($config_produits);
-            $this->addProduitCepage(key($config_produits), null, false);
-        } else {
-            foreach($config_produits as $hash => $config_produit) {
-                if($config_produit->isAutoDRev()) {
-                    $this->addProduitCepage($hash, null, false);
-                }
-            }
-        }
-
-        return $appellation;
-    }
-
     public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
@@ -626,15 +601,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->declaration->reorderByConf();
         }
 
+        if(!$exist && $produit->getConfig()->isRevendicationParLots()) {
+            $lot = $this->addLot();
+            $lot->setProduitHash($produit->getConfig()->getHash());
+        }
+
         return $this->get($produit->getHash());
-    }
-
-    public function addProduitCepage($hash, $lieu = null, $add_appellation = true) {
-        $produit = $this->getOrAdd($hash);
-
-        $this->addProduit($produit->getProduitHash(), $add_appellation);
-
-        return $produit->addDetailNode($lieu);
     }
 
     public function cloneProduit($produit) {
@@ -668,8 +640,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function addLot() {
+        $lot = $this->add('lots')->add();
+        $lot->millesime = $this->campagne;
 
-        return $this->add('lots')->add();
+        return $lot;
     }
 
     public function lotsImpactRevendication() {

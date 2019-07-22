@@ -24,7 +24,7 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        echo "Date;Statut;Identifiant;Description;Commentaire;Auteur;Id Demande;Id Habilitation;Type;Date habilitation;Hash Produit;Libelle Produit;Activite\n";
+        echo "Date;Statut;Identifiant;Description;Commentaire;Auteur;Id Demande;Type;Date habilitation;Hash Produit;Libelle Produit;Activite\n";
         $rows = HabilitationHistoriqueView::getInstance()->getAll();
         foreach($rows as $row) {
             if (preg_match('/demandes/', $row->key[HabilitationHistoriqueView::KEY_IDDOC])) {
@@ -34,6 +34,7 @@ EOF;
                     if (is_array($key)) {
                         $key = implode(',', str_replace(',', '-', $key));
                     }
+                    $key = preg_replace('/"/', '\"', $key);
                     echo str_replace(';', '-', $key);
                     $i++;
                     if ($i < $nb) {

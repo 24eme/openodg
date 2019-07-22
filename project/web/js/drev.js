@@ -192,7 +192,7 @@
             $('#form_drev_lots .bloc-lot').each(function() {
                 var saisi = false;
                 $(this).find('input, select').each(function() {
-                    if($(this).val() || $(this).is(":focus")  ) {
+                    if(($(this).val() && $(this).attr('data-default-value') != $(this).val()) || $(this).is(":focus")  ) {
                         saisi = true;
                     }
                 });
@@ -218,6 +218,19 @@
         } else {
             $('#form_drev_lots .bloc-lot:first input:first').focus();
         }
+    
+        $('#form_drev_lots .lot-delete').on('click', function() {
+            if(!confirm("Étes vous sûr de vouloir supprimer ce lot ?")) {
+
+                return;
+            }
+
+            $(this).parents('.bloc-lot').find('input, select').each(function() {
+                $(this).val("");
+            });
+            $(this).parents('.bloc-lot').find('.select2autocomplete').select2('val', "");
+            $(this).parents('.bloc-lot').hide();
+        })
     }
 
     /* =================================================================================== */

@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(30);
+$t = new lime_test(33);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -25,6 +25,8 @@ $t->is($drev->campagne, $campagne, "La campagne est ".$campagne);
 $drev->storeDeclarant();
 $drev->save();
 
+$t->comment("Initialisation des produits");
+
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
     if(!$produit->isRevendicationParLots()) {
@@ -43,9 +45,17 @@ foreach($produits as $produit) {
     $produit_hash2 = $produit->getHash();
     break;
 }
+foreach($produits as $produit) {
+    if($produit->isRevendicationParLots()) {
+        continue;
+    }
+    $produit_hash_aoc = $produit->getHash();
+    break;
+}
 
 $produit1 = $drev->addProduit($produit_hash1);
 $produit2 = $drev->addProduit($produit_hash2);
+$produit_aoc = $drev->addProduit($produit_hash_aoc);
 
 $produit_hash1 = $produit1->getHash();
 $produit_hash2 = $produit2->getHash();
@@ -57,6 +67,10 @@ $produit1->superficie_revendique = 200;
 $produit2->superficie_revendique = 150;
 
 $drev->save();
+
+$t->is(count($drev->lots), 2, "2 lots ont automatiquement été créés (1 pour chaqun des 2 produits IGP)");
+$t->is($drev->lots[0]->produit_libelle, $produit1->getLibelle(), "Le produit du lot est est initialisé avec le libellé ".$produit1->getLibelle());
+$t->is($drev->lots[1]->produit_libelle, $produit2->getLibelle(), "Le produit du lot est est initialisé avec le libellé ".$produit1->getLibelle());
 
 $t->comment("Création d'un lot");
 
@@ -73,9 +87,9 @@ $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
 $drev->save();
 
 $drev = DRevClient::getInstance()->find("DREV-".$viti->identifiant."-".$campagne);
-$lot = $drev->lots->getFirst();
+$lot = $drev->lots->getLast();
 
-$t->is(count($drev->lots), 1, "Le lot a été ajouté");
+$t->is(count($drev->lots), 3, "Le lot a été ajouté");
 $t->is($lot->numero, "1", "Le numéro de lot est 1");
 $t->is($lot->millesime, $campagne, "Le millésime est ".$campagne);
 $t->is($lot->volume, 30.4, "Le volume est 30.4");
@@ -86,9 +100,9 @@ $t->is($lot->produit_libelle, $produit1->getConfig()->getLibelleComplet(), "Le l
 $t->is($lot->destination_type, DRevClient::LOT_DESTINATION_VRAC_EXPORT, "La destination_type est ".DRevClient::LOT_DESTINATION_VRAC_EXPORT);
 
 $drev->addLot();
-$t->is(count($drev->lots), 2, "Le lot a été ajouté");
+$t->is(count($drev->lots), 4, "Le lot a été ajouté");
 $drev->cleanLots();
-$t->is(count($drev->lots), 1, "Le clean a supprimé le dernier lot ajouté car il était vide");
+$t->is(count($drev->lots), 3, "Le clean a supprimé le dernier lot ajouté car il était vide");
 
 $drev->lotsImpactRevendication();
 $t->is($drev->get($produit_hash1)->volume_revendique_issu_recolte, 30.4, "Le volume a été impacté dans la revendication");
@@ -102,19 +116,19 @@ $t->comment("Formulaire lots");
 $form = new DRevLotsForm($drev);
 $defaults = $form->getDefaults();
 $t->is($defaults["_revision"], $drev->_rev, "La revision du doc est indiqué par défaut");
-$t->is($defaults["lots"][0]["volume"], $lot->volume, "Le volume du premier lot est prérempli");
-$t->is($defaults["lots"][0]["destination_date"], $lot->getDestinationDateFr(), "La date est prérempli au format français");
-$t->is($defaults["lots"][0]["millesime"], $lot->millesime, "Le millésime est prérempli");
-$t->is($defaults["lots"][0]["numero"], $lot->numero, "Le numéro est prérempli");
+$t->is($defaults["lots"][2]["volume"], $lot->volume, "Le volume du dernier lot est prérempli");
+$t->is($defaults["lots"][2]["destination_date"], $lot->getDestinationDateFr(), "La date est prérempli au format français");
+$t->is($defaults["lots"][2]["millesime"], $lot->millesime, "Le millésime est prérempli");
+$t->is($defaults["lots"][2]["numero"], $lot->numero, "Le numéro est prérempli");
 
 $values = $defaults;
 
-$values['lots'][0]["volume"] = 5;
-$values['lots'][0]["destination_date"] = "15/05/".($campagne+1);
-$values['lots'][0]["millesime"] = ($campagne-2)."";
-$values['lots'][0]["produit_hash"] = $produit2->getConfig()->getHash();
-$values['lots'][0]["destination_type"] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
-$values['lots'][0]["numero"] = "A";
+$values['lots'][2]["volume"] = 5;
+$values['lots'][2]["destination_date"] = "15/05/".($campagne+1);
+$values['lots'][2]["millesime"] = ($campagne-2)."";
+$values['lots'][2]["produit_hash"] = $produit2->getConfig()->getHash();
+$values['lots'][2]["destination_type"] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
+$values['lots'][2]["numero"] = "A";
 
 $form->bind($values);
 
@@ -127,7 +141,7 @@ foreach($form->getErrorSchema()->getErrors() as $error) {
 $form->save();
 
 $drev = DRevClient::getInstance()->find("DREV-".$viti->identifiant."-".$campagne);
-$lot = $drev->lots->getFirst();
+$lot = $drev->lots->getLast();
 
 $t->is($lot->volume, 5, "Le volume est 5");
 $t->is($lot->millesime, ($campagne-2)."", "Le millesime est ".($campagne-2));
