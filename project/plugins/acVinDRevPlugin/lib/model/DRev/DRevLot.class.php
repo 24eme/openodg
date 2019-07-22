@@ -32,7 +32,11 @@ class DRevLot extends BaseDRevLot
 	}
 
     public function isCleanable() {
-        foreach($this as $value) {
+        foreach($this as $key => $value) {
+            if($key == 'millesime' && $value = $this->getDocument()->getCampagne()) {
+
+                continue;
+            }
             if($value) {
 
                 return false;

@@ -604,7 +604,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!$exist && $produit->getConfig()->isRevendicationParLots()) {
             $lot = $this->addLot();
             $lot->setProduitHash($produit->getConfig()->getHash());
-            $lot->millesime = $this->getCampagne();
         }
 
         return $this->get($produit->getHash());
@@ -641,8 +640,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function addLot() {
+        $lot = $this->add('lots')->add();
+        $lot->millesime = $this->campagne;
 
-        return $this->add('lots')->add();
+        return $lot;
     }
 
     public function lotsImpactRevendication() {
