@@ -29,10 +29,11 @@
                         </div>
                     </div>
                     <div class="col-md-6">
+                        <button type="button" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
                             <?php echo $lot['millesime']->renderLabel("Millésime", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-3">
-                                  <?php echo $lot['millesime']->render(); ?>
+                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
                             </div>
                         </div>
                     </div>
