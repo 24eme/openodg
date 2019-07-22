@@ -22,8 +22,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['numero']->renderLabel("Numéro", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-3">
+                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-5">
                                   <?php echo $lot['numero']->render(); ?>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['destination_date']->renderLabel("Date", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
                                 <div class="input-group date-picker">
                                     <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
