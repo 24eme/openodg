@@ -375,6 +375,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	continue;
             }
 
+            if($line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+                $produitConfigAlt = $this->getConfiguration()->identifyProductByLibelle($produitConfig->getLibelleComplet()." ". $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]);
+            }
+
+            if(isset($produitConfigAlt) && $produitConfigAlt && $produitConfigAlt->isActif()) {
+                $produitConfig = $produitConfigAlt;
+                $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT] = null;
+            }
+
             if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
                   ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
                 ) {
