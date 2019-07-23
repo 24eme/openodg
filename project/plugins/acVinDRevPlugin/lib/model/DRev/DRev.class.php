@@ -380,7 +380,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 ) {
               $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, $line[DRCsvFile::CSV_COLONNE_ID]);
               $has_bio = true;
-            }else{
+            } elseif (DRevConfiguration::getInstance()->hasImportWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+                $produit = $this->addProduit($produitConfig->getHash(), $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT], $line[DRCsvFile::CSV_COLONNE_ID]);
+            } else {
               $produit = $this->addProduit($produitConfig->getHash(), null, $line[DRCsvFile::CSV_COLONNE_ID]);
             }
 
