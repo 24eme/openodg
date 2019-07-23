@@ -14,6 +14,7 @@
     <?php echo $form->renderGlobalErrors(); ?>
 
     <?php foreach($form['lots'] as $key => $lot): ?>
+        <?php $lotItem = $drev->lots->get($key); ?>
         <?php if($key == count($form['lots']) - 1): ?>
         <a name="dernier"></a>
         <?php endif; ?>
@@ -59,7 +60,36 @@
                             <div class="col-sm-1">
                             </div>
                             <div class="col-sm-5">
-                                <p class="form-control-static"><a href=""><em>Définir le cépage</em></a></p>
+                                <p class="form-control-static"><a href="" data-toggle="modal" data-target="#<?php echo $lot->renderId() ?>_cepages" ><?php echo (count($lotItem->cepages->toArray(true, false))) ? $lotItem->getCepagesLibelle() : "<em>Définir le cépage</em>" ?></a></p>
+                                <div class="modal fade" id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
+                                	<div class="modal-dialog">
+                                		<div class="modal-content">
+                                			<div class="modal-header">
+                                				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                				<h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
+                                			</div>
+                                			<div class="modal-body">
+                                                <?php for($i=0; $i < 3; $i++): ?>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-1"></div>
+                                                        <div class="col-sm-7">
+                                                            <?php echo $lot['cepage_'.$i]->render(array("placeholder" => "Cépage")); ?>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group">
+                                                                <?php echo $lot['repartition_'.$i]->render(); ?>
+                                                                <div class="input-group-addon">%</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endfor; ?>
+                                			</div>
+                                			<div class="modal-footer">
+                                				<a class="btn btn-success btn pull-right" data-dismiss="modal">Valider</a>
+                                			</div>
+                                		</div>
+                                	</div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -114,6 +114,11 @@ DRev:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
       documents:
         required: false
         class: DRevDocuments
