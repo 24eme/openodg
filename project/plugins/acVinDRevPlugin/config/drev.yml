@@ -1,7 +1,23 @@
 all:
   configuration:
     drev:
-      prelevements: false
+      prelevements: true
       mentions_complementaire: false
       denomination_auto: false
       exploitation_save: false
+      odg_produits:
+        ANJOU:
+          - "appellations/ANJ"
+          - "appellations/ANJCDL"
+          - "appellations/AJV"
+          - "appellations/AJVBRI"
+          - "appellations/CAJ"
+          - "appellations/RAJ"
+        SAUMUR:
+          - "appellations/CAS"
+          - "appellations/COS"
+          - "appellations/SAU"
+          - "appellations/SAUCHA"
+          - "appellations/SAU"
+        CHINON:
+          - "appellations/CHI"

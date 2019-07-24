@@ -9,8 +9,12 @@ class declarationActions extends sfActions {
           $this->getUser()->usurpationOn($login, $request->getReferer());
       }
 
-        $anjouRadixProduits = DrevConfiguration::getInstance()->getOdgProduits("ANJOU");
-        $request->setParameter('filter_appellations',$anjouRadixProduits);
+      if($region = $this->getUser()->getTeledeclarationDrevRegion()){
+          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+          if($regionRadixProduits){
+            $request->setParameter('produits-filtre',$regionRadixProduits);
+          }
+      }
 
         $this->buildSearch($request);
         $nbResultatsParPage = 15;
@@ -137,7 +141,6 @@ class declarationActions extends sfActions {
     }
 
     protected function buildSearch(sfWebRequest $request) {
-        $filter_appellations = $request->getParameter('filter_appellations',null);
 
         $rows = acCouchdbManager::getClient()
                      ->group(true)
@@ -155,6 +158,7 @@ class declarationActions extends sfActions {
         $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT, "Produit" => DeclarationTousView::KEY_PRODUIT);
 
         $this->query = $request->getParameter('query', array());
+        $this->produitsFiltre = $request->getParameter('produits-filtre', null);
         $this->docs = array();
         $nbDocs = 0;
         $documentsCounter = array();
@@ -162,6 +166,20 @@ class declarationActions extends sfActions {
         $this->produitsLibelles = array();
         foreach($rows as $row) {
             $addition = 0;
+            $not_in_result = false;
+            if($this->produitsFiltre){
+              $not_in_result = true;
+              foreach ($this->produitsFiltre as $filtre) {
+                $filtre = str_replace("/","\/",$filtre);
+                if(preg_match("/".$filtre."/",$row->key[DeclarationTousView::KEY_PRODUIT])){
+                  $not_in_result = false;
+                  break;
+                }
+              }
+            }
+            if($not_in_result){
+              continue;
+            }
             $nbDocs += $row->value;
             $campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE].'-'.($row->key[DeclarationTousView::KEY_CAMPAGNE]+1);
             if(!array_key_exists($campagne,$configurations)){

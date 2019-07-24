@@ -12,6 +12,7 @@ class AppUser extends sfBasicSecurityUser {
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
     const CREDENTIAL_HABILITATION = "habilitation";
+    const CREDENTIAL_DREV_REGION = "COMPTE_REGION";
 
     public function signInOrigin($login_or_compte) {
 
@@ -150,6 +151,15 @@ class AppUser extends sfBasicSecurityUser {
 
     public function hasTeledeclarationDrevAdmin() {
         return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN);
+    }
+
+    public function getTeledeclarationDrevRegion() {
+      if($this->hasCredential(self::CREDENTIAL_DREV_ADMIN)){
+        foreach ($this->getCompte()->getSociete()->getEtablissementsObject() as $etb) {
+          return $etb->region;
+        }
+      }
+      return null;
     }
 
 }

@@ -39,4 +39,11 @@ class DRevConfiguration {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
 
+    public function getOdgProduits($odgName) {
+      if(!isset($this->configuration['odg_produits']) || !array_key_exists($odgName,$this->configuration['odg_produits'])){
+        return array();
+      }
+      return $this->configuration['odg_produits'][$odgName];
+    }
+
 }
