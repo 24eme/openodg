@@ -8,6 +8,10 @@ class declarationActions extends sfActions {
       if($usurpation && $login){
           $this->getUser()->usurpationOn($login, $request->getReferer());
       }
+
+        $anjouRadixProduits = DrevConfiguration::getInstance()->getOdgProduits("ANJOU");
+        $request->setParameter('filter_appellations',$anjouRadixProduits);
+
         $this->buildSearch($request);
         $nbResultatsParPage = 15;
         $this->nbResultats = count($this->docs);
@@ -133,27 +137,38 @@ class declarationActions extends sfActions {
     }
 
     protected function buildSearch(sfWebRequest $request) {
+        $filter_appellations = $request->getParameter('filter_appellations',null);
+
         $rows = acCouchdbManager::getClient()
-                    ->group(true)
-                    ->group_level(4)
-                    ->getView('declaration', 'tous')->rows;
+                     ->group(true)
+                     ->group_level(6)
+                     ->getView('declaration', 'tous')->rows;
 
         $this->facets = array(
             "Type" => array(),
             "Statut" => array(),
             "Campagne" => array(),
             "Mode" => array(),
+            "Produit" => array()
         );
 
-        $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
+        $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT, "Produit" => DeclarationTousView::KEY_PRODUIT);
 
         $this->query = $request->getParameter('query', array());
         $this->docs = array();
         $nbDocs = 0;
-
+        $documentsCounter = array();
+        $configurations = array();
+        $this->produitsLibelles = array();
         foreach($rows as $row) {
             $addition = 0;
             $nbDocs += $row->value;
+            $campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE].'-'.($row->key[DeclarationTousView::KEY_CAMPAGNE]+1);
+            if(!array_key_exists($campagne,$configurations)){
+               $configurations[$campagne] = ConfigurationClient::getConfigurationByCampagne($campagne);
+            }
+            $this->produitsLibelles[$row->key[DeclarationTousView::KEY_PRODUIT]] =  $configurations[$campagne]->declaration->get($row->key[DeclarationTousView::KEY_PRODUIT])->getLibelleComplet();
+
             foreach($this->facets as $facetNom => $items) {
                 $find = true;
                 if($this->query) {
@@ -171,12 +186,15 @@ class declarationActions extends sfActions {
                 if(!array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
                     $this->facets[$facetNom][$row->key[$facetKey]] = 0;
                 }
-                $this->facets[$facetNom][$row->key[$facetKey]] += $row->value;
-                $addition += $row->value;
+                if(!array_key_exists(DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey]), $documentsCounter)){
+                  $this->facets[$facetNom][$row->key[$facetKey]] += $row->value;
+                  $addition += $row->value;
+                  $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = $row;
+                }
 
             }
             if($addition > 0 && $this->query && count($this->query)) {
-                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);
+                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT], $row->key[DeclarationTousView::KEY_IDENTIFIANT], $row->key[DeclarationTousView::KEY_PRODUIT]);
                 $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
@@ -184,7 +202,6 @@ class declarationActions extends sfActions {
                 ->getView('declaration', 'tous')->rows);
             }
         }
-
         if(!$this->query || !count($this->query)) {
             $pas = 10000;
             for($i = 0; $i < $nbDocs; $i = $i + $pas) {
@@ -196,15 +213,26 @@ class declarationActions extends sfActions {
             }
         }
 
+        $tmp_docs = array();
+        foreach ($this->docs as $key => $value) {
+          $identifiantDocument = DeclarationTousView::constructIdentifiantDocument($value);
+          if(!array_key_exists($identifiantDocument,$tmp_docs)) {
+            $tmp_docs[$identifiantDocument] = $value;
+          }
+        }
+        $this->docs = $tmp_docs;
+
         krsort($this->facets["Campagne"]);
         ksort($this->facets["Statut"]);
         ksort($this->facets["Type"]);
         krsort($this->facets["Mode"]);
+        ksort($this->facets["Produit"]);
 
         uasort($this->docs, function($a, $b) {
 
             return $a->key[DeclarationTousView::KEY_DATE] < $b->key[DeclarationTousView::KEY_DATE];
         });
+
     }
 
     protected function secureEtablissement($etablissement) {
@@ -219,4 +247,10 @@ class declarationActions extends sfActions {
 
         throw new sfStopException();
     }
+
+    protected function convertHashToProduitName($campagne,$hash){
+      $configuration = ConfigurationClient::getInstance()->getConfigurationByCampagne($campagne);
+      return $configuration->declaration->get($hash)->getLibelleComplet();
+    }
+
 }

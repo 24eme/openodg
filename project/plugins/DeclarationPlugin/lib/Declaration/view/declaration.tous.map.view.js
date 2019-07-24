@@ -107,6 +107,12 @@ function(doc) {
     if(doc._id.indexOf('INTENTIONCREMANT') > -1) {
 	    type = "Intention Crémant";
     }
-
-    emit([type, doc.campagne, mode, statut, doc.identifiant, date, infos, raison_sociale, commune, email], 1);
+    
+    if(doc.type == "DRev"){
+      for (key in doc.declaration) {
+         emit([type, doc.campagne, mode, statut, doc.identifiant, key, date, infos, raison_sociale, commune, email], 1);
+      }
+    }else{
+        emit([type, doc.campagne, mode, statut, doc.identifiant, null, date, infos, raison_sociale, commune, email], 1);
+    }
 }
