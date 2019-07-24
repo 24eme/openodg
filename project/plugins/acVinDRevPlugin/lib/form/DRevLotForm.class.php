@@ -12,6 +12,17 @@ class DRevLotForm extends acCouchdbObjectForm
         parent::updateDefaultsFromObject();
 
         $this->setDefault('destination_date', $this->getObject()->getDestinationDateFr());
+        $cepages = array();
+        $i=0;
+        foreach($this->getObject()->cepages as $cepage => $repartition) {
+            $this->setDefault('cepage_'.$i, $cepage);
+            $this->setDefault('repartition_'.$i, $repartition);
+            $i++;
+        }
+
+        if(!count($this->getObject()->cepages->toArray(true, false))) {
+            $this->setDefault('repartition_'.$i, 100);
+        }
     }
 
     public function configure() {
@@ -38,11 +49,29 @@ class DRevLotForm extends acCouchdbObjectForm
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
+        for($i = 0; $i < 3; $i++) {
+            $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
+            $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
+            $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat());
+            $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
+        }
+        $this->getWidget('repartition_0')->setAttribute('readonly', 'readonly');
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
+
+        $this->getObject()->remove('cepages');
+        $this->getObject()->add('cepages');
+        for($i = 0; $i < 3; $i++) {
+            if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
+                continue;
+            }
+
+            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+        }
     }
 
     public function getDestinationsType()

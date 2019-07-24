@@ -31,12 +31,21 @@ class DRevLot extends BaseDRevLot
 		return $this->_get('produit_libelle');
 	}
 
+    public function getCepagesLibelle() {
+
+        return implode(', ', array_keys($this->cepages->toArray(true, false)));
+    }
+
     public function isCleanable() {
         foreach($this as $key => $value) {
             if($key == 'millesime' && $value = $this->getDocument()->getCampagne()) {
 
                 continue;
             }
+            if($value instanceof acCouchdbJson && !count($value->toArray(true, false))) {
+                continue;
+            }
+
             if($value) {
 
                 return false;
@@ -52,5 +61,8 @@ class DRevLot extends BaseDRevLot
         return Date::francizeDate($this->destination_date);
     }
 
+    public function addCepage($cepage, $repartition) {
+        $this->cepages->add($cepage, $repartition);
+    }
 
 }

@@ -14,40 +14,23 @@
     <?php echo $form->renderGlobalErrors(); ?>
 
     <?php foreach($form['lots'] as $key => $lot): ?>
+        <?php $lotItem = $drev->lots->get($key); ?>
         <?php if($key == count($form['lots']) - 1): ?>
         <a name="dernier"></a>
         <?php endif; ?>
         <div class="panel panel-default bloc-lot">
             <div class="panel-body" style="padding-bottom: 0;">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-5">
+                            <div class="col-sm-6">
                                   <?php echo $lot['numero']->render(); ?>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <button type="button" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
-                        <div class="form-group">
-                            <?php echo $lot['millesime']->renderLabel("Millésime", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-3">
-                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-8">
-                                  <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
+                        <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
                             <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
@@ -60,15 +43,67 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-8">
+                                  <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <?php echo $lot['millesime']->renderLabel("Millésime", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-2">
+                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
+                            </div>
+                            <div class="col-sm-1">
+                            </div>
+                            <div class="col-sm-5">
+                                <p class="form-control-static"><a href="" data-toggle="modal" data-target="#<?php echo $lot->renderId() ?>_cepages" ><?php echo (count($lotItem->cepages->toArray(true, false))) ? $lotItem->getCepagesLibelle() : "<em>Définir le cépage</em>" ?></a></p>
+                                <div class="modal fade" id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
+                                	<div class="modal-dialog">
+                                		<div class="modal-content">
+                                			<div class="modal-header">
+                                				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                				<h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
+                                			</div>
+                                			<div class="modal-body">
+                                                <?php for($i=0; $i < 3; $i++): ?>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-1"></div>
+                                                        <div class="col-sm-7">
+                                                            <?php echo $lot['cepage_'.$i]->render(array("placeholder" => "Cépage")); ?>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group">
+                                                                <?php echo $lot['repartition_'.$i]->render(); ?>
+                                                                <div class="input-group-addon">%</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endfor; ?>
+                                			</div>
+                                			<div class="modal-footer">
+                                				<a class="btn btn-success btn pull-right" data-dismiss="modal">Valider</a>
+                                			</div>
+                                		</div>
+                                	</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <?php echo $lot['destination_type']->renderLabel("Destination", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-6">
+                            <div class="col-sm-8">
                                   <?php echo $lot['destination_type']->render(); ?>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <div class="form-group">
                             <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">

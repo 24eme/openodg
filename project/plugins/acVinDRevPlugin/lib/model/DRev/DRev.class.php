@@ -375,12 +375,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	continue;
             }
 
+            if($line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+                $produitConfigAlt = $this->getConfiguration()->identifyProductByLibelle($produitConfig->getLibelleComplet()." ". $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]);
+            }
+
+            if(isset($produitConfigAlt) && $produitConfigAlt && $produitConfigAlt->isActif()) {
+                $produitConfig = $produitConfigAlt;
+                $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT] = null;
+            }
+
             if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
                   ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
                 ) {
               $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, $line[DRCsvFile::CSV_COLONNE_ID]);
               $has_bio = true;
-            }else{
+            } elseif (DRevConfiguration::getInstance()->hasImportWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+                $produit = $this->addProduit($produitConfig->getHash(), $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT], $line[DRCsvFile::CSV_COLONNE_ID]);
+            } else {
               $produit = $this->addProduit($produitConfig->getHash(), null, $line[DRCsvFile::CSV_COLONNE_ID]);
             }
 

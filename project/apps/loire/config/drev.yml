@@ -1,0 +1,5 @@
+all:
+  configuration:
+    drev:
+      mentions_complementaire: true
+      import_with_mentions_complementaire: true
