@@ -236,6 +236,7 @@
                 $(this).find('.ligne_lot_cepage .input-float[readonly=readonly]').val(total_rest.toFixed(2));
 
                 $(this).find('.ligne_lot_cepage').each(function() {
+                    var ligne = $(this);
                     var cepage = $(this).find('.form-control').eq(0).val();
                     var pourcentage = parseFloat($(this).find('.form-control').eq(1).val());
                     if(cepage && pourcentage > 0) {
@@ -250,7 +251,7 @@
 
                     $(this).find('input, select').each(function() {
                         if($(this).is(":focus")) {
-                            $(this).removeClass('transparence-sm');
+                            ligne.removeClass('transparence-sm');
                         }
                     });
                 });
