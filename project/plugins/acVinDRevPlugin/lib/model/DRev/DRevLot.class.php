@@ -32,8 +32,14 @@ class DRevLot extends BaseDRevLot
 	}
 
     public function getCepagesLibelle() {
-
-        return implode(', ', array_keys($this->cepages->toArray(true, false)));
+        $libelle = null;
+        foreach($this->cepages as $cepage => $repartition) {
+            if($libelle) {
+                $libelle .= ", ";
+            }
+            $libelle .= $cepage . " (".$repartition."%)";
+        }
+        return $libelle;
     }
 
     public function isCleanable() {

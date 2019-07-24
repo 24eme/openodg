@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(44);
+$t = new lime_test(45);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -104,6 +104,7 @@ $t->is($lot->cepages->getFirstKey(), "Chenin", "Le premier cépage est du Chenin
 $t->is($lot->cepages->getFirst(), 60, "Le premier cépage représente 60% des cépages");
 $t->is($lot->cepages->getLastKey(), "Sauvignon", "Le dernier cépage est du Sauvignon");
 $t->is($lot->cepages->getLast(), 40, "Le dernier cépage représente 40% des cépages");
+$t->is($lot->getCepagesLibelle(), "Chenin (60%), Sauvignon (40%)", "Le dernier cépage représente 40% des cépages");
 
 $drev->addLot();
 $t->is(count($drev->lots), 4, "Le lot a été ajouté");
