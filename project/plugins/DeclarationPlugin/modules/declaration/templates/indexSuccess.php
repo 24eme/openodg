@@ -33,7 +33,8 @@
                         <td><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
                         <td><a href="<?php echo url_for("declaration_etablissement", array("identifiant" => $doc->key[DeclarationTousView::KEY_IDENTIFIANT])); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
                         <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
-                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $doc->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
+                        <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
+                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $doc->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

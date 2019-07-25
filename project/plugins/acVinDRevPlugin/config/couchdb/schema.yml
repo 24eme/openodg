@@ -68,6 +68,7 @@ DRev:
                         volume_revendique_issu_recolte: { type: float }
                         volume_revendique_issu_vci: { type: float }
                         volume_revendique_total: { type: float }
+                        validation_odg: { required: false }
                         vci:
                           type: collection
                           definition:

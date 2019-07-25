@@ -71,6 +71,11 @@ class drevActions extends sfActions {
 
         $drev->validation = null;
         $drev->validation_odg = null;
+        foreach ($drev->getProduits() as $produit) {
+          if($produit->exist('validation_odg') && $produit->validation_odg){
+            $produit->validation_odg = null;
+          }
+        }
         $drev->add('etape', null);
         $drev->save();
 
@@ -536,7 +541,7 @@ class drevActions extends sfActions {
         }
 
         if($this->getUser()->isAdmin()) {
-            $this->drev->validateOdg();
+          //  $this->drev->validateOdg();
         }
 
         $this->drev->save();
@@ -588,7 +593,7 @@ class drevActions extends sfActions {
         $this->service = $request->getParameter('service');
 
         $documents = $this->drev->getOrAdd('documents');
-
+        $this->regionParam = $request->getParameter('region',null);
         if($this->getUser()->isAdmin() && $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
         }
@@ -613,20 +618,24 @@ class drevActions extends sfActions {
 
     public function executeValidationAdmin(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
+        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
+        $this->regionParam = $request->getParameter('region',null);
 
-        $this->drev->validateOdg();
+        $this->drev->validateOdg(null,$this->regionParam);
         $this->drev->save();
 
         if (!$this->drev->isPapier()) {
-            $this->sendDRevConfirmee($this->drev);
+            //$this->sendDRevConfirmee($this->drev);
         }
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 
         $service = $request->getParameter("service");
-
-        return $this->redirect('drev_visualisation', array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null));
+        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
+        if($this->regionParam){
+          $params = array_merge($params,array('region' => $this->regionParam));
+        }
+        return $this->redirect('drev_visualisation', $params);
     }
 
     public function executeModificative(sfWebRequest $request) {

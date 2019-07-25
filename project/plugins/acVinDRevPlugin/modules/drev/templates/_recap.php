@@ -15,7 +15,7 @@
     <tbody>
         <?php foreach ($drev->declaration->getProduitsWithoutLots() as $produit) : ?>
             <tr>
-                <td><?php echo $produit->getLibelleComplet() ?><small class="pull-right">&nbsp;(<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha)</small></td>
+                <td><?php echo $produit->getLibelleComplet() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right">&nbsp;(<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha)</small></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_toral') ?>"><?php if($produit->volume_revendique_total !== null): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
@@ -42,7 +42,7 @@
                 foreach ($lots as  $lot) : ?>
                 <tr>
                     <td><?php echo $lot->numero; ?></td>
-                    <td><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?></td>
+                    <td><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?><?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?></td>
                     <td>&nbsp;</td>
                     <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
                     <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>

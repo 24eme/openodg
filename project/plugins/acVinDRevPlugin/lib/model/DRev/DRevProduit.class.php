@@ -134,4 +134,15 @@ class DRevProduit extends BaseDRevProduit
 		return $this->volume_revendique_total / $this->superficie_revendique;
 	}
 
+	public function validateOdg($date = null){
+		if(is_null($date)) {
+				$date = date('Y-m-d');
+		}
+		$this->add('validation_odg',$date);
+	}
+
+	public function isValidateOdg(){
+		return ($this->exist('validation_odg') && $this->validation_odg);
+	}
+
 }

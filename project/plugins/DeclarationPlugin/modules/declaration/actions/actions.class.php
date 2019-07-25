@@ -8,13 +8,20 @@ class declarationActions extends sfActions {
       if($usurpation && $login){
           $this->getUser()->usurpationOn($login, $request->getReferer());
       }
-
-      if($region = $this->getUser()->getTeledeclarationDrevRegion()){
-          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
-          if($regionRadixProduits){
-            $request->setParameter('produits-filtre',$regionRadixProduits);
-          }
+      $this->regionParam = $request->getParameter('region',null);
+      if(!$this->regionParam && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
+        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+        if($regionRadixProduits){
+        //  return $this->redirect('declaration', array('region' => $region));
+        }
       }
+      if($this->regionParam && $this->getUser()->getTeledeclarationDrevRegion()){
+        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($regionParam);
+        if($regionRadixProduits){
+          $request->setParameter('produits-filtre',$regionRadixProduits);
+        }
+      }
+
 
         $this->buildSearch($request);
         $nbResultatsParPage = 15;
@@ -46,7 +53,7 @@ class declarationActions extends sfActions {
 
     public function executeDoc(sfWebRequest $request) {
         $doc_id = $request->getParameter("id");
-
+        $this->regionParam = $request->getParameter('region',null);
         if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
 
             return $this->forward404();
@@ -61,8 +68,11 @@ class declarationActions extends sfActions {
         }
 
         if($doc_type == "DREV") {
-
-            return $this->redirect("drev_visualisation", array("id" => $doc_id));
+            $params = array("id" => $doc_id);
+            if($this->regionParam){
+              $params = array_merge($params,array("region" => $this->regionParam));
+            }
+            return $this->redirect("drev_visualisation", $params);
         }
 
         if($doc_type == "DREVMARC") {

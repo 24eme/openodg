@@ -65,4 +65,13 @@ class DRevLot extends BaseDRevLot
         $this->cepages->add($cepage, $repartition);
     }
 
+    public function isProduitValidateOdg(){
+      foreach($this->getDocument()->getProduitsLots() as $produit) {
+          if(!$produit->isValidateOdg()){
+            return false;
+          }
+      }
+      return true;
+    }
+
 }

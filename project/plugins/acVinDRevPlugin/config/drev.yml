@@ -22,3 +22,11 @@ all:
           - "appellations/SAU"
         CHINON:
           - "appellations/CHI"
+        NANTES:
+          - appellations/MUSAC
+          - appellations/MUSCDL
+          - appellations/MUSCGL
+          - appellations/MUSSM
+          - appellations/GPL
+        IGP_VALDELOIRE:
+          - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL

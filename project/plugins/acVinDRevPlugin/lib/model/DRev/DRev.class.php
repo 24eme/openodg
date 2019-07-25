@@ -713,12 +713,39 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function validateOdg($date = null) {
+    public function validateOdg($date = null, $region = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
+        if(!$region){
+          $this->validation_odg = $date;
+        }else{
+          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+          $produitsToValidate = array();
+          foreach ($this->declaration->getProduits() as $key => $produit) {
+            foreach ($regionRadixProduits as $filtre) {
+                $filtre = str_replace("/","\/",$filtre);
+                if(preg_match("/".$filtre."/",$key)){
+                  $produitsToValidate[$key] = $produit;
+                  break;
+                }
+            }
+          }
+          foreach ($produitsToValidate as $hash => $produit) {
+             $produit->validateOdg($date);
+          }
 
-        $this->validation_odg = $date;
+          $validateOdg = true;
+          foreach ($this->declaration->getProduits() as $key => $produit) {
+            if(!$produit->isValidateOdg()){
+              $validateOdg=false;
+              break;
+            }
+          }
+          if($validateOdg){
+            $this->validateOdg($date);
+          }
+        }
     }
 
     public function getEtablissementObject() {
