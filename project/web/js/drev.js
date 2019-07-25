@@ -192,7 +192,28 @@
             $('#form_drev_lots .bloc-lot').each(function() {
                 var saisi = false;
                 $(this).find('input, select').each(function() {
-                    if(($(this).val() && $(this).attr('data-default-value') != $(this).val()) || $(this).is(":focus")  ) {
+                    if(($(this).val() && $(this).attr('data-default-value') != $(this).val()) || $(this).is(":focus")) {
+                        saisi = true;
+                    }
+                });
+                if(!saisi) {
+                    $(this).addClass('transparence-sm');
+                } else {
+                    $(this).removeClass('transparence-sm');
+                }
+            });
+        }
+
+        var checkBlocsLotCepages = function() {
+            $('#form_drev_lots .ligne_lot_cepage').each(function() {
+                var saisi = true;
+                $(this).find('input, select').each(function() {
+                    if(!$(this).val()) {
+                        saisi = false;
+                    }
+                });
+                $(this).find('input, select').each(function() {
+                    if($(this).is(":focus")) {
                         saisi = true;
                     }
                 });
@@ -203,22 +224,61 @@
                 }
             });
 
+            $('#form_drev_lots .modal_lot_cepages').each(function() {
+                var total_rest = 100;
+                var libelle = "";
+                $(this).find('.ligne_lot_cepage .input-float[readonly!=readonly]').each(function() {
+                    if(!$(this).val()) {
+                        return;
+                    }
+                    total_rest -= parseFloat($(this).val());
+                });
+                $(this).find('.ligne_lot_cepage .input-float[readonly=readonly]').val(total_rest.toFixed(2));
+
+                $(this).find('.ligne_lot_cepage').each(function() {
+                    var ligne = $(this);
+                    var cepage = $(this).find('.form-control').eq(0).val();
+                    var pourcentage = parseFloat($(this).find('.form-control').eq(1).val());
+                    if(cepage && pourcentage > 0) {
+                        if(libelle) {
+                            libelle = libelle + ", ";
+                        }
+                        libelle = libelle + cepage + " ("+ pourcentage +"%)";
+                        $(this).removeClass('transparence-sm');
+                    } else {
+                        $(this).addClass('transparence-sm');
+                    }
+
+                    $(this).find('input, select').each(function() {
+                        if($(this).is(":focus")) {
+                            ligne.removeClass('transparence-sm');
+                        }
+                    });
+                });
+                console.log('#lien_'+$(this).attr('id'));
+                if(!libelle) {
+                    libelle = "Définir le cépage";
+                }
+                $('#lien_'+$(this).attr('id')).html(libelle);
+                console.log(libelle);
+            });
         }
 
         checkBlocsLot();
-        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot()});
-        $('#form_drev_lots select').on('change', function() { checkBlocsLot()});
-        $('#form_drev_lots input').on('focus', function() { checkBlocsLot()});
-        $('#form_drev_lots select').on('focus', function() { checkBlocsLot()});
-        $('#form_drev_lots input').on('blur', function() { checkBlocsLot()});
-        $('#form_drev_lots select').on('blur', function() { checkBlocsLot()});
+        checkBlocsLotCepages();
+        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots select').on('change', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots input').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots select').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots input').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots select').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
 
         if(window.location.hash == "#dernier") {
             $('#form_drev_lots .bloc-lot:last input:first').focus();
         } else {
             $('#form_drev_lots .bloc-lot:first input:first').focus();
         }
-    
+
         $('#form_drev_lots .lot-delete').on('click', function() {
             if(!confirm("Étes vous sûr de vouloir supprimer ce lot ?")) {
 

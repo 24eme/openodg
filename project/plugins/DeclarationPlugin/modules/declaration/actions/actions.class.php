@@ -195,8 +195,9 @@ class declarationActions extends sfActions {
             if(!array_key_exists($campagne,$configurations)){
                $configurations[$campagne] = ConfigurationClient::getConfigurationByCampagne($campagne);
             }
-            $this->produitsLibelles[$row->key[DeclarationTousView::KEY_PRODUIT]] =  $configurations[$campagne]->declaration->get($row->key[DeclarationTousView::KEY_PRODUIT])->getLibelleComplet();
-
+            if($row->key[DeclarationTousView::KEY_PRODUIT]) {
+                $this->produitsLibelles[$row->key[DeclarationTousView::KEY_PRODUIT]] =  $configurations[$campagne]->declaration->get($row->key[DeclarationTousView::KEY_PRODUIT])->getLibelleComplet();
+            }
             foreach($this->facets as $facetNom => $items) {
                 $find = true;
                 if($this->query) {
