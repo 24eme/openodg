@@ -540,8 +540,8 @@ class drevActions extends sfActions {
             $this->drev->validate();
         }
 
-        if($this->getUser()->isAdmin()) {
-          //  $this->drev->validateOdg();
+        if($this->getUser()->isAdmin() && !DrevConfiguration::getInstance()->hasValidationOdg()) {
+            $this->drev->validateOdg();
         }
 
         $this->drev->save();
@@ -617,6 +617,10 @@ class drevActions extends sfActions {
     }
 
     public function executeValidationAdmin(sfWebRequest $request) {
+        if(!DrevConfiguration::getInstance()->hasValidationOdg()){
+          throw new sfException("Il n'est pas permis de valider par ODG");
+        }
+
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
         $this->regionParam = $request->getParameter('region',null);
@@ -624,8 +628,8 @@ class drevActions extends sfActions {
         $this->drev->validateOdg(null,$this->regionParam);
         $this->drev->save();
 
-        if (!$this->drev->isPapier()) {
-            //$this->sendDRevConfirmee($this->drev);
+        if (!$this->drev->isPapier() && $this->drev->getValidationOdg()) {
+            $this->sendDRevConfirmee($this->drev);
         }
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");

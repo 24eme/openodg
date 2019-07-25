@@ -45,10 +45,14 @@ class DRevConfiguration {
     }
 
     public function getOdgProduits($odgName) {
-      if(!isset($this->configuration['odg_produits']) || !array_key_exists($odgName,$this->configuration['odg_produits'])){
+      if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName]['produits']) ){
         return array();
       }
-      return $this->configuration['odg_produits'][$odgName];
+      return $this->configuration['odg'][$odgName]['produits'];
+    }
+
+    public function hasValidationOdg(){
+      return isset($this->configuration['validation_odg']) && boolval($this->configuration['validation_odg']);
     }
 
 }
