@@ -112,8 +112,20 @@ if (($handle = fopen($csv, "r")) !== false) {
             }
 
             $depot = $dates[$key]['depot'];
+            $date_depot = "";
+            if ($depot) {
+                $date_depot = $depot->format('d/m/Y');
+            }
             $enregistrement = $dates[$key]['enregistrement'];
+            $date_enregistrement = "";
+            if ($enregistrement) {
+                $date_enregistrement = $enregistrement->format('d/m/Y');
+            }
             $decision = $dates[$key]['decision'];
+            $date_decision = "";
+            if ($decision) {
+                $date_decision = $decision->format('d/m/Y');
+            }
 
             if ($config && !isset($etablissements[$datas[2]])) {
                 $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/ETABLISSEMENT-".$datas[2]);
@@ -131,7 +143,8 @@ if (($handle = fopen($csv, "r")) !== false) {
             $a_comp = (isset($adresses[1]))? $adresses[1] : "";
             $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
-            echo $datas[10].";".$depot->format('d/m/Y').";".$enregistrement->format('d/m/Y').";".$etablissement->cvi.";".$etablissement->siret.";".$datas[2].";".$etablissement->raison_sociale.";".$a.";".$a_comp.";".$a_comp1.";".$etablissement->siege->code_postal.";".$etablissement->siege->commune.";".$etablissement->telephone_bureau.";".$etablissement->fax.";".$etablissement->email.";".$type.";".$datas[7].";".$decision->format('d/m/Y').";".$datas[4]."\n";
+            echo $datas[10].";".$date_depot.";".$date_enregistrement.";".$etablissement->cvi.";".$etablissement->siret.";".$datas[2].";".$etablissement->raison_sociale.";".$a.";".$a_comp.";".$a_comp1.";";
+            echo $etablissement->siege->code_postal.";".$etablissement->siege->commune.";".$etablissement->telephone_bureau.";".$etablissement->fax.";".$etablissement->email.";".$type.";".$datas[7].";".$date_decision.";".$datas[4]."\n";
         }
     }
     fclose($handle);
