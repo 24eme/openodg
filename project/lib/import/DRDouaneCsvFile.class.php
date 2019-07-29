@@ -189,7 +189,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	$produits = array();
         $colonnesid = array();
         $colonneid = 0;
-    	foreach ($this->doc->donnees as $donnee) {
+        try {
+    	  foreach ($this->doc->donnees as $donnee) {
     		if ($produit = $configuration->declaration->get($donnee->produit)) {
     			$p = array();
     			if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
@@ -230,7 +231,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                 $p[] = $colonnesid[$produitid];
     			$produits[] = $p;
     		}
-    	}
+          }
+        }catch(Exception $e) {
+            throw new sfException('problem with '.$this->doc->_id.' : '.$e);
+        }
       $drInfos = $this->getEtablissementRows();
     	foreach ($produits as $k => $p) {
     		$csv .= implode(';', $drInfos).';'.implode(';', $p)."\n";
