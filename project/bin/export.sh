@@ -44,6 +44,10 @@ bash bin/export_docs.sh SV11 > $EXPORTDIR/sv11.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
 rm $EXPORTDIR/sv11.csv.part
 
+php symfony pieces:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/pieces.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pieces.csv.part > $EXPORTDIR/pieces.csv
+rm $EXPORTDIR/pieces.csv.part
+
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
