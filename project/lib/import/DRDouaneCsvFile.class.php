@@ -98,6 +98,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		}
                 //Livraison en négoce ou coop
         		if (preg_match("/[6-8]{1}-[1-9]+/", $values[0])) {
+                    $values[1] = self::cleanStr($values[1]);
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
         					$trt = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace(array("/^Acheteur n.{1,2}(FR[0-9a-zA-Z]{11}) -.*$/i", "/^Acheteur n.{1,2}([0-9a-zA-Z]{10}) -.*$/i"), '\1', $values[1]), "\"".trim(preg_replace(array("/^Acheteur n.{1,2}FR[0-9a-zA-Z]{11} -(.*)$/i", "/^Acheteur n.{1,2}[0-9a-zA-Z]{10} -(.*)$/i"), '\1', $values[1]))."\"", null, null);
