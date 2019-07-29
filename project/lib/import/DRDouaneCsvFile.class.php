@@ -187,7 +187,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	}
 
     	$produits = array();
-
+        $colonnesid = array();
+        $colonneid = 0;
     	foreach ($this->doc->donnees as $donnee) {
     		if ($produit = $configuration->declaration->get($donnee->produit)) {
     			$p = array();
@@ -208,6 +209,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $produit->code_douane;
     			$p[] = $produit->getLibelleFormat();
     			$p[] = $donnee->complement;
+                $produitid = join("", $p);
+                if (!$colonnesid[$produitid]) {
+                    $colonnesid[$produitid] = ++$colonneid;
+                }
     			$p[] = $donnee->categorie;
     			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
     			$p[] = str_replace('.', ',', $donnee->valeur);
@@ -222,6 +227,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     				$p[] = null;
     				$p[] = null;
     			}
+                $p[] = $colonnesid[$produitid];
     			$produits[] = $p;
     		}
     	}
