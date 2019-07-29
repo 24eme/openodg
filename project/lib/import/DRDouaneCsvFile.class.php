@@ -188,8 +188,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	}
 
     	$produits = array();
-
-    	foreach ($this->doc->donnees as $donnee) {
+        $colonnesid = array();
+        $colonneid = 0;
+        try {
+    	  foreach ($this->doc->donnees as $donnee) {
     		if ($produit = $configuration->declaration->get($donnee->produit)) {
     			$p = array();
     			if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
@@ -209,6 +211,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $produit->code_douane;
     			$p[] = $produit->getLibelleFormat();
     			$p[] = $donnee->complement;
+                $produitid = join("", $p);
+                if (!$colonnesid[$produitid]) {
+                    $colonnesid[$produitid] = ++$colonneid;
+                }
     			$p[] = $donnee->categorie;
     			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
     			$p[] = str_replace('.', ',', $donnee->valeur);
@@ -223,9 +229,13 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     				$p[] = null;
     				$p[] = null;
     			}
+                $p[] = $colonnesid[$produitid];
     			$produits[] = $p;
     		}
-    	}
+          }
+        }catch(Exception $e) {
+            throw new sfException('problem with '.$this->doc->_id.' : '.$e);
+        }
       $drInfos = $this->getEtablissementRows();
     	foreach ($produits as $k => $p) {
     		$csv .= implode(';', $drInfos).';'.implode(';', $p)."\n";
