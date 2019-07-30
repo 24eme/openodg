@@ -98,6 +98,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		}
                 //Livraison en négoce ou coop
         		if (preg_match("/[6-8]{1}-[1-9]+/", $values[0])) {
+                    $values[1] = self::cleanStr($values[1]);
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
         					$trt = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace(array("/^Acheteur n.{1,2}(FR[0-9a-zA-Z]{11}) -.*$/i", "/^Acheteur n.{1,2}([0-9a-zA-Z]{10}) -.*$/i"), '\1', $values[1]), "\"".trim(preg_replace(array("/^Acheteur n.{1,2}FR[0-9a-zA-Z]{11} -(.*)$/i", "/^Acheteur n.{1,2}[0-9a-zA-Z]{10} -(.*)$/i"), '\1', $values[1]))."\"", null, null);
@@ -187,8 +188,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	}
 
     	$produits = array();
-
-    	foreach ($this->doc->donnees as $donnee) {
+        $colonnesid = array();
+        $colonneid = 0;
+        try {
+    	  foreach ($this->doc->donnees as $donnee) {
     		if ($produit = $configuration->declaration->get($donnee->produit)) {
     			$p = array();
     			if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
@@ -208,6 +211,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $produit->code_douane;
     			$p[] = $produit->getLibelleFormat();
     			$p[] = $donnee->complement;
+                $produitid = join("", $p);
+                if (!$colonnesid[$produitid]) {
+                    $colonnesid[$produitid] = ++$colonneid;
+                }
     			$p[] = $donnee->categorie;
     			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
     			$p[] = str_replace('.', ',', $donnee->valeur);
@@ -222,9 +229,13 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     				$p[] = null;
     				$p[] = null;
     			}
+                $p[] = $colonnesid[$produitid];
     			$produits[] = $p;
     		}
-    	}
+          }
+        }catch(Exception $e) {
+            throw new sfException('problem with '.$this->doc->_id.' : '.$e);
+        }
       $drInfos = $this->getEtablissementRows();
     	foreach ($produits as $k => $p) {
     		$csv .= implode(';', $drInfos).';'.implode(';', $p)."\n";
