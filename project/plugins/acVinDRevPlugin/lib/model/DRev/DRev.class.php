@@ -713,44 +713,64 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
+    public function getProduitsByRegion($region) {
+        $produits = array();
+        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+        foreach ($this->declaration->getProduits() as $hash => $produit) {
+          foreach ($regionRadixProduits as $filtre) {
+              $filtre = str_replace("/","\/",$filtre);
+              if(!preg_match("/".$filtre."/",$hash)){
+                continue;
+              }
+              $produits[$hash] = $produit;
+              break;
+          }
+        }
+
+        return $produits;
+    }
+
     public function validateOdg($date = null, $region = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
-        if(!$region && !DrevConfiguration::getInstance()->hasOdgProduits()){
-          $this->validation_odg = $date;
-        }elseif(!$region && DrevConfiguration::getInstance()->hasOdgProduits()){
-          $regions = DrevConfiguration::getInstance()->getOdgRegions();
-          foreach ($regions as $region) {
-            $this->validateOdg($date, $region);
-          }
-        }elseif($region){
-          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
-          $produitsToValidate = array();
-          foreach ($this->declaration->getProduits() as $key => $produit) {
-            foreach ($regionRadixProduits as $filtre) {
-                $filtre = str_replace("/","\/",$filtre);
-                if(preg_match("/".$filtre."/",$key)){
-                  $produitsToValidate[$key] = $produit;
-                  break;
-                }
-            }
-          }
-          foreach ($produitsToValidate as $hash => $produit) {
-             $produit->validateOdg($date);
-          }
 
-          $validateOdg = true;
-          foreach ($this->declaration->getProduits() as $key => $produit) {
-            if(!$produit->isValidateOdg()){
-              $validateOdg=false;
-              break;
-            }
-          }
-          if($validateOdg){
-            $this->validation_odg = $date;
-          }
+        if($region && !DrevConfiguration::getInstance()->hasOdgProduits()) {
+
+            throw new sfException("Les produits des régions par ODG ne sont configurés");
         }
+
+        if(!DrevConfiguration::getInstance()->hasOdgProduits()){
+            $this->validation_odg = $date;
+
+            return;
+        }
+
+        if($region) {
+            foreach ($this->getProduitsByRegion($region) as $hash => $produit) {
+                $produit->validateOdg($date);
+            }
+        } else {
+            foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                $this->validateOdg($date, $region);
+            }
+        }
+
+        $allValidate = true;
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            if($produit->isValidateOdg()){
+               continue;
+            }
+            $allValidate = false;
+            break;
+        }
+
+        if(!$allValidate) {
+
+            return;
+        }
+
+        $this->validation_odg = $date;
     }
 
     public function getEtablissementObject() {

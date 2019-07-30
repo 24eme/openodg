@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(30);
+$t = new lime_test(31);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -36,10 +36,16 @@ $t->comment("Saisie des volumes");
 
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
+    if(!$produit->getRendement()) {
+        continue;
+    }
     $produit_hash1 = $produit->getHash();
     break;
 }
 foreach($produits as $produit) {
+    if(!$produit->getRendement()) {
+        continue;
+    }
     $produit_hash2 = $produit->getHash();
 }
 
@@ -85,12 +91,14 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqu
 $t->comment("Validation");
 
 $drev->validate();
+$drev->validateOdg();
 $drev->save();
 
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est toujours de 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est toujours de 190");
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
+$t->is($drev->validation_odg, date('Y-m-d'), "La DRev a la date du jour comme date de validation odg");
 $t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
 
 $drev->devalidate();
