@@ -717,9 +717,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
-        if(!$region){
+        if(!$region && !DrevConfiguration::getInstance()->hasOdgProduits()){
           $this->validation_odg = $date;
-        }else{
+        }elseif(!$region && DrevConfiguration::getInstance()->hasOdgProduits()){
+          $regions = DrevConfiguration::getInstance()->getOdgRegions();
+          foreach ($regions as $region) {
+            $this->validateOdg($date, $region);
+          }
+        }elseif($region){
           $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
           $produitsToValidate = array();
           foreach ($this->declaration->getProduits() as $key => $produit) {
@@ -743,7 +748,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
           }
           if($validateOdg){
-            $this->validateOdg($date);
+            $this->validation_odg = $date;
           }
         }
     }
