@@ -366,6 +366,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $produitsImporte = array();
         $has_bio = false;
         foreach($csv as $k => $line) {
+            if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_ACHAT_TOLERENCE) {
+                $this->add('achat_tolerence', 1);
+                continue;
+            }
+
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
