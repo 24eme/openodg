@@ -7,7 +7,7 @@
 </div>
 <?php endif; ?>
 
-<h3>Revendication</h3>
+<h3>Revendication AOC</h3>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -30,7 +30,7 @@
     </tbody>
 </table>
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
-    <h3>Déclaration des lots</h3>
+    <h3>Déclaration des lots IGP</h3>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
