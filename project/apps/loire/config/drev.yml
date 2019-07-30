@@ -5,3 +5,32 @@ all:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
       validation_odg: true
+      odg:
+        ANJOU:
+          produits:
+            - "appellations/ANJ"
+            - "appellations/ANJCDL"
+            - "appellations/AJV"
+            - "appellations/AJVBRI"
+            - "appellations/CAJ"
+            - "appellations/RAJ"
+        SAUMUR:
+          produits:
+            - "appellations/CAS"
+            - "appellations/COS"
+            - "appellations/SAU"
+            - "appellations/SAUCHA"
+            - "appellations/SAU"
+        CHINON:
+          produits:
+            - "appellations/CHI"
+        NANTES:
+          produits:
+            - appellations/MUSAC
+            - appellations/MUSCDL
+            - appellations/MUSCGL
+            - appellations/MUSSM
+            - appellations/GPL
+        IGP_VALDELOIRE:
+          produits:
+            - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL

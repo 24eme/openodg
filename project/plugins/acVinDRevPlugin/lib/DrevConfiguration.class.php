@@ -44,11 +44,22 @@ class DRevConfiguration {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
 
+    public function hasOdgProduits() {
+      return isset($this->configuration['odg']) && count($this->configuration['odg']);
+    }
+
     public function getOdgProduits($odgName) {
       if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName]['produits']) ){
         return array();
       }
       return $this->configuration['odg'][$odgName]['produits'];
+    }
+
+    public function getOdgRegions(){
+      if(!$this->hasOdgProduits()){
+        return array();
+      }
+      return array_keys($this->configuration['odg']);
     }
 
     public function hasValidationOdg(){

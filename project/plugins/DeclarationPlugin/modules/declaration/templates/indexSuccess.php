@@ -2,7 +2,7 @@
 <?php $query = ($query) ? $query->getRawValue() : $query ?>
 
 <ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
+  <li class="active"><a href="<?php echo ($regionParam)?  url_for('declaration',(array('region' => $regionParam))) : url_for('declaration'); ?>">Déclarations</a></li>
 </ol>
 
 <div class="row row-margin">
@@ -26,14 +26,17 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($docs as $doc): ?>
+                <?php foreach($docs as $doc):
+
+                  ?>
                     <tr>
-                        <td><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($doc->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
+
+                      <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
+                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($doc->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
-                        <td><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
-                        <td><a href="<?php echo url_for("declaration_etablissement", array("identifiant" => $doc->key[DeclarationTousView::KEY_IDENTIFIANT])); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
+                        <td><a href="<?php echo url_for("declaration_etablissement", array("identifiant" => $doc->key[DeclarationTousView::KEY_IDENTIFIANT], 'region' => $regionParam)); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
                         <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
-                        <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                         <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $doc->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
@@ -67,7 +70,8 @@
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
                 <?php if($facetNom == 'Produit'): $itemNom = $produitsLibelles[$itemNom]; endif; ?>
-                <a href="<?php echo url_for('declaration', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo $itemNom; ?></a>
+                <?php $allParams=array('query' => $params); if($regionParam): $allParams=array_merge($allParams,array('region' => $regionParam)); endif;  ?>
+                <a href="<?php echo url_for('declaration', $allParams) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo $itemNom; ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
