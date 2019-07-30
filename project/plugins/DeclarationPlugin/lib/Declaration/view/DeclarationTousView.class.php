@@ -4,9 +4,9 @@ class DeclarationTousView extends acCouchdbView
 {
     const KEY_TYPE = 0;
     const KEY_CAMPAGNE = 1;
-    const KEY_MODE = 2;
-    const KEY_STATUT = 3;
-    const KEY_IDENTIFIANT = 4;
+    const KEY_IDENTIFIANT = 2;
+    const KEY_MODE = 3;
+    const KEY_STATUT = 4;
     const KEY_PRODUIT = 5;
     const KEY_DATE = 6;
     const KEY_INFOS = 7;

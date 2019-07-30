@@ -235,7 +235,7 @@ class declarationActions extends sfActions {
 
             }
             if($addition > 0 && $this->query && count($this->query)) {
-                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT], $row->key[DeclarationTousView::KEY_IDENTIFIANT]);
+                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_IDENTIFIANT], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);
                 if($hasProduitsFilter){
                   $keys = array_merge($keys, array($row->key[DeclarationTousView::KEY_PRODUIT]));
                 }
@@ -258,28 +258,30 @@ class declarationActions extends sfActions {
             }
         }
 
-        $tmp_docs = array();
-        foreach ($this->docs as $key => $value) {
-          $identifiantDocument = DeclarationTousView::constructIdentifiantDocument($value);
-          if(!array_key_exists($identifiantDocument,$tmp_docs)) {
-            if($this->produitsFiltre){
-              $found = false;
-              foreach ($this->produitsFiltre as $filtre) {
-                $filtre = str_replace("/","\/",$filtre);
-                if(preg_match("/".$filtre."/",$value->key[DeclarationTousView::KEY_PRODUIT])){
-                  $found = true;
-                  break;
+        if($hasProduitsFilter){
+          $tmp_docs = array();
+          foreach ($this->docs as $key => $value) {
+            $identifiantDocument = DeclarationTousView::constructIdentifiantDocument($value);
+            if(!array_key_exists($identifiantDocument,$tmp_docs)) {
+              if($this->produitsFiltre){
+                $found = false;
+                foreach ($this->produitsFiltre as $filtre) {
+                  $filtre = str_replace("/","\/",$filtre);
+                  if(preg_match("/".$filtre."/",$value->key[DeclarationTousView::KEY_PRODUIT])){
+                    $found = true;
+                    break;
+                  }
                 }
-              }
-              if($found){
+                if($found){
+                  $tmp_docs[$identifiantDocument] = $value;
+                }
+              }else{
                 $tmp_docs[$identifiantDocument] = $value;
               }
-            }else{
-              $tmp_docs[$identifiantDocument] = $value;
             }
           }
+          $this->docs = $tmp_docs;
         }
-        $this->docs = $tmp_docs;
 
         krsort($this->facets["Campagne"]);
         ksort($this->facets["Statut"]);
