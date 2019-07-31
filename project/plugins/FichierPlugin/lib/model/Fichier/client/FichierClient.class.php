@@ -32,17 +32,7 @@ class FichierClient extends acCouchdbClient {
      */
     public function scrapeAndSaveFiles($etablissement, $type, $annee)
     {
-        $etablissements = array($etablissement);
-        if ($etablissement->exist('liaisons_operateurs')) {
-            foreach ($etablissement->liaisons_operateurs as $k => $o) {
-                if ($o->type_liaison == 'METAYER') {
-                    $e = EtablissementClient::getInstance()->find($o->id_etablissement);
-                    if ($e && $e->cvi) {
-                        $etablissements[] = $e;
-                    }
-                }
-            }
-        }
+        $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
         $fichiers = array();
         foreach($etablissements as $etblmt) {
             $this->scrapeFiles($etblmt, $type, $annee);

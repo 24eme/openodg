@@ -35,8 +35,8 @@
                 <?php endif; ?>
                 <?php if ($sf_user->isAdmin()): ?>
                 <div style="margin-top: 50px;">
-                    <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>?campagne=<?php echo $campagne; ?>">Démarrer la télédéclaration</a>
-                    <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>?campagne=<?php echo $campagne; ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                    <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
+                    <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -44,9 +44,9 @@
             <div class="panel-body">
                 <p>Votre déclaration de revendication viticole pour cette année n'a pas encore été déclarée.</p>
                 <div style="margin-top: 50px;">
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement)) ?>?campagne=<?php echo $campagne; ?>">Démarrer la télédéclaration</a>
+                    <a class="btn btn-block btn-default" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement)) ?>">Démarrer la télédéclaration</a>
                     <?php if ($sf_user->isAdmin()): ?>
-                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>?campagne=<?php echo $campagne; ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     <?php endif; ?>
                 </div>
             </div>

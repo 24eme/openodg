@@ -169,32 +169,29 @@ class fichierActions extends sfActions
     	if (!$this->type) {
     		return $this->forward404("La création d'un fichier nécessite le type");
     	}
-    	
+
     	$client = $this->type.'Client';
     	if ($doc = $client::getInstance()->findByArgs($this->etablissement->identifiant, $this->campagne)) {
     		return $this->redirect($this->generateUrl('edit_fichier', $doc));
     	}
-		
+
         $doc = $client::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, true);
         if ($doc->exist('libelle')) $doc->libelle = $this->type.' '.$this->campagne.' saisie interne';
         if ($doc->exist('visibilite')) $doc->visibilite = 0;
         if ($doc->exist('date_depot')) $doc->date_depot = date('Y-m-d');
         if ($doc->exist('date_import')) $doc->date_import = date('Y-m-d');
         $doc->save();
-        
+
         return $this->redirect($this->generateUrl('edit_fichier', $doc));
 	}
-	
+
 	public function executeScrape(sfWebRequest $request) {
 		$this->etablissement = $this->getRoute()->getEtablissement();
 		$this->campagne = $request->getParameter('campagne');
 		$this->type = $request->getParameter('type');
-	
-		try {
-			FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->campagne);
-		} catch(Exception $e) {
-		}
-	
+
+		FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->campagne);
+
 		return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
 	}
 
