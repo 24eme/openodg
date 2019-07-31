@@ -36,7 +36,10 @@ class FichierClient extends acCouchdbClient {
         if ($etablissement->exist('liaisons_operateurs')) {
             foreach ($etablissement->liaisons_operateurs as $k => $o) {
                 if ($o->type_liaison == 'METAYER') {
-                    $etablissements[] = Etablissement::getInstance()->find($o->id_etablissement);
+                    $e = EtablissementClient::getInstance()->find($o->id_etablissement);
+                    if ($e && $e->cvi) {
+                        $etablissements[] = $e;
+                    }
                 }
             }
         }
@@ -44,7 +47,7 @@ class FichierClient extends acCouchdbClient {
         foreach($etablissements as $etblmt) {
             $this->scrapeFiles($etblmt, $type, $annee);
             if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
-                return false;
+                continue;
             }
             $client = $this->getClientFromType($type);
             if (!$fichier = $client->findByArgs($etblmt->identifiant,  $annee)) {
