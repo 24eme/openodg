@@ -34,8 +34,8 @@ class DrevEtapes extends Etapes
             self::ETAPE_DR_DOUANE => "Déclaration de récolte",
             self::ETAPE_REVENDICATION_SUPERFICIE => "Superficies",
             self::ETAPE_VCI => "Répartition du VCI %campagne%",
-			self::ETAPE_LOTS => "Lots",
-			self::ETAPE_REVENDICATION => "Volumes",
+			self::ETAPE_LOTS => "Lots IGP",
+			self::ETAPE_REVENDICATION => "Volumes AOC",
             self::ETAPE_VALIDATION => "Validation"
     );
 

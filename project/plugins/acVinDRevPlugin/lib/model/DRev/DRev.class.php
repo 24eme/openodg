@@ -76,23 +76,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
     }
 
-    public function getProduits($onlyActive = true) {
+    public function getProduits($region = null) {
 
-        return $this->declaration->getProduits($onlyActive);
+        return $this->declaration->getProduits($region);
     }
 
-    public function getProduitsWithoutLots(){
-      return $this->declaration->getProduitsWithoutLots();
+    public function getProduitsWithoutLots($region = null) {
+
+        return $this->declaration->getProduitsWithoutLots($region);
     }
 
-    public function getProduitsVci() {
+    public function getProduitsVci($region = null) {
 
-        return $this->declaration->getProduitsVci();
+        return $this->declaration->getProduitsVci($region);
     }
 
-    public function getProduitsLots() {
+    public function getProduitsLots($region = null) {
 
-        return $this->declaration->getProduitsLots();
+        return $this->declaration->getProduitsLots($region);
     }
 
     public function summerizeProduitsByCouleur() {
@@ -366,6 +367,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $produitsImporte = array();
         $has_bio = false;
         foreach($csv as $k => $line) {
+            if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_ACHAT_TOLERENCE) {
+                $this->add('achat_tolerence', 1);
+                continue;
+            }
+
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
@@ -717,40 +723,41 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
-        if(!$region && !DrevConfiguration::getInstance()->hasOdgProduits()){
-          $this->validation_odg = $date;
-        }elseif(!$region && DrevConfiguration::getInstance()->hasOdgProduits()){
-          $regions = DrevConfiguration::getInstance()->getOdgRegions();
-          foreach ($regions as $region) {
-            $this->validateOdg($date, $region);
-          }
-        }elseif($region){
-          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
-          $produitsToValidate = array();
-          foreach ($this->declaration->getProduits() as $key => $produit) {
-            foreach ($regionRadixProduits as $filtre) {
-                $filtre = str_replace("/","\/",$filtre);
-                if(preg_match("/".$filtre."/",$key)){
-                  $produitsToValidate[$key] = $produit;
-                  break;
-                }
-            }
-          }
-          foreach ($produitsToValidate as $hash => $produit) {
-             $produit->validateOdg($date);
-          }
 
-          $validateOdg = true;
-          foreach ($this->declaration->getProduits() as $key => $produit) {
-            if(!$produit->isValidateOdg()){
-              $validateOdg=false;
-              break;
-            }
-          }
-          if($validateOdg){
-            $this->validation_odg = $date;
-          }
+        if(DrevConfiguration::getInstance()->hasOdgProduits()){
+
+            return $this->validateOdgByRegion($date, $region);
         }
+
+        $this->validation_odg = $date;
+    }
+
+    protected function validateOdgByRegion($date = null, $region = null) {
+        if($region) {
+            foreach ($this->getProduits($region) as $hash => $produit) {
+                $produit->validateOdg($date);
+            }
+        } else {
+            foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                $this->validateOdg($date, $region);
+            }
+        }
+
+        $allValidate = true;
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            if($produit->isValidateOdg()){
+               continue;
+            }
+            $allValidate = false;
+            break;
+        }
+
+        if(!$allValidate) {
+
+            return;
+        }
+
+        $this->validation_odg = $date;
     }
 
     public function getEtablissementObject() {

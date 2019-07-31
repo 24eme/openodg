@@ -21,8 +21,23 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $exploitant = array();
         $bailleur = array();
         $libelleLigne = null;
+        $achat_fin = 0;
+        $achats = array();
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
+                //Cas de fin de tableur avec les achats tolérés
+                if (preg_match('/Achats realises dans le cadre de la tolerence/', $values[0]) || preg_match('/Identification du vendeur/', $values[1]) ){
+                    $achat_fin = 1;
+                    continue;
+                }
+                if ($achat_fin) {
+                    $commentaire = $values[0];
+                    $vendeur = $values[1];
+                    $volume = str_replace('.', ',', $values[3]);
+                    $achats[] = array(preg_replace('/ - .*/', '', $vendeur), preg_replace('/ *$/', '', preg_replace('/^[0-9]* - */', '', $vendeur)), $volume, $commentaire);
+                    continue;
+                }
+
                 //Récupération des infos du déclarant depuis l'entête
         		if (preg_match('/dnr/i', $values[0])) {
         			$this->cvi = (isset($values[1]))? $values[1] : null;
@@ -170,6 +185,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
 	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b).';'.$coloneid[$k]."\n";
 	        	}
 	        }
+        }
+        foreach ($achats as $a) {
+            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerence administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999\n";
         }
         return $csv;
     }
