@@ -46,20 +46,23 @@
 
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form)); ?>
 
-<?php include_partial('drev/documents', array('drev' => $drev, 'form' => isset($form) ? $form : null)); ?>
-
+<?php //include_partial('drev/documents', array('drev' => $drev, 'form' => isset($form) ? $form : null)); ?>
 
 <div class="row row-margin row-button">
-    <div class="col-xs-5">
+    <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $drev->identifiant, 'campagne' => $drev->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
-    <div class="col-xs-2 text-center">
+    <div class="col-xs-4 text-center">
+      <a href="<?php echo $drev->getDocumentDouanier('pdf'); ?>" class="btn btn-default pull-left" >
+          <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
+      </a>
+
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-success">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
             </a>
     </div>
 
-    <div class="col-xs-5 text-right">
+    <div class="col-xs-4 text-right">
         <?php
         if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
                     <a class="btn btn-xs btn-default pull-left" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
