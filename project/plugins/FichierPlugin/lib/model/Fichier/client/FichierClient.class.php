@@ -32,28 +32,41 @@ class FichierClient extends acCouchdbClient {
      */
     public function scrapeAndSaveFiles($etablissement, $type, $annee)
     {
-    	$this->scrapeFiles($etablissement, $type, $annee);
-    	if (!$files = $this->getScrapyFiles($etablissement, strtolower($type), $annee)) {
-    		return false;
-    	}
-    	$client = $this->getClientFromType($type);
-    	if (!$fichier = $client->findByArgs($etablissement->identifiant,  $annee)) {
-    		$fichier = $client->createDoc($etablissement->identifiant, $annee);
-    	}
-    	if ($fichier->isNew()) {
-    		$fichier->setLibelle("$type $annee issue de Prodouane");
-    		$fichier->save();
-    	}
-    	try {
-	    	foreach ($files as $file) {
-	    		$fichier->storeFichier($file);
-	    	}
-	    	$fichier->save();
-    	} catch (Exception $e) {
-        	throw new sfException($e->getMessage());
-        	return;
+        $etablissements = array($etablissement);
+        if ($etablissement->exist('liaisons_operateurs')) {
+            foreach ($etablissement->liaisons_operateurs as $k => $o) {
+                if ($o->type_liaison == 'METAYER') {
+                    $etablissements[] = Etablissement::getInstance()->find($o->id_etablissement);
+                }
+            }
         }
-        return $fichier;
+        $fichiers = array();
+        foreach($etablissements as $etblmt) {
+            $this->scrapeFiles($etblmt, $type, $annee);
+            if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
+                return false;
+            }
+            $client = $this->getClientFromType($type);
+            if (!$fichier = $client->findByArgs($etblmt->identifiant,  $annee)) {
+                $fichier = $client->createDoc($etblmt->identifiant, $annee);
+            }
+            if ($fichier->isNew()) {
+                $fichier->setLibelle("$type $annee issue de Prodouane");
+                $fichier->save();
+            }
+            try {
+                foreach ($files as $file) {
+                    $fichier->storeFichier($file);
+                }
+                $fichier->save();
+            //On convertit l'exception en quelque chose de traitable par sf
+            } catch (Exception $e) {
+                throw new sfException($e->getMessage());
+                return;
+            }
+            $fichiers[] = $fichier;
+        }
+        return $fichiers;
     }
 
     private function scrapeFiles($etablissement, $type, $annee)
