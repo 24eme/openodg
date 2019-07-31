@@ -131,6 +131,11 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function getRendementEffectif(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+
 		return $this->volume_revendique_total / $this->superficie_revendique;
 	}
 
