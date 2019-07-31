@@ -31,6 +31,7 @@ class DRevValidation extends DocumentValidation
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', "Toutes les informations de revendication n'ont pas été saisies");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
+        $this->addControle(self::TYPE_WARNING, 'revendication_rendement_conseille', "Le rendement dépasse le rendement légal il faudra fournir une dérogation pour être autorisé à revendiquer ce rendement");
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_complement', 'Vous revendiquez un volume supérieur à celui qui figure sur votre déclaration douanière en L15');
@@ -138,7 +139,9 @@ class DRevValidation extends DocumentValidation
         if ($produit->superficie_revendique > 0) {
 	        if($produit->getConfig()->getRendement() !== null && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendement(), 2)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-	        }
+	        } elseif($produit->getConfig()->getRendementConseille() > 0 && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendementConseille(), 2)) {
+                $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_conseille', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
         } else{
         	if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total), 4) > round($produit->getConfig()->getRendement(), 4)) {
         		$this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));

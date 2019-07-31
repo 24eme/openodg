@@ -228,11 +228,10 @@ class declarationActions extends sfActions {
                     $this->facets[$facetNom][$row->key[$facetKey]] = 0;
                 }
                 if(!array_key_exists(DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey]), $documentsCounter)){
-                  $this->facets[$facetNom][$row->key[$facetKey]] += $row->value;
+                  $this->facets[$facetNom][$row->key[$facetKey]] += 1;
                   $addition += $row->value;
                   $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = $row;
                 }
-
             }
             if($addition > 0 && $this->query && count($this->query)) {
                 $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_IDENTIFIANT], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);

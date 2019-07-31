@@ -221,6 +221,7 @@ $produit1->getConfig()->add('attributs')->add('rendement_vci_total', 15);
 $produit1->getConfig()->clearStorage();
 
 $produit2->getConfig()->add('attributs')->add('rendement', 50);
+$produit1->getConfig()->add('attributs')->add('rendement_conseille', 45);
 $produit2->getConfig()->add('attributs')->add('rendement_vci', 5);
 $produit2->getConfig()->add('attributs')->add('rendement_vci_total', 15);
 $produit2->getConfig()->clearStorage();
@@ -231,6 +232,7 @@ $vigilances = $validation->getPointsByCodes('vigilance');
 
 $t->ok(!isset($erreurs['revendication_incomplete']), "Pas de point blocant sur le remplissage des données de revendication");
 $t->ok(!isset($erreurs['revendication_rendement']), "Pas de point blocant sur le rendement de la revendication");
+$t->ok(isset($vigilances['revendication_rendement_conseille']), "Point de vigilance sur le dépassement du rendement conseillé de la revendication");
 $t->ok(!isset($erreurs['vci_stock_utilise']), "Pas de point blocant sur la repartition du vci");
 $t->ok(!isset($erreurs['vci_rendement_annee']), "Pas de point blocant sur le rendement à l'année du vci");
 $t->ok(!isset($vigilances['vci_rendement_total']), "Pas de point de vigilance sur le rendement total du vci");
@@ -275,6 +277,7 @@ $vigilances = $validation->getPointsByCodes('vigilance');
 
 $t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produitControle2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
 $t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
+$t->ok(!isset($vigilances['revendication_rendement_conseille']) && count($erreurs['revendication_rendement_conseille']) == 1 && $vigilances['revendication_rendement_conseille'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Le point de vigilance sur le rendement conseil n'est pas levé car le rendement maximum sur le revendiqué n'est pas respecté");
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 $t->ok(isset($vigilances['vci_rendement_total']) && count($vigilances['vci_rendement_total']) == 1 && $vigilances['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le stock vci final déclaré ne respecte pas le rendement total");
 $t->ok(isset($vigilances['declaration_habilitation']), "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
@@ -284,6 +287,8 @@ $t->is(count($erreurs['declaration_volume_l15_complement']), 1, "Point bloquant 
 $t->is(count($erreurs['revendication_superficie']), 1, "Point bloquant sur la superficie declarée sur la DR et la DRev");
 $t->is(count($erreurs['vci_substitue_rafraichi']), 1, "VCI rafraichi / subsitue non respect de la ligne l15");
 $t->ok(!isset($vigilances['vci_complement']) || !count($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
+$t->ok(isset($erreurs['revendication_rendement_conseille']) && count($erreurs['revendication_rendement_conseille']) == 1 && $erreurs['revendication_rendement_conseille'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le rendement conseillé sur le revendiqué n'est pas respecté");
+
 
 $drevControle->remove($produit1->getHash());
 $validation = new DRevValidation($drevControle);

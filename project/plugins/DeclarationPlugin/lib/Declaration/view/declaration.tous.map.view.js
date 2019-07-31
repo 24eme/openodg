@@ -107,12 +107,19 @@ function(doc) {
     if(doc._id.indexOf('INTENTIONCREMANT') > -1) {
 	    type = "Intention Crémant";
     }
-    
+
     if(doc.type == "DRev"){
-      for (key in doc.declaration) {
-         emit([type, doc.campagne, mode, statut, doc.identifiant, key, date, infos, raison_sociale, commune, email], 1);
-      }
+           for (key in doc.declaration) {
+              statutProduit = statut;
+              for(detailKey in doc.declaration[key]){
+                statutProduit = statut;
+                if(doc.declaration[key][detailKey].validation_odg){
+                  statutProduit = "Validé ODG";
+                }
+    	          emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email], 1);
+              }
+           }
     }else{
-        emit([type, doc.campagne, mode, statut, doc.identifiant, null, date, infos, raison_sociale, commune, email], 1);
+             emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email], 1);
     }
 }

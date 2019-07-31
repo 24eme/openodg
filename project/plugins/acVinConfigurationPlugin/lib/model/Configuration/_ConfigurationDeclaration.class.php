@@ -740,6 +740,10 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement');
     }
 
+    public function getRendementConseille() {
+        return $this->getRendementByKey('rendement_conseille');
+    }
+
     public function getRendementNoeud() {
 
         return -1;
@@ -811,11 +815,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function isActif()
     {
     	return ($this->getRendement() <= 0 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;
-    }
-
-    public function getRendementDrev() {
-
-        return 51.0;
     }
 
     public function hasRendementVci() {

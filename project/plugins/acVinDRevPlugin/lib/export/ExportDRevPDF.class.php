@@ -14,7 +14,20 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev)));
+
+        if(!DrevConfiguration::getInstance()->hasOdgProduits()) {
+
+            $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev, 'region' => null)));
+            return;
+        }
+
+        foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+            if(!count($this->drev->getProduits($region))) {
+                continue;
+            }
+            
+            $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev, 'region' => $region)));
+        }
     }
 
     protected function getHeaderTitle() {

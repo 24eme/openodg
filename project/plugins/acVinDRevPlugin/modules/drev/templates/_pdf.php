@@ -26,8 +26,9 @@
     </tr>
 </table>
 </td></tr></table>
+<?php if(count($drev->declaration->getProduitsWithoutLots($region))): ?>
 <br />
-<div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
+<div><span class="h3">&nbsp;Revendication<?php echo ($region) ? " ".$region : "" ?>&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 247px;">Appellation</th>
@@ -35,7 +36,7 @@
         <th class="th" style="text-align: center; width: 170px;">Volume revendiqué net total</th>
         <th class="th" style="text-align: center; width: 170px;">Dont VCI</th>
     </tr>
-    <?php foreach($drev->declaration->getProduitsWithoutLots() as $produit): ?>
+    <?php foreach($drev->declaration->getProduitsWithoutLots($region) as $produit): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->superficie_revendique): ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ha</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
@@ -45,7 +46,7 @@
     <?php endforeach; ?>
 </table>
 <br />
-<?php if(count($drev->declaration->getProduitsVci(true))): ?>
+<?php if(count($drev->declaration->getProduitsVci($region))): ?>
 <div><span class="h3">&nbsp;Gestion du VCI&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
@@ -58,7 +59,7 @@
         <th class="th" style="text-align: center; width: 100px;">Constitué <?php echo $drev->campagne ?></th>
         <th class="th" style="text-align: center; width: 100px;">Stock <?php echo $drev->campagne ?></th>
     </tr>
-    <?php foreach($drev->declaration->getProduitsVci(true) as $produit): ?>
+    <?php foreach($drev->declaration->getProduitsVci($region) as $produit): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->stock_precedent): ?><?php echo sprintFloatFr($produit->vci->stock_precedent) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
@@ -78,35 +79,14 @@ Les produits déclarés sont du millésime du VCI
 <span style="font-family: Dejavusans">☑</span> Je m'engage à transmettre le justificatif de destruction de VCI
 <?php endif; ?>
 <?php else: ?>
-<br />
 <em>Aucun stock VCI déclaré</em>
 <?php endif; ?>
-<?php if(DRevConfiguration::getInstance()->hasPrelevements()): ?>
-    <br />
-    <br />
-    <br />
-    <table cellspacing=0 cellpadding=0>
-    <tr><td class="tdH2Big"><span class="h2">Dégustation conseil</span></td></tr>
-    </table>
-    <?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::CUVE)); ?>
-    <br />
-    <br />
-    <?php if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0 || $drev->isNonConditionneurJustForThisMillesime()): ?>
-    <br />
-    <table cellspacing=0 cellpadding=0>
-    <tr><td class="tdH2Big"><span class="h2">Contrôle externe</span></td></tr>
-    </table>
-    <?php if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0): ?>
-    <?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::BOUTEILLE)); ?>
-    <?php elseif($drev->isNonConditionneurJustForThisMillesime()): ?>
-    <em>Ne conditionne pas de volume pour ce millésime.</em>
-    <?php endif; ?>
-    <?php endif; ?>
+<br />
 <?php endif; ?>
 
-<?php if($drev->exist('lots') && count($drev->lots)): ?>
-<br /><br />
-<div><span class="h3">&nbsp;Declaration des lots&nbsp;</span></div>
+<?php if(count($drev->declaration->getProduitsLots($region)) && $drev->exist('lots') && count($drev->lots)): ?>
+<br />
+<div><span class="h3">&nbsp;Declaration des lots<?php echo ($region) ? " ".$region : "" ?>&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 50px">&nbsp;Lot</th>
