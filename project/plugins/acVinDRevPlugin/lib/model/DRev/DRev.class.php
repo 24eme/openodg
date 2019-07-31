@@ -76,23 +76,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
     }
 
-    public function getProduits($onlyActive = true) {
+    public function getProduits($region = null) {
 
-        return $this->declaration->getProduits($onlyActive);
+        return $this->declaration->getProduits($region);
     }
 
-    public function getProduitsWithoutLots(){
-      return $this->declaration->getProduitsWithoutLots();
+    public function getProduitsWithoutLots($region = null) {
+
+        return $this->declaration->getProduitsWithoutLots($region);
     }
 
-    public function getProduitsVci() {
+    public function getProduitsVci($region = null) {
 
-        return $this->declaration->getProduitsVci();
+        return $this->declaration->getProduitsVci($region);
     }
 
-    public function getProduitsLots() {
+    public function getProduitsLots($region = null) {
 
-        return $this->declaration->getProduitsLots();
+        return $this->declaration->getProduitsLots($region);
     }
 
     public function summerizeProduitsByCouleur() {
@@ -713,41 +714,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function getProduitsByRegion($region) {
-        $produits = array();
-        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
-        foreach ($this->declaration->getProduits() as $hash => $produit) {
-          foreach ($regionRadixProduits as $filtre) {
-              $filtre = str_replace("/","\/",$filtre);
-              if(!preg_match("/".$filtre."/",$hash)){
-                continue;
-              }
-              $produits[$hash] = $produit;
-              break;
-          }
-        }
-
-        return $produits;
-    }
-
     public function validateOdg($date = null, $region = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
 
-        if($region && !DrevConfiguration::getInstance()->hasOdgProduits()) {
+        if(DrevConfiguration::getInstance()->hasOdgProduits()){
 
-            throw new sfException("Les produits des régions par ODG ne sont configurés");
+            return $this->validateOdgByRegion($date, $region);
         }
 
-        if(!DrevConfiguration::getInstance()->hasOdgProduits()){
-            $this->validation_odg = $date;
+        $this->validation_odg = $date;
+    }
 
-            return;
-        }
-
+    protected function validateOdgByRegion($date = null, $region = null) {
         if($region) {
-            foreach ($this->getProduitsByRegion($region) as $hash => $produit) {
+            foreach ($this->getProduits($region) as $hash => $produit) {
                 $produit->validateOdg($date);
             }
         } else {
