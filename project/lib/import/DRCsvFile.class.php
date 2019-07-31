@@ -10,6 +10,6 @@ class DRCsvFile extends DouaneCsvFile
   const CSV_LIGNE_CODE_VOLUME = 9;
   const CSV_LIGNE_CODE_RECOLTENETTE = 15;
   const CSV_LIGNE_CODE_VCI = 19;
-  const CSV_LIGNE_CODE_ACHAT_TOLERENCE = 99;
+  const CSV_LIGNE_CODE_ACHAT_TOLERANCE = 99;
 
 }

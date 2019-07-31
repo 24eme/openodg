@@ -26,7 +26,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
                 //Cas de fin de tableur avec les achats tolérés
-                if (preg_match('/Achats realises dans le cadre de la tolerence/', $values[0]) || preg_match('/Identification du vendeur/', $values[1]) ){
+                if (preg_match('/Achats realises dans le cadre de la toler/', $values[0]) || (isset($values[1]) && preg_match('/Identification du vendeur/', $values[1])) ){
                     $achat_fin = 1;
                     continue;
                 }
@@ -187,7 +187,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
 	        }
         }
         foreach ($achats as $a) {
-            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerence administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999\n";
+            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999\n";
         }
         return $csv;
     }

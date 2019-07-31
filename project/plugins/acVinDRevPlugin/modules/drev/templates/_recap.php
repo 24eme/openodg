@@ -1,9 +1,9 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
 
-<?php if ($drev->exist('achat_tolerence') && $drev->get('achat_tolerence')): ?>
+<?php if ($drev->exist('achat_tolerance') && $drev->get('achat_tolerance')): ?>
 <div class="alert alert-info" role="alert">
-    <p>Les volumes récoltés ont fait l'objet d'achats réalisés dans le cadre de la tolérence administrative ou sinistre climatique.</p>
+    <p>Les volumes récoltés ont fait l'objet d'achats réalisés dans le cadre de la tolérance administrative ou sinistre climatique.</p>
 </div>
 <?php endif; ?>
 

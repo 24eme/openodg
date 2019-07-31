@@ -16,7 +16,7 @@ DRev:
       type: { }
       campagne: { }
       etape: { required: false }
-      achat_tolerence: { required: false }
+      achat_tolerance: { required: false }
       identifiant: { }
       validation: { }
       validation_odg: { }
