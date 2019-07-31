@@ -94,7 +94,7 @@ class FichierClient extends acCouchdbClient {
 
         $t = strtolower($type);
         $cvi = $etablissement->cvi;
-        exec("$scrapybin/download_douane.sh $t $annee $cvi > /dev/null 2>&1");
+        exec("$scrapybin/download_douane.sh $t $annee $cvi 1>&2");
     }
 
     private function getScrapyFiles($etablissement, $type, $annee)
