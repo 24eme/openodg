@@ -154,9 +154,10 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function getTeledeclarationDrevRegion() {
-      if($this->hasCredential(self::CREDENTIAL_DREV_ADMIN)){
-        foreach ($this->getCompte()->getSociete()->getEtablissementsObject() as $etb) {
-          return $etb->region;
+      $drevConf = DrevConfiguration::getInstance();
+      if($this->hasTeledeclarationDrevAdmin() && ($region = $this->getCompte()->getRegion()) && $drevConf->hasValidationOdg()){
+        if(in_array($region, $drevConf->getOdgRegions())){
+                    return $region;
         }
       }
       return null;
