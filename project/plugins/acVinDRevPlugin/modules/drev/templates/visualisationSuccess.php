@@ -2,6 +2,7 @@
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php $hasValidationOdg = DrevConfiguration::getInstance()->hasValidationOdg(); ?>
+<?php $isValidateOdgRegion = ($regionParam)? $drev->isValidateOdgByRegion($regionParam) : null; ?>
 <?php if (isset($form)): ?>
     <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
         <?php echo $form->renderHiddenFields(); ?>
@@ -68,7 +69,7 @@
 
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin()) && $hasValidationOdg): ?>
+        <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin()) && $hasValidationOdg && $isValidateOdgRegion): ?>
         <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
         <?php elseif($sf_user->isAdmin()): ?>
