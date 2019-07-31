@@ -24,8 +24,8 @@ abstract class DocumentSecurity implements SecurityInterface {
         if(!is_array($droits)) {
             $droits = array($droits);
         }
-        
-        if(!$this->isAdmin() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
+
+        if(!$this->isAdmin() && $this->user->getCompte()->getSociete() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
 
             $lienSymbolique = DeclarationClient::getInstance()->find(str_replace($this->doc->identifiant, $this->user->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant, $this->doc->_id), acCouchdbClient::HYDRATE_JSON, true);
 
