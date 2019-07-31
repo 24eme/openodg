@@ -79,6 +79,7 @@ Les produits déclarés sont du millésime du VCI
 <span style="font-family: Dejavusans">☑</span> Je m'engage à transmettre le justificatif de destruction de VCI
 <?php endif; ?>
 <?php else: ?>
+<br />
 <em>Aucun stock VCI déclaré</em>
 <?php endif; ?>
 <br />

@@ -6,7 +6,7 @@ all:
       import_with_mentions_complementaire: true
       validation_odg: true
       odg:
-        ANJOU:
+        ANJOU_SAUMUR:
           produits:
             - "appellations/ANJ"
             - "appellations/ANJCDL"
@@ -14,8 +14,6 @@ all:
             - "appellations/AJVBRI"
             - "appellations/CAJ"
             - "appellations/RAJ"
-        SAUMUR:
-          produits:
             - "appellations/CAS"
             - "appellations/COS"
             - "appellations/SAU"

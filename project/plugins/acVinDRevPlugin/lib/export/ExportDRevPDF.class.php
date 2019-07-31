@@ -3,9 +3,11 @@
 class ExportDRevPDF extends ExportPDF {
 
     protected $drev = null;
+    protected $region = null;
 
-    public function __construct($drev, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($drev, $region = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->drev = $drev;
+        $this->region = $region;
         if (!$filename) {
             $filename = $this->getFileName(true, true);
         }
@@ -18,6 +20,11 @@ class ExportDRevPDF extends ExportPDF {
         if(!DrevConfiguration::getInstance()->hasOdgProduits()) {
 
             $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev, 'region' => null)));
+            return;
+        }
+
+        if($this->region) {
+            $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev, 'region' => $this->region)));
             return;
         }
 
@@ -54,9 +61,15 @@ class ExportDRevPDF extends ExportPDF {
         return $header_subtitle;
     }
 
-    protected function getConfig() {
 
-        return new ExportDRevPDFConfig();
+    protected function getConfig() {
+        $config = parent::getConfig();
+
+        if($this->region && file_exists(sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower($this->region).'.jpg')) {
+            $config->header_logo = 'logo_'.strtolower($this->region).'.jpg';
+        }
+
+        return $config;
     }
 
     public function getFileName($with_rev = false) {
