@@ -21,13 +21,18 @@ abstract class ExportPDF {
     }
 
     public function isUseCache() {
-        
+
         return $this->use_cache;
     }
 
     public function setPartialFunction($function) {
-        
+
         $this->partial_function = $function;
+    }
+
+    public function getPartialFunction() {
+
+        return $this->partial_function;
     }
 
     public function isCached() {
