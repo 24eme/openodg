@@ -42,7 +42,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
 
-        $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement calculé avec la L15 de la DR");
+        $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement dans votre DR (L5 - L16)");
 
         /*
          * Engagement
@@ -135,7 +135,7 @@ class DRevValidation extends DocumentValidation
     protected function controleRecoltes()
     {
         foreach($this->document->getProduits() as $produit) {
-            if(($produit->recolte->recolte_nette / $produit->recolte->superficie_total) > $produit->getConfig()->getRendement()) {
+            if((($produit->recolte->volume_total - $produit->recolte->usages_industriels_total) / $produit->recolte->superficie_total) > $produit->getConfig()->getRendement()) {
                 $this->addPoint(self::TYPE_WARNING, 'recolte_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
         }
