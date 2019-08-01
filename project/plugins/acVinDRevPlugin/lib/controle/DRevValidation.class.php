@@ -166,7 +166,10 @@ class DRevValidation extends DocumentValidation
         if ($produit->isCleanable()) {
           return;
         }
-        if($produit->superficie_revendique === null || $produit->volume_revendique_issu_recolte === null) {
+        if($produit->superficie_revendique === null) {
+            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }
+        if($produit->volume_revendique_issu_recolte === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->superficie_revendique > 0) {
@@ -227,4 +230,5 @@ class DRevValidation extends DocumentValidation
             $point->setMessage($point->getMessage() . " soit $vol hl");
         }
     }
+
 }
