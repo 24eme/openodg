@@ -30,6 +30,16 @@ class ExportDRevPDF extends ExportPDF {
         }
     }
 
+    public function getRegion() {
+        $region = null;
+
+        if(count($this->regions) == 1 && $this->regions[0]) {
+            $region = $this->regions[0];
+        }
+
+        return $region;
+    }
+
     public function generate() {
         if(count($this->regions) <= 1) {
 
@@ -80,7 +90,14 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration de Revendication %s", $this->drev->campagne);
+        $titre = sprintf("Déclaration de Revendication %s", $this->drev->campagne);
+
+        $region = $this->getRegion();
+        if($region) {
+            $titre .= " (".$region.")";
+        }
+
+        return $titre;
     }
 
     protected function getHeaderSubtitle() {
@@ -121,13 +138,8 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public function getFileName($with_rev = false) {
-        $region = null;
 
-        if(count($this->regions) == 1 && $this->regions[0]) {
-            $region = $this->regions[0];
-        }
-
-        return self::buildFileName($this->drev, true, $region);
+        return self::buildFileName($this->drev, true, $this->getRegion());
     }
 
     public static function buildFileName($drev, $with_rev = false, $region = null) {

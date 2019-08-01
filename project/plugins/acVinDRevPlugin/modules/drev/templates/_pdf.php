@@ -28,7 +28,7 @@
 </td></tr></table>
 <?php if(count($drev->declaration->getProduitsWithoutLots($region))): ?>
 <br />
-<div><span class="h3">&nbsp;Revendication<?php echo ($region) ? " ".$region : "" ?>&nbsp;</span></div>
+<div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 247px;">Appellation</th>
@@ -87,7 +87,7 @@ Les produits déclarés sont du millésime du VCI
 
 <?php if(count($drev->declaration->getProduitsLots($region)) && $drev->exist('lots') && count($drev->lots)): ?>
 <br />
-<div><span class="h3">&nbsp;Declaration des lots<?php echo ($region) ? " ".$region : "" ?>&nbsp;</span></div>
+<div><span class="h3">&nbsp;Declaration des lots&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 50px">&nbsp;Lot</th>
