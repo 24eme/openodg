@@ -96,7 +96,7 @@
                         <h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
                     </div>
                     <div class="modal-body">
-                        <?php for($i=0; $i < 3; $i++): ?>
+                        <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-7">
