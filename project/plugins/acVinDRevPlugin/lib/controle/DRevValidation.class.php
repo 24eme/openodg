@@ -29,7 +29,8 @@ class DRevValidation extends DocumentValidation
         /*
          * Error
          */
-        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', "Toutes les informations de revendication n'ont pas été saisies");
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', "Le volume revendique n'a pas été saisie");
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', "La superficie revensiqué n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_conseille', "Le rendement sur le volume revendiqué dépasse le rendement légal il faudra fournir une dérogation pour être autorisé à revendiquer ce rendement");
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
@@ -160,17 +161,16 @@ class DRevValidation extends DocumentValidation
         }
     }
 
-
     protected function controleRevendication($produit)
     {
         if ($produit->isCleanable()) {
           return;
         }
         if($produit->superficie_revendique === null) {
-            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
         if($produit->volume_revendique_issu_recolte === null) {
-            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->superficie_revendique > 0) {
 	        if($produit->getConfig()->getRendement() !== null && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendement(), 2)) {
