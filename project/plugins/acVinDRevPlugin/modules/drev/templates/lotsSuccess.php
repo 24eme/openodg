@@ -23,28 +23,6 @@
                 <div class="row">
                     <div class="col-md-5">
                         <div class="form-group">
-                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-6">
-                                  <?php echo $lot['numero']->render(); ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
-                        <div class="form-group">
-                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-5">
-                                <div class="input-group">
-                                    <?php echo $lot['volume']->render(); ?>
-                                    <div class="input-group-addon">hl</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="form-group">
                             <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-8">
                                   <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
@@ -61,6 +39,28 @@
                             </div>
                             <div class="col-sm-5">
                                 <p class="form-control-static"><a href="" id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal" data-target="#<?php echo $lot->renderId() ?>_cepages" ><?php echo (count($lotItem->cepages->toArray(true, false))) ? $lotItem->getCepagesLibelle() : "Définir le cépage" ?></a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-6">
+                                  <?php echo $lot['numero']->render(); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
+                        <div class="form-group">
+                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-5">
+                                <div class="input-group">
+                                    <?php echo $lot['volume']->render(); ?>
+                                    <div class="input-group-addon">hl</div>
+                                </div>
                             </div>
                         </div>
                     </div>
