@@ -31,7 +31,7 @@ class DRevValidation extends DocumentValidation
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', "Toutes les informations de revendication n'ont pas été saisies");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
-        $this->addControle(self::TYPE_WARNING, 'revendication_rendement_conseille', "Le rendement dépasse le rendement légal il faudra fournir une dérogation pour être autorisé à revendiquer ce rendement");
+        $this->addControle(self::TYPE_WARNING, 'revendication_rendement_conseille', "Le rendement sur le volume revendiqué dépasse le rendement légal il faudra fournir une dérogation pour être autorisé à revendiquer ce rendement");
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_complement', 'Vous revendiquez un volume supérieur à celui qui figure sur votre déclaration douanière en L15');
@@ -40,6 +40,9 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'vci_substitue_rafraichi', 'Vous ne pouvez ni subsituer ni rafraichir un volume de VCI supérieur à celui qui figure sur votre déclaration douanière en L15');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
+
+        $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement issu de la récolte");
+
         /*
          * Engagement
          */
@@ -50,14 +53,14 @@ class DRevValidation extends DocumentValidation
 
     public function controle()
     {
-    	  $produits = array();
+        $this->controleRecoltes();
+    	$produits = array();
         foreach ($this->document->getProduitsWithoutLots() as $hash => $produit) {
               $this->controleRevendication($produit);
               $this->controleVci($produit);
         }
 
         foreach ($this->document->getProduits() as $hash => $produit) {
-
           $produits[$hash] = $produit;
         }
         $this->controleNeant();
@@ -127,6 +130,36 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, '');
         }
     }
+
+    protected function controleRecoltes()
+    {
+        $produits = array();
+
+        foreach($this->document->getProduits() as $produit) {
+            $hash = $produit->getConfig()->getHash();
+
+            if($produit->getConfig()->isRevendicationParLots()) {
+                $hash = $produit->getConfig()->getCouleur()->getHash();
+            }
+            
+            if(!array_key_exists($hash, $produits)) {
+                $produits[$hash] = array("volume" => 0, "superficie" => 0);
+            }
+
+            $produits[$hash]["volume"] += $produit->recolte->volume_total - $produit->recolte->usages_industriels_total;
+            $produits[$hash]["superficie"] += $produit->recolte->superficie_total;
+        }
+
+        foreach($produits as $hash => $produit) {
+            $rendement = $produit["volume"] / $produit["superficie"];
+            $produitConfig = $this->document->getConfiguration()->get($hash);
+
+            if($rendement > $produitConfig->getRendement()) {
+                $this->addPoint(self::TYPE_WARNING, 'recolte_rendement', $produitConfig->getLibelleFormat(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
+        }
+    }
+
 
     protected function controleRevendication($produit)
     {
