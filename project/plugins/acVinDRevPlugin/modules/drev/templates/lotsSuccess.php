@@ -4,7 +4,7 @@
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_LOTS, 'drev' => $drev, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Revendication des Lots</h2></div>
+    <div class="page-header"><h2>Revendication des Lots IGP</h2></div>
 
     <?php echo include_partial('global/flash'); ?>
 
