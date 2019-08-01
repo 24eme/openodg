@@ -176,7 +176,7 @@ class DRevValidation extends DocumentValidation
 	        if (round($produit->volume_revendique_issu_recolte, 4) != round($produit->recolte->recolte_nette, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4)) {
 	          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
-	        if (round($produit->volume_revendique_total, 4) > round($produit->recolte->recolte_nette + $produit->vci->complement, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4)) {
+	        if (round($produit->volume_revendique_total, 4) > round($produit->recolte->recolte_nette + $produit->vci->complement, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4) && (!$drev->exist('achat_tolerance') || !$drev->achat_tolerance)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
 	        if ($produit->recolte->recolte_nette && ($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
