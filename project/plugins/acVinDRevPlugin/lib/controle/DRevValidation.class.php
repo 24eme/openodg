@@ -42,7 +42,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
 
-        $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement issu de la récolte");
+        $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement calculé avec la L15 de la DR");
 
         /*
          * Engagement
@@ -134,29 +134,9 @@ class DRevValidation extends DocumentValidation
 
     protected function controleRecoltes()
     {
-        $produits = array();
-
         foreach($this->document->getProduits() as $produit) {
-            $hash = $produit->getConfig()->getHash();
-
-            if($produit->getConfig()->isRevendicationParLots()) {
-                $hash = $produit->getConfig()->getCouleur()->getHash();
-            }
-            
-            if(!array_key_exists($hash, $produits)) {
-                $produits[$hash] = array("volume" => 0, "superficie" => 0);
-            }
-
-            $produits[$hash]["volume"] += $produit->recolte->volume_total - $produit->recolte->usages_industriels_total;
-            $produits[$hash]["superficie"] += $produit->recolte->superficie_total;
-        }
-
-        foreach($produits as $hash => $produit) {
-            $rendement = $produit["volume"] / $produit["superficie"];
-            $produitConfig = $this->document->getConfiguration()->get($hash);
-
-            if($rendement > $produitConfig->getRendement()) {
-                $this->addPoint(self::TYPE_WARNING, 'recolte_rendement', $produitConfig->getLibelleFormat(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            if(($produit->recolte->recolte_nette / $produit->recolte->superficie_total) > $produit->getConfig()->getRendement()) {
+                $this->addPoint(self::TYPE_WARNING, 'recolte_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
         }
     }
