@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(74);
+$t = new lime_test(77);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -40,7 +40,7 @@ $dr->save();
 $drev->importFromDocumentDouanier();
 $drev->save();
 
-$t->is(count($drev->getProduits()), 2, "La DRev a repris 2 produits du csv de la DR");
+$t->is(count($drev->getProduits()), 4, "La DRev a repris 4 produits du csv de la DR");
 
 $i = 0;
 $produits2Delete = array();
@@ -52,14 +52,15 @@ foreach($drev->getProduits() as $produit) {
 }
 
 foreach($produits2Delete as $hash) {
-    $drev->remove($hash);
+    //$drev->remove($hash);
 }
 
 $produits = $drev->getProduits();
 
 
 $produit2 = current($produits);
-    $produit_hash2 = $produit2->getHash();
+$produit_hash2 = $produit2->getHash();
+
 next($produits);
 $produit1 = current($produits);
 $produit_hash1 = $produit1->getHash();
@@ -173,7 +174,7 @@ $form = new DRevRevendicationForm($drev);
 
 $defaults = $form->getDefaults();
 
-$t->is(count($form['produits']), count($drev->getProduits()), "La form à le même nombre de produit que dans la drev");
+$t->is(count($form['produits']), count($drev->getProduitsWithoutLots()), "La form à le même nombre de produit que dans la drev");
 $t->is($form['produits'][$produit_hash1]['recolte']['volume_total']->getValue(), $produit1->recolte->volume_sur_place, "Le volume total récolté est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['recolte']['recolte_nette']->getValue(), $produit1->recolte->recolte_nette, "La récolté nette de la DR sont initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['recolte']['volume_sur_place']->getValue(), $produit1->recolte->volume_sur_place, "Le volume sur place est initialisé dans le form");
@@ -187,7 +188,7 @@ $valuesRev = array(
 );
 
 $valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 104.1;
-$valuesRev['produits'][$produit_hash2]['volume_revendique_issu_recolte'] = 100;
+$valuesRev['produits'][$produit_hash2]['volume_revendique_issu_recolte'] = 104.1;
 
 $form->bind($valuesRev);
 
@@ -215,13 +216,13 @@ $habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant,
 $habilitation->addProduit($produit1->getConfig()->getHash())->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::STATUT_HABILITE);
 $habilitation->save();
 
-$produit1->getConfig()->add('attributs')->add('rendement', 50);
+$produit1->getConfig()->add('attributs')->add('rendement', 55);
+$produit1->getConfig()->add('attributs')->add('rendement_conseille', 45);
 $produit1->getConfig()->add('attributs')->add('rendement_vci', 5);
 $produit1->getConfig()->add('attributs')->add('rendement_vci_total', 15);
 $produit1->getConfig()->clearStorage();
 
-$produit2->getConfig()->add('attributs')->add('rendement', 50);
-$produit1->getConfig()->add('attributs')->add('rendement_conseille', 45);
+$produit2->getConfig()->add('attributs')->add('rendement', 55);
 $produit2->getConfig()->add('attributs')->add('rendement_vci', 5);
 $produit2->getConfig()->add('attributs')->add('rendement_vci_total', 15);
 $produit2->getConfig()->clearStorage();
@@ -230,7 +231,8 @@ $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->ok(!isset($erreurs['revendication_incomplete']), "Pas de point blocant sur le remplissage des données de revendication");
+$t->ok(!isset($erreurs['revendication_incomplete_volume']), "Pas de point blocant sur le remplissage des volumes de revendication");
+$t->ok(!isset($erreurs['revendication_incomplete_superficie']), "Pas de point blocant sur le remplissage des superficies de revendication");
 $t->ok(!isset($erreurs['revendication_rendement']), "Pas de point blocant sur le rendement de la revendication");
 $t->ok(isset($vigilances['revendication_rendement_conseille']), "Point de vigilance sur le dépassement du rendement conseillé de la revendication");
 $t->ok(!isset($erreurs['vci_stock_utilise']), "Pas de point blocant sur la repartition du vci");
@@ -242,7 +244,7 @@ $t->ok(!isset($erreurs['revendication_superficie']), "Pas de point blocant sur l
 if($application == "rhone") {
     $t->is(count($vigilances['declaration_habilitation']), 1, "Pas de point de vigilance sur l'habilitation du premier produit");
 } else {
-    $t->is(!isset($vigilances['declaration_habilitation']), "Pas de point de vigilance sur l'habilitation du premier produit");
+    $t->ok(!isset($vigilances['declaration_habilitation']), "Pas de point de vigilance sur l'habilitation du premier produit");
 }
 $t->ok(!isset($vigilances['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
 $t->ok(!isset($vigilances['declaration_neant']), "Pas de point vigilance sur la declaration neant");
@@ -275,20 +277,18 @@ $validation = new DRevValidation($drevControle);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produitControle2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
+$t->ok(isset($erreurs['revendication_incomplete_volume']) && count($erreurs['revendication_incomplete_volume']) == 1 && $erreurs['revendication_incomplete_volume'][0]->getInfo() == $produitControle2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
 $t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
-$t->ok(!isset($vigilances['revendication_rendement_conseille']) && count($erreurs['revendication_rendement_conseille']) == 1 && $vigilances['revendication_rendement_conseille'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Le point de vigilance sur le rendement conseil n'est pas levé car le rendement maximum sur le revendiqué n'est pas respecté");
+$t->ok(!isset($vigilances['revendication_rendement_conseille']), "Le point de vigilance sur le rendement conseil n'est pas levé car le rendement maximum sur le revendiqué n'est pas respecté");
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 $t->ok(isset($vigilances['vci_rendement_total']) && count($vigilances['vci_rendement_total']) == 1 && $vigilances['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le stock vci final déclaré ne respecte pas le rendement total");
 $t->ok(isset($vigilances['declaration_habilitation']), "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
-$t->is(count($vigilances['declaration_volume_l15']), 1, "Point vigilance sur le respect de la ligne l15");
+$t->is(count($vigilances['declaration_volume_l15']), 2, "Point vigilance sur le respect de la ligne l15");
 
 $t->is(count($erreurs['declaration_volume_l15_complement']), 1, "Point bloquant sur le respect de la ligne l15");
 $t->is(count($erreurs['revendication_superficie']), 1, "Point bloquant sur la superficie declarée sur la DR et la DRev");
 $t->is(count($erreurs['vci_substitue_rafraichi']), 1, "VCI rafraichi / subsitue non respect de la ligne l15");
 $t->ok(!isset($vigilances['vci_complement']) || !count($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
-$t->ok(isset($erreurs['revendication_rendement_conseille']) && count($erreurs['revendication_rendement_conseille']) == 1 && $erreurs['revendication_rendement_conseille'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le rendement conseillé sur le revendiqué n'est pas respecté");
-
 
 $drevControle->remove($produit1->getHash());
 $validation = new DRevValidation($drevControle);
@@ -313,4 +313,4 @@ $export = new ExportDRevCSV($drev);
 
 $csvContent = $export->export();
 
-$t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");
+$t->is(count(explode("\n", $csvContent)), 6, "L'export fait 4 lignes");

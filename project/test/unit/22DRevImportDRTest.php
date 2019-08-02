@@ -15,8 +15,10 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 $campagne = (date('Y')-1)."";
 
 $csvDouane = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane_'.$application.'.csv');
+file_put_contents(dirname(__FILE__).'/../data/dr_douane_'.$application.'_converti.csv', $csvDouane->convert());
+$drCsv = new DRCsvFile(dirname(__FILE__).'/../data/dr_douane_'.$application.'_converti.csv');
+$csv = $drCsv->getCsv();
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$csv = $drev->getCsvFromObjectDouanier($csvDouane);
 
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_TOTAL);
@@ -103,7 +105,7 @@ if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $nb_bio = 0;
-foreach($erreurs['revendication_incomplete'] as $err) {
+foreach($erreurs['revendication_incomplete_volume'] as $err) {
   if (preg_match('/ '.DRevClient::DENOMINATION_BIO_LIBELLE_AUTO.'/', $err->getInfo()) ) {
     $nb_bio++;
   }
