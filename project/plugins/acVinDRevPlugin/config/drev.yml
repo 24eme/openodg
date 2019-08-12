@@ -7,4 +7,3 @@ all:
       denomination_auto: false
       exploitation_save: false
       validation_odg: false
-      modificatrice_lots : false
