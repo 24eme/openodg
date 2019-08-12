@@ -353,6 +353,10 @@ class drevActions extends sfActions {
             return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
+        if(DrevConfiguration::getInstance()->isModificatriceLots() && $this->drev->isModificative()){
+          return $this->redirect('drev_validation', $this->drev);
+        }
+
         return $this->redirect('drev_revendication', $this->drev);
     }
 
@@ -644,9 +648,14 @@ class drevActions extends sfActions {
 
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+        $isModificatriceLots = DrevConfiguration::getInstance()->isModificatriceLots();
 
         $drev_modificative = $drev->generateModificative();
         $drev_modificative->save();
+
+        if($isModificatriceLots){
+          return $this->redirect('drev_lots', $drev_modificative);
+        }
 
         return $this->redirect('drev_edit', $drev_modificative);
     }

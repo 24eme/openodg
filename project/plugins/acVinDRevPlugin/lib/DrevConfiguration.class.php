@@ -66,4 +66,7 @@ class DRevConfiguration {
       return isset($this->configuration['validation_odg']) && boolval($this->configuration['validation_odg']);
     }
 
+    public function isModificatriceLots(){
+      return isset($this->configuration['modificatrice_lots']) && boolval($this->configuration['modificatrice_lots']);
+    }
 }
