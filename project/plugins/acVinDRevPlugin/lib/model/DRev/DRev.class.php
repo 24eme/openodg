@@ -112,7 +112,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getLotsByCouleur() {
         $couleurs = array();
         foreach ($this->lots as $lot) {
+          $couleur = "vide";
+          if($lot->produit_hash){
             $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
+          }
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array();
             }
@@ -697,17 +700,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!$this->exist('lots')) {
             return;
         }
-        $keysToRemove = array();
+        $lotsToKeep = array();
+
         foreach($this->lots as $keyLot => $lot) {
             if(!$lot->isCleanable()) {
-                continue;
+                $lotsToKeep[] = $lot;
             }
-            $keysToRemove[] = $keyLot;
         }
 
-        foreach($keysToRemove as $key) {
-            $this->lots->remove($key);
-        }
+         $this->remove('lots');
+         $this->add('lots', $lotsToKeep);
     }
 
     public function addLot() {
