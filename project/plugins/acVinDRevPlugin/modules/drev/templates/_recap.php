@@ -1,7 +1,13 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
 
-<h3>Revendication</h3>
+<?php if ($drev->exist('achat_tolerance') && $drev->get('achat_tolerance')): ?>
+<div class="alert alert-info" role="alert">
+    <p>Les volumes récoltés ont fait l'objet d'achats réalisés dans le cadre de la tolérance administrative ou sinistre climatique.</p>
+</div>
+<?php endif; ?>
+
+<h3>Revendication AOC</h3>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -15,7 +21,7 @@
     <tbody>
         <?php foreach ($drev->declaration->getProduitsWithoutLots() as $produit) : ?>
             <tr>
-                <td><?php echo $produit->getLibelleComplet() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right">&nbsp;(<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha)</small></td>
+                <td><?php echo $produit->getLibelleComplet() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right <?php if($produit->getRendementEffectif() > $produit->getConfig()->getRendement()): ?>text-danger<?php endif; ?>">&nbsp;<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha</small></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_toral') ?>"><?php if($produit->volume_revendique_total !== null): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
@@ -24,7 +30,7 @@
     </tbody>
 </table>
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
-    <h3>Déclaration des lots</h3>
+    <h3>Déclaration des lots IGP</h3>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -50,10 +56,10 @@
                 <?php $volume += $lot->volume ; endforeach; ?>
                 <tr>
                     <td><strong>Total</strong></td>
-                    <td><strong><?php echo $lot->getConfigProduit()->getCouleur()->getLibelleComplet(); ?></strong><small class="pull-right">&nbsp;(<?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha)</small></td>
+                    <td><strong><?php echo $lot->getConfigProduit()->getCouleur()->getLibelleComplet(); ?></strong><small class="pull-right">&nbsp;<?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small></td>
                     <td class="text-right"><strong><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong></td>
-                    <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong> / <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-center"><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small></td>
+                    <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong></td>
+                    <td class="text-center"><?php if($synthese_revendication[$couleur]['volume_total'] > 0): ?><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small><?php endif; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

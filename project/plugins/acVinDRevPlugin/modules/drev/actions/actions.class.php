@@ -353,6 +353,10 @@ class drevActions extends sfActions {
             return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->drev->isModificative()){
+          return $this->redirect('drev_validation', $this->drev);
+        }
+
         return $this->redirect('drev_revendication', $this->drev);
     }
 
@@ -648,6 +652,10 @@ class drevActions extends sfActions {
         $drev_modificative = $drev->generateModificative();
         $drev_modificative->save();
 
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
+          return $this->redirect('drev_lots', $drev_modificative);
+        }
+
         return $this->redirect('drev_edit', $drev_modificative);
     }
 
@@ -659,7 +667,7 @@ class drevActions extends sfActions {
             $drev->cleanDoc();
         }
 
-        $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {
@@ -733,7 +741,7 @@ class drevActions extends sfActions {
     }
 
     protected function sendDRevValidation($drev) {
-        $pdf = new ExportDRevPdf($drev, 'pdf', true);
+        $pdf = new ExportDRevPdf($drev, null, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();

@@ -53,15 +53,32 @@ class DRevDeclaration extends BaseDRevDeclaration
 		}
 	}
 
-	public function getProduits($onlyActive = false)
-    {
-        $produits = array();
-        foreach($this as $key => $items) {
-			foreach($items as $item) {
-				if ($onlyActive && !$item->isActive()) {
+	protected function getProduitsByRegion($region) {
+		$produits = array();
+		$regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+		foreach ($this->getProduits() as $hash => $produit) {
+		  	foreach ($regionRadixProduits as $filtre) {
+				if(!preg_match("|".$filtre."|", $hash)){
+					continue;
+				}
+				$produits[$hash] = $produit;
+				break;
+		  	}
+		}
 
-		    		continue;
-		    	}
+		return $produits;
+	}
+
+	public function getProduits($region = null)
+    {
+		if($region) {
+
+			return $this->getProduitsByRegion($region);
+		}
+
+        $produits = array();
+        foreach($this as $items) {
+			foreach($items as $item) {
 	            $produits[$item->getHash()] = $item;
 			}
         }
@@ -69,23 +86,26 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $produits;
     }
 
-	public function getProduitsWithoutLots(){
+	public function getProduitsWithoutLots($region = null){
 		$produits = array();
-		foreach ($this->getProduits()	 as $key => $produit) {
-			if(!$produit->getConfig()->isRevendicationParLots()){
-				$produits[$key] =	$produit;
+		foreach ($this->getProduits($region) as $produit) {
+			if($produit->getConfig()->isRevendicationParLots()){
+
+				continue;
 			}
+			$produits[$produit->getHash()] = $produit;
 		}
 		return $produits;
 	}
 
-    public function getProduitsVci()
+    public function getProduitsVci($region = null)
     {
         $produitsVci = array();
-        $produits = $this->getProduits();
+        $produits = $this->getProduits($region);
         foreach($produits as $produit) {
             if(!$produit->hasVci()) {
-                continue;
+
+				continue;
             }
             $produitsVci[$produit->getHash()] = $produit;
         }
@@ -93,18 +113,17 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $produitsVci;
     }
 
-	public function getProduitsLots()
+	public function getProduitsLots($region = null)
     {
-        $produitsVci = array();
-        $produits = $this->getProduits();
-        foreach($produits as $produit) {
+        $produits = array();
+        foreach($this->getProduits($region) as $produit) {
             if(!$produit->getConfig()->isRevendicationParLots()) {
                 continue;
             }
-            $produitsVci[$produit->getHash()] = $produit;
+            $produits[$produit->getHash()] = $produit;
         }
 
-        return $produitsVci;
+        return $produits;
     }
 
     public function hasVciDetruit()

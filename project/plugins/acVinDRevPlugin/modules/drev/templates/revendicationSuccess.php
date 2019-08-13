@@ -22,7 +22,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
         <!--<a class="btn btn-warning btn-sm pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Récupérer les données de la Déclaration de Récolte</a>-->
     <?php endif; ?>
-    <h2>Revendication</h2>
+    <h2>Revendication AOC</h2>
 </div>
 
 <?php echo include_partial('global/flash'); ?>

@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(45);
+$t = new lime_test(49);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -170,3 +170,21 @@ $t->is($lot->cepages->getLastKey(), "Cabernet", "Le cépage est Cabernet");
 $t->is($lot->cepages->getLast(), 15, "La repartition du cépage est de 15");
 $t->is($drev->get($produit_hash1)->volume_revendique_issu_recolte, 0, "Le volument de revendentication du produit ".$produit1->getConfig()->getLibelleComplet()." a été synchronisé par rapport aux lots");
 $t->is($drev->get($produit_hash2)->volume_revendique_issu_recolte, 5, "Le volument de revendentication du produit ".$produit2->getConfig()->getLibelleComplet()." a été synchronisé par rapport aux lots");
+
+$drev = DRevClient::getInstance()->find("DREV-".$viti->identifiant."-".$campagne);
+
+$t->comment("Formulaire lots suppression");
+
+$form = new DRevLotsForm($drev);
+$defaults = $form->getDefaults();
+$values = $defaults;
+
+unset($values['lots'][1]);
+$form->bind($values);
+
+$t->ok($form->isValid(), "Le formulaire après suppression d'une ligne est valide");
+$form->save();
+
+$t->is(count($drev->lots), 2, "il reste 2 lots dans la Drev");
+$t->is($drev->lots[0]->produit_hash,$produit1->getParent()->getHash(),"Le 1er lot restant est correct");
+$t->is($drev->lots[1]->produit_hash,$produit2->getParent()->getHash(),"Le 2nd lot restant est correct");

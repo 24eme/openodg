@@ -76,23 +76,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
     }
 
-    public function getProduits($onlyActive = true) {
+    public function getProduits($region = null) {
 
-        return $this->declaration->getProduits($onlyActive);
+        return $this->declaration->getProduits($region);
     }
 
-    public function getProduitsWithoutLots(){
-      return $this->declaration->getProduitsWithoutLots();
+    public function getProduitsWithoutLots($region = null) {
+
+        return $this->declaration->getProduitsWithoutLots($region);
     }
 
-    public function getProduitsVci() {
+    public function getProduitsVci($region = null) {
 
-        return $this->declaration->getProduitsVci();
+        return $this->declaration->getProduitsVci($region);
     }
 
-    public function getProduitsLots() {
+    public function getProduitsLots($region = null) {
 
-        return $this->declaration->getProduitsLots();
+        return $this->declaration->getProduitsLots($region);
     }
 
     public function summerizeProduitsByCouleur() {
@@ -111,7 +112,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getLotsByCouleur() {
         $couleurs = array();
         foreach ($this->lots as $lot) {
+          $couleur = "vide";
+          if($lot->produit_hash){
             $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
+          }
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array();
             }
@@ -185,18 +189,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getDocumentDouanier();
     }
 
-    public function getDocumentDouanier($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $fichier = DRClient::getInstance()->find('DR-'.$this->identifiant.'-'.$this->campagne);
+    public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $etablissements = $this->getEtablissementObject()->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
+        $fichiers = array();
+        foreach($etablissements as $e) {
+            $f = $this->getDocumentDouanier($ext, $e->identifiant, $hydrate);
+            if ($f) {
+                $fichiers[] = $f;
+            }
+        }
+        return $fichiers;
+    }
+
+    public function getDocumentDouanier($ext = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        if (!$identifiant) {
+            $identifiant = $this->identifiant;
+        }
+        $fichier = DRClient::getInstance()->find('DR-'.$identifiant.'-'.$this->campagne);
         if ($fichier) {
             return ($ext)? $fichier->getFichier($ext) : $fichier;
         }
 
-        $fichier = SV12Client::getInstance()->find('SV12-'.$this->identifiant.'-'.$this->campagne);
+        $fichier = SV12Client::getInstance()->find('SV12-'.$identifiant.'-'.$this->campagne);
         if ($fichier) {
             return ($ext)? $fichier->getFichier($ext) : $fichier;
         }
 
-        $fichier = SV11Client::getInstance()->find('SV11-'.$this->identifiant.'-'.$this->campagne);
+        $fichier = SV11Client::getInstance()->find('SV11-'.$identifiant.'-'.$this->campagne);
         if ($fichier) {
             return ($ext)? $fichier->getFichier($ext) : $fichier;
         }
@@ -205,7 +224,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function hasDocumentDouanier() {
-        return ($this->getDocumentDouanier());
+        $a = $this->getDocumentsDouaniers();
+        if (!$a) {
+            return false;
+        }
+        return count($a);
     }
 
     public function getDocumentDouanierType() {
@@ -271,28 +294,36 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getCsvFromDocumentDouanier() {
-      if ($this->csv_douanier != null) {
-        return $this->csv_douanier;
-      }
+
+        if ($this->csv_douanier != null) {
+            return $this->csv_douanier;
+        }
     	if (!$this->hasDocumentDouanier()) {
     		return null;
     	}
+
     	$typeDocumentDouanier = $this->getDocumentDouanierType();
-    	$csvFile = $this->getDocumentDouanier('csv');
-    	if (!$csvFile) {
+    	$csvFiles = $this->getDocumentsDouaniers('csv');
+
+
+    	if (!count($csvFiles)) {
     		$docDouanier = $this->getDocumentDouanier();
     		if ($docDouanier &&  $docDouanier->exist('donnees') && count($docDouanier->donnees) >= 1) {
     			$className = DeclarationClient::getInstance()->getExportCsvClassName($typeDocumentDouanier);
     			$csvOrigine = new $className($docDouanier, false);
     			$this->csv_douanier = $csvOrigine->getCsv();
     		}
-        return $this->csv_douanier;
+            return $this->csv_douanier;
     	}
-    	return $this->getCsvFromObjectDouanier(DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->getDocumentDouanier()));
 
-    }
-    public function getCsvFromObjectDouanier($csvOrigine) {
-    	$csvContent = $csvOrigine->convert();
+        $csvContent = '';
+        foreach($csvFiles as $a_csv_file) {
+    	    $csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $a_csv_file);
+            if ($csvOrigine) {
+    	        $csvContent .= $csvOrigine->convert();
+            }
+        }
+
     	if (!$csvContent) {
     		return null;
     	}
@@ -305,7 +336,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	}
     	file_put_contents($path.$filename, $csvContent);
     	$csv = DouaneCsvFile::getNewInstanceFromType($csvOrigine->getCsvType(), $path.$filename);
-      $this->csv_douanier = $csv->getCsv();
+        $this->csv_douanier = $csv->getCsv();
+
     	return $this->csv_douanier;
     }
 
@@ -347,7 +379,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$csv) {
       	return false;
       }
-	    try {
+	  try {
         $this->importCSVDouane($csv);
         return true;
       } catch (Exception $e) { }
@@ -365,7 +397,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $produitsImporte = array();
         $has_bio = false;
+
+        $has_bailleurs_or_multiple = 0;
+        $first_cvi = $csv[0][DRCsvFile::CSV_RECOLTANT_CVI];
         foreach($csv as $k => $line) {
+            if ($line[DRCsvFile::CSV_BAILLEUR_PPM]) {
+                $has_bailleurs_or_multiple = true;
+                break;
+            }
+            if ($first_cvi != $line[DRCsvFile::CSV_RECOLTANT_CVI]) {
+                $has_bailleurs_or_multiple = true;
+                break;
+            }
+        }
+        $cvi = $this->declarant->cvi;
+        $ppm = $this->declarant->ppm;
+        foreach($csv as $k => $line) {
+            $is_bailleur = false;
+
+            if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_ACHAT_TOLERANCE) {
+                $this->add('achat_tolerance', 1);
+                continue;
+            }
+
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
@@ -395,8 +449,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
               $produit = $this->addProduit($produitConfig->getHash(), null, $line[DRCsvFile::CSV_COLONNE_ID]);
             }
 
+
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
                 $bailleurs[$produit->getHash()] = $produit->getHash();
+                $is_bailleur = true;
+            }
+
+
+            if ($is_bailleur && (!$has_bailleurs_or_multiple || !$ppm || $ppm != trim($line[DRCsvFile::CSV_BAILLEUR_PPM]))) {
+                continue;
+            }
+            if (!$is_bailleur && $has_bailleurs_or_multiple && (!$cvi || $cvi != trim($line[DRCsvFile::CSV_RECOLTANT_CVI]))) {
                 continue;
             }
 
@@ -637,17 +700,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!$this->exist('lots')) {
             return;
         }
-        $keysToRemove = array();
+        $lotsToKeep = array();
+
         foreach($this->lots as $keyLot => $lot) {
             if(!$lot->isCleanable()) {
-                continue;
+                $lotsToKeep[] = $lot;
             }
-            $keysToRemove[] = $keyLot;
         }
 
-        foreach($keysToRemove as $key) {
-            $this->lots->remove($key);
-        }
+         $this->remove('lots');
+         $this->add('lots', $lotsToKeep);
     }
 
     public function addLot() {
@@ -717,40 +779,50 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
-        if(!$region && !DrevConfiguration::getInstance()->hasOdgProduits()){
-          $this->validation_odg = $date;
-        }elseif(!$region && DrevConfiguration::getInstance()->hasOdgProduits()){
-          $regions = DrevConfiguration::getInstance()->getOdgRegions();
-          foreach ($regions as $region) {
-            $this->validateOdg($date, $region);
-          }
-        }elseif($region){
-          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
-          $produitsToValidate = array();
-          foreach ($this->declaration->getProduits() as $key => $produit) {
-            foreach ($regionRadixProduits as $filtre) {
-                $filtre = str_replace("/","\/",$filtre);
-                if(preg_match("/".$filtre."/",$key)){
-                  $produitsToValidate[$key] = $produit;
-                  break;
-                }
-            }
-          }
-          foreach ($produitsToValidate as $hash => $produit) {
-             $produit->validateOdg($date);
-          }
 
-          $validateOdg = true;
-          foreach ($this->declaration->getProduits() as $key => $produit) {
-            if(!$produit->isValidateOdg()){
-              $validateOdg=false;
-              break;
-            }
-          }
-          if($validateOdg){
-            $this->validation_odg = $date;
-          }
+        if(DrevConfiguration::getInstance()->hasOdgProduits()){
+
+            return $this->validateOdgByRegion($date, $region);
         }
+
+        $this->validation_odg = $date;
+    }
+
+    protected function validateOdgByRegion($date = null, $region = null) {
+        if($region) {
+            foreach ($this->getProduits($region) as $hash => $produit) {
+                $produit->validateOdg($date);
+            }
+        } else {
+            foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                $this->validateOdg($date, $region);
+            }
+        }
+
+        $allValidate = true;
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            if($produit->isValidateOdg()){
+               continue;
+            }
+            $allValidate = false;
+            break;
+        }
+
+        if(!$allValidate) {
+
+            return;
+        }
+
+        $this->validation_odg = $date;
+    }
+
+    public function isValidateOdgByRegion($region){
+      foreach ($this->getProduits($region) as $hash => $produit) {
+        if($produit->isValidateOdg()){
+          return false;
+        }
+      }
+      return true;
     }
 
     public function getEtablissementObject() {

@@ -1,6 +1,7 @@
 <?php
 class DRevLotForm extends acCouchdbObjectForm
 {
+    const NBCEPAGES = 5;
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -49,7 +50,7 @@ class DRevLotForm extends acCouchdbObjectForm
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
-        for($i = 0; $i < 3; $i++) {
+        for($i = 0; $i < self::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
             $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
             $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat());
@@ -65,7 +66,7 @@ class DRevLotForm extends acCouchdbObjectForm
 
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
-        for($i = 0; $i < 3; $i++) {
+        for($i = 0; $i < self::NBCEPAGES; $i++) {
             if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
                 continue;
             }
