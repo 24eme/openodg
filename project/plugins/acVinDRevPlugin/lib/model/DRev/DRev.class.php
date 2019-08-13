@@ -764,7 +764,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->generateMouvements();
     }
 
-    public function devalidate() {
+    public function devalidate($reinit_version_lot = true) {
         $this->validation = null;
         $this->validation_odg = null;
         if($this->exist('etape')) {
@@ -772,6 +772,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
+        }
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots') && $reinit_version_lot){
+          foreach($this->lots as $lot) {
+              if($lot->exist('date_version') && $lot->date_version){
+                $lot->date_version = null;
+              }
+          }
         }
     }
 
@@ -781,7 +788,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         if(DrevConfiguration::getInstance()->hasOdgProduits()){
-
             return $this->validateOdgByRegion($date, $region);
         }
 
@@ -797,6 +803,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
                 $this->validateOdg($date, $region);
             }
+        }
+
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
+          foreach($this->lots as $lot) {
+              if(!$lot->exist('date_version') || !$lot->date_version){
+                $lot->add('date_version',$date);
+              }
+          }
         }
 
         $allValidate = true;
@@ -1444,7 +1458,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function listenerGenerateVersion($document) {
-        $document->devalidate();
+        $document->devalidate(false);
     }
 
     public function listenerGenerateNextVersion($document) {
@@ -1460,6 +1474,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->validation;
     }
+
+    public function isValideeOdg() {
+
+        return boolval($this->getValidationOdg());
+    }
+
+
 
     public function getDate() {
       return $this->campagne.'-12-10';
