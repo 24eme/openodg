@@ -247,7 +247,7 @@
                         if(libelle) {
                             libelle = libelle + ", ";
                         }
-                        libelle = libelle + cepage + " ("+ pourcentage +"%)";
+                        libelle = libelle + cepage + "&nbsp;("+ pourcentage +"%)";
                         $(this).removeClass('transparence-sm');
                     } else {
                         $(this).addClass('transparence-sm');
@@ -259,7 +259,6 @@
                         }
                     });
                 });
-              //  console.log('#lien_'+$(this).attr('id'));
                 if(!libelle) {
                     libelle = "Assemblage";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
@@ -267,7 +266,6 @@
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");
                 }
                 $('span.checkboxtext_'+$(this).attr('id')).html(libelle);
-                //console.log($('span.checkboxtext_'+$(this).attr('id')));
             });
         }
 
