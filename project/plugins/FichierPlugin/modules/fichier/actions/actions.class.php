@@ -3,7 +3,11 @@
 class fichierActions extends sfActions
 {
 	public function executeIndex(sfWebRequest $request) {
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+		if(class_exists("EtablissementChoiceForm")) {
+			$this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        } elseif(class_exists("LoginForm")) {
+            $this->form = new LoginForm();
+        }
 	}
 
 	public function executeMesdocuments(sfWebRequest $request) {
