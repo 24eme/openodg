@@ -48,7 +48,7 @@ class ExportLiaisonsCSV {
                 $csv .= ";"; // attributs chais
                 $csv .= ";"; // aliaises
                 $csv .= $liaison->id_etablissement.";";
-                $csv .= $etablissement->_id;
+                $csv .= $etablissement->_id.";";
                 $csv .= $etablissement->_id.'/'.$k;
                 $csv .= "\n";
             }
