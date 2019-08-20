@@ -74,7 +74,7 @@ class ExportHabilitationDemandesPublipostageCSV {
             $historiqueSuivant = $demande->getHistoriqueSuivant($row->key[HabilitationHistoriqueView::KEY_STATUT], $row->key[HabilitationHistoriqueView::KEY_DATE]);
 
             $declarant = $hab->getDeclarant();
-            $societe = $hab->getEtablissementObject()->getSociete();
+            $societe = $hab->getSociete();
 
             $declarant_adresse = str_replace('"', '', $declarant->adresse);
             $acs = explode('−',$declarant->adresse_complementaire);
