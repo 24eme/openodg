@@ -5,9 +5,42 @@ class ExportHabilitationDemandesPublipostageCSV {
     protected $dateTo = null;
     protected $header = null;
 
-    public static function getHeaderCsv() {
+    protected static $delimiter = ';';
 
-        return "Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Adresse complémentaire 1;Adresse complémentaire 2;Code postal Opérateur;Commune Opérateur;Email;Téléphone Bureau;Téléphone Mobile;Demande;Libellé activités;Produit;Statut;Date Statut;Statut précédent;Date précédent statut;Statut suivant;Date statut suivant;Commentaire;Id du doc;Clé de la demande\n";
+    public static function getHeaderCsv() {
+        $headers = [
+            'Identifiant',
+            'CVI Opérateur',
+            'Siret Opérateur',
+            'Nom Opérateur',
+            'Adresse Opérateur',
+            'Adresse complémentaire Opérateur 1',
+            'Adresse complémentaire Opérateur 2',
+            'Code postal Opérateur',
+            'Commune Opérateur',
+            'Adresse Société',
+            'Adresse complémentaire Société 1',
+            'Adresse complémentaire Société 2',
+            'Code postal Société',
+            'Commune Société',
+            'Email',
+            'Téléphone Bureau',
+            'Téléphone Mobile',
+            'Demande',
+            'Libellé activités',
+            'Produit',
+            'Statut',
+            'Date Statut',
+            'Statut précédent',
+            'Date précédent statut',
+            'Statut suivant',
+            'Date statut suivant',
+            'Commentaire',
+            'Id du doc',
+            'Clé de la demande',
+            '\n'
+        ];
+        return implode(self::$delimiter, $headers);
     }
 
     public function __construct($dateFrom = null, $dateTo = null, $header = true) {
@@ -42,16 +75,55 @@ class ExportHabilitationDemandesPublipostageCSV {
             $historiqueSuivant = $demande->getHistoriqueSuivant($row->key[HabilitationHistoriqueView::KEY_STATUT], $row->key[HabilitationHistoriqueView::KEY_DATE]);
 
             $declarant = $hab->getDeclarant();
-            $adresse = str_replace('"', '', $declarant->adresse);
+            $societe = $hab->getEtablissementObject()->getSociete();
+
+            $declarant_adresse = str_replace('"', '', $declarant->adresse);
             $acs = explode('−',$declarant->adresse_complementaire);
-            $adresse_complementaire = "";
-            $adresse_complementaire_bis = "";
-            $adresse_complementaire = str_replace('"', '', $acs[0]);
+            $declarant_adresse_complementaire = "";
+            $declarant_adresse_complementaire_bis = "";
+            $declarant_adresse_complementaire = str_replace('"', '', $acs[0]);
             if(count($acs) > 1){
-                $adresse_complementaire_bis = str_replace('"', '', $acs[1]);
+                $declarant_adresse_complementaire_bis = str_replace('"', '', $acs[1]);
             }
 
-            $csvLigne = $row->key[HabilitationHistoriqueView::KEY_IDENTIFIANT].";".$declarant->cvi.";".$declarant->siret.";".$declarant->raison_sociale.";".$adresse.";".$adresse_complementaire.";".$adresse_complementaire_bis.";".$declarant->code_postal.";" .$declarant->commune.";".str_replace(";",",",$declarant->email).";".str_replace(";",",",$declarant->telephone_bureau).";".str_replace(";",",",$declarant->telephone_mobile).";".$demande->demande.";".implode(", ", $demande->getActivitesLibelle()).";".$demande->produit_libelle.";".$row->key[HabilitationHistoriqueView::KEY_STATUT].";".$row->key[HabilitationHistoriqueView::KEY_DATE].";".(($historiquePrecedent) ? $historiquePrecedent->statut : null).";".(($historiquePrecedent) ? $historiquePrecedent->date : null).";".(($historiqueSuivant) ? $historiqueSuivant->statut : null).";".(($historiqueSuivant) ? $historiqueSuivant->date : null).";\"".$row->key[HabilitationHistoriqueView::KEY_COMMENTAIRE]."\";".$row->id.";".$demande->getKey()."\n";
+            $societe_adresse_complementaire = explode('−', $societe->siege->adresse_complementaire);
+            $societe_adresse_complementaire1 = '';
+            $societe_adresse_complementaire2 = '';
+            $societe_adresse_complementaire1 = str_replace('"', '', $societe_adresse_complementaire[0]);
+            if (count($societe_adresse_complementaire) > 1) {
+                $societe_adresse_complementaire2 = str_replace('"', '', $societe_adresse_complementaire[1]);
+            }
+
+            $csvLigne = $row->key[HabilitationHistoriqueView::KEY_IDENTIFIANT].";"
+                .$declarant->cvi.";"
+                .$declarant->siret.";"
+                .$declarant->raison_sociale.";"
+                .$declarant_adresse.";"
+                .$declarant_adresse_complementaire.";"
+                .$declarant_adresse_complementaire_bis.";"
+                .$declarant->code_postal.";"
+                .$declarant->commune.";"
+                .$societe->siege->adresse.";"
+                .$societe_adresse_complementaire1.";"
+                .$societe_adresse_complementaire2.";"
+                .$societe->siege->code_postal.";"
+                .$societe->siege->commune.";"
+                .str_replace(";",",",$declarant->email).";"
+                .str_replace(";",",",$declarant->telephone_bureau).";"
+                .str_replace(";",",",$declarant->telephone_mobile).";"
+                .$demande->demande.";"
+                .implode(", ", $demande->getActivitesLibelle()).";"
+                .$demande->produit_libelle.";"
+                .$row->key[HabilitationHistoriqueView::KEY_STATUT].";"
+                .$row->key[HabilitationHistoriqueView::KEY_DATE].";"
+                .(($historiquePrecedent) ? $historiquePrecedent->statut : null).";"
+                .(($historiquePrecedent) ? $historiquePrecedent->date : null).";"
+                .(($historiqueSuivant) ? $historiqueSuivant->statut : null).";"
+                .(($historiqueSuivant) ? $historiqueSuivant->date : null).";"
+                ."\"".$row->key[HabilitationHistoriqueView::KEY_COMMENTAIRE]."\";"
+                .$row->id.";"
+                .$demande->getKey()
+                ."\n";
 
             if($stream) {
                 echo $csvLigne;
