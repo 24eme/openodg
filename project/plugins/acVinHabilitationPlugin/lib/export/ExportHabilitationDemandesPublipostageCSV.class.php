@@ -37,8 +37,7 @@ class ExportHabilitationDemandesPublipostageCSV {
             'Date statut suivant',
             'Commentaire',
             'Id du doc',
-            'Clé de la demande',
-            '\n'
+            "Clé de la demande\n"
         ];
         return implode(self::$delimiter, $headers);
     }
