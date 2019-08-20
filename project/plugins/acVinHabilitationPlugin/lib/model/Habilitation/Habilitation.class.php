@@ -44,15 +44,6 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $declarant->telephone_mobile = $compte->telephone_mobile;
         $declarant->email = $compte->email ;
 
-        $compteSociete = $etablissement->getSociete()->getMasterCompte();
-        $declarant->adresse_societe = $compteSociete->adresse;
-        $declarant->adresse_complementaire_societe = $compteSociete->adresse_complementaire;
-        $declarant->commune_societe = $compteSociete->commune;
-        $declarant->code_postal_societe = $compteSociete->code_postal;
-        $declarant->telephone_bureau_societe = $compteSociete->telephone_bureau;
-        $declarant->telephone_mobile_societe = $compteSociete->telephone_mobile;
-        $declarant->email_societe = $compteSociete->email ;
-
         return $declarant;
 
     }
@@ -168,6 +159,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+    }
+
+    public function getSociete() {
+        return $this->getEtablissementObject()->getSociete();
     }
 
   public function isLastOne(){

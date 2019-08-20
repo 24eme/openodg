@@ -48,8 +48,9 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
         $tel_portable =$declarant->telephone_mobile;
         $email = $declarant->email;
 
-        $adresse_societe = $this->protectStr($declarant->adresse_societe);
-        $acss = explode('−',$declarant->adresse_complementaire_societe);
+        $societe = $this->habilitation->getSociete();
+        $adresse_societe = $this->protectStr($societe->siege->adresse);
+        $acss = explode('−',$societe->siege->adresse_complementaire);
         $adresse_complementaire_societe = "";
         $adresse_complementaire_societe_bis = "";
         $adresse_complementaire_societe = $this->protectStr($acss[0]);
@@ -57,11 +58,11 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
           $adresse_complementaire_societe_bis = $this->protectStr($acss[1]);
         }
 
-        $code_postal_societe = $declarant->code_postal_societe;
-        $commune_societe = $this->protectStr($declarant->commune_societe);
-        $tel_fixe_societe = $declarant->telephone_bureau_societe;
-        $tel_portable_societe =$declarant->telephone_mobile_societe;
-        $email_societe = $declarant->email_societe;
+        $code_postal_societe = $societe->siege->code_postal;
+        $commune_societe = $this->protectStr($societe->siege->commune);
+        $tel_fixe_societe = $societe->telephone_bureau;
+        $tel_portable_societe =$societe->telephone_mobile;
+        $email_societe = $societe->email;
 
 
         foreach($this->habilitation->getProduits() as $produit) {
