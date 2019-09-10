@@ -4,7 +4,7 @@
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_LOTS, 'drev' => $drev, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Revendication des Lots</h2></div>
+    <div class="page-header"><h2>Revendication des Lots IGP</h2></div>
 
     <?php echo include_partial('global/flash'); ?>
 
@@ -20,6 +20,30 @@
         <?php endif; ?>
         <div class="panel panel-default bloc-lot">
             <div class="panel-body" style="padding-bottom: 0;">
+              <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-8">
+                                  <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group">
+                          <div class="col-sm-7">
+                            <div class="checkbox checkboxlots">
+                              <label><input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?> id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal" data-target="#<?php echo $lot->renderId() ?>_cepages" />
+                                <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Assemblages : " :  "Assemblage" ?></span></label>
+                              </div>
+
+                            </div>
+                            <div class="col-sm-2">
+                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-5">
                         <div class="form-group">
@@ -38,29 +62,6 @@
                                     <?php echo $lot['volume']->render(); ?>
                                     <div class="input-group-addon">hl</div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-8">
-                                  <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="form-group">
-                            <?php echo $lot['millesime']->renderLabel("Millésime", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-2">
-                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
-                            </div>
-                            <div class="col-sm-1">
-                            </div>
-                            <div class="col-sm-5">
-                                <p class="form-control-static"><a href="" id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal" data-target="#<?php echo $lot->renderId() ?>_cepages" ><?php echo (count($lotItem->cepages->toArray(true, false))) ? $lotItem->getCepagesLibelle() : "Définir le cépage" ?></a></p>
                             </div>
                         </div>
                     </div>
@@ -96,7 +97,7 @@
                         <h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
                     </div>
                     <div class="modal-body">
-                        <?php for($i=0; $i < 3; $i++): ?>
+                        <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-7">

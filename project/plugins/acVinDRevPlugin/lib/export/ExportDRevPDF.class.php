@@ -60,7 +60,7 @@ class ExportDRevPDF extends ExportPDF {
             $files[] = $pdf->getFile();
         }
 
-        shell_exec('pdftk '.implode(' ', $files).' cat output '.$this->getFileName(true));
+        shell_exec('pdftk '.implode(' ', $files).' cat output '.$this->getFile());
     }
 
     public function output() {
@@ -86,7 +86,7 @@ class ExportDRevPDF extends ExportPDF {
             return parent::getFile();
         }
 
-        return $this->getFileName(true);
+        return sfConfig::get('sf_cache_dir').'/pdf/'.$this->getFileName(true);
     }
 
     protected function getHeaderTitle() {

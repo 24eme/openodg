@@ -29,6 +29,10 @@ class EtablissementAllView extends acCouchdbView
         return acCouchdbManager::getView('etablissement', 'all', 'Etablissement');
     }
 
+	public function getAll() {
+        return $this->client->reduce(false)->getView($this->design, $this->view)->rows;
+    }
+
     public function findByInterpro($interpro) {
 
         return $this->client->startkey(array($interpro))

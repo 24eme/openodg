@@ -188,6 +188,10 @@
             return;
         }
 
+        $('div.checkboxlots input[type="checkbox"]').click(function(e){
+          e.preventDefault();
+        });
+
         var checkBlocsLot = function() {
             $('#form_drev_lots .bloc-lot').each(function() {
                 var saisi = false;
@@ -243,7 +247,7 @@
                         if(libelle) {
                             libelle = libelle + ", ";
                         }
-                        libelle = libelle + cepage + " ("+ pourcentage +"%)";
+                        libelle = libelle + cepage + "&nbsp;("+ pourcentage +"%)";
                         $(this).removeClass('transparence-sm');
                     } else {
                         $(this).addClass('transparence-sm');
@@ -255,17 +259,20 @@
                         }
                     });
                 });
-                console.log('#lien_'+$(this).attr('id'));
                 if(!libelle) {
-                    libelle = "Définir le cépage";
+                    libelle = "Assemblage";
+                    $('#lien_'+$(this).attr('id')).removeAttr("checked");
+                }else{
+                  $('#lien_'+$(this).attr('id')).prop("checked","checked");
                 }
-                $('#lien_'+$(this).attr('id')).html(libelle);
-                console.log(libelle);
+                $('span.checkboxtext_'+$(this).attr('id')).html(libelle);
             });
         }
 
+
         checkBlocsLot();
         checkBlocsLotCepages();
+    //    $('#form_drev_lots .modal_lot_cepages').on('hidden.bs.modal', function () { checkBlocsLot(); checkBlocsLotCepages(); });
         $('#form_drev_lots input').on('keyup', function() { checkBlocsLot(); checkBlocsLotCepages(); });
         $('#form_drev_lots select').on('change', function() { checkBlocsLot(); checkBlocsLotCepages(); });
         $('#form_drev_lots input').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });

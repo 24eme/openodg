@@ -353,6 +353,10 @@ class drevActions extends sfActions {
             return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->drev->isModificative()){
+          return $this->redirect('drev_validation', $this->drev);
+        }
+
         return $this->redirect('drev_revendication', $this->drev);
     }
 
@@ -648,6 +652,10 @@ class drevActions extends sfActions {
         $drev_modificative = $drev->generateModificative();
         $drev_modificative->save();
 
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
+          return $this->redirect('drev_lots', $drev_modificative);
+        }
+
         return $this->redirect('drev_edit', $drev_modificative);
     }
 
@@ -718,6 +726,19 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Expires', '0');
 
         return $this->renderText($file);
+    }
+
+    public function executeDocumentDouanierPdf(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText(file_get_contents($drev->getDocumentDouanier('pdf')));
     }
 
     public function executeMain()

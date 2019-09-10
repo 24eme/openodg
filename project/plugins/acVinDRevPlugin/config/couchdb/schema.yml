@@ -109,6 +109,7 @@ DRev:
               class: DRevLot
               definition:
                 fields:
+                  date_version: { }
                   numero: { }
                   millesime: { }
                   volume: { type: float }

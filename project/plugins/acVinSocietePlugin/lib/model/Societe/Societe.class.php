@@ -345,7 +345,10 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
 // A VIRER
     protected function createCompteSociete() {
         if ($this->compte_societe) {
-            return $this->getCompte($this->compte_societe);
+            $c = $this->getCompte($this->compte_societe);
+            if ($c) {
+                return $c;
+            }
         }
 
         $compte = CompteClient::getInstance()->findOrCreateCompteSociete($this);
@@ -550,14 +553,23 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       if($this->isSuspendu()){
          $newStatus = SocieteClient::STATUT_ACTIF;
       }
+      $toberemoved = array();
       foreach ($this->contacts as $keyCompte => $compte) {
           $contact = CompteClient::getInstance()->find($keyCompte);
+          if (!$contact) {
+              $toberemoved[] = $keyCompte;
+              continue;
+          }
           $contact->setStatut($newStatus);
           $contact->save();
+      }
+      foreach($toberemoved as $keyCompte) {
+          $this->removeContact($keyCompte);
       }
       foreach ($this->etablissements as $keyEtablissement => $etablissement) {
           $etablissement = EtablissementClient::getInstance()->find($keyEtablissement);
           $etablissement->setStatut($newStatus);
+          $this->addCompte($etablissement->getMasterCompte());
       }
       $this->setStatut($newStatus);
       $this->save();

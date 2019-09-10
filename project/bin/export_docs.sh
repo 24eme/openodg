@@ -13,10 +13,12 @@ if ! test "$DOC" ; then
 fi
 
 header=1
-curl -s http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE"/_design/declaration/_view/export?reduce=true&group_level=2" | awk -F '"' '{print $4 " " $6}' | grep "^$DOC " | while read doc ; do
+curl -s http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE"/_design/declaration/_view/export?reduce=true&group_level=2" | awk -F '"' '{print $4 " " $6}' | grep "^$DOC " > /tmp/$$.docs
+cat /tmp/$$.docs | while read doc ; do
 	php symfony declarations:export-csv $SYMFONYTASKOPTIONS --header=$header $doc
 	header=0
 	if test "$WAITSLEEP" ; then
 		sleep $WAITSLEEP
 	fi
 done
+rm /tmp/$$.docs
