@@ -728,6 +728,19 @@ class drevActions extends sfActions {
         return $this->renderText($file);
     }
 
+    public function executeDocumentDouanierPdf(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText(file_get_contents($drev->getDocumentDouanier('pdf')));
+    }
+
     public function executeMain()
     {
     }

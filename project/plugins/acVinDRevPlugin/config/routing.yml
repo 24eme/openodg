@@ -124,9 +124,9 @@ drev_dr_import:
   requirements:
     sf_method: [get, post]
 
-drev_dr_pdf:
-  url: /drev/dr-pdf/:id
-  param: { module: drev, action: drPdf }
+drev_document_douanier_pdf:
+  url: /drev/document_douanier_pdf/:id
+  param: { module: drev, action: documentDouanierPdf }
   class: DRevRoute
   options:
     model:    DRev
