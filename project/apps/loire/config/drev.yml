@@ -5,6 +5,7 @@ all:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
       validation_odg: true
+      habilitation_inao: true
       odg:
         ANJOU_SAUMUR:
           produits:
@@ -13,12 +14,14 @@ all:
             - "appellations/AJV"
             - "appellations/AJVBRI"
             - "appellations/CAJ"
-            - "appellations/RAJ"
+            - "appellations/CLO"
             - "appellations/CAS"
             - "appellations/COS"
+            - "appellations/RAJ"
             - "appellations/SAU"
             - "appellations/SAUCHA"
             - "appellations/SAU"
+          inao: "data/drev/FEDE.csv"
         CHINON:
           produits:
             - "appellations/CHI"
@@ -29,6 +32,7 @@ all:
             - appellations/MUSCGL
             - appellations/MUSSM
             - appellations/GPL
+          inao: "data/drev/NANTES.csv"
         IGP_VALDELOIRE:
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL
