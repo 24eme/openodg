@@ -55,11 +55,22 @@ class DRevConfiguration {
       return $this->configuration['odg'][$odgName]['produits'];
     }
 
+    public function getOdgINAOHabilitationFile($odgName) {
+      if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName]['inao']) ){
+        return null;
+      }
+      return $this->configuration['odg'][$odgName]['inao'];
+    }
+
     public function getOdgRegions(){
       if(!$this->hasOdgProduits()){
         return array();
       }
       return array_keys($this->configuration['odg']);
+    }
+
+    public function hasHabilitationINAO() {
+        return isset($this->configuration['habilitation_inao']) && ($this->configuration['habilitation_inao']);
     }
 
     public function hasValidationOdg(){

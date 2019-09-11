@@ -43,6 +43,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
 
         $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement dans votre DR (L5 - L16)");
+        $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
 
         /*
          * Engagement
@@ -69,6 +70,7 @@ class DRevValidation extends DocumentValidation
         $this->controleEngagementSv();
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleSurfaceBailleur();
+        $this->controleHabilitationINAO();
     }
 
     protected function controleNeant()
@@ -159,7 +161,7 @@ class DRevValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_conseille', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
         }
-        if (!$produit->isHabilite()) {
+        if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
 
@@ -207,4 +209,13 @@ class DRevValidation extends DocumentValidation
         }
     }
 
+    protected function controleHabilitationINAO()
+    {
+        if (!DRevConfiguration::getInstance()->hasHabilitationINAO()) {
+            return;
+        }
+        foreach($this->document->getNonHabilitationINAO() as $produit) {
+            $this->addPoint(self::TYPE_WARNING, 'drev_habilitation_inao', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }
+    }
 }

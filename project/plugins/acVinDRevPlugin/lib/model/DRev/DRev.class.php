@@ -1490,5 +1490,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
     }
 
+    public function getNonHabilitationINAO() {
+        return DRevClient::getInstance()->getNonHabilitationINAO($this);
+    }
+
     /**** FIN DE VERSION ****/
 }

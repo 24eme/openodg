@@ -145,4 +145,34 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public function getOrdrePrelevements() {
         return array("cuve" => array("cuve_ALSACE", "cuve_GRDCRU", "cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
     }
+
+    public function getNonHabilitationINAO($drev) {
+        $non_habilite = array();
+        $identifiant = $drev->declarant->cvi;
+        if ($identifiant) {
+            $identifiant = $drev->declarant->siret;
+        }
+        if (!$identifiant) {
+            return array();
+        }
+        $regions = DrevConfiguration::getInstance()->getOdgRegions();
+        foreach($regions as $region) {
+            $produits = $drev->getProduits($region);
+            if (!count($produits)) {
+                continue;
+            }
+            $inao_fichier = DrevConfiguration::getInstance()->getOdgINAOHabilitationFile($region);
+            if (!$inao_fichier) {
+                continue;
+            }
+            $inao_csv = new INAOHabilitationCsvFile(sfConfig::get('sf_root_dir').'/'.$inao_fichier);
+            foreach ($produits as $produit) {
+                if (! $inao_csv->isHabilite($identifiant, $produit->getConfig()->getAppellation()->getLibelle())) {
+                    $non_habilite[] = $produit;
+                }
+            }
+        }
+        return $non_habilite;
+    }
+
 }
