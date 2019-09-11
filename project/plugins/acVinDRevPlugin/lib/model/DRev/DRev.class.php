@@ -112,6 +112,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getLotsByCouleur() {
         $couleurs = array();
         foreach ($this->lots as $lot) {
+          if(!$lot->hasVolumeAndHashProduit()){
+            continue;
+          }
           $couleur = "vide";
           if($lot->produit_hash){
             $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();

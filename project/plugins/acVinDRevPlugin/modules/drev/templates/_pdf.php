@@ -11,7 +11,7 @@
 <table border="0">
     <tr>
         <td style="width: 360px;">&nbsp;Nom : <i><?php echo $drev->declarant->raison_sociale ?></i></td>
-        <td style="width: 300px;">&nbsp;Tel / Fax : <i><?php echo $drev->declarant->telephone ?> / <?php echo $drev->declarant->fax ?></i></td>
+        <td style="width: 300px;">&nbsp;Téléphones : <i><?php echo $drev->declarant->telephone_mobile ?> / <?php echo $drev->declarant->telephone_bureau ?></i></td>
         <td>N° CVI : <i><?php echo $drev->declarant->cvi ?></i></td>
     </tr>
     <tr>
@@ -96,12 +96,14 @@ Les produits déclarés sont du millésime du VCI
         <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
     </tr>
 <?php foreach($drev->lots as $lot): ?>
+<?php   if($lot->hasVolumeAndHashProduit()): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)</td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
         <td class="td" style="text-align: center;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
     </tr>
+    <?php endif; ?>
 <?php endforeach; ?>
 </table>
 <?php endif; ?>

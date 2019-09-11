@@ -19,9 +19,11 @@ all:
             - "appellations/SAU"
             - "appellations/SAUCHA"
             - "appellations/SAU"
+          nom: "Anjou Saumur"
         CHINON:
           produits:
             - "appellations/CHI"
+          nom: "Chinon"
         NANTES:
           produits:
             - appellations/MUSAC
@@ -29,6 +31,8 @@ all:
             - appellations/MUSCGL
             - appellations/MUSSM
             - appellations/GPL
+          nom: "Nantes"
         IGP_VALDELOIRE:
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL
+          nom: "Vins IGP Val de Loire"

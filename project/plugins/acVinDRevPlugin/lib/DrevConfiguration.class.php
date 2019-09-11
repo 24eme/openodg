@@ -62,6 +62,10 @@ class DRevConfiguration {
       return array_keys($this->configuration['odg']);
     }
 
+    public function getOdgRegionLibelle($region){
+      return $this->configuration['odg'][$region]["nom"];
+    }
+
     public function hasValidationOdg(){
       return isset($this->configuration['validation_odg']) && boolval($this->configuration['validation_odg']);
     }

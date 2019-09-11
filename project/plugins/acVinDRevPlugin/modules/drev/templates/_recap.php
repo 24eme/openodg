@@ -45,7 +45,8 @@
             <?php foreach ($drev->getLotsByCouleur() as $couleur => $lots) :
                 $volume = 0;
                 $synthese_revendication = $drev->summerizeProduitsByCouleur();
-                foreach ($lots as  $lot) : ?>
+                foreach ($lots as  $lot) :
+                  ?>
                 <tr>
                     <td><?php echo $lot->numero; ?></td>
                     <td><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?><?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?></td>
@@ -53,14 +54,17 @@
                     <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
                     <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
                 </tr>
-                <?php $volume += $lot->volume ; endforeach; ?>
+                <?php $volume += $lot->volume ;
+                endforeach;
+                ?>
                 <tr>
                     <td><strong>Total</strong></td>
-                    <td><strong><?php echo $lot->getConfigProduit()->getCouleur()->getLibelleComplet(); ?></strong><small class="pull-right">&nbsp;<?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small></td>
+                    <td><strong><?php echo ($lot->produit_hash)? $lot->getConfigProduit()->getCouleur()->getLibelleComplet() : "pas de produit"; ?></strong><small class="pull-right">&nbsp;<?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small></td>
                     <td class="text-right"><strong><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong></td>
                     <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong></td>
                     <td class="text-center"><?php if($synthese_revendication[$couleur]['volume_total'] > 0): ?><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small><?php endif; ?></td>
                 </tr>
+
             <?php endforeach; ?>
         </tbody>
     </table>
