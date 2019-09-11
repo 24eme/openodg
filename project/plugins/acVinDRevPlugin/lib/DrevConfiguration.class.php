@@ -73,6 +73,13 @@ class DRevConfiguration {
         return isset($this->configuration['habilitation_inao']) && ($this->configuration['habilitation_inao']);
     }
 
+    public function getOdgRegionLibelle($region){
+        if(!isset($this->configuration['odg']) || !array_key_exists($region,$this->configuration['odg']) || !isset($this->configuration['odg'][$region]['nom']) ){
+          return null;
+        }
+        return $this->configuration['odg'][$region]["nom"];
+    }
+
     public function hasValidationOdg(){
       return isset($this->configuration['validation_odg']) && boolval($this->configuration['validation_odg']);
     }

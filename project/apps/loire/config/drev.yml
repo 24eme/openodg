@@ -8,6 +8,7 @@ all:
       habilitation_inao: true
       odg:
         ANJOU_SAUMUR:
+          nom: "Anjou Saumur"
           produits:
             - "appellations/ANJ"
             - "appellations/ANJCDL"
@@ -23,9 +24,11 @@ all:
             - "appellations/SAU"
           inao: "data/drev/FEDE.csv"
         CHINON:
+          nom: "Chinon"
           produits:
             - "appellations/CHI"
         NANTES:
+          nom: "Nantes"
           produits:
             - appellations/MUSAC
             - appellations/MUSCDL
@@ -34,5 +37,6 @@ all:
             - appellations/GPL
           inao: "data/drev/NANTES.csv"
         IGP_VALDELOIRE:
+          nom: "Vins IGP Val de Loire"
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL

@@ -80,4 +80,8 @@ class DRevLot extends BaseDRevLot
       return true;
     }
 
+    public function hasVolumeAndHashProduit(){
+      return $this->volume && $this->produit_hash;
+    }
+
 }

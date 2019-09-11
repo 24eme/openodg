@@ -32,7 +32,6 @@ class ExportDRevPDF extends ExportPDF {
 
     public function getRegion() {
         $region = null;
-
         if(count($this->regions) == 1 && $this->regions[0]) {
             $region = $this->regions[0];
         }
@@ -91,10 +90,9 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getHeaderTitle() {
         $titre = sprintf("Déclaration de Revendication %s", $this->drev->campagne);
-
         $region = $this->getRegion();
         if($region) {
-            $titre .= " (".$region.")";
+            $titre .= " (".DRevConfiguration::getInstance()->getOdgRegionLibelle($region).")";
         }
 
         return $titre;
