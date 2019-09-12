@@ -842,6 +842,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return true;
     }
 
+    public function getValidationOdgDateByRegion($region){
+      if(!$region){
+        return null;
+      }
+      foreach ($this->getProduits($region) as $hash => $produit) {
+        if($produit->isValidateOdg()){
+          return $produit->validation_odg;
+        }
+      }
+      return null;
+    }
+
     public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
