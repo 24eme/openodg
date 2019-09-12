@@ -811,7 +811,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
           foreach($this->lots as $lot) {
               if(!$lot->exist('date_version') || !$lot->date_version){
-                $lot->add('date_version',$date);
+                $lot->add('date_version',$date."_".$this->getVersion());
+              }
+              foreach ($lot as $key => $field) {
+                if($this->getDocument()->isModifiedMother($lot->getHash(), $key)){
+                  $lot->date_version = $date."_".$this->getVersion();
+                  break;
+                }
               }
           }
         }
@@ -1474,6 +1480,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function listenerGenerateVersion($document) {
         $document->devalidate(false);
+        foreach ($document->getProduitsLots() as $produit) {
+          $produit->validation_odg = null;
+        }
     }
 
     public function listenerGenerateNextVersion($document) {
