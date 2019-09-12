@@ -5,34 +5,38 @@ all:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
       validation_odg: true
+      habilitation_inao: true
       odg:
         ANJOU_SAUMUR:
+          nom: "Anjou Saumur"
           produits:
             - "appellations/ANJ"
             - "appellations/ANJCDL"
             - "appellations/AJV"
             - "appellations/AJVBRI"
             - "appellations/CAJ"
-            - "appellations/RAJ"
+            - "appellations/CLO"
             - "appellations/CAS"
             - "appellations/COS"
+            - "appellations/RAJ"
             - "appellations/SAU"
             - "appellations/SAUCHA"
             - "appellations/SAU"
-          nom: "Anjou Saumur"
+          inao: "data/drev/FEDE.csv"
         CHINON:
+          nom: "Chinon"
           produits:
             - "appellations/CHI"
-          nom: "Chinon"
         NANTES:
+          nom: "Nantes"
           produits:
             - appellations/MUSAC
             - appellations/MUSCDL
             - appellations/MUSCGL
             - appellations/MUSSM
             - appellations/GPL
-          nom: "Nantes"
+          inao: "data/drev/NANTES.csv"
         IGP_VALDELOIRE:
+          nom: "Vins IGP Val de Loire"
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL
-          nom: "Vins IGP Val de Loire"
