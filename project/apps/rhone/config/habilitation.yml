@@ -50,3 +50,5 @@ all:
             VALIDE: RETRAIT
             REFUSE: HABILITE
             ANNULE: ANNULÉ
+          SUSPENSION:
+            VALIDE: SUSPENDU

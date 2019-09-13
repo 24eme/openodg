@@ -112,6 +112,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getLotsByCouleur() {
         $couleurs = array();
         foreach ($this->lots as $lot) {
+          if(!$lot->hasVolumeAndHashProduit()){
+            continue;
+          }
           $couleur = "vide";
           if($lot->produit_hash){
             $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
@@ -808,7 +811,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
           foreach($this->lots as $lot) {
               if(!$lot->exist('date_version') || !$lot->date_version){
-                $lot->add('date_version',$date);
+                $lot->add('date_version',$date."_".$this->getVersion());
+              }
+              foreach ($lot as $key => $field) {
+                if($this->getDocument()->isModifiedMother($lot->getHash(), $key)){
+                  $lot->date_version = $date."_".$this->getVersion();
+                  break;
+                }
               }
           }
         }
@@ -837,6 +846,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
       }
       return true;
+    }
+
+    public function getValidationOdgDateByRegion($region){
+      if(!$region){
+        return null;
+      }
+      foreach ($this->getProduits($region) as $hash => $produit) {
+        if($produit->isValidateOdg()){
+          return $produit->validation_odg;
+        }
+      }
+      return null;
     }
 
     public function getEtablissementObject() {
@@ -1459,6 +1480,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function listenerGenerateVersion($document) {
         $document->devalidate(false);
+        foreach ($document->getProduitsLots() as $produit) {
+          $produit->validation_odg = null;
+        }
     }
 
     public function listenerGenerateNextVersion($document) {
@@ -1488,6 +1512,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasDenominationAuto($const) {
       return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
+    }
+
+    public function getNonHabilitationINAO() {
+        return DRevClient::getInstance()->getNonHabilitationINAO($this);
     }
 
     /**** FIN DE VERSION ****/
