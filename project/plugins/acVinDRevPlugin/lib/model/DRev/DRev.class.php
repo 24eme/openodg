@@ -757,7 +757,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $etapeOriginal != $this->etape;
     }
 
-    public function storeLotsDateVersion() {
+    public function storeLotsDateVersion($date) {
         if($this->exist('lots')){
           foreach($this->lots as $lot) {
               if(!$lot->exist('date_version') || !$lot->date_version){
