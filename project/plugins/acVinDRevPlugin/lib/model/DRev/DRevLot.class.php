@@ -86,7 +86,7 @@ class DRevLot extends BaseDRevLot
 
     public function getDateVersionfr(){
       if($this->date_version){
-        return Date::francizeDate(preg_replace("/(_M[0-9]+)/",'',$this->date_version));
+        return Date::francizeDate(preg_replace("/_(M?[0-9]*)/",'',$this->date_version));
       }
       return "";
     }
