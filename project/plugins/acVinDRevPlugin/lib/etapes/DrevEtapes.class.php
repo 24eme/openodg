@@ -97,6 +97,11 @@ class DrevEtapes extends Etapes
 			return true;
 		}
 
+		if($etape == self::ETAPE_REVENDICATION && !count($doc->getProduitsWithoutLots())) {
+
+			return true;
+		}
+
         return parent::isEtapeDisabled($etape, $doc);
     }
 
