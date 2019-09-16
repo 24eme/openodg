@@ -22,6 +22,8 @@ all:
           AVIS_POSITIF_OIVR: "Avis positif de l'OIVR"
           AVIS_NEGATIF_OIVR: "Avis négatif de l'OIVR"
           TRANSMIS_ODG: "Transmis à une autre ODG"
+          VALIDE_ODG: "Validé par une autre ODG"
+          REFUSE_ODG: "Refusé par une autre ODG"
           TRANSMIS_CERTIPAQ: "Transmis à CERTIPAQ"
           VALIDE_CERTIPAQ: "Validé par CERTIPAQ"
           REFUSE_CERTIPAQ: "Refusé par CERTIPAQ"
@@ -35,6 +37,8 @@ all:
           COMPLET: ENREGISTREMENT
           AVIS_POSITIF_OIVR: TRANSMIS_INAO
           AVIS_NEGATIF_OIVR: TRANSMIS_INAO
+          VALIDE_ODG: VALIDE
+          REFUSE_ODG: REFUSE
           VALIDE_INAO: VALIDE
           REFUSE_INAO: REFUSE
           VALIDE_CERTIPAQ: VALIDE
