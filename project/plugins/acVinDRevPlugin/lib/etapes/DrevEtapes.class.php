@@ -92,7 +92,16 @@ class DrevEtapes extends Etapes
 			return true;
 		}
 
+		if($etape != self::ETAPE_LOTS && $etape != self::ETAPE_VALIDATION && $doc->isModificative()){
+			return true;
+		}
+
 		if($etape == self::ETAPE_LOTS && !count($doc->getProduitsLots())) {
+
+			return true;
+		}
+
+		if($etape == self::ETAPE_REVENDICATION && !count($doc->getProduitsWithoutLots())) {
 
 			return true;
 		}

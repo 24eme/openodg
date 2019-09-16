@@ -80,4 +80,28 @@ class DRevLot extends BaseDRevLot
       return true;
     }
 
+    public function hasVolumeAndHashProduit(){
+      return $this->volume && $this->produit_hash;
+    }
+
+    public function getDateVersionfr(){
+      if($this->date_version){
+        return Date::francizeDate(preg_replace("/_(M?[0-9]*)/",'',$this->date_version));
+      }
+      return "";
+    }
+
+    public function getDrevLastFromDateVersion(){
+      if(!$this->date_version){
+        return null;
+      }
+      if(!$this->getDocument()->getMother()){
+        return $this->getDocument();
+      }
+      if(!$this->getDocument()->isModifiedMother($this->getHash(), "date_version")){
+        return $this->getDocument()->getMother()->get($this->getHash())->getDrevLastFromDateVersion();
+      }
+      return $this->getDocument();
+    }
+
 }

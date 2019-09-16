@@ -158,6 +158,7 @@ class declarationActions extends sfActions {
         $rows = acCouchdbManager::getClient()
                      ->group(true)
                      ->group_level($level_reduce)
+                     ->descending(true)
                      ->getView('declaration', 'tous')->rows;
 
         $this->facets = array(
@@ -242,6 +243,7 @@ class declarationActions extends sfActions {
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
                 ->reduce(false)
+                ->descending(true)
                 ->getView('declaration', 'tous')->rows);
             }
         }
@@ -253,6 +255,7 @@ class declarationActions extends sfActions {
                 ->reduce(false)
                 ->skip($i)
                 ->limit($pas)
+                ->descending(true)
                 ->getView('declaration', 'tous')->rows);
             }
         }

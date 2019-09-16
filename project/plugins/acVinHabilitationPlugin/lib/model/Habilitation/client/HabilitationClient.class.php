@@ -26,10 +26,12 @@ class HabilitationClient extends acCouchdbClient {
 
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
+    const DEMANDE_SUSPENSION = "SUSPENSION";
 
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
-        self::DEMANDE_RETRAIT => "Retrait"
+        self::DEMANDE_RETRAIT => "Retrait",
+        self::DEMANDE_SUSPENSION => "Suspension",
     );
 
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",

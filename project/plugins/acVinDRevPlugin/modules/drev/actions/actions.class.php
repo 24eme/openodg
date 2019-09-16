@@ -328,6 +328,16 @@ class drevActions extends sfActions {
             return $this->redirect('drev_dr_upload', $this->drev);
         }
 
+        if(!count($this->drev->getProduitsLots()) && !$request->getParameter('prec')) {
+
+            return $this->redirect('drev_revendication', $this->drev);
+        }
+
+        if(!count($this->drev->getProduitsLots()) && $request->getParameter('prec')) {
+
+            return $this->redirect('drev_vci', array('sf_subject' => $this->drev, 'prec' => 1));
+        }
+
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_LOTS))) {
             $this->drev->save();
         }
@@ -367,6 +377,16 @@ class drevActions extends sfActions {
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
+        }
+
+        if(!count($this->drev->getProduitsWithoutLots()) && !$request->getParameter('prec')) {
+
+            return $this->redirect('drev_validation', $this->drev);
+        }
+
+        if(!count($this->drev->getProduitsWithoutLots()) && $request->getParameter('prec')) {
+
+            return $this->redirect('drev_lots', $this->drev);
         }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION))) {
@@ -445,9 +465,14 @@ class drevActions extends sfActions {
             return $this->redirect('drev_lots', $this->drev);
         }
 
-        if(!count($this->drev->getProduitsVci())) {
+        if(!count($this->drev->getProduitsVci()) && !$request->getParameter('prec')) {
 
             return $this->redirect('drev_revendication', $this->drev);
+        }
+
+        if(!count($this->drev->getProduitsVci()) && $request->getParameter('prec')) {
+
+            return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VCI))) {
@@ -506,6 +531,8 @@ class drevActions extends sfActions {
         }
 
         $this->drev->cleanDoc();
+        $this->drev->storeLotsDateVersion();
+        
         $this->validation = new DRevValidation($this->drev);
 
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
@@ -726,6 +753,19 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Expires', '0');
 
         return $this->renderText($file);
+    }
+
+    public function executeDocumentDouanierPdf(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText(file_get_contents($drev->getDocumentDouanier('pdf')));
     }
 
     public function executeMain()

@@ -62,8 +62,12 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pieces.csv.part > $EXPORTDIR/piec
 rm $EXPORTDIR/pieces.csv.part
 
 php symfony liaisons:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/liaisons.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/liaissons.csv.part > $EXPORTDIR/liaisons.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/liaisons.csv.part > $EXPORTDIR/liaisons.csv
 rm $EXPORTDIR/liaisons.csv.part
+
+php symfony compte:export-all-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes.csv
+rm $EXPORTDIR/comptes.csv.part
 
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
