@@ -102,10 +102,14 @@ class ExportDRevPDF extends ExportPDF {
 
         $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
         );
-
+        $region = $this->getRegion();
         if (!$this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
             $date = new DateTime($this->drev->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+            if($region && $this->drev->getValidationOdgDateByRegion($region)){
+              $dateOdg = new DateTime($this->drev->getValidationOdgDateByRegion($region));
+              $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
+            }
         } elseif(!$this->drev->isPapier()) {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }
@@ -114,7 +118,6 @@ class ExportDRevPDF extends ExportPDF {
             $date = new DateTime($this->drev->validation);
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
-
         return $header_subtitle;
     }
 
@@ -131,7 +134,7 @@ class ExportDRevPDF extends ExportPDF {
         if($region && file_exists(sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower($region).'.jpg')) {
             $config->header_logo = 'logo_'.strtolower($region).'.jpg';
         }
-
+        $config->header_string = $this->getHeaderSubtitle();
         return $config;
     }
 

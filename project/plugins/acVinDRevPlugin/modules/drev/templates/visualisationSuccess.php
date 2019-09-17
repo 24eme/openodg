@@ -34,6 +34,13 @@
 </div>
 <?php endif; ?>
 
+<?php if(!$drev->isMaster()): ?>
+    <div class="alert alert-info">
+      Ce n'est pas la <a class="" href="<?php echo ($drev->getMaster()->isValidee())? url_for('drev_visualisation', $drev->getMaster()) :  url_for('drev_edit', $drev->getMaster()) ?>"><strong>dernière version</strong></a> de la déclaration, le tableau récapitulatif n'est donc pas à jour.
+
+    </div>
+<?php endif; ?>
+
 <?php if($drev->validation && !$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-warning">
         Cette déclaration est en <strong>attente de validation</strong> par l'ODG
@@ -69,7 +76,6 @@
         <?php elseif ($drev->validation && ($sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin()) && !$drev->isLectureSeule()): ?>
                   <a class="btn btn-xs btn-default-step pull-right hidden-xs" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
         <?php endif; ?>
-
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin()) && $hasValidationOdg && $isValidateOdgRegion): ?>
@@ -77,6 +83,8 @@
                 <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
         <?php elseif($sf_user->isAdmin()): ?>
                 <a onclick="return confirm('Étes vous sûr de vouloir créer une modificatrice ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Créer une modificatrice</a>
+        <?php elseif($drev->validation_odg && count($drev->getProduitsLots())): ?>
+                <a onclick="return confirm('Étes vous sûr de vouloir effectuer une modification des lots ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier des lots IGP</a>
         <?php endif; ?>
 
 <?php if (isset($form)): ?>

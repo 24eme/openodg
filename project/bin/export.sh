@@ -22,6 +22,13 @@ ln -s chais.en.csv $EXPORTDIR/chais.iso8859.csv 2> /dev/null # Pour l'AVPI en pr
 
 sleep 60
 
+php symfony export:societe $SYMFONYTASKOPTIONS > $EXPORTDIR/societe.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/societe.csv.part > $EXPORTDIR/societe.iso.csv
+rm $EXPORTDIR/societe.csv.part
+mv -f $EXPORTDIR/societe.iso.csv $EXPORTDIR/societe.csv
+
+sleep 60
+
 bash bin/export_docs.sh DRev 30 > $EXPORTDIR/drev.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev.csv.part > $EXPORTDIR/drev.csv
 rm $EXPORTDIR/drev.csv.part

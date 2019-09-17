@@ -757,11 +757,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $etapeOriginal != $this->etape;
     }
 
+    public function storeLotsDateVersion($date) {
+        if($this->exist('lots')){
+          foreach($this->lots as $lot) {
+              if(!$lot->exist('date_version') || !$lot->date_version){
+                $lot->add('date_version',$date."_".$this->getVersion());
+              }
+              foreach ($lot as $key => $field) {
+                if($this->getDocument()->isModifiedMother($lot->getHash(), $key)){
+                  $lot->date_version = $date."_".$this->getVersion();
+                  break;
+                }
+              }
+          }
+        }
+
+    }
+
     public function validate($date = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
 
+        $this->storeLotsDateVersion();
         $this->cleanDoc();
         $this->validation = $date;
         $this->generateMouvements();
@@ -808,14 +826,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
 
-        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
-          foreach($this->lots as $lot) {
-              if(!$lot->exist('date_version') || !$lot->date_version){
-                $lot->add('date_version',$date);
-              }
-          }
-        }
-
         $allValidate = true;
         foreach ($this->declaration->getProduits() as $key => $produit) {
             if($produit->isValidateOdg()){
@@ -840,6 +850,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
       }
       return true;
+    }
+
+    public function getValidationOdgDateByRegion($region){
+      if(!$region){
+        return null;
+      }
+      foreach ($this->getProduits($region) as $hash => $produit) {
+        if($produit->isValidateOdg()){
+          return $produit->validation_odg;
+        }
+      }
+      return null;
     }
 
     public function getEtablissementObject() {
@@ -1462,6 +1484,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function listenerGenerateVersion($document) {
         $document->devalidate(false);
+        foreach ($document->getProduitsLots() as $produit) {
+          $produit->validation_odg = null;
+        }
     }
 
     public function listenerGenerateNextVersion($document) {

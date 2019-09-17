@@ -12,8 +12,8 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-5">Appellation revendiquée</th>
-            <th class="col-xs-2 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
+            <th class="col-xs-6">Appellation revendiquée</th>
+            <th class="col-xs-1 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
             <th class="col-xs-2 text-center">Volume revendiqué<br />net total <small class="text-muted">(hl)</small></th>
             <th class="col-xs-3 text-center">Dont VCI<br /><small class="text-muted">(hl)</small></th>
         </tr>
@@ -23,7 +23,7 @@
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right <?php if($produit->getRendementEffectif() > $produit->getConfig()->getRendement()): ?>text-danger<?php endif; ?>">&nbsp;<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha</small></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
-                <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_toral') ?>"><?php if($produit->volume_revendique_total !== null): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_total') ?>"><?php if($produit->volume_revendique_total !== null): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
             </tr>
         <?php endforeach; ?>
@@ -34,11 +34,12 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
+                <th class="col-xs-1">Date Rev.</th>
                 <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-4">Produit (millesime)</th>
-                <th class="text-center col-xs-2">Superficie</th>
+                <th class="text-center col-xs-5">Produit (millesime)</th>
+                <th class="text-center col-xs-1">Superficie</th>
                 <th class="text-center col-xs-2">Volume</th>
-                <th class="text-center col-xs-3">Destination (date)</th>
+                <th class="text-center col-xs-2">Destination (date)</th>
             </tr>
         </thead>
         <tbody>
@@ -48,21 +49,25 @@
                 foreach ($lots as  $lot) :
                   ?>
                 <tr>
-                    <td><?php echo $lot->numero; ?></td>
-                    <td><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?><?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?></td>
+                    <td><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $lot->getDrevLastFromDateVersion()) ?>"><?php echo $lot->getDateVersionfr(); ?></a></td>
+                    <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
+                    <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?>
+                      <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
+                    </td>
                     <td>&nbsp;</td>
-                    <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($lot, 'volume') ?>"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+                    <td class="text-center <?php echo isVersionnerCssClass($lot, 'destination_type') ?>"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
                 </tr>
                 <?php $volume += $lot->volume ;
                 endforeach;
                 ?>
                 <tr>
+                    <td></td>
                     <td><strong>Total</strong></td>
-                    <td><strong><?php echo ($lot->produit_hash)? $lot->getConfigProduit()->getCouleur()->getLibelleComplet() : "pas de produit"; ?></strong><small class="pull-right">&nbsp;<?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small></td>
-                    <td class="text-right"><strong><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong></td>
+                    <td><strong><?php echo ($lot->produit_hash)? $lot->getConfigProduit()->getCouleur()->getLibelleComplet() : "pas de produit"; ?></strong><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur])): ?><?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
+                    <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur])): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong><?php endif; ?></td>
                     <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong></td>
-                    <td class="text-center"><?php if($synthese_revendication[$couleur]['volume_total'] > 0): ?><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small><?php endif; ?></td>
+                    <td class="text-center"><?php if(isset($synthese_revendication[$couleur])): ?><?php if($synthese_revendication[$couleur]['volume_total'] > 0): ?><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small><?php endif; ?><?php endif; ?></td>
                 </tr>
 
             <?php endforeach; ?>
