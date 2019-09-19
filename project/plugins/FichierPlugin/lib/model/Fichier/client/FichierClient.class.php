@@ -130,6 +130,8 @@ class FichierClient extends acCouchdbClient {
     public function getCategories() {
 
         return array(
+            "Dr" => "Dr",
+            "Drev" => "Drev",
             "Identification" => "Identification"
         );
     }

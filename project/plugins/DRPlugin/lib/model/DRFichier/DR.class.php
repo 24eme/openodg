@@ -14,7 +14,7 @@ class DR extends BaseDR {
     public static function isPieceEditable($admin = false) {
     	return ($admin)? true : false;
     }
-    
+
     public function generateDonnees() {
     	$export = new ExportDRCSV($this, false);
     	$csv = explode(PHP_EOL, $export->export());
@@ -46,4 +46,8 @@ class DR extends BaseDR {
     	}
     	return false;
     }
+
+		public function getCategorie(){
+			return ucfirst(strtolower($this->type));
+		}
 }
