@@ -55,7 +55,7 @@ class fichierActions extends sfActions
 
         return $this->renderText($file);
     }
-    
+
     public function executeDelete(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
         $etablissement = $fichier->getEtablissementObject();
@@ -67,7 +67,7 @@ class fichierActions extends sfActions
     	}
     	return $this->redirect('upload_fichier', array('fichier_id' => $fichier->_id, 'sf_subject' => $fichier->getEtablissementObject()));
     }
-    
+
     public function executeCsvgenerate(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
     	$csv = "";
@@ -82,7 +82,7 @@ class fichierActions extends sfActions
     	$this->getResponse()->setHttpHeader('Pragma', '');
     	$this->getResponse()->setHttpHeader('Cache-Control', 'public');
     	$this->getResponse()->setHttpHeader('Expires', '0');
-    	
+
     	return $this->renderText($csv);
     }
 
@@ -123,7 +123,7 @@ class fichierActions extends sfActions
 				$this->years[$m[1]] = $m[1];
 			}
 			if ($this->year && (!isset($m[1]) || $m[1] != $this->year)) { continue; }
-			$categorie = $doc->key[PieceAllView::KEYS_CATEGORIE];
+			$categorie = strtolower($doc->key[PieceAllView::KEYS_CATEGORIE]);
 			if (!isset($this->categories[$categorie])) {
 				$this->categories[$categorie] = 0;
 			}
@@ -131,32 +131,32 @@ class fichierActions extends sfActions
 		}
 		ksort($this->categories);
 	}
-	
+
 	public function executeEdit(sfWebRequest $request) {
     	$this->fichier = $this->getRoute()->getFichier();
         $this->etablissement = $this->fichier->getEtablissementObject();
-		
+
         $this->fichier->generateDonnees();
-        
+
         $this->form = new FichierDonneesForm($this->fichier);
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
-        
+
         $this->form->bind($request->getParameter($this->form->getName()));
-        
+
         if (!$this->form->isValid()) {
         	return sfView::SUCCESS;
         }
-        
+
         $this->form->save();
 
         $this->getUser()->setFlash("notice", "Modifications prises en compte avec succès.");
 
         return $this->redirect($this->generateUrl('edit_fichier', $this->fichier));
 	}
-	
+
 	public function executeNew(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
     	$this->campagne = $request->getParameter('campagne');

@@ -48,6 +48,6 @@ class DR extends BaseDR {
     }
 
 		public function getCategorie(){
-			return ucfirst(strtolower($this->type));
+			return strtolower($this->type);
 		}
 }
