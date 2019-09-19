@@ -30,6 +30,7 @@ all:
           TRANSMIS_INAO: "Transmis à l'INAO"
           VALIDE_INAO: "Validé par l'INAO"
           REFUSE_INAO: "Refusé par l'INAO"
+          SUSPENDU_INAO: "Suspendu par l'INAO"
           VALIDE: "Validé"
           REFUSE: "Refusé"
           ANNULE: "Annulé"
@@ -49,10 +50,10 @@ all:
             VALIDE: HABILITE
             REFUSE: REFUS
             ANNULE: ANNULÉ
+            SUSPENDU_INAO: SUSPENDU
           RETRAIT:
             COMPLET: DEMANDE_RETRAIT
             VALIDE: RETRAIT
             REFUSE: HABILITE
             ANNULE: ANNULÉ
-          SUSPENSION:
-            VALIDE: SUSPENDU
+            SUSPENDU_INAO: SUSPENDU
