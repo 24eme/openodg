@@ -116,9 +116,9 @@ if (($handle = fopen($csv, "r")) !== false) {
             $decision = $dates[$key]['decision'];
 
             if ($config && !isset($etablissements[$datas[2]])) {
-                $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/ETABLISSEMENT-".$datas[2]);
+                $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/COMPTE-".$datas[2]);
                 if ($content !== false) {
-                    $etablissements[$datas[2]] = json_decode(file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/ETABLISSEMENT-".$datas[2]));
+                    $etablissements[$datas[2]] = json_decode(file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/COMPTE-".$datas[2]));
                 }
             }
 
@@ -126,12 +126,14 @@ if (($handle = fopen($csv, "r")) !== false) {
                 continue;
             }
 
-            $adresses = explode(' - ', str_replace(array('"',','),array('',''), $etablissement->siege->adresse));
+            $adresses = explode(' - ', str_replace(array('"',','),array('',''), $compte->societe_informations->adresse));
             $a = (isset($adresses[0]))? $adresses[0] : "";
             $a_comp = (isset($adresses[1]))? $adresses[1] : "";
             $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
-            echo $datas[10].";".$depot->format('d/m/Y').";".$enregistrement->format('d/m/Y').";".$etablissement->cvi.";".$etablissement->siret.";".$datas[2].";".$etablissement->raison_sociale.";".$a.";".$a_comp.";".$a_comp1.";".$etablissement->siege->code_postal.";".$etablissement->siege->commune.";".$etablissement->telephone_bureau.";".$etablissement->fax.";".$etablissement->email.";".$type.";".$datas[7].";".$decision->format('d/m/Y').";".$datas[4]."\n";
+            echo $datas[10].";".$date_depot.";".$date_enregistrement.";".$compte->etablissement_informations->cvi.";".$compte->societe_informations->sitet.";".$datas[2].";".$compte->nom_a_afficher.";".$a.";".$a_comp.";".$a_comp1.";";
+            echo $compte->societe_informations->code_postal.";".$compte->societe_informations->commune.";".$compte->telephone_bureau.";".$compte->fax.";".$compte->email.";".$type.";".$datas[7].";".$date_decision.";".$datas[4]."\n";
+
         }
     }
     fclose($handle);
