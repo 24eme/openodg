@@ -228,14 +228,5 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 
     /**** FIN DES PIECES ****/
 
-    public function getCategorie(){
-      if($this->exist('categorie') && $this->_get('categorie')){
-        return $this->_get('categorie');
-      }
-      if(preg_match("/^DI/",$this->libelle)){
-              return 'Identification';
- 			}
-      return $this->_get('categorie');
-		}
 
 }

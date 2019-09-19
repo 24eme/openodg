@@ -1305,7 +1305,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getCategorie(){
-      return ucfirst(strtolower($this->type));
+      return strtolower($this->type);
     }
 
     /**** FIN DES PIECES ****/
