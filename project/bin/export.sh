@@ -39,7 +39,7 @@ rm $EXPORTDIR/habilitation.csv.part
 
 php symfony export:habilitation-demandes $SYMFONYTASKOPTIONS > $EXPORTDIR/habilitation_demandes.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes.csv.part > $EXPORTDIR/habilitation_demandes.csv
-php bin/export/export_liste_inao.php $EXPORTDIR/habilitation_demandes.csv.part > $EXPORTDIR/habilitation_demandes_inao.csv.part
+php bin/export/export_liste_inao.php $EXPORTDIR/habilitation_demandes.csv.part | grep -E "^Côtes du Rhône" > $EXPORTDIR/habilitation_demandes_inao.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_inao.csv.part > $EXPORTDIR/habilitation_demandes_inao.csv
 rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_inao.csv.part
 
