@@ -122,16 +122,20 @@ if (($handle = fopen($csv, "r")) !== false) {
                 }
             }
 
-            if (!$etablissement = $etablissements[$datas[2]]) {
+            if (!$compte = $etablissements[$datas[2]]) {
                 continue;
             }
+            $adresse = $compte->societe_informations->adresse;
+            if($compte->societe_informations->adresse_complementaire) {
+                $adresse .= (($adresse) ? ' - ' : null).$compte->societe_informations->adresse_complementaire;
+            }
 
-            $adresses = explode(' - ', str_replace(array('"',','),array('',''), $compte->societe_informations->adresse));
+            $adresses = explode(' - ', str_replace(array('"',','),array('',''), $adresse));
             $a = (isset($adresses[0]))? $adresses[0] : "";
             $a_comp = (isset($adresses[1]))? $adresses[1] : "";
             $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
-            echo $datas[10].";".$date_depot.";".$date_enregistrement.";".$compte->etablissement_informations->cvi.";".$compte->societe_informations->sitet.";".$datas[2].";".$compte->nom_a_afficher.";".$a.";".$a_comp.";".$a_comp1.";";
+            echo $datas[10].";".$date_depot.";".$date_enregistrement.";".$compte->etablissement_informations->cvi.";".$compte->societe_informations->siret.";".$datas[2].";".$compte->nom_a_afficher.";".$a.";".$a_comp.";".$a_comp1.";";
             echo $compte->societe_informations->code_postal.";".$compte->societe_informations->commune.";".$compte->telephone_bureau.";".$compte->fax.";".$compte->email.";".$type.";".$datas[7].";".$date_decision.";".$datas[4]."\n";
 
         }
