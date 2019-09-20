@@ -127,6 +127,14 @@ if (($handle = fopen($csv, "r")) !== false) {
                 $date_decision = $decision->format('d/m/Y');
             }
 
+            if(!$date_depot) {
+                $date_depot = $date_decision;
+            }
+
+            if(!$date_enregistrement) {
+                $date_enregistrement = $date_decision;
+            }
+
             if ($config && !isset($etablissements[$datas[2]])) {
                 $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/COMPTE-".$datas[2]);
                 if ($content !== false) {
