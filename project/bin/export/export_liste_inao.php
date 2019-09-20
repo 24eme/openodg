@@ -119,8 +119,20 @@ if (($handle = fopen($csv, "r")) !== false) {
 
         foreach($types as $type) {
             $depot = $dates[$key]['depot'];
+            $date_depot = "";
+            if ($depot) {
+                $date_depot = $depot->format('d/m/Y');
+            }
             $enregistrement = $dates[$key]['enregistrement'];
+            $date_enregistrement = "";
+            if ($enregistrement) {
+                $date_enregistrement = $enregistrement->format('d/m/Y');
+            }
             $decision = $dates[$key]['decision'];
+            $date_decision = "";
+            if ($decision) {
+                $date_decision = $decision->format('d/m/Y');
+            }
 
             if(!$date_depot) {
                 $date_depot = $date_decision;
@@ -152,7 +164,6 @@ if (($handle = fopen($csv, "r")) !== false) {
 
             echo $datas[10].";".$date_depot.";".$date_enregistrement.";".$compte->etablissement_informations->cvi.";".$compte->societe_informations->siret.";".$datas[2].";".$compte->nom_a_afficher.";".$a.";".$a_comp.";".$a_comp1.";";
             echo $compte->societe_informations->code_postal.";".$compte->societe_informations->commune.";".$compte->telephone_bureau.";".$compte->fax.";".$compte->email.";".$type.";".$datas[7].";".$date_decision.";".$datas[4]."\n";
-
         }
     }
     fclose($handle);
