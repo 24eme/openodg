@@ -5,7 +5,7 @@ function generateHash($datas) {
     $statut = $datas[1];
     $id = $datas[2];
     $produit = $datas[9];
-    return $date.'-'.$id.'-'.$type.'-'.$statut.'-'.$produit;
+    return preg_replace("/^.+:/", "", $datas[6]).'*'.$date.'*'.$id.'*'.$type.'*'.$statut.'*'.$produit;
 }
 
 if (!isset($argv[1]) ||
@@ -35,21 +35,23 @@ if (($handle = fopen($csv, "r")) !== false) {
     fclose($handle);
 }
 ksort($historique);
-
 $dates = array();
 foreach ($historique as $h => $d) {
-    $tabH = explode('-', $h);
-    $key = $tabH[1].'-'. $tabH[2].'-'. $tabH[4];
-    if (!isset($dates[$key])) {
-        $dates[$key] = array('depot' => null, 'enregistrement' => null, 'decision' => null);
+    $tabH = explode('*', $h);
+    $key = $tabH[2].'-'.$tabH[5];
+    if (!isset($dates[$key]) || $dates[$key]['id'] != $tabH[0]) {
+        $dates[$key] = array('depot' => null, 'enregistrement' => null, 'decision' => null, 'id' => null);
     }
-    if ($tabH[3] == 'COMPLET') {
+
+    $dates[$key]['id'] = $tabH[0];
+
+    if ($tabH[4] == 'COMPLET') {
         $dates[$key]['depot'] = $d;
     }
-    if ($tabH[3] == 'ENREGISTREMENT') {
+    if ($tabH[4] == 'ENREGISTREMENT') {
         $dates[$key]['enregistrement'] = $d;
     }
-    if (strpos($tabH[3], 'VALIDE') !== false) {
+    if (strpos($tabH[4], 'VALIDE') !== false) {
         $dates[$key]['decision'] = $d;
     }
 }
@@ -96,21 +98,26 @@ if (($handle = fopen($csv, "r")) !== false) {
         if (count($datas) != 12) {
             continue;
         }
-	if (!preg_match("/^[0-9]+/", $datas[0])) {
+	    if (!preg_match("/^[0-9]+/", $datas[0])) {
+            continue;
+        }
+
+        $key = $datas[2].'-'. $datas[9];
+        $id = generateHash($datas);
+
+        if (!isset($dates[$key])) {
+            continue;
+        }
+        if ($dates[$key]['id'] != preg_replace("/^.+:/", "", $datas[6])) {
             continue;
         }
         if ($datas[1] != 'VALIDE') {
             continue;
         }
+
         $types = explode(',', $datas[11]);
 
         foreach($types as $type) {
-            $key = $datas[2].'-'. $datas[7].'-'. $datas[9];
-
-            if (!isset($dates[$key])) {
-                continue;
-            }
-
             $depot = $dates[$key]['depot'];
             $enregistrement = $dates[$key]['enregistrement'];
             $decision = $dates[$key]['decision'];
