@@ -625,6 +625,10 @@ class drevActions extends sfActions {
 
         $documents = $this->drev->getOrAdd('documents');
         $this->regionParam = $request->getParameter('region',null);
+        if (!$this->regionParam && $this->getUser()->getCompte()->exist('region')) {
+            $this->regionParam = $this->getUser()->getCompte()->region;
+        }
+        
         if($this->getUser()->isAdmin() && $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
         }

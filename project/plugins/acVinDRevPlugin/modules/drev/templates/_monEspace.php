@@ -11,11 +11,8 @@
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication viticole a été validée pour cette année.</p>
-                <div style="margin-top: 50px;">
+                <div style="margin-top: 79px;">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser</a>
-                    <?php if (DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
-                        <a onclick='return confirm("Êtes vous sûr de vouloir dévalider cette déclaration ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
-                    <?php endif; ?>
                 </div>
             </div>
         <?php elseif ($drev && (DRevClient::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin())): ?>

@@ -1,5 +1,7 @@
 all:
   credentials: ADMIN
+index:
+  credentials: [[ADMIN, habilitation]]
 get:
   credentials: []
 piecesHistorique:
