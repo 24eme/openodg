@@ -235,6 +235,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentDouanierType() {
+
         if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
 
             return DRCsvFile::CSV_TYPE_DR;
@@ -244,7 +245,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             return SV11CsvFile::CSV_TYPE_SV11;
         }
-
         if($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR) {
 
             return SV12CsvFile::CSV_TYPE_SV12;
@@ -738,13 +738,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
 
-        if($this->getDocumentDouanierType() == "DR") {
-            $this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR;
-        } elseif($this->getDocumentDouanierType() == "SV11") {
-            $this->declarant->famille == EtablissementFamilles::FAMILLE_COOPERATIVE;
-        } elseif($this->getDocumentDouanierType() == "SV12") {
-            $this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT;
-        } elseif($this->getEtablissementObject()->famille) {
+        if($this->getEtablissementObject()->famille) {
             $this->declarant->famille = $this->getEtablissementObject()->famille;
         }
     }
@@ -760,12 +754,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function storeLotsDateVersion($date) {
         if($this->exist('lots')){
           foreach($this->lots as $lot) {
-              if(!$lot->exist('date_version') || !$lot->date_version){
-                $lot->add('date_version',$date."_".$this->getVersion());
+              if(!$lot->exist('id') || !$lot->id){
+                $lot->add('id_document',$this->_id);
+                $lot->add('date',$date);
               }
               foreach ($lot as $key => $field) {
                 if($this->getDocument()->isModifiedMother($lot->getHash(), $key)){
-                  $lot->date_version = $date."_".$this->getVersion();
+                  $lot->date = $date;
+                  $lot->id_document = $this->_id;
                   break;
                 }
               }
@@ -779,7 +775,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $date = date('Y-m-d');
         }
 
-        $this->storeLotsDateVersion();
+        $this->storeLotsDateVersion($date);
         $this->cleanDoc();
         $this->validation = $date;
         $this->generateMouvements();
@@ -796,8 +792,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots') && $reinit_version_lot){
           foreach($this->lots as $lot) {
-              if($lot->exist('date_version') && $lot->date_version){
-                $lot->date_version = null;
+              if($lot->exist('date') && $lot->date){
+                $lot->date = null;
+                $lot->id_document = null;
               }
           }
         }
