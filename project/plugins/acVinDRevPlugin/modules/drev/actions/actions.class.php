@@ -327,8 +327,8 @@ class drevActions extends sfActions {
 
             return $this->redirect('drev_dr_upload', $this->drev);
         }
-
-        if(!count($this->drev->getProduitsLots()) && !$request->getParameter('prec')) {
+        
+        if(!count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -531,8 +531,8 @@ class drevActions extends sfActions {
         }
 
         $this->drev->cleanDoc();
-        $this->drev->storeLotsDateVersion();
-        
+        $this->drev->storeLotsDateVersion(date('Y-m-d'));
+
         $this->validation = new DRevValidation($this->drev);
 
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
@@ -682,7 +682,6 @@ class drevActions extends sfActions {
 
         $drev_modificative = $drev->generateModificative();
         $drev_modificative->save();
-
         if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
           return $this->redirect('drev_lots', $drev_modificative);
         }
