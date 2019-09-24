@@ -242,8 +242,7 @@ class declarationActions extends sfActions {
                 $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
-                ->reduce(false)
-                ->descending(true)
+                ->reduce(false)                
                 ->getView('declaration', 'tous')->rows);
             }
         }
