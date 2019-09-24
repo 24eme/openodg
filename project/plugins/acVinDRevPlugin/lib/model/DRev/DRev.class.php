@@ -245,7 +245,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             return SV11CsvFile::CSV_TYPE_SV11;
         }
-        if($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR) {
+        if(preg_match('/^'.EtablissementFamilles::FAMILLE_NEGOCIANT.'/', $this->declarant->famille)) {
 
             return SV12CsvFile::CSV_TYPE_SV12;
         }

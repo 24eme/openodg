@@ -50,7 +50,7 @@ class INAOHabilitationCsvFile
           $this->produits4cvi[$cvi] = $this->getProduits4Id($cvi);
       }
       foreach($this->produits4cvi[$cvi] as $ligne) {
-          if ($produit_slug == KeyInflector::slugify($ligne[self::CSV_PRODUIT_LIBELLE])) {
+          if (preg_match("/^".KeyInflector::slugify($ligne[self::CSV_PRODUIT_LIBELLE])."/", $produit_slug)) {
               return ($ligne[self::CSV_VINIFICATEUR]);
           }
       }

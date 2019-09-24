@@ -41,6 +41,9 @@
             <a href="<?php echo ($drev->isModificative())? url_for("drev_lots", $drev) : url_for("drev_revendication", array('sf_subject' => $drev, 'prec' => true)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
+            <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left" >
+                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
+            </a>
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
             </a>
