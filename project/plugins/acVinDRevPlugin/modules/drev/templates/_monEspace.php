@@ -12,7 +12,7 @@
             <div class="panel-body">
                 <p>Votre déclaration de revendication viticole a été validée pour cette année.</p>
                 <div style="margin-top: 79px;">
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser</a>
+                    <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Voir la DRev</a>
                 </div>
             </div>
         <?php elseif ($drev && (DRevClient::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin())): ?>
