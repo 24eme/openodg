@@ -104,4 +104,16 @@ class DRevLot extends BaseDRevLot
       return $this->getDocument();
     }
 
+    public function getCepagesToStr(){
+      $cepages = $this->cepages;
+      $str ='';
+      $k=0;
+      foreach ($cepages as $c => $pourcent){
+        $k++;
+        $str.= $c." (".$pourcent.'%)';
+        $str.= ($k < count($cepages))? ', ' : '';
+      }
+      return $str;
+    }
+
 }
