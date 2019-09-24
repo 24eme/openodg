@@ -441,23 +441,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT] = null;
             }
 
+            $complement = null;
+
             if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
                   ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
                 ) {
-              $produit = $this->addProduit($produitConfig->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, $line[DRCsvFile::CSV_COLONNE_ID]);
               $has_bio = true;
+              $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
             } elseif (DRevConfiguration::getInstance()->hasImportWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
-                $produit = $this->addProduit($produitConfig->getHash(), $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT], $line[DRCsvFile::CSV_COLONNE_ID]);
-            } else {
-              $produit = $this->addProduit($produitConfig->getHash(), null, $line[DRCsvFile::CSV_COLONNE_ID]);
+                $complement = $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT];
             }
-
 
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
-                $bailleurs[$produit->getHash()] = $produit->getHash();
                 $is_bailleur = true;
+                if($complement) {
+                    $complement .= " - ";
+                }
+                $complement .= $line[DRCsvFile::CSV_RECOLTANT_LIBELLE];
             }
+            $produit = $this->addProduit($produitConfig->getHash(), $complement, $line[DRCsvFile::CSV_COLONNE_ID]);
 
+            if($is_bailleur) {
+                $bailleurs[$produit->getHash()] = $produit->getHash();
+            }
 
             if ($is_bailleur && (!$has_bailleurs_or_multiple || !$ppm || $ppm != trim($line[DRCsvFile::CSV_BAILLEUR_PPM]))) {
                 continue;
