@@ -31,7 +31,7 @@
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; width: 440px;">Appellation</th>
+        <th class="th" style="text-align: left; width: 440px;">Produit</th>
         <th class="th" style="text-align: center; width: 170px;">Superficie revendiquée</th>
         <th class="th" style="text-align: center; width: 170px;">Volume revendiqué net total</th>
         <th class="th" style="text-align: center; width: 170px;">Dont VCI</th>
@@ -50,7 +50,7 @@
 <div><span class="h3">&nbsp;Gestion du VCI&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; width: 247px;">Appellation</th>
+        <th class="th" style="text-align: left; width: 247px;">Produit</th>
         <th class="th" style="text-align: center; width: 100px;">Stock <?php echo ($drev->campagne - 1) ?></th>
         <th class="th" style="text-align: center; width: 100px;">A détruire</th>
         <th class="th" style="text-align: center; width: 100px;">Complément</th>
@@ -91,7 +91,7 @@ Les produits déclarés sont du millésime du VCI
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 50px">&nbsp;Lot</th>
-        <th class="th" style="text-align: left; width: 450px">&nbsp;Appellation (millésime)</th>
+        <th class="th" style="text-align: left; width: 450px">&nbsp;Produit (millésime)</th>
         <th class="th" style="text-align: center; width: 150px">Volume</th>
         <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
     </tr>
