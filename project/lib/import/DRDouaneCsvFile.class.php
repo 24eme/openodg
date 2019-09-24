@@ -23,6 +23,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $libelleLigne = null;
         $achat_fin = 0;
         $achats = array();
+        $ratio_metayer = array();
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
                 //Cas de fin de tableur avec les achats tolérés
@@ -92,9 +93,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			for ($i = 2; $i < count($csv[$key+1]); $i++) {
         				if ($i%2) {
         					if ($csv[$key+1][$i]) {
-        						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($csv[$key+1][$i]), null, null, null, null);
+                                $volume = (float) str_replace(",", ".", $csv[$key+1][$i]);
+        						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), $volume, null, null, null, null);
         					}
         					if ($csv[$key+1][$i+1]) {
+                                $volumeBailleur = (float) str_replace(",", ".", $csv[$key+1][$i+1]);
+                                $ratio_metayer[$i] = $volume / ($volume + $volumeBailleur);
         						$bailleur[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($csv[$key+1][$i+1]), null, null, null, null);
         					}
         				}
@@ -169,11 +173,16 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         if ($ppm && in_array($ppm, $bailleurs)) {
         	return;
         }
-
         $csv = '';
         $doc = $this->getEtablissementRows();
         foreach ($produits as $k => $p) {
 	        foreach ($exploitant[$k] as $sk => $e) {
+                if($e[0] == 4 && isset($ratio_metayer[$k])){
+                    $superficieInitiale = (float) (str_replace(",", ".", $e[2]));
+                    $e[2] = self::numerizeVal($superficieInitiale*$ratio_metayer[$k], 4);
+                    array_unshift($bailleur[$k], $e);
+                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale*(1 - $ratio_metayer[$k]), 4);
+                }
 	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k]."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
 	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$coloneid[$k]."\n";
