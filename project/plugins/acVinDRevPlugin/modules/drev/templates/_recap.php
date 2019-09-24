@@ -52,6 +52,11 @@
                     <td><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $lot->getDrevLastFromDateVersion()) ?>"><?php echo $lot->getDateVersionfr(); ?></a></td>
                     <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
                     <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?>
+                      <?php if(count($lot->cepages)): ?>
+                        <small>
+                          <?php echo $lot->getCepagesToStr(); ?>
+                        </small>
+                      <?php endif; ?>
                       <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                     </td>
                     <td>&nbsp;</td>
