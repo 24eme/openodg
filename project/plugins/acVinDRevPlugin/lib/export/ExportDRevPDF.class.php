@@ -17,10 +17,14 @@ class ExportDRevPDF extends ExportPDF {
         } else {
             $this->regions[] = $region;
         }
+        
+        if(!count($this->regions)){
+          $this->regions[] = $region;
+        }
+
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
-
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
