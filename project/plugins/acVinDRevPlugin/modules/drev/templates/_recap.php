@@ -52,6 +52,11 @@
                     <td><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $lot->getDrevLastFromDateVersion()) ?>"><?php echo $lot->getDateVersionfr(); ?></a></td>
                     <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
                     <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?>
+                      <?php if(count($lot->cepages)): ?>
+                        <small>
+                          <?php echo $lot->getCepagesToStr(); ?>
+                        </small>
+                      <?php endif; ?>
                       <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                     </td>
                     <td>&nbsp;</td>
@@ -81,10 +86,10 @@
             <tr>
                 <th class="col-xs-3">Appellation revendiquée</th>
                 <th class="text-center col-xs-2">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-1">A détruire<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-1">Complémt<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-1">Substitué<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Complémt<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">A détruire<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Substitué<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Constitué<br /><?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-2">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
             </tr>
@@ -94,10 +99,10 @@
                 <tr>
                     <td><?php echo $produit->getLibelleComplet() ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_precedent') ?>"><?php if($produit->vci->stock_precedent): ?><?php echoFloat($produit->vci->stock_precedent) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'destruction') ?>"><?php if($produit->vci->destruction): ?><?php echoFloat($produit->vci->destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'complement') ?>"><?php if($produit->vci->complement): ?><?php echoFloat($produit->vci->complement) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'substitution') ?>"><?php if($produit->vci->substitution): ?><?php echoFloat($produit->vci->substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'rafraichi') ?>"><?php if($produit->vci->rafraichi): ?><?php echoFloat($produit->vci->rafraichi) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'complement') ?>"><?php if($produit->vci->complement): ?><?php echoFloat($produit->vci->complement) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'destruction') ?>"><?php if($produit->vci->destruction): ?><?php echoFloat($produit->vci->destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'substitution') ?>"><?php if($produit->vci->substitution): ?><?php echoFloat($produit->vci->substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'constitue') ?>"><?php if($produit->vci->constitue): ?><?php echoFloat($produit->vci->constitue) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?>"><?php if($produit->vci->stock_final): ?><?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 </tr>

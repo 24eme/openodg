@@ -14,6 +14,9 @@
 <h3>Liste des déclarations</h3>
 <div class="row">
     <div class="col-sm-9 col-xs-12">
+    	<?php if (!count($docs)): ?>
+    	<p><em>Aucune déclaration enregistrée</em></p>
+    	<?php else: ?>
         <table class="table table-bordered table-striped table-condensed">
             <thead>
                 <tr>
@@ -75,5 +78,6 @@
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
+    <?php endif; ?>
     </div>
 </div>
