@@ -102,6 +102,11 @@ class ExportDRevPDF extends ExportPDF {
         return $titre;
     }
 
+    protected function getFooterText() {
+
+        return DRevConfiguration::getInstance()->getOdgRegionLibelle($this->getRegion());
+    }
+
     protected function getHeaderSubtitle() {
 
         $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
