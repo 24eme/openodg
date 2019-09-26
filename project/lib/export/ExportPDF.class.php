@@ -16,6 +16,7 @@ abstract class ExportPDF {
             $config->header_title = $this->getHeaderTitle();
             $config->header_string = $this->getHeaderSubtitle();
             $config->title = $this->getTitle();
+            $config->footer_text = $this->getFooterText();
             $this->printable_document = new PageablePDF($filename, $file_dir, $config);
         }
     }
@@ -89,6 +90,11 @@ abstract class ExportPDF {
     protected function getTitle() {
 
         return sprintf('%s de %s', $this->getHeaderTitle(), preg_replace('/\n/', ', ', $this->getHeaderSubtitle()));
+    }
+
+    protected function getFooterText() {
+
+        return null;
     }
 
     abstract protected function getHeaderTitle();
