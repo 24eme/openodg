@@ -13,9 +13,9 @@
     <thead>
         <tr>
             <th class="col-xs-6">Appellation revendiquée</th>
-            <th class="col-xs-1 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
-            <th class="col-xs-2 text-center">Volume revendiqué<br />net total <small class="text-muted">(hl)</small></th>
-            <th class="col-xs-3 text-center">Dont VCI<br /><small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
+            <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Dont millesime <?php echo $drev->campagne-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
         </tr>
     </thead>
     <tbody>
