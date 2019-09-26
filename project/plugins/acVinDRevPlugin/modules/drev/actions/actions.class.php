@@ -327,7 +327,7 @@ class drevActions extends sfActions {
 
             return $this->redirect('drev_dr_upload', $this->drev);
         }
-        
+
         if(!count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
 
             return $this->redirect('drev_revendication', $this->drev);
@@ -531,7 +531,6 @@ class drevActions extends sfActions {
         }
 
         $this->drev->cleanDoc();
-        $this->drev->storeLotsDateVersion(date('Y-m-d'));
 
         $this->validation = new DRevValidation($this->drev);
 
@@ -628,7 +627,7 @@ class drevActions extends sfActions {
         if (!$this->regionParam && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-        
+
         if($this->getUser()->isAdmin() && $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
         }

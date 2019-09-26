@@ -760,7 +760,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function storeLotsDateVersion($date) {
         if($this->exist('lots')){
           foreach($this->lots as $lot) {
-              if(!$lot->exist('id') || !$lot->id){
+              if(!$lot->exist('id_document') || !$lot->id_document){
                 $lot->add('id_document',$this->_id);
                 $lot->add('date',$date);
               }
