@@ -36,6 +36,10 @@ all:
             - appellations/MUSSM
             - appellations/GPL
           inao: "data/drev/NANTES.csv"
+        COTEAUX_VENDOMOIS:
+          nom: "Côteaux du vendomois"
+          produits:
+            - appellations/CTXV
         IGP_VALDELOIRE:
           nom: "Vins IGP Val de Loire"
           produits:
