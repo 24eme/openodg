@@ -177,6 +177,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $doc = $this->getEtablissementRows();
         foreach ($produits as $k => $p) {
 	        foreach ($exploitant[$k] as $sk => $e) {
+                $eOrigin = null;
+                if($e[0] == 4) {
+                    $eOrigin = $e;
+                    $eOrigin[0] = "04b";
+                    $eOrigin[1] = "Superificie de récolte originale";
+                }
                 if($e[0] == 4 && isset($ratio_metayer[$k])){
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));
                     $e[2] = self::numerizeVal($superficieInitiale*$ratio_metayer[$k], 4);
@@ -188,6 +194,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
 	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$coloneid[$k]."\n";
 	        		unset($bailleur[$k][$sk]);
 	        	}
+                if(isset($eOrigin)) {
+                    $csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $eOrigin).';'.$coloneid[$k]."\n";
+                }
 	        }
 	        if (isset($baillage[$k]) && isset($bailleur[$k])) {
 	        	foreach ($bailleur[$k] as $b) {
