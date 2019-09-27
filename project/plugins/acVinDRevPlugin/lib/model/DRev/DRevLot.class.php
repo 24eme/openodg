@@ -88,20 +88,14 @@ class DRevLot extends BaseDRevLot
       if($this->date){
         return Date::francizeDate($this->date);
       }
-      return "";
+      return date("d/m/Y");
     }
 
-    public function getDrevLastFromDateVersion(){
-      if(!$this->date){
+    public function getDrevDocOrigine(){
+      if(!$this->exist('id_document') || !$this->id_document){
         return null;
       }
-      if(!$this->getDocument()->getMother()){
-        return $this->getDocument();
-      }
-      if(!$this->getDocument()->isModifiedMother($this->getHash(), "date")){
-        return $this->getDocument()->getMother()->get($this->getHash())->getDrevLastFromDateVersion();
-      }
-      return $this->getDocument();
+      return DRevClient::getInstance()->find($this->id_document);
     }
 
     public function getCepagesToStr(){

@@ -90,14 +90,16 @@ Les produits déclarés sont du millésime du VCI
 <div><span class="h3">&nbsp;Declaration des lots&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
+        <th class="th" style="text-align: left; width: 80px">&nbsp;Date</th>
         <th class="th" style="text-align: left; width: 50px">&nbsp;Lot</th>
-        <th class="th" style="text-align: left; width: 450px">&nbsp;Produit (millésime)</th>
+        <th class="th" style="text-align: left; width: 430px">&nbsp;Produit (millésime)</th>
         <th class="th" style="text-align: center; width: 150px">Volume</th>
         <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
     </tr>
 <?php foreach($drev->lots as $lot): ?>
 <?php   if($lot->hasVolumeAndHashProduit()): ?>
     <tr>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)<?php if(count($lot->cepages)): echo "&nbsp;<small>".$lot->getCepagesToStr()."</small>"; endif; ?></td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>

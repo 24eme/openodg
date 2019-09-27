@@ -39,6 +39,10 @@ all:
             - appellations/MUSSM
             - appellations/GPL
           inao: "data/drev/NANTES.csv"
+        COTEAUX_VENDOMOIS:
+          nom: "Côteaux du vendomois"
+          produits:
+            - appellations/CTXV
         IGP_VALDELOIRE:
           nom: "Syndicat des Vins IGP du Val de Loire"
           adresse: "37 avenue jean Joxé, 49100 Angers"

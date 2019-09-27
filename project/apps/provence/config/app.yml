@@ -3,6 +3,7 @@
 
 # default values
 all:
+  elasticversion: '2.4.6'
   document_validation_signataire: 1
   parcellaire_irrigable:
     ressources: ["Canal de Provence", "Forage", "Etang", "Retenue collinaire","Réseau urbain"]
