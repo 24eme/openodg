@@ -96,15 +96,22 @@ class ExportDRevPDF extends ExportPDF {
         $titre = sprintf("Déclaration de Revendication %s", $this->drev->campagne);
         $region = $this->getRegion();
         if($region) {
-            $titre .= " (".DRevConfiguration::getInstance()->getOdgRegionLibelle($region).")";
+            $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+            $titre .= " (".$infos['nom'].")";
         }
 
         return $titre;
     }
 
     protected function getFooterText() {
+        if(!$this->getRegion()) {
 
-        return DRevConfiguration::getInstance()->getOdgRegionLibelle($this->getRegion());
+            return null;
+        }
+
+        $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+
+        return sprintf("%s - %s", (isset($infos) && $infos['nom']) ? $infos['nom'] : null, (isset($infos) && isset($infos['adresse'])) ? $infos['adresse'] : null);
     }
 
     protected function getHeaderSubtitle() {
