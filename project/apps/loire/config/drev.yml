@@ -9,6 +9,7 @@ all:
       odg:
         ANJOU_SAUMUR:
           nom: "Anjou Saumur"
+          adresse: "73 rue du Plantagenêt, 49024 Angers"
           produits:
             - "appellations/ANJ"
             - "appellations/ANJCDL"
@@ -24,11 +25,13 @@ all:
             - "appellations/SAU"
           inao: "data/drev/FEDE.csv"
         CHINON:
-          nom: "Chinon"
+          nom: "Syndicat des Vins de Chinon"
+          adresse: "place Hofheim, 37500 Chinon"
           produits:
             - "appellations/CHI"
         NANTES:
-          nom: "Nantes"
+          nom: "La Fédération des vins de Nantes"
+          adresse: "Château de la Frémoire, 44120 Vertou"
           produits:
             - appellations/MUSAC
             - appellations/MUSCDL
@@ -41,6 +44,7 @@ all:
           produits:
             - appellations/CTXV
         IGP_VALDELOIRE:
-          nom: "Vins IGP Val de Loire"
+          nom: "Syndicat des Vins IGP du Val de Loire"
+          adresse: "37 avenue jean Joxé, 49100 Angers"
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL

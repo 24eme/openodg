@@ -11,7 +11,7 @@
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication viticole a été validée pour cette année.</p>
-                <div style="margin-top: 79px;">
+                <div style="margin-top: 76px;">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Voir la DRev</a>
                 </div>
             </div>
