@@ -110,4 +110,8 @@ class DRevLot extends BaseDRevLot
       return $str;
     }
 
+    public function hasBeenEdited(){
+      return ($this->getDocument()->hasVersion() && $this->exist('id_document') && $this->id_document);
+    }
+
 }

@@ -322,6 +322,7 @@ class drevActions extends sfActions {
     public function executeLots(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if ($this->needDrDouane()) {
 
@@ -368,6 +369,24 @@ class drevActions extends sfActions {
         }
 
         return $this->redirect('drev_revendication', $this->drev);
+    }
+
+    public function executeDeleteLots(sfWebRequest $request){
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if(!isset($this->drev->lots[$request->getParameter('appellation')])){
+          throw new sfException("le lot d'index ".$request->getParameter('appellation')." n'existe pas ");
+        }
+
+        $lot = $this->drev->lots[$request->getParameter('appellation')];
+        if($lot){
+            $this->drev->remove($lot->getHash());
+        }
+
+        $this->drev->save();
+        return $this->redirect('drev_lots', $this->drev);
+
     }
 
     public function executeRevendication(sfWebRequest $request) {

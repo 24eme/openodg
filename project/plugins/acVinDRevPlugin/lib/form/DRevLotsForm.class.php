@@ -12,6 +12,9 @@ class DRevLotsForm extends acCouchdbForm
 		$formLots = new BaseForm();
 
 		foreach($this->getDocument()->lots as $lot) {
+			if($lot->hasBeenEdited()){
+				continue;
+			}
 			$formLots->embedForm($lot->getKey(), new DRevLotForm($lot));
 		}
 

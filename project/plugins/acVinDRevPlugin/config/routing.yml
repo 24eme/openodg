@@ -225,6 +225,16 @@ drev_lots:
   requirements:
     sf_method: [get, post]
 
+drev_lots_delete:
+  url: /drev/lots/:id/:appellation/supprimer
+  param: { module: drev, action: deleteLots, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_generatemouvements:
   url: /drev/generatemouvements/:id
   param: { module: drev, action: generateMouvements }

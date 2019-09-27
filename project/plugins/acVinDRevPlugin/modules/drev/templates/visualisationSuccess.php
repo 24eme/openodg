@@ -81,10 +81,8 @@
         <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin()) && $hasValidationOdg && $isValidateOdgRegion): ?>
         <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
-        <?php elseif($sf_user->isAdmin()): ?>
-                <a onclick="return confirm('Étes vous sûr de vouloir créer une modificatrice ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Créer une modificatrice</a>
-        <?php elseif($drev->validation_odg && count($drev->getProduitsLots())): ?>
-                <a onclick="return confirm('Étes vous sûr de vouloir effectuer une modification des lots ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier des lots IGP</a>
+        <?php elseif(($sf_user->isAdmin() || $drev->validation_odg) && count($drev->getProduitsLots())): ?>
+          <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
         <?php endif; ?>
 
 <?php if (isset($form)): ?>

@@ -6,19 +6,52 @@
 
     <div class="page-header"><h2>Revendication des Lots IGP</h2></div>
 
-    <?php echo include_partial('global/flash'); ?>
 
+
+    <?php echo include_partial('global/flash'); ?>
     <form role="form" action="<?php echo url_for("drev_lots", $drev) ?>" method="post" id="form_drev_lots" class="form-horizontal">
 
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
+    <?php foreach($drev->lots as $lot): ?>
+      <?php if(!$lot->hasBeenEdited()){ continue; } ?>
+      <div class="panel panel-default" style="border-color:rgba(130, 147, 69, 0.4);">
+          <div class="panel-body panel-body-success">
+            <div class="row">
+              <div class="col-md-2"><?php echo Date::francizeDate($lot->date); ?></div>
+              <div class="col-md-3"><strong><?php echo $lot->produit_libelle; ?></strong></div>
+              <div class="col-md-3">
+                <?php if(count($lot->cepages)): ?>
+                  <small>
+                    <?php echo $lot->getCepagesToStr(); ?>
+                  </small>
+                <?php endif; ?>
+              </div>
+              <div class="col-md-3"><strong><?php echo $lot->millesime; ?></strong></div>
+              <div class="col-md-1"></div>
+            </div>
+            <div class="row">
+              <div class="col-md-2"></div>
+              <div class="col-md-3">Numéro cuve : <?php echo $lot->numero; ?></div>
+              <div class="col-md-3">Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></div>
+              <div class="col-md-3"><?php echo $lot->destination_type." (".Date::francizeDate($lot->destination_date).")"; ?></div>
+              <div class="col-md-1 text-right">
+                <?php if($isAdmin): ?>
+                  <a href="<?php echo url_for("drev_lots_delete", $drev) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
+                <?php endif; ?>
+              </div>
+            </div>
+          </div>
+          <div class="row"></div>
+      </div>
+    <?php endforeach; ?>
     <?php foreach($form['lots'] as $key => $lot): ?>
         <?php $lotItem = $drev->lots->get($key); ?>
         <?php if($key == count($form['lots']) - 1): ?>
-        <a name="dernier"></a>
+          <a name="dernier"></a>
         <?php endif; ?>
-        <div class="panel panel-default bloc-lot">
+        <div class="panel panel-default">
             <div class="panel-body" style="padding-bottom: 0;">
               <div class="row">
                     <div class="col-md-5">
@@ -33,7 +66,11 @@
                         <div class="form-group">
                           <div class="col-sm-7">
                             <div class="checkbox checkboxlots">
-                              <label><input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?> id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal" data-target="#<?php echo $lot->renderId() ?>_cepages" />
+                              <label>
+                                <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
+                                       id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal"
+                                       data-target="#<?php echo $lot->renderId() ?>_cepages"
+                                       <?php if($edite): ?> readonly="readonly" <?php endif; ?> />
                                 <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Assemblages : " :  "Assemblage" ?></span></label>
                               </div>
 
