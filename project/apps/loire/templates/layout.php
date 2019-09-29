@@ -49,13 +49,16 @@
             <?php $etablissement = $route->getEtablissement(); ?>
         <?php endif; ?>
 
-        <?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
+        <?php if($sf_user->isAuthenticated() && !($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_user->hasTeledeclarationDrevAdmin()) && (!$compte || !$etablissement)): ?>
             <?php $compte = $sf_user->getCompte(); ?>
             <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
         <?php endif; ?>
+	<?php if($sf_user->isAuthenticated() && $sf_user->hasTeledeclarationDrevAdmin() && !$compte): ?>
+		<?php $compte = $sf_user->getCompte(); ?>
+	<?php endif; ?>
 
             <?php if(sfConfig::get('app_url_header')): ?>
-            <?php echo file_get_contents(sfConfig::get('app_url_header')."?compte_id=".(($compte) ? $compte->_id : "")."&etablissement_id=".(($etablissement) ? $etablissement->_id : "")."&usurpation=".(($sf_user->isUsurpationCompte()) ? "1" : "0")); ?>
+            <?php echo file_get_contents(sfConfig::get('app_url_header')."?compte_id=".(($compte) ? $compte->_id : "")."&etablissement_id=".(($etablissement) ? $etablissement->_id : "")."&usurpation=".(($sf_user->isUsurpationCompte()) ? "1" : "0")."&actif=".(($route instanceof InterfaceDeclarationRoute) ? 'drev' : null)); ?>
             <?php else: ?>
             <?php include_partial('global/header'); ?>
             <?php include_partial('global/nav'); ?>
