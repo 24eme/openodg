@@ -9,7 +9,7 @@ class declarationActions extends sfActions {
           $this->getUser()->usurpationOn($login, $request->getReferer());
       }
       $this->regionParam = $request->getParameter('region',null);
-      if(!$this->regionParam && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
+      if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
         $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
         if($regionRadixProduits){
            return $this->redirect('declaration', array('region' => $region));

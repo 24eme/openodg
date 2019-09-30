@@ -1526,7 +1526,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getNonHabilitationINAO() {
-        return DRevClient::getInstance()->getNonHabilitationINAO($this);
+        try {
+            return DRevClient::getInstance()->getNonHabilitationINAO($this);
+        }catch(Exception $e) {
+            return array();
+        }
     }
 
     /**** FIN DE VERSION ****/
