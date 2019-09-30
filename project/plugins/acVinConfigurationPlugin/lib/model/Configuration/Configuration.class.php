@@ -200,6 +200,11 @@ class Configuration extends BaseConfiguration {
                 return $produit;
             }
         }
+        foreach($produitsByCodeDouane as $code => $produit) {
+            if(preg_match('/^'.$code_douane.'/', $code)) {
+                return $produit;
+            }
+        }
         return false;
     }
 

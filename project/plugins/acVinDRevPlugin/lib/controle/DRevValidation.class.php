@@ -147,7 +147,7 @@ class DRevValidation extends DocumentValidation
     protected function controleRecoltes()
     {
         foreach($this->document->getProduits() as $produit) {
-            if((($produit->recolte->volume_total - $produit->recolte->usages_industriels_total) / $produit->recolte->superficie_total) > $produit->getConfig()->getRendement()) {
+            if($produit->recolte->superficie_total && (($produit->recolte->volume_total - $produit->recolte->usages_industriels_total) / $produit->recolte->superficie_total) > $produit->getConfig()->getRendement()) {
                 $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
                 $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
