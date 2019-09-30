@@ -194,8 +194,10 @@ class Configuration extends BaseConfiguration {
         }
         krsort($produitsByCodeDouane);
         foreach($produitsByCodeDouane as $produit) {
-            if(preg_match('/^'.$produit->code_douane.'/', $code_douane)) {
-                return $produit;
+            foreach($produit->getCodesDouanes() as $code) {
+                if(preg_match('/^'.$code.'/', $code_douane)) {
+                    return $produit;
+                }
             }
         }
         return false;
