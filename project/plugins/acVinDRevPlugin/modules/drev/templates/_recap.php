@@ -7,6 +7,7 @@
 </div>
 <?php endif; ?>
 
+<?php if(count($drev->getProduitsWithoutLots())): ?>
 <h3>Revendication AOC</h3>
 
 <table class="table table-bordered table-striped">
@@ -29,6 +30,7 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?php endif; ?>
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
     <h3>Déclaration des lots IGP</h3>
     <table class="table table-bordered table-striped">
