@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <?php if(count($drev->getProduitsWithoutLots())): ?>
-<h3>Revendication AOC</h3>
+<h3>Revendication AOP</h3>
 
 <table class="table table-bordered table-striped">
     <thead>
