@@ -1,7 +1,10 @@
 <ol class="breadcrumb">
 
   <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php endif; ?>
+ <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
   <li class="active"><a href=""><?php echo $campagne ?>-<?php echo $campagne +1 ?></a></li>
 </ol>
 
