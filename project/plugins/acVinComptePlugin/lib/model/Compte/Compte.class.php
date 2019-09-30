@@ -708,6 +708,13 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return $this->getIdentifiant();
     }
 
+    public function getRegion() {
+        if (!$this->exist('region')) {
+            return null;
+        }
+        return $this->_get('region');
+    }
+
     public function getRegionViticole(){
       return strtoupper(sfContext::getInstance()->getConfiguration()->getApplication());
     }
