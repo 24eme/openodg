@@ -22,7 +22,7 @@
 								<span class="error"><?php echo $form['denomination_auto']->renderError() ?></span>
 								<div class="form-inline">
 	  								<div class="controls-row">
-										<?php echo $form['denomination_auto']->render(array("data-placeholder" => "Séléctionnez un choix",  "required" => true)) ?>
+										<?php echo $form['denomination_auto']->render(array("data-placeholder" => "Sélectionnez un choix",  "required" => true)) ?>
 									</div>
 								</div>
 							</div>
