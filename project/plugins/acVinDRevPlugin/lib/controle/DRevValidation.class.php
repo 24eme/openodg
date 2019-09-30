@@ -49,6 +49,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
 
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Le volume total est dépassé');
+        $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
         /*
          * Engagement
@@ -240,6 +241,15 @@ class DRevValidation extends DocumentValidation
           }
           if(!$lot->exist('destination_type') || !$lot->destination_type || !$lot->exist('destination_date') || !$lot->destination_date){
               $this->addPoint(self::TYPE_WARNING, 'lot_destination_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
+          if(count($lot->cepages)){
+            $somme = 0.0;
+            foreach ($lot->cepages as $cepage => $v) {
+              $somme+=$v;
+            }
+            if($somme != $lot->volume){
+              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            }
           }
       }
 
