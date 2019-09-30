@@ -241,8 +241,8 @@
 
                 $(this).find('.ligne_lot_cepage').each(function() {
                     var ligne = $(this);
-                    var cepage = $(this).find('.form-control').eq(0).val();
-                    var pourcentage = parseFloat($(this).find('.form-control').eq(1).val());
+                    var cepage = $(this).find('.select2 option:selected').text();
+                    var pourcentage = parseFloat($(this).find('.input-float').val());
                     if(cepage && pourcentage > 0) {
                         if(libelle) {
                             libelle = libelle + ", ";

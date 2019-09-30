@@ -69,8 +69,7 @@
                               <label>
                                 <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
                                        id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal"
-                                       data-target="#<?php echo $lot->renderId() ?>_cepages"
-                                       <?php if($edite): ?> readonly="readonly" <?php endif; ?> />
+                                       data-target="#<?php echo $lot->renderId() ?>_cepages" />
                                 <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Assemblages : " :  "Assemblage" ?></span></label>
                               </div>
 
@@ -138,7 +137,7 @@
                             <div class="form-group ligne_lot_cepage">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-7">
-                                    <?php echo $lot['cepage_'.$i]->render(array("placeholder" => "Cépage")); ?>
+                                    <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="input-group">
