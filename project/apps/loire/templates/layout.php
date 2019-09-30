@@ -49,11 +49,11 @@
             <?php $etablissement = $route->getEtablissement(); ?>
         <?php endif; ?>
 
-        <?php if($sf_user->isAuthenticated() && !($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_user->hasTeledeclarationDrevAdmin()) && (!$compte || !$etablissement)): ?>
+        <?php if($sf_user->isAuthenticated() && !($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_user->hasDrevAdmin()) && (!$compte || !$etablissement)): ?>
             <?php $compte = $sf_user->getCompte(); ?>
             <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
         <?php endif; ?>
-	<?php if($sf_user->isAuthenticated() && $sf_user->hasTeledeclarationDrevAdmin() && !$compte): ?>
+	<?php if($sf_user->isAuthenticated() && $sf_user->hasDrevAdmin() && !$compte): ?>
 		<?php $compte = $sf_user->getCompte(); ?>
 	<?php endif; ?>
 

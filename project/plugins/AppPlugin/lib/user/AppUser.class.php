@@ -149,13 +149,13 @@ class AppUser extends sfBasicSecurityUser {
         return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION);
     }
 
-    public function hasTeledeclarationDrevAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN);
+    public function hasDrevAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
 
     public function getTeledeclarationDrevRegion() {
       $drevConf = DrevConfiguration::getInstance();
-      if($this->hasTeledeclarationDrevAdmin() && ($region = $this->getCompte()->getRegion()) && $drevConf->hasValidationOdg()){
+      if($this->hasDrevAdmin() && ($region = $this->getCompte()->getRegion()) && $drevConf->hasValidationOdg()){
         if(in_array($region, $drevConf->getOdgRegions())){
                     return $region;
         }

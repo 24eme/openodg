@@ -73,12 +73,12 @@
         <?php
         if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
                     <a class="btn btn-xs btn-default pull-left" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-        <?php elseif ($drev->validation && ($sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin()) && !$drev->isLectureSeule()): ?>
+        <?php elseif ($drev->validation && ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()) && !$drev->isLectureSeule()): ?>
                   <a class="btn btn-xs btn-default-step pull-right hidden-xs" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
         <?php endif; ?>
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasTeledeclarationDrevAdmin()) && $hasValidationOdg && $isValidateOdgRegion): ?>
+        <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()) && $hasValidationOdg && $isValidateOdgRegion): ?>
         <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
         <?php elseif(($sf_user->isAdmin() || $drev->validation_odg) && count($drev->getProduitsLots())): ?>
