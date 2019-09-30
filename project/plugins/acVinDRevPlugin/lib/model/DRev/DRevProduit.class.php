@@ -83,9 +83,9 @@ class DRevProduit extends BaseDRevProduit
 
             return true;
         }
-				if ($this->recolte->superficie_total == null) {
-					return true;
-				}
+		if ($this->recolte->superficie_total == null && $this->recolte->volume_total == null) {
+			return true;
+		}
 
         return false;
     }
