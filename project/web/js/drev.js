@@ -229,25 +229,18 @@
             });
 
             $('#form_drev_lots .modal_lot_cepages').each(function() {
-                var total_rest = 100;
-                var libelle = "";
-                $(this).find('.ligne_lot_cepage .input-float[readonly!=readonly]').each(function() {
-                    if(!$(this).val()) {
-                        return;
-                    }
-                    total_rest -= parseFloat($(this).val());
-                });
-                $(this).find('.ligne_lot_cepage .input-float[readonly=readonly]').val(total_rest.toFixed(2));
 
+                var libelle = "";
+                var volume = "";
                 $(this).find('.ligne_lot_cepage').each(function() {
                     var ligne = $(this);
                     var cepage = $(this).find('.form-control').eq(0).val();
-                    var pourcentage = parseFloat($(this).find('.form-control').eq(1).val());
-                    if(cepage && pourcentage > 0) {
+                    var volume = parseFloat($(this).find('.form-control').eq(1).val());
+                    if(cepage && volume > 0) {
                         if(libelle) {
                             libelle = libelle + ", ";
                         }
-                        libelle = libelle + cepage + "&nbsp;("+ pourcentage +"%)";
+                        libelle = libelle + cepage + "&nbsp;("+ volume +"&nbsp;hl)";
                         $(this).removeClass('transparence-sm');
                     } else {
                         $(this).addClass('transparence-sm');
