@@ -24,6 +24,12 @@ all:
             - "appellations/SAUCHA"
             - "appellations/SAU"
           inao: "data/drev/FEDE.csv"
+        TOURAINE:
+          nom: "Touraine"
+          adresse: "ZI 4 rue Gutenberg, 41140 NOYERS SUR CHER"
+          produits:
+            - "appellations/TOU"
+          inao: "data/drev/FEDE.csv"
         CHINON:
           nom: "Syndicat des Vins de Chinon"
           adresse: "place Hofheim, 37500 Chinon"
