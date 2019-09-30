@@ -54,3 +54,8 @@ all:
           adresse: "37 avenue jean Joxé, 49100 Angers"
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL
+        SAINT_NICOLAS:
+          nom: "Syndicat des Vins de Saint Nicolas de Bourgueil"
+          adresse: "33 avenue Saint-Vincent 37140 Saint Nicolas de Bourgueil"
+          produits:
+            - appellations/STN
