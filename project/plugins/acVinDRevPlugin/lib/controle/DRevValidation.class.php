@@ -224,19 +224,21 @@ class DRevValidation extends DocumentValidation
     }
 
     protected function controleLots(){
-      foreach ($this->document->lots as $key => $lot) {
-        if($lot->hasBeenEdited()){
-          continue;
-        }
-        if(!$lot->hasVolumeAndHashProduit()){
-          continue;
-        }
-        $volume = sprintf("%01.02f",$lot->getVolume());
-        if(!$lot->exist('millesime') || !$lot->millesime){
-            $this->addPoint(self::TYPE_WARNING, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-        }
-        if(!$lot->exist('destination_type') || !$lot->destination_type || !$lot->exist('destination_date') || !$lot->destination_date){
-            $this->addPoint(self::TYPE_WARNING, 'lot_destination_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+      if($this->document->exist('lots'){
+        foreach ($this->document->lots as $key => $lot) {
+          if($lot->hasBeenEdited()){
+            continue;
+          }
+          if(!$lot->hasVolumeAndHashProduit()){
+            continue;
+          }
+          $volume = sprintf("%01.02f",$lot->getVolume());
+          if(!$lot->exist('millesime') || !$lot->millesime){
+              $this->addPoint(self::TYPE_WARNING, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
+          if(!$lot->exist('destination_type') || !$lot->destination_type || !$lot->exist('destination_date') || !$lot->destination_date){
+              $this->addPoint(self::TYPE_WARNING, 'lot_destination_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
         }
       }
     }
