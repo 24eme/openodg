@@ -1276,7 +1276,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getValidation(),
-    		'libelle' => 'Revendication des appellations viticoles '.$this->campagne.' '.$complement,
+    		'libelle' => 'Revendication des produits viticoles '.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null

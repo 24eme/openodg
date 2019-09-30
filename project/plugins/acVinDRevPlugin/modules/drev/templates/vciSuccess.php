@@ -22,7 +22,7 @@
                 <th class="text-center col-xs-1" colspan="4">Utilisation</th>
             </tr>
             <tr>
-                <th class="text-left col-xs-3">Appellation revendiquée</th>
+                <th class="text-left col-xs-3">Produit revendiqué</th>
                 <th style="position: relative;" class="text-center col-xs-1">Plafond <?php echo ($drev->campagne) ?><br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'plafond_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Stock <?php echo ($drev->campagne - 1) ?><br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'stock_vci_precedent') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'rafraichi_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>

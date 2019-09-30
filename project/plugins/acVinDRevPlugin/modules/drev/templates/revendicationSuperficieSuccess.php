@@ -21,7 +21,7 @@
                 <th colspan="2" class="text-center">Déclaration de Revendication</th>
             </tr>
             <tr>
-                <th class="text-left col-xs-4">Appellation revendiquée</th>
+                <th class="text-left col-xs-4">Produit revendiqué</th>
                 <th class="text-center col-xs-2 info"><div style="position: relative;">Superficie récoltée totale<br /><small class="text-muted">(ha)</small> &nbsp;<a title="<?php echo getPointAideText('drev', 'superficie_totale') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: -8px; right: -8px;"><span class="glyphicon glyphicon-question-sign"></span></a></div></th>
                 <th style="position: relative;" class="text-center col-xs-2">Superficie revendiquée<br /><small class="text-muted">(ha)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'superficie_revendique') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-2">Possède du stock VCI<br />&nbsp;<a title="<?php echo getPointAideText('drev', 'possede_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
@@ -44,7 +44,7 @@
     </table>
 
     <?php if ($ajoutForm->hasProduits()): ?>
-        <button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
+        <button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
     <?php endif; ?>
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
