@@ -851,7 +851,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     protected function findRendementByKeyStorable($key) {
-        if ($this->exist('attributs') && $this->attributs->exist($key) && $this->attributs->_get($key)) {
+        if ($this->exist('attributs') && $this->attributs->exist($key) && $this->attributs->_get($key) !== null) {
 
             return $this->attributs->_get($key);
         }
