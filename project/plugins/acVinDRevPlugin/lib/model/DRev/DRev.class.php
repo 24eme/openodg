@@ -796,9 +796,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
         }
-        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots') && $reinit_version_lot){
+        if($reinit_version_lot && ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
           foreach($this->lots as $lot) {
-              if($lot->exist('date') && $lot->date){
+              if($lot->exist('date') && $lot->date && ($this->_id == $lot->id_document)){
                 $lot->date = null;
                 $lot->id_document = null;
               }
