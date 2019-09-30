@@ -35,7 +35,7 @@ class DrevEtapes extends Etapes
             self::ETAPE_REVENDICATION_SUPERFICIE => "Superficies",
             self::ETAPE_VCI => "Répartition du VCI %campagne%",
 			self::ETAPE_LOTS => "Lots IGP",
-			self::ETAPE_REVENDICATION => "Volumes AOC",
+			self::ETAPE_REVENDICATION => "Volumes AOP",
             self::ETAPE_VALIDATION => "Validation"
     );
 
