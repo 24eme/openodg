@@ -85,6 +85,13 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+
+<?php if(($sf_user->isAdmin() || $drev->validation_odg) && count($drev->getProduitsLots())): ?>
+<div class="col-xs-12" style="margin-bottom: 20px;">
+  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
+</div>
+<?php endif; ?>
+
 <?php endif; ?>
 <?php if(count($drev->declaration->getProduitsVci())): ?>
     <h3>Gestion du VCI</h3>
