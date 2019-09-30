@@ -252,6 +252,22 @@ class DRevValidation extends DocumentValidation
             }
           }
       }
+
+        $synthese = $this->document->summerizeProduitsByCouleur();
+        foreach ($this->document->getLotsByCouleur() as $couleur => $lot) {
+            if (! isset($synthese[$couleur])) {
+                continue;
+            }
+
+            $volume = 0;
+            foreach ($lot as $produit) {
+                $volume += $produit->volume;
+            }
+
+            if ($volume > $synthese[$couleur]['volume_total']) {
+                $this->addPoint(self::TYPE_ERROR, 'lot_volume_total_depasse', $couleur);
+            }
+        }
     }
   }
 }
