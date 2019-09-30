@@ -143,7 +143,7 @@
                                 <div class="col-sm-3">
                                     <div class="input-group">
                                         <?php echo $lot['repartition_'.$i]->render(); ?>
-                                        <div class="input-group-addon">%</div>
+                                        <div class="input-group-addon">hl</div>
                                     </div>
                                 </div>
                             </div>

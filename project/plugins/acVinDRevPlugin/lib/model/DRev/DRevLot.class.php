@@ -102,9 +102,9 @@ class DRevLot extends BaseDRevLot
       $cepages = $this->cepages;
       $str ='';
       $k=0;
-      foreach ($cepages as $c => $pourcent){
+      foreach ($cepages as $c => $volume){
         $k++;
-        $str.= $c." (".$pourcent.'%)';
+        $str.= $c." (".$volume.' hl)';
         $str.= ($k < count($cepages))? ', ' : '';
       }
       return $str;
