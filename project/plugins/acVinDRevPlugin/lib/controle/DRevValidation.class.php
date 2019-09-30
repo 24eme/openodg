@@ -26,6 +26,9 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', 'Le volume de recolte nette est à 0');
+
+        $this->addControle(self::TYPE_WARNING, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
+        $this->addControle(self::TYPE_WARNING, 'lot_destination_non_saisie', "La destination du lot n'a pas été renseignée entièrement");
         /*
          * Error
          */
@@ -44,6 +47,8 @@ class DRevValidation extends DocumentValidation
 
         $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement dans votre DR (L5 - L16)");
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
+
+        $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Le volume total est dépassé');
 
         /*
          * Engagement
@@ -71,6 +76,7 @@ class DRevValidation extends DocumentValidation
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleSurfaceBailleur();
         $this->controleHabilitationINAO();
+        $this->controleLots();
     }
 
     protected function controleNeant()
@@ -216,6 +222,25 @@ class DRevValidation extends DocumentValidation
         }
         foreach($this->document->getNonHabilitationINAO() as $produit) {
             $this->addPoint(self::TYPE_WARNING, 'drev_habilitation_inao', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }
+    }
+
+    protected function controleLots(){
+      if($this->document->exist('lots'){
+        foreach ($this->document->lots as $key => $lot) {
+          if($lot->hasBeenEdited()){
+            continue;
+          }
+          if(!$lot->hasVolumeAndHashProduit()){
+            continue;
+          }
+          $volume = sprintf("%01.02f",$lot->getVolume());
+          if(!$lot->exist('millesime') || !$lot->millesime){
+              $this->addPoint(self::TYPE_WARNING, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
+          if(!$lot->exist('destination_type') || !$lot->destination_type || !$lot->exist('destination_date') || !$lot->destination_date){
+              $this->addPoint(self::TYPE_WARNING, 'lot_destination_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
         }
     }
 }
