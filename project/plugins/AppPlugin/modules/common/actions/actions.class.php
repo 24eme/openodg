@@ -7,11 +7,6 @@ class commonActions extends sfActions {
 
             return $this->redirect('declaration');
         }
-
-        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
-
-            return $this->redirect('declaration');
-        }
 	
 	if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
 
