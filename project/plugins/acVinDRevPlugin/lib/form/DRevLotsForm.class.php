@@ -11,7 +11,7 @@ class DRevLotsForm extends acCouchdbForm
     {
         $formLots = new BaseForm();
 
-        foreach($this->getDocument()->getLotsByCouleur() as $couleur => $lots) {
+        foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
             foreach ($lots as $lot) {
                 if($lot->hasBeenEdited()){
                     continue;
