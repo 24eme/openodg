@@ -15,14 +15,17 @@ all:
             - "appellations/ANJCDL"
             - "appellations/AJV"
             - "appellations/AJVBRI"
+            - "appellations/BON"
             - "appellations/CAJ"
             - "appellations/CLO"
             - "appellations/CAS"
+            - "appellations/COL"
             - "appellations/COS"
             - "appellations/RAJ"
             - "appellations/SAU"
             - "appellations/SAUCHA"
             - "appellations/SAU"
+            - "appellations/RLO"
           inao: "data/drev/FEDE.csv"
         TOURAINE:
           nom: "Touraine"
@@ -54,3 +57,8 @@ all:
           adresse: "37 avenue jean Joxé, 49100 Angers"
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL
+        SAINT_NICOLAS:
+          nom: "Syndicat des Vins de Saint Nicolas de Bourgueil"
+          adresse: "33 avenue Saint-Vincent 37140 Saint Nicolas de Bourgueil"
+          produits:
+            - appellations/STN

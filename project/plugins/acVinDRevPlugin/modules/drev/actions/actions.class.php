@@ -77,6 +77,7 @@ class drevActions extends sfActions {
           }
         }
         $drev->add('etape', null);
+        $drev->devalidate();
         $drev->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
@@ -463,7 +464,8 @@ class drevActions extends sfActions {
     public function executeRevendicationCepageSuppressionProduit(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if ($this->hash = str_replace('_', '/', $request->getParameter('hash'))) {
+        $this->hash = str_replace('__', '/', $request->getParameter('hash'));
+        if ($this->hash) {
         	$this->drev->remove($this->hash);
         	$this->drev->save();
         }

@@ -155,7 +155,7 @@ class AppUser extends sfBasicSecurityUser {
 
     public function getTeledeclarationDrevRegion() {
       $drevConf = DrevConfiguration::getInstance();
-      if($this->hasDrevAdmin() && ($region = $this->getCompte()->getRegion()) && $drevConf->hasValidationOdg()){
+      if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $drevConf->hasValidationOdg()){
         if(in_array($region, $drevConf->getOdgRegions())){
                     return $region;
         }

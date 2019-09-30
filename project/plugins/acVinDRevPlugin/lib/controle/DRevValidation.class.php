@@ -26,6 +26,9 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', 'Le volume de recolte nette est à 0');
+
+        $this->addControle(self::TYPE_WARNING, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
+        $this->addControle(self::TYPE_WARNING, 'lot_destination_non_saisie', "La destination du lot n'a pas été renseignée entièrement");
         /*
          * Error
          */
@@ -42,8 +45,14 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
 
-        $this->addControle(self::TYPE_WARNING, 'recolte_rendement', "Vous dépassez le rendement dans votre DR (L5 - L16)");
+        $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L5 - L15)");
+        $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
+        $this->addControle(self::TYPE_WARNING, 'sv11_recolte_rendement', "Vous dépassez le rendement dans votre SV11");
+
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
+
+        $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Le volume total est dépassé');
+        $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
         /*
          * Engagement
@@ -71,6 +80,7 @@ class DRevValidation extends DocumentValidation
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleSurfaceBailleur();
         $this->controleHabilitationINAO();
+        $this->controleLots();
     }
 
     protected function controleNeant()
@@ -138,7 +148,8 @@ class DRevValidation extends DocumentValidation
     {
         foreach($this->document->getProduits() as $produit) {
             if((($produit->recolte->volume_total - $produit->recolte->usages_industriels_total) / $produit->recolte->superficie_total) > $produit->getConfig()->getRendement()) {
-                $this->addPoint(self::TYPE_WARNING, 'recolte_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
+                $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
         }
     }
@@ -218,4 +229,49 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_WARNING, 'drev_habilitation_inao', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
     }
+
+    protected function controleLots(){
+      if($this->document->exist('lots')){
+        foreach ($this->document->lots as $key => $lot) {
+          if($lot->hasBeenEdited()){
+            continue;
+          }
+          if(!$lot->hasVolumeAndHashProduit()){
+            continue;
+          }
+          $volume = sprintf("%01.02f",$lot->getVolume());
+          if(!$lot->exist('millesime') || !$lot->millesime){
+              $this->addPoint(self::TYPE_WARNING, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
+          if(!$lot->exist('destination_type') || !$lot->destination_type || !$lot->exist('destination_date') || !$lot->destination_date){
+              $this->addPoint(self::TYPE_WARNING, 'lot_destination_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
+          if(count($lot->cepages)){
+            $somme = 0.0;
+            foreach ($lot->cepages as $cepage => $v) {
+              $somme+=$v;
+            }
+            if($somme != $lot->volume){
+              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            }
+          }
+      }
+
+        $synthese = $this->document->summerizeProduitsByCouleur();
+        foreach ($this->document->getLotsByCouleur() as $couleur => $lot) {
+            if (! isset($synthese[$couleur])) {
+                continue;
+            }
+
+            $volume = 0;
+            foreach ($lot as $produit) {
+                $volume += $produit->volume;
+            }
+
+            if ($volume > $synthese[$couleur]['volume_total']) {
+                $this->addPoint(self::TYPE_ERROR, 'lot_volume_total_depasse', $couleur, $this->generateUrl('drev_lots', array('id' => $this->document->_id)));
+            }
+        }
+    }
+  }
 }

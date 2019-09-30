@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!$sf_user->isAdmin()): ?>
+<?php if (!$sf_user->hasDrevAdmin()): ?>
     <?php return; ?>
 <?php endif; ?>
 <?php if (class_exists("DRClient") && ($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR  || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>

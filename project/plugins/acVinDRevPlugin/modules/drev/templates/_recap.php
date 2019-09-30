@@ -7,12 +7,13 @@
 </div>
 <?php endif; ?>
 
-<h3>Revendication AOC</h3>
+<?php if(count($drev->getProduitsWithoutLots())): ?>
+<h3>Revendication AOP</h3>
 
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-6">Appellation revendiquée</th>
+            <th class="col-xs-6">Produit revendiqué</th>
             <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
             <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<small class="text-muted">(hl)</small></th>
             <th class="col-xs-2 text-center">Dont millesime <?php echo $drev->campagne-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
@@ -29,6 +30,7 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?php endif; ?>
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
     <h3>Déclaration des lots IGP</h3>
     <table class="table table-bordered table-striped">
@@ -56,7 +58,7 @@
                       <?php if($drevDocOrigine): ?></a><?php endif; ?>
                     </td>
                     <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
-                    <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?>
+                    <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
                       <?php if(count($lot->cepages)): ?>
                         <small>
                           <?php echo $lot->getCepagesToStr(); ?>
@@ -83,13 +85,20 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+
+<?php if(($sf_user->isAdmin() || $drev->validation_odg) && count($drev->getProduitsLots())): ?>
+<div class="col-xs-12" style="margin-bottom: 20px;">
+  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
+</div>
+<?php endif; ?>
+
 <?php endif; ?>
 <?php if(count($drev->declaration->getProduitsVci())): ?>
     <h3>Gestion du VCI</h3>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="col-xs-3">Appellation revendiquée</th>
+                <th class="col-xs-3">Produit revendiqué</th>
                 <th class="text-center col-xs-2">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Complémt<br /><small class="text-muted">(hl)</small></th>

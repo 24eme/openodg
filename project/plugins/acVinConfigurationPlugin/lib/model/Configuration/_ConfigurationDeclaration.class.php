@@ -203,29 +203,20 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $produits;
     }
 
-    public function getCodeDouane($vtsgn = null) {
+    public function getCodeDouane() {
+        $a = $this->getCodesDouanes();
+        if (!$a) {
+            return null;
+        }
+        return array_shift($a);
+    }
+
+    public function getCodesDouanes() {
         if (!$this->_get('code_douane')) {
-
-            return $this->getParentNode()->getCodeDouane();
+            return $this->getParentNode()->getCodesDouanes();
         }
 
-        $mention = null;
-
-        if($vtsgn == "VT") {
-            $mention = "D7";
-        }
-
-        if($vtsgn == "SGN") {
-            $mention = "D6";
-        }
-
-        $codeDouane = $this->_get('code_douane');
-
-        if($mention) {
-            $codeDouane = substr($codeDouane, 0, 5).$mention.substr($codeDouane, 7, 1);
-        }
-
-        return $codeDouane;
+        return explode(',', $this->_get('code_douane'));
     }
 
     public function getCodeProduit() {

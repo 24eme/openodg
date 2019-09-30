@@ -31,11 +31,11 @@ class DrevEtapes extends Etapes
 
 	public static $libelles = array(
             self::ETAPE_EXPLOITATION => "Exploitation",
-            self::ETAPE_DR_DOUANE => "Déclaration de récolte",
+            self::ETAPE_DR_DOUANE => "Document douanier",
             self::ETAPE_REVENDICATION_SUPERFICIE => "Superficies",
             self::ETAPE_VCI => "Répartition du VCI %campagne%",
 			self::ETAPE_LOTS => "Lots IGP",
-			self::ETAPE_REVENDICATION => "Volumes AOC",
+			self::ETAPE_REVENDICATION => "Volumes AOP",
             self::ETAPE_VALIDATION => "Validation"
     );
 
@@ -73,7 +73,7 @@ class DrevEtapes extends Etapes
 
 		if($step == self::ETAPE_DR_DOUANE) {
 
-			return $doc->getDocumentDouanierTypeLibelle();
+			return $doc->getDocumentDouanierType();
 		}
 
 		return parent::getLibelle($step, $doc);

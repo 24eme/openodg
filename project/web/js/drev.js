@@ -229,16 +229,13 @@
             });
 
             $('#form_drev_lots .modal_lot_cepages').each(function() {
-                var total_rest = 100;
-                var libelle = "";
-                $(this).find('.ligne_lot_cepage .input-float[readonly!=readonly]').each(function() {
-                    if(!$(this).val()) {
-                        return;
-                    }
-                    total_rest -= parseFloat($(this).val());
-                });
-                $(this).find('.ligne_lot_cepage .input-float[readonly=readonly]').val(total_rest.toFixed(2));
 
+                var libelle = "";
+                var volume = "";
+                var total = 0.0;
+                $(this).find('.ligne_lot_cepage').each(function() {
+                    total += ($(this).find('.form-control').eq(1).val())? parseFloat($(this).find('.form-control').eq(1).val()) : 0;
+                });
                 $(this).find('.ligne_lot_cepage').each(function() {
                     var ligne = $(this);
                     var cepage = $(this).find('.select2 option:selected').text();
@@ -247,7 +244,8 @@
                         if(libelle) {
                             libelle = libelle + ", ";
                         }
-                        libelle = libelle + cepage + "&nbsp;("+ pourcentage +"%)";
+                        var p = (total)? parseInt((volume/total) * 100) : 0;
+                        libelle = libelle + cepage + "&nbsp;("+p+"%)";
                         $(this).removeClass('transparence-sm');
                     } else {
                         $(this).addClass('transparence-sm');

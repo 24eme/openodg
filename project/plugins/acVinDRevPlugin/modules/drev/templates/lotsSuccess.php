@@ -35,7 +35,7 @@
               <div class="col-md-2"></div>
               <div class="col-md-3">Numéro cuve : <?php echo $lot->numero; ?></div>
               <div class="col-md-3">Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></div>
-              <div class="col-md-3"><?php echo $lot->destination_type." (".Date::francizeDate($lot->destination_date).")"; ?></div>
+              <div class="col-md-3"><?php echo $lot->destination_type; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
               <div class="col-md-1 text-right">
                 <?php if($isAdmin): ?>
                   <a href="<?php echo url_for("drev_lots_delete", $drev) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
@@ -51,14 +51,14 @@
         <?php if($key == count($form['lots']) - 1): ?>
           <a name="dernier"></a>
         <?php endif; ?>
-        <div class="panel panel-default">
+        <div class="panel panel-default bloc-lot">
             <div class="panel-body" style="padding-bottom: 0;">
               <div class="row">
                     <div class="col-md-5">
                         <div class="form-group">
                             <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-8">
-                                  <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                                  <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                             </div>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                                 <div class="col-sm-3">
                                     <div class="input-group">
                                         <?php echo $lot['repartition_'.$i]->render(); ?>
-                                        <div class="input-group-addon">%</div>
+                                        <div class="input-group-addon">hl</div>
                                     </div>
                                 </div>
                             </div>

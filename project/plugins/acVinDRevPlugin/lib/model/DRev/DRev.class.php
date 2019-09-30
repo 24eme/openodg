@@ -109,12 +109,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
 
-    public function getLotsByCouleur() {
+    public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
         foreach ($this->lots as $lot) {
-          if(!$lot->hasVolumeAndHashProduit()){
-            continue;
-          }
+           if($visualisation && !$lot->hasVolumeAndHashProduit()){
+             continue;
+           }
           $couleur = "vide";
           if($lot->produit_hash){
             $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
@@ -736,6 +736,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if(!$lot->produit_hash) {
                 continue;
             }
+            if(!$this->exist($lot->produit_hash)) {
+                continue;
+            }
             $produit = $this->addProduit($lot->produit_hash);
             $produit->volume_revendique_issu_recolte += $lot->volume;
         }
@@ -760,12 +763,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function storeLotsDateVersion($date) {
         if($this->exist('lots')){
           foreach($this->lots as $lot) {
-              if(!$lot->exist('id_document') || !$lot->id_document){
+              if($lot->hasVolumeAndHashProduit() && (!$lot->exist('id_document') || !$lot->id_document)){
                 $lot->add('id_document',$this->_id);
                 $lot->add('date',$date);
               }
               foreach ($lot as $key => $field) {
-                if($this->getDocument()->isModifiedMother($lot->getHash(), $key)){
+                if($lot->hasVolumeAndHashProduit() && $this->getDocument()->isModifiedMother($lot->getHash(), $key)){
                   $lot->date = $date;
                   $lot->id_document = $this->_id;
                   break;
@@ -796,9 +799,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
         }
-        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots') && $reinit_version_lot){
+        if($reinit_version_lot && ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
           foreach($this->lots as $lot) {
-              if($lot->exist('date') && $lot->date){
+              if($lot->exist('date') && $lot->date && ($this->_id == $lot->id_document)){
                 $lot->date = null;
                 $lot->id_document = null;
               }
@@ -1276,7 +1279,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getValidation(),
-    		'libelle' => 'Revendication des appellations viticoles '.$this->campagne.' '.$complement,
+    		'libelle' => 'Revendication des produits viticoles '.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
@@ -1526,7 +1529,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getNonHabilitationINAO() {
-        return DRevClient::getInstance()->getNonHabilitationINAO($this);
+        try {
+            return DRevClient::getInstance()->getNonHabilitationINAO($this);
+        }catch(Exception $e) {
+            return array();
+        }
     }
 
     /**** FIN DE VERSION ****/

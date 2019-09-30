@@ -68,6 +68,27 @@ class Configuration extends BaseConfiguration {
         return false;
     }
 
+    public function identifyProductByCodeDouane($code) {
+        if(array_key_exists($code, $this->identifyCodeDouaneProduct)) {
+            return $this->identifyCodeDouaneProduct[$code];
+        }
+
+        $codeSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($code)));
+
+        foreach($this->getProduits() as $produit) {
+            foreach($produit->getCodesDouanes() as $code) {
+                $codeProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($code)));
+                if($codeSlugify == $codeProduitSlugify) {
+                    $this->identifyCodeDouaneProduct[$code][] = $produit;
+                }
+            }
+        }
+        if (isset($this->identifyCodeDouaneProduct[$code])) {
+          return $this->identifyCodeDouaneProduct[$code];
+        }
+        return array();
+    }
+
     public function getTemplatesFactures() {
         $factures = array();
         if ($this->exist('factures')) {
@@ -167,13 +188,15 @@ class Configuration extends BaseConfiguration {
     public function findProductByCodeDouane($code_douane) {
         $produitsByCodeDouane = array();
         foreach($this->getProduits() as $produit) {
-        	if ($produit->code_douane) {
-            	$produitsByCodeDouane[$produit->code_douane] = $produit;
-        	}
+            foreach($produit->getCodesDouanes() as $code) {
+            	if ($code) {
+                	$produitsByCodeDouane[$code] = $produit;
+            	}
+            }
         }
         krsort($produitsByCodeDouane);
-        foreach($produitsByCodeDouane as $produit) {
-            if(preg_match('/^'.$produit->code_douane.'/', $code_douane)) {
+        foreach($produitsByCodeDouane as $code => $produit) {
+            if(preg_match('/^'.$code.'/', $code_douane)) {
                 return $produit;
             }
         }

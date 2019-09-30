@@ -20,10 +20,6 @@ class DRevLotForm extends acCouchdbObjectForm
             $this->setDefault('repartition_'.$i, $repartition);
             $i++;
         }
-
-        if(!count($this->getObject()->cepages->toArray(true, false))) {
-            $this->setDefault('repartition_'.$i, 100);
-        }
     }
 
     public function configure() {
@@ -57,7 +53,6 @@ class DRevLotForm extends acCouchdbObjectForm
             $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat());
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
-        $this->getWidget('repartition_0')->setAttribute('readonly', 'readonly');
 
         $this->widgetSchema->setNameFormat('[%s]');
     }

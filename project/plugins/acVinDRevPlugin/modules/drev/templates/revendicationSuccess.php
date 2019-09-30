@@ -22,7 +22,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
         <!--<a class="btn btn-warning btn-sm pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Récupérer les données de la Déclaration de Récolte</a>-->
     <?php endif; ?>
-    <h2>Revendication AOC</h2>
+    <h2>Revendication AOP</h2>
 </div>
 
 <?php echo include_partial('global/flash'); ?>
@@ -52,11 +52,11 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
             </tr>
             <tr>
-                <th class="col-xs-3">Appellation revendiquée</th>
+                <th class="col-xs-3">Produit revendiqué</th>
 <?php if ($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR): ?>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume récolté total<br/>(L5)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_recolte_total') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume en cave part.<br/>(L9)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_cave_particuliere') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="text-center info col-xs-1" style="position: relative;">Récolte nette totale<br/>(L15)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'recolte_nette_totale') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="text-center info col-xs-1" style="position: relative;">Vol. récolté net totale<br/>(L15)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'recolte_nette_totale') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume VCI constitué<br/>(L19)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'vci_constitue') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="col-xs-2 text-center" style="position: relative;">Volume <br/>revendiqué net <br />issu de la récolte<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_issu_recolte') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
 <?php else: ?>
