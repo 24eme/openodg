@@ -9,14 +9,16 @@ class DRevLotsForm extends acCouchdbForm
 
 	public function configure()
     {
-		$formLots = new BaseForm();
+        $formLots = new BaseForm();
 
-		foreach($this->getDocument()->lots as $lot) {
-			if($lot->hasBeenEdited()){
-				continue;
-			}
-			$formLots->embedForm($lot->getKey(), new DRevLotForm($lot));
-		}
+        foreach($this->getDocument()->getLotsByCouleur() as $couleur => $lots) {
+            foreach ($lots as $lot) {
+                if($lot->hasBeenEdited()){
+                    continue;
+                }
+                $formLots->embedForm($lot->getKey(), new DRevLotForm($lot));
+            }
+        }
 
         $this->embedForm('lots', $formLots);
 
