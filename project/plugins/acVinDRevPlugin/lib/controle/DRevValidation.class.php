@@ -226,7 +226,7 @@ class DRevValidation extends DocumentValidation
     }
 
     protected function controleLots(){
-      if($this->document->exist('lots'){
+      if($this->document->exist('lots')){
         foreach ($this->document->lots as $key => $lot) {
           if($lot->hasBeenEdited()){
             continue;
@@ -241,6 +241,7 @@ class DRevValidation extends DocumentValidation
           if(!$lot->exist('destination_type') || !$lot->destination_type || !$lot->exist('destination_date') || !$lot->destination_date){
               $this->addPoint(self::TYPE_WARNING, 'lot_destination_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
-        }
+      }
     }
+  }
 }
