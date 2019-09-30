@@ -3,6 +3,9 @@
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo ($regionParam)?  url_for('declaration',(array('region' => $regionParam))) : url_for('declaration'); ?>">Déclarations</a></li>
+  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php endif; ?>
 </ol>
 
 <div class="row row-margin">
@@ -64,6 +67,12 @@
         <p>
             <a href="<?php echo url_for('declaration', array('query' => 0)) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
+        <?php endif; ?>
+        <?php if ($regionParam) : ?>
+        <h4>Région</h4>
+        <div class="list-group">
+            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo $regionParam; ?></a>
+        </div>
         <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
         <h4><?php echo $facetNom; ?></h4>

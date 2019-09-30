@@ -109,12 +109,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
 
-    public function getLotsByCouleur() {
+    public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
         foreach ($this->lots as $lot) {
-          if(!$lot->hasVolumeAndHashProduit()){
-            continue;
-          }
+           if($visualisation && !$lot->hasVolumeAndHashProduit()){
+             continue;
+           }
           $couleur = "vide";
           if($lot->produit_hash){
             $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
@@ -1279,7 +1279,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getValidation(),
-    		'libelle' => 'Revendication des appellations viticoles '.$this->campagne.' '.$complement,
+    		'libelle' => 'Revendication des produits viticoles '.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
