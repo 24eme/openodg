@@ -56,7 +56,7 @@
                       <?php if($drevDocOrigine): ?></a><?php endif; ?>
                     </td>
                     <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
-                    <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle." (".$lot->millesime.")"; ?>
+                    <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
                       <?php if(count($lot->cepages)): ?>
                         <small>
                           <?php echo $lot->getCepagesToStr(); ?>

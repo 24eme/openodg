@@ -17,7 +17,7 @@ abstract class DocumentSecurity implements SecurityInterface {
     }
 
     public function isAdmin() {
-	     return $this->user->isAdmin() && $this->user->hasTeledeclarationDrevAdmin();
+	     return $this->user->isAdmin() && $this->user->hasDrevAdmin();
     }
 
     public function isAuthorized($droits) {
@@ -44,17 +44,17 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin() && !$this->user->hasTeledeclarationDrevAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin() && !$this->user->hasTeledeclarationDrevAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
 
-        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin() && !$this->user->hasTeledeclarationDrevAdmin()) {
+        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
@@ -69,7 +69,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin() && !$this->user->hasTeledeclarationDrevAdmin()) {
+        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }

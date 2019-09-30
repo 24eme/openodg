@@ -34,7 +34,7 @@ class DRevVciProduitForm extends acCouchdbObjectForm {
       $defaults = $this->getDefaults();
       if (is_null($defaults['destruction'])) {
           $defaults['destruction'] = $defaults['stock_precedent'] - $this->getObject()->getParent()->getPlafondStockVci();
-          if ($defaults['destruction'] < 0) {
+          if ($defaults['destruction'] <= 0) {
             unset($defaults['destruction']);
           }
       }
