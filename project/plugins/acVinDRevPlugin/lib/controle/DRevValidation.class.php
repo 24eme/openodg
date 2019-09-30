@@ -269,7 +269,7 @@ class DRevValidation extends DocumentValidation
             }
 
             if ($volume > $synthese[$couleur]['volume_total']) {
-                $this->addPoint(self::TYPE_ERROR, 'lot_volume_total_depasse', $couleur);
+                $this->addPoint(self::TYPE_ERROR, 'lot_volume_total_depasse', $couleur, $this->generateUrl('drev_lots', array('id' => $this->document->_id)));
             }
         }
     }
