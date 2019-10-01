@@ -36,20 +36,30 @@
 	<td class="center">
 		<strong><?php echo (!is_null($douane)) ? $douane->taux : null ?></strong>
 	</td>
+	<td class="center">
+		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
+			<?php echo ($produit->getCodeComptable()) ? $produit->getCodeComptable() : "(Aucun)" ?>
+		</a>
+	</td>
 	<?php endif; ?>
 	<td class="center">
 		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
 			<?php echo ($produit->getCodeDouane()) ? $produit->getCodeDouane() : "(Aucun)" ?>
 		</a>
 	</td>
-	<td class="center">
-		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
-			<?php echo ($produit->getCodeComptable()) ? $produit->getCodeComptable() : "(Aucun)" ?>
+	<td class="text-right">
+		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
+			<?php echo sprintFloat($produit->getRendementConseille()) ?>&nbsp;
 		</a>
 	</td>
 	<td class="text-right">
 		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
 			<?php echo sprintFloat($produit->getRendement()) ?>&nbsp;
+		</a>
+	</td>
+	<td class="text-right">
+		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
+			<?php echo sprintFloat($produit->getRendementDr()) ?>&nbsp;
 		</a>
 	</td>
 	<td class="text-right">
