@@ -52,7 +52,7 @@ class DRevProduit extends BaseDRevProduit
 
 	public function getPlafondStockVci() {
 
-		return $this->superficie_revendique * $this->getConfig()->rendement_vci_total;
+		return $this->recolte->superficie_total * $this->getConfig()->rendement_vci_total;
 	}
 
 	public function canHaveVtsgn() {
