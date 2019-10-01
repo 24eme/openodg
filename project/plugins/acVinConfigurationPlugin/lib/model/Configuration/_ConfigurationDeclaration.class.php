@@ -735,6 +735,10 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement_conseille');
     }
 
+    public function getRendementDR() {
+        return $this->getRendementByKey('rendement_dr');
+    }
+
     public function getRendementNoeud() {
 
         return -1;
