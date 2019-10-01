@@ -62,4 +62,4 @@ all:
           nom: "Syndicat des Vins de Saint Nicolas de Bourgueil"
           adresse: "33 avenue Saint-Vincent 37140 Saint Nicolas de Bourgueil"
           produits:
-            - appellations/STN
+            - TRANQ/appellations/STN
