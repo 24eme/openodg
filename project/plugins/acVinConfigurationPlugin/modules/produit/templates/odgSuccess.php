@@ -1,4 +1,10 @@
-<img src="/images/pdf/logo_<?php echo strtolower($odg) ?>.jpg" style="float: right; height: 100px;" />
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for("produits_odg", array('odg' => $odg)) ?>">Produits</a></li>
+    <li><a href="<?php echo url_for("produits_odg", array('odg' => $odg)) ?>"><?php echo $odg ?></a></li>
+    <li class="active"><a href="<?php echo url_for("produits_odg", array('odg' => $odg, 'date' => $date)) ?>"><?php echo $date ?></a></li>
+</ol>
+
+<img src="/odg/images/pdf/logo_<?php echo strtolower($odg) ?>.jpg" style="float: right; height: 100px;" />
 <h2><?php echo $odgInfos['nom'] ?></h2>
 
 <?php echo $odgInfos['adresse'] ?>
