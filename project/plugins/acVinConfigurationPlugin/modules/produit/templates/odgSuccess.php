@@ -1,4 +1,9 @@
-<h2>Produits</h2>
+<img src="/images/pdf/logo_<?php echo strtolower($odg) ?>.jpg" style="float: right; height: 100px;" />
+<h2><?php echo $odgInfos['nom'] ?></h2>
+
+<?php echo $odgInfos['adresse'] ?>
+
+<h3 style="margin-top: 40px;">Produits</h3>
 
 <table class="table table-condensed table-striped table-bordered">
     <thead>
