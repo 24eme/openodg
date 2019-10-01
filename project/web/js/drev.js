@@ -231,15 +231,15 @@
             $('#form_drev_lots .modal_lot_cepages').each(function() {
 
                 var libelle = "";
-                var volume = "";
+                var volume = 0.0;
                 var total = 0.0;
                 $(this).find('.ligne_lot_cepage').each(function() {
-                    total += ($(this).find('.form-control').eq(1).val())? parseFloat($(this).find('.form-control').eq(1).val()) : 0;
+                    total += ($(this).find('.input-float').val())? parseFloat($(this).find('.input-float').val()) : 0;
                 });
                 $(this).find('.ligne_lot_cepage').each(function() {
                     var ligne = $(this);
-                    var cepage = $(this).find('.form-control').eq(0).val();
-                    var volume = parseFloat($(this).find('.form-control').eq(1).val());
+                    var cepage = $(this).find('.select2 option:selected').text();
+                    var volume = parseFloat($(this).find('.input-float').val());
                     if(cepage && volume > 0) {
                         if(libelle) {
                             libelle = libelle + ", ";

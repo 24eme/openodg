@@ -54,23 +54,22 @@
         <div class="panel panel-default bloc-lot">
             <div class="panel-body" style="padding-bottom: 0;">
               <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-8">
+                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-3 control-label")); ?>
+                            <div class="col-sm-9">
                                   <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <div class="form-group">
                           <div class="col-sm-7">
                             <div class="checkbox checkboxlots">
                               <label>
                                 <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
                                        id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal"
-                                       data-target="#<?php echo $lot->renderId() ?>_cepages"
-                                       <?php if($edite): ?> readonly="readonly" <?php endif; ?> />
+                                       data-target="#<?php echo $lot->renderId() ?>_cepages" />
                                 <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Assemblages : " :  "Assemblage" ?></span></label>
                               </div>
 
@@ -82,15 +81,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-3 control-label")); ?>
                             <div class="col-sm-6">
                                   <?php echo $lot['numero']->render(); ?>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
                             <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
@@ -104,15 +103,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['destination_type']->renderLabel("Destination", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-8">
+                            <?php echo $lot['destination_type']->renderLabel("Destination", array('class' => "col-sm-3 control-label")); ?>
+                            <div class="col-sm-9">
                                   <?php echo $lot['destination_type']->render(); ?>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
@@ -138,7 +137,7 @@
                             <div class="form-group ligne_lot_cepage">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-7">
-                                    <?php echo $lot['cepage_'.$i]->render(array("placeholder" => "Cépage")); ?>
+                                    <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="input-group">

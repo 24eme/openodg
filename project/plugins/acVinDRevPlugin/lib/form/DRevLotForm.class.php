@@ -24,6 +24,7 @@ class DRevLotForm extends acCouchdbObjectForm
 
     public function configure() {
         $produits = $this->getProduits();
+        $cepages = $this->getCepages();
 
         $this->setWidget('volume', new bsWidgetFormInputFloat());
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
@@ -41,14 +42,14 @@ class DRevLotForm extends acCouchdbObjectForm
             'required' => false)));
 
         $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
-        $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));;
+        $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
-            $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
+            $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
+            $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
             $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat());
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
@@ -88,6 +89,11 @@ class DRevLotForm extends acCouchdbObjectForm
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
         return array_merge(array('' => ''), $produits);
+    }
+
+    public function getCepages()
+    {
+        return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
     }
 
 }

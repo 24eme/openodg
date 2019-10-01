@@ -67,6 +67,12 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
                     'attributs', new ProduitRendementsForm($this->getObject()->getOrAdd('attributs'))
             );
         }
+        
+        if ($this->getObject()->hasCepagesAutorises()) {
+            $this->setWidget('cepages_autorises', new bsWidgetFormTextarea());
+            $this->widgetSchema->setLabel('cepages_autorises', 'Cepages autorisés : ');
+            $this->setValidator('cepages_autorises', new sfValidatorString(array('required' => false)));
+        }
 
         $this->widgetSchema->setNameFormat('produit_definition[%s]');
         $this->mergePostValidator(new ProduitDefinitionValidatorSchema($this->getObject()));
@@ -139,9 +145,22 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
         $circulationNode->date_fin = $date_fin;
     }
 
+    public function updateDefaultsFromObject() {
+      parent::updateDefaultsFromObject();
+      if($this->getObject()->hasCepagesAutorises()){
+        $this->setDefault('cepages_autorises',implode(', ',$this->getObject()->cepages_autorises->toArray(true,false)));
+      }
+
+    }
+
     public function save($con = null) {
         $object = parent::save($con);
         $values = $this->getValues();
+        
+        if($this->getObject()->hasCepagesAutorises()){
+          $this->getObject()->setCepagesAutorises($this->values['cepages_autorises']);
+        }
+        unset($this->values['cepages_autorises']);
 
         if ($object->hasDepartements()) {
             $object->remove('departements');
