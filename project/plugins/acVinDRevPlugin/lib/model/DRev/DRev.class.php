@@ -736,10 +736,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if(!$lot->produit_hash) {
                 continue;
             }
-            if(!$this->exist($lot->produit_hash)) {
+
+            $produit = $lot->getProduitRevendique();
+
+            if(!$produit) {
+
                 continue;
             }
-            $produit = $this->addProduit($lot->produit_hash);
+
             $produit->volume_revendique_issu_recolte += $lot->volume;
         }
     }

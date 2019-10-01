@@ -15,6 +15,20 @@ class DRevLot extends BaseDRevLot
         return $this->getDocument()->getConfiguration()->get($this->produit_hash);
     }
 
+    public function getProduitRevendique() {
+        if($this->getDocument()->exist($this->produit_hash)) {
+
+            return $this->getDocument()->addProduit($this->produit_hash);
+        }
+
+        if($this->getConfigProduit()->getParent()->exist('DEFAUT') && $this->getDocument()->exist($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash())) {
+
+            return $this->getDocument()->addProduit($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash());
+        }
+
+        return null;
+    }
+
     public function setProduitHash($hash) {
         if($hash != $this->_get('produit_hash')) {
             $this->produit_libelle = null;
