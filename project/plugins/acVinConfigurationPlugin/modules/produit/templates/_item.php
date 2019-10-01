@@ -1,3 +1,4 @@
+<?php use_helper('Float') ?>
 <tr>
 	<td class="center">
 		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getFormatLibelleDefinitionNoeud()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
