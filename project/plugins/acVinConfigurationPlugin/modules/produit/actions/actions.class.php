@@ -43,7 +43,7 @@ class produitActions extends sfActions
       $this->notDisplayDroit = true;
       $this->produits = array();
       $this->produitsOdg = DRevConfiguration::getInstance()->getOdgProduits($this->odg);
-
+      $this->odgInfos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->odg);
       foreach($this->config->declaration->getProduits($this->date) as $produit) {
           foreach($this->produitsOdg as $produitOdgHash) {
               if(!preg_match('|'.$produitOdgHash.'|', $produit->getHash())) {

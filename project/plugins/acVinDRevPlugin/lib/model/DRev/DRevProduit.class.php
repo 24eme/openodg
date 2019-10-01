@@ -165,6 +165,15 @@ class DRevProduit extends BaseDRevProduit
 		return $this->volume_revendique_total / $this->superficie_revendique;
 	}
 
+	public function getRendementDR(){
+		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_totale')) {
+
+			return null;
+		}
+
+		return $this->recolte->volume_total / $this->recolte->superficie_totale;
+	}
+
 	public function validateOdg($date = null){
 		if(is_null($date)) {
 				$date = date('Y-m-d');
