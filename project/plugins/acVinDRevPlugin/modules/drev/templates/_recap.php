@@ -33,6 +33,12 @@
 <?php endif; ?>
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
     <h3>Déclaration des lots IGP</h3>
+    <?php
+        $lots = $drev->getLotsByCouleur();
+        if (!count($lots)) :
+            echo "<p><i>Vous n'avez pas déclaré de lot</i></p>";
+        else :
+    ?>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -45,7 +51,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($drev->getLotsByCouleur() as $couleur => $lots) :
+            <?php foreach ($lots as $couleur => $lots) :
                 $volume = 0;
                 $synthese_revendication = $drev->summerizeProduitsByCouleur();
                 foreach ($lots as  $lot) :
@@ -85,6 +91,7 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+<?php endif; ?>
 
 <?php if(($sf_user->isAdmin() || $drev->validation_odg) && count($drev->getProduitsLots())): ?>
 <div class="col-xs-12" style="margin-bottom: 20px;">
