@@ -12,7 +12,9 @@ class declarationActions extends sfActions {
       if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
         $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
         if($regionRadixProduits){
-           return $this->redirect('declaration', array('region' => $region));
+            $params = $request->getGetParameters();
+            $params['region'] = $region;
+           return $this->redirect('declaration', $params);
         }
       }
       if($this->regionParam){  //&& $this->getUser()->getTeledeclarationDrevRegion()){
