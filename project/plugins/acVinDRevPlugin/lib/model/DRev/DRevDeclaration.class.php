@@ -69,6 +69,17 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return $produits;
 	}
 
+	public function getSyndicats() {
+		$syndicats = array();
+		foreach (DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+			if(!count($this->getProduitsByRegion($region))) {
+					continue;
+			}
+			$syndicats[] = $region;
+		}
+		return $syndicats;
+	}
+
 	public function getProduits($region = null)
     {
 		if($region) {
