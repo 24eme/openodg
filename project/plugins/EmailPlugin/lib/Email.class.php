@@ -18,22 +18,39 @@ class Email {
     }
 
     public function sendDRevValidation($drev) {
-        if (!$drev->declarant->email) {
-
-            return;
-        }
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-        $to = array($drev->declarant->email);
-        $subject = 'Validation de votre Déclaration de Revendication';
-        $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
-                ->setTo($to)
-                ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
 
-        return $this->getMailer()->send($message);
+        if ($drev->declarant->email) {
+            $to = array($drev->declarant->email);
+            $subject = 'Validation de votre Déclaration de Revendication';
+            $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
+            $message = Swift_Message::newInstance()
+                    ->setFrom($from)
+                    ->setTo($to)
+                    ->setSubject($subject)
+                    ->setBody($body)
+                    ->setContentType('text/plain');
+
+            $this->getMailer()->send($message);
+        }
+
+        $odgs = sfConfig::get('drev_configuration_drev', []);
+        foreach ($drev->getSyndicats() as $syndicat) {
+            $email_syndicat = (isset($odgs['odg'][$syndicat]['email'])) ? $odgs['odg'][$syndicat]['email'] : false;
+            if ($email_syndicat) {
+                $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
+                $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
+                $to = array($email_syndicat);
+                $message = Swift_Message::newInstance()
+                        ->setFrom($from)
+                        ->setTo($to)
+                        ->setSubject($subject)
+                        ->setBody($body)
+                        ->setContentType('text/plain');
+
+                return $this->getMailer()->send($message);
+            }
+        }
     }
 
     public function sendDRevConfirmee($drev) {
