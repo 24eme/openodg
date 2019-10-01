@@ -29,6 +29,31 @@ class produitActions extends sfActions
       $this->notDisplayDroit = true;
   }
 
+  public function executeOdg(sfWebRequest $request) {
+      $this->odg = $request->getParameter('odg');
+      if(!$request->getParameter('date')) {
+
+        return $this->redirect('produits_odg', array('odg' => $this->odg, 'date' => date('Y-m-d')));
+      }
+      set_time_limit(0);
+
+      $this->date = $request->getParameter('date');
+      $this->config = ConfigurationClient::getConfiguration($this->date);
+
+      $this->notDisplayDroit = true;
+      $this->produits = array();
+      $this->produitsOdg = DRevConfiguration::getInstance()->getOdgProduits($this->odg);
+      $this->odgInfos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->odg);
+      foreach($this->config->declaration->getProduits($this->date) as $produit) {
+          foreach($this->produitsOdg as $produitOdgHash) {
+              if(!preg_match('|'.$produitOdgHash.'|', $produit->getHash())) {
+                  continue;
+              }
+              $this->produits[$produit->getHash()] = $produit;
+          }
+      }
+  }
+
   public function executeModification(sfWebRequest $request)
   {
     //throw new sfException("Edition de l'arbre produit désactivé pour le moment");

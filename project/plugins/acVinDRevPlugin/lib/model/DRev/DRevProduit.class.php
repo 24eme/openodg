@@ -83,9 +83,9 @@ class DRevProduit extends BaseDRevProduit
 
             return true;
         }
-				if ($this->recolte->superficie_total == null) {
-					return true;
-				}
+		if ($this->recolte->superficie_total == null && $this->recolte->volume_total == null) {
+			return true;
+		}
 
         return false;
     }
@@ -130,6 +130,32 @@ class DRevProduit extends BaseDRevProduit
 		return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
 	}
 
+	public function getRendementVci(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+		if(!$this->exist('vci') || !$this->vci->exist('constitue')) {
+
+			return null;
+		}
+
+		return $this->vci->constitue / $this->superficie_revendique;
+	}
+	public function getRendementVciTotal(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+		if(!$this->exist('vci') || !$this->vci->exist('stock_final')) {
+
+			return null;
+		}
+
+		return $this->vci->stock_final / $this->superficie_revendique;
+	}
+
+
 	public function getRendementEffectif(){
 		if(!$this->superficie_revendique) {
 
@@ -137,6 +163,15 @@ class DRevProduit extends BaseDRevProduit
 		}
 
 		return $this->volume_revendique_total / $this->superficie_revendique;
+	}
+
+	public function getRendementDR(){
+		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_totale')) {
+
+			return null;
+		}
+
+		return $this->recolte->volume_total / $this->recolte->superficie_totale;
 	}
 
 	public function validateOdg($date = null){

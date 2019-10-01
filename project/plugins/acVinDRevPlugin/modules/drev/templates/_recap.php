@@ -13,7 +13,7 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-6">Produit revendiqué</th>
+            <th class="col-xs-6"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
             <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
             <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<small class="text-muted">(hl)</small></th>
             <th class="col-xs-2 text-center">Dont millesime <?php echo $drev->campagne-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
@@ -33,6 +33,12 @@
 <?php endif; ?>
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
     <h3>Déclaration des lots IGP</h3>
+    <?php
+        $lots = $drev->getLotsByCouleur();
+        if (!count($lots)) :
+            echo "<p><i>Vous n'avez pas déclaré de lot</i></p>";
+        else :
+    ?>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -45,7 +51,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($drev->getLotsByCouleur() as $couleur => $lots) :
+            <?php foreach ($lots as $couleur => $lots) :
                 $volume = 0;
                 $synthese_revendication = $drev->summerizeProduitsByCouleur();
                 foreach ($lots as  $lot) :
@@ -85,8 +91,9 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+<?php endif; ?>
 
-<?php if(($sf_user->isAdmin() || $drev->validation_odg) && count($drev->getProduitsLots())): ?>
+<?php if(($sf_user->hasDrevAdmin() || $drev->validation) && count($drev->getProduitsLots()) && $drev->isValidee()): ?>
 <div class="col-xs-12" style="margin-bottom: 20px;">
   <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
 </div>
@@ -98,27 +105,33 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="col-xs-3">Produit revendiqué</th>
-                <th class="text-center col-xs-2">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="col-xs-5"><?php if (count($drev->declaration->getProduitsVci()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
+                <th class="text-center col-xs-1">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Complémt<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">A détruire<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Substitué<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center col-xs-1">Constitué<br /><?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-2">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($drev->declaration->getProduitsVci() as $produit) : ?>
                 <tr>
-                    <td><?php echo $produit->getLibelleComplet() ?></td>
+                    <td>
+                        <?php echo $produit->getLibelleComplet() ?>
+                        <small class="pull-right">
+                            <span class="<?php if($produit->getRendementVci() > $produit->getConfig()->getRendementVci()): ?>text-danger<?php endif; ?>">&nbsp;<?php echoFloat(round($produit->getRendementVci(), 2)); ?></span>
+                            <span class="<?php if($produit->getRendementVciTotal() > $produit->getConfig()->getRendementVciTotal()): ?>text-danger<?php endif; ?>">Σ&nbsp;<?php echoFloat(round($produit->getRendementVciTotal(), 2)); ?></span>
+                        hl/ha </small>
+                    </td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_precedent') ?>"><?php if($produit->vci->stock_precedent): ?><?php echoFloat($produit->vci->stock_precedent) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'rafraichi') ?>"><?php if($produit->vci->rafraichi): ?><?php echoFloat($produit->vci->rafraichi) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'complement') ?>"><?php if($produit->vci->complement): ?><?php echoFloat($produit->vci->complement) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'destruction') ?>"><?php if($produit->vci->destruction): ?><?php echoFloat($produit->vci->destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'substitution') ?>"><?php if($produit->vci->substitution): ?><?php echoFloat($produit->vci->substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'constitue') ?>"><?php if($produit->vci->constitue): ?><?php echoFloat($produit->vci->constitue) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?>"><?php if($produit->vci->stock_final): ?><?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'constitue') ?><?php if($produit->getRendementVci() > $produit->getConfig()->getRendementVci()): ?>text-danger<?php endif; ?>"><?php if($produit->vci->constitue): ?><?php echoFloat($produit->vci->constitue) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?><?php if($produit->getRendementVciTotal() > $produit->getConfig()->getRendementVciTotal()): ?> text-danger<?php endif; ?>"><?php if($produit->vci->stock_final): ?><?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

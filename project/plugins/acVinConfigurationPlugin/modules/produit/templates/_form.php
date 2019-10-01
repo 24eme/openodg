@@ -73,6 +73,13 @@
 				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_conseille']->render(array('class' => 'form-control text-right')); ?></div>
 				            </div>
 			            </div>
+                        <div class="col-sm-4">
+							<div class="form-group <?php if ($form['attributs']['rendement_dr']->hasError()): ?>has-error<?php endif; ?>" >
+								<?php echo $form['attributs']['rendement_dr']->renderError() ?>
+				                <?php echo $form['attributs']['rendement_dr']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_dr']->render(array('class' => 'form-control text-right')); ?></div>
+				            </div>
+			            </div>
                     	<div class="col-sm-4">
 				            <div class="form-group <?php if ($form['attributs']['rendement_vci']->hasError()): ?>has-error<?php endif; ?>" >
 				                <?php echo $form['attributs']['rendement_vci']->renderError() ?>
