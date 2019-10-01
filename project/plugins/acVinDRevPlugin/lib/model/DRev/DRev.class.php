@@ -426,7 +426,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
-                continue;
+                if (preg_match('/([a-zA-Z0-9]{5,6}) ([0-9]{1,2})/', $line[DRCsvFile::CSV_PRODUIT_INAO], $m)) {
+                    $produitConfig = $this->getConfiguration()->findProductByCodeDouane($m[1]);
+                }
+            }
+            if (!$produitConfig) {
+            	continue;
             }
             if (!$produitConfig->isActif()) {
             	continue;
