@@ -13,6 +13,7 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
+	<?php if (count($form['produits']) > 0): ?>
     <table class="table table-bordered table-striped table-condensed">
         <thead>
         	<tr>
@@ -42,6 +43,9 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <p>Aucun produit a revendiquer</p>
+    <?php endif; ?>
 
     <?php if ($ajoutForm->hasProduits()): ?>
         <button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
