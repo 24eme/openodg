@@ -35,7 +35,7 @@ class Email {
         }
 
         $odgs = sfConfig::get('drev_configuration_drev', []);
-        foreach ($drev->getSyndicats() as $syndicat) {
+        foreach ($drev->declaration->getSyndicats() as $syndicat) {
             $email_syndicat = (isset($odgs['odg'][$syndicat]['email'])) ? $odgs['odg'][$syndicat]['email'] : false;
             if ($email_syndicat) {
                 $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
