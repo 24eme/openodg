@@ -72,6 +72,15 @@
                 <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $etablissement && $route instanceof InterfaceDeclarationRoute && !$sf_user->isUsurpationCompte()) : ?>
                      <a tabindex="-1" style="position: absolute; right:20px;" href="<?php echo url_for('auth_usurpation', array('identifiant' => $etablissement->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a>
                 <?php endif; ?>
+
+                <?php if ($etablissement && $route instanceof InterfaceDeclarationRoute ) : ?>
+                  <?php $drev = DrevClient::getInstance()->getLastDrevFromEtablissement($etablissement); ?>
+
+                <?php if($drev): ?>
+                    <?php include_partial('drev/popupSyndicats',array('drev' => $drev)); ?>
+                <?php endif; ?>
+              <?php endif; ?>
+
                 <?php if ($sf_user->isUsurpationCompte()): ?>
                     <a tabindex="-1" style="position: absolute; right:20px;" href="<?php echo url_for('auth_deconnexion_usurpation') ?>" title="Déconnexion du mode déclarant"><span class="glyphicon glyphicon-cloud-download"></span></a>
                 <?php endif; ?>
