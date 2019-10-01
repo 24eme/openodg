@@ -164,7 +164,11 @@
             <a tabindex="-1" href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-
+            <?php if ($sf_user->hasDrevAdmin()): ?>
+              <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left" >
+                  <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
+              </a>
+            <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>

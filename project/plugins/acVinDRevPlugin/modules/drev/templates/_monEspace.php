@@ -6,11 +6,11 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($drev && $drev->validation): ?>panel-success<?php elseif($drev): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Revendication&nbsp;des&nbsp;produits&nbsp;viticoles&nbsp;<?php echo $campagne; ?></h3>
+            <h3 class="panel-title">Revendication&nbsp;des&nbsp;produits&nbsp;<?php echo $campagne; ?></h3>
         </div>
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
-                <p>Votre déclaration de revendication viticole a été validée pour cette année.</p>
+                <p>Votre déclaration de revendication a été validée pour cette année.</p>
                 <div style="margin-top: 76px;">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Voir la DRev</a>
                 </div>
