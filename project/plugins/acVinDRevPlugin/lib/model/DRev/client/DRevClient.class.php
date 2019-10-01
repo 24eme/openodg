@@ -175,4 +175,12 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $non_habilite;
     }
 
+    public function getLastDrevFromEtablissement($etablissement){
+      $lastDrevs = $this->getHistory($etablissement->getIdentifiant());
+      foreach ($lastDrevs as $drev) {
+        return $drev;
+      }
+      return null;
+    }
+
 }
