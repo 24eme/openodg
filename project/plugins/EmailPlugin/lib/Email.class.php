@@ -36,7 +36,7 @@ class Email {
 
         $odgs = sfConfig::get('drev_configuration_drev', []);
         foreach ($drev->declaration->getSyndicats() as $syndicat) {
-            $email_syndicat = (isset($odgs['odg'][$syndicat]['email'])) ? $odgs['odg'][$syndicat]['email'] : false;
+            $email_syndicat = (isset($odgs['odg'][$syndicat]['email_notification'])) ? $odgs['odg'][$syndicat]['email_notification'] : false;
             if ($email_syndicat) {
                 $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
                 $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;

@@ -7,7 +7,18 @@
 <img src="/odg/images/pdf/logo_<?php echo strtolower($odg) ?>.jpg" style="float: right; height: 100px;" />
 <h2><?php echo $odgInfos['nom'] ?></h2>
 
-<?php echo $odgInfos['adresse'] ?>
+<div class="row">
+  <div class="col-xs-2">Adresse : </div>
+  <div class="col-xs-5"><?php echo $odgInfos['adresse'] ?></div>
+</div>
+<div class="row">
+  <div class="col-xs-2">Téléphone : </div>
+  <div class="col-xs-5"><?php echo $odgInfos['telephone'] ?></div>
+</div>
+<div class="row">
+  <div class="col-xs-2">Mail : </div>
+  <div class="col-xs-5"><?php echo $odgInfos['email'] ?></div>
+</div>
 
 <h3 style="margin-top: 40px;">Produits</h3>
 
