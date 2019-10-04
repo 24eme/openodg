@@ -534,7 +534,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
             if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
-                print_r($p->toArray(true, false));
     		   $todelete[$hash] = $hash;
                continue;
         	}
