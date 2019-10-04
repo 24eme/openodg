@@ -18,7 +18,6 @@ all:
             - "appellations/BON/"
             - "TRANQ/appellations/CAJ/"
             - "EFF/appellations/CLO/"
-            - "appellations/CAS/"
             - "appellations/COL/"
             - "appellations/COS/"
             - "appellations/COB/"
