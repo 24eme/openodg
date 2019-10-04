@@ -23,7 +23,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $libelleLigne = null;
         $achat_fin = 0;
         $achats = array();
-        $ratio_metayer = array();
+        $ratios_metayer = array();
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
                 //Cas de fin de tableur avec les achats tolérés
@@ -88,17 +88,29 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
+                // Calcul du ratio du baillages-métayages
+                if ($values[0] == 5 || $values[0] == 15) {
+                    for ($i = 2; $i < count($csv[$key+1]); $i++) {
+                        if ($i%2) {
+        					if ($csv[$key+1][$i]) {
+                                $volume = (float) str_replace(",", ".", $csv[$key+1][$i]);
+        					}
+        					if ($csv[$key+1][$i+1]) {
+                                $volumeBailleur = (float) str_replace(",", ".", $csv[$key+1][$i+1]);
+                                $ratios_metayer[sprintf('%02d', $values[0])][$i] = $volume / ($volume + $volumeBailleur);
+        					}
+        				}
+        			}
+                }
+
                 //Récupération de la récolte totale - L5 (avec un décalage car il y a un ligne extra pour l'exploitant et le bailleur)
         		if ($values[0] == 5) {
         			for ($i = 2; $i < count($csv[$key+1]); $i++) {
         				if ($i%2) {
         					if ($csv[$key+1][$i]) {
-                                $volume = (float) str_replace(",", ".", $csv[$key+1][$i]);
-        						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), $volume, null, null, null, null);
+        						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($csv[$key+1][$i]), null, null, null, null);
         					}
         					if ($csv[$key+1][$i+1]) {
-                                $volumeBailleur = (float) str_replace(",", ".", $csv[$key+1][$i+1]);
-                                $ratio_metayer[$i] = $volume / ($volume + $volumeBailleur);
         						$bailleur[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($csv[$key+1][$i+1]), null, null, null, null);
         					}
         				}
@@ -183,11 +195,18 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     $eOrigin[0] = "04b";
                     $eOrigin[1] = "Superificie de récolte originale";
                 }
-                if($e[0] == 4 && isset($ratio_metayer[$k])){
+                $ratio_metayer = null;
+                if(!$ratio_metayer && isset($ratios_metayer["15"][$k]) && $ratios_metayer["15"][$k]) {
+                    $ratio_metayer = $ratios_metayer["15"][$k];
+                }
+                if(!$ratio_metayer && isset($ratios_metayer["05"][$k]) && $ratios_metayer["05"][$k]) {
+                    $ratio_metayer = $ratios_metayer["05"][$k];
+                }
+                if($e[0] == 4 && isset($ratio_metayer)){
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));
-                    $e[2] = self::numerizeVal($superficieInitiale*$ratio_metayer[$k], 4);
+                    $e[2] = self::numerizeVal($superficieInitiale*$ratio_metayer, 4);
                     array_unshift($bailleur[$k], $e);
-                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale*(1 - $ratio_metayer[$k]), 4);
+                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale*(1 - $ratio_metayer), 4);
                 }
 	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k]."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
