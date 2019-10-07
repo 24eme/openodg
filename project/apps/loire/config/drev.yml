@@ -35,7 +35,9 @@ all:
           nom: "Touraine"
           adresse: "ZI 4 rue Gutenberg, 41140 NOYERS SUR CHER"
           produits:
-            - "appellations/TOU"
+            - "TRANQ/appellations/TOU/"
+            - "TRANQ/appellations/TOUNJO/"
+            - "EFF/appellations/TOU"
           inao: "data/drev/FEDE.csv"
         CHINON:
           nom: "Syndicat des Vins de Chinon"
