@@ -41,7 +41,7 @@ all:
           nom: "Syndicat des Vins de Chinon"
           adresse: "place Hofheim, 37500 Chinon"
           produits:
-            - "appellations/CHI"
+            - "appellations/CHI/"
         NANTES:
           nom: "La Fédération des vins de Nantes"
           adresse: "Château de la Frémoire, 44120 Vertou"
