@@ -46,11 +46,12 @@ all:
           nom: "La Fédération des vins de Nantes"
           adresse: "Château de la Frémoire, 44120 Vertou"
           produits:
-            - appellations/MUSAC
-            - appellations/MUSCDL
-            - appellations/MUSCGL
-            - appellations/MUSSM
-            - appellations/GPL
+            - TRANQ/appellations/MUSAC
+            - TRANQ/appellations/MUSCDL
+            - TRANQ/appellations/MUSCGL
+            - TRANQ/appellations/MUSSM
+            - TRANQ/appellations/GPL
+            - TRANQ/appellations/COA
           inao: "data/drev/NANTES.csv"
         COTEAUX_VENDOMOIS:
           nom: "Côteaux du vendomois"
