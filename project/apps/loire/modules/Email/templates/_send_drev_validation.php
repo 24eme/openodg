@@ -27,12 +27,15 @@ Contacts de vos Syndicats :
   - <?php echo $nom; ?>
 <?php endif; ?>
 <?php if($adresse): ?>
+
       <?php echo $adresse; ?>
 <?php endif; ?>
 <?php if($email): ?>
+
       Email : <?php echo $email; ?>
 <?php endif; ?>
 <?php if($telephone): ?>
+
       Téléphone : <?php echo $telephone; ?>
 <?php endif; ?>
 
