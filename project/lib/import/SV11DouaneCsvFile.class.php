@@ -16,6 +16,8 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $communeTiers = null;
         $libellesLigne = null;
         $tabValues = array(3,4,9,10,11,12,13);
+        $cpt = 1;
+        
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
@@ -61,8 +63,10 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
+                        $produit[] = $cpt;
 	        			$produits[] = $produit;
         			}
+                    $cpt++;
         		}
         	}
         }
@@ -70,11 +74,10 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $doc = $this->getEtablissementRows();
 
         $csv = '';
-        $cpt = 1;
         foreach ($produits as $p) {
-	    	$csv .= implode(';', $doc).';;;'.implode(';', $p).";".$cpt."\n";
-        $cpt++;
+	    	$csv .= implode(';', $doc).';;;'.implode(';', $p)."\n";
         }
+
         return $csv;
     }
 }
