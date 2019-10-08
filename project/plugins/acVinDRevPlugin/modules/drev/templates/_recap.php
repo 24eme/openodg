@@ -122,7 +122,8 @@
                         <?php echo $produit->getLibelleComplet() ?>
                         <small class="pull-right">
                             <span class="<?php if($produit->getRendementVci() > $produit->getConfig()->getRendementVci()): ?>text-danger<?php endif; ?>">&nbsp;<?php echoFloat(round($produit->getRendementVci(), 2)); ?></span>
-                            <span class="<?php if($produit->getRendementVciTotal() > $produit->getConfig()->getRendementVciTotal()): ?>text-danger<?php endif; ?>">Σ&nbsp;<?php echoFloat(round($produit->getRendementVciTotal(), 2)); ?></span>
+                            <span data-toggle="tooltip" title="Rendement&nbsp;VCI&nbsp;de&nbsp;l'année&nbsp;| Σ&nbsp;rendement&nbsp;cumulé"
+                                  class="<?php if($produit->getRendementVciTotal() > $produit->getConfig()->getRendementVciTotal()): ?>text-danger<?php endif; ?>">|&nbsp;Σ&nbsp;<?php echoFloat(round($produit->getRendementVciTotal(), 2)); ?></span>
                         hl/ha </small>
                     </td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_precedent') ?>"><?php if($produit->vci->stock_precedent): ?><?php echoFloat($produit->vci->stock_precedent) ?> <small class="text-muted">hl</small><?php endif; ?></td>
