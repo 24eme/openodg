@@ -850,6 +850,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             break;
         }
 
+        if($this->isModificative()){
+            $this->getMother()->validateOdgByRegion($date, $region);
+            $this->getMother()->save();
+        }
+
         if(!$allValidate) {
 
             return;
