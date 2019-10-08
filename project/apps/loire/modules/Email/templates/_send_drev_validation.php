@@ -1,3 +1,4 @@
+<?php $odgs = sfConfig::get('drev_configuration_drev', []); ?>
 Bonjour,
 
 Votre déclaration de Revendication <?php echo $drev->campagne; ?> a bien été transmise à vos différents syndicats.
