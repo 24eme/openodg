@@ -1,6 +1,6 @@
 Bonjour,
 
-Votre déclaration de Revendication <?php echo $drev->campagne; ?> a bien été transmise au syndicat via le site syndicat-cotesdurhone.com.
+Votre déclaration de Revendication <?php echo $drev->campagne; ?> a bien été transmise à vos différents syndicats.
 
 Cette validation sera définitive lorsque votre déclaration aura été vérifiée et que les éventuelles pièces à joindre seront parvenues à notre service.
 <?php if (count($drev->getOrAdd('documents')) > 0): ?>
@@ -12,17 +12,32 @@ Rappel des documents à envoyer :
 
 <?php endforeach; ?>
 
-Le ou les document(s) annexes peuvent être envoyés par mail (<contact@vinsvaldeloire.pro>) ou par voie postale :
-
-Syndicat de loire
-BLA BLA
-37000 Tours
 <?php endif; ?>
 
+Contacts de vos Syndicats :
+
+<?php foreach ($drev->declaration->getSyndicats() as $syndicat) :
+    $nom = (isset($odgs['odg'][$syndicat]['nom']))? $odgs['odg'][$syndicat]['nom'] : false;
+    $adresse = (isset($odgs['odg'][$syndicat]['adresse']))? $odgs['odg'][$syndicat]['adresse'] : false;
+    $email = (isset($odgs['odg'][$syndicat]['email']))? $odgs['odg'][$syndicat]['email'] : false;
+    $telephone = (isset($odgs['odg'][$syndicat]['telephone']))? $odgs['odg'][$syndicat]['telephone'] : false;
+?>
+<?php if($nom): ?>
+  - <?php echo $nom; ?>
+<?php endif; ?>
+<?php if($adresse): ?>
+      <?php echo $adresse; ?>
+<?php endif; ?>
+<?php if($email): ?>
+      Email : <?php echo $email; ?>
+<?php endif; ?>
+<?php if($telephone): ?>
+      Téléphone : <?php echo $telephone; ?>
+<?php endif; ?>
+
+<?php endforeach; ?>
+
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>
-
-
-Votre déclaration sera transmise à l’organisme de contrôle.
 
 Pour toute question, n'hésitez pas à contacter votre syndicat.
 
