@@ -129,6 +129,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
     public function getLots(){
         $lots = $this->_get('lots')->toArray(1,1);
+        if($lots){
+            return $this->_get('lots');
+        }
         uasort($lots, "DRev::compareLots");
         return $lots;
     }
