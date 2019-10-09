@@ -166,12 +166,12 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function getRendementDR(){
-		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_totale')) {
+		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_total')) {
 
 			return null;
 		}
 
-		return $this->recolte->volume_total / $this->recolte->superficie_totale;
+		return $this->recolte->volume_total / $this->recolte->superficie_total;
 	}
 
 	public function validateOdg($date = null){

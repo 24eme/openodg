@@ -1510,7 +1510,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function listenerGenerateVersion($document) {
         $document->devalidate(false);
         foreach ($document->getProduitsLots() as $produit) {
-          $produit->validation_odg = null;
+          if($produit->exist("validation_odg") && $produit->validation_odg){
+            $produit->validation_odg = null;
+          }
         }
     }
 

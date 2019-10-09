@@ -6,6 +6,7 @@ class DRevValidation extends DocumentValidation
     const TYPE_ENGAGEMENT = 'engagement';
 
     protected $etablissement = null;
+    protected $produit_revendication_rendement = array();
 
     public function __construct($document, $options = null)
     {
@@ -64,12 +65,12 @@ class DRevValidation extends DocumentValidation
 
     public function controle()
     {
-        $this->controleRecoltes();
-    	$produits = array();
+        $produits = array();
         foreach ($this->document->getProduitsWithoutLots() as $hash => $produit) {
-              $this->controleRevendication($produit);
-              $this->controleVci($produit);
+          $this->controleRevendication($produit);
+          $this->controleVci($produit);
         }
+        $this->controleRecoltes();
 
         foreach ($this->document->getProduits() as $hash => $produit) {
           $produits[$hash] = $produit;
@@ -148,8 +149,10 @@ class DRevValidation extends DocumentValidation
     {
         foreach($this->document->getProduits() as $produit) {
             if($produit->getConfig()->getRendementDR() && ($produit->getRendementDR() > $produit->getConfig()->getRendementDR()) ) {
-                $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
-                $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+                if(!array_key_exists($produit->gethash(),$this->produit_revendication_rendement)){
+                  $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
+                  $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+                }
             }
         }
     }
@@ -166,11 +169,13 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->superficie_revendique > 0 && $produit->volume_revendique_issu_recolte > 0) {
+
 	        if($produit->getConfig()->getRendement() !== null && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendement(), 2)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-	        } elseif($produit->getConfig()->getRendementConseille() > 0 && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendementConseille(), 2)) {
+            $this->produit_revendication_rendement[$produit->getHash()] = $produit->getHash();
+          } elseif($produit->getConfig()->getRendementConseille() > 0 && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendementConseille(), 2)) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_conseille', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-            }
+          }
         }
         if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
