@@ -96,7 +96,7 @@ Les produits déclarés sont du millésime du VCI
         <th class="th" style="text-align: center; width: 150px">Volume</th>
         <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
     </tr>
-<?php foreach($drev->lots as $lot): ?>
+<?php foreach($drev->getLots() as $lot): ?>
 <?php   if($lot->hasVolumeAndHashProduit()): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>

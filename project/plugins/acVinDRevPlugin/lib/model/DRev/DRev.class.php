@@ -111,7 +111,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
-        foreach ($this->lots as $lot) {
+
+        foreach ($this->getLots() as $lot) {
            if($visualisation && !$lot->hasVolumeAndHashProduit()){
              continue;
            }
@@ -126,7 +127,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         return $couleurs;
     }
+    public function getLots(){
+        $lots = $this->_get('lots')->toArray(1,1);
+        uasort($lots, "DRev::compareLots");
+        return $lots;
+    }
 
+    public static function compareLots($lotA, $lotB){
+        $dateA = $lotA->getDate();
+        $dateB = $lotB->getDate();
+        if(empty($dateA)){
+            if(!empty($dateB)){
+                return $dateB;
+            }
+        }
+        return strcasecmp($dateA, $dateB);
+    }
 
     public function getConfigProduits() {
 
