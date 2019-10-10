@@ -605,12 +605,14 @@ class drevActions extends sfActions {
         }
 
         if($this->getUser()->isAdmin()) {
+            $this->sendDRevValidation($this->drev);
+
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        $this->sendDRevValidation($this->drev);
+
 
         return $this->redirect('drev_confirmation', $this->drev);
     }

@@ -30,7 +30,6 @@ class Email {
                     ->setSubject($subject)
                     ->setBody($body)
                     ->setContentType('text/plain');
-
             $this->getMailer()->send($message);
         }
 
@@ -39,16 +38,18 @@ class Email {
             $email_syndicat = (isset($odgs['odg'][$syndicat]['email_notification'])) ? $odgs['odg'][$syndicat]['email_notification'] : false;
             if ($email_syndicat) {
                 $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
-                $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
-                $to = array($email_syndicat);
-                $message = Swift_Message::newInstance()
+                if(!empty($body)) {
+                    $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
+                    $to = array($email_syndicat);
+                    $message = Swift_Message::newInstance()
                         ->setFrom($from)
                         ->setTo($to)
                         ->setSubject($subject)
                         ->setBody($body)
                         ->setContentType('text/plain');
 
-                return $this->getMailer()->send($message);
+                    return $this->getMailer()->send($message);
+                }
             }
         }
     }
