@@ -195,15 +195,24 @@ class Configuration extends BaseConfiguration {
             }
         }
         krsort($produitsByCodeDouane);
+
+        foreach($produitsByCodeDouane as $code => $produit) {
+            preg_match('/([a-zA-Z0-9]{5,6}) ([0-9]{1,2})/', $code, $m);
+            if(isset($m[1]) && preg_match('/^'.$code_douane.'$/', $m[1])) {
+                return $produit;
+            }
+        }
+
         foreach($produitsByCodeDouane as $code => $produit) {
             if(preg_match('/^'.$code.'/', $code_douane)) {
                 return $produit;
             }
         }
+
         foreach($produitsByCodeDouane as $code => $produit) {
-            if(preg_match('/^'.$code_douane.'/', $code)) {
-                return $produit;
-            }
+          if(preg_match('/^'.$code_douane.'/', $code)) {
+            return $produit;
+          }
         }
         return false;
     }
