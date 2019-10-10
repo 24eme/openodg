@@ -14,6 +14,7 @@ all:
             - "TRANQ/appellations/ANJ"
             - "TRANQ/appellations/ANJCDL"
             - "TRANQ/appellations/AJV"
+            - "EFF/appellations/ANJ"
             - "appellations/AJVBRI/"
             - "appellations/BON/"
             - "TRANQ/appellations/CAJ/"
