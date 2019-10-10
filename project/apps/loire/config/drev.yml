@@ -73,3 +73,8 @@ all:
           adresse: "33 avenue Saint-Vincent 37140 Saint Nicolas de Bourgueil"
           produits:
             - TRANQ/appellations/STN
+        HAUT_POITOU:
+          nom: "Syndicat des Vins du Haut Poitou"
+          adresse: "Téléport 4 - Avenue Thomas Edison, Asterama 1, 86360 Chasseneuil-du-Poitou"
+          produits:
+            - TRANQ/appellations/HPT
