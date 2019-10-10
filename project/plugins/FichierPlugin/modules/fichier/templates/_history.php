@@ -17,7 +17,7 @@
 			<?php endif; ?>
 		<?php else: ?>
 			<?php if($document->value[PieceAllView::VALUES_FICHIERS] && count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
-			  	<a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
+			  	<a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown" data-toggle-second="tooltip" title="Accéder au documents" aria-haspopup="true" aria-expanded="false"><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
 			  	<ul class="dropdown-menu">
 			  		<?php
 			  			foreach ($document->value[PieceAllView::VALUES_FICHIERS] as $file):
@@ -31,13 +31,13 @@
 			  		<?php endif; ?>
 			  	</ul>
 			<?php else: ?>
-			<a href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
+			<a href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>" ><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
 			<?php endif; ?>
 		<?php endif; ?>
 	</span>
 	<span class="col-sm-2 col-xs-12">
 		<?php if($document->value[PieceAllView::VALUES_FICHIERS] && count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
-		  	<a href="#" class="pull-right dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-duplicate"></span></a>
+		  	<a href="#" class="pull-right dropdown-toggle" type="button" data-toggle="dropdown" data-toggle-second="tooltip" title="Accéder au documents" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-duplicate"></span></a>
 		  	<ul class="dropdown-menu">
 		  		<?php
 		  			foreach ($document->value[PieceAllView::VALUES_FICHIERS] as $file):
@@ -54,7 +54,7 @@
 		<a class="pull-right" href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><span class="glyphicon glyphicon-file"></span></a>
 		<?php endif; ?>
 		<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasDrevAdmin())): ?>
-			<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;"><span class="glyphicon glyphicon-edit"></span></a>
+			<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;" data-toggle-second="tooltip" title="Modifier le document" ><span class="glyphicon glyphicon-edit"></span></a>
 		<?php endif; ?>
 		<?php if (Piece::isPieceEditable($document->id, $sf_user->hasDrevAdmin())): ?>
 			<a class="pull-right" href="<?php echo url_for('edit_fichier', array('id' => $document->id)) ?>"><span class="glyphicon glyphicon-user"></span></a>
