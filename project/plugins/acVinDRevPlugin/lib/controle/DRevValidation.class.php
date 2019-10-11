@@ -29,7 +29,9 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', "Le volume récolté de la DR est absent ou à zéro");
 
         $this->addControle(self::TYPE_WARNING, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
-        $this->addControle(self::TYPE_WARNING, 'lot_destination_non_saisie', "La destination du lot n'a pas été renseignée entièrement");
+        $this->addControle(self::TYPE_WARNING, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
+        $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
+
         /*
          * Error
          */
@@ -248,9 +250,13 @@ class DRevValidation extends DocumentValidation
           if(!$lot->exist('millesime') || !$lot->millesime){
               $this->addPoint(self::TYPE_WARNING, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
-          if(!$lot->exist('destination_type') || !$lot->destination_type || !$lot->exist('destination_date') || !$lot->destination_date){
-              $this->addPoint(self::TYPE_WARNING, 'lot_destination_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          if(!$lot->exist('destination_type') || !$lot->destination_type){
+              $this->addPoint(self::TYPE_WARNING, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
+          if(!$lot->exist('destination_date') || !$lot->destination_date){
+            $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
+
           if(count($lot->cepages)){
             $somme = 0.0;
             foreach ($lot->cepages as $cepage => $v) {
