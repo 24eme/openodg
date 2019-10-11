@@ -14,6 +14,9 @@ class DRevLot extends BaseDRevLot
 
         return $this->getDocument()->getConfiguration()->get($this->produit_hash);
     }
+    public function getNumero(){
+        return $this->_get('numero');
+    }
 
     public function getProduitRevendique() {
         if($this->getDocument()->exist($this->produit_hash)) {
@@ -35,6 +38,14 @@ class DRevLot extends BaseDRevLot
         }
         parent::_set('produit_hash', $hash);
         $this->getProduitLibelle();
+    }
+
+    public function getDestinationType(){
+        return $this->_get("destination_type");
+    }
+
+    public function getDestinationDate(){
+        return $this->_get("destination_date");
     }
 
     public function getProduitLibelle() {
