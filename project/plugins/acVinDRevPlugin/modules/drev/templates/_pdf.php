@@ -6,7 +6,7 @@
 <?php echo styleDRev(); ?>
 </style>
 
-<span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>
+<span class="h3Alt">&nbsp;Entreprise&nbsp;</span><br/>
 <table class="tableAlt"><tr><td>
 <table border="0" >
   <tr>

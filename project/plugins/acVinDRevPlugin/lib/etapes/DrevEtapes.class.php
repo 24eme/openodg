@@ -30,7 +30,7 @@ class DrevEtapes extends Etapes
     );
 
 	public static $libelles = array(
-            self::ETAPE_EXPLOITATION => "Exploitation",
+            self::ETAPE_EXPLOITATION => "Entreprise",
             self::ETAPE_DR_DOUANE => "Document douanier",
             self::ETAPE_REVENDICATION_SUPERFICIE => "Superficies",
             self::ETAPE_VCI => "Répartition du VCI %campagne%",
