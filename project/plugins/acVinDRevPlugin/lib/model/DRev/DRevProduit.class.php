@@ -126,7 +126,23 @@ class DRevProduit extends BaseDRevProduit
 		return null;
 	}
 
+	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
+
+		if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
+
+			return true;
+		}
+
+		if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_total)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
+
 		return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
 	}
 
