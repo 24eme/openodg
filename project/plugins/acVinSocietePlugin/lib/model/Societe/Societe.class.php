@@ -597,4 +597,8 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
     }
 
+    public function setLegalSignatureDrev() {
+      return $this->add('legal_signature')->add('drev', date('c'));
+    }
+
 }

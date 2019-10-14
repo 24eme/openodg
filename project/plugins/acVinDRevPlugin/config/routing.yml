@@ -25,7 +25,7 @@ drev_create:
     sf_method: [get]
 
 drev_legal_signature:
-  url: /drev/declaration
+  url: /drev/legalSignature
   param: { module: drev, action: legalSignature }
   class: EtablissementRoute
   options:
