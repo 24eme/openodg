@@ -3,10 +3,12 @@
 <?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin() || !$sf_user->hasDrevAdmin())): ?>
     <?php return; ?>
 <?php endif; ?>
-<div style="padding: 50px">
-    okkkkkkkkkkkkkkkkkk
+
+<?php if(DRevConfiguration::getInstance()->hasCgu()
+     && ($societe = $etablissement->getSociete())
+     && (!$societe->exist('legal_signature') || !$societe->legal_signature->exist('drev'))): ?>
     <?php  include_component('drev', 'legalSignature', array('etablissement' => $etablissement));  ?>
-</div>
+<?php endif; ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($drev && $drev->validation): ?>panel-success<?php elseif($drev): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
