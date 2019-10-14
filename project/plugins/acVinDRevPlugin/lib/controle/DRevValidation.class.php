@@ -108,18 +108,6 @@ class DRevValidation extends DocumentValidation
     	}
     }
 
-    protected function controleSurfaceBailleur()
-    {
-    	$bailleurs = $this->document->getProduitsBailleur();
-    	foreach ($this->document->getProduits() as $produit) {
-    		if (in_array($produit->getConfig()->getHash(), $bailleurs)) {
-	    		if (round($produit->recolte->superficie_total,4) == round($produit->superficie_revendique,4)) {
-	    			$this->addPoint(self::TYPE_WARNING, 'declaration_surface_bailleur', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
-	    		}
-    		}
-    	}
-    }
-
     protected function controleEngagementVCI()
     {
         if($this->document->isPapier()) {

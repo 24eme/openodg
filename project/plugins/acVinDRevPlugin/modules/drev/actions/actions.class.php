@@ -327,9 +327,13 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         foreach ($this->drev->getProduits() as $prod) {
-          $prod->volume_revendique_issu_recolte = $prod->getTheoriticalVolumeRevendiqueIssuRecole();
+            if(!$prod->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
+                $prod->volume_revendique_issu_recolte = null;
+                continue;
+            }
+
+            $prod->volume_revendique_issu_recolte = $prod->getTheoriticalVolumeRevendiqueIssuRecole();
         }
-        $this->drev->updatePrelevementsFromRevendication();
         $this->drev->save();
         return $this->redirect('drev_revendication', $this->drev);
     }
