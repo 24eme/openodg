@@ -7,3 +7,4 @@ all:
       denomination_auto: false
       exploitation_save: true
       validation_odg: false
+      cgu: false

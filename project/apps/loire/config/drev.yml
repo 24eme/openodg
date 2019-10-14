@@ -6,6 +6,7 @@ all:
       import_with_mentions_complementaire: true
       validation_odg: true
       habilitation_inao: true
+      cgu: true
       odg:
         ANJOU_SAUMUR:
           nom: "Anjou Saumur"

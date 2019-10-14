@@ -84,4 +84,8 @@ class DRevConfiguration {
       return isset($this->configuration['validation_odg']) && boolval($this->configuration['validation_odg']);
     }
 
+    public function hasCgu(){
+      return isset($this->configuration['cgu']) && boolval($this->configuration['cgu']);
+    }
+
 }
