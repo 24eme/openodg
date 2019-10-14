@@ -81,7 +81,6 @@ class DRevValidation extends DocumentValidation
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleProduitsDocumentDouanier($produits);
-        $this->controleSurfaceBailleur();
         $this->controleHabilitationINAO();
         $this->controleLots();
     }
