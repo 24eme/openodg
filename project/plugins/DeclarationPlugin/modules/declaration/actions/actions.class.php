@@ -111,8 +111,20 @@ class declarationActions extends sfActions {
     }
 
     public function executeExport(sfWebRequest $request) {
-        $this->buildSearch($request);
 
+        $this->regionParam = null;
+        if($this->getUser() && $this->getUser()->getTeledeclarationDrevRegion()){
+          $this->regionParam = $this->getUser()->getTeledeclarationDrevRegion();
+        }
+
+        if($this->regionParam){
+          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($this->regionParam);
+          if($regionRadixProduits){
+            $request->setParameter('produits-filtre',$regionRadixProduits);
+          }
+        }
+
+        $this->buildSearch($request);
         $this->setLayout(false);
         $attachement = sprintf("attachment; filename=export_declarations_%s.csv", date('YmdHis'));
         $this->response->setContentType('text/csv');
@@ -244,7 +256,7 @@ class declarationActions extends sfActions {
                 $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
-                ->reduce(false)                
+                ->reduce(false)
                 ->getView('declaration', 'tous')->rows);
             }
         }
