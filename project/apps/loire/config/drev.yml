@@ -11,6 +11,8 @@ all:
         ANJOU_SAUMUR:
           nom: "Anjou Saumur"
           adresse: "73 rue du Plantagenêt, 49024 Angers"
+          telephone: "%app_drev_ANJOU_SAUMUR_telephone%"
+          email: "%app_drev_ANJOU_SAUMUR_email%"
           produits:
             - "TRANQ/appellations/ANJ"
             - "TRANQ/appellations/ANJCDL"
