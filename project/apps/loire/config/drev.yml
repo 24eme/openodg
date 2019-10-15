@@ -11,6 +11,8 @@ all:
         ANJOU_SAUMUR:
           nom: "Anjou Saumur"
           adresse: "73 rue du Plantagenêt, 49024 Angers"
+          telephone: "%app_drev_ANJOU_SAUMUR_telephone%"
+          email: "%app_drev_ANJOU_SAUMUR_email%"
           produits:
             - "TRANQ/appellations/ANJ"
             - "TRANQ/appellations/ANJCDL"
@@ -80,3 +82,11 @@ all:
           produits:
             - TRANQ/appellations/HPT
           inao: "data/drev/HAUT_POITOU.csv"
+        VOUVRAY:
+          nom: "ODG de l’Aire d’Appellation Vouvray"
+          adresse: "Espace du vin - 20 Rue Victor Hugo 37210 Vouvray"
+          telephone: "%app_drev_VOUVRAY_telephone%"
+          email: "%app_drev_VOUVRAY_email%"
+          produits:
+            - "TRANQ/appellations/VOU/"
+            - "EFF/appellations/VOU"

@@ -77,7 +77,15 @@ class DRevConfiguration {
         if(!isset($this->configuration['odg']) || !array_key_exists($region,$this->configuration['odg']) || !isset($this->configuration['odg'][$region]) ){
             return null;
         }
-        return $this->configuration['odg'][$region];
+        $odgInfos = array();
+        foreach ($this->configuration['odg'][$region] as $key => $value) {
+          if(is_string($value) && preg_match("/^%.+%$/",$value)){
+            $odgInfos[$key] = sfConfig::get(str_replace("%",'',$value), '');
+          }else{
+            $odgInfos[$key] = $value;
+          }
+        }
+        return $odgInfos;
     }
 
     public function hasValidationOdg(){
