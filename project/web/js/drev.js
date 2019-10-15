@@ -298,14 +298,6 @@
         })
     }
 
-
-    $.initModalCgu = function() {
-      $('#drevModalCgu').modal({
-            backdrop: 'static',
-            keyboard: false
-          });
-    }
-
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -323,7 +315,7 @@
         $.initLots();
         $.initRecapEventsAccordion();
         $.initValidationDeclaration();
-        $.initModalCgu();
+
     });
 
 })(jQuery);

@@ -86,6 +86,7 @@ Etablissement:
        siret: { }
        caution: { }
        intitule: { required: false }
+       legal_signature_drev: { required: false }
        declaration_commune: { required: false }
        declaration_commune: { required: false }
        declaration_insee: { required: false }

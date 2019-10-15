@@ -19,6 +19,7 @@ class drevActions extends sfActions {
     }
 
     public function executeLegalSignature(sfWebRequest $request) {
+        exit();
         $identifiant = $request->getParameter('identifiant');
         $etablissement = EtablissementClient::getInstance()->retrieveById($identifiant);
         $this->legalSignatureForm = new DRevLegalSignatureForm($etablissement);
@@ -29,7 +30,7 @@ class drevActions extends sfActions {
                 $this->legalSignatureForm->save();
             }
         }
-        return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant));
+        return $this->redirect('drm_societe', array('identifiant' => $identifiant));
     }
 
     public function executeCreate(sfWebRequest $request) {

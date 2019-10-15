@@ -25,18 +25,16 @@ class DRevLegalSignatureForm extends BaseForm {
             'terms' => new sfWidgetFormInputCheckbox()
         ));
         $this->setValidators(array('terms' => new sfValidatorPass(array('required' => true))));
-
+        
         $this->widgetSchema->setNameFormat('drev_legal_signature[%s]');
     }
-
-
+    
+    
     public function save() {
-        if ($this->getValue('terms') && $this->etablissement) {
-            $societe = $this->etablissement->getSociete();
-            if($societe){
-              $societe->setLegalSignatureDrev();
-              $societe->save();
-            }
+        if ($this->getValue('terms')) {
+            $societe = $this->etablissement->societe;
+            $societe->setLegalSignature();
+            $societe->save();
         }
     }
 
