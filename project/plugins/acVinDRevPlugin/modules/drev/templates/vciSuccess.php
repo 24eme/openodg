@@ -22,13 +22,13 @@
                 <th class="text-center col-xs-1" colspan="4">Utilisation</th>
             </tr>
             <tr>
-                <th class="text-left col-xs-3">Appellation revendiquée</th>
-                <th style="position: relative;" class="text-center col-xs-1">Plafond<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'plafond_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="text-left col-xs-3"><?php if (count($form['produits']) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
+                <th style="position: relative;" class="text-center col-xs-1">Plafond <?php echo ($drev->campagne) ?><br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'plafond_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Stock <?php echo ($drev->campagne - 1) ?><br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'stock_vci_precedent') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Destruction<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'destruction_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Complément<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'complement_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Substitution<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'substitution_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'rafraichi_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Complément<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'complement_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">A détruire<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'destruction_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Substitué<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'substitution_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody class="edit_vci">
@@ -38,10 +38,10 @@
                     <td><?php echo $produit->getLibelleComplet() ?> <small class="text-muted">(<?php echoFloat($produit->recolte->superficie_total) ?> ha)</small></td>
                     <td class="text-right"><?php if($produit->getPlafondStockVci()): ?><?php echoFloat($produit->getPlafondStockVci()) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td><?php echo $formProduit['stock_precedent']->render(array( 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['destruction']->render(array( 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['complement']->render(array( 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['substitution']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['rafraichi']->render(array('class' => 'form-control text-right input-float  sum_stock_final', 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['complement']->render(array( 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['destruction']->render(array( 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['substitution']->render(array( 'placeholder' => "hl")) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

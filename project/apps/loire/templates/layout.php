@@ -49,13 +49,16 @@
             <?php $etablissement = $route->getEtablissement(); ?>
         <?php endif; ?>
 
-        <?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
+        <?php if($sf_user->isAuthenticated() && !($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_user->hasDrevAdmin()) && (!$compte || !$etablissement)): ?>
             <?php $compte = $sf_user->getCompte(); ?>
             <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
         <?php endif; ?>
+	<?php if($sf_user->isAuthenticated() && $sf_user->hasDrevAdmin() && !$compte): ?>
+		<?php $compte = $sf_user->getCompte(); ?>
+	<?php endif; ?>
 
             <?php if(sfConfig::get('app_url_header')): ?>
-            <?php echo file_get_contents(sfConfig::get('app_url_header')."?compte_id=".(($compte) ? $compte->_id : "")."&etablissement_id=".(($etablissement) ? $etablissement->_id : "")."&usurpation=".(($sf_user->isUsurpationCompte()) ? "1" : "0")); ?>
+            <?php echo file_get_contents(sfConfig::get('app_url_header')."?compte_id=".(($compte) ? $compte->_id : "")."&etablissement_id=".(($etablissement) ? $etablissement->_id : "")."&usurpation=".(($sf_user->isUsurpationCompte()) ? "1" : "0")."&actif=".(($route instanceof InterfaceDeclarationRoute) ? 'drev' : null)); ?>
             <?php else: ?>
             <?php include_partial('global/header'); ?>
             <?php include_partial('global/nav'); ?>
@@ -69,6 +72,15 @@
                 <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $etablissement && $route instanceof InterfaceDeclarationRoute && !$sf_user->isUsurpationCompte()) : ?>
                      <a tabindex="-1" style="position: absolute; right:20px;" href="<?php echo url_for('auth_usurpation', array('identifiant' => $etablissement->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a>
                 <?php endif; ?>
+
+                <?php if ($etablissement && $route instanceof InterfaceDeclarationRoute ) : ?>
+                  <?php $drev = DrevClient::getInstance()->getLastDrevFromEtablissement($etablissement); ?>
+
+                <?php if($drev): ?>
+                    <?php include_partial('drev/popupSyndicats',array('drev' => $drev)); ?>
+                <?php endif; ?>
+              <?php endif; ?>
+
                 <?php if ($sf_user->isUsurpationCompte()): ?>
                     <a tabindex="-1" style="position: absolute; right:20px;" href="<?php echo url_for('auth_deconnexion_usurpation') ?>" title="Déconnexion du mode déclarant"><span class="glyphicon glyphicon-cloud-download"></span></a>
                 <?php endif; ?>

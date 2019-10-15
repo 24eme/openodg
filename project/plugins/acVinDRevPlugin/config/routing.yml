@@ -24,6 +24,16 @@ drev_create:
   requirements:
     sf_method: [get]
 
+drev_legal_signature:
+  url: /drev/legalSignature
+  param: { module: drev, action: legalSignature }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
 drev_create_papier:
   url: /drev/creation-papier/:identifiant
   param: { module: drev, action: createPapier }
@@ -124,9 +134,9 @@ drev_dr_import:
   requirements:
     sf_method: [get, post]
 
-drev_dr_pdf:
-  url: /drev/dr-pdf/:id
-  param: { module: drev, action: drPdf }
+drev_document_douanier_pdf:
+  url: /drev/document_douanier_pdf/:id
+  param: { module: drev, action: documentDouanierPdf }
   class: DRevRoute
   options:
     model:    DRev
@@ -218,6 +228,16 @@ drev_vci:
 drev_lots:
   url: /drev/lots/:id/:appellation
   param: { module: drev, action: lots, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_lots_delete:
+  url: /drev/lots/:id/:appellation/supprimer
+  param: { module: drev, action: deleteLots, appellation: 0 }
   class: DRevRoute
   options:
     model:    DRev

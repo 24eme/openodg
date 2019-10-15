@@ -16,6 +16,7 @@ DRev:
       type: { }
       campagne: { }
       etape: { required: false }
+      achat_tolerance: { required: false }
       identifiant: { }
       validation: { }
       validation_odg: { }
@@ -68,6 +69,7 @@ DRev:
                         volume_revendique_issu_recolte: { type: float }
                         volume_revendique_issu_vci: { type: float }
                         volume_revendique_total: { type: float }
+                        validation_odg: { required: false }
                         vci:
                           type: collection
                           definition:
@@ -107,6 +109,8 @@ DRev:
               class: DRevLot
               definition:
                 fields:
+                  date: { }
+                  id_document: { }
                   numero: { }
                   millesime: { }
                   volume: { type: float }
@@ -114,6 +118,11 @@ DRev:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
       documents:
         required: false
         class: DRevDocuments

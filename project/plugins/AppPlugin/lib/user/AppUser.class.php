@@ -12,6 +12,7 @@ class AppUser extends sfBasicSecurityUser {
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
     const CREDENTIAL_HABILITATION = "habilitation";
+    const CREDENTIAL_DREV_REGION = "COMPTE_REGION";
 
     public function signInOrigin($login_or_compte) {
 
@@ -148,8 +149,18 @@ class AppUser extends sfBasicSecurityUser {
         return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION);
     }
 
-    public function hasTeledeclarationDrevAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN);
+    public function hasDrevAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN);
+    }
+
+    public function getTeledeclarationDrevRegion() {
+      $drevConf = DrevConfiguration::getInstance();
+      if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $drevConf->hasValidationOdg()){
+        if(in_array($region, $drevConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
     }
 
 }

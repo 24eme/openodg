@@ -16,12 +16,16 @@ abstract class DocumentSecurity implements SecurityInterface {
         $this->doc = $doc;
     }
 
+    public function isAdmin() {
+	     return $this->user->isAdmin() && $this->user->hasDrevAdmin();
+    }
+
     public function isAuthorized($droits) {
         if(!is_array($droits)) {
             $droits = array($droits);
         }
 
-        if(!$this->user->isAdmin() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
+        if(!$this->isAdmin() && $this->user->getCompte()->getSociete() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
 
             $lienSymbolique = DeclarationClient::getInstance()->find(str_replace($this->doc->identifiant, $this->user->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant, $this->doc->_id), acCouchdbClient::HYDRATE_JSON, true);
 
@@ -40,17 +44,17 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
 
-        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin()) {
+        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
@@ -65,7 +69,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin()) {
+        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }

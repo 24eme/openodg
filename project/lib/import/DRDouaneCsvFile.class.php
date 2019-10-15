@@ -21,8 +21,24 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $exploitant = array();
         $bailleur = array();
         $libelleLigne = null;
+        $achat_fin = 0;
+        $achats = array();
+        $ratios_metayer = array();
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
+                //Cas de fin de tableur avec les achats tolérés
+                if (preg_match('/Achats realises dans le cadre de la toler/', $values[0]) || (isset($values[1]) && preg_match('/Identification du vendeur/', $values[1])) ){
+                    $achat_fin = 1;
+                    continue;
+                }
+                if ($achat_fin) {
+                    $commentaire = $values[0];
+                    $vendeur = $values[1];
+                    $volume = str_replace('.', ',', $values[3]);
+                    $achats[] = array(preg_replace('/ - .*/', '', $vendeur), preg_replace('/ *$/', '', preg_replace('/^[0-9]* - */', '', $vendeur)), $volume, $commentaire);
+                    continue;
+                }
+
                 //Récupération des infos du déclarant depuis l'entête
         		if (preg_match('/dnr/i', $values[0])) {
         			$this->cvi = (isset($values[1]))? $values[1] : null;
@@ -72,6 +88,21 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
         			continue;
         		}
+                // Calcul du ratio du baillages-métayages
+                if ($values[0] == 5 || $values[0] == 15) {
+                    for ($i = 2; $i < count($csv[$key+1]); $i++) {
+                        if ($i%2) {
+        					if ($csv[$key+1][$i]) {
+                                $volume = (float) str_replace(",", ".", $csv[$key+1][$i]);
+        					}
+        					if ($csv[$key+1][$i+1]) {
+                                $volumeBailleur = (float) str_replace(",", ".", $csv[$key+1][$i+1]);
+                                $ratios_metayer[sprintf('%02d', $values[0])][$i] = $volume / ($volume + $volumeBailleur);
+        					}
+        				}
+        			}
+                }
+
                 //Récupération de la récolte totale - L5 (avec un décalage car il y a un ligne extra pour l'exploitant et le bailleur)
         		if ($values[0] == 5) {
         			for ($i = 2; $i < count($csv[$key+1]); $i++) {
@@ -98,6 +129,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		}
                 //Livraison en négoce ou coop
         		if (preg_match("/[6-8]{1}-[1-9]+/", $values[0])) {
+                    $values[1] = self::cleanStr($values[1]);
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
         					$trt = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace(array("/^Acheteur n.{1,2}(FR[0-9a-zA-Z]{11}) -.*$/i", "/^Acheteur n.{1,2}([0-9a-zA-Z]{10}) -.*$/i"), '\1', $values[1]), "\"".trim(preg_replace(array("/^Acheteur n.{1,2}FR[0-9a-zA-Z]{11} -(.*)$/i", "/^Acheteur n.{1,2}[0-9a-zA-Z]{10} -(.*)$/i"), '\1', $values[1]))."\"", null, null);
@@ -153,22 +185,46 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         if ($ppm && in_array($ppm, $bailleurs)) {
         	return;
         }
-
         $csv = '';
         $doc = $this->getEtablissementRows();
         foreach ($produits as $k => $p) {
 	        foreach ($exploitant[$k] as $sk => $e) {
+                $eOrigin = null;
+                if($e[0] == 4) {
+                    $eOrigin = $e;
+                    $eOrigin[0] = "04b";
+                    $eOrigin[1] = "Superificie de récolte originale";
+                }
+                $ratio_metayer = null;
+                if(!$ratio_metayer && isset($ratios_metayer["15"][$k]) && $ratios_metayer["15"][$k]) {
+                    $ratio_metayer = $ratios_metayer["15"][$k];
+                }
+                if(!$ratio_metayer && isset($ratios_metayer["05"][$k]) && $ratios_metayer["05"][$k]) {
+                    $ratio_metayer = $ratios_metayer["05"][$k];
+                }
+                if($e[0] == 4 && isset($ratio_metayer)){
+                    $superficieInitiale = (float) (str_replace(",", ".", $e[2]));
+                    $e[2] = self::numerizeVal($superficieInitiale*$ratio_metayer, 4);
+                    array_unshift($bailleur[$k], $e);
+                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale*(1 - $ratio_metayer), 4);
+                }
 	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k]."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
 	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$coloneid[$k]."\n";
 	        		unset($bailleur[$k][$sk]);
 	        	}
+                if(isset($eOrigin)) {
+                    $csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $eOrigin).';'.$coloneid[$k]."\n";
+                }
 	        }
 	        if (isset($baillage[$k]) && isset($bailleur[$k])) {
 	        	foreach ($bailleur[$k] as $b) {
 	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b).';'.$coloneid[$k]."\n";
 	        	}
 	        }
+        }
+        foreach ($achats as $a) {
+            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999\n";
         }
         return $csv;
     }
@@ -187,8 +243,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	}
 
     	$produits = array();
-
-    	foreach ($this->doc->donnees as $donnee) {
+        $colonnesid = array();
+        $colonneid = 0;
+        try {
+    	  foreach ($this->doc->donnees as $donnee) {
     		if ($produit = $configuration->declaration->get($donnee->produit)) {
     			$p = array();
     			if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
@@ -208,6 +266,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $produit->code_douane;
     			$p[] = $produit->getLibelleFormat();
     			$p[] = $donnee->complement;
+                $produitid = join("", $p);
+                if (!$colonnesid[$produitid]) {
+                    $colonnesid[$produitid] = ++$colonneid;
+                }
     			$p[] = $donnee->categorie;
     			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
     			$p[] = str_replace('.', ',', $donnee->valeur);
@@ -222,9 +284,13 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     				$p[] = null;
     				$p[] = null;
     			}
+                $p[] = $colonnesid[$produitid];
     			$produits[] = $p;
     		}
-    	}
+          }
+        }catch(Exception $e) {
+            throw new sfException('problem with '.$this->doc->_id.' : '.$e);
+        }
       $drInfos = $this->getEtablissementRows();
     	foreach ($produits as $k => $p) {
     		$csv .= implode(';', $drInfos).';'.implode(';', $p)."\n";

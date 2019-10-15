@@ -203,29 +203,20 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $produits;
     }
 
-    public function getCodeDouane($vtsgn = null) {
+    public function getCodeDouane() {
+        $a = $this->getCodesDouanes();
+        if (!$a) {
+            return null;
+        }
+        return array_shift($a);
+    }
+
+    public function getCodesDouanes() {
         if (!$this->_get('code_douane')) {
-
-            return $this->getParentNode()->getCodeDouane();
+            return $this->getParentNode()->getCodesDouanes();
         }
 
-        $mention = null;
-
-        if($vtsgn == "VT") {
-            $mention = "D7";
-        }
-
-        if($vtsgn == "SGN") {
-            $mention = "D6";
-        }
-
-        $codeDouane = $this->_get('code_douane');
-
-        if($mention) {
-            $codeDouane = substr($codeDouane, 0, 5).$mention.substr($codeDouane, 7, 1);
-        }
-
-        return $codeDouane;
+        return explode(',', $this->_get('code_douane'));
     }
 
     public function getCodeProduit() {
@@ -740,6 +731,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement');
     }
 
+    public function getRendementConseille() {
+        return $this->getRendementByKey('rendement_conseille');
+    }
+
+    public function getRendementDR() {
+        return $this->getRendementByKey('rendement_dr');
+    }
+
     public function getRendementNoeud() {
 
         return -1;
@@ -813,11 +812,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     	return ($this->getRendement() <= 0 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;
     }
 
-    public function getRendementDrev() {
-
-        return 51.0;
-    }
-
     public function hasRendementVci() {
 
         return $this->hasRendementByKey('rendement_vci');
@@ -861,7 +855,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     protected function findRendementByKeyStorable($key) {
-        if ($this->exist('attributs') && $this->attributs->exist($key) && $this->attributs->_get($key)) {
+        if ($this->exist('attributs') && $this->attributs->exist($key) && $this->attributs->_get($key) !== null) {
 
             return $this->attributs->_get($key);
         }

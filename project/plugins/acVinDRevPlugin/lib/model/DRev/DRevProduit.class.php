@@ -52,7 +52,7 @@ class DRevProduit extends BaseDRevProduit
 
 	public function getPlafondStockVci() {
 
-		return $this->superficie_revendique * $this->getConfig()->rendement_vci_total;
+		return $this->recolte->superficie_total * $this->getConfig()->rendement_vci_total;
 	}
 
 	public function canHaveVtsgn() {
@@ -83,9 +83,9 @@ class DRevProduit extends BaseDRevProduit
 
             return true;
         }
-				if ($this->recolte->superficie_total == null) {
-					return true;
-				}
+		if ($this->recolte->superficie_total == null && $this->recolte->volume_total == null) {
+			return true;
+		}
 
         return false;
     }
@@ -126,12 +126,79 @@ class DRevProduit extends BaseDRevProduit
 		return null;
 	}
 
+	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
+
+		if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
+
+			return true;
+		}
+
+		if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_total)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
+
 		return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
 	}
 
+	public function getRendementVci(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+		if(!$this->exist('vci') || !$this->vci->exist('constitue')) {
+
+			return null;
+		}
+
+		return $this->vci->constitue / $this->superficie_revendique;
+	}
+	public function getRendementVciTotal(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+		if(!$this->exist('vci') || !$this->vci->exist('stock_final')) {
+
+			return null;
+		}
+
+		return $this->vci->stock_final / $this->superficie_revendique;
+	}
+
+
 	public function getRendementEffectif(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+
 		return $this->volume_revendique_total / $this->superficie_revendique;
+	}
+
+	public function getRendementDR(){
+		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_total')) {
+
+			return null;
+		}
+
+		return $this->recolte->volume_total / $this->recolte->superficie_total;
+	}
+
+	public function validateOdg($date = null){
+		if(is_null($date)) {
+				$date = date('Y-m-d');
+		}
+		$this->add('validation_odg',$date);
+	}
+
+	public function isValidateOdg(){
+		return ($this->exist('validation_odg') && $this->validation_odg);
 	}
 
 }

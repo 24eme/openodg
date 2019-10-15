@@ -8,6 +8,23 @@ class declarationActions extends sfActions {
       if($usurpation && $login){
           $this->getUser()->usurpationOn($login, $request->getReferer());
       }
+      $this->regionParam = $request->getParameter('region',null);
+      if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
+        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+        if($regionRadixProduits){
+            $params = $request->getGetParameters();
+            $params['region'] = $region;
+           return $this->redirect('declaration', $params);
+        }
+      }
+      if($this->regionParam){  //&& $this->getUser()->getTeledeclarationDrevRegion()){
+        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($this->regionParam);
+        if($regionRadixProduits){
+          $request->setParameter('produits-filtre',$regionRadixProduits);
+        }
+      }
+
+
         $this->buildSearch($request);
         $nbResultatsParPage = 15;
         $this->nbResultats = count($this->docs);
@@ -38,7 +55,7 @@ class declarationActions extends sfActions {
 
     public function executeDoc(sfWebRequest $request) {
         $doc_id = $request->getParameter("id");
-
+        $this->regionParam = $request->getParameter('region',null);
         if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
 
             return $this->forward404();
@@ -53,8 +70,11 @@ class declarationActions extends sfActions {
         }
 
         if($doc_type == "DREV") {
-
-            return $this->redirect("drev_visualisation", array("id" => $doc_id));
+            $params = array("id" => $doc_id);
+            if($this->regionParam){
+              $params = array_merge($params,array("region" => $this->regionParam));
+            }
+            return $this->redirect("drev_visualisation", $params);
         }
 
         if($doc_type == "DREVMARC") {
@@ -91,8 +111,20 @@ class declarationActions extends sfActions {
     }
 
     public function executeExport(sfWebRequest $request) {
-        $this->buildSearch($request);
 
+        $this->regionParam = null;
+        if($this->getUser() && $this->getUser()->getTeledeclarationDrevRegion()){
+          $this->regionParam = $this->getUser()->getTeledeclarationDrevRegion();
+        }
+
+        if($this->regionParam){
+          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($this->regionParam);
+          if($regionRadixProduits){
+            $request->setParameter('produits-filtre',$regionRadixProduits);
+          }
+        }
+
+        $this->buildSearch($request);
         $this->setLayout(false);
         $attachement = sprintf("attachment; filename=export_declarations_%s.csv", date('YmdHis'));
         $this->response->setContentType('text/csv');
@@ -133,27 +165,66 @@ class declarationActions extends sfActions {
     }
 
     protected function buildSearch(sfWebRequest $request) {
+
+        $hasProduitsFilter = DrevConfiguration::getInstance()->hasOdgProduits();
+
+        $level_reduce = 5 + intval(boolval($hasProduitsFilter));
         $rows = acCouchdbManager::getClient()
-                    ->group(true)
-                    ->group_level(4)
-                    ->getView('declaration', 'tous')->rows;
+                     ->group(true)
+                     ->group_level($level_reduce)
+                     ->descending(true)
+                     ->getView('declaration', 'tous')->rows;
 
         $this->facets = array(
             "Type" => array(),
             "Statut" => array(),
             "Campagne" => array(),
-            "Mode" => array(),
+            "Mode" => array()
         );
-
         $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
 
+        if($hasProduitsFilter){
+          $this->facets = array_merge($this->facets, array("Produit" => array()));
+          $facetToRowKey = array_merge($facetToRowKey,array("Produit" => DeclarationTousView::KEY_PRODUIT));
+        }
+
         $this->query = $request->getParameter('query', array());
+        $this->produitsFiltre = $request->getParameter('produits-filtre', null);
+
         $this->docs = array();
         $nbDocs = 0;
+        $documentsCounter = array();
+        $configurations = array();
+        $this->produitsLibelles = array();
 
         foreach($rows as $row) {
             $addition = 0;
+            if($hasProduitsFilter){
+              $not_in_result = false;
+              if($this->produitsFiltre){
+                $not_in_result = true;
+                foreach ($this->produitsFiltre as $filtre) {
+                  $filtre = str_replace("/","\/",$filtre);
+                  if(preg_match("/".$filtre."/",$row->key[DeclarationTousView::KEY_PRODUIT])){
+                    $not_in_result = false;
+                    break;
+                  }
+                }
+              }
+              if($not_in_result){
+                continue;
+              }
+              $campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE].'-'.($row->key[DeclarationTousView::KEY_CAMPAGNE]+1);
+              if(!array_key_exists($campagne,$configurations)){
+                 $configurations[$campagne] = ConfigurationClient::getConfigurationByCampagne($campagne);
+              }
+              if($row->key[DeclarationTousView::KEY_PRODUIT]) {
+                  $this->produitsLibelles[$row->key[DeclarationTousView::KEY_PRODUIT]] =  $configurations[$campagne]->declaration->get($row->key[DeclarationTousView::KEY_PRODUIT])->getLibelleComplet();
+              }
+            }
+
             $nbDocs += $row->value;
+
             foreach($this->facets as $facetNom => $items) {
                 $find = true;
                 if($this->query) {
@@ -171,12 +242,17 @@ class declarationActions extends sfActions {
                 if(!array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
                     $this->facets[$facetNom][$row->key[$facetKey]] = 0;
                 }
-                $this->facets[$facetNom][$row->key[$facetKey]] += $row->value;
-                $addition += $row->value;
-
+                if(!array_key_exists(DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey]), $documentsCounter)){
+                  $this->facets[$facetNom][$row->key[$facetKey]] += 1;
+                  $addition += $row->value;
+                  $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = $row;
+                }
             }
             if($addition > 0 && $this->query && count($this->query)) {
-                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);
+                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_IDENTIFIANT], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);
+                if($hasProduitsFilter){
+                  $keys = array_merge($keys, array($row->key[DeclarationTousView::KEY_PRODUIT]));
+                }
                 $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
                 ->startkey($keys)
                 ->endkey(array_merge($keys, array(array())))
@@ -192,19 +268,48 @@ class declarationActions extends sfActions {
                 ->reduce(false)
                 ->skip($i)
                 ->limit($pas)
+                ->descending(true)
                 ->getView('declaration', 'tous')->rows);
             }
+        }
+
+        if($hasProduitsFilter){
+          $tmp_docs = array();
+          foreach ($this->docs as $key => $value) {
+            $identifiantDocument = DeclarationTousView::constructIdentifiantDocument($value);
+            if(!array_key_exists($identifiantDocument,$tmp_docs)) {
+              if($this->produitsFiltre){
+                $found = false;
+                foreach ($this->produitsFiltre as $filtre) {
+                  $filtre = str_replace("/","\/",$filtre);
+                  if(preg_match("/".$filtre."/",$value->key[DeclarationTousView::KEY_PRODUIT])){
+                    $found = true;
+                    break;
+                  }
+                }
+                if($found){
+                  $tmp_docs[$identifiantDocument] = $value;
+                }
+              }else{
+                $tmp_docs[$identifiantDocument] = $value;
+              }
+            }
+          }
+          $this->docs = $tmp_docs;
         }
 
         krsort($this->facets["Campagne"]);
         ksort($this->facets["Statut"]);
         ksort($this->facets["Type"]);
         krsort($this->facets["Mode"]);
-
+        if($hasProduitsFilter){
+            ksort($this->facets["Produit"]);
+        }
         uasort($this->docs, function($a, $b) {
 
             return $a->key[DeclarationTousView::KEY_DATE] < $b->key[DeclarationTousView::KEY_DATE];
         });
+
     }
 
     protected function secureEtablissement($etablissement) {
@@ -219,4 +324,10 @@ class declarationActions extends sfActions {
 
         throw new sfStopException();
     }
+
+    protected function convertHashToProduitName($campagne,$hash){
+      $configuration = ConfigurationClient::getInstance()->getConfigurationByCampagne($campagne);
+      return $configuration->declaration->get($hash)->getLibelleComplet();
+    }
+
 }

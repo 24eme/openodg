@@ -15,8 +15,10 @@ class drevComponents extends sfComponents {
         $this->drevsHistory = DRevClient::getInstance()->getHistory($this->etablissement->identifiant);
     }
 
-    public function executeStepRevendication(sfWebRequest $request) {
-        $this->ajoutForm = new DRevAjoutAppellationForm($this->drev);
+    public function executeLegalSignature() {
+        if (!$this->etablissement)
+            throw new sfException('need an identifiant of etablissement ('.$this->etablissement.' provided)');
+        $this->legalSignatureForm = new DRevLegalSignatureForm($this->etablissement);
     }
 
 }
