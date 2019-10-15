@@ -3,17 +3,11 @@
 <?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin() || !$sf_user->hasDrevAdmin())): ?>
     <?php return; ?>
 <?php endif; ?>
-<div style="padding: 50px">
-    okkkkkkkkkkkkkkkkkk
-    <?php  include_component('drev', 'legalSignature', array('etablissement' => $etablissement));  ?>
-</div>
-
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($drev && $drev->validation): ?>panel-success<?php elseif($drev): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Revendication&nbsp;des&nbsp;produits&nbsp;<?php echo $campagne; ?></h3>
         </div>
-
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication a été validée pour cette année.</p>

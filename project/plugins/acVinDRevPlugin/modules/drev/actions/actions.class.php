@@ -18,21 +18,6 @@ class drevActions extends sfActions {
         $this->pdf = base64_encode(file_get_contents($file_path_pdf));
     }
 
-    public function executeLegalSignature(sfWebRequest $request) {
-        exit();
-        $identifiant = $request->getParameter('identifiant');
-        $etablissement = EtablissementClient::getInstance()->retrieveById($identifiant);
-        $this->legalSignatureForm = new DRevLegalSignatureForm($etablissement);
-
-        if ($request->isMethod(sfRequest::POST)) {
-            $this->legalSignatureForm->bind($request->getParameter($this->legalSignatureForm->getName()));
-            if ($this->legalSignatureForm->isValid()) {
-                $this->legalSignatureForm->save();
-            }
-        }
-        return $this->redirect('drm_societe', array('identifiant' => $identifiant));
-    }
-
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);

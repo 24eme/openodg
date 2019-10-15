@@ -24,16 +24,6 @@ drev_create:
   requirements:
     sf_method: [get]
 
-drev_legal_signature:
-  url: /drev/declaration
-  param: { module: drev, action: legalSignature }
-  class: EtablissementRoute
-  options:
-    model:    Etablissement
-    type:     object
-  requirements:
-    sf_method: [get,post]
-
 drev_create_papier:
   url: /drev/creation-papier/:identifiant
   param: { module: drev, action: createPapier }
