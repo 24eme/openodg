@@ -110,6 +110,13 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function findOrCreate($identifiant, $date = null, $source = null, $type = self::TYPE_COUCHDB) {
+        if (! $date) {
+            $date = date('Ymd');
+        }
+        $parcellaire = $this->getLast($identifiant);
+        if ($parcellaire && $parcellaire->date == $date) {
+            return $parcellaire;
+        }
         $parcellaire = new Parcellaire();
         $parcellaire->initDoc($identifiant, $date);
         $parcellaire->source = $source;
