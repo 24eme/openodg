@@ -79,7 +79,7 @@ class DRevConfiguration {
         }
         $odgInfos = array();
         foreach ($this->configuration['odg'][$region] as $key => $value) {
-          if(preg_match("/^%.+%$/",$value)){
+          if(is_string($value) && preg_match("/^%.+%$/",$value)){
             $odgInfos[$key] = sfConfig::get(str_replace("%",'',$value), '');
           }else{
             $odgInfos[$key] = $value;
