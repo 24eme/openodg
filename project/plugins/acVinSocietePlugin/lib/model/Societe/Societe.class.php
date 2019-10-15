@@ -383,6 +383,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+        
         $this->interpro = "INTERPRO-declaration";
         $compteMaster = $this->getMasterCompte();
 
