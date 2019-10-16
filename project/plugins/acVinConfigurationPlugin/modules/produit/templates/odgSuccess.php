@@ -19,6 +19,12 @@
   <div class="col-xs-2">Mail : </div>
   <div class="col-xs-5"><?php echo $odgInfos['email'] ?></div>
 </div>
+<?php if(isset($odgInfos['email_notification'])): ?>
+<div class="row">
+  <div class="col-xs-2">Mail de notification : </div>
+  <div class="col-xs-5"><?php echo $odgInfos['email_notification'] ?></div>
+</div>
+<?php endif; ?>
 
 <h3 style="margin-top: 40px;">Produits</h3>
 
