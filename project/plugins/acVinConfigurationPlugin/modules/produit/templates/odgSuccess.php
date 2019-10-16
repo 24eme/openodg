@@ -4,7 +4,7 @@
     <li class="active"><a href="<?php echo url_for("produits_odg", array('odg' => $odg, 'date' => $date)) ?>"><?php echo $date ?></a></li>
 </ol>
 
-<img src="/odg/images/pdf/logo_<?php echo strtolower($odg) ?>.jpg" style="float: right; height: 100px;" />
+<img src="/odg/images/pdf/logo_<?php echo strtolower($odg) ?>.jpg" style="position: absolute; right: 15px; height: 100px;" />
 <h2><?php echo $odgInfos['nom'] ?></h2>
 
 <div class="row">
