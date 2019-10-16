@@ -78,7 +78,9 @@ all:
             - TRANQ/appellations/STN
         HAUT_POITOU:
           nom: "Syndicat des Vins du Haut Poitou"
-          adresse: "Téléport 4 - Avenue Thomas Edison, Asterama 1, 86360 Chasseneuil-du-Poitou"
+          adresse: "1 bis Place de l'Eglise, BLASLAY, 86170 SAINT MARTIN LA PALLU"
+          telephone: "%app_drev_HAUT_POITOU_telephone%"
+          email: "%app_drev_HAUT_POITOU_email%"
           produits:
             - TRANQ/appellations/HPT
           inao: "data/drev/HAUT_POITOU.csv"
