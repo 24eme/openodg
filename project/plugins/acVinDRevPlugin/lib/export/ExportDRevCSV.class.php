@@ -4,20 +4,24 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     protected $drev = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
         return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination (Date)\n";
     }
 
-    public function __construct($drev, $header = true) {
+    public function __construct($drev, $header = true, $region = null) {
         $this->drev = $drev;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {
-
-        return $this->drev->_id . '_' . $this->drev->_rev . '.csv';
+        $name = $this->drev->_id;
+        $name .= ($this->region)? "_".$this->region : "";
+        $name .= $this->drev->_rev;
+        return  $name . '.csv';
     }
 
     public function protectStr($str) {
@@ -44,7 +48,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
           $date_envoi_oi = date_create($date_envoi_oi)->format('Y-m-d H:i:s');
         }
 
-        foreach($this->drev->declaration->getProduitsWithoutLots() as $produit) {
+        foreach($this->drev->declaration->getProduitsWithoutLots($this->region) as $produit) {
 
             $configProduit = $produit->getConfig();
             $certification = $configProduit->getCertification()->getKey();
@@ -67,9 +71,8 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
                 $mode, $date_envoi_oi, null, null, null, null
                 );
         }
-
-        foreach($this->drev->lots as $lot) {
-            //Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO
+        if($this->drev->exist('lots') && count($this->drev->lots) && (is_null($this->region) || $this->region == DeclarationClient::REGION_LOT)){
+          foreach($this->drev->lots as $lot) {
             $configProduit = $lot->getConfig();
             $certification = $configProduit->getCertification()->getKey();
             $genre = $configProduit->getGenre()->getKey();
@@ -93,7 +96,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
                 $mode, $date_envoi_oi, $numLot, $dateRev, $lot->millesime,$destination
             );
         }
-
+        }
         return $csv;
     }
 
