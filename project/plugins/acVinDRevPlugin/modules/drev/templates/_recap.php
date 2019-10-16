@@ -16,7 +16,7 @@
             <th class="col-xs-4"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
             <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
             <th class="col-xs-2 text-center">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
-            <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->campagne ?><small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
             <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<small class="text-muted">(hl)</small></th>
 
         </tr>
