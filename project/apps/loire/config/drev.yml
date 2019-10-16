@@ -67,8 +67,9 @@ all:
         IGP_VALDELOIRE:
           nom: "Syndicat des Vins IGP du Val de Loire"
           adresse: "37 avenue jean Joxé, 49100 Angers"
-          email: "contact@vinsvaldeloire.pro"
-          email_notification: "contact@vinsvaldeloire.pro"
+          telephone: "%app_drev_IGP_VALDELOIRE_telephone%"
+          email: "%app_drev_IGP_VALDELOIRE_email%"
+          email_notification: "%app_drev_IGP_VALDELOIRE_email_notification%"
           produits:
             - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL
         SAINT_NICOLAS:
