@@ -91,8 +91,7 @@
             <footer id="footer" class="container hidden-xs hidden-sm text-center" role="contentinfo" style="margin-top: 40px;">
                 <nav role="navigation">
                     <ul class="list-inline" style="font-size: 13px;">
-                        <li><a href="<?php echo url_for('contact') ?>">Contact</a></li>
-                        <li><a href="<?php echo url_for('mentions_legales') ?>">Mentions légales</a></li>
+                        <li><a href="https://www.vinsvaldeloire.fr/fr/mentions">Mentions légales</a></li>
                     </ul>
                 </nav>
             </footer>

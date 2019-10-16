@@ -142,8 +142,10 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
-
-		return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
+		if($this->recolte->recolte_nette)
+			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
+		else
+			return $this->recolte->recolte_nette;
 	}
 
 	public function getRendementVci(){
