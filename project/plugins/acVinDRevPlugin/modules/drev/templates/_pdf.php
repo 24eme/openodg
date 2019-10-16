@@ -31,17 +31,19 @@
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; width: 440px;">Produit</th>
-        <th class="th" style="text-align: center; width: 170px;">Superficie revendiquée</th>
-        <th class="th" style="text-align: center; width: 170px;">Volume revendiqué net total</th>
-        <th class="th" style="text-align: center; width: 170px;">Dont VCI</th>
+        <th class="th" style="text-align: left; width: 400px;">Produit</th>
+        <th class="th" style="text-align: center; width: 137px;">Superficie revendiquée</th>
+        <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI</th>
+        <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->campagne ?></th>
+        <th class="th" style="text-align: center; width: 137px;">Volume revendiqué net total</th>
     </tr>
     <?php foreach($drev->declaration->getProduitsWithoutLots($region) as $produit): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->superficie_revendique): ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ha</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_total): ?><?php echo sprintFloatFr($produit->volume_revendique_total) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_vci): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_recolte): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_recolte) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_total): ?><?php echo sprintFloatFr($produit->volume_revendique_total) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
         </tr>
     <?php endforeach; ?>
 </table>
