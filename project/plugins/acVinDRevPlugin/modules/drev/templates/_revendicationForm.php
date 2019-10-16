@@ -15,6 +15,6 @@
         <span class="input_sum_value"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?></span> <small class="text-muted">hl</small><?php endif; ?>
     </td>
     <td class="text-right">
-        <span class="input_sum_total"><?php echoFloat($produit->volume_revendique_issu_vci + $form['volume_revendique_issu_recolte']->getValue()) ?></span> <small class="text-muted">hl</small>
+        <span class="input_sum_total"><?php if($produit->volume_revendique_issu_vci){echoFloat($produit->volume_revendique_issu_vci + $form['volume_revendique_issu_recolte']->getValue());}else{echo null;} ?></span> <small class="text-muted">hl</small>
     </td>
 </tr>
