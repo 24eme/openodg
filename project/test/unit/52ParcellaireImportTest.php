@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(16);
+$t = new lime_test(21);
 $viti = CompteClient::getInstance()->findByIdentifiant('CDP0001001')->getEtablissement();
 $date = date('Y-m-d');
 
@@ -29,12 +29,14 @@ $array = [
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'GRENACHE N','1.1', '1.1', '2001-2002','100','250', 'Fermier']
 ];
 
-$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd')."-");
+$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-7 day"),)."-");
 $handle = fopen($tempfname, 'w');
 foreach ($array as $line) {
     fputcsv($handle, $line, ';');
 }
 fclose($handle);
+
+$t->comment("import $tempfname ");
 
 $csv_test = new Csv($tempfname, ';', false);
 $parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
@@ -70,3 +72,47 @@ $t->is($parcelle3->getKey(), "GRENACHE-N-2001-2002-PARIS-AM-152-00-MARSEILLE", "
 $t->is($parcelle3->getProduit()->getLibelle(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
+
+$t->comment("import d'un fichier avec une parcelle en moins $tempfname ");
+
+$array = [
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', 'Propriétaire'],
+];
+
+$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-6 day"),)."-");
+$handle = fopen($tempfname, 'w');
+foreach ($array as $line) {
+    fputcsv($handle, $line, ';');
+}
+fclose($handle);
+
+
+$csv_test = new Csv($tempfname, ';', false);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader->convert();
+$parcellaireloader->save();
+
+$parcellaire = $parcellaireloader->getParcellaire();
+
+$parcellaire_id = 'PARCELLAIRE-'.$viti->identifiant.'-'.str_replace("-", "", $date);
+$t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
+$t->is(count($parcellaire->declaration), 1, "Le nouveau parcellaire n'a qu'un seul produit");
+
+$parcelles = $parcellaire->getParcelles();
+$t->is(count($parcelles), 2, "Le nouveau parcellaire a deux parcelles");
+
+$t->comment("import d'un fichier sans parcelles $tempfname ");
+
+$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-5 day"),)."-");
+$handle = fopen($tempfname, 'w');
+fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut");
+fclose($handle);
+
+$csv_test = new Csv($tempfname, ';', false);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader->convert();
+$parcellaireloader->save();
+$parcellaire = $parcellaireloader->getParcellaire();
+$t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
+$t->is(count($parcellaire->declaration), 0, "Le nouveau parcellaire n'a pas de produit");

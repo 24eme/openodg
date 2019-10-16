@@ -383,6 +383,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+        
         $this->interpro = "INTERPRO-declaration";
         $compteMaster = $this->getMasterCompte();
 
@@ -595,10 +600,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
 
     public function getRaisonSociale() {
         return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
-    }
-
-    public function setLegalSignatureDrev() {
-      return $this->add('legal_signature')->add('drev', date('c'));
     }
 
 }
