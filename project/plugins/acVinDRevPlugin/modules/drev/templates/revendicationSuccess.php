@@ -32,7 +32,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte si vous avez autorisé le transfert de vos données.
+    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte, SV11 ou SV12, lorsque nous avons pu déduire vos volumes sur place.
     <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -46,26 +46,37 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th class="text-center col-xs-2"></th>
 <?php if ($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR): ?>
                 <th colspan="4" class="text-center info"><?php echo $drev->getDocumentDouanierTypeLibelle(); ?></th>
-<?php else: ?>
-                <th colspan="2" class="text-center info"><?php echo $drev->getDocumentDouanierTypeLibelle(); ?></th>
-<?php endif; ?>
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
+<?php elseif ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11): ?>
+                <th colspan="2" class="text-center info"><?php echo $drev->getDocumentDouanierTypeLibelle(); ?></th>
+                <th colspan="3" class="text-center">Déclaration de Revendication</th>
+<?php else: ?>
+                <th class="text-center info"><?php echo $drev->getDocumentDouanierTypeLibelle(); ?></th>
+                <th class="text-center">Déclaration de Revendication</th>
+<?php endif; ?>
             </tr>
             <tr>
-                <th class="col-xs-3"><?php if (count($form['produits']) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
 <?php if ($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR): ?>
+                <th class="col-xs-3"><?php if (count($form['produits']) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume récolté total<br/>(L5)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_recolte_total') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume en cave part.<br/>(L9)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_cave_particuliere') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Vol. récolté net totale<br/>(L15)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'recolte_nette_totale') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume VCI constitué<br/>(L19)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'vci_constitue') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="col-xs-2 text-center" style="position: relative;">Volume <br/>revendiqué net <br />issu de la récolte<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_issu_recolte') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-<?php else: ?>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué<br />issu du VCI <br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_issu_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_total') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+<?php elseif ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11): ?>
+                <th class="col-xs-3"><?php if (count($form['produits']) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume<br/>en cave<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_cave_particuliere') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="text-center info col-xs-1" style="position: relative;">Volume VCI<br/>constitué<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'vci_constitue') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="col-xs-2 text-center" style="position: relative;">Volume <br/>revendiqué net <br />issu de récoltes<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_issu_recolte') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-<?php endif; ?>
                 <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué<br />issu du VCI <br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_issu_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_total') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+<?php else: ?>
+                <th class="col-xs-6"><?php if (count($form['produits']) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
+                <th class="text-center info col-xs-3" style="position: relative;">Volume en cave<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_cave_particuliere') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-3 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_issu_recolte') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+<?php endif; ?>
             </tr>
         </thead>
         <tbody>
