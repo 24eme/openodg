@@ -31,7 +31,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
         $this->addControle(self::TYPE_WARNING, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
-        $this->addControle(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr', "Ce lot IGP est inexistant dans la DR mais rajouté manuellement. Renvendiquez le dans l'étape 5 Lots IGP.");
+        $this->addControle(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr', "Ce lot IGP est inexistant dans la DR.");
 
         /*
          * Error
