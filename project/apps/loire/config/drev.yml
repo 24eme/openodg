@@ -52,6 +52,8 @@ all:
         NANTES:
           nom: "La Fédération des vins de Nantes"
           adresse: "Château de la Frémoire, 44120 Vertou"
+          telephone: "%app_drev_NANTES_telephone%"
+          email: "%app_drev_NANTES_email%"
           produits:
             - TRANQ/appellations/MUSAC
             - TRANQ/appellations/MUSCDL
