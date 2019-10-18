@@ -325,6 +325,7 @@ class drevActions extends sfActions {
     }
 
     public function executeLots(sfWebRequest $request) {
+        
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
@@ -333,13 +334,16 @@ class drevActions extends sfActions {
 
             return $this->redirect('drev_dr_upload', $this->drev);
         }
-
-        if(!count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
+        $has = false;
+        if(count($this->drev->getLots())){
+            $has = true;
+        }
+        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }
 
-        if(!count($this->drev->getProduitsLots()) && $request->getParameter('prec')) {
+        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec')) {
 
             return $this->redirect('drev_vci', array('sf_subject' => $this->drev, 'prec' => 1));
         }
@@ -407,6 +411,8 @@ class drevActions extends sfActions {
 
             return $this->redirect('drev_validation', $this->drev);
         }
+        $produits = $this->drev->getProduitsLots();
+        
 
         if(!count($this->drev->getProduitsWithoutLots()) && $request->getParameter('prec')) {
 

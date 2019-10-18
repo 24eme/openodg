@@ -31,6 +31,23 @@ class DRevLot extends BaseDRevLot
 
         return null;
     }
+    public function lotPossible(){
+      $hashCompatibles = array();
+      $hash = $this->_get('produit_hash');
+      $hashCompatibles[] = $hash;
+      $hashCompatibles[] = preg_replace('|/[^/]+$|', '/DEFAUT', $hash);
+      $hashCompatibles[] = preg_replace('|/[^/]+(/couleurs/[^/]+/cepages/[^/]+)$|', '/DEFAUT\1', $hash);
+      $hashCompatibles[] = preg_replace('|/[^/]+(/couleurs/[^/]+/cepages)/[^/]+$|', '/DEFAUT\1/DEFAUT', $hash);
+
+      $possible = true;
+      foreach ($hashCompatibles as $hashCompatible) {
+          if (!$this->document->exist($hashCompatible)) {
+              $possible = false;
+              break;
+          }
+      }
+     return $possible;
+    }
 
     public function setProduitHash($hash) {
         if($hash != $this->_get('produit_hash')) {

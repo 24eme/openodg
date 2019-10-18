@@ -1,5 +1,5 @@
 <?php use_helper('Float'); ?>
-<?php use_helper('PointsAides'); ?>
+<?php use_helper('PointsAides');?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_LOTS, 'drev' => $drev, 'ajax' => true)) ?>
