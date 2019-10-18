@@ -101,9 +101,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduits() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
-                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0);
+                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, );
             }
-            $couleurs[$couleur]['volume_total'] += $p->recolte->volume_sur_place;
+            if($couleurs[$couleur]['volume_total'] !== false && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
+                $couleurs[$couleur]['volume_total'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
+            } else {
+                $couleurs[$couleur]['volume_total'] = false;
+            }
+            $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
         }
         return $couleurs;
@@ -552,8 +557,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
-            if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci() && !$p->getConfig()->isRevendicationParLots()) {
-    		       $todelete[$hash] = $hash;
+            if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
+    		   $todelete[$hash] = $hash;
                continue;
         	}
         }
