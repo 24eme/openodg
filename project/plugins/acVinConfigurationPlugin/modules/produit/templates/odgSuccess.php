@@ -25,7 +25,14 @@
   <div class="col-xs-5"><?php echo $odgInfos['email_notification'] ?></div>
 </div>
 <?php endif; ?>
-
+<?php if(isset($odgInfos['inao'])): ?>
+<div class="row">
+  <div class="col-xs-2">Habilitation : </div>
+  <div class="col-xs-5">
+    <a href="<?php echo url_for('produit_habilitation',  array('odg' => $odg)) ?>" class="btn btn-default pull-left" ><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Télécharger</a>
+  </div>
+</div>
+<?php endif; ?>
 <h3 style="margin-top: 40px;">Produits</h3>
 
 <table class="table table-condensed table-striped table-bordered">
