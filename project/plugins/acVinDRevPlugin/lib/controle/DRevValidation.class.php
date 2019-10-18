@@ -281,7 +281,7 @@ class DRevValidation extends DocumentValidation
                 $volume += $produit->volume;
             }
 
-            if ($volume > $synthese[$couleur]['volume_total']) {
+            if ($volume > $synthese[$couleur]['volume_max']) {
                 $this->addPoint(self::TYPE_ERROR, 'lot_volume_total_depasse', $couleur, $this->generateUrl('drev_lots', array('id' => $this->document->_id)));
             }
         }
