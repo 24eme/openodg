@@ -230,7 +230,7 @@ class DRevValidation extends DocumentValidation
         foreach ($this->document->getProduits() as $hash => $produit) {
           $produits[$hash] = $produit;
         }
-        //print_r($produits);
+        
         
       if($this->document->exist('lots')){
         foreach ($this->document->lots as $key => $lot) {
@@ -251,13 +251,13 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
 
-          //si lots IGP n'existent pas dans
-        [,$hashProduit] = explode("/declaration/", $lot->produit_hash);
-      
-        if (!array_key_exists($hashProduit, $produits)) {
-            print_r($produits[$hashProduit]);
+          //si lots IGP n'existent pas dans la DR
+
+        
+        if(!$lot->lotPossible()){
             $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
         }
+        
 
           if(count($lot->cepages)){
             $somme = 0.0;
@@ -286,5 +286,6 @@ class DRevValidation extends DocumentValidation
             }
         }
     }
+        //exit;
   }
 }
