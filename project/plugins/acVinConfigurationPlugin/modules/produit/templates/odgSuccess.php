@@ -25,6 +25,9 @@
   <div class="col-xs-5"><?php echo $odgInfos['email_notification'] ?></div>
 </div>
 <?php endif; ?>
+<div class="row">
+  <div class="col-xs-12"><a class="pull-right btn btn-default" href="/odg/exports/<?php echo $odg ?>">Exports</a></div>
+</div>
 
 <h3 style="margin-top: 40px;">Produits</h3>
 
