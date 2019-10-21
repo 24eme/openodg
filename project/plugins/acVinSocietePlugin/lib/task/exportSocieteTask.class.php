@@ -23,50 +23,7 @@ Call it with:
     [php symfony export:societe|INFO]
 EOF;
   }
-
-  const ISCLIENT = 1;
-  const ISFOURNISSEUR = 2;
-
-  private function printSociete($societe, $compte, $isclient = 1) {
-    if (!$this->includeSuspendu && !$societe->isActif()) {
-	return ;
-    }
-    print $compte.";";
-    print $societe->raison_sociale.";";
-    if ($isclient == self::ISCLIENT) {
-      print "CLIENT;";
-    }else{
-      print "FOURNISSEUR;";
-    }
-    print $societe->raison_sociale_abregee.";";
-    print preg_replace('/;.*/', '', $societe->getSiegeAdresses()).";";
-    if (preg_match('/;/', $societe->getSiegeAdresses())) {
-        print str_replace(';', '-', preg_replace('/.*;/', '', $societe->getSiegeAdresses()));
-    }
-    print ";";
-    print $societe->siege->code_postal.";";
-    print $societe->siege->commune.";";
-    print "France;";
-    print ";"; //NAF
-    print $societe->no_tva_intracommunautaire.";";
-    print $societe->siret.";";
-    print $societe->statut.";";
-    print $societe->date_modification.";";
-    print preg_replace('/[^\+0-9]/i', '', $societe->telephone).";"; 
-    print preg_replace('/[^\+0-9]/i', '', $societe->fax).";"; 
-    print $societe->email.";";
-    print $this->routing->generate('societe_visualisation', $societe, true).';';
-    try {
-      if ($isclient == self::ISCLIENT) {
-	print $societe->getRegionViticole(false).';';
-      }
-    }catch(sfException $e) {
-      print "INCONNUE;";
-    }
-    print $societe->isActif().';';
-    print "\n";
-  }
-
+  
   protected function execute($arguments = array(), $options = array())
   {
     // initialize the database connection
@@ -80,18 +37,19 @@ EOF;
 
     $this->routing = clone ProjectConfiguration::getAppRouting();
 
-    echo "numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;code NAF;n° identifiant;n° siret;mise en sommeil;date de création;téléphone;fax;email;site;Région viticole;Actif;\n";
+    echo ExportSocieteCSV::getHeaderCsv();
 
     foreach(SocieteAllView::getInstance()->findByInterpro('INTERPRO-declaration') as $socdata) {
-      $soc = SocieteClient::getInstance()->find($socdata->id);
-      if (!$soc->code_comptable_client && ! $soc->code_comptable_fournisseur) 
-	continue;
-      if ($soc->code_comptable_client) {
-	$this->printSociete($soc, $soc->code_comptable_client, self::ISCLIENT);
-      }
-      if ($soc->code_comptable_fournisseur) {
-	$this->printSociete($soc, $soc->code_comptable_fournisseur, self::ISFOURNISSEUR);
-      }
+        $soc = SocieteClient::getInstance()->find($socdata->id);
+        if (!$this->includeSuspendu && $soc->isSuspendu()) {
+  	       continue ;
+        }
+        if (!$soc->code_comptable_client && ! $soc->code_comptable_fournisseur) {
+	        continue;
+        }
+
+        $export = new ExportSocieteCSV($soc, false, $this->routing);
+        echo $export->export();
     }
   }
 }
