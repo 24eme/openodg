@@ -191,6 +191,40 @@ class societeActions extends sfCredentialActions {
         }
     }
 
+    public function executeApi(sfWebRequest $request) {
+        $identifiant = $request->getParameter('identifiant');
+
+        $this->response->setContentType('text/csv');
+
+        if(!$this->getUser()->isAdmin() && !$this->getUser()->hasCredential($request->getParameter('droit'))) {
+            $this->response->setStatusCode('401');
+
+            return sfView::NONE;
+        }
+
+        $compte = CompteClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
+        if(!$compte) {
+            $this->response->setStatusCode('404');
+
+            return sfView::NONE;
+        }
+
+        if(!$request->getParameter('droit') || !$compte->hasDroit($request->getParameter('droit'))) {
+            $this->response->setStatusCode('403');
+
+            return sfView::NONE;
+        }
+
+        $societe = $compte->getSociete();
+        $export = new ExportSocieteCSV($societe);
+
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition', "attachment; filename=".date('Ymdhis')."_societe_".$request->getParameter('identifiant').".csv");
+        $this->response->setContent($export->export());
+
+        return sfView::NONE;
+    }
+
     protected function matchCompte($view_res, $term, $limit) {
         $json = array();
         foreach ($view_res as $key => $one_row) {
