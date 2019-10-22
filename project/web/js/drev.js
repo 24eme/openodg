@@ -182,6 +182,14 @@
 
     }
 
+    $.initSocieteChoixEtablissement = function() {
+        $('.societe_choix_etablissement').on('change', function (e) {
+          if($(this).val() != "0"){
+            $("#choix_etablissement").submit();
+          }
+        });
+    }
+
     $.initLots = function() {
         if ($('#form_drev_lots').length == 0)
         {
@@ -315,6 +323,7 @@
         $.initLots();
         $.initRecapEventsAccordion();
         $.initValidationDeclaration();
+        $.initSocieteChoixEtablissement();
 
     });
 
