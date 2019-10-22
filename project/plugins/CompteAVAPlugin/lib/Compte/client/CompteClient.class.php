@@ -8,6 +8,8 @@ class CompteClient extends acCouchdbClient {
     const DROIT_TOURNEE = "TOURNEE";
     const DROIT_OPERATEUR = "OPERATEUR";
     const DROIT_CONTACT = "CONTACT";
+    const DROIT_API = "API";
+
     const TYPE_COMPTE_ETABLISSEMENT = "ETABLISSEMENT";
     const TYPE_COMPTE_AGENT_PRELEVEMENT = "AGENT_PRELEVEMENT";
     const TYPE_COMPTE_DEGUSTATEUR = "DEGUSTATEUR";
