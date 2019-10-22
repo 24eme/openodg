@@ -437,8 +437,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return false;
         }
         $droits = $this->get('droits')->toArray(0, 1);
-        foreach($droits as $key => $droit) {
-            $droitTab = explode(":", $droit);
+        foreach($droits as $key => $d) {
+            $droitTab = explode(":", $d);
             $droits[$key] = $droitTab[0];
         }
 
