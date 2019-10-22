@@ -110,4 +110,20 @@ class produitActions extends sfActions
 
     return $this->redirect('produit_modification', array('noeud' => $noeud, 'hash' => $hash, 'noeud_to_edit' => implode("|", $noeud_to_edit)));
   }
+
+  public function executeHabilitation(sfWebRequest $request) {
+    $this->odg = $request->getParameter('odg');
+    $this->odgInfos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->odg);
+
+    $this->getResponse()->setHttpHeader('Content-Type', 'application/csv');
+    $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+    $this->getResponse()->setHttpHeader('Pragma', '');
+    $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+    $this->getResponse()->setHttpHeader('Expires', '0');
+
+    $inao_fichier = $this->odgInfos["inao"];
+    
+    return $this->renderText(file_get_contents(sfConfig::get('sf_root_dir').'/'.$inao_fichier));
+    }
+
 }

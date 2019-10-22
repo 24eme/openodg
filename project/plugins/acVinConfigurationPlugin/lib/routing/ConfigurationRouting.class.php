@@ -19,6 +19,8 @@ class ConfigurationRouting {
 
         $r->prependRoute('produits_odg', new sfRoute('/produits_odg/:odg', array('module' => 'produit',
                                                                     'action' => 'odg')));
+        $r->prependRoute('produit_habilitation', new sfRoute('/produits_odg/:odg/habilitation.csv', array('module' => 'produit',
+                                                                    'action' => 'habilitation')));
 
     }
  }
