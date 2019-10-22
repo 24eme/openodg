@@ -32,6 +32,25 @@
         <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
+    <?php  if(count($etablissement->getSociete()->getEtablissementsObj(false)) > 1): ?>
+      <section id="principal">
+          <form id="choix_etablissement" method="post" action="<?php echo url_for('drev_societe_choix_etablissement', array('identifiant' => $etablissement->identifiant)) ?>">
+            <br/>
+               <div >
+                  <div class="bloc_form bloc_form_condensed">
+                  <?php echo $etablissementChoiceForm->renderHiddenFields() ?>
+                  <?php echo $etablissementChoiceForm->renderGlobalErrors() ?>
+
+                  <div class="row">
+                      <?php echo $etablissementChoiceForm['etablissementChoice']->renderError() ?>
+                      <div class="col-md-3"><?php echo $etablissementChoiceForm['etablissementChoice']->renderLabel() ?></div>
+                      <div class="col-md-6"><?php echo $etablissementChoiceForm['etablissementChoice']->render(array('class' => 'select2autocomplete societe_choix_etablissement', 'style' => "width: 100%;")) ?></div>
+                  </div>
+                  </div>
+               </div>
+          </form>
+      </section>
+    <?php  endif; ?>
 </div>
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
