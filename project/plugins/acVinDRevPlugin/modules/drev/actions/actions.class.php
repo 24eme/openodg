@@ -18,6 +18,35 @@ class drevActions extends sfActions {
         $this->pdf = base64_encode(file_get_contents($file_path_pdf));
     }
 
+    public function executeSocieteChoixEtablissement(sfWebRequest $request) {
+      $usurpation = $request->getParameter('usurpation',null);
+      $login = $request->getParameter('login',null);
+      if($usurpation && $login){
+          $this->getUser()->usurpationOn($login, $request->getReferer());
+      }
+      $this->etablissement = $this->getRoute()->getEtablissement();
+      $this->societe = $this->etablissement->getSociete();
+      $this->form = new SocieteEtablissementChoiceForm($this->etablissement);
+
+      if ($request->isMethod(sfWebRequest::POST)) {
+          $parameters = $request->getParameter($this->form->getName());
+          $this->form->bind($parameters);
+          if ($this->form->isValid()) {
+              $values = $this->form->getValues();
+              $etablissementId = $values['etablissementChoice'];
+              if (!$etablissementId) {
+                  throw new sfException("L'établissement n'a pas été choisi");
+              }
+              $etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissementId);
+              if (!$etablissement) {
+                  throw new sfException("L'établissement n'existe plus dans la base de donné");
+              }
+              $this->redirect('declaration_etablissement', array('identifiant' => $etablissementId));
+          }
+       }
+    }
+
+
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
@@ -325,7 +354,7 @@ class drevActions extends sfActions {
     }
 
     public function executeLots(sfWebRequest $request) {
-        
+
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
@@ -412,7 +441,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
         $produits = $this->drev->getProduitsLots();
-        
+
 
         if(!count($this->drev->getProduitsWithoutLots()) && $request->getParameter('prec')) {
 

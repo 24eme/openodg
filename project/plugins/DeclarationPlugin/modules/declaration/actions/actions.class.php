@@ -153,6 +153,8 @@ class declarationActions extends sfActions {
 
         $this->secureEtablissement($this->etablissement);
 
+        $this->etablissementChoiceForm = new SocieteEtablissementChoiceForm($this->etablissement);
+
         if(class_exists("EtablissementChoiceForm")) {
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
