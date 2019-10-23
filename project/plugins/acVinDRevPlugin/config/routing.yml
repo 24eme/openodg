@@ -2,6 +2,16 @@ drev_index:
   url: /drev
   param: { module: drev, action: index }
 
+drev_societe_choix_etablissement:
+  url: /drev/societe/:identifiant/choix-etablissement
+  param: { module: drev, action: societeChoixEtablissement }
+  class: EtablissementRoute
+  options:
+    model:    Societe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_request_dr:
   url: /drev/dr/request
   param: { module: drev, action: requestDR }
