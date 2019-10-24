@@ -11,7 +11,7 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;code NAF;n° identifiant;n° siret;mise en sommeil;date de création;téléphone;fax;email;site;Région viticole;Actif;\n";
+        return "Identifiant,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,Pays,Code comptable,Code NAF,Siret,TVA Intra,Téléphone,Téléphone portable,Fax,Email,Site,Région,Type,Statut,Date de modification,Observation\n";
     }
 
     public function __construct($societe, $header = true, $routing = null) {
@@ -26,59 +26,42 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
         return  $name . '.csv';
     }
 
-    public function exportCompte($compte, $isclient = 1) {
-        $csv = "";
-        $csv .= $compte.";";
-        $csv .= $this->societe->raison_sociale.";";
-        if ($isclient == self::ISCLIENT) {
-          $csv .= "CLIENT;";
-        }else{
-          $csv .= "FOURNISSEUR;";
-        }
-        $csv .= $this->societe->raison_sociale_abregee.";";
-        $csv .= preg_replace('/;.*/', '', $this->societe->getSiegeAdresses()).";";
-        if (preg_match('/;/', $this->societe->getSiegeAdresses())) {
-            $csv .= str_replace(';', '-', preg_replace('/.*;/', '', $this->societe->getSiegeAdresses()));
-        }
-        $csv .= ";";
-        $csv .= $this->societe->siege->code_postal.";";
-        $csv .= $this->societe->siege->commune.";";
-        $csv .= "France;";
-        $csv .= ";"; //NAF
-        $csv .= $this->societe->no_tva_intracommunautaire.";";
-        $csv .= $this->societe->siret.";";
-        $csv .= $this->societe->statut.";";
-        $csv .= $this->societe->date_modification.";";
-        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->telephone).";";
-        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->fax).";";
-        $csv .= $this->societe->email.";";
-        $csv .= (($this->routing) ? $this->routing->generate('societe_visualisation', $this->societe, true) : "").';';
-        try {
-          if ($isclient == self::ISCLIENT) {
-    	$csv .= $this->societe->getRegionViticole(false).';';
-          }
-        }catch(sfException $e) {
-          $csv .= "INCONNUE;";
-        }
-        $csv .= $this->societe->isActif().';';
-        $csv .= "\n";
-
-        return $csv;
-    }
-
     public function export() {
         $csv = null;
         if($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        if ($this->societe->code_comptable_client) {
-  	        $csv .= $this->exportCompte($this->societe->code_comptable_client, self::ISCLIENT);
-        }
-        if ($this->societe->code_comptable_fournisseur) {
-  	        $csv .= $$this->exportCompte($this->societe->code_comptable_fournisseur, self::ISFOURNISSEUR);
-        }
+
+        $adresses_complementaires = explode(' − ', str_replace(array('"',','),array('',''), $this->societe->siege->adresse_complementaire));
+        $adresse_complementaire = array_shift($adresses_complementaires);
+
+        $csv = "";
+        $csv .= $this->societe->identifiant.",";
+        $csv .= $this->societe->getIntitule().",";
+        $csv .= $this->societe->getRaisonSocialeWithoutIntitule().",";
+        $csv .= str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse).",";
+        $csv .= str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse_complementaire).",";
+        $csv .= implode(' − ', $adresses_complementaires).",";
+        $csv .= $this->societe->siege->code_postal.",";
+        $csv .= $this->societe->siege->commune.",";
+        $csv .= $this->societe->siege->pays.",";
+        $csv .= $this->societe->code_comptable_client.",";
+        $csv .= ","; //NAF
+        $csv .= $this->societe->siret.",";
+        $csv .= $this->societe->no_tva_intracommunautaire.",";
+        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->telephone).",";
+        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->telephone_mobile).",";
+        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->fax).",";
+        $csv .= $this->societe->email.",";
+        $csv .= $this->societe->site_internet.",";
+        $csv .= ",";
+        $csv .= $this->societe->type_societe.",";
+        $csv .= $this->societe->statut.",";
+        $csv .= $this->societe->date_modification.",";
+        $csv .= '"'.str_replace('"', "''", str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->commentaire)).'",';
+        $csv .= "\n";
 
         return $csv;
     }
-
+    
 }

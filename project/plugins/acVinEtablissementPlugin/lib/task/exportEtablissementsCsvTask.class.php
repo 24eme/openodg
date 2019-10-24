@@ -93,8 +93,9 @@ EOF;
             $intitule = $extractIntitule[0];
             $raisonSociale = $extractIntitule[1];
 
-$adresses_complementaires = explode(' − ', str_replace(array('"',','),array('',''), $etablissement->adresse_complementaire));
-$adresse_complementaire = array_shift($adresses_complementaires);
+            $adresses_complementaires = explode(' − ', str_replace(array('"',','),array('',''), $etablissement->adresse_complementaire));
+            $adresse_complementaire = array_shift($adresses_complementaires);
+            
             echo
             $societe->identifiant.",".
             $intitule.",".
