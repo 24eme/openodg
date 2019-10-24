@@ -41,12 +41,6 @@ EOF;
 
     foreach(SocieteAllView::getInstance()->findByInterpro('INTERPRO-declaration') as $socdata) {
         $soc = SocieteClient::getInstance()->find($socdata->id);
-        if (!$this->includeSuspendu && $soc->isSuspendu()) {
-  	       continue ;
-        }
-        if (!$soc->code_comptable_client && ! $soc->code_comptable_fournisseur) {
-	        continue;
-        }
 
         $export = new ExportSocieteCSV($soc, false, $this->routing);
         echo $export->export();
