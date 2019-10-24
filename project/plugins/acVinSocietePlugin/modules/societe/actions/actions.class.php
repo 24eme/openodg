@@ -191,13 +191,13 @@ class societeActions extends sfCredentialActions {
         }
     }
 
-    public function executeApi(sfWebRequest $request) {
+    public function executeExport(sfWebRequest $request) {
         $identifiant = $request->getParameter('identifiant');
 
         $this->response->setContentType('text/csv');
 
         if(!$this->getUser()->isAdmin() && !$this->getUser()->hasCredential($request->getParameter('droit'))) {
-            $this->response->setStatusCode('401');
+            $this->response->setStatusCode('403');
 
             return sfView::NONE;
         }
