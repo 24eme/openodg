@@ -89,19 +89,10 @@ EOF;
                 $ordre .= substr($etablissement->region, -2);
             }
 
-            $intitules = "EARL|EI|ETS|EURL|GAEC|GFA|HOIRIE|IND|M|MM|Mme|MME|MR|SA|SARL|SAS|SASU|SC|SCA|SCE|SCEA|SCEV|SCI|SCV|SFF|SICA|SNC|SPH|STE|STEF";
-            $intitule = null;
-            $raisonSociale = $etablissement->raison_sociale;
+            $extractIntitule = Etablissement::extractIntitule($etablissement->raison_sociale);
+            $intitule = $extractIntitule[0];
+            $raisonSociale = $extractIntitule[1];
 
-            if(preg_match("/^(".$intitules.") /", $raisonSociale, $matches)) {
-                $intitule = $matches[1];
-                $raisonSociale = preg_replace("/^".$intitule." /", "", $raisonSociale);
-            }
-
-            if(preg_match("/ \((".$intitules.")\)$/", $raisonSociale, $matches)) {
-                $intitule = $matches[1];
-                $raisonSociale = preg_replace("/ \((".$intitule.")\)$/", "", $raisonSociale);
-            }
 $adresses_complementaires = explode(' − ', str_replace(array('"',','),array('',''), $etablissement->adresse_complementaire));
 $adresse_complementaire = array_shift($adresses_complementaires);
             echo
