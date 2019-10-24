@@ -154,10 +154,9 @@ abstract class CompteGenerique extends acCouchdbDocument {
         return $this->_get('fax');
     }
 
-    public function extractIntitule() {
+    public static function extractIntitule($raisonSociale) {
         $intitules = "EARL|EI|ETS|EURL|GAEC|GFA|HOIRIE|IND|M|MM|Mme|MME|MR|SA|SARL|SAS|SASU|SC|SCA|SCE|SCEA|SCEV|SCI|SCV|SFF|SICA|SNC|SPH|STE|STEF";
         $intitule = null;
-        $raisonSociale = $this->raison_sociale;
 
         if(preg_match("/^(".$intitules.") /", $raisonSociale, $matches)) {
             $intitule = $matches[1];
@@ -173,13 +172,13 @@ abstract class CompteGenerique extends acCouchdbDocument {
     }
 
     public function getIntitule() {
-        $extract = $this->extractIntitule();
+        $extract = $this->extractIntitule($this->raison_sociale);
 
         return $extract[0];
     }
 
     public function getRaisonSocialeWithoutIntitule() {
-        $extract = $this->extractIntitule();
+        $extract = $this->extractIntitule($this->raison_sociale);
 
         return $extract[1];
     }
