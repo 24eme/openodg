@@ -35,7 +35,6 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
         $adresses_complementaires = explode(' − ', str_replace(array('"',','),array('',''), $this->societe->siege->adresse_complementaire));
         $adresse_complementaire = array_shift($adresses_complementaires);
 
-        $csv = "";
         $csv .= $this->societe->identifiant.",";
         $csv .= $this->societe->getIntitule().",";
         $csv .= $this->societe->getRaisonSocialeWithoutIntitule().",";
