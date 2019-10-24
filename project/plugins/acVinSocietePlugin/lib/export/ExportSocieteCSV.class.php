@@ -57,7 +57,7 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->societe->type_societe.",";
         $csv .= $this->societe->statut.",";
         $csv .= $this->societe->date_modification.",";
-        $csv .= '"'.str_replace('"', "''", str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->commentaire)).'",';
+        $csv .= '"'.str_replace('"', "''", str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->commentaire)).'"';
         $csv .= "\n";
 
         return $csv;
