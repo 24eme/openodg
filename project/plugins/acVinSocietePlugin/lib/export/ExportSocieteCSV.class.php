@@ -52,7 +52,7 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
         $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->telephone_mobile).",";
         $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->fax).",";
         $csv .= $this->societe->email.",";
-        $csv .= $this->societe->site_internet.",";
+        $csv .= str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->site_internet).",";
         $csv .= ",";
         $csv .= $this->societe->type_societe.",";
         $csv .= $this->societe->statut.",";
