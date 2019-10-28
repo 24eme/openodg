@@ -3,7 +3,11 @@ API
 
 This API works through https procotol with http authentification.
 
-The production URL is https://declaration.syndicat-cotesdurhone.com/api.php
+| Information      | Description 	                                |
+|------------	   |--------------------------------------------	|
+| Protocol         | HTTPS 	                                    |
+| Authentification | HTTP Authentification 	|
+| Production URL   | https://declaration.syndicat-cotesdurhone.com/api.php 	|
 
     > curl https://user:password@declaration.syndicat-cotesdurhone.com/api.php/
 
@@ -52,7 +56,7 @@ Get the company's information from its identifier.
     }
 
     > echo "If the company isn't authorized to access."
-    > curl https://user:password@declaration.syndicat-cotesdurhone.com/api.php/export/societe/timbre?login=login&type=json
+    > curl https://user:password@declaration.syndicat-cotesdurhone.com/api.php/export/societe/timbre?login=your_login&type=json
 
     HTTP/1.1 403 Forbidden
     Date: Mon, 28 Oct 2019 16:00:24 GMT
