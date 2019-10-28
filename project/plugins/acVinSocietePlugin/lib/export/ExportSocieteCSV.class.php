@@ -48,7 +48,7 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
         $data['intitule'] = $intitule;
         $data['raison_sociale'] = $raisonSociale;
         $data['adresse_1'] = str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse);
-        $data['adresse_2'] = str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse_complementaire);
+        $data['adresse_2'] = str_replace(array('"',',', ';'), array('','', ''), $adresse_complementaire);
         $data['adresse_3'] = implode(' − ', $adresses_complementaires);
         $data['code_postal'] = $this->societe->siege->code_postal;
         $data['commune'] = $this->societe->siege->commune;
