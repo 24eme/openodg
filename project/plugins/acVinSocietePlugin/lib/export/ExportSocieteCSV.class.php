@@ -27,38 +27,53 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
             $csv .= self::getHeaderCsv();
         }
 
+        $data = $this->exportData();
+        $data['commentaire'] = '"'.$data['commentaire'].'"';
+        $csv .= implode(';', $data);
+        $csv .= "\n";
+
+        return $csv;
+    }
+
+    public function exportData() {
+        $data = array();
+
         $adresses_complementaires = explode(' − ', str_replace(array('"', ',', ';'),array('','',''), $this->societe->siege->adresse_complementaire));
         $adresse_complementaire = array_shift($adresses_complementaires);
         $extractIntitule = Societe::extractIntitule($this->societe->raison_sociale);
         $intitule = $extractIntitule[0];
         $raisonSociale = $extractIntitule[1];
 
-        $csv .= $this->societe->identifiant.";";
-        $csv .= $intitule.";";
-        $csv .= $raisonSociale.";";
-        $csv .= str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse).";";
-        $csv .= str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse_complementaire).";";
-        $csv .= implode(' − ', $adresses_complementaires).";";
-        $csv .= $this->societe->siege->code_postal.";";
-        $csv .= $this->societe->siege->commune.";";
-        $csv .= $this->societe->siege->pays.";";
-        $csv .= $this->societe->code_comptable_client.";";
-        $csv .= ";"; //NAF
-        $csv .= $this->societe->siret.";";
-        $csv .= $this->societe->no_tva_intracommunautaire.";";
-        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->telephone).";";
-        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->telephone_mobile).";";
-        $csv .= preg_replace('/[^\+0-9]/i', '', $this->societe->fax).";";
-        $csv .= $this->societe->email.";";
-        $csv .= str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->site_internet).";";
-        $csv .= ";";
-        $csv .= $this->societe->type_societe.";";
-        $csv .= (($this->societe->statut) ? $this->societe->statut : EtablissementClient::STATUT_ACTIF).";";
-        $csv .= $this->societe->date_modification.";";
-        $csv .= '"'.str_replace('"', "''", str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->commentaire)).'"';
-        $csv .= "\n";
+        $data['identifiant'] = $this->societe->identifiant;
+        $data['intitule'] = $intitule;
+        $data['raison_sociale'] = $raisonSociale;
+        $data['adresse_1'] = str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse);
+        $data['adresse_2'] = str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse_complementaire);
+        $data['adresse_3'] = implode(' − ', $adresses_complementaires);
+        $data['code_postal'] = $this->societe->siege->code_postal;
+        $data['commune'] = $this->societe->siege->commune;
+        $data['pays'] = $this->societe->siege->pays;
+        $data['code_comptable'] = $this->societe->code_comptable_client;
+        $data['naf'] = ""; //NAF
+        $data['siret'] = $this->societe->siret;
+        $data['no_tva_intracommunautaire'] = $this->societe->no_tva_intracommunautaire;
+        $data['telephone'] = preg_replace('/[^\+0-9]/i', '', $this->societe->telephone);
+        $data['telephone_mobile'] = preg_replace('/[^\+0-9]/i', '', $this->societe->telephone_mobile);
+        $data['fax'] = preg_replace('/[^\+0-9]/i', '', $this->societe->fax);
+        $data['email'] = $this->societe->email;
+        $data['site_internet'] = str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->site_internet);
+        $data['region'] = "";
+        $data['type'] = $this->societe->type_societe;
+        $data['statut'] = (($this->societe->statut) ? $this->societe->statut : EtablissementClient::STATUT_ACTIF);
+        $data['date_modification'] = $this->societe->date_modification;
+        $data['commentaire'] = str_replace('"', "''", str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->commentaire));
 
-        return $csv;
+        return $data;
+    }
+
+    public function exportJson() {
+
+        return json_encode($this->exportData(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
     }
 
 }
