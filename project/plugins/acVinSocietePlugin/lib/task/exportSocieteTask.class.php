@@ -30,7 +30,13 @@ EOF;
 
     echo ExportSocieteCSV::getHeaderCsv();
 
+    $cpt = 0;
     foreach(SocieteAllView::getInstance()->findByInterpro('INTERPRO-declaration') as $socdata) {
+        $cpt++;
+         if($cpt > 1000) {
+             sleep(2);
+             $cpt = 0;
+         }
         $soc = SocieteClient::getInstance()->find($socdata->id, acCouchdbClient::HYDRATE_JSON);
 
         $export = new ExportSocieteCSV($soc, false);
