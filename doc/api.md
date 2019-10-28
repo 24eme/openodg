@@ -52,7 +52,7 @@ Get the company's information from its identifier.
     }
 
     > echo "If the company isn't authorized to access."
-    > curl https://user:password@declaration.syndicat-cotesdurhone.com/api.php/export/societe/right_of_your_choice?login=login&type=json
+    > curl https://user:password@declaration.syndicat-cotesdurhone.com/api.php/export/societe/timbre?login=login&type=json
 
     HTTP/1.1 403 Forbidden
     Date: Mon, 28 Oct 2019 16:00:24 GMT
