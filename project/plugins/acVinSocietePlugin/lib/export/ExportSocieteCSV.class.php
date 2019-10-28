@@ -4,20 +4,15 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
 
     protected $societe = null;
     protected $header = false;
-    protected $routing = false;
-
-    const ISCLIENT = 1;
-    const ISFOURNISSEUR = 2;
 
     public static function getHeaderCsv() {
 
         return "Identifiant;Titre;Raison sociale;Adresse;Adresse 2;Adresse 3;Code postal;Commune;Pays;Code comptable;Code NAF;Siret;TVA Intra;Téléphone;Téléphone portable;Fax;Email;Site;Région;Type;Statut;Date de modification;Observation\n";
     }
 
-    public function __construct($societe, $header = true, $routing = null) {
+    public function __construct($societe, $header = true) {
         $this->societe = $societe;
         $this->header = $header;
-        $this->routing = $routing;
     }
 
     public function getFileName() {
@@ -34,10 +29,13 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
 
         $adresses_complementaires = explode(' − ', str_replace(array('"', ',', ';'),array('','',''), $this->societe->siege->adresse_complementaire));
         $adresse_complementaire = array_shift($adresses_complementaires);
+        $extractIntitule = Societe::extractIntitule($this->societe->raison_sociale);
+        $intitule = $extractIntitule[0];
+        $raisonSociale = $extractIntitule[1];
 
         $csv .= $this->societe->identifiant.";";
-        $csv .= $this->societe->getIntitule().";";
-        $csv .= $this->societe->getRaisonSocialeWithoutIntitule().";";
+        $csv .= $extractIntitule.";";
+        $csv .= $raisonSociale.";";
         $csv .= str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse).";";
         $csv .= str_replace(array('"',',', ';'), array('','', ''), $this->societe->siege->adresse_complementaire).";";
         $csv .= implode(' − ', $adresses_complementaires).";";
