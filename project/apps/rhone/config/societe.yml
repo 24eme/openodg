@@ -1,3 +1,11 @@
 all:
   configuration:
     societe:
+      droits:
+        "ADMIN": "Administrateur"
+        "habilitation": "Habilitation"
+        "habilitation:inao": "Habilitatio INAO"
+        "habilitation:oivr": "Habilitatio OIVR"
+        "habilitation:odg": "Habilitatio ODG"
+        "api": "API"
+        "timbre": "Timbre"

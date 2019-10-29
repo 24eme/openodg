@@ -135,12 +135,7 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         if(isset($values['droits'])){
             $compte->remove("droits");
             $compte->add('droits');
-            $flag = 0;
             foreach ($values['droits'] as $key => $droit) {
-              if(!$flag){
-                $compte->getOrAdd("droits")->add(null, Roles::TELEDECLARATION);
-              }
-              $flag++;
               $compte->getOrAdd("droits")->add(null, $droit);
             }
         }
@@ -165,7 +160,15 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
     }
 
     public function getDroits() {
-        return Roles::$teledeclarationLibellesShort;
+        $droits = SocieteConfiguration::getInstance()->getDroits();
+        foreach($this->getObject()->getMasterCompte()->droits as $key) {
+            if(isset($droits[$key])) {
+                continue;
+            }
+            $droits[$key] = $key;
+        }
+
+        return $droits;
     }
 
 }

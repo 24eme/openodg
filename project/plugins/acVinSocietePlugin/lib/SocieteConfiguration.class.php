@@ -25,4 +25,13 @@ class SocieteConfiguration {
         return isset($this->configuration['disable_save']) && boolval($this->configuration['disable_save']);
     }
 
+    public function getDroits() {
+        if(!isset($this->configuration['droits'])) {
+
+            return array();
+        }
+
+        return $this->configuration['droits'];
+    }
+
 }

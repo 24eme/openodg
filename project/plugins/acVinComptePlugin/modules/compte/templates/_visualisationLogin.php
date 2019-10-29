@@ -11,4 +11,8 @@
 <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Logins DéclarVins&nbsp;:</div>
 <div style="margin-bottom: 5px;" class="col-xs-9"><?php echo implode(', ', $compte->getSociete()->getMasterCompte()->alternative_logins->getRawValue()->toArray()); ?></div>
 <?php endif; ?>
+<?php if($compte->exist('droits') && count($compte->getRawValue()->droits->toArray(true, false)) > 0): ?>
+<div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Droits&nbsp;:</div>
+<div style="margin-bottom: 5px;" class="col-xs-9"><?php echo implode(", ", $compte->getRawValue()->droits->toArray(true, false)); ?></div>
+<?php endif; ?>
 </div>
