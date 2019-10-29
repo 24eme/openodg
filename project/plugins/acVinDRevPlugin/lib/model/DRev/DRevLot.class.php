@@ -39,10 +39,10 @@ class DRevLot extends BaseDRevLot
       $hashCompatibles[] = preg_replace('|/[^/]+(/couleurs/[^/]+/cepages/[^/]+)$|', '/DEFAUT\1', $hash);
       $hashCompatibles[] = preg_replace('|/[^/]+(/couleurs/[^/]+/cepages)/[^/]+$|', '/DEFAUT\1/DEFAUT', $hash);
 
-      $possible = true;
+      $possible = false;
       foreach ($hashCompatibles as $hashCompatible) {
-          if (!$this->document->exist($hashCompatible)) {
-              $possible = false;
+          if ($this->document->exist($hashCompatible)) {
+              $possible = true;
               break;
           }
       }

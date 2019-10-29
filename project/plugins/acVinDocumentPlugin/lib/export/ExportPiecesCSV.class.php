@@ -6,7 +6,7 @@ class ExportPiecesCSV {
     protected $header = false;
 
     public static function getHeaderCsv() {
-        return "identifiant;libelle;mime;date depot;visibilite;source;piece numero;fichiers;doc id\n";
+        return "identifiant;libelle;mime;date depot;visibilite;categorie;source;piece numero;fichiers;doc id\n";
     }
 
     public function __construct($header = true) {
@@ -38,6 +38,7 @@ class ExportPiecesCSV {
             $csv .= $piece->key[PieceAllView::KEYS_MIME].";";
             $csv .= $piece->key[PieceAllView::KEYS_DATE_DEPOT].";";
             $csv .= $piece->key[PieceAllView::KEYS_VISIBILITE].";";
+            $csv .= $piece->key[PieceAllView::KEYS_CATEGORIE].";";
             $csv .= $piece->key[PieceAllView::KEYS_SOURCE].";";
             $csv .= $piece->value[PieceAllView::VALUES_KEY].";";
             $csv .= join('|', $piece->value[PieceAllView::VALUES_FICHIERS]).";";
