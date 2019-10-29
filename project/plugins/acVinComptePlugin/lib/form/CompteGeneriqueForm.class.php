@@ -161,6 +161,12 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
 
     public function getDroits() {
         $droits = SocieteConfiguration::getInstance()->getDroits();
+
+        if(!$this->getObject()->getMasterCompte()->exist('droits')) {
+
+            return $droits;
+        }
+        
         foreach($this->getObject()->getMasterCompte()->droits as $key) {
             if(isset($droits[$key])) {
                 continue;
