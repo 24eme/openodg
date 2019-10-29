@@ -2,3 +2,4 @@ all:
   configuration:
     societe:
       disable_save: false
+      droits: []
