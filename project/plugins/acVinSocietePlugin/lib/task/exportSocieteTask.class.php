@@ -33,7 +33,7 @@ EOF;
     $cpt = 0;
     foreach(SocieteAllView::getInstance()->findByInterpro('INTERPRO-declaration') as $socdata) {
         $cpt++;
-         if($cpt > 1000) {
+         if($cpt > 500) {
              sleep(2);
              $cpt = 0;
          }
