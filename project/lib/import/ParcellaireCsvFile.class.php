@@ -38,9 +38,8 @@ class ParcellaireCsvFile
         $this->file = $file;
         $this->format = $format;
 
-        $split = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
-        $this->cvi = $split[1];
-        $this->date_maj = $split[2];
+        [,$this->cvi] = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
+        
 
         if ($etablissement->cvi !== $this->cvi) {
             $m = sprintf("Les cvi de l'établissement et du fichier ne correspondent pas : %s ≠ %s",
