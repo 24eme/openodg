@@ -3,7 +3,7 @@ all:
     points_aides:
       drev:
         superficie_totale: "Il s'agit de la superficie de récolte en ha indiquée dans votre déclaration douanière (Ligne 4)"
-        superficie_revendique: "Par défaut il s'agit de la superficie revendiquée en ha de votre déclaration douanière. Veuillez la modifier en cas de production partielle en cave particulière, veuillez indiquer la surface proportionnelle au volume produit"
+        superficie_revendique: "Par défaut il s’agit de la superficie déclarée en ha de votre déclaration douanière. Veuillez la modifier en cas de production partielle en cave particulière et indiquer la surface proportionnelle au volume."
         possede_vci: "Cette case est obligatoirement cochée si vous avez du VCI en stock car elle permet d'activer le soufflet intitulé 'Répartition du VCI'"
         plafond_vci: "C'est le plafond de volume maximum autorisé de  VCI en hl cette année. Il correspond au résultat de la surface de cette année* volume autorisé de VCI (hl) fixé par décret."
         stock_vci_precedent: "Il s'agit du nombre d'hl total de VCI en stock de l'année précédente. Vous devez répartir l'intégralité de ce volume parmi : "Rafraîchi", "Complément", "Destruction" et "Substitution". Plusieurs possibilités sont possibles."
