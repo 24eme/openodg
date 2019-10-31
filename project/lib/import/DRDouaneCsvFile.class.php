@@ -95,7 +95,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         					if ($csv[$key+1][$i]) {
                                 $volume = (float) str_replace(",", ".", $csv[$key+1][$i]);
         					}
-        					if ($csv[$key+1][$i+1]) {
+        					if (isset($csv[$key+1][$i+1]) && $csv[$key+1][$i+1]) {
                                 $volumeBailleur = (float) str_replace(",", ".", $csv[$key+1][$i+1]);
                                 $ratios_metayer[sprintf('%02d', $values[0])][$i] = $volume / ($volume + $volumeBailleur);
         					}
@@ -110,7 +110,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         					if ($csv[$key+1][$i]) {
         						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($csv[$key+1][$i]), null, null, null, null);
         					}
-        					if ($csv[$key+1][$i+1]) {
+        					if (isset($csv[$key+1][$i+1]) && $csv[$key+1][$i+1]) {
         						$bailleur[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($csv[$key+1][$i+1]), null, null, null, null);
         					}
         				}

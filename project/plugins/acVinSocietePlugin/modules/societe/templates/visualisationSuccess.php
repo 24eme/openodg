@@ -64,6 +64,9 @@
                     </div>
                 </div>
                 <hr />
+                <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
+                <?php include_partial('compte/visualisationLogin', array('compte' => $societe->getMasterCompte())); ?>
+                <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte())); ?>
                 <?php if ($societe->commentaire) : ?>

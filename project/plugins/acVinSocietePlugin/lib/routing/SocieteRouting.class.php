@@ -80,9 +80,9 @@ class SocieteRouting {
         $r->prependRoute('societe_upload', new sfRoute('/societe/upload-csv-rgt-en-attente', array('module' => 'societe',
             'action' => 'upload')));
 
-        $r->prependRoute('societe_export_csv_droit', new sfRoute('/api/societe/:identifiant/:droit', array(
+        $r->prependRoute('societe_export_csv_droit', new sfRoute('/export/societe/:droit', array(
             'module' => 'societe',
-            'action' => 'api')));
+            'action' => 'export')));
 
 
         /*         * *************

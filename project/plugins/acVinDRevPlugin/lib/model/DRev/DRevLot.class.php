@@ -39,14 +39,23 @@ class DRevLot extends BaseDRevLot
       $hashCompatibles[] = preg_replace('|/[^/]+(/couleurs/[^/]+/cepages/[^/]+)$|', '/DEFAUT\1', $hash);
       $hashCompatibles[] = preg_replace('|/[^/]+(/couleurs/[^/]+/cepages)/[^/]+$|', '/DEFAUT\1/DEFAUT', $hash);
 
-      $possible = true;
       foreach ($hashCompatibles as $hashCompatible) {
-          if (!$this->document->exist($hashCompatible)) {
-              $possible = false;
+          if ($this->document->exist($hashCompatible)) {
+              return true;
               break;
           }
       }
-     return $possible;
+
+      $hash_couleur = preg_replace('/\/DEFAUT$/', '', $hash);
+      if (preg_match('/cepages$/', $hash_couleur)) {
+          foreach($this->document->getProduits() as $p) {
+              if (strpos($p->getHash(), $hash_couleur) !== false) {
+                  return true;
+              }
+          }
+      }
+
+     return false;
     }
 
     public function setProduitHash($hash) {

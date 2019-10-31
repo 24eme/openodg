@@ -31,7 +31,8 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
         $this->addControle(self::TYPE_WARNING, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
-        $this->addControle(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr', "Ce lot IGP est inexistant dans la DR.");
+        $this->addControle(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', "Ce lot IGP est inexistant dans la DR.");
+        $this->addControle(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', "Ce lot IGP est inexistant dans la DR.");
 
         /*
          * Error
@@ -253,11 +254,15 @@ class DRevValidation extends DocumentValidation
 
           //si lots IGP n'existent pas dans la DR
 
-        
+
         if(!$lot->lotPossible()){
-            $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            if (preg_match('/DEFAUT$/', $lot->produit_hash)) {
+                $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            }else{
+                $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            }
         }
-        
+
 
           if(count($lot->cepages)){
             $somme = 0.0;

@@ -3,4 +3,4 @@ all:
   credentials: contacts
 
 export:
-  credentials: [[API, ADMIN]]
+  credentials: [[api, ADMIN]]
