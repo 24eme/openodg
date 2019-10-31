@@ -690,7 +690,7 @@ class drevActions extends sfActions {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
 
-        if($this->getUser()->isDrevAdmin() && $this->drev->validation) {
+        if($this->getUser()->hasDrevAdmin() && $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
         }
 
