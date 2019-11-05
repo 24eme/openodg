@@ -21,7 +21,7 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $odgs = sfConfig::get('drev_configuration_drev', []);
         foreach ($drev->declaration->getSyndicats() as $syndicat) {
-            $infos = DrevConfiguration::egtInstance()->getOdgRegionInfos($syndicat);
+            $infos = DrevConfiguration::getInstance()->getOdgRegionInfos($syndicat);
             $email_syndicat = (isset($infos['email_notification'])) ? $infos['email_notification'] : false;
             if ($email_syndicat) {
                 $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
