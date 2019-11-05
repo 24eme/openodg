@@ -62,9 +62,9 @@ class DRevProduit extends BaseDRevProduit
 
 	public function hasVci($saisie = false) {
 		if ($saisie) {
-			return ($this->vci->stock_precedent || $this->vci->destruction || $this->vci->complement || $this->vci->substitution || $this->vci->rafraichi || $this->vci->constitue);
+			return ($this->vci->stock_precedent || $this->vci->destruction || $this->vci->complement || $this->vci->substitution || $this->vci->rafraichi || $this->vci->constitue  || $this->vci->ajustement);
 		}
-		return ($this->vci->stock_precedent !== null || $this->vci->destruction !== null || $this->vci->complement !== null || $this->vci->substitution !== null || $this->vci->rafraichi !== null || $this->vci->constitue !== null);
+		return ($this->vci->stock_precedent !== null || $this->vci->destruction !== null || $this->vci->complement !== null || $this->vci->substitution !== null || $this->vci->rafraichi !== null || $this->vci->constitue !== null || $this->vci->ajustement !== null);
 	}
 
 	public function hasVciDetruit() {
