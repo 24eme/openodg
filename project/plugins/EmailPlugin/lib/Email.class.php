@@ -19,20 +19,6 @@ class Email {
 
     public function sendDRevValidation($drev) {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-
-        if ($drev->declarant->email) {
-            $to = array($drev->declarant->email);
-            $subject = 'Validation de votre Déclaration de Revendication';
-            $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
-            $message = Swift_Message::newInstance()
-                    ->setFrom($from)
-                    ->setTo($to)
-                    ->setSubject($subject)
-                    ->setBody($body)
-                    ->setContentType('text/plain');
-            $this->getMailer()->send($message);
-        }
-
         $odgs = sfConfig::get('drev_configuration_drev', []);
         foreach ($drev->declaration->getSyndicats() as $syndicat) {
             $email_syndicat = (isset($odgs['odg'][$syndicat]['email_notification'])) ? $odgs['odg'][$syndicat]['email_notification'] : false;
