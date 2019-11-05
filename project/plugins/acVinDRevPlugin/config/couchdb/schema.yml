@@ -78,6 +78,7 @@ DRev:
                               substitution: { type: float }
                               rafraichi: { type: float }
                               constitue: { type: float }
+                              ajustement: { type: float }
                               stock_final: { type: float }
                         recolte:
                           type: collection
