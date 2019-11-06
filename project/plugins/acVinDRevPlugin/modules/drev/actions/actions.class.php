@@ -643,15 +643,11 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        if($this->getUser()->isAdmin()) {
-            $this->sendDRevValidation($this->drev);
-
-            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
-
-            return $this->redirect('drev_visualisation', $this->drev);
+        if(!$this->getUser()->hasDrevAdmin() && !$this->getUser()->isAdmin()) {
+          $this->sendDRevValidation($this->drev);
+          $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+          return $this->redirect('drev_visualisation', $this->drev);
         }
-
-
 
         return $this->redirect('drev_confirmation', $this->drev);
     }
@@ -690,7 +686,7 @@ class drevActions extends sfActions {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
 
-        if($this->getUser()->hasDrevAdmin() && $this->drev->validation) {
+        if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
         }
 

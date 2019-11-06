@@ -150,7 +150,7 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function hasDrevAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN);
+        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdmin();
     }
 
     public function getTeledeclarationDrevRegion() {
