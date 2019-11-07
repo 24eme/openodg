@@ -62,16 +62,17 @@ class ParcellaireClient extends acCouchdbClient {
     {
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
+        
         //$dir = sfConfig::get('sf_apps_dir');
         //$scrapybin = $dir.'/../../../prodouane_scrapy/bin';
         //$scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
         
 
-        exec("$scrapybin/download_parcellaire.sh $cvi");
-        
+        exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
+       
         $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
         
-        if (empty($files)) {
+        if (empty($files) && status != 0) {
             throw new Exception("Le scraping n'a retourné aucun résultat.");
         }
 
@@ -94,11 +95,12 @@ class ParcellaireClient extends acCouchdbClient {
         //$scrapybin = $dir.'/../../../prodouane_scrapy/bin';
         //$scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
 
-        exec("$scrapybin/download_parcellaire_geojson.sh $cvi");
+        
+        exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
+
         $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
-        //print_r($files);
-        //exit;
-        if (empty($files)) {
+
+        if (empty($files) && status != 0) {
             throw new Exception("La récupération des géojson n'a pas fonctionné.");
         }
 
@@ -132,7 +134,7 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->save();
             return true;
         } catch (Exception $e) {
-            $error = "Une erreur lors de la sauvégardage !";
+            $error = "Une erreur lors du sauvégardage !";
             print_r($error);
             return false;
         }
