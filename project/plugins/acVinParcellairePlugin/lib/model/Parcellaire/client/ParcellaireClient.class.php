@@ -132,14 +132,14 @@ class ParcellaireClient extends acCouchdbClient {
             
             $parcellaire = new ParcellaireJsonFile($etablissement, $path, new ParcellaireCsvFormat);
             $parcellaire->save();
-            return true;
+
         } catch (Exception $e) {
             $error = "Une erreur lors du sauvégardage !";
-            print_r($error);
+            //print_r($error);
             return false;
         }
 
-        
+        return true;
         
     }
 
@@ -187,7 +187,6 @@ class ParcellaireClient extends acCouchdbClient {
         if (! $date) {
             $date = date('Ymd');
         }
-        print_r($date);
         $parcellaire = $this->getLast($identifiant);
         
         if ($parcellaire && $parcellaire->date == $date) {

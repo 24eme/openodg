@@ -37,7 +37,7 @@ class ParcellaireJsonFile
         $this->etablissement = $etablissement->identifiant;
         $this->file = $file;
 
-        [,$this->cvi] = explode('-', pathinfo($file, PATHINFO_FILENAME));
+        list(,$this->cvi) = explode('-', pathinfo($file, PATHINFO_FILENAME));
         
 
         if ($etablissement->cvi !== $this->cvi) {
