@@ -38,7 +38,7 @@ class ParcellaireCsvFile
         $this->file = $file;
         $this->format = $format;
 
-        [,$this->cvi] = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
+        list(,$this->cvi) = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
         
 
         if ($etablissement->cvi !== $this->cvi) {

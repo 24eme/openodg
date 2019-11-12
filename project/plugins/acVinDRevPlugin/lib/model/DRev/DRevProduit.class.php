@@ -62,9 +62,9 @@ class DRevProduit extends BaseDRevProduit
 
 	public function hasVci($saisie = false) {
 		if ($saisie) {
-			return ($this->vci->stock_precedent || $this->vci->destruction || $this->vci->complement || $this->vci->substitution || $this->vci->rafraichi || $this->vci->constitue);
+			return ($this->vci->stock_precedent || $this->vci->destruction || $this->vci->complement || $this->vci->substitution || $this->vci->rafraichi || $this->vci->constitue  || $this->vci->ajustement);
 		}
-		return ($this->vci->stock_precedent !== null || $this->vci->destruction !== null || $this->vci->complement !== null || $this->vci->substitution !== null || $this->vci->rafraichi !== null || $this->vci->constitue !== null);
+		return ($this->vci->stock_precedent !== null || $this->vci->destruction !== null || $this->vci->complement !== null || $this->vci->substitution !== null || $this->vci->rafraichi !== null || $this->vci->constitue !== null || $this->vci->ajustement !== null);
 	}
 
 	public function hasVciDetruit() {
@@ -95,7 +95,7 @@ class DRevProduit extends BaseDRevProduit
 		$this->volume_revendique_issu_vci = null;
 		if($this->hasVci()) {
 			$this->volume_revendique_issu_vci = ((float) $this->vci->complement) + ((float) $this->vci->substitution) + ((float) $this->vci->rafraichi);
-			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue);
+			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement);
 		}
 		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci);
 	}
