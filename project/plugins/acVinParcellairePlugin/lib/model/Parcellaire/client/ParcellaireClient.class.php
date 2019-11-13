@@ -60,12 +60,12 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function scrapeParcellaireCSV($cvi)
     {
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
-        $scrapybin = sfConfig::get('app_scrapy_bin');
+        //$scrapydocs = sfConfig::get('app_scrapy_documents');
+        //$scrapybin = sfConfig::get('app_scrapy_bin');
         
-        //$dir = sfConfig::get('sf_apps_dir');
-        //$scrapybin = $dir.'/../../../prodouane_scrapy/bin';
-        //$scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+        $dir = sfConfig::get('sf_apps_dir');
+        $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
+        $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
         
 
         exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
@@ -89,11 +89,11 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireJSON($cvi)
     {
         
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
-        $scrapybin = sfConfig::get('app_scrapy_bin');
-        //$dir = sfConfig::get('sf_apps_dir');
-        //$scrapybin = $dir.'/../../../prodouane_scrapy/bin';
-        //$scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+        //$scrapydocs = sfConfig::get('app_scrapy_documents');
+        //$scrapybin = sfConfig::get('app_scrapy_bin');
+        $dir = sfConfig::get('sf_apps_dir');
+        $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
+        $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
 
         
         exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
@@ -129,13 +129,12 @@ class ParcellaireClient extends acCouchdbClient {
     public function saveParcellaireGeoJson($etablissement, $path, &$error){
         try {
             
-            
             $parcellaire = new ParcellaireJsonFile($etablissement, $path, new ParcellaireCsvFormat);
+            
             $parcellaire->save();
 
         } catch (Exception $e) {
             $error = "Une erreur lors du sauvégardage !";
-            //print_r($error);
             return false;
         }
 
@@ -188,15 +187,15 @@ class ParcellaireClient extends acCouchdbClient {
             $date = date('Ymd');
         }
         $parcellaire = $this->getLast($identifiant);
+        $declaration = $parcellaire->getDeclaration();        
         
         if ($parcellaire && $parcellaire->date == $date) {
             if($path){
-
                 $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
+                $parcellaire->setDeclaration($declaration);
+                
                 $parcellaire->save();
             }
-            //print_r($parcellaire);
-            //exit;
             
             return $parcellaire;
         }
