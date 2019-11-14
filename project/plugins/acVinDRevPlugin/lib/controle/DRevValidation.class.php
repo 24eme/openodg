@@ -25,7 +25,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
         $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre déclaration douanière");
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
-        $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
+        $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas tout votre volume malgré votre stock VCI disponible");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', "Le volume récolté de la DR est absent ou à zéro");
 
         $this->addControle(self::TYPE_WARNING, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
@@ -195,7 +195,7 @@ class DRevValidation extends DocumentValidation
 	        	$this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
 	        }
         }
-        if ($produit->getConfig()->getRendement() > $produit->volume_revendique_issu_recolte && $produit->vci->stock_precedent > 0 && $produit->vci->stock_precedent > $produit->vci->complement) {
+        if (($produit->getConfig()->getRendement() > $produit->volume_revendique_issu_recolte) && ($produit->vci->stock_precedent > 0) && ($produit->vci->stock_precedent > $produit->vci->complement) && ($produit->getPlafondStockVci() > $produit->vci->complement)) {
         	$this->addPoint(self::TYPE_WARNING, 'vci_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 
