@@ -38,7 +38,7 @@ class ParcellaireCsvFile
         $this->file = $file;
         $this->format = $format;
 
-        [,$this->cvi] = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
+        list(,$this->cvi) = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
         
 
         if ($etablissement->cvi !== $this->cvi) {
@@ -55,6 +55,7 @@ class ParcellaireCsvFile
             'PRODOUANE'
         );
         if ($this->parcellaire->getParcelles()) {
+
             $this->parcellaire->remove('declaration');
             $this->parcellaire->add('declaration');
         }
@@ -145,6 +146,7 @@ class ParcellaireCsvFile
                 $new_parcelle->superficie = (float) $parcelle[$f::CSV_SUPERFICIE];
                 $new_parcelle->superficie_cadastrale = (float) $parcelle[$f::CSV_SUPERFICIE_CADASTRALE];
                 $new_parcelle->set('mode_savoirfaire',$parcelle[$f::CSV_FAIRE_VALOIR]);
+
 
                 if (! $this->check($new_parcelle)) {
                     throw new Exception("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");

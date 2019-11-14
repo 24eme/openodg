@@ -33,6 +33,11 @@
     <strong>Erreur :</strong> <?= $sf_user->getFlash('erreur_import') ?>
 </div>
 <?php endif; ?>
+<?php if ($sf_user->hasFlash('success_import')): ?>
+<div class="alert alert-success" role="alert">
+    <strong>Succès :</strong> <?= $sf_user->getFlash('success_import') ?>
+</div>
+<?php endif; ?>
 
 <?php if(isset($form)): ?>
 <div class="row row-margin">

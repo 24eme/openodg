@@ -73,6 +73,8 @@ class parcellaireActions extends sfActions {
 
         if (! empty($msg)) {
             $this->getUser()->setFlash('erreur_import', $msg);
+        }else{
+            $this->getUser()->setFlash('success_import', "La mise à jour a été un succès.");
         }
 
         $this->redirect('parcellaire_declarant', $this->etablissement);
