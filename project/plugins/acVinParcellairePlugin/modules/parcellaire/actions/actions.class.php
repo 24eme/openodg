@@ -53,6 +53,11 @@ class parcellaireActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
     }
 
+    public function executeMap(sfWebRequest $request){
+        $parcellaire_client = ParcellaireClient::getInstance();
+        //TODO if we popup the map
+    }
+
     public function executeImport(sfWebRequest $request)
     {
         $this->etablissement = $this->getRoute()->getEtablissement();

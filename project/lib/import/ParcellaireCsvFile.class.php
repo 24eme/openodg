@@ -55,6 +55,7 @@ class ParcellaireCsvFile
             date('Y-m-d'),
             'PRODOUANE'
         );
+        
         if ($this->parcellaire->getParcelles()) {
             $this->parcellaire->remove('declaration');
             $this->parcellaire->add('declaration');

@@ -62,11 +62,58 @@ class ParcellaireClient extends acCouchdbClient {
     {
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
+        
+        // $dir = sfConfig::get('sf_apps_dir');
+        // $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
+        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+        
 
-        exec("$scrapybin/download_parcellaire.sh $cvi");
-        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'-*.csv');
+        exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
+       
+        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
+        
+        if (empty($files) || $status != 0) {
+            throw new Exception("Le scraping n'a retourné aucun résultat.");
+        }
+
+        return array_pop($files);
+    }
+    /**
+     * Scrape le site des douanes via le scrapy
+     *
+     * @param string $cvi Le numéro du CVI à scraper
+     *
+     * @throws Exception Si aucun CVI trouvé
+     * @return string Le fichier le plus récent
+     */
+    public function scrapeParcellaireJSON($cvi)
+    {
+        
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapybin = sfConfig::get('app_scrapy_bin');
+        // $dir = sfConfig::get('sf_apps_dir');
+        // $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
+        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+
+        
+        exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
+
+        $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
+        $message = "";
+        
         if (empty($files)) {
-            throw new Exception("Le scraping n'a retourné aucun résultat");
+            $message = "Les parcelles n'existent pas dans les fichier du Cadastre. ";
+
+            if($status != 0){
+                $message .= "La récupération des geojson n'a pas fonctionné.";
+            }
+
+        }
+
+        if(!empty($message)){
+            
+            throw new Exception($message);
+
         }
 
         return array_pop($files);
@@ -85,16 +132,65 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function saveParcellaire(Etablissement $etablissement, $path, &$error)
     {
+        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi);
+        $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi);
+        return $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv']) &&
+        $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
+            
+    }
+
+    public function getParcellaireGeoJson($identifiant, $cvi){
+        $file_name = "import-cadastre-".$cvi."-parcelles.json";
+
+        $parcellaire = $this->getLast($identifiant);
+        
+        $uri = $parcellaire->getAttachmentUri($file_name);
+        $import = file_get_contents($uri);
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $uri);
+
+    
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $import = curl_exec($ch);
+        curl_close($ch);      
+        if(strpos($import, "Document is missing attachment"))
+            return false;
+        return $import;
+      
+        
+    }
+
+    public function saveParcellaireGeoJson($etablissement, $path, &$error){
+        try {
+            
+            $parcellaire = new ParcellaireJsonFile($etablissement, $path, new ParcellaireCsvFormat);
+            
+            $parcellaire->save();
+
+        } catch (Exception $e) {
+            $error = "Une erreur lors du sauvégardage !";
+            return false;
+        }
+
+        return true;
+        
+    }
+
+    public function saveParcellaireCSV(Etablissement $etablissement, $path, &$error){
         try {
             $csv = new Csv($path);
             $parcellaire = new ParcellaireCsvFile($etablissement, $csv, new ParcellaireCsvFormat);
             $parcellaire->convert();
+            
         } catch (Exception $e) {
             $error = $e->getMessage();
             return false;
         }
 
         $parcellaire->save();
+        
         return true;
     }
 
