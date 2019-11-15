@@ -60,12 +60,12 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function scrapeParcellaireCSV($cvi)
     {
-        //$scrapydocs = sfConfig::get('app_scrapy_documents');
-        //$scrapybin = sfConfig::get('app_scrapy_bin');
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapybin = sfConfig::get('app_scrapy_bin');
         
-        $dir = sfConfig::get('sf_apps_dir');
-        $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
-        $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+        // $dir = sfConfig::get('sf_apps_dir');
+        // $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
+        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
         
 
         exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
@@ -89,28 +89,31 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireJSON($cvi)
     {
         
-        //$scrapydocs = sfConfig::get('app_scrapy_documents');
-        //$scrapybin = sfConfig::get('app_scrapy_bin');
-        $dir = sfConfig::get('sf_apps_dir');
-        $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
-        $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapybin = sfConfig::get('app_scrapy_bin');
+        // $dir = sfConfig::get('sf_apps_dir');
+        // $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
+        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
 
         
         exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
 
         $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
         $message = "";
+        
         if (empty($files)) {
-            $message = "La récupération des geojson n'a pas fonctionné.";
+            $message = "Les parcelles n'existent pas dans les fichier du Cadastre. ";
+
+            if($status != 0){
+                $message .= "La récupération des geojson n'a pas fonctionné.";
+            }
 
         }
 
-        if($status != 0){
-            $message .= " Et les parcelles n'existent pas dans les fichier du Cadastre";
-        }
-
-        if(!empty(message)){
+        if(!empty($message)){
+            
             throw new Exception($message);
+
         }
 
         return array_pop($files);
@@ -135,6 +138,29 @@ class ParcellaireClient extends acCouchdbClient {
             
     }
 
+    public function getParcellaireGeoJson($identifiant, $cvi){
+        $file_name = "import-cadastre-".$cvi."-parcelles.json";
+
+        $parcellaire = $this->getLast($identifiant);
+        
+        $uri = $parcellaire->getAttachmentUri($file_name);
+        $import = file_get_contents($uri);
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $uri);
+
+    
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $import = curl_exec($ch);
+        curl_close($ch);      
+        if(strpos($import, "Document is missing attachment"))
+            return false;
+        return $import;
+      
+        
+    }
+
     public function saveParcellaireGeoJson($etablissement, $path, &$error){
         try {
             
@@ -156,12 +182,14 @@ class ParcellaireClient extends acCouchdbClient {
             $csv = new Csv($path);
             $parcellaire = new ParcellaireCsvFile($etablissement, $csv, new ParcellaireCsvFormat);
             $parcellaire->convert();
+            
         } catch (Exception $e) {
             $error = $e->getMessage();
             return false;
         }
 
         $parcellaire->save();
+        
         return true;
     }
 
