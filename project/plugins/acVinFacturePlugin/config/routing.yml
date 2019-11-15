@@ -81,3 +81,10 @@ facturation_declarant:
     type:     object
   requirements:
     sf_method: [get, post]
+
+facturation_tempalte:
+  url: /facturation/template/:id
+  param: { module: facturation, action: template }
+  requirements:
+    sf_method: [get, post]
+  class: FacturationRoute

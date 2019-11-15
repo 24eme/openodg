@@ -46,7 +46,9 @@ all:
           inao: "data/drev/FEDE.csv"
         CHINON:
           nom: "Syndicat des Vins de Chinon"
-          adresse: "place Hofheim, 37500 Chinon"
+          adresse: 'Siège social "impasse des caves Painctes", Accueil "Place Hofheim"'
+          telephone: "%app_drev_CHINON_telephone%"
+          email: "%app_drev_CHINON_email%"
           produits:
             - "TRANQ/appellations/CHI/"
         NANTES:

@@ -51,7 +51,7 @@
 
         <?php if($sf_user->isAuthenticated() && !($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_user->hasDrevAdmin()) && (!$compte || !$etablissement)): ?>
             <?php $compte = $sf_user->getCompte(); ?>
-            <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
+            <?php $etablissement = ($compte->getSociete()) ? $compte->getSociete()->getEtablissementPrincipal() : null; ?>
         <?php endif; ?>
 	<?php if($sf_user->isAuthenticated() && $sf_user->hasDrevAdmin() && !$compte): ?>
 		<?php $compte = $sf_user->getCompte(); ?>
