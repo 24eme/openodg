@@ -153,9 +153,9 @@ class declarationActions extends sfActions {
 
         $this->secureEtablissement($this->etablissement);
 
-        $this->etablissementChoiceForm = new SocieteEtablissementChoiceForm($this->etablissement);
 
         if(class_exists("EtablissementChoiceForm")) {
+            $this->etablissementChoiceForm = new SocieteEtablissementChoiceForm($this->etablissement);
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
 
@@ -168,7 +168,7 @@ class declarationActions extends sfActions {
 
     protected function buildSearch(sfWebRequest $request) {
 
-        $hasProduitsFilter = DrevConfiguration::getInstance()->hasOdgProduits();
+        $hasProduitsFilter = (class_exists("DrevConfiguration") && DrevConfiguration::getInstance()->hasOdgProduits());
 
         $level_reduce = 5 + intval(boolval($hasProduitsFilter));
         $rows = acCouchdbManager::getClient()
@@ -264,7 +264,7 @@ class declarationActions extends sfActions {
         }
 
         if(!$this->query || !count($this->query)) {
-            $pas = 10000;
+            $pas = 20000;
             for($i = 0; $i < $nbDocs; $i = $i + $pas) {
                 $this->docs = array_merge($this->docs , acCouchdbManager::getClient()
                 ->reduce(false)
