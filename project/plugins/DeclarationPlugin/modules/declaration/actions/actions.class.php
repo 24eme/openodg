@@ -264,7 +264,7 @@ class declarationActions extends sfActions {
         }
 
         if(!$this->query || !count($this->query)) {
-            $pas = 20000;
+            $pas = 10000;
             for($i = 0; $i < $nbDocs; $i = $i + $pas) {
                 $this->docs = array_merge($this->docs , acCouchdbManager::getClient()
                 ->reduce(false)
