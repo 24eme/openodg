@@ -114,6 +114,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
 
+    public function getLotsRevendiques() {
+        $lots = array();
+        foreach ($this->getLots() as $lot) {
+            if(!$lot->hasVolumeAndHashProduit()){
+                continue;
+            }
+
+            $lots[] = $lot;
+       }
+
+       return $lots;
+    }
+
     public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
 
@@ -121,7 +134,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $couleurs[$p->getConfig()->getCouleur()->getLibelleComplet()] = array();
         }
 
-        foreach ($this->getLots() as $lot) {
+        foreach ($this->getLotsRevendiques() as $lot) {
            if($visualisation && !$lot->hasVolumeAndHashProduit()){
              continue;
            }
@@ -826,6 +839,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->cleanDoc();
         $this->validation = $date;
         $this->generateMouvements();
+
+        if(!count($this->getLotsRevendiques())) {
+            foreach($this->getProduitsLots() as $produit) {
+                $produit->validateOdg($date);
+            }
+        }
     }
 
     public function devalidate($reinit_version_lot = true) {
@@ -894,7 +913,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function isValidateOdgByRegion($region){
       foreach ($this->getProduits($region) as $hash => $produit) {
-        if($produit->isValidateOdg()){
+        if(!$produit->isValidateOdg()){
           return false;
         }
       }
