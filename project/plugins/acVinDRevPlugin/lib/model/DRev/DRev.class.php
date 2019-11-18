@@ -96,9 +96,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getProduitsLots($region);
     }
 
-    public function summerizeProduitsByCouleur() {
+    public function summerizeProduitsLotsByCouleur() {
         $couleurs = array();
-        foreach($this->getProduits() as $h => $p) {
+        foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, );
@@ -116,6 +116,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
+
+        foreach($this->getProduitsLots() as $h => $p) {
+            $couleurs[$p->getConfig()->getCouleur()->getLibelleComplet()] = array();
+        }
 
         foreach ($this->getLots() as $lot) {
            if($visualisation && !$lot->hasVolumeAndHashProduit()){

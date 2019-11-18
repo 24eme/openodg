@@ -281,7 +281,7 @@ class DRevValidation extends DocumentValidation
           }
       }
 
-        $synthese = $this->document->summerizeProduitsByCouleur();
+        $synthese = $this->document->summerizeProduitsLotsByCouleur();
         foreach ($this->document->getLotsByCouleur() as $couleur => $lot) {
             if (! isset($synthese[$couleur])) {
                 continue;
