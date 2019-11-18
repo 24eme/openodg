@@ -209,7 +209,7 @@ class fichierActions extends sfActions
 	}
 
 	protected function secureEtablissement($etablissement) {
-        if (!$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
+        if (class_exists("AppUser") && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
 
             return $this->forwardSecure();
         }

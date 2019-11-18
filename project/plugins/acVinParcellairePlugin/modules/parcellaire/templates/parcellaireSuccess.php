@@ -58,12 +58,22 @@
         <?php endif; ?>
     </div>
 </div>
-
+<?php $parcellaire_client = ParcellaireClient::getInstance();
+if($parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
+    <div>
+        <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
+    </div>
+<?php endif; ?>
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <div class="row">
         <div class="col-xs-12">
             <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
             	<h3><?php echo $commune ?></h3>
+                <div class="clearfix">
+                    <a href="<?= url_for('parcellaire_map', $etablissement) ?>" class="pull-right" style="margin: 10px;">
+                        <i class="glyphicon glyphicon-map-marker"></i> Voir les parcelles
+                    </a>
+                </div>
 
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
