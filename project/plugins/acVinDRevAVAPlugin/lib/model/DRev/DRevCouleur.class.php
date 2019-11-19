@@ -106,7 +106,7 @@ class DRevCouleur extends BaseDRevCouleur
     }
 
 	public function getVolumeRevendiqueRecolte() {
-		if(!$this->exist('volume_revendique_recolte') || is_null($this->_get('volume_revendique_recolte'))) {
+		if(!$this->exist('volume_revendique_recolte')) {
 
 			return $this->volume_revendique;
 		}
