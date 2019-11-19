@@ -150,6 +150,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
     public function getLots(){
+        if(!$this->exist('lots')) {
+
+            return array();
+        }
         $lots = $this->_get('lots')->toArray(1,1);
         if($lots){
             return $this->_get('lots');
