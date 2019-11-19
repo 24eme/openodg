@@ -38,7 +38,7 @@ endif;
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
     <p>Ces informations ont été initialisées depuis votre registre VCI.
-    <br /><br />Veuillez indiquer l'utilisation de votre VCI 2017.</p>
+    <br /><br />Veuillez indiquer l'utilisation de votre VCI <?php echo ($drev->campagne - 1) ?>.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
