@@ -13,6 +13,7 @@
  * @property ParcellaireDeclarant $declarant
  * @property ParcellaireDeclaration $declaration
  * @property acCouchdbJson $pieces
+ * @property acCouchdbJson $_attachments
 
  * @method string getId()
  * @method string setId()
@@ -32,6 +33,8 @@
  * @method ParcellaireDeclaration setDeclaration()
  * @method acCouchdbJson getPieces()
  * @method acCouchdbJson setPieces()
+ * @method acCouchdbJson getAttachments()
+ * @method acCouchdbJson setAttachments()
  
  */
  

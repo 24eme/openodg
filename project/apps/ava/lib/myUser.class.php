@@ -106,4 +106,13 @@ class myUser extends sfBasicSecurityUser
     {
     	return $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
+
+    public function getTeledeclarationDrevRegion()
+    {
+        return null;
+    }
+
+    public function hasDrevAdmin() {
+        return $this->isAdmin();
+    }
 }
