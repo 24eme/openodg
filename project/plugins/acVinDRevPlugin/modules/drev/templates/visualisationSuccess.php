@@ -78,7 +78,7 @@
         <?php endif; ?>
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()) && $hasValidationOdg && $isValidateOdgRegion): ?>
+        <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()) && $hasValidationOdg && !$isValidateOdgRegion): ?>
         <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
         <?php endif; ?>
