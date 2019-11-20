@@ -156,13 +156,13 @@ foreach ($selected_datas as $k => $d) {
             }
 
             if ($config && !isset($etablissements[$datas[2]])) {
-                $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/COMPTE-".$datas[2]);
+                $content = file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/COMPTE-".sprintf('%08d', $datas[2]));
                 if ($content !== false) {
-                    $etablissements[$datas[2]] = json_decode(file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/COMPTE-".$datas[2]));
+                    $etablissements[$datas[2]] = json_decode(file_get_contents("http://".$config['domaine'].":".$config['port']."/".$config['base']."/COMPTE-".sprintf('%08d', $datas[2])));
                 }
             }
 
-            if (!$compte = $etablissements[$datas[2]]) {
+            if (!($compte = $etablissements[$datas[2]])) {
                 continue;
             }
             $adresse = $compte->societe_informations->adresse;
