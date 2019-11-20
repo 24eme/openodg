@@ -77,26 +77,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->declaration->getProduits($onlyActive);
     }
-    
+
     public function getProduitsVCI() {
     	return $this->declaration->getProduitsVCI();
     }
-    
+
     public function calculateVolumeRevendiqueVCI()
     {
     	$vci = array();
     	foreach ($this->getProduitsVci() as $produit) {
-    		if ($produit->stockage_identifiant) {
-    			continue;
-    		}
     		if (!isset($vci[$produit->getCouleur()->getHash()])) {
                 $vci[$produit->getCouleur()->getHash()] = 0;
     		}
-
             $vci[$produit->getCouleur()->getHash()] += $produit->complement + $produit->substitution + $produit->rafraichi;
     	}
     	foreach ($vci as $hash => $val) {
-    		$this->get($hash)->add('volume_revendique_vci', $val);
+            $this->get($hash)->add('volume_revendique_vci');
+            $this->get($hash)->volume_revendique_vci = $val;
     	}
     }
 
