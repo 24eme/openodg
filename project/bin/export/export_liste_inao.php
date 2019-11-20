@@ -26,9 +26,9 @@ if (($handle = fopen($csv, "r")) !== false) {
         if (count($datas) != 12) {
             continue;
         }
-	if (!preg_match("/^[0-9]+/", $datas[0])) {
-	    continue;
-	}
+	    if (!preg_match("/^[0-9]+/", $datas[0])) {
+	        continue;
+	    }
         $hash = generateHash($datas);
         $historique[$hash] = new DateTime($datas[0]);
     }
