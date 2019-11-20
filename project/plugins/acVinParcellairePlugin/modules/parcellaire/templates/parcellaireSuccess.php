@@ -59,7 +59,7 @@
     </div>
 </div>
 <?php $parcellaire_client = ParcellaireClient::getInstance();
-if($parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
+if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
     <div>
         <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
     </div>
