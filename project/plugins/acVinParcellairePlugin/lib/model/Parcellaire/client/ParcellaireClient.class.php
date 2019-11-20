@@ -144,7 +144,7 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellaire = $this->getLast($identifiant);
         
         $uri = $parcellaire->getAttachmentUri($file_name);
-        $import = file_get_contents($uri);
+        
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $uri);
