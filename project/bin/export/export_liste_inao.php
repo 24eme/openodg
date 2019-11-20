@@ -108,9 +108,6 @@ if (($handle = fopen($csv, "r")) !== false) {
 
         $id = generateHash($datas);
 
-        if (!isset($dates[$key])) {
-            continue;
-        }
         if ($datas[1] != 'VALIDE') {
             continue;
         }
@@ -118,6 +115,9 @@ if (($handle = fopen($csv, "r")) !== false) {
         $types = explode(',', $datas[11]);
         foreach($types as $type) {
             $key = $datas[2].'-'. $datas[9].'-'.$type;
+            if (!isset($dates[$key])) {
+                continue;
+            }
             $selected_datas[$datas[2].$type.$datas[10]] = array('type' => $type, 'datas' => $datas, 'key'=> $key, 'id'=> $id );
         }
     }
