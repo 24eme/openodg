@@ -5,7 +5,7 @@ function generateHash($datas) {
     $statut = $datas[1];
     $id = $datas[2];
     $produit = $datas[9];
-    return preg_replace("/^.+:/", "", $datas[6]).'*'.$date.'*'.$id.'*'.$type.'*'.$statut.'*'.$produit;
+    return preg_replace("/^.+:/", "", $datas[6]).'*'.$date.'*'.$id.'*'.$type.'*'.$statut.'*'.$produit.'*'.$datas[11];
 }
 
 if (!isset($argv[1]) ||
@@ -38,21 +38,24 @@ ksort($historique);
 $dates = array();
 foreach ($historique as $h => $d) {
     $tabH = explode('*', $h);
-    $key = $tabH[2].'-'.$tabH[5];
-    if (!isset($dates[$key]) || $dates[$key]['id'] != $tabH[0]) {
-        $dates[$key] = array('depot' => null, 'enregistrement' => null, 'decision' => null, 'id' => null);
-    }
+    $types = explode(',', $tabH[6]);
+    foreach($types as $type) {
+        $key = $tabH[2].'-'.$tabH[5].'-'.$type;
+        if (!isset($dates[$key]) || $dates[$key]['id'] != $tabH[0]) {
+            $dates[$key] = array('depot' => null, 'enregistrement' => null, 'decision' => null, 'id' => null);
+        }
 
-    $dates[$key]['id'] = $tabH[0];
+        $dates[$key]['id'] = $tabH[0];
 
-    if ($tabH[4] == 'COMPLET') {
-        $dates[$key]['depot'] = $d;
-    }
-    if ($tabH[4] == 'ENREGISTREMENT') {
-        $dates[$key]['enregistrement'] = $d;
-    }
-    if (strpos($tabH[4], 'VALIDE') !== false) {
-        $dates[$key]['decision'] = $d;
+        if ($tabH[4] == 'COMPLET') {
+            $dates[$key]['depot'] = $d;
+        }
+        if ($tabH[4] == 'ENREGISTREMENT') {
+            $dates[$key]['enregistrement'] = $d;
+        }
+        if (strpos($tabH[4], 'VALIDE') !== false) {
+            $dates[$key]['decision'] = $d;
+        }
     }
 }
 unset($historique);
@@ -93,6 +96,7 @@ if (count($config) != 3) {
 }
 
 echo "Libelle Appellation;Date depot DI;Date Enregistrement DI;N CVI;N SIRET;Cle identite;Nom ou raison sociale de l'operateur;Adresse 1;Adresse 2;Adresse 3;CP;Commune;Telephone;Telecopie;Email;Activité;Etat de l'habilitation;Date de décision;Observations\n";
+$selected_datas = array();
 if (($handle = fopen($csv, "r")) !== false) {
     while (($datas = fgetcsv($handle, 0, ";")) !== false) {
         if (count($datas) != 12) {
@@ -102,13 +106,9 @@ if (($handle = fopen($csv, "r")) !== false) {
             continue;
         }
 
-        $key = $datas[2].'-'. $datas[9];
         $id = generateHash($datas);
 
         if (!isset($dates[$key])) {
-            continue;
-        }
-        if ($dates[$key]['id'] != preg_replace("/^.+:/", "", $datas[6])) {
             continue;
         }
         if ($datas[1] != 'VALIDE') {
@@ -116,8 +116,21 @@ if (($handle = fopen($csv, "r")) !== false) {
         }
 
         $types = explode(',', $datas[11]);
-
         foreach($types as $type) {
+            $key = $datas[2].'-'. $datas[9].'-'.$type;
+            $selected_datas[$datas[2].$type.$datas[10]] = array('type' => $type, 'datas' => $datas, 'key'=> $key, 'id'=> $id );
+        }
+    }
+}
+fclose($handle);
+
+foreach ($selected_datas as $k => $d) {
+
+            $type  = $d['type'];
+            $datas  = $d['datas'];
+            $key = $d['key'];
+            $id = $d['id'];
+
             $depot = $dates[$key]['depot'];
             $date_depot = "";
             if ($depot) {
@@ -164,7 +177,4 @@ if (($handle = fopen($csv, "r")) !== false) {
 
             echo $datas[10].";".$date_depot.";".$date_enregistrement.";".$compte->etablissement_informations->cvi.";".$compte->societe_informations->siret.";".$datas[2].";".$compte->nom_a_afficher.";".$a.";".$a_comp.";".$a_comp1.";";
             echo $compte->societe_informations->code_postal.";".$compte->societe_informations->commune.";".$compte->telephone_bureau.";".$compte->fax.";".$compte->email.";".$type.";".$datas[7].";".$date_decision.";".$datas[4]."\n";
-        }
-    }
-    fclose($handle);
 }
