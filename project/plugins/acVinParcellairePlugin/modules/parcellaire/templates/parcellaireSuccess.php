@@ -70,22 +70,22 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
             <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
             	<h3><?php echo $commune ?></h3>
                 <div class="clearfix">
-                    <a href="<?= url_for('parcellaire_map', $etablissement) ?>" class="pull-right" style="margin: 10px;">
+                    <a onclick="window.location.reload()" href="#parcelle<?php echo $detail->numero_parcelle; ?>" class="pull-right" style="margin-bottom: 1em">
                         <i class="glyphicon glyphicon-map-marker"></i> Voir les parcelles
                     </a>
                 </div>
-
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
 		                <th class="col-xs-2">Lieu-dit</th>
                     <th class="col-xs-1" style="text-align: right;">Section</th>
                     <th class="col-xs-1">N° parcelle</th>
-                    <th class="col-xs-4">Cépage</th>
+                    <th class="col-xs-3">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                     <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
+                    <th class="col-xs-1"></th>
 		            </tr>
                   </thead>
                     <tbody>
@@ -153,6 +153,13 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                                 <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
+                                <td>
+                                    <div id="par" class="clearfix">
+                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')" href="#parcelle<?php echo $detail->numero_parcelle; ?>" class="pull-right">
+                                            <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
+                                        </a>
+                                    </div>
+                                </td>
 
                             </tr>
                             <?php
