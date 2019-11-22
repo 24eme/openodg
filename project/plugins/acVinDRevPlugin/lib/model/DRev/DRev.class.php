@@ -134,7 +134,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $couleurs[$p->getConfig()->getCouleur()->getLibelleComplet()] = array();
         }
 
-        foreach ($this->getLotsRevendiques() as $lot) {
+        foreach ($this->getLots() as $lot) {
            if($visualisation && !$lot->hasVolumeAndHashProduit()){
              continue;
            }
@@ -150,6 +150,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
     public function getLots(){
+        if(!$this->exist('lots')) {
+
+            return array();
+        }
         $lots = $this->_get('lots')->toArray(1,1);
         if($lots){
             return $this->_get('lots');
