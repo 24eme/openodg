@@ -86,6 +86,7 @@ all:
           adresse: "1 bis Place de l'Eglise, BLASLAY, 86170 SAINT MARTIN LA PALLU"
           telephone: "%app_drev_HAUT_POITOU_telephone%"
           email: "%app_drev_HAUT_POITOU_email%"
+          email_notification: "%app_drev_HAUT_POITOU_email_notification%"
           produits:
             - TRANQ/appellations/HPT
           inao: "data/drev/HAUT_POITOU.csv"
