@@ -96,9 +96,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getProduitsLots($region);
     }
 
-    public function summerizeProduitsByCouleur() {
+    public function summerizeProduitsLotsByCouleur() {
         $couleurs = array();
-        foreach($this->getProduits() as $h => $p) {
+        foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, );
@@ -114,8 +114,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
 
+    public function getLotsRevendiques() {
+        $lots = array();
+        foreach ($this->getLots() as $lot) {
+            if(!$lot->hasVolumeAndHashProduit()){
+                continue;
+            }
+
+            $lots[] = $lot;
+       }
+
+       return $lots;
+    }
+
     public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
+
+        foreach($this->getProduitsLots() as $h => $p) {
+            $couleurs[$p->getConfig()->getCouleur()->getLibelleComplet()] = array();
+        }
 
         foreach ($this->getLots() as $lot) {
            if($visualisation && !$lot->hasVolumeAndHashProduit()){
@@ -133,6 +150,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
     public function getLots(){
+        if(!$this->exist('lots')) {
+
+            return array();
+        }
         $lots = $this->_get('lots')->toArray(1,1);
         if($lots){
             return $this->_get('lots');
@@ -603,7 +624,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produit->vci->constitue = $produitRecolte->vci_constitue;
             }
 
-            $todelete[$hash] = $hash;
+            if (! $p->vci->stock_precedent) {
+                $todelete[$hash] = $hash;
+            }
         }
         foreach ($todelete as $del) {
             $this->remove($del);
@@ -822,6 +845,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->cleanDoc();
         $this->validation = $date;
         $this->generateMouvements();
+
+        if(!count($this->getLotsRevendiques())) {
+            foreach($this->getProduitsLots() as $produit) {
+                $produit->validateOdg($date);
+            }
+        }
     }
 
     public function devalidate($reinit_version_lot = true) {
@@ -890,7 +919,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function isValidateOdgByRegion($region){
       foreach ($this->getProduits($region) as $hash => $produit) {
-        if($produit->isValidateOdg()){
+        if(!$produit->isValidateOdg()){
           return false;
         }
       }
