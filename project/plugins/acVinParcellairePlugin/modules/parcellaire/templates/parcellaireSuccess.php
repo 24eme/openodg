@@ -70,7 +70,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
             <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
             	<h3><?php echo $commune ?></h3>
                 <div class="clearfix">
-                    <a onclick="window.location.reload()" href="#parcelle<?php echo $detail->numero_parcelle; ?>" class="pull-right" style="margin-bottom: 1em">
+                    <a onclick="zoomOnMap()" class="pull-right" href="#" style="margin-bottom: 1em">
                         <i class="glyphicon glyphicon-map-marker"></i> Voir les parcelles
                     </a>
                 </div>
@@ -85,7 +85,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                     <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
-                    <th class="col-xs-1"></th>
+                    <th class="col-xs-1">Carte</th>
 		            </tr>
                   </thead>
                     <tbody>
@@ -155,7 +155,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
                                 <td>
                                     <div id="par" class="clearfix">
-                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')" href="#parcelle<?php echo $detail->numero_parcelle; ?>" class="pull-right">
+                                        <a href="#parcelle<?php echo $detail->numero_parcelle; ?>" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
                                             <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
                                         </a>
                                     </div>

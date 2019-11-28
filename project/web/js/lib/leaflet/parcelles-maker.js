@@ -2,25 +2,32 @@ var parcelles = window.parcelles;
 var myMarker;
 var mygeojson;
 var myLayer=[];
+var fitBound;
+var minZoom = 17;
 var listIdLayer=[];
-var center = [parcelles["features"][0]["geometry"]["coordinates"][0][0][1], parcelles["features"][0]["geometry"]["coordinates"][0][0][0]];
-var map = L.map('map').setView(center, 10);
+
+var map = L.map('map');
+
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 30,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> creator, ' +
+        '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
         'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.light'
 }).addTo(map);
 
 function getColor(d) {
+
     return d.includes("rouge") ? '#790000' :
            d.includes("rosé") ? '#f95087':
            d.includes("blanc") ? '#efeef3':'#2b0c0c';
 }
+
+
+
 function style(feature) {
     return {
-        fillColor: getColor(feature.properties.parcellaires.Produit),
+        fillColor: getColor(feature.properties.parcellaires['0'].Produit),
         weight: 2,
         opacity: 2,
         color: 'white',
@@ -30,12 +37,17 @@ function style(feature) {
 } 
 
 function closeDisplayer(){
-    if(this.myMarker){
-        this.map.removeLayer(myMarker);//remove preview marker, show one marker at the same time
+    var res = false;
+    
+    if(myMarker){
+        map.removeLayer(myMarker);//remove preview marker, show one marker at the same time
+        res = true;
     }
-    if(this.map._popup){
-        this.map.closePopup();//close popup if is opened
+    if(map._popup){
+        map.closePopup();//close popup if is opened
+        res = true;
     }
+    return res;
 }
 
 function loadGeoJson(){
@@ -44,67 +56,103 @@ function loadGeoJson(){
     onEachFeature: onEachFeature,
     }).addTo(map);
 
+    zoomOnMap();
+}
+
+function zoomOnMap(){
+
+    closeDisplayer();
+    myMarker = null;
+
     map.fitBounds(mygeojson.getBounds());
 }
 
-//map.fitBounds(mygeojson.getBounds());
-loadGeoJson();
+loadGeoJson(); //Create map layer from geojson coordonates 
 
 function zoomToFeature(e) {
-    closeDisplayer();
-    map.fitBounds(e.target.getBounds());
+    if(!closeDisplayer() || map.getZoom() < minZoom){
+
+        myMarker = L.marker(e.target.getCenter()).addTo(map); 
+        map.flyToBounds(e.target.getBounds());
+    }else{
+        map.openPopup(e.target._popup);
+    }
+
+    
 }
 
-function isAlready(layer){
-    console.log("Exist");
-    return listIdLayer.includes(layer._leaflet_id);
-}
+
 
 function onEachFeature(feature, layer) {
     layer.on({
-        click: zoomToFeature
+        click: zoomToFeature,
     });
-    if(!isAlready(layer)){
-        console.log("Exist");
-    }else{
-        listIdLayer.push(layer);
-    }
-    var popupContent = "<div id='parcelle"+feature.properties.numero+"' style='margin:15px'><p>Parcelle : N° "+ feature.properties.numero+ " Section "+feature.properties.parcellaires.Section+"</p>"+
-    "<p>Cépage : "+feature.properties.parcellaires.Cepage+"</p>"+
-    "<p>Produit : "+feature.properties.parcellaires.Produit+"</p>"+
-    "<p>Compagne : "+feature.properties.parcellaires.Campagne+"</p>"+
-    "<p>Surface : "+feature.properties.parcellaires.Superficie+"ha</p>"+
-    "<p>Ecart pied : "+feature.properties.parcellaires["Ecart pied"]+"</p>"+
-    "<p>Ecart rang : "+feature.properties.parcellaires["Ecart rang"]+"</p></div>";
+    
+    var Cepages = "<th>Produits et cepages</th>";
+    var numParcelles = "<th>Parcelle N°</th>";
+    var Superficies = "<th>Superficies  <span>(ha)</span></th>";
+    var ecartPied = "<th>Écart Pieds</th>";
+    var ecartRang = "<th>Écart Rang</th>";
+    var compagnes = "<th>Année plantat°</th>";
+    feature.properties.parcellaires.forEach(function(parcelle){
+        numParcelles += '<td>'+parcelle["Numero parcelle"]+'</td>';
+        Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
+        compagnes += '<td>'+parcelle.Campagne+'</td>';
+        Superficies += '<td>'+parcelle.Superficie+'</td>';
+        ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
+        ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
+    });
+    
+    var popupContent ='<table class="table table-bordered table-condensed table-striped"><tbody>'+
+                    '<tr>'+numParcelles+'</tr>'+
+                    '<tr>'+Cepages+'</tr>'+
+                    '<tr>'+compagnes+'</tr>'+
+                    '<tr>'+Superficies+'</tr>'+
+                    '<tr>'+ecartPied+'</tr>'+
+                    '<tr>'+ecartRang+'</tr>'+
+                    '</tbody></table>';
 
     if (feature.properties && feature.properties.popupContent) {
         popupContent += feature.properties.popupContent;
     }
-    layer.bindPopup(popupContent);
-}
 
-function styleParcelle(){
-    return {fillColor :'blue'};
+    layer.bindPopup(popupContent);
+
+    layer._events.click.reverse();
+
 }
+var error = true;
 
 function showParcelle(id, htmlObj){
 
     if(this.map) {
-        this.map.eachLayer(function(layer) {
-            if(layer.feature && layer.feature.id == id){
-                closeDisplayer();
-                this.myLayer = layer;
-                center = myLayer.getCenter();
-                this.myMarker = L.marker(center,  {
 
-                }).addTo(map);
+        this.map.eachLayer(function(layer) {
+            if(layer.feature){
+                if(layer.feature.id == id){
+                    error = false;
+                    closeDisplayer();
+                    this.myLayer = layer;
+                    center = myLayer.getCenter();
+                    this.myMarker = L.marker(center,  {
+
+                    }).addTo(map);
+                    
+                    this.map.fitBounds(this.myLayer.getBounds());
+                    $(window).scrollTop(0);
+                }
+            
                 
-                this.map.fitBounds(this.myLayer.getBounds());
             }
-            $(window).scrollTop(0);
 
         });
+        if(error){
+            alert("Erreur: Cette parcelle n'existe pas au cadastre.");
+        }
+        
     }else{
         alert("Error: Map empty !");
     }
+
+
 }
