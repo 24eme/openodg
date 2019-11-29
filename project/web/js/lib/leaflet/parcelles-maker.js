@@ -73,18 +73,18 @@ function zoomToFeature(e) {
     if(!closeDisplayer() || map.getZoom() < minZoom){
 
         myMarker = L.marker(e.target.getCenter()).addTo(map); 
-        map.flyToBounds(e.target.getBounds());
+        var f = map.fitBounds(e.target.getBounds());
+        map.openPopup(e.target._popup);
     }else{
         map.openPopup(e.target._popup);
         var popup = $(".leaflet-popup-content")[0];
         minPopupWidth = popup.style.width;
+        popup.style.overflow = "scroll";
         var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
         if(width > minPopupWidth){
             popup.style.width = width;
-        }
+        }   
     }
-
-    
 }
 
 
