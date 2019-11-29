@@ -90,13 +90,17 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		}
                 // Calcul du ratio du baillages-métayages
                 if ($values[0] == 5 || $values[0] == 15) {
-                    for ($i = 2; $i < count($csv[$key+1]); $i++) {
+                    $keyLigneBailleur = $key;
+                    if($values[0] == 5) {
+                        $keyLigneBailleur = $key + 1;
+                    }
+                    for ($i = 2; $i < count($csv[$keyLigneBailleur]); $i++) {
                         if ($i%2) {
-        					if ($csv[$key+1][$i]) {
-                                $volume = (float) str_replace(",", ".", $csv[$key+1][$i]);
+        					if ($csv[$keyLigneBailleur][$i]) {
+                                $volume = (float) str_replace(",", ".", $csv[$keyLigneBailleur][$i]);
         					}
-        					if (isset($csv[$key+1][$i+1]) && $csv[$key+1][$i+1]) {
-                                $volumeBailleur = (float) str_replace(",", ".", $csv[$key+1][$i+1]);
+        					if (isset($csv[$keyLigneBailleur][$i+1]) && $csv[$keyLigneBailleur][$i+1]) {
+                                $volumeBailleur = (float) str_replace(",", ".", $csv[$keyLigneBailleur][$i+1]);
                                 $ratios_metayer[sprintf('%02d', $values[0])][$i] = $volume / ($volume + $volumeBailleur);
         					}
         				}

@@ -19,8 +19,8 @@ all:
           TRANSMIS_CI: "Transmis au Contrôle Interne"
           TRAITE_CI: "Traité par le Contrôle Interne"
           TRANSMIS_OIVR: "Transmis à l'OIVR"
-          AVIS_POSITIF_OIVR: "Avis positif de l'OIVR"
-          AVIS_NEGATIF_OIVR: "Avis négatif de l'OIVR"
+          AVIS_CONFORME_OIVR: "Avis conforme de l'OIVR"
+          AVIS_NONCONFORME_OIVR: "Avis non conforme de l'OIVR"
           TRANSMIS_ODG: "Transmis à une autre ODG"
           VALIDE_ODG: "Validé par une autre ODG"
           REFUSE_ODG: "Refusé par une autre ODG"
@@ -36,8 +36,8 @@ all:
           ANNULE: "Annulé"
         automatique:
           COMPLET: ENREGISTREMENT
-          AVIS_POSITIF_OIVR: TRANSMIS_INAO
-          AVIS_NEGATIF_OIVR: TRANSMIS_INAO
+          AVIS_CONFORME_OIVR: TRANSMIS_INAO
+          AVIS_NONCONFORME_OIVR: TRANSMIS_INAO
           VALIDE_ODG: VALIDE
           REFUSE_ODG: REFUSE
           VALIDE_INAO: VALIDE
