@@ -80,10 +80,10 @@ function zoomToFeature(e) {
         var popup = $(".leaflet-popup-content")[0];
         minPopupWidth = popup.style.width;
         popup.style.overflow = "scroll";
-        // var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
-        // if(width > minPopupWidth){
-        //     popup.style.width = width;
-        // }   
+        var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
+        if(width > minPopupWidth){
+            popup.style.width = width;
+        }   
     }
 }
 
