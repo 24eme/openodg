@@ -43,7 +43,7 @@ function closeDisplayer(){
         map.removeLayer(myMarker);//remove preview marker, show one marker at the same time
         res = true;
     }
-    if(map._popup){
+    if(map._popup != null){
         map.closePopup();//close popup if is opened
         res = true;
     }
@@ -76,6 +76,12 @@ function zoomToFeature(e) {
         map.flyToBounds(e.target.getBounds());
     }else{
         map.openPopup(e.target._popup);
+        var popup = $(".leaflet-popup-content")[0];
+        minPopupWidth = popup.style.width;
+        var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
+        if(width > minPopupWidth){
+            popup.style.width = width;
+        }
     }
 
     
