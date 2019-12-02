@@ -22,7 +22,7 @@
   <tr>
         <td>&nbsp;Commune : <i><?php echo $drev->declarant->code_postal; ?> <?php echo $drev->declarant->commune; ?></i></td>
         <td></td>
-        <td><?php if(DRevConfiguration::getInstance()->hasCgu()): ?>&nbsp;N° Interloire : <? else : ?>&nbsp;N° Adhérent : <?php endif; ?><i><?php echo preg_replace('/..$/', '', $drev->identifiant); ?></i></td>
+        <td><?php if(DRevConfiguration::getInstance()->hasCgu()): ?>&nbsp;N° Interloire : <?php else : ?>&nbsp;N° Adhérent : <?php endif; ?><i><?php echo preg_replace('/..$/', '', $drev->identifiant); ?></i></td>
   </tr>
 </table>
 </td></tr></table>

@@ -624,7 +624,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produit->vci->constitue = $produitRecolte->vci_constitue;
             }
 
-            $todelete[$hash] = $hash;
+            if (! $p->vci->stock_precedent) {
+                $todelete[$hash] = $hash;
+            }
         }
         foreach ($todelete as $del) {
             $this->remove($del);

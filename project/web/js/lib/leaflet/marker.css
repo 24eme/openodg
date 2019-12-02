@@ -66,3 +66,12 @@ Version: 1.0
   top: 8px; 
   color: #000;
 }
+
+#refreshButton {
+  position: absolute;
+  top: 20px;
+  font-weight: bold;
+  right: 20px;
+  padding: 5px;
+  z-index: 999;
+}

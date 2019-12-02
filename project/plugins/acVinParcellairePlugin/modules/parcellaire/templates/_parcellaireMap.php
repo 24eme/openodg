@@ -2,7 +2,10 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
-<div id="map" class="col-xs-12" style="height: 300px; margin-bottom: 20px;"></div>
+<div id="map" class="col-12" style="height: 350px; margin-bottom: 20px;">
+	<button id="refreshButton" onclick="zoomOnMap()"><i class="glyphicon glyphicon-fullscreen"></i></button>
+</div>
+
 
 
 <?php $parcellaire_client = ParcellaireClient::getInstance();
