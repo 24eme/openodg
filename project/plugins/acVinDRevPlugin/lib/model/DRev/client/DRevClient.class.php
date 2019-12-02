@@ -149,8 +149,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public function getNonHabilitationINAO($drev) {
         $non_habilite = array();
         $identifiant = $drev->declarant->cvi;
-        if ($identifiant) {
-            $identifiant = $drev->declarant->siret;
+        if (!$identifiant) {
+            $identifiant = preg_replace('/ /', '', $drev->declarant->siret);
         }
         if (!$identifiant) {
             return array();
