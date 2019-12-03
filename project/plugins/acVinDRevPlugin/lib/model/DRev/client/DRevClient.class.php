@@ -85,6 +85,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         $previous_drev = self::findMasterByIdentifiantAndCampagne($identifiant, $campagne - 1 );
         if ($previous_drev) {
+            $drev->set('chais', $previous_drev->chais->toArray(true, false));
           foreach($previous_drev->getProduitsVci() as $produit) {
             if ($produit->vci->stock_final) {
               $drev->cloneProduit($produit);
