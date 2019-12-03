@@ -600,8 +600,8 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
-        if (!$this->validation->isValide() && $this->drev->isTeledeclare()) {
+        
+        if (!$this->validation->isValide() && $this->drev->isTeledeclare() && !$sf_user->hasDrevAdmin()) {
 
             return sfView::SUCCESS;
         }
