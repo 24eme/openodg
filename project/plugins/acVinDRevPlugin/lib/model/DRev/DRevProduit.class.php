@@ -188,8 +188,10 @@ class DRevProduit extends BaseDRevProduit
 
 			return null;
 		}
-
-		return $this->recolte->volume_total / $this->recolte->superficie_total;
+		if ($this->recolte->superficie_total) {
+			return $this->recolte->volume_total / $this->recolte->superficie_total;
+		}
+		return 0;
 	}
 
 	public function validateOdg($date = null){
