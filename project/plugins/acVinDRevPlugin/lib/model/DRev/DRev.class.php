@@ -1062,6 +1062,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return $can;
     }
 
+    public function isAdresseLogementDifferente() {
+        if(!$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
+
+            return false;
+        }
+
+        return ($this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
+    }
+
 	protected function doSave() {
         $this->piece_document->generatePieces();
 

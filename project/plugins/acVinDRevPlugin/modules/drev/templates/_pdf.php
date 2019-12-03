@@ -26,6 +26,17 @@
   </tr>
 </table>
 </td></tr></table>
+<?php if($drev->isAdresseLogementDifferente()): ?>
+    <span class="h3Alt">&nbsp;Logement du vin&nbsp;</span><br/>
+    <table class="tableAlt"><tr><td>
+    <table border="0" >
+      <tr>
+          <td style="width: 360px;">&nbsp;Adresse : <i><?php echo $drev->chais->adresse ?></i></td>
+          <td>&nbsp;Commune : <i><?php echo $drev->chais->code_postal; ?> <?php echo $drev->chais->commune; ?></i></td>
+      </tr>
+    </table>
+    </td></tr></table>
+<?php endif; ?>
 <?php if(count($drev->declaration->getProduitsWithoutLots($region))): ?>
 <br />
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
