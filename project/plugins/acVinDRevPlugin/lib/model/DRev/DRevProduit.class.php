@@ -83,7 +83,7 @@ class DRevProduit extends BaseDRevProduit
 
             return true;
         }
-		if ($this->recolte->superficie_total == null && $this->recolte->volume_total == null) {
+		if ($this->recolte->superficie_total === null && $this->recolte->volume_total === null && $this->superficie_revendique === null && $this->volume_revendique_total === null ) {
 			return true;
 		}
 
@@ -188,8 +188,10 @@ class DRevProduit extends BaseDRevProduit
 
 			return null;
 		}
-
-		return $this->recolte->volume_total / $this->recolte->superficie_total;
+		if ($this->recolte->superficie_total) {
+			return $this->recolte->volume_total / $this->recolte->superficie_total;
+		}
+		return 0;
 	}
 
 	public function validateOdg($date = null){
