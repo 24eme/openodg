@@ -19,9 +19,10 @@ var er;
 $('#locate-position').on('click', function(){
     map.locate({setView: true});
 });
+var icon = L.divIcon({className: 'glyphicon glyphicon-user'});
 function onLocationFound(e) {
     var radius = e.accuracy / 100;
-    L.marker(e.latlng).addTo(map);
+    L.marker(e.latlng,{icon: icon}).addTo(map);
     L.circle(e.latlng, radius).addTo(map);
     map.setView(e.latlng, minZoom);    
 }
