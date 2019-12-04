@@ -15,6 +15,23 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
         'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.light'
 }).addTo(map);
+var er;
+$('#locate-position').on('click', function(){
+    map.locate({setView: true});
+});
+function onLocationFound(e) {
+    var radius = e.accuracy / 100;
+    L.marker(e.latlng).addTo(map);
+    L.circle(e.latlng, radius).addTo(map);
+    map.setView(e.latlng, minZoom);    
+}
+function onLocationError(e) {
+    alert("Vous n'êtes pas actuellement pas localisable. Veuillez activer la localisation.");
+}
+
+map.on('locationfound', onLocationFound);
+
+map.on('locationerror', onLocationError);
 
 function getColor(d) {
 
@@ -74,15 +91,14 @@ function zoomToFeature(e) {
 
         myMarker = L.marker(e.target.getCenter()).addTo(map); 
         var f = map.fitBounds(e.target.getBounds());
-        map.openPopup(e.target._popup);
     }else{
         map.openPopup(e.target._popup);
         var popup = $(".leaflet-popup-content")[0];
         minPopupWidth = popup.style.width;
-        popup.style.overflow = "scroll";
         var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
         if(width > minPopupWidth){
-            popup.style.width = width;
+            popup.style.overflowX = "scroll";
+            //popup.style.width = width;
         }   
     }
 }

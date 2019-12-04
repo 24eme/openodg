@@ -4,6 +4,7 @@
 
 <div id="map" class="col-12" style="height: 350px; margin-bottom: 20px;">
 	<button id="refreshButton" onclick="zoomOnMap()"><i class="glyphicon glyphicon-fullscreen"></i></button>
+	<button id="locate-position"><i class="glyphicon glyphicon-map-marker"></i></button>
 </div>
 
 
