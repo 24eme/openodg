@@ -152,13 +152,9 @@ DRev:
         type: collection
         definition:
           fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  adresse: { }
-                  commune: { }
-                  code_postal: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
       mouvements:
         type: collection
         definition:

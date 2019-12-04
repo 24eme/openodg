@@ -10,14 +10,17 @@
         $('#btn_exploitation_modifier').click(function(e) {
             $('#btn_exploitation_modifier').addClass("hidden")
             $('#btn_exploitation_annuler').removeClass("hidden")
-            $('#row_form_exploitation').removeClass("hidden");
-            $('#row_info_exploitation').addClass("hidden");
+            $('.row_form_exploitation').removeClass("hidden");
+            $('.row_info_exploitation').addClass("hidden");
         });
         if($('#drevDenominationAuto').length){
             if($('#drevDenominationAuto').data("auto")){
                 $('#drevDenominationAuto').modal('show');
             }
         }
+        $('#checkbox_logement_vin').on('change', function() {
+            $('#form_logement_vin').find('input').val("");
+        });
     }
 
     $.initPrelevement = function()
