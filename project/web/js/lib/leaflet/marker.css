@@ -75,3 +75,11 @@ Version: 1.0
   padding: 5px;
   z-index: 999;
 }
+#locate-position{
+  position:absolute;
+  font-weight: bold;
+  top:60px;
+  right: 20px;
+  padding: 5px;
+  z-index: 999;
+}
