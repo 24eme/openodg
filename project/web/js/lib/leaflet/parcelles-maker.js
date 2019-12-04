@@ -97,8 +97,8 @@ function zoomToFeature(e) {
         minPopupWidth = popup.style.width;
         var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
         if(width > minPopupWidth){
-            popup.style.xoverflow = "scroll";
-            popup.style.width = width;
+            popup.style.overflowX = "scroll";
+            //popup.style.width = width;
         }   
     }
 }
