@@ -267,7 +267,7 @@ class DRevValidation extends DocumentValidation
 
 
         if(!$lot->lotPossible()){
-            if (preg_match('/DEFAUT$/', $lot->produit_hash)) {
+            if (preg_match('/(DEFAUT|MULTI)$/', $lot->produit_hash)) {
                 $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }else{
                 $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
