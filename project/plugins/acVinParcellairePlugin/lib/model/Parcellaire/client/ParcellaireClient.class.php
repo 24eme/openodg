@@ -91,9 +91,9 @@ class ParcellaireClient extends acCouchdbClient {
         
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
-        //$dir = sfConfig::get('sf_apps_dir');
-        //$scrapybin = $dir.'/../../../prodouane_scrapy/bin';
-        //$scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+        // $dir = sfConfig::get('sf_apps_dir');
+        // $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
+        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
 
         
         exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
