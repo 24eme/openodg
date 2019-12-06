@@ -460,6 +460,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         $cvi = $this->declarant->cvi;
         $ppm = $this->declarant->ppm;
+        $known_produit = array();
         foreach($csv as $k => $line) {
             $is_bailleur = false;
 
@@ -468,13 +469,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-            $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
-
-            if(!$produitConfig) {
-                if (preg_match('/([a-zA-Z0-9]{5,6}) ([0-9]{1,2})/', $line[DRCsvFile::CSV_PRODUIT_INAO], $m)) {
-                    $produitConfig = $this->getConfiguration()->findProductByCodeDouane($m[1]);
+            if (!isset($known_produit[$line[DRCsvFile::CSV_PRODUIT_INAO]])) {
+                $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
+                if(!$produitConfig) {
+                    if (preg_match('/([a-zA-Z0-9]{5,6}) ([0-9]{1,2})/', $line[DRCsvFile::CSV_PRODUIT_INAO], $m)) {
+                        $produitConfig = $this->getConfiguration()->findProductByCodeDouane($m[1]);
+                    }
                 }
+                $known_produit[$line[DRCsvFile::CSV_PRODUIT_INAO]] = $produitConfig;
+            }else{
+                $produitConfig = $known_produit[$line[DRCsvFile::CSV_PRODUIT_INAO]];
             }
+
             if (!$produitConfig) {
             	continue;
             }
@@ -483,7 +489,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if($line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
-                $produitConfigAlt = $this->getConfiguration()->identifyProductByLibelle($produitConfig->getLibelleComplet()." ". $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]);
+                if (!isset($known_produit[$produitConfig->getLibelleComplet()." ". $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]])) {
+                    $produitConfigAlt = $this->getConfiguration()->identifyProductByLibelle($produitConfig->getLibelleComplet()." ". $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]);
+                    $known_produit[$produitConfig->getLibelleComplet()." ". $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]] = $produitConfigAlt;
+                }else{
+                    $produitConfigAlt = $known_produit[$produitConfig->getLibelleComplet()." ". $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]];
+                }
             }
 
             if(isset($produitConfigAlt) && $produitConfigAlt && $produitConfigAlt->isActif()) {
