@@ -676,6 +676,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
                 continue;
             }
+            if (!$produit->getVolumeRevendiqueRecolte() && $this->isNonVinificateur()) {
+
+                continue;
+            }
             $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
             $key = $this->getPrelevementsKeyByHash($hash);
             $this->addPrelevement(self::CUVE . $key);
@@ -686,7 +690,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             unset($prelevements_to_delete[self::BOUTEILLE . $key]);
         }
 
-        if ($this->declaration->hasVtsgn()) {
+        if ($this->declaration->hasVtsgn() && !$this->isNonVinificateur()) {
             $this->addPrelevement(self::CUVE_VTSGN);
             if(!$this->isNonConditionneur()) {
                 $this->addPrelevement(self::BOUTEILLE_VTSGN);
