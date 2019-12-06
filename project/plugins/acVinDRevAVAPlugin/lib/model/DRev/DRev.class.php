@@ -690,7 +690,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             unset($prelevements_to_delete[self::BOUTEILLE . $key]);
         }
 
-        if ($this->declaration->hasVtsgn()) {
+        if ($this->declaration->hasVtsgn() && !$this->isNonVinificateur()) {
             $this->addPrelevement(self::CUVE_VTSGN);
             if(!$this->isNonConditionneur()) {
                 $this->addPrelevement(self::BOUTEILLE_VTSGN);
