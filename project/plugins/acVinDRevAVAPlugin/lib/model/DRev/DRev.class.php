@@ -676,6 +676,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
                 continue;
             }
+            if (!$produit->getVolumeRevendiqueRecolte() && $this->isNonVinificateur()) {
+
+                continue;
+            }
             $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
             $key = $this->getPrelevementsKeyByHash($hash);
             $this->addPrelevement(self::CUVE . $key);
