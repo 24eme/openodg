@@ -150,6 +150,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+
         $this->tags->remove('automatique');
         $this->tags->add('automatique');
         if ($this->exist('teledeclaration_active') && $this->teledeclaration_active) {
