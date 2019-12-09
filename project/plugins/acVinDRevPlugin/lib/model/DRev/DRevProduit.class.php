@@ -183,6 +183,16 @@ class DRevProduit extends BaseDRevProduit
 		return $this->volume_revendique_total / $this->superficie_revendique;
 	}
 
+	public function getRendementEffectifHorsVCI(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+
+		return $this->volume_revendique_issu_recolte / $this->superficie_revendique;
+	}
+
+
 	public function getRendementDR(){
 		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_total')) {
 
