@@ -43,7 +43,6 @@ all:
             - "TRANQ/appellations/TOU/"
             - "TRANQ/appellations/TOUNJO/"
             - "EFF/appellations/TOU"
-          inao: "data/drev/FEDE.csv"
         CHINON:
           nom: "Syndicat des Vins de Chinon"
           adresse: 'Siège social "impasse des caves Painctes", Accueil "Place Hofheim"'
