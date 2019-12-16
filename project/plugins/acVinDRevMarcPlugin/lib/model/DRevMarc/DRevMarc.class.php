@@ -111,11 +111,6 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     	$this->piece_document->generatePieces();
     }
 
-    public function isLectureSeule() {
-
-        return $this->exist('lecture_seule') && $this->get('lecture_seule');
-    }
-
     /**** MOUVEMENTS ****/
 
     public function getMouvements() {
