@@ -111,6 +111,11 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     	$this->piece_document->generatePieces();
     }
 
+    public function isLectureSeule() {
+
+        return $this->exist('lecture_seule') && $this->get('lecture_seule');
+    }
+
     /**** MOUVEMENTS ****/
 
     public function getMouvements() {
@@ -142,7 +147,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
             $mouvement->taux = $cotisation->getPrix();
             $mouvement->facture = 0;
             $mouvement->facturable = 1;
-            $mouvement->date = $this->getCampagne()."110-10";
+            $mouvement->date = $this->getCampagne()."-10-10";
             $mouvement->date_version = $this->validation;
             $mouvement->version = null;
             $mouvement->template = $templateFacture->_id;
