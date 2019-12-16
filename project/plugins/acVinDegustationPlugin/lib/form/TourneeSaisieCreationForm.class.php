@@ -29,7 +29,7 @@ class TourneeSaisieCreationForm extends acCouchdbObjectForm
         $produits = array("" => "");
 
         foreach ($lieux as $key => $lieu) {
-            $produits[$lieu->getHash()] = $lieu->getLibelle();
+            $produits[$lieu->getHash()] = ($lieu->getLibelle()) ? $lieu->getLibelle() : "Aucun lieu" ;
         }
 
         return $produits;
