@@ -80,6 +80,7 @@ all:
           adresse: "33 avenue Saint-Vincent 37140 Saint Nicolas de Bourgueil"
           produits:
             - TRANQ/appellations/STN
+          email_notification: "%app_drev_SAINT_NICOLAS_email_notification%"
         HAUT_POITOU:
           nom: "Syndicat des Vins du Haut Poitou"
           adresse: "1 bis Place de l'Eglise, BLASLAY, 86170 SAINT MARTIN LA PALLU"
