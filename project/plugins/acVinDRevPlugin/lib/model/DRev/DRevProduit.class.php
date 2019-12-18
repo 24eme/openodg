@@ -203,6 +203,17 @@ class DRevProduit extends BaseDRevProduit
 		}
 		return 0;
 	}
+	
+	public function hasDonneesRecolte() {
+	    if ($this->exist('recolte')) {
+	        foreach ($this->recolte as $k => $v) {
+	            if ($v && $v > 0) {
+	                return true;
+	            }
+	        }
+	    }
+	    return false;
+	}
 
 	public function validateOdg($date = null){
 		if(is_null($date)) {
