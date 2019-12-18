@@ -45,10 +45,11 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
             }
         }
 
-        if ($this->getObject()->getConfig()->getRendementVci() > 0) {
+        if ($this->getObject()->getConfig()->getRendementVciTotal() > 0 || $this->getObject()->getConfigPrecedente()->getRendementVciTotal() > 0) {
             $this->setWidget('has_stock_vci', new sfWidgetFormInputCheckbox());
             $this->setValidator('has_stock_vci', new sfValidatorBoolean(array('required' => false)));
-
+        }
+        if ($this->getObject()->getConfig()->getRendementVci() > 0) {
             $this->setWidget('vci_constitue', new sfWidgetFormInputFloat());
             $this->setValidator('vci_constitue', new sfValidatorNumber(array('required' => false)));
         }
