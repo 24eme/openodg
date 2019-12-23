@@ -38,9 +38,10 @@ class DRevValidation extends DocumentValidation
          * Error
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', "Le volume revendique n'a pas été saisie");
+        $this->addControle(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', "Le volume revendique n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', "La superficie revendiqué n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
-        $this->addControle(self::TYPE_WARNING, 'revendication_rendement_warn', "Le rendement sur le volume revendiqué n'est pas respecté (sans doute lié à un achat de vendange)");
+        $this->addControle(self::TYPE_WARNING, 'revendication_rendement_warn', "Le rendement sur le volume revendiqué n'est pas respecté (peut être lié à un achat de vendange ou l'intégration de VCI stocké chez un négociant)");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_conseille', "Le rendement sur le volume revendiqué dépasse le rendement légal il vous faut disposer d'une dérogation pour être autorisé à revendiquer ce rendement");
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
@@ -163,7 +164,11 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
         if($produit->volume_revendique_issu_recolte === null) {
-            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            if ($produit->hasDonneesRecolte()) {
+                $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            } else {
+                $this->addPoint(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
         }
         if ($produit->superficie_revendique > 0 && $produit->volume_revendique_issu_recolte > 0) {
 
@@ -171,7 +176,11 @@ class DRevValidation extends DocumentValidation
                 if ($produit->getDocument()->exist('achat_tolerance') && $produit->getDocument()->get('achat_tolerance')) {
                     $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
                 }else{
-                    $this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                    if ((round(($produit->getRendementEffectifHorsVCI()), 2) <= round($produit->getConfig()->getRendement(), 2))) {
+                        $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                    }else{
+                        $this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                    }
                 }
                 $this->produit_revendication_rendement[$produit->getHash()] = $produit->getHash();
             } elseif($produit->getConfig()->getRendementConseille() > 0 && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendementConseille(), 2)) {
@@ -198,7 +207,7 @@ class DRevValidation extends DocumentValidation
 	        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
 	        }
         }
-        if ( (!$produit->recolte->superficie_total) || ($produit->superficie_revendique > $produit->recolte->superficie_total) ) {
+        if ( (!$produit->recolte->superficie_total && $produit->superficie_revendique > 0) || ($produit->superficie_revendique > $produit->recolte->superficie_total) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
                 $this->addPoint(self::TYPE_ENGAGEMENT, 'revendication_superficie_dae', $produit->getLibelleComplet());
@@ -267,7 +276,7 @@ class DRevValidation extends DocumentValidation
 
 
         if(!$lot->lotPossible()){
-            if (preg_match('/DEFAUT$/', $lot->produit_hash)) {
+            if (preg_match('/(DEFAUT|MULTI)$/', $lot->produit_hash)) {
                 $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }else{
                 $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));

@@ -59,11 +59,6 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     }
 
     public function save($synchro_etablissement = true, $update_coodronnees = false) {
-        if(SocieteConfiguration::getInstance()->isDisableSave()) {
-
-            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
-        }
-
         if ($this->isNew() && !$this->identifiant) {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
             $this->statut = CompteClient::STATUT_ACTIF;

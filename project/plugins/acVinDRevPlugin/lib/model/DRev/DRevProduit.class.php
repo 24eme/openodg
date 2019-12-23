@@ -183,6 +183,16 @@ class DRevProduit extends BaseDRevProduit
 		return $this->volume_revendique_total / $this->superficie_revendique;
 	}
 
+	public function getRendementEffectifHorsVCI(){
+		if(!$this->superficie_revendique) {
+
+			return null;
+		}
+
+		return $this->volume_revendique_issu_recolte / $this->superficie_revendique;
+	}
+
+
 	public function getRendementDR(){
 		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_total')) {
 
@@ -192,6 +202,17 @@ class DRevProduit extends BaseDRevProduit
 			return $this->recolte->volume_total / $this->recolte->superficie_total;
 		}
 		return 0;
+	}
+	
+	public function hasDonneesRecolte() {
+	    if ($this->exist('recolte')) {
+	        foreach ($this->recolte as $k => $v) {
+	            if ($v && $v > 0) {
+	                return true;
+	            }
+	        }
+	    }
+	    return false;
 	}
 
 	public function validateOdg($date = null){
