@@ -11,10 +11,12 @@
 
 <?php $parcellaire_client = ParcellaireClient::getInstance();
 $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi());
+	$list_communes = implode("|", $parcellaire_client->getDelimitations($parcellaire->declaration->getCommunes()));
 ?>
 
 <script type="text/javascript">
 	var parcelles = JSON.parse('<?php echo $import; ?>');
+	var delimitation = '<?php echo $list_communes; ?>';
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>
 

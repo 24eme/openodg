@@ -82,6 +82,15 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return $produits;
     }
 
+    public function getCommunes(){
+        $communes = [];
+        foreach ($this->getProduitsDetails() as $detail) {
+            $communes[$detail["code_commune"]] = $detail["code_commune"];
+        }
+        //return implode('|', (array)$communes);
+        return array_keys($communes);
+    }
+
     public function getLieuxEditable() {
         $lieux = array();
 
