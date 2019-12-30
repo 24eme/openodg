@@ -1,4 +1,5 @@
 var parcelles = window.parcelles;
+var delimitationStr = window.delimitation;
 var myMarker;
 var mygeojson;
 var myLayer=[];
@@ -6,7 +7,18 @@ var fitBound;
 var minZoom = 17;
 var listIdLayer=[];
 
+function parseString(dlmString){
+    var mydlm = [];
+    dlmString.split("|").forEach(function(str){
+        mydlm.push(JSON.parse(str));
+    });
+    return mydlm;
+}
+
+var dlmJson = parseString(delimitationStr);
+
 var map = L.map('map');
+
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 30,
@@ -19,14 +31,15 @@ var er;
 $('#locate-position').on('click', function(){
     map.locate({setView: true});
 });
+var icon = L.divIcon({className: 'glyphicon glyphicon-user'});
 function onLocationFound(e) {
     var radius = e.accuracy / 100;
-    L.marker(e.latlng).addTo(map);
+    L.marker(e.latlng,{icon: icon}).addTo(map);
     L.circle(e.latlng, radius).addTo(map);
     map.setView(e.latlng, minZoom);    
 }
 function onLocationError(e) {
-    alert("Vous n'êtes pas actuellement pas localisable. Veuillez activer la localisation.");
+    alert("Vous n'êtes actuellement pas localisable. Veuillez activer la localisation.");
 }
 
 map.on('locationfound', onLocationFound);
@@ -43,15 +56,27 @@ function getColor(d) {
 
 
 function style(feature) {
+    var color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
-        fillColor: getColor(feature.properties.parcellaires['0'].Produit),
+        fillColor: color,
+        weight: 2,
+        opacity: 2,
+        color: color,
+        dashArray: '1',
+        fillOpacity: 1
+    };
+}
+
+function styleDelimitation(feature){
+    return {
+        fillColor: '#d0f3fb',
         weight: 2,
         opacity: 2,
         color: 'white',
         dashArray: '5',
         fillOpacity: 0.7
-    };
-} 
+    }
+}
 
 function closeDisplayer(){
     var res = false;
@@ -76,6 +101,7 @@ function loadGeoJson(){
     zoomOnMap();
 }
 
+
 function zoomOnMap(){
 
     closeDisplayer();
@@ -83,8 +109,19 @@ function zoomOnMap(){
 
     map.fitBounds(mygeojson.getBounds());
 }
+// var ggHybrid = new L.Google('HYBRID');
+// map.addControl(new L.Control.Layers( { 
+//     'Google Hybrid' : ggHybrid
+//     }, {})
+// );
+
+mygeojson = L.geoJSON(dlmJson,{
+    style: styleDelimitation
+}).addTo(map);
+zoomOnMap();
 
 loadGeoJson(); //Create map layer from geojson coordonates 
+
 
 function zoomToFeature(e) {
     if(!closeDisplayer() || map.getZoom() < minZoom){

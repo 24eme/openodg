@@ -64,6 +64,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
         <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
     </div>
 <?php endif; ?>
+<?php $list_communes = [];?>
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <div class="row">
         <div class="col-xs-12">
@@ -146,7 +147,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
 
                                 <td style="<?php echo $styleproduit; ?>"><?php echo $detail->lieu; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $detail->section; ?></td>
+                                <td class="" style="text-align: right;"><?php echo $detail->section; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
                                 <td class=""><?php echo $detail->numero_parcelle; ?></td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $detail->cepage; ?></td>
                                 <td class="" style="text-align: center;"><?php echo $detail->campagne_plantation; ?></td>
@@ -179,4 +180,5 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
         <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaire->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
 </div>
-<?php endif; ?>
+<?php endif;?>
+
