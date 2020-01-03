@@ -1,7 +1,6 @@
 <?php
 
-class
-myUser extends sfBasicSecurityUser
+class myUser extends sfBasicSecurityUser
 {
 
     const SESSION_LOGIN = "LOGIN";
