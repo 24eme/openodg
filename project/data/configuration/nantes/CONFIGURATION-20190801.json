@@ -1,0 +1,2039 @@
+{
+  "_id": "CONFIGURATION-20190801",
+  "type": "Configuration",
+  "declaration": {
+    "certifications": {
+      "AOC_INTERLOIRE": {
+        "genres": {
+          "TRANQ": {
+            "appellations": {
+              "MUSAC": {
+                "libelle": "Muscadet AC",
+                "format_libelle": null,
+                "code": "MUSAC",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-inter-loire": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  },
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1040",
+                                "code_comptable": "9940",
+                                "code_douane": "1B228",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "LIE": {
+                    "libelle": "Sur lie",
+                    "format_libelle": null,
+                    "code": "LIE",
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1041",
+                                "code_comptable": "9950",
+                                "code_douane": "1B228 01",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "attributs": {
+                      "rendement": 55,
+                      "rendement_conseille": 40,
+                      "rendement_dr": null,
+                      "rendement_vci": null,
+                      "rendement_vci_total": null
+                    }
+                  },
+                  "PRI": {
+                    "libelle": "Primeur",
+                    "format_libelle": null,
+                    "code": "PRI",
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1080",
+                                "code_comptable": "9940",
+                                "code_douane": "1B228 02",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 65,
+                  "rendement_vci": 8,
+                  "rendement_vci_total": 24,
+                  "rendement_conseille": 40
+                }
+              },
+              "MUSCGL": {
+                "libelle": "Muscadet Côtes de Grand Lieu",
+                "format_libelle": null,
+                "code": "MUSCGL",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-inter-loire": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  },
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1070",
+                                "code_comptable": "9940",
+                                "code_douane": "1B227",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "LIE": {
+                    "libelle": "Sur lie",
+                    "format_libelle": null,
+                    "code": "LIE",
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1071",
+                                "code_comptable": "9950",
+                                "code_douane": "1B227 01",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 55,
+                  "rendement_vci": 0,
+                  "rendement_vci_total": 20,
+                  "rendement_conseille": 40
+                }
+              },
+              "MUSCDL": {
+                "libelle": "Muscadet Coteaux de la Loire",
+                "format_libelle": null,
+                "code": "MUSCDL",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-inter-loire": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  },
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1060",
+                                "code_comptable": "9940",
+                                "code_douane": "1B229",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "LIE": {
+                    "libelle": "Sur lie",
+                    "format_libelle": null,
+                    "code": "LIE",
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1061",
+                                "code_comptable": "9950",
+                                "code_douane": "1B229 01",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 55,
+                  "rendement_conseille": 40,
+                  "rendement_vci": 0,
+                  "rendement_vci_total": 20
+                }
+              },
+              "MUSSM": {
+                "libelle": "Muscadet Sèvre et Maine",
+                "format_libelle": null,
+                "code": "MUSSM",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-inter-loire": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  },
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1050",
+                                "code_comptable": "9940",
+                                "code_douane": "1B230",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        },
+                        "attributs": {
+                          "rendement": 55,
+                          "rendement_conseille": 40,
+                          "rendement_vci": 0,
+                          "rendement_vci_total": 20
+                        }
+                      },
+                      "GORGES": {
+                        "libelle": "Gorges",
+                        "format_libelle": null,
+                        "code": "GORGES",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1250",
+                                "code_comptable": "9940",
+                                "code_douane": "1B702",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        },
+                        "attributs": {
+                          "rendement": null,
+                          "rendement_vci": null,
+                          "rendement_vci_total": null,
+                          "rendement_conseille": null
+                        }
+                      },
+                      "CLISSON": {
+                        "libelle": "Clisson",
+                        "format_libelle": null,
+                        "code": "CLISSON",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1150",
+                                "code_comptable": "9940",
+                                "code_douane": "1B701",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        },
+                        "attributs": {
+                          "rendement": null,
+                          "rendement_vci": null,
+                          "rendement_vci_total": null,
+                          "rendement_conseille": null
+                        }
+                      },
+                      "LEPALLET": {
+                        "libelle": "Le Pallet",
+                        "format_libelle": null,
+                        "code": "LEPALLET",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1350",
+                                "code_comptable": "9940",
+                                "code_douane": "1B703",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        },
+                        "attributs": {
+                          "rendement": null,
+                          "rendement_vci": null,
+                          "rendement_vci_total": null,
+                          "rendement_conseille": null
+                        }
+                      }
+                    },
+                    "attributs": {
+                      "rendement": null,
+                      "rendement_conseille": null,
+                      "rendement_vci": null,
+                      "rendement_vci_total": null
+                    }
+                  },
+                  "LIE": {
+                    "libelle": "Sur lie",
+                    "format_libelle": null,
+                    "code": "LIE",
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "MEL": {
+                                "libelle": "Melon",
+                                "format_libelle": null,
+                                "code": "MEL",
+                                "code_produit": "1051",
+                                "code_comptable": "9950",
+                                "code_douane": "1B230 01",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "attributs": {
+                      "rendement": 55,
+                      "rendement_conseille": 40,
+                      "rendement_vci": 0,
+                      "rendement_vci_total": 20
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 45,
+                  "rendement_vci": 0,
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": 40
+                }
+              },
+              "COA": {
+                "libelle": "Coteaux d'Ancenis",
+                "format_libelle": "%g% %a% %l% %co% %m% %ce%",
+                "code": "COA",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-inter-loire": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    },
+                    "produit_non_interpro": false
+                  },
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "Chenin",
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": "3010",
+                                "code_comptable": "9980",
+                                "code_douane": "1B707S01",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    },
+                                    "produit_non_interpro": false
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              },
+                              "MALVOISIE": {
+                                "libelle": "Malvoisie",
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": "3010",
+                                "code_comptable": "9980",
+                                "code_douane": "1B707S",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    },
+                                    "produit_non_interpro": false
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": [],
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 50,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
+                          },
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": "1",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "Gamay",
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": "3020",
+                                "code_comptable": "9980",
+                                "code_douane": "1R707S03",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    },
+                                    "produit_non_interpro": false
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": [],
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null
+                                }
+                              },
+                              "CBF": {
+                                "libelle": "Cabernet",
+                                "format_libelle": null,
+                                "code": "CBF",
+                                "code_produit": "3020",
+                                "code_comptable": "9980",
+                                "code_douane": "1R707S02",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    },
+                                    "produit_non_interpro": false
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          },
+                          "rose": {
+                            "libelle": "Rosé",
+                            "format_libelle": null,
+                            "code": "2",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "Gamay",
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": "3030",
+                                "code_comptable": "9980",
+                                "code_douane": "1S707S03",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    },
+                                    "produit_non_interpro": false
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": [],
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null
+                                }
+                              },
+                              "CBF": {
+                                "libelle": "Cabernet",
+                                "format_libelle": null,
+                                "code": "CBF",
+                                "code_produit": "3030",
+                                "code_comptable": "9980",
+                                "code_douane": "1S707S02",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    },
+                                    "produit_non_interpro": false
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 60,
+                  "rendement_conseille": null,
+                  "rendement_dr": null,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null
+                }
+              },
+              "GPL": {
+                "libelle": "Gros plant",
+                "format_libelle": null,
+                "code": "GPL",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-inter-loire": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  },
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "FBL": {
+                                "libelle": "Folle blanche",
+                                "format_libelle": null,
+                                "code": "FBL",
+                                "code_produit": "2000",
+                                "code_comptable": "9960",
+                                "code_douane": "1B708",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "LIE": {
+                    "libelle": "Sur lie",
+                    "format_libelle": null,
+                    "code": "LIE",
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-inter-loire": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      },
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-inter-loire": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          },
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "3",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-inter-loire": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              },
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "FBL": {
+                                "libelle": "Folle blanche",
+                                "format_libelle": null,
+                                "code": "FBL",
+                                "code_produit": "2001",
+                                "code_comptable": "9970",
+                                "code_douane": "1B708 01",
+                                "interpro": {
+                                  "INTERPRO-inter-loire": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    },
+                                    "produit_non_interpro": false
+                                  },
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "cepages_autorises": []
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 70,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null,
+                  "rendement_conseille": 55
+                }
+              }
+            },
+            "libelle": null,
+            "format_libelle": null,
+            "code": "TRANQ",
+            "code_produit": null,
+            "code_comptable": null,
+            "code_douane": null,
+            "interpro": {
+              "INTERPRO-inter-loire": {
+                "labels": [],
+                "droits": {
+                  "douane": [
+                    {
+                      "date": "2015-08-01",
+                      "taux": 3.75,
+                      "code": "L387",
+                      "libelle": "Vins Tranquilles"
+                    },
+                    {
+                      "date": "2016-01-01",
+                      "taux": 3.77,
+                      "code": "L387",
+                      "libelle": "Vins Tranquilles"
+                    },
+                    {
+                      "date": "2018-01-01",
+                      "taux": 3.78,
+                      "code": "L387",
+                      "libelle": "Vins Tranquilles"
+                    },
+                    {
+                      "date": "2019-01-01",
+                      "taux": 3.82,
+                      "code": "L387",
+                      "libelle": "Vins Tranquilles"
+                    },
+                    {
+                      "date": "2020-01-01",
+                      "taux": 3.88,
+                      "code": "L387",
+                      "libelle": "Vins Tranquilles"
+                    }
+                  ],
+                  "cvo": []
+                }
+              },
+              "INTERPRO-declaration": {
+                "labels": [],
+                "droits": {
+                  "douane": [],
+                  "cvo": []
+                }
+              }
+            },
+            "departements": []
+          }
+        },
+        "libelle": "AOP",
+        "format_libelle": "%g% %a% %l% %m%",
+        "code": "AOC_INTERLOIRE",
+        "code_produit": null,
+        "code_comptable": null,
+        "code_douane": null,
+        "departements": [],
+        "interpro": {
+          "INTERPRO-inter-loire": {
+            "labels": [],
+            "droits": {
+              "douane": [],
+              "cvo": [
+                {
+                  "date": "2016-01-01",
+                  "taux": 2.5,
+                  "code": "CVO",
+                  "libelle": "Cvo"
+                }
+              ]
+            }
+          },
+          "INTERPRO-declaration": {
+            "labels": [],
+            "droits": {
+              "douane": [],
+              "cvo": []
+            }
+          }
+        },
+        "attributs": {
+          "rendement": null,
+          "rendement_vci": null,
+          "rendement_vci_total": null,
+          "rendement_conseille": null,
+          "rendement_dr": null
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,3 @@
 all:
   configuration:
     societe:
-      disable_save: true
