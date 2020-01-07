@@ -13,6 +13,7 @@ class DeclarationTousView extends acCouchdbView
     const KEY_RAISON_SOCIALE = 8;
     const KEY_COMMUNE = 9;
     const KEY_EMAIL = 10;
+    const KEY_CVI = 11;
 
     const MODE_TELDECLARATION = "Télédeclaration";
     const MODE_SAISIE_INTERNE = "Saisie interne";
