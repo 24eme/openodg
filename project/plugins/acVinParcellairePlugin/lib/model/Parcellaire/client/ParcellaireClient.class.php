@@ -146,11 +146,12 @@ class ParcellaireClient extends acCouchdbClient {
      *
      * @return bool
      */
-    public function saveParcellaire(Etablissement $etablissement, &$error)
+    public function saveParcellaire(Etablissement $etablissement, Array &$errors)
     {
         $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi);
-        //$fileJson = $this->scrapeParcellaireJSON($etablissement->cvi);
-        return $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv']);
+        $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi);
+        return $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv']) &&
+        $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
             
     }
 
