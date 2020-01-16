@@ -58,23 +58,24 @@
         <?php endif; ?>
     </div>
 </div>
-<?php $parcellaire_client = ParcellaireClient::getInstance();
+<!-- <?php $parcellaire_client = ParcellaireClient::getInstance();
 if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
     <div>
-        <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
+        <?php //include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
     </div>
-<?php endif; ?>
+<?php endif; ?> -->
 <?php $list_communes = [];?>
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <div class="row">
         <div class="col-xs-12">
             <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
             	<h3><?php echo $commune ?></h3>
-                <div class="clearfix">
+                <!--<div class="clearfix">
                     <a onclick="zoomOnMap()" class="pull-right" href="#" style="margin-bottom: 1em">
                         <i class="glyphicon glyphicon-map-marker"></i> Voir les parcelles
                     </a>
-                </div>
+                </div>-->
+
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
@@ -86,7 +87,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                     <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
-                    <th class="col-xs-1">Carte</th>
+                    <!-- <th class="col-xs-1">Carte</th> -->
 		            </tr>
                   </thead>
                     <tbody>
@@ -154,13 +155,14 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                                 <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
-                                <td>
+                                <!-- <td>
                                     <div id="par" class="clearfix">
                                         <a href="#parcelle<?php echo $detail->numero_parcelle; ?>" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
                                             <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
                                         </a>
                                     </div>
-                                </td>
+                                </td> -->
+
                             </tr>
                             <?php
                         endforeach;
