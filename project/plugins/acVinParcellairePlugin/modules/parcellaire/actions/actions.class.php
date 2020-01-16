@@ -64,11 +64,14 @@ class parcellaireActions extends sfActions {
         $parcellaire_client = ParcellaireClient::getInstance();
 
         try {
-            $error = '';
+            $errors = [];
+            $errors['csv'] =  '';
+            $errors['json'] = '';
+            
             $msg = '';
-            $file = $parcellaire_client->scrapeParcellaire($this->etablissement->cvi);
-            if (! $parcellaire_client->saveParcellaire($this->etablissement, $file, $error)) {
-                $msg = $error;
+            
+            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors)) {
+                $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {
             $msg = $e->getMessage();
@@ -76,6 +79,8 @@ class parcellaireActions extends sfActions {
 
         if (! empty($msg)) {
             $this->getUser()->setFlash('erreur_import', $msg);
+        }else{
+            $this->getUser()->setFlash('success_import', "La mise à jour a été un succès.");
         }
 
         $this->redirect('parcellaire_declarant', $this->etablissement);

@@ -1,5 +1,4 @@
 <?php
-
 final class ParcellaireCsvFormat
 {
     const CSV_CVI = 0;
@@ -9,16 +8,19 @@ final class ParcellaireCsvFormat
     const CSV_CP = 4;
     const CSV_COMMUNE_OP = 5;
     const CSV_EMAIL = 6;
-    const CSV_COMMUNE = 7;
-    const CSV_LIEU_DIT = 8;
-    const CSV_SECTION = 9;
-    const CSV_NUMERO_PARCELLE = 10;
-    const CSV_PRODUIT = 11;
-    const CSV_CEPAGE = 12;
-    const CSV_SUPERFICIE = 13;
-    const CSV_SUPERFICIE_CADASTRALE = 14;
-    const CSV_CAMPAGNE = 15;
-    const CSV_ECART_PIED = 16;
-    const CSV_ECART_RANG = 17;
-    const CSV_FAIRE_VALOIR = 18;
+    const CSV_IDU = 7;
+    const CSV_COMMUNE = 8;
+    const CSV_LIEU_DIT = 9;
+    const CSV_SECTION = 10;
+    const CSV_NUMERO_PARCELLE = 11;
+    const CSV_PRODUIT = 12;
+    const CSV_CEPAGE = 13;
+    const CSV_SUPERFICIE = 14;
+    const CSV_SUPERFICIE_CADASTRALE = 15;
+    const CSV_CAMPAGNE = 16;
+    const CSV_ECART_PIED = 17;
+    const CSV_ECART_RANG = 18;
+    const CSV_FAIRE_VALOIR = 19;
+    const CSV_STATUT = 20;
+    const CSV_DATE_MAJ = 21;
 }

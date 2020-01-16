@@ -50,6 +50,23 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
+    public function getDelimitations($communes){
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        // $dir = sfConfig::get('sf_apps_dir');
+        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
+        $geojson = [];
+        $files = '';
+        foreach ($communes as $id => $commune) {
+            $file_name = $scrapydocs.'/delimitation-'.$commune.'.json';
+            $files = glob($file_name);
+            if (!empty($files)) {
+                $contents = file_get_contents($file_name);
+                array_push($geojson, $contents);
+            }
+        }
+        return $geojson;
+    }
+
     /**
      * Scrape le site des douanes via le scrapy
      *
@@ -58,7 +75,7 @@ class ParcellaireClient extends acCouchdbClient {
      * @throws Exception Si aucun CVI trouvé
      * @return string Le fichier le plus récent
      */
-    public function scrapeParcellaire($cvi)
+    public function scrapeParcellaireCSV($cvi)
     {
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
@@ -125,12 +142,11 @@ class ParcellaireClient extends acCouchdbClient {
      * sauver
      *
      * @param Etablissement $etablissement L'établissement à mettre à jour
-     * @param string $path Le chemin du fichier
-     * @param string &$error Le potentiel message d'erreur de retour
+     * @param Array &$error Le potentiel message d'erreur de retour
      *
      * @return bool
      */
-    public function saveParcellaire(Etablissement $etablissement, $path, &$error)
+    public function saveParcellaire(Etablissement $etablissement, Array &$errors)
     {
         $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi);
         $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi);
@@ -145,7 +161,7 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellaire = $this->getLast($identifiant);
         
         $uri = $parcellaire->getAttachmentUri($file_name);
-        $import = file_get_contents($uri);
+        
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $uri);
@@ -216,8 +232,28 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellaire = new Parcellaire();
         $parcellaire->initDoc($identifiant, $date);
         $parcellaire->source = $source;
-
+       
         return $parcellaire;
+    }
+
+    public function findOrCreateDocJson($identifiant, $date = null, $source = null, $path=null, $cvi, $type = self::TYPE_COUCHDB) {
+        if (! $date) {
+            $date = date('Ymd');
+        }
+        $parcellaire = $this->getLast($identifiant);
+        $declaration = $parcellaire->getDeclaration();        
+        
+        if ($parcellaire && $parcellaire->date == $date) {
+            if($path){
+                $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
+                $parcellaire->setDeclaration($declaration);
+                
+                $parcellaire->save();
+            }
+            
+            return $parcellaire;
+        }
+    
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
