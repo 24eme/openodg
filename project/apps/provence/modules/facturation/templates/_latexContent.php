@@ -65,8 +65,8 @@
 \renewcommand{\headrulewidth}{0cm}
 \renewcommand\sfdefault{phv}
 \renewcommand{\familydefault}{\sfdefault}
-\fancyhead[L]{\includegraphics[scale=0.1]{\LOGO}}
-\fancyhead[C]{ \large{\textbf{\EMETTEURLIBELLE} \\ \EMETTEURADRESSE \\
+\fancyhead[L]{\includegraphics[scale=0.11]{\LOGO}}
+\fancyhead[R]{ \large{\textbf{\EMETTEURLIBELLE} \\ \EMETTEURADRESSE \\
 		\EMETTEURCP \\ \EMETTEURVILLE}}
 \fancypagestyle{nofooter}{%
 	  \fancyfoot{}%
