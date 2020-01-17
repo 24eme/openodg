@@ -43,7 +43,7 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
 	    			$item->produit = "certifications/".$data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[DouaneCsvFile::CSV_PRODUIT_GENRE]."/appellations/".$data[DouaneCsvFile::CSV_PRODUIT_APPELLATION]."/mentions/".$data[DouaneCsvFile::CSV_PRODUIT_MENTION]."/lieux/".$data[DouaneCsvFile::CSV_PRODUIT_LIEU]."/couleurs/".$data[DouaneCsvFile::CSV_PRODUIT_COULEUR]."/cepages/".$data[DouaneCsvFile::CSV_PRODUIT_CEPAGE];
 	    			$item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
 	    			$item->categorie = $data[DouaneCsvFile::CSV_LIGNE_CODE];
-	    			$item->valeur = $data[DouaneCsvFile::CSV_VALEUR];
+	    			$item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
 	    			if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {
 	    				if ($tiers = EtablissementClient::getInstance()->findByCvi($data[DouaneCsvFile::CSV_TIERS_CVI])) {
 	    					$item->tiers = $tiers->_id;
@@ -63,6 +63,44 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
 
 	public function getCategorie(){
 		return strtolower($this->type);
+	}
+
+	public function calcul($formule, $produitFilter = null) {
+		$calcul = $formule;
+		$numLignes = preg_split('|[\-+*\/() ]+|', $formule, -1, PREG_SPLIT_NO_EMPTY);
+		foreach($numLignes as $numLigne) {
+			$datas[$numLigne] = $this->getTotalValeur($numLigne, $produitFilter);
+		}
+
+		foreach($datas as $numLigne => $value) {
+			$calcul = str_replace($numLigne, $value, $calcul);
+		}
+
+		return eval("return $calcul;");
+	}
+
+	public function getTotalValeur($numLigne, $produitFilter = null) {
+		$value = 0;
+
+		$produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+		$produitExclude = (bool) $produitExclude;
+		$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
+
+		foreach($this->donnees as $donnee) {
+			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $donnee->produit)) {
+				continue;
+			}
+			if($produitFilter && $produitExclude && preg_match($regexpFilter, $donnee->produit)) {
+				continue;
+			}
+			if($donnee->categorie != str_replace("L", "", $numLigne)) {
+				continue;
+			}
+
+			$value += VarManipulator::floatize($donnee->valeur);
+		}
+
+		return $value;
 	}
 
 	/**** MOUVEMENTS ****/
