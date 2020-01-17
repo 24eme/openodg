@@ -1,5 +1,4 @@
 <?php
-
 final class ParcellaireCsvFormat
 {
     const CSV_CVI = 0;

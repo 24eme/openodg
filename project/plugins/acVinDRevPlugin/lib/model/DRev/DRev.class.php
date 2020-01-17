@@ -1154,12 +1154,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
       foreach($cotisations as $cotisation) {
           $mouvement = DRevMouvement::freeInstance($this);
-          $mouvement->categorie = $cotisation->getCollectionKey();
-          $mouvement->type_hash = $cotisation->getDetailKey();
-          $mouvement->type_libelle = $cotisation->getLibelle();
-          $mouvement->quantite = $cotisation->getQuantite();
-          $mouvement->taux = $cotisation->getPrix();
-          $mouvement->tva = $cotisation->getTva();
+          $mouvement->fillFromCotisation($cotisation);
           $mouvement->facture = 0;
           $mouvement->facturable = 1;
           $mouvement->date = $this->getCampagne().'-12-10';

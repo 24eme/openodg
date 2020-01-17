@@ -24,8 +24,16 @@
 						<code_syndicat_vin value="<?php echo $codeProduit; ?>" />
 						<surface value="<?php echo $produit->superficie_revendique; ?>" />
 						<volume value="<?php echo $produit->volume_revendique_total * 100; ?>" />
-						<vsi value="0" />
-					</ligne>
+            <?php if($produit->hasVci()): ?>
+            <vci_complement value="<?php echo floatval($produit->vci->complement); ?>" />
+            <vci_nouveau value="<?php echo floatval($produit->vci->constitue); ?>" />
+            <vci_rafraichi value="<?php echo floatval($produit->vci->rafraichi); ?>" />
+            <vci_substitue value="<?php echo floatval($produit->vci->substitution); ?>" />
+            <vci_detruit value="<?php echo floatval($produit->vci->destruction); ?>" />
+            <vci_stock_n value="<?php echo floatval($produit->vci->stock_final); ?>"/>
+            <vci_stock_n_1 value="<?php echo floatval($produit->vci->stock_precedent); ?>"/>
+          <?php endif; ?>
+  					</ligne>
 	<?php endif; ?>
 <?php endforeach; ?>
 				</lignes>
