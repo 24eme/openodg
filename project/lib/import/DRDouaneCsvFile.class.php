@@ -271,7 +271,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $produit->getLibelleFormat();
     			$p[] = $donnee->complement;
                 $produitid = join("", $p);
-                if (!$colonnesid[$produitid]) {
+                if (!isset($colonnesid[$produitid]) || !$colonnesid[$produitid]) {
                     $colonnesid[$produitid] = ++$colonneid;
                 }
     			$p[] = $donnee->categorie;
