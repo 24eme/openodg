@@ -27,7 +27,7 @@
 \newcommand{\CutlnPapillon}{\Rightscissors \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline
 \\
 }
-\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_provence.png}
+\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_provence2.png}
 
 
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
@@ -45,7 +45,7 @@
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
-\def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
+\def\FACTUREDECLARANTCOMMUNE{<?php echo escape_string_for_latex($facture->declarant->commune); ?>}
 \def\FACTUREMEMBRERS{<?php echo escape_string_for_latex($facture->declarant->raison_sociale); ?>}
 \def\FACTUREMEMBREADRESSE{<?php echo escape_string_for_latex($facture->declarant->adresse); ?>}
 \def\FACTUREMEMBRECOMMUNE{<?php echo escape_string_for_latex($facture->declarant->commune); ?>}
