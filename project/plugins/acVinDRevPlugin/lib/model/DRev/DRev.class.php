@@ -1123,6 +1123,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalSuperficieVinifiee();
 	}
 
+    public function getTotalVolumeRevendique()
+    {
+
+        return $this->declaration->getTotalVolumeRevendique();
+    }
+
+    public function getTotalVolumeRevendiqueVCI()
+    {
+
+        return $this->declaration->getTotalVolumeRevendiqueVCI();
+    }
+
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
