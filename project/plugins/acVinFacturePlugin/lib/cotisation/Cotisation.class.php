@@ -52,6 +52,14 @@ class Cotisation
 		return $this->getConfig()->callback;
 	}
 
+	protected function getConfigCallbackParameters() {
+		if(!$this->getConfig()->exist('callback_parameters')) {
+			return array();
+		}
+		return $this->getConfig()->callback_parameters->toArray(true, false);
+	}
+
+
 	protected function getDoc() {
 
 		return $this->doc;

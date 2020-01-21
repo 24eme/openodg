@@ -184,6 +184,12 @@ TemplateFacture:
                               tranche: { required: false }
                               reference: { required: false }
                               callback: { required: false }
+                              callback_parameters:
+                                type: array_collection
+                                required: false
+                                definition:
+                                  fields:
+                                    '*': {  }
                               depart: { required: false }
                               minimum: { required: false }
                               complement: { required: false }

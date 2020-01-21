@@ -161,7 +161,6 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                                         </a>
                                     </div>
                                 </td>
-
                             </tr>
                             <?php
                         endforeach;

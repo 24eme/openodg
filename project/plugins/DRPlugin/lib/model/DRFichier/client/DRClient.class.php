@@ -7,10 +7,10 @@ class DRClient extends acCouchdbClient {
       return acCouchdbManager::getClient("DR");
     }
 
-    public function findByArgs($identifiant, $annee)
+    public function findByArgs($identifiant, $annee, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
     	$id = 'DR-' . $identifiant . '-' . $annee;
-    	return $this->find($id);
+    	return $this->find($id, $hydrate);
     }
 
     public function createDoc($identifiant, $campagne, $papier = false)
