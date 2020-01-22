@@ -1,0 +1,136 @@
+{
+   "_id": "TEMPLATE-FACTURE-AOC-2019",
+   "type": "TemplateFacture",
+   "campagne": "2019",
+   "template": "AOC",
+   "libelle": "2019 - AOC Vins de Nantes",
+   "docs": [
+       "DR",
+       "DRev"
+   ],
+   "cotisations": {
+       "odg": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation ODG",
+           "code_comptable": "706102",
+           "details": {
+               "superficie": {
+                   "modele": "CotisationVariable",
+                   "prix": 20,
+                   "tva": 0,
+                   "libelle": "ha de superficie récolté",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DR"
+                   ],
+                   "callback": "calcul",
+                   "callback_parameters": ["L4"]
+               },
+               "volume": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.40,
+                   "tva": 0,
+                   "libelle": "hl de vins récolté",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DR"
+                   ],
+                   "callback": "calcul",
+                   "callback_parameters": ["L5 - (L12 + L14 + L16)"]
+               },
+               "vci": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.40,
+                   "tva": 0.20,
+                   "libelle": "hl de VCI utilisé",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getTotalVolumeRevendiqueVCI"
+               }
+           }
+       },
+       "valorisation": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation valorisation",
+           "code_comptable": "706102",
+           "details": {
+               "superficie": {
+                   "modele": "CotisationVariable",
+                   "prix": 20,
+                   "tva": 0.20,
+                   "libelle": "ha de superficie récolté",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DR"
+                   ],
+                   "callback": "calcul",
+                   "callback_parameters": ["L4"]
+               },
+               "volume": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.40,
+                   "tva": 0.20,
+                   "libelle": "hl de vin récolté",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DR"
+                   ],
+                   "callback": "calcul",
+                   "callback_parameters": [
+                       "L5 - (L12 + L14 + L16)",
+                       "NOT CLISSON,GORGES,LEPALLET"
+                   ]
+               },
+               "volume_crus": {
+                   "modele": "CotisationVariable",
+                   "prix": 5,
+                   "tva": 0.20,
+                   "libelle": "hl de vins de crus récolté",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DR"
+                   ],
+                   "callback": "calcul",
+                   "callback_parameters": [
+                       "L5 - (L12 + L14 + L16)",
+                       "CLISSON,GORGES,LEPALLET"
+                   ]
+               },
+               "vci": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.40,
+                   "tva": 0.20,
+                   "libelle": "hl de VCI utilisé",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getTotalVolumeRevendiqueVCI"
+               }
+           }
+       },
+       "inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Droits I.N.A.O. (Art. 34, Loi 88/11/93 du 29/12/1988)",
+           "code_comptable": "706102",
+           "details": {
+               "volume": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "libelle": "hl de vins revendiqué",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getTotalVolumeRevendique"
+               }
+           }
+       }
+   }
+}

@@ -319,11 +319,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $montant_papillon_str = sprintf("%01.02f",$montant_papillon);
         $cumul += floatval($montant_papillon_str);
         $dateField = $pvalue["field"];
-        if($pvalue["calcul"]){
+        if($pvalue["date_jour_mois"]){
           $d = $this->get($dateField);
           $date_echeance = new DateTime($d);
-          $date_echeance->modify($pvalue["calcul"]);
-          $this->updateEcheance($pvalue["libelle"],$date_echeance->format("d.m.Y"),$montant_papillon_str);
+          $date_jour_mois = $pvalue["date_jour_mois"].".".date('Y');
+          $this->updateEcheance($pvalue["libelle"],$date_jour_mois,$montant_papillon_str);
         }
         else{
           $this->updateEcheance($pvalue["libelle"],$pvalue["libelle_date"],$montant_papillon_str);

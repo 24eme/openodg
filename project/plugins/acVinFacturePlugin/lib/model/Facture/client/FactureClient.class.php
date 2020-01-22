@@ -56,6 +56,10 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function getMouvementsByDocs($compteIdentifiant, $docs, $regenerate = false) {
+        if (!$docs) {
+
+            return array();
+        }
         $mouvements = array();
         if($docs && !is_array($docs)){
           $docs = array($docs);
