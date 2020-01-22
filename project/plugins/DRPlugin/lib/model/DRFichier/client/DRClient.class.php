@@ -1,6 +1,6 @@
 <?php
 
-class DRClient extends acCouchdbClient {
+class DRClient extends acCouchdbClient implements FacturableClient {
 	const TYPE_MODEL = 'DR';
     public static function getInstance()
     {
@@ -34,5 +34,16 @@ class DRClient extends acCouchdbClient {
     		$view->limit($limit);
     	}
     	return $view->execute($hydrate)->getDatas();
+    }
+
+	public function findFacturable($identifiant, $campagne) {
+    	$dr = $this->find('DR-'.$identifiant.'-'.$campagne);
+
+        if($dr && !$dr->exist('donnees')) {
+
+            return null;
+        }
+
+        return $dr;
     }
 }

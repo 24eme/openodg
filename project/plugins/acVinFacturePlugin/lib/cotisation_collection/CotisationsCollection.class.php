@@ -13,7 +13,13 @@ class CotisationsCollection
 	public function getCotisations() {
 		$cotisations = array();
 		foreach($this->getDetails() as $detail) {
-			$cotisations[] = $detail->getInstanceCotisation($this->getDoc());
+			$cotisation = $detail->getInstanceCotisation($this->getDoc());
+
+			if(!$cotisation) {
+				continue;
+			}
+			
+			$cotisations[] = $cotisation;
 		}
 
 		return $cotisations;

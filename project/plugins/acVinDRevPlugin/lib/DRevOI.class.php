@@ -18,7 +18,7 @@ class DRevOI
 
 	public function send()
 	{
-		$regions = ($this->region)? array_keys(sfConfig::get('app_oi_regions')) : null;
+		$regions = ($this->region)? sfConfig::get('app_oi_regions') : null;
 		$domain_action = ($this->region)? $regions[$this->region]['domain_action'] : sfConfig::get('app_oi_domain_action');
 		$url_http = ($this->region)? $regions[$this->region]['url_http'] : sfConfig::get('app_oi_url_http');
 		$headers = array(

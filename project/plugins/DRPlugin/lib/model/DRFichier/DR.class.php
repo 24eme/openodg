@@ -146,7 +146,7 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
           }
 
-          if($this->hasVersion() && !$mouvement->quantite) {
+          if(!$mouvement->quantite) {
               continue;
           }
 
