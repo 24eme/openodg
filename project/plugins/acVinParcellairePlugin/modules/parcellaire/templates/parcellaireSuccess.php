@@ -58,6 +58,15 @@
         <?php endif; ?>
     </div>
 </div>
+
+ <div class="row">
+        <div class="col-xs-12">
+            <h3>Filtrer</h3>
+            <div class="form-group">
+                <input type="hidden" data-placeholder="Saisissez un produit, un numéro de contrat ou un nom de soussigné :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+            </div>
+        </div>
+    </div>
 <?php $parcellaire_client = ParcellaireClient::getInstance();
 if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
     <div>
@@ -144,16 +153,25 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                               $classcepage .= ' text-danger strong';
                             }
                             ?>
-                            <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
+                            <?php 
+                                $lieu = $detail->lieu;
+                                $compagne = $detail->campagne_plantation;
+                                $section = $detail->section;
+                                $num_parcelle = $detail->numero_parcelle;
+                                $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
+                                $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
+                                $cepage = $detail->cepage;
+                            ?>
+                            <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
 
-                                <td style="<?php echo $styleproduit; ?>"><?php echo $detail->lieu; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $detail->section; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
-                                <td class=""><?php echo $detail->numero_parcelle; ?></td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $detail->cepage; ?></td>
-                                <td class="" style="text-align: center;"><?php echo $detail->campagne_plantation; ?></td>
+                                <td style="<?php echo $styleproduit; ?>"><?php echo $lieu; ?></td>
+                                <td class="" style="text-align: right;"><?php echo $section; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
+                                <td class=""><?php echo $num_parcelle; ?></td>
+                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
+                                <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
                                 <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
                                 <td>
                                     <div id="par" class="clearfix">
                                         <a href="#parcelle<?php echo $detail->numero_parcelle; ?>" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">

@@ -1,4 +1,5 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
+<?php use_javascript('hamza_style.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
