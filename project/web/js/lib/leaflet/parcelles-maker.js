@@ -210,17 +210,28 @@ function filterMapOn(myfilters){
     filters = myfilters;
     $(".hamzastyle-item").each(function(i, val){
         var words = val.getAttribute("data-words");
-        if(filters.value && eval(words).includes(filters.value)){
-            myidus.push(val.lastElementChild.firstElementChild.getAttribute("id"));            
+        if(filters.value && checkAllwords(eval(words),filters.value.split(","))){
+            let id = val.lastElementChild.firstElementChild.getAttribute("id");
+            myidus[id] = id;
         }
     });
-    
-    if(filters.value && myidus.length){
-        layerFilter(styleDelimitation(), myidus);
+    if(filters.value && Object.keys(myidus).length){
+        layerFilter(styleDelimitation(), Object.keys(myidus));
+        myidus=[];
     }else{
-        myidus = [];
         layerFilter("default", myidus);
-    }   
+    }
+}
+
+function checkAllwords(words, wordsfilter){
+    for(let i=0; i < wordsfilter.length; i++){
+
+        if(!words.includes(wordsfilter[i])){
+            //console.log('pas',wordsfilter[i]);
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
@@ -233,10 +244,12 @@ function layerFilter(styleCss, myidus){
         map.eachLayer(function(layer) {
             if(layer.feature){
                 if(typeof(styleCss) == 'object' && !myidus.includes(layer.feature.id)){
+                    console.log(myidus.includes(layer.feature.id));
+                    console.log(layer.feature.id,typeof(styleCss));
+
                    layer.setStyle(styleCss);                    
                 }else if(layer.feature.properties.hasOwnProperty('parcellaires')){
-                    console.log(layer.feature.id,typeof(styleCss));
-                    layer.setStyle(style(layer.feature));
+                   layer.setStyle(style(layer.feature));
                 }
             }
         });
