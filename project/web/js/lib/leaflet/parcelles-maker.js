@@ -227,7 +227,6 @@ function checkAllwords(words, wordsfilter){
     for(let i=0; i < wordsfilter.length; i++){
 
         if(!words.includes(wordsfilter[i])){
-            //console.log('pas',wordsfilter[i]);
             return false;
         }
     }
@@ -244,9 +243,6 @@ function layerFilter(styleCss, myidus){
         map.eachLayer(function(layer) {
             if(layer.feature){
                 if(typeof(styleCss) == 'object' && !myidus.includes(layer.feature.id)){
-                    console.log(myidus.includes(layer.feature.id));
-                    console.log(layer.feature.id,typeof(styleCss));
-
                    layer.setStyle(styleCss);                    
                 }else if(layer.feature.properties.hasOwnProperty('parcellaires')){
                    layer.setStyle(style(layer.feature));
