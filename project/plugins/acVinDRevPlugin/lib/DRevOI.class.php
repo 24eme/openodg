@@ -18,8 +18,9 @@ class DRevOI
 
 	public function send()
 	{
-		$domain_action = ($this->region)? $regions[$region]['domain_action'] : sfConfig::get('app_oi_domain_action');
-		$url_http = ($this->region)? $regions[$region]['url_http'] : sfConfig::get('app_oi_url_http');
+		$regions = ($this->region)? sfConfig::get('app_oi_regions') : null;
+		$domain_action = ($this->region)? $regions[$this->region]['domain_action'] : sfConfig::get('app_oi_domain_action');
+		$url_http = ($this->region)? $regions[$this->region]['url_http'] : sfConfig::get('app_oi_url_http');
 		$headers = array(
 			"Content-Type: text/xml;charset=UTF-8",
 			"SOAPAction: http://".$domain_action."/CreationDrev"
@@ -30,7 +31,7 @@ class DRevOI
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getXml());
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		
+
 		$output = curl_exec($ch);
 		$info = curl_getinfo($ch);
 		if ($output === false || $info['http_code'] != 200) {
