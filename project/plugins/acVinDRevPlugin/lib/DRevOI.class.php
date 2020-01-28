@@ -28,7 +28,7 @@ class DRevOI
 		}else{
 			$this->sendXml();
 		}
-		if(!$this->regions || (count($this->regions) == count($regionSended))){
+		if(!$this->regions || count($regionSended)){
 			 $this->drev->add('envoi_oi', date('c'));
 			 $this->drev->save();
 		}

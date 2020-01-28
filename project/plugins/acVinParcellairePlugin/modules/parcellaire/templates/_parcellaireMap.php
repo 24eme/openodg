@@ -1,5 +1,4 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
-<?php use_javascript('hamza_style.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
@@ -19,5 +18,6 @@ $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissem
 	var parcelles = JSON.parse('<?php echo $import; ?>');
 	var delimitation = '<?php echo $list_communes; ?>';
 </script>
+<?php use_javascript('hamza_style.js'); ?>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>
 
