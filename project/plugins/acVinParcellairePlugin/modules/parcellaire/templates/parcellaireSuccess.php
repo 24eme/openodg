@@ -63,7 +63,7 @@
         <div class="col-xs-12">
             <h3>Filtrer</h3>
             <div class="form-group">
-                <input type="hidden" data-placeholder="Saisissez un produit, un numéro de contrat ou un nom de soussigné :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un produit, un numéro de contrat ou un nom de soussigné :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
             </div>
         </div>
     </div>
@@ -173,7 +173,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
                                 <td>
-                                    <div id="par" class="clearfix">
+                                    <div id="<?php echo $detail->idu; ?>" class="clearfix">
                                         <a href="#parcelle<?php echo $detail->numero_parcelle; ?>" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
                                             <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
                                         </a>

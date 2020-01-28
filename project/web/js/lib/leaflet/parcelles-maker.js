@@ -6,6 +6,9 @@ var myLayer=[];
 var fitBound;
 var minZoom = 17;
 var listIdLayer=[];
+var myidus= [];
+var filters;
+var error = true;
 
 function parseString(dlmString){
     var mydlm = [];
@@ -56,7 +59,8 @@ function getColor(d) {
 
 
 function style(feature) {
-    var color = getColor(feature.properties.parcellaires['0'].Produit);
+    var color;
+    color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
         fillColor: color,
         weight: 2,
@@ -67,7 +71,7 @@ function style(feature) {
     };
 }
 
-function styleDelimitation(feature){
+function styleDelimitation(){
     return {
         fillColor: '#d0f3fb',
         weight: 2,
@@ -109,11 +113,6 @@ function zoomOnMap(){
 
     map.fitBounds(mygeojson.getBounds());
 }
-// var ggHybrid = new L.Google('HYBRID');
-// map.addControl(new L.Control.Layers( { 
-//     'Google Hybrid' : ggHybrid
-//     }, {})
-// );
 
 mygeojson = L.geoJSON(dlmJson,{
     style: styleDelimitation
@@ -135,12 +134,9 @@ function zoomToFeature(e) {
         var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
         if(width > minPopupWidth){
             popup.style.overflowX = "scroll";
-            //popup.style.width = width;
         }   
     }
 }
-
-
 
 function onEachFeature(feature, layer) {
     layer.on({
@@ -180,12 +176,9 @@ function onEachFeature(feature, layer) {
     layer._events.click.reverse();
 
 }
-var error = true;
 
 function showParcelle(id, htmlObj){
-
     if(this.map) {
-
         this.map.eachLayer(function(layer) {
             if(layer.feature){
                 if(layer.feature.id == id){
@@ -199,19 +192,70 @@ function showParcelle(id, htmlObj){
                     
                     this.map.fitBounds(this.myLayer.getBounds());
                     $(window).scrollTop(0);
-                }
-            
-                
+                }   
             }
-
         });
         if(error){
             alert("Erreur: Cette parcelle n'existe pas au cadastre.");
-        }
-        
+        }        
     }else{
         alert("Error: Map empty !");
     }
-
-
 }
+/**
+* On select words filter, we filter map layers also.
+* myfilters it's input element  
+**/
+function filterMapOn(myfilters){
+    filters = myfilters;
+    $(".hamzastyle-item").each(function(i, val){
+        var words = val.getAttribute("data-words");
+        if(filters.value && checkAllwords(eval(words),filters.value.split(","))){
+            let id = val.lastElementChild.firstElementChild.getAttribute("id");
+            myidus[id] = id;
+        }
+    });
+    if(filters.value && Object.keys(myidus).length){
+        layerFilter(styleDelimitation(), Object.keys(myidus));
+        myidus=[];
+    }else{
+        layerFilter("default", myidus);
+    }
+}
+
+function checkAllwords(words, wordsfilter){
+    for(let i=0; i < wordsfilter.length; i++){
+
+        if(!words.includes(wordsfilter[i])){
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+* hide layer(s) by changing color filling (function styleDelimitation)
+* show layer(s) by changing color filling with produit color (function style) 
+**/
+function layerFilter(styleCss, myidus){
+    if(map) {
+        closeDisplayer();
+        map.eachLayer(function(layer) {
+            if(layer.feature){
+                if(typeof(styleCss) == 'object' && !myidus.includes(layer.feature.id)){
+                   layer.setStyle(styleCss);                    
+                }else if(layer.feature.properties.hasOwnProperty('parcellaires')){
+                   layer.setStyle(style(layer.feature));
+                }
+            }
+        });
+    }
+}
+
+$(window).on("load", function() {
+    filters = $("#hamzastyle")[0];
+    if(filters){
+        filterMapOn(filters);
+    }
+});
+
