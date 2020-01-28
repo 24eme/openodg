@@ -3,24 +3,41 @@ class DRevOI
 {
 	public $drev;
 	public $context;
-	public $region;
+	public $regions;
 
 
-	public function __construct(DRev $drev, $context = null, $region = null) {
+	public function __construct(DRev $drev, $context = null) {
 		if (!$drev->validation_odg) {
 			throw new sfException('DRev non validée');
 		}
 		$this->drev = $drev;
 		$this->context = ($context) ? $context : sfContext::getInstance();
-		$this->region = $region;
-
+		$this->regions = sfConfig::get('app_oi_regions');
 	}
 
 	public function send()
 	{
-		$regions = ($this->region)? sfConfig::get('app_oi_regions') : null;
-		$domain_action = ($this->region)? $regions[$this->region]['domain_action'] : sfConfig::get('app_oi_domain_action');
-		$url_http = ($this->region)? $regions[$this->region]['url_http'] : sfConfig::get('app_oi_url_http');
+		if($this->regions){
+			$regionSended = array();
+			foreach ($this->regions as $region => $regionOpt) {
+				if(!count($this->drev->declaration->getProduits($region))){
+					continue;
+				}
+				$regionSended[] = $this->sendXml($region, $regionOpt);
+			}
+		}else{
+			$this->sendXml();
+		}
+		if(!$this->regions || (count($this->regions) == count($regionSended))){
+			 $this->drev->add('envoi_oi', date('c'));
+			 $this->drev->save();
+		}
+		return $this->drev;
+	}
+
+	public function sendXml($region = null, $regionOpt = null){
+		$domain_action = ($regionOpt)? $regionOpt['domain_action'] : sfConfig::get('app_oi_domain_action');
+		$url_http = ($regionOpt)? $regionOpt['url_http'] : sfConfig::get('app_oi_url_http');
 		$headers = array(
 			"Content-Type: text/xml;charset=UTF-8",
 			"SOAPAction: http://".$domain_action."/CreationDrev"
@@ -29,7 +46,7 @@ class DRevOI
 		curl_setopt($ch, CURLOPT_URL, $url_http);
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getXml());
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getXml($region));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
 		$output = curl_exec($ch);
@@ -44,14 +61,10 @@ class DRevOI
 			$stderr = fopen("php://stderr", "w");
 			fwrite($stderr, "Retour envoi oi : ".$output);
 		}
-		if(!$this->region){
-			$this->drev->add('envoi_oi', date('c'));
-			$this->drev->save();
-		}
 		curl_close($ch);
 	}
 
-	protected function getXml() {
-		return $this->context->getController()->getAction('drev', 'main')->getPartial('drev/xml', array('drev' => $this->drev, 'region' => $this->region));
+	protected function getXml($region = null) {
+		return $this->context->getController()->getAction('drev', 'main')->getPartial('drev/xml', array('drev' => $this->drev, 'region' => $region));
 	}
 }
