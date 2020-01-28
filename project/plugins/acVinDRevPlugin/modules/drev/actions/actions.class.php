@@ -789,11 +789,12 @@ class drevActions extends sfActions {
     }
 
     public function executeSendoi(sfWebRequest $request) {
+      
     	$drev = $this->getRoute()->getDRev();
-      $region = $request->getParameter('region',null);
     	$this->secure(DRevSecurity::VISUALISATION, $drev);
-    	$drevOi = new DRevOI($drev, null, $region);
-    	$drevOi->send();
+      $drevOi = new DRevOI($drev, null);
+      $drevOi->send();
+
     	return $this->redirect('drev_visualisation', $drev);
     }
 
