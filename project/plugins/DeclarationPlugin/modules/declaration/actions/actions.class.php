@@ -253,11 +253,10 @@ class declarationActions extends sfActions {
               if(!array_key_exists($campagne,$configurations)){
                  $configurations[$campagne] = ConfigurationClient::getConfigurationByCampagne($campagne);
               }
-              if($row->key[DeclarationTousView::KEY_PRODUIT]) {
+              if($row->key[DeclarationTousView::KEY_PRODUIT] && !isset($this->produitsLibelles[$row->key[DeclarationTousView::KEY_PRODUIT]])) {
                   $this->produitsLibelles[$row->key[DeclarationTousView::KEY_PRODUIT]] =  $configurations[$campagne]->declaration->get($row->key[DeclarationTousView::KEY_PRODUIT])->getLibelleComplet();
               }
             }
-
             $nbDocs += $row->value;
 
             foreach($this->facets as $facetNom => $items) {
