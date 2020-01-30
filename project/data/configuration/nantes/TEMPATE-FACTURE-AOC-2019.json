@@ -19,8 +19,9 @@
                    "modele": "CotisationVariable",
                    "prix": 20,
                    "tva": 0,
-                   "libelle": "ha de superficie récolté",
+                   "libelle": "Superficie",
                    "complement_libelle": "",
+                   "unite": "ha",
                    "docs": [
                        "DR"
                    ],
@@ -31,8 +32,9 @@
                    "modele": "CotisationVariable",
                    "prix": 1.40,
                    "tva": 0,
-                   "libelle": "hl de vins récolté",
+                   "libelle": "Volume",
                    "complement_libelle": "",
+                   "unite": "hl",
                    "docs": [
                        "DR"
                    ],
@@ -43,8 +45,9 @@
                    "modele": "CotisationVariable",
                    "prix": 1.40,
                    "tva": 0.20,
-                   "libelle": "hl de VCI utilisé",
+                   "libelle": "VCI",
                    "complement_libelle": "",
+                   "unite": "hl",
                    "docs": [
                        "DRev"
                    ],
@@ -62,8 +65,9 @@
                    "modele": "CotisationVariable",
                    "prix": 20,
                    "tva": 0.20,
-                   "libelle": "ha de superficie récolté",
+                   "libelle": "Superficie",
                    "complement_libelle": "",
+                   "unite": "ha",
                    "docs": [
                        "DR"
                    ],
@@ -74,8 +78,9 @@
                    "modele": "CotisationVariable",
                    "prix": 1.40,
                    "tva": 0.20,
-                   "libelle": "hl de vin récolté",
+                   "libelle": "Volume",
                    "complement_libelle": "",
+                   "unite": "hl",
                    "docs": [
                        "DR"
                    ],
@@ -89,8 +94,9 @@
                    "modele": "CotisationVariable",
                    "prix": 5,
                    "tva": 0.20,
-                   "libelle": "hl de vins de crus récolté",
+                   "libelle": "Volume Crus",
                    "complement_libelle": "",
+                   "unite": "hl",
                    "docs": [
                        "DR"
                    ],
@@ -104,8 +110,9 @@
                    "modele": "CotisationVariable",
                    "prix": 1.40,
                    "tva": 0.20,
-                   "libelle": "hl de VCI utilisé",
+                   "libelle": "VCI",
                    "complement_libelle": "",
+                   "unite": "hl",
                    "docs": [
                        "DRev"
                    ],
@@ -123,8 +130,9 @@
                    "modele": "CotisationVariable",
                    "prix": 0.15,
                    "tva": 0,
-                   "libelle": "hl de vins revendiqué",
+                   "libelle": "",
                    "complement_libelle": "",
+                   "unite": "(hl)",
                    "docs": [
                        "DRev"
                    ],

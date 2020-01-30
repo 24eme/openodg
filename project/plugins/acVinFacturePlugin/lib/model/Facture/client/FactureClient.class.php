@@ -119,21 +119,23 @@ class FactureClient extends acCouchdbClient {
                     "categorie" => $mouv->categorie,
                     "type_hash" => $mouv->type_hash,
                     "type_libelle" => $mouv->type_libelle,
-                    "quantite" => $mouv->quantite,
+                    "quantite" => 0,
                     "taux" => $mouv->taux,
-                    "origines" => array($mouv->getDocument()->_id => array($mouv->getKey())),
+                    "origines" => array(),
                 );
                 if($mouv->exist("tva")){
-                  $mouvementsAggreges[$key] = array_merge($mouvementsAggreges[$key],array("tva" => $mouv->tva));
+                    $mouvementsAggreges[$key]["tva"] = $mouv->tva;
                 }
-            } else {
-                $mouvementsAggreges[$key]["type_libelle"] = $mouv->type_libelle;
-                $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
-                if(!isset($mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id])) {
-                    $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id] = array();
+                if($mouv->exist("unite")){
+                  $mouvementsAggreges[$key]["unite"] = $mouv->unite;
                 }
-                $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id][] = $mouv->getKey();
             }
+
+            $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
+            if(!isset($mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id])) {
+                $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id] = array();
+            }
+            $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id][] = $mouv->getKey();
         }
 
         return array_values($mouvementsAggreges);
