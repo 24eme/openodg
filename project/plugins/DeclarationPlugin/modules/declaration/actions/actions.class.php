@@ -273,18 +273,20 @@ class declarationActions extends sfActions {
                     continue;
                 }
                 $facetKey = $facetToRowKey[$facetNom];
-                if(array_key_exists($facetKey, $row->key) && !array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
-                    $this->facets[$facetNom]= [$row->key[$facetKey] => 0];
+                if (!isset($this->facets[$facetNom])) {
+                    $this->facets[$facetNom] = array();
                 }
-                if(!array_key_exists(DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey]), $documentsCounter)){
+                if(isset($row->key[$facetKey]) && !isset($this->facets[$facetNom][$row->key[$facetKey]])) {
+                    $this->facets[$facetNom][$row->key[$facetKey]] = 0;
+                }
+                if(!isset($documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])])){
                   $this->facets[$facetNom][$row->key[$facetKey]] += 1;
                   $addition += $row->value;
-                  $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = $row;
+                  $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = 1;
                 }
                 $this->docs[$row->id] = $row;
             }
         }
-
         if($hasProduitsFilter){
           $tmp_docs = array();
           foreach ($this->docs as $key => $value) {
