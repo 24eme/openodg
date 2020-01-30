@@ -179,19 +179,22 @@ function onEachFeature(feature, layer) {
 
 function showParcelle(id, htmlObj){
     if(this.map) {
-        this.map.eachLayer(function(layer) {
+        this.map.eachLayer(function(layer) {            
             if(layer.feature){
-                if(layer.feature.id == id){
-                    error = false;
-                    closeDisplayer();
-                    this.myLayer = layer;
-                    center = myLayer.getCenter();
-                    this.myMarker = L.marker(center,  {
+                if(Object.keys(layer.feature.properties).includes('parcellaires')){
+                    if(layer.feature.properties.parcellaires[0].IDU == id){
+                        error = false;
+                        closeDisplayer();
+                        this.myLayer = layer;
+                        center = myLayer.getCenter();
+                        this.myMarker = L.marker(center,  {
 
-                    }).addTo(map);
+                        }).addTo(map);
+                        
+                        this.map.fitBounds(this.myLayer.getBounds());
+                        $(window).scrollTop(0);
+                    }
                     
-                    this.map.fitBounds(this.myLayer.getBounds());
-                    $(window).scrollTop(0);
                 }   
             }
         });
