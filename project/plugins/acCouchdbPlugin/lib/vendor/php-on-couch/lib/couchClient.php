@@ -120,8 +120,7 @@ class couchClient extends couch {
 	* @param string|object|array $data the request body. If it's an array or an object, $data is json_encode()d
 	*/
 	protected function _queryAndTest ( $method, $url,$allowed_status_codes, $parameters = array(),$data = NULL ) {
-// 		print_r($method.' '.$url."\n");
-// 		print_r($parameters);
+// 		print_r(array($method,$url,$parameters,$data));
 		if (sfConfig::get('sf_debug')) {
 			$memory = memory_get_usage();
 			$timer = sfTimerManager::getTimer("CouchDB", true);
