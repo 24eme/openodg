@@ -3,7 +3,7 @@
 class habilitationActions extends sfActions {
 
 
-  public function executeIndex(sfWebRequest $request)
+  public function executeIndexDemande(sfWebRequest $request)
   {
         $filtre = $request->getParameter('filtre', null);
         $filtres = array();
