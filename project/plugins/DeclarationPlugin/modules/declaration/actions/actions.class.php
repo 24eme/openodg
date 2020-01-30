@@ -232,7 +232,6 @@ class declarationActions extends sfActions {
         $documentsCounter = array();
         $configurations = array();
         $this->produitsLibelles = array();
-
         foreach($rows as $row) {
             $addition = 0;
             if($hasProduitsFilter){
@@ -275,8 +274,8 @@ class declarationActions extends sfActions {
                     continue;
                 }
                 $facetKey = $facetToRowKey[$facetNom];
-                if(!array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
-                    $this->facets[$facetNom][$row->key[$facetKey]] = 0;
+                if(array_key_exists($facetKey, $row->key) && !array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
+                    $this->facets[$facetNom]= [$row->key[$facetKey] => 0];
                 }
                 if(!array_key_exists(DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey]), $documentsCounter)){
                   $this->facets[$facetNom][$row->key[$facetKey]] += 1;
