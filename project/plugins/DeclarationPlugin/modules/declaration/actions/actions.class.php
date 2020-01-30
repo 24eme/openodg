@@ -215,7 +215,11 @@ class declarationActions extends sfActions {
             $rows = array_merge($rows, $view->getView('declaration', 'tous')->rows);
         }
         foreach($this->facets['Campagne'] as $annee => $nb) {
-            $this->facets['Campagne'][$annee] = 0;
+            if ($annee == $this->query['Campagne']) {
+                $this->facets['Campagne'][$annee] = 0;
+            }else{
+                $this->facets['Campagne'][$annee] = '?';
+            }
         }
         $this->facets['Type'] = array();
         $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
