@@ -63,7 +63,7 @@
         <div class="col-xs-12">
             <h3>Filtrer</h3>
             <div class="form-group">
-                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou  :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
             </div>
         </div>
     </div>
