@@ -59,7 +59,7 @@ function getColor(d) {
 
     return d.includes("rouge") ? '#790000' :
            d.includes("rosé") ? '#f95087':
-           d.includes("blanc") ? '#efeef3':'#2b0c0c';
+           d.includes("blanc") ? '#edcb09':'#ffffff';
 }
 
 /**
@@ -72,10 +72,10 @@ function style(feature) {
     color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
         fillColor: color,
-        weight: 2,
+        weight: 3,
         opacity: 2,
-        color: color,
-        dashArray: '1',
+        color: 'white',
+        dashArray: '5',
         fillOpacity: 1
     };
 }
@@ -89,7 +89,6 @@ function styleDelimitation(){
         weight: 2,
         opacity: 2,
         color: 'white',
-        dashArray: '5',
         fillOpacity: 0.7
     }
 }

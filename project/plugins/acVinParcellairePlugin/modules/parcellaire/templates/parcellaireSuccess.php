@@ -1,5 +1,9 @@
 <?php use_helper("Date"); ?>
-<?php $last = null; ?>
+<?php
+$parcellaire_client = ParcellaireClient::getInstance();
+$last = null;
+$list_communes = [];
+?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
     <ol class="breadcrumb">
@@ -52,36 +56,33 @@
         <?php if($parcellaire): ?>
             <div class="well">
                 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>
-        <?php else: ?>
-            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+            </div>            
         <?php endif; ?>
     </div>
 </div>
-<?php if ($parcellaire && count($parcellaire->declaration) > 1): ?>
- <div class="row">
-        <div class="col-xs-12">
-            <h3>Filtrer</h3>
-            <div class="form-group">
-                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+<?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
+    <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
+    $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()); ?>
+    <?php if(isset($import)): ?>
+     <div class="row">
+            <div class="col-xs-12">
+                <h3>Filtrer</h3>
+                <div class="form-group">
+                    <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+                </div>
             </div>
         </div>
-    </div>
-<?php endif; ?>
-<?php $parcellaire_client = ParcellaireClient::getInstance();
-if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
-    <div>
-        <?php
-        $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi());
-        ?>
-        <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
-    </div>
-<?php endif; ?>
-<?php $list_communes = [];?>
-<?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
+    <?php endif; ?>
+    <?php if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
+        <div>
+            <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
+        </div>
+    <?php endif; ?>
+
+
     <div class="row">
         <div class="col-xs-12">
-            <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
+            <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
             	<h3><?php echo $commune ?></h3>
 
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
@@ -187,6 +188,12 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
     <?php endforeach; ?>
         </div>
     </div>
+<?php else: ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+        </div>
+    </div>
 <?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
@@ -196,4 +203,5 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
     </div>
 </div>
 <?php endif;?>
+<?php use_javascript('hamza_style.js'); ?>
 
