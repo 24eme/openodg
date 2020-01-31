@@ -58,15 +58,16 @@
         <?php endif; ?>
     </div>
 </div>
-
+<?php if ($parcellaire && count($parcellaire->declaration) > 1): ?>
  <div class="row">
         <div class="col-xs-12">
             <h3>Filtrer</h3>
             <div class="form-group">
-                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un produit, un numéro de contrat ou un nom de soussigné :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou  :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
             </div>
         </div>
     </div>
+<?php endif ?>
 <?php $parcellaire_client = ParcellaireClient::getInstance();
 if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
     <div>
@@ -99,11 +100,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
 		            </tr>
                   </thead>
                     <tbody>
-
-
-
-                        <?php
-                        foreach ($parcelles as $detail):
+                        <?php foreach ($parcelles as $detail):
                             $classline = '';
                             $styleline = '';
                             $styleproduit = '';
@@ -180,10 +177,7 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                                     </div>
                                 </td>
                             </tr>
-                            <?php
-                        endforeach;
-
-                        ?>
+                            <?php endforeach; ?>
                     </tbody>
                 </table>
     <?php endforeach; ?>

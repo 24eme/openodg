@@ -30,11 +30,15 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
         'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.light'
 }).addTo(map);
-var er;
+
+/***** Location position ****/
+
 $('#locate-position').on('click', function(){
     map.locate({setView: true});
 });
+
 var icon = L.divIcon({className: 'glyphicon glyphicon-user'});
+
 function onLocationFound(e) {
     var radius = e.accuracy / 100;
     L.marker(e.latlng,{icon: icon}).addTo(map);
@@ -49,6 +53,8 @@ map.on('locationfound', onLocationFound);
 
 map.on('locationerror', onLocationError);
 
+/****** End location position *****/
+
 function getColor(d) {
 
     return d.includes("rouge") ? '#790000' :
@@ -56,7 +62,10 @@ function getColor(d) {
            d.includes("blanc") ? '#efeef3':'#2b0c0c';
 }
 
-
+/**
+* Css style for parcelles according product color ie "Côtes de Provence Rouge GRENACHE"
+* Color will be Red
+**/
 
 function style(feature) {
     var color;
@@ -71,6 +80,9 @@ function style(feature) {
     };
 }
 
+/**
+* Css style default
+**/
 function styleDelimitation(){
     return {
         fillColor: '#d0f3fb',
@@ -82,6 +94,9 @@ function styleDelimitation(){
     }
 }
 
+/**
+* Close popup and delete marker showing on map
+**/
 function closeDisplayer(){
     var res = false;
     
@@ -96,6 +111,9 @@ function closeDisplayer(){
     return res;
 }
 
+/**
+* Use this function to load all map data (Geojson). ie add new Feature
+**/
 function loadGeoJson(){
     mygeojson = L.geoJSON(parcelles, {
     style: style,
@@ -177,10 +195,15 @@ function onEachFeature(feature, layer) {
 
 }
 
+/**
+* show parcelle with maker on it in map  
+**/
+
 function showParcelle(id, htmlObj){
     if(this.map) {
         this.map.eachLayer(function(layer) {            
             if(layer.feature){
+                //Check proprietie parcellaires to filter layer delimitation
                 if(Object.keys(layer.feature.properties).includes('parcellaires')){
                     if(layer.feature.properties.parcellaires[0].IDU == id){
                         error = false;
@@ -255,6 +278,9 @@ function layerFilter(styleCss, myidus){
     }
 }
 
+/**
+* Keep filter if the page reload
+**/
 $(window).on("load", function() {
     filters = $("#hamzastyle")[0];
     if(filters){
