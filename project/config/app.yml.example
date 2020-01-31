@@ -25,6 +25,7 @@ all:
     to_notification: ["email@email.fr"]
     signature: "Signature de mail\nSignature de mail"
   url:
+    header: "https://url_header"
     civa: "https://url_civa"
     compte_mot_de_passe: "https://url_compte_civa_pour_modifier_mdp"
     compte_creation: "http://url_compte_creation"
@@ -93,6 +94,17 @@ all:
     mdp: motdepasse
     domain_action: actions.example.org
     url_http: http://actions.example.org/Service.asmx
+    regions:
+      REGION1:
+        login: utilisateur_region_1
+        mdp: motdepasse_region_1
+        domain_action: actions.example.org
+        url_http: http://actions.example.org/Service.asmx
+      REGION2:
+        login: utilisateur_region_1
+        mdp: motdepasse_region_1
+        domain_action: actions.example.org
+        url_http: http://actions.example.org/Service.asmx
   dr:
     categories:
       '04': "4. Superficie de récolte"
@@ -119,3 +131,4 @@ all:
   donnees_viticoles:
     regions:
       "": ""
+  export_webpath: null

@@ -65,6 +65,11 @@ function(doc) {
         email = doc.declarant.email;
     }
 
+    var cvi = null;
+    if(doc.declarant && doc.declarant.cvi) {
+        cvi = doc.declarant.cvi;
+    }
+
     var mode = "Télédeclaration";
 
     if(doc.automatique) {
@@ -78,7 +83,7 @@ function(doc) {
     var statut = "Brouillon";
     var infos = "Étape " + doc.etape;
     if(validation_odg) {
-	    statut = "Validé";
+	    statut = "Approuvé";
         infos = null;
         if(validation_odg !== false && validation_odg !== true) {
             infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)/, "$3/$2/$1");
@@ -86,7 +91,7 @@ function(doc) {
     }
 
     if(validation && !validation_odg) {
-	    statut = "À valider";
+	    statut = "À approuver";
         infos = null;
         if(nb_doc_en_attente) {
            infos = nb_doc_en_attente + " pièce(s) en attente";
@@ -108,5 +113,18 @@ function(doc) {
 	    type = "Intention Crémant";
     }
 
-    emit([type, doc.campagne, mode, statut, doc.identifiant, date, infos, raison_sociale, commune, email], 1);
+    if(doc.type == "DRev"){
+           for (key in doc.declaration) {
+              statutProduit = statut;
+              for(detailKey in doc.declaration[key]){
+                statutProduit = statut;
+                if(doc.declaration[key][detailKey].validation_odg){
+                  statutProduit = "Approuvé";
+                }
+                    emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+              }
+           }
+    }else{
+             emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+    }
 }

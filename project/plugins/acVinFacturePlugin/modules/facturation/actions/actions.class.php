@@ -290,6 +290,10 @@ class facturationActions extends sfActions
         return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
     }
 
+    public function executeTemplate(sfWebRequest $request) {
+        $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
+    }
+
     private function getLatexTmpPath() {
             return "/tmp/";
     }

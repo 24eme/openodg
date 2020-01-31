@@ -11,6 +11,11 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
         return $this->getCepage()->getConfig();
     }
 
+    public function getConfigPrecedente()
+    {
+        return $this->getCepage()->getConfigPrecedente();
+    }
+
     public function getProduitsCepage()
     {
 
@@ -170,7 +175,7 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     }
 
     public function getNoeudVci() {
-        if (!$this->getConfig()->hasRendementVCI()) {
+        if (!$this->getConfig()->hasRendementVCI() && !$this->getConfigPrecedente()->hasRendementVciTotal()) {
             return;
         }
         if (preg_match('/appellation_CREMANT/', $this->getHash())) {

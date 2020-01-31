@@ -16,6 +16,9 @@ class DeclarationsExportCsvTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
+            new sfCommandOption('sleep_second', null, sfCommandOption::PARAMETER_REQUIRED, 'secont to wait', false),
+            new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', false),
+            new sfCommandOption('region', null, sfCommandOption::PARAMETER_REQUIRED, "region de l'ODG (si non renseignée toutes les régions sont utilisées)", null),
         ));
 
         $this->namespace = 'declarations';
@@ -38,9 +41,31 @@ EOF;
 
         $ids = DeclarationClient::getInstance()->getIds($arguments['type'], $arguments['campagne']);
 
+        $sleepSecond = false;
+        if($options['sleep_second']) {
+            $sleepSecond = $options['sleep_second']*1;
+        }
+
+        $sleepStep = false;
+        if($options['sleep_step']) {
+            $sleepStep = $options['sleep_step']*1;
+        }
+
+        $step = 0;
+
+        $region = null;
+        if($options["region"]) {
+            $region = $options['region'];
+        }
+
         foreach($ids as $id) {
-            $doc = DeclarationClient::getInstance()->find($id);
-            $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
+            $doc = null;
+            try{
+              $doc = DeclarationClient::getInstance()->find($id);
+            }catch(sfException $e){
+              continue;
+            }
+            $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false, $region);
 
             if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
                 continue;
@@ -51,6 +76,11 @@ EOF;
             }
 
             echo $export->export();
+            $step++;
+            if($sleepStep && $sleepSecond && $step > $sleepStep) {
+                sleep($sleepSecond);
+                $step = 0;
+            }
         }
 
 

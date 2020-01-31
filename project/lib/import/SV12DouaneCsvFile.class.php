@@ -5,11 +5,9 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
     public function convert() {
         $handler = fopen($this->filePath, 'r');
 
-        $csv = array();
+        $csvFile = new CsvFile($this->filePath);
+        $csv = $csvFile->getCsv();
 
-        while (($data = fgetcsv($handler)) !== FALSE) {
-            $csv[] = self::clean($data);
-        }
         $this->cvi = null;
         $this->raison_sociale = null;
         $this->commune = null;
@@ -18,7 +16,8 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         $libellesLigne = null;
         $lies = null;
         $firstPage = true;
-
+        $cpt = 1;
+        
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
@@ -71,8 +70,10 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
+                        $produit[] = $cpt;
 	        			$produits[] = $produit;
-        			}
+                    }
+                    $cpt++;
         		}
         	}
         }
@@ -83,6 +84,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         foreach ($produits as $p) {
 	    	$csv .= implode(';', $doc).';;;'.implode(';', $p)."\n";
         }
+
         return $csv;
     }
 }

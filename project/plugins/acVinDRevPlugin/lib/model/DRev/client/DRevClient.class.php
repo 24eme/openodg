@@ -7,10 +7,21 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
     const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
     const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
+    const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_ET_CONDITIONNEMENT';
+    const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
+    const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
+    const LOT_DESTINATION_CONDITIONNEMENT = 'CONDITIONNEMENT';
 
     public static $denominationsAuto = array(
         self::DENOMINATION_BIO_PARTIEL => "Une partie de mes volumes sont certifiés en Bio",
         self::DENOMINATION_BIO_TOTAL => 'Tous mes volumes sont certifiés en Bio'
+    );
+
+    public static $lotDestinationsType = array(
+        DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
+        DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
+        DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",
+        DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
     );
 
     public static function getInstance()
@@ -43,7 +54,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public function findFacturable($identifiant, $campagne) {
     	$drev = $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
 
-        if(!$drev->validation_odg) {
+        if($drev && !$drev->validation_odg) {
 
             return null;
         }
@@ -74,6 +85,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         $previous_drev = self::findMasterByIdentifiantAndCampagne($identifiant, $campagne - 1 );
         if ($previous_drev) {
+            $drev->set('chais', $previous_drev->chais->toArray(true, false));
           foreach($previous_drev->getProduitsVci() as $produit) {
             if ($produit->vci->stock_final) {
               $drev->cloneProduit($produit);
@@ -134,4 +146,42 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public function getOrdrePrelevements() {
         return array("cuve" => array("cuve_ALSACE", "cuve_GRDCRU", "cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
     }
+
+    public function getNonHabilitationINAO($drev) {
+        $non_habilite = array();
+        $identifiant = $drev->declarant->cvi;
+        if (!$identifiant) {
+            $identifiant = preg_replace('/ /', '', $drev->declarant->siret);
+        }
+        if (!$identifiant) {
+            return array();
+        }
+        $regions = DrevConfiguration::getInstance()->getOdgRegions();
+        foreach($regions as $region) {
+            $produits = $drev->getProduits($region);
+            if (!count($produits)) {
+                continue;
+            }
+            $inao_fichier = DrevConfiguration::getInstance()->getOdgINAOHabilitationFile($region);
+            if (!$inao_fichier) {
+                continue;
+            }
+            $inao_csv = new INAOHabilitationCsvFile(sfConfig::get('sf_root_dir').'/'.$inao_fichier);
+            foreach ($produits as $produit) {
+                if (! $inao_csv->isHabilite($identifiant, $produit->getConfig()->getAppellation()->getLibelle())) {
+                    $non_habilite[] = $produit;
+                }
+            }
+        }
+        return $non_habilite;
+    }
+
+    public function getLastDrevFromEtablissement($etablissement){
+      $lastDrevs = $this->getHistory($etablissement->getIdentifiant());
+      foreach ($lastDrevs as $drev) {
+        return $drev;
+      }
+      return null;
+    }
+
 }

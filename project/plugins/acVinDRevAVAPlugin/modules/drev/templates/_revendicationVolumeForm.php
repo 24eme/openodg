@@ -46,5 +46,12 @@
         <?php endif; ?>
     </td>
     <td class="text-center"><?php if ($produit->exist('volume_revendique_vci') && !$vtsgn) { echoFloat($produit->volume_revendique_vci); } ?></td>
-    <td class="text-center"><?php if ($produit->exist('volume_revendique_vci') && $vtsgn) { if ($produit->volume_revendique - $produit->volume_revendique_vci > 0) echoFloat($produit->volume_revendique - $produit->volume_revendique_vci);} else {echoFloat($produit->get('volume_revendique'.(($vtsgn) ? "_vtsgn"  : null))); } ?></td>
+    <td class="text-center">
+      <?php if ($produit->exist('volume_revendique_vci') && !$vtsgn) {
+         if ($produit->volume_revendique - $produit->volume_revendique_vci > 0)
+          echoFloat($produit->volume_revendique - $produit->volume_revendique_vci);
+       } else {
+         echoFloat($produit->get('volume_revendique'.(($vtsgn) ? "_vtsgn"  : null)));
+       } ?>
+     </td>
 </tr>

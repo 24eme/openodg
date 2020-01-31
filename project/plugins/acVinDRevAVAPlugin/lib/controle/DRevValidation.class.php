@@ -38,7 +38,7 @@ class DRevValidation extends DocumentValidation {
 
         $this->addControle(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', 'Le volume revendiqué ne peut pas être inférieur au volume sur place déduit des usages industriels de votre DR');
 
-        $this->addControle(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', 'Le volume revendiqué ne peut pas être supérieur au volume sur place de votre DR');
+        $this->addControle(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', 'Le volume revendiqué ne peut pas être supérieur au volume sur place de votre DR, à moins que vous ayez utilisé du VCI en complément');
 
         $this->addControle(self::TYPE_ERROR, 'prelevement', 'Vous devez saisir une semaine de prélèvement');
         $this->addControle(self::TYPE_ERROR, 'revendication_sans_lot', 'Vous avez revendiqué des produits sans spécifier de lots');

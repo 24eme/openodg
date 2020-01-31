@@ -7,7 +7,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
     protected function getObjectForParameters($parameters = null) {
         $this->etablissement = EtablissementClient::getInstance()->find($parameters['identifiant']);
         $myUser = sfContext::getInstance()->getUser();
-        if ($myUser->hasTeledeclaration() &&
+        if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin() &&
                 $myUser->getCompte()->identifiant != $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant) {
             throw new sfError404Exception("Vous n'avez pas le droit d'accéder à cette page");
         }

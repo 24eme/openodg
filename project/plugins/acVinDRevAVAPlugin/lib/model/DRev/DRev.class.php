@@ -73,30 +73,32 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
     }
 
+    public function getConfigurationPrecedente() {
+
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration(($this->campagne - 1).'');
+    }
+
     public function getProduits($onlyActive = false) {
 
         return $this->declaration->getProduits($onlyActive);
     }
-    
+
     public function getProduitsVCI() {
     	return $this->declaration->getProduitsVCI();
     }
-    
+
     public function calculateVolumeRevendiqueVCI()
     {
     	$vci = array();
     	foreach ($this->getProduitsVci() as $produit) {
-    		if ($produit->stockage_identifiant) {
-    			continue;
-    		}
     		if (!isset($vci[$produit->getCouleur()->getHash()])) {
                 $vci[$produit->getCouleur()->getHash()] = 0;
     		}
-
             $vci[$produit->getCouleur()->getHash()] += $produit->complement + $produit->substitution + $produit->rafraichi;
     	}
     	foreach ($vci as $hash => $val) {
-    		$this->get($hash)->add('volume_revendique_vci', $val);
+            $this->get($hash)->add('volume_revendique_vci');
+            $this->get($hash)->volume_revendique_vci = $val;
     	}
     }
 
@@ -679,6 +681,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
                 continue;
             }
+            if (!$produit->getVolumeRevendiqueRecolte() && $this->isNonVinificateur()) {
+
+                continue;
+            }
             $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
             $key = $this->getPrelevementsKeyByHash($hash);
             $this->addPrelevement(self::CUVE . $key);
@@ -689,7 +695,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             unset($prelevements_to_delete[self::BOUTEILLE . $key]);
         }
 
-        if ($this->declaration->hasVtsgn()) {
+        if ($this->declaration->hasVtsgn() && !$this->isNonVinificateur()) {
             $this->addPrelevement(self::CUVE_VTSGN);
             if(!$this->isNonConditionneur()) {
                 $this->addPrelevement(self::BOUTEILLE_VTSGN);

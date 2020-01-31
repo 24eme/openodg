@@ -1,7 +1,10 @@
 <ol class="breadcrumb">
 
   <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php endif; ?>
+ <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
   <li class="active"><a href=""><?php echo $campagne ?>-<?php echo $campagne +1 ?></a></li>
 </ol>
 
@@ -29,6 +32,25 @@
         <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
+    <?php  if(!$sf_user->isAdmin() && (count($etablissement->getSociete()->getEtablissementsObj(false)) > 1)): ?>
+      <section id="principal">
+          <form id="choix_etablissement" method="post" action="<?php echo url_for('drev_societe_choix_etablissement', array('identifiant' => $etablissement->identifiant)) ?>">
+            <br/>
+               <div >
+                  <div class="bloc_form bloc_form_condensed">
+                  <?php echo $etablissementChoiceForm->renderHiddenFields() ?>
+                  <?php echo $etablissementChoiceForm->renderGlobalErrors() ?>
+
+                  <div class="row">
+                      <?php echo $etablissementChoiceForm['etablissementChoice']->renderError() ?>
+                      <div class="col-md-3"><?php echo $etablissementChoiceForm['etablissementChoice']->renderLabel() ?></div>
+                      <div class="col-md-6"><?php echo $etablissementChoiceForm['etablissementChoice']->render(array('class' => 'select2autocomplete societe_choix_etablissement', 'style' => "width: 100%;")) ?></div>
+                  </div>
+                  </div>
+               </div>
+          </form>
+      </section>
+    <?php  endif; ?>
 </div>
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>

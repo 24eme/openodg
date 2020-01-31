@@ -150,6 +150,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+
         $this->tags->remove('automatique');
         $this->tags->add('automatique');
         if ($this->exist('teledeclaration_active') && $this->teledeclaration_active) {
@@ -437,7 +442,25 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return false;
         }
         $droits = $this->get('droits')->toArray(0, 1);
+        foreach($droits as $key => $d) {
+            $droitTab = explode(":", $d);
+            $droits[$key] = $droitTab[0];
+        }
+
         return in_array($droit, $droits);
+    }
+
+
+    public function getDroitValue($droit) {
+        foreach($this->droits as $d) {
+            $droitTab = explode(":", $d);
+            if($droit != $droitTab[0]) {
+                continue;
+            }
+            return isset($droitTab[1]) ? $droitTab[1] : null;
+        }
+
+        return null;
     }
 
     public function getDroits() {
@@ -593,6 +616,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
         $file = file_get_contents($url);
         $result = json_decode($file);
+
         if(!count($result)){
             return false;
         }
@@ -687,6 +711,13 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function getIdentifiantAAfficher(){
       return $this->getIdentifiant();
+    }
+
+    public function getRegion() {
+        if (!$this->exist('region')) {
+            return null;
+        }
+        return $this->_get('region');
     }
 
     public function getRegionViticole(){

@@ -11,7 +11,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
 
         $vtsgn = false;
 
-        if(!$this->getObject()->getDocument()->mustDeclareCepage()) {
+        if(!$this->getObject()->getDocument()->mustDeclareCepage() && !$this->getObject()->getDocument()->isNonVinificateur()) {
             $vtsgn = true;
         }
 

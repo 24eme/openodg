@@ -18,4 +18,9 @@ class DRevRevendicationCepageForm extends acCouchdbObjectForm
         $this->getObject()->getDocument()->updateProduitRevendiqueFromCepage();
         $this->getObject()->getDocument()->updateLotsFromCepage();
     }
+
+    public function canHaveVci() {
+
+        return ($this->getObject()->getConfig()->getRendementVciTotal() > 0 || $this->getObject()->getConfigPrecedente()->getRendementVciTotal() > 0);
+    }
 }

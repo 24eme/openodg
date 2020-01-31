@@ -1,7 +1,6 @@
 <?php
 
-class
-myUser extends sfBasicSecurityUser
+class myUser extends sfBasicSecurityUser
 {
 
     const SESSION_LOGIN = "LOGIN";
@@ -106,5 +105,14 @@ myUser extends sfBasicSecurityUser
     public function isAdmin()
     {
     	return $this->hasCredential(self::CREDENTIAL_ADMIN);
+    }
+
+    public function getTeledeclarationDrevRegion()
+    {
+        return null;
+    }
+
+    public function hasDrevAdmin() {
+        return $this->isAdmin();
     }
 }
