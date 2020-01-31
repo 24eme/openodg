@@ -25,7 +25,7 @@ var map = L.map('map');
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 30,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> creator, ' +
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> creator: ' +
         '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
         'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.light'
@@ -37,7 +37,7 @@ $('#locate-position').on('click', function(){
     map.locate({setView: true});
 });
 
-var icon = L.divIcon({className: 'glyphicon glyphicon-user'});
+var icon = L.divIcon({className: 'glyphicon glyphicon-record'});
 
 function onLocationFound(e) {
     var radius = e.accuracy / 100;
