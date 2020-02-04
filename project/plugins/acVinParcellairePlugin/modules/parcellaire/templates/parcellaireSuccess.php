@@ -1,5 +1,9 @@
 <?php use_helper("Date"); ?>
-<?php $last = null; ?>
+<?php
+$parcellaire_client = ParcellaireClient::getInstance();
+$last = null;
+$list_communes = [];
+?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
     <ol class="breadcrumb">
@@ -52,38 +56,35 @@
         <?php if($parcellaire): ?>
             <div class="well">
                 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>
-        <?php else: ?>
-            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+            </div>            
         <?php endif; ?>
     </div>
 </div>
-
- <div class="row">
-        <div class="col-xs-12">
-            <h3>Filtrer</h3>
-            <div class="form-group">
-                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un produit, un numéro de contrat ou un nom de soussigné :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+<?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
+    <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
+    $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()); ?>
+    <?php if(isset($import)): ?>
+     <div class="row">
+            <div class="col-xs-12">
+                <a name="carte"/><h3>Filtrer</h3>
+                <div class="form-group">
+                    <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+                </div>
             </div>
         </div>
-    </div>
-<?php $parcellaire_client = ParcellaireClient::getInstance();
-if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
-    <div>
-        <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
-    </div>
-<?php endif; ?>
-<?php $list_communes = [];?>
-<?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
+    <?php endif; ?>
+    <?php if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
+        <div>
+            <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
+        </div>
+    <?php endif; ?>
+
+
     <div class="row">
         <div class="col-xs-12">
-            <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
+            <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
             	<h3><?php echo $commune ?></h3>
-                <div class="clearfix">
-                    <a onclick="zoomOnMap()" class="pull-right" href="#" style="margin-bottom: 1em">
-                        <i class="glyphicon glyphicon-map-marker"></i> Voir les parcelles
-                    </a>
-                </div>
+
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
@@ -95,15 +96,13 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                     <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
+                    <?php if(isset($import)): ?>
                     <th class="col-xs-1">Carte</th>
+                    <?php endif; ?>
 		            </tr>
                   </thead>
                     <tbody>
-
-
-
-                        <?php
-                        foreach ($parcelles as $detail):
+                        <?php foreach ($parcelles as $detail):
                             $classline = '';
                             $styleline = '';
                             $styleproduit = '';
@@ -172,21 +171,27 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
                                 <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
+
+                                <?php if(isset($import)): ?>
                                 <td>
-                                    <div id="<?php echo $detail->idu; ?>" class="clearfix">
-                                        <a href="#parcelle<?php echo $detail->numero_parcelle; ?>" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
+                                    <div id="<?php echo $detail->idu; ?>" class="clearfix liencarto">
+                                        <a href="#carte" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
                                             <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
                                         </a>
                                     </div>
                                 </td>
+                                <?php endif; ?>
                             </tr>
-                            <?php
-                        endforeach;
-
-                        ?>
+                            <?php endforeach; ?>
                     </tbody>
                 </table>
     <?php endforeach; ?>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
         </div>
     </div>
 <?php endif; ?>
@@ -198,4 +203,5 @@ if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getE
     </div>
 </div>
 <?php endif;?>
+<?php use_javascript('hamza_style.js'); ?>
 

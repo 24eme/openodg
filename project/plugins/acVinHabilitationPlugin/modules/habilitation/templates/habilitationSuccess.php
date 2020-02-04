@@ -14,7 +14,7 @@
 </div>
 
 <div class="well">
-    <?php if ($sf_user->isAdmin()): ?>
+    <?php if ($sf_user->isAdmin() && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
 <a style="margin-bottom: 30px;" class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_globale', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification globale</a>
 
 <?php endif; ?>
@@ -63,7 +63,7 @@
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" >
                         <?php if(isset($editForm)): ?>
-                        <a class="btn btn-xs btn-default invisible" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a class="btn btn-xs btn-default <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>invisible<?php endif; ?>" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                         <?php endif; ?>
                       </td>
                 </tr>
@@ -72,7 +72,7 @@
         </tbody>
     </table>
 
-    <?php if ($sf_user->isAdmin()): ?>
+    <?php if ($sf_user->isAdmin() && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
         <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
         </div>
@@ -86,6 +86,7 @@
         </div>
     <?php endif; ?>
 
+    <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
     <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
         <thead>
@@ -109,6 +110,7 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php endif; ?>
 
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">

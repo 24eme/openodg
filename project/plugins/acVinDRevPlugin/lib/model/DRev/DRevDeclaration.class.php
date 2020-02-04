@@ -100,6 +100,16 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getProduitsWithoutLots($region = null){
 		$produits = array();
 
+		if(count(DRevConfiguration::getInstance()->getOdgRegions()) == 0) {
+			foreach ($this->getProduits($region) as $produit) {
+				if($produit->getConfig()->isRevendicationParLots()){
+					continue;
+				}
+				$produits[$produit->getHash()] = $produit;
+			}
+			return $produits;
+		}
+
 		if($region){
 			return $this->getProduitsWithoutLotsByRegion($region);
 		}
@@ -110,8 +120,8 @@ class DRevDeclaration extends BaseDRevDeclaration
 				$produits = array_merge($produits,$produitsByRegion);
 			}
 
-			return $produits;
-		}
+		return $produits;
+	}
 
 	public function getProduitsWithoutLotsByRegion($region = null){
 		$produits = array();

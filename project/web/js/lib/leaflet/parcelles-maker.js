@@ -25,16 +25,20 @@ var map = L.map('map');
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 30,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> creator, ' +
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> creator: ' +
         '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
         'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.light'
 }).addTo(map);
-var er;
+
+/***** Location position ****/
+
 $('#locate-position').on('click', function(){
     map.locate({setView: true});
 });
-var icon = L.divIcon({className: 'glyphicon glyphicon-user'});
+
+var icon = L.divIcon({className: 'glyphicon glyphicon-record'});
+
 function onLocationFound(e) {
     var radius = e.accuracy / 100;
     L.marker(e.latlng,{icon: icon}).addTo(map);
@@ -49,39 +53,49 @@ map.on('locationfound', onLocationFound);
 
 map.on('locationerror', onLocationError);
 
+/****** End location position *****/
+
 function getColor(d) {
 
     return d.includes("rouge") ? '#790000' :
            d.includes("rosé") ? '#f95087':
-           d.includes("blanc") ? '#efeef3':'#2b0c0c';
+           d.includes("blanc") ? '#edcb09':'#ffffff';
 }
 
-
+/**
+* Css style for parcelles according product color ie "Côtes de Provence Rouge GRENACHE"
+* Color will be Red
+**/
 
 function style(feature) {
     var color;
     color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
         fillColor: color,
-        weight: 2,
+        weight: 3,
         opacity: 2,
-        color: color,
-        dashArray: '1',
+        color: 'white',
+        dashArray: '5',
         fillOpacity: 1
     };
 }
 
+/**
+* Css style default
+**/
 function styleDelimitation(){
     return {
         fillColor: '#d0f3fb',
-        weight: 2,
+        weight: 0,
         opacity: 2,
         color: 'white',
-        dashArray: '5',
         fillOpacity: 0.7
     }
 }
 
+/**
+* Close popup and delete marker showing on map
+**/
 function closeDisplayer(){
     var res = false;
     
@@ -96,6 +110,9 @@ function closeDisplayer(){
     return res;
 }
 
+/**
+* Use this function to load all map data (Geojson). ie add new Feature
+**/
 function loadGeoJson(){
     mygeojson = L.geoJSON(parcelles, {
     style: style,
@@ -177,21 +194,29 @@ function onEachFeature(feature, layer) {
 
 }
 
+/**
+* show parcelle with maker on it in map  
+**/
+
 function showParcelle(id, htmlObj){
     if(this.map) {
-        this.map.eachLayer(function(layer) {
+        this.map.eachLayer(function(layer) {            
             if(layer.feature){
-                if(layer.feature.id == id){
-                    error = false;
-                    closeDisplayer();
-                    this.myLayer = layer;
-                    center = myLayer.getCenter();
-                    this.myMarker = L.marker(center,  {
+                //Check proprietie parcellaires to filter layer delimitation
+                if(Object.keys(layer.feature.properties).includes('parcellaires')){
+                    if(layer.feature.properties.parcellaires[0].IDU == id){
+                        error = false;
+                        closeDisplayer();
+                        this.myLayer = layer;
+                        center = myLayer.getCenter();
+                        this.myMarker = L.marker(center,  {
 
-                    }).addTo(map);
+                        }).addTo(map);
+                        
+                        this.map.fitBounds(this.myLayer.getBounds());
+                        $(window).scrollTop(0);
+                    }
                     
-                    this.map.fitBounds(this.myLayer.getBounds());
-                    $(window).scrollTop(0);
                 }   
             }
         });
@@ -252,6 +277,9 @@ function layerFilter(styleCss, myidus){
     }
 }
 
+/**
+* Keep filter if the page reload
+**/
 $(window).on("load", function() {
     filters = $("#hamzastyle")[0];
     if(filters){
