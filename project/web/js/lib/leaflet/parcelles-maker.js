@@ -224,10 +224,7 @@ function showParcelle(id, htmlObj){
                     
                 }   
             }
-        });
-        if(error){
-            alert("Erreur: Cette parcelle n'existe pas au cadastre.");
-        }        
+        });        
     }else{
         alert("Error: Map empty !");
     }
@@ -292,6 +289,10 @@ $(window).on("load", function() {
     }
 });
 
+/*
+* filter tab after page load (when all ready)
+* check parcelles which there aren't data geojson and put message not-found
+*/
 $(document).ready(function(){
    allIdu.forEach(function(idu){
     var found = false;
@@ -315,8 +316,7 @@ $(document).ready(function(){
                 }                
             });
         }
-    }
-    
+    }    
    });
 })
 
