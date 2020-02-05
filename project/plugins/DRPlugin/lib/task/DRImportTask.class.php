@@ -29,44 +29,49 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         if(!file_exists($arguments['csv'])) {
-            echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['doc_id']);
+            //echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['doc_id']);
 
-            return;
+            //return;
         }
 
-        $csv = new CsvFile($arguments['csv']);
-
-        $cvi = null;
-        foreach($csv->getCsv() as $data) {
+        $csvFile = new CsvFile($arguments['csv']);
+        $csv = $csvFile->getCsv();
+        $cvis = null;
+        foreach($csv as $ligne => $data) {
             $cvi = $data[DouaneCsvFile::CSV_RECOLTANT_CVI];
             $campagne = $data[DouaneCsvFile::CSV_CAMPAGNE];
-            break;
+            $cvis[$cvi."_".$campagne][] = $ligne;
         }
 
-        $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
+        foreach($cvis as $cviCamapagne => $lignes) {
+                $cviParts = explode('_', $cviCamapagne);
+                $cvi = $cviParts[0];
+                $campagne = $cviParts[1];
 
-        if(!$etablissement) {
-            echo "ERREUR;$cvi;cvi non trouvé\n";
+                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
 
-            return;
+                if(!$etablissement) {
+                    echo "ERREUR;$cvi;cvi non trouvé\n";
+
+                    continue;
+                }
+
+                $dr = DRClient::getInstance()->findByArgs($etablissement->identifiant, $campagne);
+
+                if(!$dr) {
+                    $dr = DRClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+                }
+
+                $dr->remove('donnees');
+                $dr->add('donnees');
+
+                foreach($lignes as $ligne) {
+                    $dr->addDonnee($csv[$ligne]);
+                }
+
+                $dr->save();
+
+                echo "IMPORTE;$dr->_id\n";
         }
-
-        $dr = DRClient::getInstance()->findByArgs($etablissement->identifiant, $campagne);
-
-        if(!$dr) {
-            $dr = DRClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-        }
-
-
-        $dr->remove('donnees');
-        $dr->add('donnees');
-
-        foreach($csv->getCsv() as $data) {
-            $dr->addDonnee($data);
-        }
-
-        $dr->save();
-
-        echo "IMPORTE;$dr->_id\n";
     }
 }
