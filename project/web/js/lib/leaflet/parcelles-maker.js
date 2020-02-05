@@ -87,7 +87,7 @@ function style(feature) {
 function styleDelimitation(){
     return {
         fillColor: '#d0f3fb',
-        weight: 2,
+        weight: 0,
         opacity: 2,
         color: 'white',
         fillOpacity: 0.7

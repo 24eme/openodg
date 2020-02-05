@@ -67,7 +67,7 @@ $list_idu = [];
     <?php if(isset($import)): ?>
      <div class="row" id="jump">
             <div class="col-xs-12">
-                <h3>Filtrer</h3>
+                <a name="carte"/><h3>Filtrer</h3>
                 <div class="form-group">
                     <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
                 </div>
@@ -175,8 +175,8 @@ $list_idu = [];
 
                                 <?php if(isset($import)): ?>
                                 <td>
-                                    <div id="<?php echo $detail->idu; ?>" class="clearfix">
-                                        <a href="#parcelle<?php echo $detail->numero_parcelle; ?>" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
+                                    <div id="<?php echo $detail->idu; ?>" class="clearfix liencarto">
+                                        <a href="#carte" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
                                             <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
                                         </a>
                                     </div>
