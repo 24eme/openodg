@@ -60,6 +60,7 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
 
 		$item = $this->donnees->add();
 		$item->produit = $hash;
+		$item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
 		$item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
 		$item->categorie = $data[DouaneCsvFile::CSV_LIGNE_CODE];
 		$item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
