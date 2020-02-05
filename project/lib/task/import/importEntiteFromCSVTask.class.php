@@ -248,7 +248,7 @@ EOF;
           $etb->save();
           return $etb;
         }
-    *
+    
 
     protected function importLiaisons($viti,$line){
         $data = str_getcsv($line, ';');
