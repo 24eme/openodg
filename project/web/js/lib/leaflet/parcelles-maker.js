@@ -1,5 +1,6 @@
 var parcelles = window.parcelles;
 var delimitationStr = window.delimitation;
+var allIdu = window.all_idu;
 var myMarker;
 var mygeojson;
 var myLayer=[];
@@ -116,6 +117,10 @@ function closeDisplayer(){
 function loadGeoJson(){
     mygeojson = L.geoJSON(parcelles, {
     style: style,
+    filter:function (feature) {
+        //check if the parcelle is outer zone
+        return feature.properties.parcellaires[0].Produit.includes("Provence");
+    },
     onEachFeature: onEachFeature,
     }).addTo(map);
 
@@ -219,10 +224,7 @@ function showParcelle(id, htmlObj){
                     
                 }   
             }
-        });
-        if(error){
-            alert("Erreur: Cette parcelle n'existe pas au cadastre.");
-        }        
+        });        
     }else{
         alert("Error: Map empty !");
     }
@@ -286,4 +288,35 @@ $(window).on("load", function() {
         filterMapOn(filters);
     }
 });
+
+/*
+* filter tab after page load (when all ready)
+* check parcelles which there aren't data geojson and put message not-found
+*/
+$(document).ready(function(){
+   allIdu.forEach(function(idu){
+    var found = false;
+    if(map) {
+        for(key in Object.keys(map._layers)){
+            if(map._layers[Object.keys(map._layers)[key]].hasOwnProperty("feature")
+                && map._layers[Object.keys(map._layers)[key]].feature.hasOwnProperty("properties")
+                && map._layers[Object.keys(map._layers)[key]].feature.properties.hasOwnProperty("parcellaires")
+                && map._layers[Object.keys(map._layers)[key]].feature.properties.id == idu){
+                found = true;
+            }
+        };
+        if(!found){
+            document.querySelectorAll('[id="'+idu+'"]').forEach(element=> {
+                if(!element.style.display.length){
+                    var parent = element.parentNode;
+                    var p = document.createElement("p");
+                    p.innerHTML = "non-trouvée";
+                    parent.append(p);
+                    element.style.display = 'none'; 
+                }                
+            });
+        }
+    }    
+   });
+})
 

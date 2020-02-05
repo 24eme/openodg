@@ -7,57 +7,41 @@ class importEntitesFromCSVTask extends sfBaseTask
     protected $chaisAttributsInImport = array();
     protected $isSuspendu = false;
 
-    const CSV_OLDID = 0;
-    const CSV_TITRE = 1;
-    const CSV_NOM = 2;
-    const CSV_ADRESSE_1 = 3;
-    const CSV_ADRESSE_2 = 4;
-    const CSV_ADRESSE_3 = 5;
-    const CSV_CP = 6;
-    const CSV_VILLE = 7;
+
+    const CSV_IDENTIFIANT_LIGNE = 0; // used
+    const CSV_EVV = 1; // used
+    const CSV_SIRET = 2; // used
+    const CSV_FORME_SOCIETE = 3; // used
+    const CSV_RAISONSOCIALE = 4; // used
+    const CSV_CATEGORIE = 5;
+    const CSV_LIBELLE = 6;
+    const CSV_PPM = 7;
+    const CSV_ADRESSE_1 = 8; // used
+    const CSV_ADRESSE_2 = 9; // used
+    const CSV_CP = 10; // used
+    const CSV_VILLE = 11; // used
+    const CSV_TELEPHONE_1 = 12; // used
+    const CSV_TELEPHONE_2 = 13; // used
+    const CSV_EMAIL = 14;
+    const CSV_DATE_CREATION = 15; // ATTENTION aux valeurs "00/00/00" used
+    const CSV_RIB = 16; //Tout le temps vide !!! inutile
+    const CSV_DOMICILIATION = 17; //Tout le temps vide !!! inutile
+    const CSV_DATE_MAJ = 18;
+    const CSV_USER_MAJ = 19;
+    const CSV_OBSERVATION = 20;
 
 
-    const CSV_EVV = 8;
-    const CSV_SIRET = 9;
+    //En faire des contacts
+    const CSV_CONTACT_NOM = 21;
+    const CSV_CONTACT_PRENOM = 22;
+    const CSV_CONTACT_FONCTION = 23;
+    const CSV_CONTACT_TELEPHONE = 24;
 
-    const CSV_TELEPHONE = 10;
-    const CSV_PORTABLE = 11;
-    const CSV_FAX = 12;
-    const CSV_EMAIL = 13;
+    const CSV_PRODUCTEUR = 25;
+    const CSV_VINIFICATEUR = 26;
+    const CSV_CONDITIONNEUR = 27;
+    const CSV_ELEVEUR = 28;
 
-    const CSV_ACTIVITES = 14;
-    const CSV_ETAT = 15;
-    const CSV_ORDRE = 16;
-    const CSV_ZONE = 17;
-    const CSV_ID_TIERS = 18;
-    const CSV_CHAIS_TYPE = 19;
-    const CSV_CHAIS_ACTIVITES = 20;
-
-
-    const CSV_CHAIS_ADRESSE_1 = 21;
-    const CSV_CHAIS_ADRESSE_2 = 22;
-    const CSV_CHAIS_ADRESSE_3 = 23;
-    const CSV_CHAIS_CP = 24;
-    const CSV_CHAIS_VILLE = 25;
-
-
-    const CSV_CAVE_APPORTEURID = 26;
-    const CSV_CAVE_COOP = 27;
-
-
-    const CSV_DATE_RECEPTION_ODG = 28;
-    const CSV_DATE_ENREGISTREMENT_ODG = 29;
-    const CSV_DATE_TRANSMISSION_AVPI = 30;
-    const CSV_DATE_HABILITATION = 31;
-    const CSV_DATE_ARCHIVAGE = 32;
-
-    const CSV_COMMENTAIRE = 33;
-
-    const CSV_CHAI_RESPONSABLE_NOM = 34;
-    const CSV_CHAI_RESPONSABLE_TELEPHONE = 35;
-    const CSV_CHAI_ARCHIVE = 36;
-
-    const CSV_SOCIETE_TYPE = 37;
 
 
 
@@ -78,11 +62,6 @@ class importEntitesFromCSVTask extends sfBaseTask
         $this->briefDescription = "Import d'une entite";
         $this->detailedDescription = <<<EOF
 EOF;
-
-        $this->convert_attributs["Vinification"] = "VINIFICATION";
-        $this->convert_attributs["VV Stockage"] = "STOCKAGE_VRAC";
-        $this->convert_attributs['VC Stockage'] = "STOCKAGE_VIN_CONDITIONNE";
-        $this->convert_attributs['DGC'] = "DGC";
     }
 
     protected function execute($arguments = array(), $options = array())
@@ -105,124 +84,97 @@ EOF;
 
       }
       error_reporting(E_ERROR | E_PARSE);
-      $this->chaisAttributsInImport = EtablissementClient::$chaisAttributsInImport;
 
       foreach(file($this->file_path) as $line) {
-          $line = str_replace("\n", "", $line);
-          if(preg_match("/tbl_CDPOps/", $line)) {
-              continue;
+        if(!preg_match("^EVV principal;Siret;Forme;Nom relation;Catégorie;", $line)){
+            $line = str_replace("\n", "", $line);
+            $this->importEntite($line);
           }
-          $this->importEntite($line);
         }
     }
 
     protected function importEntite($line){
-            $data = str_getcsv($line, ';');
-            if(!preg_match('/^'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'$/', $data[self::CSV_OLDID])) {
-                throw new Exception("Mauvais identifiant ". $data[self::CSV_OLDID]);
-            }
-            $identifiant = $data[self::CSV_OLDID];
 
-            $this->isSuspendu = ($data[self::CSV_ETAT] == "Archivé");
+            $data = str_getcsv($line, ';');
+            $identifiant = sprintf("%06d",intval($data[self::CSV_IDENTIFIANT_LIGNE]));
 
             $soc = SocieteClient::getInstance()->find($identifiant);
             if(!$soc){
                 $soc = $this->importSociete($data,$identifiant);
                 $etb = $this->importEtablissement($soc,$data,$identifiant);
-                $etb = EtablissementClient::getInstance()->find($etb->_id);
-                $activitesChais = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
-
-                $chaiApport = false;
-                if(count($activitesChais) > 0){
-                      $this->importLiaisons($etb,$line);
-                      if($data[self::CSV_CHAIS_TYPE] != "Apporteur" || !$data[self::CSV_CAVE_APPORTEURID]){
-                          $this->addChaiForEtablissement($etb,$data);
-                      }
-                }
-                $this->addResponsableDeChai($soc,$data);
+                $compte = $this->importContactAssocie($soc,$data,$identifiant);
                 echo "\n";
             }else{
-              $etb = $soc->getEtablissementPrincipal();
-              echo "La société : ".$identifiant." est déjà dans la base => on va alimenter les chais  ";
-              $activitesChais = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
-
-              if(count($activitesChais) > 0){
-                    $this->importLiaisons($etb,$line);
-                    if($data[self::CSV_CHAIS_TYPE] != "Apporteur" || !$data[self::CSV_CAVE_APPORTEURID]){
-                        $this->addChaiForEtablissement($etb,$data);
-                    }
-              }
-              $this->addResponsableDeChai($soc,$data);
-
-              echo "\n";
+               $etb = $soc->getEtablissementPrincipal();
+               echo "La société : ".$identifiant." est déjà dans la base\n";
             }
       }
 
     protected function importSociete($data,$identifiant){
+
             $societe = new societe();
             $societe->identifiant = $identifiant;
             $cvi = $data[self::CSV_EVV];
             $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
-
             $societe->constructId();
+
             $societe->raison_sociale = $this->buildRaisonSociete($data);
+
             $societe->add('date_creation', date("Y-m-d"));
+            if($date_creation = trim($data["CSV_DATE_CREATION"]) != "00/00/00"){
+              $societe->add('date_creation', date("Y-m-d",DateTime::createFromFormat("d/m/y",$date_creation)));
+            }
 
-            $societe->code_comptable_client = ($data[self::CSV_ID_TIERS]) ? $data[self::CSV_ID_TIERS] : $societe->identifiant;
+            $societe->code_comptable_client = null; // pas de code comptable?
+
             $siege = $societe->getOrAdd('siege');
-
             $societe->siret = ($data[self::CSV_SIRET])? $data[self::CSV_SIRET] : null;
 
             $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
             $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2];
 
-            if($data[self::CSV_ADRESSE_3]){
-              $societe->siege->adresse_complementaire .= " − ".$data[self::CSV_ADRESSE_3];
-            }
-
             $societe->siege->code_postal = $data[self::CSV_CP];
             $societe->siege->commune = $data[self::CSV_VILLE];
-            if($data[self::CSV_CP]){
-              $societe->siege->pays = "France";
-            }else{
-              $societe->siege->pays = ($data[self::CSV_ADRESSE_3])? $data[self::CSV_ADRESSE_3] : 'Autre Pays';
+
+            $societe->siege->pays = "France";
+
+            $telephone1 = $this->formatTel($data[self::CSV_TELEPHONE_1]);
+            $telephone2 = $this->formatTel($data[self::CSV_TELEPHONE_2]);
+
+            if($telephone1 && preg_match("/^(06|07)/",$telephone1)){
+              $societe->telephone_mobile = $telephone1;
+            }
+            if($telephone1 && preg_match("/^(01|02|03|04|05|09)/",$telephone1)){
+              $societe->telephone_bureau = $telephone1;
             }
 
+            if($telephone2 && preg_match("/^(06|07)/",$telephone2)){
+              if(!$societe->telephone_mobile){
+                $societe->telephone_mobile = $telephone2;
+              }else{
+                $societe->fax = $telephone2;
+              }
+            }
 
-            $societe->telephone_bureau = $this->formatTel($data[self::CSV_TELEPHONE]);
-            $societe->telephone_mobile = $this->formatTel($data[self::CSV_PORTABLE]);
-            $societe->fax = $this->formatTel($data[self::CSV_FAX]);
-            //$emails = (explode(";",$data[self::CSV_EMAIL]));
+            if($telephone2 && preg_match("/^(01|02|03|04|05|09)/",$telephone2)){
+              if(!$societe->telephone_bureau){
+                $societe->telephone_bureau = $telephone2;
+              }else{
+                $societe->fax = $telephone2;
+              }
+            }
 
             $societe->email = str_replace("'","",trim($data[self::CSV_EMAIL]));
 
-            if($this->isSuspendu){
-              $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
-            }else{
-              $societe->setStatut(SocieteClient::STATUT_ACTIF);
-            }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
             return $societe;
           }
 
     protected function importEtablissement($societe,$data,$identifiant){
-          $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
 
-          if($data[self::CSV_ORDRE]){
-              if(($data[self::CSV_ORDRE] == "N83") || ($data[self::CSV_ORDRE] == "N13")){
-                  $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-              }
-              if(($data[self::CSV_ORDRE] == "CC 83") || ($data[self::CSV_ORDRE] == "CC 13")){
-                  $type_etablissement = EtablissementFamilles::FAMILLE_COOPERATIVE;
-              }
-              if(($data[self::CSV_ORDRE] == "CP 83") || ($data[self::CSV_ORDRE] == "CP 13")){
-                  $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-              }
-          }
-          if($data[self::CSV_SOCIETE_TYPE] == "NEGOCIANT"){
-              $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT;
-          }
+          $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+          // Type d'établissement????
 
           $cvi = $data[self::CSV_EVV];
           $etablissement = $societe->createEtablissement($type_etablissement);
@@ -230,38 +182,51 @@ EOF;
           $etablissement->cvi = $cvi;
           $etablissement->nom = $this->buildRaisonSociete($data);
 
-          $departement = null;
-          if(preg_match("/([0-9]{2})$/", $data[self::CSV_ORDRE], $matches)) {
-              $departement = $matches[1];
-          } else {
-              $departement = substr($data[self::CSV_CP], 0, 2);
-          }
-          if($data[self::CSV_ZONE]){
-              $etablissement->region = str_replace(" ", "_", $data[self::CSV_ZONE])."_".$departement;
-          }
-
-          if($data[self::CSV_ZONE] && !array_key_exists($etablissement->region, EtablissementClient::getRegions())) {
-              echo $etablissement->identifiant . " : La région ".$etablissement->region." n'existe pas\n";
-          }
+          $etablissement->region = "PDL"; //Comment on determine la région?
 
           $etablissement->save();
-          if($this->isSuspendu){
-            $etablissement->setStatut(SocieteClient::STATUT_SUSPENDU);
-          }else{
-            $etablissement->setStatut(SocieteClient::STATUT_ACTIF);
-          }
 
-
-          echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id  ";
-          echo ($this->isSuspendu)? " SUSPENDU   " : " ACTIF ";
-          if(trim($data[self::CSV_COMMENTAIRE])){
-              $etablissement->setCommentaire(str_replace("#","\n",$data[self::CSV_COMMENTAIRE]));
+          echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id  \n";
+          if(trim($data[self::CSV_OBSERVATION])){
+              $etablissement->setCommentaire($data[self::CSV_OBSERVATION]);
           }
           $etablissement->save();
 
           return $etablissement;
-
         }
+
+    protected function importContactAssocie($societe,$data){
+
+      $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
+      $contact->nom = trim($data[self::CSV_CONTACT_NOM]);
+      $contact->prenom = trim($data[self::CSV_CONTACT_PRENOM]);
+      $contact->fonction = trim($data[self::CSV_CONTACT_FONCTION]);
+      $contact->telephone = $data[self::CSV_CONTACT_TELEPHONE];
+      $contact->save();
+
+    }
+
+    protected function buildRaisonSociete($data){
+      if($data[self::CSV_FORME_SOCIETE]){
+        return trim($data[self::CSV_FORME_SOCIETE]).' '.trim($data[self::CSV_RAISONSOCIALE]);
+      }
+      return trim($data[self::CSV_RAISONSOCIALE]);
+    }
+
+    protected function formatTel($tel){
+        if(!$tel){
+            return null;
+        }
+        $t = str_replace(array(' ','.'),array('',''),$tel);
+        if(strlen($t) > 10 && preg_match("/^\+?33/",$t)){
+          $t = preg_replace("/^\+?33(.+)/","0$1", $t);
+        }
+        $tk = sprintf("%010d",$t);
+        return substr($tk, 0,2)." ".substr($tk,2,2)." ".substr($tk,4,2)." ".substr($tk,6,2)." ".substr($tk,8,2);
+    }
+
+////////////////////////////////////// ci dessous probablement inutil
+
 
         protected function addChaiForEtablissement($etb,$data){
           $newChai = $etb->getOrAdd('chais')->add();
@@ -283,14 +248,7 @@ EOF;
           $etb->save();
           return $etb;
         }
-
-    protected function buildRaisonSociete($data){
-      $civilites = array("MR","MME", "MM", "M");
-      if(in_array($data[self::CSV_TITRE],$civilites)){
-        return trim($data[self::CSV_NOM].' ('.$data[self::CSV_TITRE].')');
-      }
-      return trim($data[self::CSV_TITRE].' '.$data[self::CSV_NOM]);
-    }
+    
 
     protected function importLiaisons($viti,$line){
         $data = str_getcsv($line, ';');
@@ -358,15 +316,6 @@ EOF;
         echo "\n/!\ ".$data[self::CSV_OLDID]." : on ne trouve pas le chai ".$data[self::CSV_CHAIS_ADRESSE_1] ." ".$data[self::CSV_CHAIS_ADRESSE_2]." ".$data[self::CSV_CHAIS_ADRESSE_3]." ".$data[self::CSV_CHAIS_VILLE]." ".$data[self::CSV_CHAIS_CP]. " dans ".$coopOrNego->_id."\n";
 
         return null;
-    }
-
-    protected function formatTel($tel){
-        if(!$tel){
-            return null;
-        }
-        $t = str_replace(array(' ','.'),array('',''),$tel);
-        $tk = sprintf("%010d",$t);
-        return substr($tk, 0,2)." ".substr($tk,2,2)." ".substr($tk,4,2)." ".substr($tk,6,2)." ".substr($tk,8,2);
     }
 
     protected function convertAttributsChais($chaisAttributsCsv){
