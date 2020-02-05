@@ -96,10 +96,11 @@ class CompteClient extends acCouchdbClient {
 
           try {
               $index = acElasticaManager::getType('COMPTE');
+              $resset = $index->search($q);
           } catch(Exception $e) {
               return array();
           }
-          $resset = $index->search($q);
+          
           $results = $resset->getResults();
           $this->facets = $resset->getFacets();
 
