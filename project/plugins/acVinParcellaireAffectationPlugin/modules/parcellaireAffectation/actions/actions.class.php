@@ -1,6 +1,19 @@
 <?php
 
 class parcellaireAffectationActions extends sfActions {
+    
+    public function executeChoixDgc(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
+    
+        $this->papier = $request->getParameter('papier', false);
+        $this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
+        
+        $this->ParcellaireAffectation = ParcellaireAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
+    
+        $this->form = new ParcellaireAffectationChoixDgcForm($this->ParcellaireAffectation);
+    
+    }
 
     public function executeAffectation(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
@@ -29,7 +42,7 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "Vos parcelles affectées ont bien été enregistrées");
 
-        return $this->redirect('ParcellaireAffectation_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne, 'papier' => $this->papier));
+        return $this->redirect('ParcellaireAffectation_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne, 'papier' => $this->papier)); 
 
     }
 

@@ -3,7 +3,7 @@
 class ParcellaireAffectationClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireAffectation";
-      const TYPE_COUCHDB = "ParcellaireAffectation";
+      const TYPE_COUCHDB = "PARCELLAIREAFFECTATION";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("ParcellaireAffectation");

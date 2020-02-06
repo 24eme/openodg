@@ -1,3 +1,13 @@
+ParcellaireAffectation_create:
+  url: /parcellaire-affectation/creation/:identifiant
+  param: { module: parcellaireAffectation, action: choixDgc }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 ParcellaireAffectation_edit:
   url: /parcellaire-affectation/edition/:identifiant
   param: { module: parcellaireAffectation, action: affectation }
