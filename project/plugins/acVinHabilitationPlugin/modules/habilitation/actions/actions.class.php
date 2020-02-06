@@ -439,6 +439,9 @@ class habilitationActions extends sfActions {
                 $find = true;
                 if($this->query) {
                     foreach($this->query as $queryKey => $queryValue) {
+                        if(!array_key_exists($queryValue, $this->facets[$queryKey])) {
+                            $this->facets[$queryKey][$queryValue] = 0;
+                        }
                         if($queryValue != $row->key[$facets[$queryKey]]) {
                             $find = false;
                             break;
