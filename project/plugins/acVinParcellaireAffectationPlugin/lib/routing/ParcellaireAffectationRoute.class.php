@@ -1,15 +1,15 @@
 <?php
 class ParcellaireAffectationRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
-    protected $parcellaire = null;
+    protected $ParcellaireAffectation = null;
 
     protected function getObjectForParameters($parameters = null) {
-        $this->parcellaire = ParcellaireAffectationClient::getInstance()->find($parameters['id']);
-        if (!$this->parcellaire) {
+        $this->ParcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($parameters['id']);
+        if (!$this->ParcellaireAffectation) {
 
-            throw new sfError404Exception(sprintf('No Parcellaire found with the id "%s".', $parameters['id']));
+            throw new sfError404Exception(sprintf('No ParcellaireAffectation found with the id "%s".', $parameters['id']));
         }
-        return $this->parcellaire;
+        return $this->ParcellaireAffectation;
     }
 
     protected function doConvertObjectToArray($object = null) {
@@ -17,15 +17,15 @@ class ParcellaireAffectationRoute extends EtablissementRoute implements Interfac
         return $parameters;
     }
 
-    public function getParcellaire() {
-        if (!$this->parcellaire) {
+    public function getParcellaireAffectation() {
+        if (!$this->ParcellaireAffectation) {
             $this->getObject();
         }
-        return $this->parcellaire;
+        return $this->ParcellaireAffectation;
     }
 
     public function getEtablissement() {
 
-        return $this->getParcellaire()->getEtablissementObject();
+        return $this->getParcellaireIrrigable()->getEtablissementObject();
     }
 }

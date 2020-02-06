@@ -1,48 +1,28 @@
-#PARCELLAIRE
+#PARCELLAIREAFFECTATION
 ParcellaireAffectation:
   definition:
     fields:
       _id: { }
       _rev: { }
       type: { }
-      campagne: { }
       identifiant: { }
       etape: { }
       validation: { }
       validation_odg: { }
-      autorisation_acheteur: { }
+      campagne: { }
+      date: { }
+      lecture_seule: { required: false }
+      signataire: { }
       papier: { required: false, type: integer }
-      source: { required: false }
-      type_proprietaire:
-        type: collection
-        required: false
-        definition:
-          fields:
-            '*': { }
-      acheteurs:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  '*':
-                    type: collection
-                    definition:
-                      fields:
-                        cvi : { }
-                        nom : { }
-                        commune: { }
-                        email_envoye: { }
-                        email: { }
       declarant:
         type: collection
+        class: ParcellaireAffectationDeclarant
         definition:
           fields:
             nom: { }
             raison_sociale: { }
             cvi: { }
+            ppm: { }
             siret: { }
             adresse: { }
             commune: { }
@@ -63,53 +43,32 @@ ParcellaireAffectation:
               definition:
                 fields:
                   libelle: { }
-                  acheteurs:
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          definition:
-                            fields:
-                              '*':
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          cvi : { }
-                                          nom : { }
-                                          commune: { }
                   detail:
                     type: collection
                     definition:
                       fields:
                         '*':
                           type: collection
-                          class: ParcellaireAffectationParcelle
+                          class: ParcellaireAffectationProduitDetail
                           definition:
                             fields:
                               superficie: { type: float }
-                              superficie_cadastrale: { type: float }
                               commune: { }
-                              code_postal: { required: false }
                               code_commune: { }
                               section: { }
                               numero_parcelle: { }
                               idu: { }
-                              lieu: { }
-                              cepage: { }
-                              campagne_plantation: { }
+                              lieu: {  }
+                              cepage: {  }
                               departement: { required: false }
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
-                              code_insee: { required: false }
-                              ecart_rang: { type: float }
-                              ecart_pieds: { type: float }
-                              mode_savoirfaire: { required: false }
-                              porte_greffe: { required: false }
+                              campagne_plantation: {  }
+                              materiel: {  }
+                              ressource: {  }
+                              irrigation: {  }
+                              date_irrigation: {  }
+      observations: {  }
       pieces:
         type: array_collection
         definition:
