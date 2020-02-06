@@ -245,6 +245,15 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $total;
     }
 
+	public function getTotalVolumeRevendiqueVCI()
+    {
+		$total = 0;
+        foreach($this->getProduits() as $key => $item) {
+            $total += $item->volume_revendique_issu_vci;
+        }
+        return $total;
+	}
+
 		public static function sortByLibelle($p1,$p2){
 			return strcmp($p1->getLibelle(), $p2->getLibelle());
 		}

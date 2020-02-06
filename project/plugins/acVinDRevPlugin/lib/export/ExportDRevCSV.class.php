@@ -6,6 +6,25 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     protected $header = false;
     protected $region = null;
 
+    const CSV_CAMPAGNE = 0;
+    const CSV_CVI = 2;
+    const CSV_PRODUIT_CERTIFICATION = 10;
+    const CSV_PRODUIT_GENRE = 11;
+    const CSV_PRODUIT_APPELLATION = 12;
+    const CSV_PRODUIT_MENTION = 13;
+    const CSV_PRODUIT_LIEU = 14;
+    const CSV_PRODUIT_COULEUR = 15;
+    const CSV_PRODUIT_CEPAGE = 16;
+    const CSV_SUPERFICIE_REVENDIQUE = 19;
+    const CSV_VOLUME_REVENDIQUE_ISSU_RECOLTE = 20;
+    const CSV_VOLUME_REVENDIQUE_ISSU_VCI = 21;
+    const CSV_VCI_STOCK_PRECEDENT = 23;
+    const CSV_VCI_STOCK_DESTRUCTION= 24;
+    const CSV_VCI_STOCK_COMPLEMENT = 25;
+    const CSV_VCI_STOCK_SUBSTITUTION = 26;
+    const CSV_VCI_STOCK_RAFRAICHI = 27;
+    const CSV_VCI_STOCK_CONSTITUE = 28;
+
     public static function getHeaderCsv() {
 
         return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination (Date);Date de validation VCI;Date de validation ODG\n";

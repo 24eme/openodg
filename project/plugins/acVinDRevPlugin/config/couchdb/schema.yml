@@ -178,6 +178,7 @@ DRev:
                         detail_identifiant: {  }
                         detail_libelle: {  }
                         quantite: { type: float }
+                        unite: { required: false }
                         taux: { }
                         tva: { }
                         facture: { type: integer }

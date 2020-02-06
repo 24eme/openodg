@@ -3,6 +3,7 @@
 $parcellaire_client = ParcellaireClient::getInstance();
 $last = null;
 $list_communes = [];
+$list_idu = [];
 ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
@@ -64,7 +65,7 @@ $list_communes = [];
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
     $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()); ?>
     <?php if(isset($import)): ?>
-     <div class="row">
+     <div class="row" id="jump">
             <div class="col-xs-12">
                 <a name="carte"/><h3>Filtrer</h3>
                 <div class="form-group">
@@ -164,7 +165,7 @@ $list_communes = [];
                             <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
 
                                 <td style="<?php echo $styleproduit; ?>"><?php echo $lieu; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $section; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
+                                <td class="" style="text-align: right;"><?php echo $section; $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
                                 <td class=""><?php echo $num_parcelle; ?></td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
@@ -204,4 +205,7 @@ $list_communes = [];
 </div>
 <?php endif;?>
 <?php use_javascript('hamza_style.js'); ?>
+<script type="text/javascript">
+    var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
+</script>
 
