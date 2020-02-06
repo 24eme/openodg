@@ -80,11 +80,11 @@ EOF;
              }
 
              // ON VIRE LES HABILITATIONS DEJA CREER
-             $habs = HabilitationClient::getInstance()->getHistory($eta->identifiant);
-             foreach ($habs as $key => $hab) {
-                echo "/!\ : on vire l'habilitation précédente ".$hab->_id." \n";
-                $hab->delete();
-             }
+             // $habs = HabilitationClient::getInstance()->getHistory($eta->identifiant);
+             // foreach ($habs as $key => $hab) {
+             //    // echo "/!\ : on vire l'habilitation précédente ".$hab->_id." \n";
+             //    // $hab->delete();
+             // }
 
             $produitKey = $this->produits[$data[self::CSV_PRODUIT_LIBELLE]];
             // var_dump($produitKey); exit;
