@@ -24,6 +24,7 @@ NANTES_IMPORT_TMP=$DATA_DIR"/Nantes"
 
 ls $WORKINGDIR/data/configuration/nantes | while read jsonFile
 do
+    php symfony document:delete $(echo $jsonFile | sed 's/\.json//')
     curl -s -X POST -d @data/configuration/nantes/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
@@ -57,3 +58,11 @@ echo ""
 bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/habilitation/_view/historique
 
 php symfony import:habilitations-csv-inao $NANTES_IMPORT_TMP/habilitations_proper_inao.csv --application="nantes" --trace
+
+echo "Import des DR"
+
+php symfony dr:import $URLDRCSV --application=nantes
+
+echo "Import des DRev"
+
+php symfony dr:import $URLDREVCSV --application=nantes
