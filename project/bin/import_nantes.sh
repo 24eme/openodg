@@ -54,4 +54,6 @@ cat $NANTES_IMPORT_TMP/habilitations_proper_inao.csv
 sleep 2
 echo ""
 
+bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/habilitation/_view/historique
+
 php symfony import:habilitations-csv-inao $NANTES_IMPORT_TMP/habilitations_proper_inao.csv --application="nantes" --trace
