@@ -12,6 +12,11 @@ if ! test "$1"; then
     exit 1;
 fi
 
+bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
+bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
+bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
+
+
 echo "Récupération des données"
 cp -r $1"/" $DATA_DIR"/"
 
@@ -31,3 +36,17 @@ echo "Traitement de l'import"
 sleep 2
 
 php symfony import:entite-from-csv $NANTES_IMPORT_TMP/listes_operateurs.csv --application="nantes" --trace
+
+echo ""
+echo ""
+echo "Traitement du fichier habilitations.csv"
+
+cat $NANTES_IMPORT_TMP/habilitations.csv | tail -n +11 > $NANTES_IMPORT_TMP/habilitations_proper_inao.csv
+echo "CSV habilitations_proper.csv créé :"
+sleep 2
+echo ""
+cat $NANTES_IMPORT_TMP/habilitations_proper_inao.csv
+sleep 2
+echo ""
+
+php symfony import:habilitations-csv-inao $NANTES_IMPORT_TMP/habilitations_proper_inao.csv --application="nantes" --trace

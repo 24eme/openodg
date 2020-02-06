@@ -182,11 +182,19 @@ EOF;
           $etablissement->cvi = $cvi;
           $etablissement->nom = $this->buildRaisonSociete($data);
 
+          $ppm = str_replace("ppm_","",$data[self::CSV_PPM]);
+          if($ppm){
+            $etablissement->ppm = $ppm;
+          }
           $etablissement->region = "PDL"; //Comment on determine la région?
 
           $etablissement->save();
+          if($cvi){
+            echo "L'entité $identifiant CVI (".$etablissement->cvi.")  etablissement =>  $etablissement->_id  \n";
+          }else{
+            echo "L'entité $identifiant Siret (".$societe->siret.")  etablissement =>  $etablissement->_id  \n";
+          }
 
-          echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id  \n";
           if(trim($data[self::CSV_OBSERVATION])){
               $etablissement->setCommentaire($data[self::CSV_OBSERVATION]);
           }
@@ -214,6 +222,7 @@ EOF;
     }
 
     protected function formatTel($tel){
+
         if(!$tel){
             return null;
         }
@@ -229,6 +238,7 @@ EOF;
 
 
         protected function addChaiForEtablissement($etb,$data){
+
           $newChai = $etb->getOrAdd('chais')->add();
           $newChai->nom = $data[self::CSV_CHAIS_VILLE];
           $newChai->adresse = $this->getChaiAdresseConcat($data);
@@ -247,8 +257,9 @@ EOF;
           echo " LE CHAI ".$newChai->nom." ".$newChai->adresse."...  a été crée   ";
           $etb->save();
           return $etb;
+
         }
-    
+
 
     protected function importLiaisons($viti,$line){
         $data = str_getcsv($line, ';');
@@ -364,7 +375,8 @@ EOF;
         }else{
             $contact->telephone_bureau = $telephone;
         }
-            echo " (+INTERLOCUTEUR $contact->_id ".$contact->nom." (".$contact->telephone_bureau."/".$contact->telephone_mobile.") ";
+
+        echo " (+INTERLOCUTEUR $contact->_id ".$contact->nom." (".$contact->telephone_bureau."/".$contact->telephone_mobile.") ";
 
 
         $contact->save();
