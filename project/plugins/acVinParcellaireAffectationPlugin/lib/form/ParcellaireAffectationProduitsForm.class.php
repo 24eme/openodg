@@ -5,7 +5,7 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     public function configure() {
     	
 		foreach ($this->getObject()->declaration as $key => $value) {
-			$this->embedForm($key, new ParcellaireAffectationProduitIrrigationsForm($value));
+			$this->embedForm($key, new ParcellaireAffectationProduitAffectesForm($value));
 		}
 
         $this->widgetSchema->setNameFormat('parcelles[%s]');
@@ -27,5 +27,4 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     		}
     	}
     }
-
 }

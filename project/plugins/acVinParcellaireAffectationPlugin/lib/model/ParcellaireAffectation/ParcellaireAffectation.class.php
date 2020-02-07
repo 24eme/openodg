@@ -236,6 +236,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             'source' => null
         ));
     }
+    
+    public function getDgc(){
+      $lieux = array();
+      foreach ($this->declaration as $hash => $produit) {
+        $lieu = $this->getConfiguration()->declaration->get($hash)->getLieu();
+        $lieux[$lieu->getKey()] = $lieu->getLibelle();
+      }
+      ksort($lieux);
+      return $lieux;
+    }
 
     public function generatePieces() {
         return $this->piece_document->generatePieces();

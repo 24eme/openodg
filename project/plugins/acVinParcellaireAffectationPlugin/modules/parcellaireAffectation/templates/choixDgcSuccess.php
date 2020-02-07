@@ -1,10 +1,10 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('parcellaireAffectation/breadcrumb', array('ParcellaireAffectation' => $ParcellaireAffectation)); ?>
+<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
 <div class="page-header no-border">
     <h2>Identification des parcelles affectées
-    <?php if($ParcellaireAffectation->isPapier()): ?>
+    <?php if($parcellaireAffectation->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier</small>
     <?php endif; ?>
     </h2>
@@ -15,7 +15,7 @@
 <?php endif; ?>
 
 
-<form id="validation-form" action="<?php echo url_for("ParcellaireAffectation_create", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
+<form id="validation-form" action="<?php echo url_for("parcellaireAffectation_create", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     
@@ -50,10 +50,10 @@
     </div>
     
 	<div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $ParcellaireAffectation->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireAffectation->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
-            <?php if($ParcellaireAffectation->isValidee()): ?>
-                <a href="<?php echo url_for('ParcellaireAffectation_export_pdf', $ParcellaireAffectation) ?>" class="btn btn-success">
+            <?php if($parcellaireAffectation->isValidee()): ?>
+                <a href="<?php echo url_for('ParcellaireAffectation_export_pdf', $parcellaireAffectation) ?>" class="btn btn-success">
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
                 </a>
             <?php endif; ?>
