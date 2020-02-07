@@ -18,32 +18,13 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     	}
     	
 		foreach ($this->getObject()->declaration as $key => $value) {
-			$this->embedForm($key, new ParcellaireAffectationProduitIrrigationsForm($value));
+			$this->embedForm($key, new ParcellaireAffectationProduitAffectesForm($value));
 		}
 
         $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
 
     protected function doUpdateObject($values) {
-		parent::doUpdateObject($values);
-    	if($this->getObject()->isPapier()) {
-    		$this->getObject()->validate($values['date_papier']);
-    	} else {
-    		$this->getObject()->validate();
-    	}
-    	foreach ($values as $produit => $value) {
-    		if (!is_array($value)) continue;
-    		foreach ($value as $detail => $items) {
-    			$node = $this->getObject()->declaration->get($produit);
-    			$node = $node->detail->get($detail);
-    			foreach ($items as $k => $v) {
-    				$node->add($k, $v);
-    				if ($k == 'irrigation' && $v && !$node->date_irrigation) {
-    					$node->date_irrigation = date('Y-m-d');
-    				}
-    			}
-    		}
-    	}
+		
     }
-
 }

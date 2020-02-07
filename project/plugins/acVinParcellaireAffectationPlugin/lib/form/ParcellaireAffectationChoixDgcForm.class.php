@@ -32,15 +32,7 @@ class ParcellaireAffectationChoixDgcForm extends acCouchdbObjectForm {
     }
     
     private function getDgcChoices() {
-        $produits = array();
-        foreach ($this->configuration->getProduits() as $p) {
-            $lieu = $p->getLieu();
-            if ($lieu->getKey() == Configuration::DEFAULT_KEY) {
-                continue;
-            }
-            $produits[$lieu->getKey()] = $lieu->libelle;
-        }
-        return $produits;
+        return $this->configuration->getLieux();
     }
 
 }
