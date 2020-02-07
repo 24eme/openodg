@@ -12,7 +12,22 @@ class parcellaireAffectationActions extends sfActions {
         $this->ParcellaireAffectation = ParcellaireAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
     
         $this->form = new ParcellaireAffectationChoixDgcForm($this->ParcellaireAffectation);
-    
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+        	return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+        	return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+		//$this->redirect('ParcellaireAffectation_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne));
     }
 
     public function executeAffectation(sfWebRequest $request) {

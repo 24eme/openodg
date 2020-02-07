@@ -58,7 +58,7 @@
                 </a>
             <?php endif; ?>
         </div>
-        <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper"  id="btn-validation-document" data-toggle="modal" data-target="#ParcellaireAffectation-confirmation-validation">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper"  id="btn-validation-document">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
 </form>
 </div>

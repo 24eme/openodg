@@ -24,6 +24,19 @@ class ParcellaireAffectationChoixDgcForm extends acCouchdbObjectForm {
     }
 
     protected function doUpdateObject($values) {
+        parent::doUpdateObject($values);
+        if (isset($values['dgc'])) {
+            foreach ($values['dgc'] as $dgc) {
+                foreach (array('rouge', 'rose', 'blanc') as $couleur) {
+                    $hash = preg_replace("|/declaration/|", '', $dgc).'/couleurs/'.$couleur.'/cepages/DEFAUT';
+                    $commune_dgc = sfConfig::get('app_communes_denominations_'.substr($dgc, -3));
+
+                    $this->getObject()->declaration->setHash($commune_dgc);
+                }
+                
+            }
+
+        }
     }
     
     private function getDgcChoices() {
