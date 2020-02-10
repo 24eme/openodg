@@ -86,7 +86,7 @@ EOF;
       error_reporting(E_ERROR | E_PARSE);
 
       foreach(file($this->file_path) as $line) {
-        if(!preg_match("^EVV principal;Siret;Forme;Nom relation;Catégorie;", $line)){
+        if(!preg_match("^Identifiant ligne;EVV principal;Siret;Forme;Nom relation;Catégorie;", $line)){
             $line = str_replace("\n", "", $line);
             $this->importEntite($line);
           }
