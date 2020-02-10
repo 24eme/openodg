@@ -31,7 +31,7 @@
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_nantes_complet.png}
-\def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
+\def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Relevé de Cotisations<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
@@ -81,7 +81,7 @@
   width=8.9cm,
   padding={0.2cm,0.2cm},
   text-align=center
-]{\textbf{\LARGE{Relevé de Cotisations}}}}
+]{\textbf{\LARGE{\TYPEFACTURE}}}}
 
 \\\vspace{12mm}
 
