@@ -60,13 +60,24 @@ sleep 2
 echo ""
 
 bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/habilitation/_view/historique
-
+sleep 2
+echo ""
 php symfony import:habilitations-csv-inao $NANTES_IMPORT_TMP/habilitations_proper_inao.csv --application="nantes" --trace
+sleep 2
+echo ""
+recode iso88591..utf8 $NANTES_IMPORT_TMP/Lignes_de_revendication.txt
+cat $NANTES_IMPORT_TMP/Lignes_de_revendication.txt | tr '\r' ' ' | sed 's/ $//' | sed -r 's|\t|;|g' > $NANTES_IMPORT_TMP/lignes_de_revendication.csv
 
-echo "Import des DR"
 
-php symfony dr:import $URLDRCSV --application=nantes
-
-echo "Import des DRev"
-
-php symfony dr:import $URLDREVCSV --application=nantes
+# sleep 2
+# echo ""
+# echo "Import des DR"
+# sleep 2
+# echo ""
+# php symfony dr:import $URLDRCSV --application=nantes
+# sleep 2
+# echo ""
+# echo "Import des DRev de cette année"
+# sleep 2
+# echo ""
+# php symfony dr:import $URLDREVCSV --application=nantes

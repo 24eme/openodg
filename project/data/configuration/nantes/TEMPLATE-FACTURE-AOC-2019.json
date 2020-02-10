@@ -44,7 +44,7 @@
                "vci": {
                    "modele": "CotisationVariable",
                    "prix": 1.40,
-                   "tva": 0.20,
+                   "tva": 0,
                    "libelle": "VCI",
                    "complement_libelle": "",
                    "unite": "hl",
@@ -132,7 +132,7 @@
                    "tva": 0,
                    "libelle": "",
                    "complement_libelle": "",
-                   "unite": "(hl)",
+                   "unite": "hl",
                    "docs": [
                        "DRev"
                    ],

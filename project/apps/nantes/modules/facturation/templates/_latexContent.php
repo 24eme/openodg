@@ -46,9 +46,9 @@
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
-\def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht); ?>}
-\def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe); ?>}
-\def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc); ?>}
+\def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht, ','); ?>}
+\def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe, ','); ?>}
+\def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc, ','); ?>}
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0cm}
@@ -121,15 +121,15 @@
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.8cm}|>{\raggedleft}m{1.6cm}|>{\raggedleft}m{2.2cm}|}
+\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
   \hline
-  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~unitaire} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
+  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>
-  	    <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire); ?> €} & {<?php echo formatFloat($detail->quantite); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->taux_tva*100)." \%" : null; ?> & <?php echo formatFloat($detail->montant_ht); ?> € \tabularnewline
+  	    <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} & {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> & <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
   	<?php endforeach; ?>
-	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht); ?> €}  \tabularnewline
+	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
 	\hline
   <?php endforeach; ?>
   \end{tabular}
@@ -150,7 +150,7 @@ Modalités de paiements : \\
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL HT} & \textbf{\FACTURETOTALHT~€} \tabularnewline
   \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{TOTAL TVA}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
+  & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{NET À PAYER}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
