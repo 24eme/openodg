@@ -64,12 +64,13 @@
   <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-2">Document</th>
-            <th class="col-xs-2">Campagne</th>
+            <th class="col-xs-1">Document</th>
+            <th class="col-xs-1">Campagne</th>
             <th class="col-xs-4">Cotisation</th>
-            <th class="col-xs-2">Taux</th>
+            <th class="col-xs-1">Quantite</th>
+            <th class="col-xs-1">Prix unit.</th>
             <th class="col-xs-1">Tva</th>
-            <th class="col-xs-1">Montant HT</th>
+            <th class="col-xs-2">Montant HT</th>
         </tr>
     </thead>
     <tbody>
@@ -77,7 +78,8 @@
     <tr>
         <td><?php echo $mvt->getDocument()->getType();?></td>
         <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
-        <td>Cotisation <?php echo $mvt->categorie; ?></td>
+        <td><?php echo ucfirst($mvt->categorie); ?> <?php echo $mvt->type_libelle; ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->quantite); ?></td>
         <td class="text-right"><?php echo echoFloat($mvt->taux); ?></td>
         <td class="text-right"><?php echo echoFloat($mvt->tva); ?>&nbsp;%</td>
         <td class="text-right"><?php echo echoFloat($mvt->taux * $mvt->quantite); ?>&nbsp;€</td>
