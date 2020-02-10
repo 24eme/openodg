@@ -2,6 +2,8 @@
 
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
+<?php include_partial('parcellaireAffectation/nav', array('etablissement' => $etablissement, 'campagne' => $campagne, 'papier' => $papier, 'parcellaireAffectation' => $parcellaireAffectation, 'current' => 'dgcs')); ?>
+
 <div class="page-header no-border">
     <h2>Identification des parcelles affectées
     <?php if($parcellaireAffectation->isPapier()): ?>
@@ -14,8 +16,9 @@
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
-
-<form id="validation-form" action="<?php echo url_for("parcellaireAffectation_create", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
+<p>Veuillez activer les dénominations complémentaires pour lesquelles vous souhaitez y déclarer vos parcelles.</p>
+     
+<form action="<?php echo url_for("parcellaireAffectation_create", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     
@@ -38,16 +41,17 @@
     </div>
     <?php endif; ?>
     
-    <div class="row">
-        <div class="form-group <?php if ($form["dgc"]->hasError()): ?>has-error<?php endif; ?>">
-        	 <div class="col-sm-12">
-             <div class="checkbox">
-            	<?php echo $form["dgc"]->renderLabel(null, array("class" => "control-label")); ?>
-            	<?php echo $form["dgc"]->render(); ?>
-            </div>
-            </div>
-        </div>
-    </div>
+    <table class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+		<thead>
+        	<tr>
+                <th class="col-xs-2">Dénominations complémentaire</th>
+                <th class="col-xs-1">Affectation?</th>
+            </tr>
+		</thead>
+		<tbody>
+			<?php echo $form["dgc"]->render(); ?>
+        </tbody>
+	</table>
     
 	<div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireAffectation->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>

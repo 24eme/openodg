@@ -86,7 +86,7 @@ EOF;
       error_reporting(E_ERROR | E_PARSE);
 
       foreach(file($this->file_path) as $line) {
-        if(!preg_match("^Identifiant ligne;EVV principal;Siret;Forme;Nom relation;Catégorie;", $line)){
+        if(!preg_match("/^Identifiant ligne/", $line)){
             $line = str_replace("\n", "", $line);
             $this->importEntite($line);
           }
@@ -186,7 +186,11 @@ EOF;
           if($ppm){
             $etablissement->ppm = $ppm;
           }
-          $etablissement->region = "PDL"; //Comment on determine la région?
+
+          if(count(EtablissementClient::getRegions()) == 1){
+            $regions = array_keys(EtablissementClient::getRegions());
+            $etablissement->region = $regions[0];
+          }
 
           $etablissement->save();
           if($cvi){

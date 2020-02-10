@@ -3,7 +3,7 @@
 class ParcellaireAffectationProduitAffecteForm extends acCouchdbObjectForm {
 
     public function configure() {
-		if ($this->getObject()->active) {
+		if ($this->getObject()->affectation && $this->getObject()->date_affectation && $this->getObject()->getDocument()->date && $this->getObject()->date_affectation != $this->getObject()->getDocument()->date) {
 			$this->setWidgets(array(
 					'affectation' => new sfWidgetFormInputHidden(),
 			));
@@ -15,7 +15,7 @@ class ParcellaireAffectationProduitAffecteForm extends acCouchdbObjectForm {
     	$this->setValidators(array(
     			'affectation' => new ValidatorBoolean(),
     	));
-        $this->widgetSchema->setNameFormat('parcellaire_irrigation[%s]');
+        $this->widgetSchema->setNameFormat('parcellaire_affectation[%s]');
     }
 
 }
