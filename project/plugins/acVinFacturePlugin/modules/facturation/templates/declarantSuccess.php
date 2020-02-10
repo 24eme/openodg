@@ -59,19 +59,45 @@
 <div class="page-header">
     <h2>Espace Facture</h2>
 </div>
-
+<?php if(count($mouvements) && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+  <h3>Mouvements en attente de facturation</h3>
+  <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-1">Document</th>
+            <th class="col-xs-1">Campagne</th>
+            <th class="col-xs-4">Cotisation</th>
+            <th class="col-xs-1">Quantite</th>
+            <th class="col-xs-1">Prix unit.</th>
+            <th class="col-xs-1">Tva</th>
+            <th class="col-xs-2">Montant HT</th>
+        </tr>
+    </thead>
+    <tbody>
+  <?php foreach ($mouvements as $keyMvt => $mvt): ?>
+    <tr>
+        <td><?php echo $mvt->getDocument()->getType();?></td>
+        <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
+        <td><?php echo ucfirst($mvt->categorie); ?> <?php echo $mvt->type_libelle; ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->quantite); ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux); ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->tva); ?>&nbsp;%</td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux * $mvt->quantite); ?>&nbsp;€</td>
+    </tr>
+  <?php endforeach; ?>
+  </tbody>
+</table>
+<?php endif; ?>
+<h3>Liste des factures</h3>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-1">Date</th>
-            <th class="col-xs-1">Numéro</th>
-            <th class="col-xs-1">Type</th>
-            <th class="col-xs-3">Libellé</th>
+            <th class="col-xs-2">Date</th>
+            <th class="col-xs-2">Numéro</th>
+            <th class="col-xs-2">Type</th>
+            <th class="col-xs-4">Libellé</th>
             <th class="col-xs-2">Montant TTC</th>
-            <th class="col-xs-2">Paiement</th>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-            <th class="text-center" style="width: 0;"><span class="glyphicon glyphicon-list-alt"></span></th>
-            <th class="text-center" style="width: 0;"><span class="glyphicon glyphicon-euro"></span></th>
             <th style="witdth: 0;"></th>
             <?php endif; ?>
             <th style="witdth: 0;"></th>
@@ -81,63 +107,29 @@
         <?php foreach ($factures as $facture) : ?>
         <tr>
             <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
-            <td>N°&nbsp;<?php echo $facture->numero_ava ?></td>
+            <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
             <td><?php if(!$facture->isAvoir()): ?><?php echo $facture->getTemplate()->libelle ?><?php endif; ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
-            <td class="text-center">
-                <?php if($facture->isPayee() && !$facture->isAvoir() && !$facture->versement_comptable_paiement && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                    <a style="<?php if($facture->versement_comptable_paiement): ?>cursor: not-allowed;<?php endif; ?>" href="<?php if(!$facture->versement_comptable_paiement): ?><?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?><?php else: ?>#<?php endif; ?>" class="btn btn-sm btn-default" data-toggle="tooltip" title="Paiement&nbsp;de&nbsp;<?php echo Anonymization::hideIfNeeded(echoFloat($facture->montant_paiement)); ?> €&nbsp;reçu&nbsp;le&nbsp;<?php echo format_date($facture->date_paiement, "dd/MM/yyyy", "fr_FR"); ?>
-                        <?php if($facture->reglement_paiement): ?>(<?php echo $facture->reglement_paiement ?>)<?php endif; ?>"><span class="glyphicon glyphicon-ok-sign"></span> Reçu
-                    </a>
-                <?php elseif($facture->isPayee() && !$facture->isAvoir()): ?>
-                    <a style="cursor: help;" href="#" class="btn btn-sm btn-default" data-toggle="tooltip" title="Paiement&nbsp;de&nbsp;<?php echo Anonymization::hideIfNeeded(echoFloat($facture->montant_paiement)); ?> €&nbsp;reçu&nbsp;le&nbsp;<?php echo format_date($facture->date_paiement, "dd/MM/yyyy", "fr_FR"); ?>
-                        <?php if($facture->reglement_paiement): ?>(<?php echo $facture->reglement_paiement ?>)<?php endif; ?>"><span class="glyphicon glyphicon-ok-sign"></span> Reçu
-                    </a>
-                <?php elseif(!$facture->isAvoir() && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                    <a class="btn btn-sm btn-default-step" href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>"><span class="glyphicon glyphicon-pencil"></span> Saisir</a>
-                <?php elseif($facture->isAvoir()): ?>
-                    <span style="opacity: 0.4;" class="text-muted"><span class="glyphicon glyphicon-ban-circle"></span></span>
-                <?php else : ?>
-                <?php endif; ?>
-            </td>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <td class="text-center">
-                <?php if($facture->versement_comptable): ?><span style="cursor: help;" data-toggle="tooltip" title="Facture versée en comptabilité" class="glyphicon glyphicon-check"></span><?php else: ?><span class="glyphicon glyphicon-unchecked text-muted" style="opacity: 0.4;"></span><?php endif; ?>
+                <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement && !$facture->exist('avoir')): ?>
+                  <a href="<?php echo url_for("facturation_avoir_defacturant", array("id" => $facture->_id)) ?>" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-repeat"></span> Créér un avoir
+                    </a>
+                <?php endif; ?>
             </td>
-            <td class="text-center">
-                <?php if($facture->versement_comptable_paiement && !$facture->isAvoir()): ?><span style="cursor: help;" data-toggle="tooltip" title="Paiement versé en comptabilité" class="glyphicon glyphicon-check"></span><?php elseif(!$facture->isAvoir()): ?><span style="opacity: 0.4;" class="glyphicon glyphicon-unchecked text-muted"></span><?php else: ?><span style="opacity: 0.4;" class="text-muted"><span class="glyphicon glyphicon-ban-circle"></span></span><?php endif; ?>
-            </td>
-            <td>
-                <button type="button" class="btn btn-default btn-default-step btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <?php if(!$facture->isPayee() && !$facture->versement_comptable): ?>
-                    <li><a href="<?php if(!$facture->isPayee() && !$facture->versement_comptable): ?><?php echo url_for("facturation_edition", array("id" => $facture->_id)) ?><?php endif; ?>">Modifier</a></li>
-                    <?php else: ?>
-                        <li class="disabled"><a href="">Modifier</a></li>
-                    <?php endif; ?>
-                    <?php if(!$facture->isAvoir()): ?>
-                    <li><a href="<?php echo url_for("facturation_avoir", array("id" => $facture->_id)) ?>">Créér un avoir <small>(à partir de cette facture)</small></a></li>
-                    <?php else: ?>
-                        <li class="disabled"><a href="">Créér un avoir <small>(à partir de cette facture)</small></a></li>
-                    <?php endif; ?>
-                    <?php if(!$facture->isAvoir() && !$facture->isPayee() && !$facture->versement_comptable): ?>
-                        <li><a onclick='return confirm("Étes vous sûr de vouloir regénérer la facture ?");' href="<?php echo url_for("facturation_regenerate", array("id" => $facture->_id)) ?>">Regénerer</a></li>
-                    <?php else: ?>
-                        <li class="disabled"><a href="">Regénerer</a></li>
-                    <?php endif; ?>
-                    <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement): ?>
-                    <li><a href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>">Saisir / modifier le paiement</a></li>
-                    <?php else: ?>
-                        <li class="disabled"><a href="">Saisir / modifier le paiement</a></li>
-                    <?php endif; ?>
-                </ul>
-            </td>
-            <?php endif; ?>
+           <?php endif; ?>
             <td class="text-right">
                 <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
             </td>
         </tr>
-        <?php endforeach; ?>
+        <?php endforeach;
+          if(!count($factures)):
+        ?>
+        <tr>
+            <td colspan="<?php echo intval($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))+6 ?>">Aucune factures éditées</td>
+        </tr>
+      <?php endif; ?>
     </tbody>
 </table>
