@@ -127,7 +127,7 @@
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>
-  	    <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire); ?> €} & {<?php echo formatFloat($detail->quantite); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->taux_tva*100)." \%" : null; ?> & <?php echo formatFloat($detail->montant_ht); ?> € \tabularnewline
+  	    <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire); ?> €} & {<?php echo formatFloat($detail->quantite); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva)." €" : null; ?> & <?php echo formatFloat($detail->montant_ht); ?> € \tabularnewline
   	<?php endforeach; ?>
 	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht); ?> €}  \tabularnewline
 	\hline
@@ -150,7 +150,7 @@ Modalités de paiements : \\
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL HT} & \textbf{\FACTURETOTALHT~€} \tabularnewline
   \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{TOTAL TVA}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
+  & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{NET À PAYER}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
