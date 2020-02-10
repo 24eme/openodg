@@ -69,4 +69,4 @@ php symfony dr:import $URLDRCSV --application=nantes
 
 echo "Import des DRev"
 
-php symfony dr:import $URLDREVCSV --application=nantes
+php symfony drev:import $URLDREVCSV --application=nantes
