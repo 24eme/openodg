@@ -12,21 +12,25 @@ if ! test "$1"; then
     exit 1;
 fi
 
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
-
-
-echo "Récupération des données"
-cp -r $1"/" $DATA_DIR"/"
-
-NANTES_IMPORT_TMP=$DATA_DIR"/Nantes"
+cd ..
+make clean
+make
+cd -
 
 ls $WORKINGDIR/data/configuration/nantes | while read jsonFile
 do
     php symfony document:delete $(echo $jsonFile | sed 's/\.json//')
     curl -s -X POST -d @data/configuration/nantes/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
+
+bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
+bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
+bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
+
+echo "Récupération des données"
+cp -r $1"/" $DATA_DIR"/"
+
+NANTES_IMPORT_TMP=$DATA_DIR"/Nantes"
 
 echo "Traitement du fichier listes_operateurs.txt"
 recode iso88591..utf8 $NANTES_IMPORT_TMP/listes_operateurs.txt

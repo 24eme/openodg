@@ -1,17 +1,47 @@
 <?php
 
 class parcellaireAffectationActions extends sfActions {
+    
+    public function executeChoixDgc(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
+    
+        $this->papier = $request->getParameter('papier', false);
+        $this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
+        
+        $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
+    
+        $this->form = new ParcellaireAffectationChoixDgcForm($this->parcellaireAffectation);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+        	return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+        	return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+		$this->redirect('parcellaireAffectation_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne, 'lieu' => array_shift(array_keys($this->parcellaireAffectation->getDgc()))));
+    }
 
     public function executeAffectation(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
 
+        $this->Lieu = $request->getParameter('lieu');
+
 		$this->papier = $request->getParameter('papier', false);
 		$this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
 
-        $this->ParcellaireAffectation = ParcellaireAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
+        $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant, $this->campagne, $this->papier);
 
-        $this->form = new ParcellaireAffectationProduitsForm($this->ParcellaireAffectation);
+        $this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -29,7 +59,7 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "Vos parcelles affectées ont bien été enregistrées");
 
-        return $this->redirect('ParcellaireAffectation_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne, 'papier' => $this->papier));
+        return $this->redirect('parcellaireAffectation_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne, 'papier' => $this->papier, 'lieu' => [])); 
 
     }
 
@@ -50,11 +80,11 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
         set_time_limit(180);
-        $this->ParcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
-        $this->secure(ParcellaireSecurity::VISUALISATION, $this->ParcellaireAffectation);
+        $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireAffectation);
 
 
-        $this->document = new ExportParcellaireAffectationPDF($this->ParcellaireAffectation, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportParcellaireAffectationPDF($this->parcellaireAffectation, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {

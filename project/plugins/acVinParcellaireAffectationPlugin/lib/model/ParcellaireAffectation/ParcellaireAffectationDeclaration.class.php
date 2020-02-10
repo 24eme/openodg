@@ -30,4 +30,17 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
 
         return $parcelles;
     }
+
+    public function setHash($commune_dgc){
+        foreach($this as $hash => $produit) {
+            
+            foreach ($produit->detail as $parcelle) {
+                //var_dump($hash);
+                if(in_array($parcelle->get("code_commune"), $commune_dgc)){
+                    var_dump($parcelle->commune);
+                }
+                
+            }
+        }
+    }
 }

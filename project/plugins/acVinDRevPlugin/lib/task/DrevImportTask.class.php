@@ -1,6 +1,6 @@
 <?php
 
-class DRImportTask extends sfBaseTask
+class DrevImportTask extends sfBaseTask
 {
 
     protected function configure()

@@ -55,7 +55,7 @@
         </p>
         <?php if($query && count($query) > 0): ?>
         <p>
-            <a href="<?php echo url_for('habilitation') ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
+            <a href="<?php echo url_for('habilitation', array('query' => "0")) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
         <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
