@@ -101,13 +101,12 @@ EOF;
             foreach (self::$activites as $csvkey => $activite) {
               if(trim($data[$csvkey])){
                 //demande
-                if($dateDemande){
-                  $hab_activites->add($activite)->updateHabilitation(HabilitationClient::STATUT_ATTENTE_HABILITATION, null, $dateDemande);
-                }
+                // if($dateDemande){
+                //   $hab_activites->add($activite)->updateHabilitation(HabilitationClient::STATUT_ATTENTE_HABILITATION, null, $dateDemande);
+                // }
                 //statut habilite
-                if($dateHabilitation){
-                    $hab_activites->add($activite)->updateHabilitation(HabilitationClient::STATUT_HABILITE, null, $dateHabilitation);
-                }
+                $hab_activites->add($activite)->updateHabilitation(HabilitationClient::STATUT_HABILITE, null, $dateDemande);
+
               }
             }
 
