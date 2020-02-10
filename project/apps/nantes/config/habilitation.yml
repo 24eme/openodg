@@ -2,11 +2,9 @@ all:
   configuration:
     habilitation:
       activites:
-         PRODUCTEUR: "Producteur de raisin"
+         PRODUCTEUR: "Producteur de raisins"
          VINIFICATEUR: "Vinificateur"
          VRAC: "Détenteur de vin en vrac"
          CONDITIONNEUR: "Conditionneur"
-         ELABORATEUR: "Élaborateur"
-         VENTE_A_LA_TIREUSE: "Vente tireuse"
-         PRODUCTEUR_MOUTS: "Producteur de moût"
+         PRODUCTEUR_MOUTS: "Producteur de moûts"
          ELEVEUR_DGC: "Éleveur de DGC"
