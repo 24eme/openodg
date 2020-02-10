@@ -121,9 +121,9 @@
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.8cm}|>{\raggedleft}m{1.6cm}|>{\raggedleft}m{2.2cm}|}
+\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
   \hline
-  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~unitaire} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
+  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>

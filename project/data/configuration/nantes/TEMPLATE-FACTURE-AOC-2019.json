@@ -132,7 +132,7 @@
                    "tva": 0,
                    "libelle": "",
                    "complement_libelle": "",
-                   "unite": "(hl)",
+                   "unite": "hl",
                    "docs": [
                        "DRev"
                    ],
