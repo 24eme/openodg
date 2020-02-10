@@ -18,76 +18,11 @@
     <div class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></div>
 <?php endif; ?>
 
-<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-<h3>Générer une facture</h3>
-<form method="post" action="" role="form" class="form-horizontal">
-    <?php echo $form->renderHiddenFields(); ?>
-    <?php echo $form->renderGlobalErrors(); ?>
-    <div class="row">
-        <div class="col-sm-8 col-xs-12">
-          <?php if(isset($form["modele"])): ?>
-            <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
-                <?php echo $form["modele"]->renderError() ?>
-                <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-8">
-                <?php echo $form["modele"]->render(array("class" => "form-control")); ?>
-                </div>
-            </div>
-          <?php endif; ?>
-            <div class="form-group <?php if($form["date_facturation"]->hasError()): ?>has-error<?php endif; ?>">
-                <?php echo $form["date_facturation"]->renderError(); ?>
-                <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-8">
-                    <div class="input-group date-picker-week">
-                        <?php echo $form["date_facturation"]->render(array("class" => "form-control", "placeholder" => "Date de facturation")); ?>
-                        <div class="input-group-addon">
-                            <span class="glyphicon-calendar glyphicon"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group text-right">
-                <div class="col-xs-6 col-xs-offset-6">
-                    <button class="btn btn-default btn-block btn-upper" type="submit">Générer la facture</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-<?php endif; ?>
 
 <div class="page-header">
     <h2>Espace Facture</h2>
 </div>
-<?php if(count($mouvements) && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-  <h3>Mouvements en attente de facturation</h3>
-  <table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th class="col-xs-1">Document</th>
-            <th class="col-xs-1">Campagne</th>
-            <th class="col-xs-4">Cotisation</th>
-            <th class="col-xs-1">Quantite</th>
-            <th class="col-xs-1">Prix unit.</th>
-            <th class="col-xs-1">Tva</th>
-            <th class="col-xs-2">Montant HT</th>
-        </tr>
-    </thead>
-    <tbody>
-  <?php foreach ($mouvements as $keyMvt => $mvt): ?>
-    <tr>
-        <td><?php echo $mvt->getDocument()->getType();?></td>
-        <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
-        <td><?php echo ucfirst($mvt->categorie); ?> <?php echo $mvt->type_libelle; ?></td>
-        <td class="text-right"><?php echo echoFloat($mvt->quantite); ?></td>
-        <td class="text-right"><?php echo echoFloat($mvt->taux); ?></td>
-        <td class="text-right"><?php echo echoFloat($mvt->tva); ?>&nbsp;%</td>
-        <td class="text-right"><?php echo echoFloat($mvt->taux * $mvt->quantite); ?>&nbsp;€</td>
-    </tr>
-  <?php endforeach; ?>
-  </tbody>
-</table>
-<?php endif; ?>
+
 <h3>Liste des factures</h3>
 <table class="table table-bordered table-striped">
     <thead>
@@ -133,3 +68,73 @@
       <?php endif; ?>
     </tbody>
 </table>
+
+<hr />
+
+<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+<h3>Génération de facture</h3>
+<form method="post" action="" role="form" class="form-horizontal">
+    <?php echo $form->renderHiddenFields(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
+    <div class="row">
+        <div class="col-sm-8 col-xs-12">
+          <?php if(isset($form["modele"])): ?>
+            <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["modele"]->renderError() ?>
+                <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                <?php echo $form["modele"]->render(array("class" => "form-control")); ?>
+                </div>
+            </div>
+          <?php endif; ?>
+            <div class="form-group <?php if($form["date_facturation"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["date_facturation"]->renderError(); ?>
+                <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                    <div class="input-group date-picker-week">
+                        <?php echo $form["date_facturation"]->render(array("class" => "form-control", "placeholder" => "Date de facturation")); ?>
+                        <div class="input-group-addon">
+                            <span class="glyphicon-calendar glyphicon"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group text-right">
+                <div class="col-xs-6 col-xs-offset-6">
+                    <button class="btn btn-default btn-block btn-upper" type="submit">Générer la facture</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<?php endif; ?>
+
+<?php if(count($mouvements) && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+  <h3>Mouvements en attente de facturation</h3>
+  <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-1">Document</th>
+            <th class="col-xs-1">Campagne</th>
+            <th class="col-xs-4">Cotisation</th>
+            <th class="col-xs-1">Quantite</th>
+            <th class="col-xs-1">Prix unit.</th>
+            <th class="col-xs-1">Tva</th>
+            <th class="col-xs-2">Montant HT</th>
+        </tr>
+    </thead>
+    <tbody>
+  <?php foreach ($mouvements as $keyMvt => $mvt): ?>
+    <tr>
+        <td><?php echo $mvt->getDocument()->getType();?></td>
+        <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
+        <td><?php echo ucfirst($mvt->categorie); ?> <?php echo $mvt->type_libelle; ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->quantite); ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux); ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->tva); ?>&nbsp;%</td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux * $mvt->quantite); ?>&nbsp;€</td>
+    </tr>
+  <?php endforeach; ?>
+  </tbody>
+</table>
+<?php endif; ?>
