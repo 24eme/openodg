@@ -3,7 +3,7 @@
 class ParcellaireAffectationClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireAffectation";
-      const TYPE_COUCHDB = "ParcellaireAffectation";
+      const TYPE_COUCHDB = "PARCELLAIREAFFECTATION";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("ParcellaireAffectation");
@@ -19,6 +19,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
       public function createOrGetDocFromIdentifiantAndDate($identifiant, $campagne, $papier = false, $date = null, $type = self::TYPE_COUCHDB)
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
+
           if ($doc_found && $doc_found->date === $date) {
               return $doc_found;
           }

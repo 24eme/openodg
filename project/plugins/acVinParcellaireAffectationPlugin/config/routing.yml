@@ -1,6 +1,6 @@
-ParcellaireAffectation_edit:
-  url: /parcellaire-affectation/edition/:identifiant
-  param: { module: parcellaireAffectation, action: affectation }
+parcellaireAffectation_create:
+  url: /parcellaire-affectation/creation/:identifiant
+  param: { module: parcellaireAffectation, action: choixDgc }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -8,6 +8,15 @@ ParcellaireAffectation_edit:
   requirements:
     sf_method: [get, post]
 
+parcellaireAffectation_edit:
+  url: /parcellaire-affectation/edition/:identifiant/:lieu
+  param: { module: parcellaireAffectation, action: affectation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
 parcellaireaffectation_export_pdf:
   url: /parcellaire-affectation/pdf/:id
   param: { module: parcellaireAffectation, action: PDF }
