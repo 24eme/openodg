@@ -1,5 +1,4 @@
 <?php use_helper('Date'); ?>
-<?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel panel-primary">
         <div class="panel-heading">
@@ -32,17 +31,4 @@
       <?php endif; ?>
     </div>
 </div>
-<?php elseif ($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>
-<div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;affectées</h3>
-        </div>
-		<div class="panel-body">
-			<p>Vous devez valider votre identification des parcelles irrigables pour pouvoir identifier vos parcelles affectées.</p>
-			<div style="margin-top: 97px;"></div>
-		</div>
-    </div>
-</div>
-<?php endif; ?>
 

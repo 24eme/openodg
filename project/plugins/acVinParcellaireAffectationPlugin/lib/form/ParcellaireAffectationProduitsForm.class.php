@@ -1,10 +1,19 @@
 <?php
 
 class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
+    
+    protected $lieu;
+    
+    public function __construct(acCouchdbJson $object, $lieu, $options = array(), $CSRFSecret = null) {
+        $this->lieu = $lieu;
+        parent::__construct($object, $options, $CSRFSecret);
+    }
 
     public function configure() {
-    	
 		foreach ($this->getObject()->declaration as $key => $value) {
+		    if (!preg_match('/\/lieux\/'.$this->lieu.'\/couleurs\//', $key)) {
+		        continue;
+		    }
 			$this->embedForm($key, new ParcellaireAffectationProduitAffectesForm($value));
 		}
 
@@ -20,11 +29,12 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     			$node = $node->detail->get($detail);
     			foreach ($items as $k => $v) {
     				$node->add($k, $v);
-    				if ($k == 'irrigation' && $v && !$node->date_irrigation) {
-    					$node->date_irrigation = date('Y-m-d');
+    				if ($k == 'affectation' && $v && !$node->date_affectation) {
+    					$node->date_affectation = date('Y-m-d');
     				}
     			}
     		}
     	}
     }
+
 }
