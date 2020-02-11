@@ -29,9 +29,6 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     			$node = $node->detail->get($detail);
     			foreach ($items as $k => $v) {
     				$node->add($k, $v);
-    				if ($k == 'affectation' && $v && !$node->date_affectation) {
-    					$node->date_affectation = date('Y-m-d');
-    				}
     			}
     		}
     	}

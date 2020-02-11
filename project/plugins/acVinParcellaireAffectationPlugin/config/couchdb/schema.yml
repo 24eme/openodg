@@ -5,13 +5,11 @@ ParcellaireAffectation:
       _id: { }
       _rev: { }
       type: { }
+      campagne: { }
       identifiant: { }
       etape: { }
       validation: { }
       validation_odg: { }
-      campagne: { }
-      date: { }
-      lecture_seule: { required: false }
       signataire: { }
       papier: { required: false, type: integer }
       declarant:

@@ -13,11 +13,11 @@
  */
 class ExportParcellaireAffectationPDF extends ExportPDF {
 
-    protected $ParcellaireAffectation = null;
+    protected $parcellaireAffectation = null;
     protected $nomFilter = null;
 
-    public function __construct($ParcellaireAffectation, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
-        $this->ParcellaireAffectation = $ParcellaireAffectation;
+    public function __construct($parcellaireAffectation, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
+        $this->parcellaireAffectation = $parcellaireAffectation;
         $this->nomFilter = null;
         if(!$filename) {
             $filename = $this->getFileName(true, true);
@@ -28,10 +28,10 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
     public function create() {
 
-       $parcellesByCommune = $this->ParcellaireAffectation->declaration->getParcellesByCommune();
+       $parcellesByCommune = $this->parcellaireAffectation->declaration->getParcellesByCommune();
 
        if(count($parcellesByCommune) == 0) {
-           $this->printable_document->addPage($this->getPartial('ParcellaireAffectation/pdf', array('ParcellaireAffectation' =>    $this->ParcellaireAffectation, 'parcellesByCommune' => false)));
+           $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
 
            return;
        }
@@ -74,21 +74,21 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
             $parcellesByPage[] = $currentPage;
         }
 
-        if($this->ParcellaireAffectation->observations) {
-            $unite += $uniteTableauLigne + count(explode("\n", $this->ParcellaireAffectation->observations));
+        if($this->parcellaireAffectation->observations) {
+            $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireAffectation->observations));
         }
 
         foreach($parcellesByPage as $nbPage => $parcelles) {
-            $this->printable_document->addPage($this->getPartial('ParcellaireAffectation/pdf', array(
-                'ParcellaireAffectation' => $this->ParcellaireAffectation,
+            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
+                'parcellaireAffectation' => $this->parcellaireAffectation,
                 'parcellesByCommune' => $parcelles,
-                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->ParcellaireAffectation->observations && $unite <= $uniteParPage) || !$this->ParcellaireAffectation->observations)),
+                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->parcellaireAffectation->observations && $unite <= $uniteParPage) || !$this->parcellaireAffectation->observations)),
             )));
         }
 
-        if ($this->ParcellaireAffectation->observations && $unite > $uniteParPage) {
-            $this->printable_document->addPage($this->getPartial('ParcellaireAffectation/pdf', array(
-                'ParcellaireAffectation' => $this->ParcellaireAffectation,
+        if ($this->parcellaireAffectation->observations && $unite > $uniteParPage) {
+            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
+                'parcellaireAffectation' => $this->parcellaireAffectation,
                 'parcellesByCommune' => array(),
                 'lastPage' => true,
             )));
@@ -96,29 +96,28 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $date = new DateTime($this->ParcellaireAffectation->date);
-        return sprintf("Déclaration d'irrigation %s",$date->format('d/m/Y'));
+        return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaireAffectation->campagne."-".($this->parcellaireAffectation->campagne + 1));
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("%s", $this->ParcellaireAffectation->declarant->nom);
+        $header_subtitle = sprintf("%s", $this->parcellaireAffectation->declarant->nom);
         $header_subtitle .= "\n\n";
 
-        if (!$this->ParcellaireAffectation->isPapier()) {
-            if ($this->ParcellaireAffectation->validation) {
-                $date = new DateTime($this->ParcellaireAffectation->validation);
+        if (!$this->parcellaireAffectation->isPapier()) {
+            if ($this->parcellaireAffectation->validation) {
+                $date = new DateTime($this->parcellaireAffectation->validation);
 
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->ParcellaireAffectation->signataire);
-                if($this->ParcellaireAffectation->exist('signataire') && $this->ParcellaireAffectation->signataire) {
-                    $header_subtitle .= " par " . $this->ParcellaireAffectation->signataire;
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireAffectation->signataire);
+                if($this->parcellaireAffectation->exist('signataire') && $this->parcellaireAffectation->signataire) {
+                    $header_subtitle .= " par " . $this->parcellaireAffectation->signataire;
                 }
             }else{
                 $header_subtitle .= sprintf("Exemplaire brouilllon");
             }
         }
 
-        if ($this->ParcellaireAffectation->isPapier() && $this->ParcellaireAffectation->validation && $this->ParcellaireAffectation->validation !== true) {
-            $date = new DateTime($this->ParcellaireAffectation->validation);
+        if ($this->parcellaireAffectation->isPapier() && $this->parcellaireAffectation->validation && $this->parcellaireAffectation->validation !== true) {
+            $date = new DateTime($this->parcellaireAffectation->validation);
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
 
@@ -132,15 +131,15 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
     public function getFileName($with_rev = false) {
 
-      return self::buildFileName($this->ParcellaireAffectation, $with_rev, $this->nomFilter);
+      return self::buildFileName($this->parcellaireAffectation, $with_rev, $this->nomFilter);
     }
 
-    public static function buildFileName($ParcellaireAffectation, $with_rev = false, $nomFilter = null) {
+    public static function buildFileName($parcellaireAffectation, $with_rev = false, $nomFilter = null) {
 
-        $prefixName = $ParcellaireAffectation->getTypeParcellaire()."_%s_%s";
-        $filename = sprintf($prefixName, $ParcellaireAffectation->identifiant, $ParcellaireAffectation->campagne);
+        $prefixName = $parcellaireAffectation->getTypeParcellaire()."_%s_%s";
+        $filename = sprintf($prefixName, $parcellaireAffectation->identifiant, $parcellaireAffectation->campagne);
 
-        $declarant_nom = strtoupper(KeyInflector::slugify($ParcellaireAffectation->declarant->nom));
+        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaireAffectation->declarant->nom));
         $filename .= '_' . $declarant_nom;
 
         if($nomFilter) {
@@ -148,7 +147,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         }
 
         if ($with_rev) {
-            $filename .= '_' . $ParcellaireAffectation->_rev;
+            $filename .= '_' . $parcellaireAffectation->_rev;
         }
 
         return $filename . '.pdf';

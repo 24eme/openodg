@@ -2,7 +2,7 @@
 
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
-<?php include_partial('parcellaireAffectation/nav', array('etablissement' => $etablissement, 'campagne' => $campagne, 'papier' => $papier, 'parcellaireAffectation' => $parcellaireAffectation, 'current' => 'dgcs')); ?>
+<?php include_partial('parcellaireAffectation/step', array('step' => 'denominations', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 
 <div class="page-header no-border">
     <h2>Identification des parcelles affectées
@@ -18,7 +18,7 @@
 
 <p>Veuillez activer les dénominations complémentaires pour lesquelles vous souhaitez y déclarer vos parcelles.</p>
      
-<form action="<?php echo url_for("parcellaireAffectation_create", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("parcellaireaffectation_denominations", $parcellaireAffectation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     
@@ -54,13 +54,8 @@
 	</table>
     
 	<div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireAffectation->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("parcellaireaffectation_exploitation", $parcellaireAffectation); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
-            <?php if($parcellaireAffectation->isValidee()): ?>
-                <a href="<?php echo url_for('ParcellaireAffectation_export_pdf', $parcellaireAffectation) ?>" class="btn btn-success">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
-                </a>
-            <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper"  id="btn-validation-document">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
