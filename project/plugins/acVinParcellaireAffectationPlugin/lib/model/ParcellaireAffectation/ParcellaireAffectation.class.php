@@ -215,7 +215,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
 	public function isValidee(){
-		return $this->validation || $this->validation_odg;
+		return $this->validation;
 	}
     
     public function getDgc($onlyAffectes = false) {

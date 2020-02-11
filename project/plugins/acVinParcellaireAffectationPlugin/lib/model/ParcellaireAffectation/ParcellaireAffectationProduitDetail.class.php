@@ -23,6 +23,16 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     public function getIdentificationCepageLibelle() {
     	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
     }
+    
+    public function getDgcLibelle() {
+        $communesDenominations = sfConfig::get('app_communes_denominations');
+        foreach ($communesDenominations as $dgc => $communes) {
+            if (in_array($this->code_commune, $communes)) {
+                return $this->getDocument()->getDgcLibelle($dgc);
+            }
+        }
+        return null;
+    }
 
     public function getLieuLibelle() {
         if ($this->lieu) {

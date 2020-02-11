@@ -58,7 +58,7 @@
         <th class="th" style="text-align: center; width: 150px;">Cépage</th>
         <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
         <th class="th" style="text-align: center; width: 80px;">Surface</th>
-        <th class="th" style="text-align: center; width: 230px;">Affectation</th>
+        <th class="th" style="text-align: center; width: 230px;">Dénomination compl.</th>
         <th class="th" style="text-align: center; width: 80px;">Date affectation</th>
     </tr>
     <?php foreach ($parcelles as $parcelle):
@@ -72,7 +72,7 @@
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $parcelle->superficie); ?>&nbsp;<small>ha</small>&nbsp;</td>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;</td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->getDgcLibelle(); ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $date_affectation->format('d/m/Y'); ?>&nbsp;</td>
     	</tr>
     <?php

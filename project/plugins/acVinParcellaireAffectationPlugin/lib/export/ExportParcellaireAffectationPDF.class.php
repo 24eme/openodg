@@ -27,8 +27,10 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
     }
 
     public function create() {
+        
+        $dgcs = $this->parcellaireAffectation->getDgc(true);
 
-       $parcellesByCommune = $this->parcellaireAffectation->declaration->getParcellesByCommune();
+       $parcellesByCommune = $this->parcellaireAffectation->declaration->getParcellesByCommune(null, true);
 
        if(count($parcellesByCommune) == 0) {
            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
