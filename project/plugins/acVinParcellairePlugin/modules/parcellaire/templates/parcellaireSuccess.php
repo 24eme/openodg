@@ -64,7 +64,7 @@ $list_idu = [];
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
     $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()); ?>
-    <?php if(isset($import)): ?>
+    <?php if(!empty($import)): ?>
      <div class="row" id="jump">
             <div class="col-xs-12">
                 <a name="carte"/><h3>Filtrer</h3>
@@ -97,7 +97,7 @@ $list_idu = [];
                     <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
-                    <?php if(isset($import)): ?>
+                    <?php if(!empty($import)): ?>
                     <th class="col-xs-1">Carte</th>
                     <?php endif; ?>
 		            </tr>
@@ -173,7 +173,7 @@ $list_idu = [];
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
 
-                                <?php if(isset($import)): ?>
+                                <?php if(!empty($import)): ?>
                                 <td>
                                     <div id="<?php echo $detail->idu; ?>" class="clearfix liencarto">
                                         <a onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
