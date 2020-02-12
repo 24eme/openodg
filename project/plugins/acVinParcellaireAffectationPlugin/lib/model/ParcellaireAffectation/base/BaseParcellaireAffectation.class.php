@@ -1,24 +1,24 @@
 <?php
 /**
- * BaseParcellaire
- *
- * Base model for Parcellaire
+ * BaseParcellaireAffectation
+ * 
+ * Base model for ParcellaireAffectation
  *
  * @property string $_id
  * @property string $_rev
  * @property string $type
- * @property string $campagne
  * @property string $identifiant
  * @property string $etape
  * @property string $validation
  * @property string $validation_odg
- * @property string $autorisation_acheteur
+ * @property string $campagne
+ * @property string $date
+ * @property string $lecture_seule
+ * @property string $signataire
  * @property integer $papier
- * @property acCouchdbJson $type_proprietaire
- * @property acCouchdbJson $acheteurs
- * @property acCouchdbJson $declarant
- * @property ParcellaireDeclaration $declaration
- * @property acCouchdbJson $pieces
+ * @property ParcellaireAffectationDeclarant $declarant
+ * @property ParcellaireAffectationDeclaration $declaration
+ * @property string $observations
 
  * @method string getId()
  * @method string setId()
@@ -26,8 +26,6 @@
  * @method string setRev()
  * @method string getType()
  * @method string setType()
- * @method string getCampagne()
- * @method string setCampagne()
  * @method string getIdentifiant()
  * @method string setIdentifiant()
  * @method string getEtape()
@@ -36,27 +34,29 @@
  * @method string setValidation()
  * @method string getValidationOdg()
  * @method string setValidationOdg()
- * @method string getAutorisationAcheteur()
- * @method string setAutorisationAcheteur()
+ * @method string getCampagne()
+ * @method string setCampagne()
+ * @method string getDate()
+ * @method string setDate()
+ * @method string getLectureSeule()
+ * @method string setLectureSeule()
+ * @method string getSignataire()
+ * @method string setSignataire()
  * @method integer getPapier()
  * @method integer setPapier()
- * @method acCouchdbJson getTypeProprietaire()
- * @method acCouchdbJson setTypeProprietaire()
- * @method acCouchdbJson getAcheteurs()
- * @method acCouchdbJson setAcheteurs()
- * @method acCouchdbJson getDeclarant()
- * @method acCouchdbJson setDeclarant()
- * @method ParcellaireDeclaration getDeclaration()
- * @method ParcellaireDeclaration setDeclaration()
- * @method acCouchdbJson getPieces()
- * @method acCouchdbJson setPieces()
-
+ * @method ParcellaireAffectationDeclarant getDeclarant()
+ * @method ParcellaireAffectationDeclarant setDeclarant()
+ * @method ParcellaireAffectationDeclaration getDeclaration()
+ * @method ParcellaireAffectationDeclaration setDeclaration()
+ * @method string getObservations()
+ * @method string setObservations()
+ 
  */
-
+ 
 abstract class BaseParcellaireAffectation extends acCouchdbDocument {
 
     public function getDocumentDefinitionModel() {
         return 'ParcellaireAffectation';
     }
-
+    
 }

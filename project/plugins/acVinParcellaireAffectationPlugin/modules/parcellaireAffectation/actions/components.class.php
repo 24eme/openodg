@@ -3,7 +3,8 @@
 class parcellaireAffectationComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $this->parcellaire = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::TYPE_COUCHDB.'-' . $this->etablissement->identifiant . '-' . $this->campagne);
+        $this->campagne = "".$this->campagne;
+        $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find('PARCELLAIREAFFECTATION-' . $this->etablissement->identifiant . '-' . $this->campagne);
     }
 
 }

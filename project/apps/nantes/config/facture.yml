@@ -6,4 +6,5 @@ all:
       echeances: false
       all_etablissements: false
       uniq_template_prefix: false
-      export_sage_width_txt: false
+      export_sage_width_txt: true
+      all_etablissements: true

@@ -89,15 +89,16 @@ class EtablissementForm extends acCouchdbObjectForm
     		}
     	}
 		parent::doUpdateObject($values);
-
+        if ($this->getObject()->getDocument()->exist('chais')) {
 		$this->getObject()->getDocument()->chais->adresse = $values['chais_adresse'];
 		$this->getObject()->getDocument()->chais->commune = $values['chais_commune'];
 		$this->getObject()->getDocument()->chais->code_postal = $values['chais_code_postal'];
 
 		if(!$this->getObject()->getDocument()->isAdresseLogementDifferente()) {
-			$this->getObject()->getDocument()->remove('chais');
-			$this->getObject()->getDocument()->add('chais');
+		    $this->getObject()->getDocument()->remove('chais');
+		    $this->getObject()->getDocument()->add('chais');
 		}
+        }
 
 	}
 

@@ -2,34 +2,30 @@
 
 class ParcellaireAffectationEtapes extends Etapes {
 
-    const ETAPE_EXPLOITATION = 'exploitation';
-    const ETAPE_PROPRIETE = 'propriete';
-    const ETAPE_PARCELLES = 'parcelles';
-    const ETAPE_ACHETEURS = 'acheteurs';
+	const ETAPE_EXPLOITATION = 'exploitation';
+    const ETAPE_DENOMINATIONS = 'denominations';
+    const ETAPE_AFFECTATIONS = 'affectations';
     const ETAPE_VALIDATION = 'validation';
 
     private static $_instance = null;
     public static $etapes = array(
         self::ETAPE_EXPLOITATION => 1,
-        self::ETAPE_PROPRIETE => 2,
-        self::ETAPE_PARCELLES => 3,
-        self::ETAPE_ACHETEURS => 4,
-        self::ETAPE_VALIDATION => 5
+        self::ETAPE_DENOMINATIONS => 2,
+        self::ETAPE_AFFECTATIONS => 3,
+        self::ETAPE_VALIDATION => 4
     );
 
     public static $links = array(
-        self::ETAPE_EXPLOITATION => 'parcellaire_exploitation',
-        self::ETAPE_PROPRIETE => 'parcellaire_propriete',
-        self::ETAPE_PARCELLES => 'parcellaire_parcelles',
-        self::ETAPE_ACHETEURS => 'parcellaire_acheteurs',
-        self::ETAPE_VALIDATION => 'parcellaire_validation'
+        self::ETAPE_EXPLOITATION => 'parcellaireaffectation_exploitation',
+        self::ETAPE_DENOMINATIONS => 'parcellaireaffectation_denominations',
+        self::ETAPE_AFFECTATIONS => 'parcellaireaffectation_affectations',
+        self::ETAPE_VALIDATION => 'parcellaireaffectation_validation'
     );
 
     public static $libelles = array(
         self::ETAPE_EXPLOITATION => 'Exploitation',
-        self::ETAPE_PROPRIETE => 'Destination du raisin',
-        self::ETAPE_PARCELLES => 'Parcelles',
-        self::ETAPE_ACHETEURS => 'Acheteurs',
+        self::ETAPE_DENOMINATIONS => 'Sélection des dénominations complémentaires',
+        self::ETAPE_AFFECTATIONS => 'Affectation des dénominations complémentaires',
         self::ETAPE_VALIDATION => 'Validation'
     );
 

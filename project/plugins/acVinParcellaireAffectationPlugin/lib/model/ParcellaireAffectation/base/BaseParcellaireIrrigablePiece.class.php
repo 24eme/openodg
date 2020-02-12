@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseParcellairePiece
+ * BaseParcellaireAffectationPiece
  *
- * Base model for ParcellairePiece
+ * Base model for ParcellaireAffectationPiece
 
  * @property string $identifiant
  * @property string $date_depot
@@ -10,6 +10,7 @@
  * @property string $mime
  * @property integer $visibilite
  * @property string $source
+ * @property acCouchdbJson $fichiers
 
  * @method string getIdentifiant()
  * @method string setIdentifiant()
@@ -23,10 +24,12 @@
  * @method integer setVisibilite()
  * @method string getSource()
  * @method string setSource()
+ * @method acCouchdbJson getFichiers()
+ * @method acCouchdbJson setFichiers()
 
  */
 
-abstract class BaseParcellairePiece extends Piece {
+abstract class BaseParcellaireAffectationPiece extends Piece {
 
     public function configureTree() {
        $this->_root_class_name = 'ParcellaireAffectation';
