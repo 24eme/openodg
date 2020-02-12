@@ -1,9 +1,9 @@
-<div class="modal fade" id="ParcellaireAffectation-confirmation-validation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
+<div class="modal fade" id="parcellaireaffectation-confirmation-validation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Validation de votre parcellaire affecté</h4>
+					<h4 class="modal-title" id="myModalLabel">Validation de votre affectations</h4>
 				</div>
 				<div class="modal-body">
 					<p>Pour confirmer la validation, merci de nous indiquer vos nom et prénom.</p>

@@ -9,6 +9,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $declarant_document = null;
   protected $piece_document = null;
 
+  public function isAdresseLogementDifferente() {
+      return false;
+  }
   public function __construct() {
       parent::__construct();
       $this->initDocuments();
@@ -23,16 +26,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   	$this->constructId();
   }
 
-  private function getTheoriticalId() {
-    $date = str_ireplace("-","",$this->date);
-    return ParcellaireAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$date;
-  }
-
-  public function constructId() {
-      $id = $this->getTheoriticalId();
-      $this->set('_id', $id);
-  }
-
   protected function initDocuments() {
       $this->declarant_document = new DeclarantDocument($this);
       $this->piece_document = new PieceDocument($this);
@@ -42,33 +35,29 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->declarant_document->storeDeclarant();
   }
 
-  public function getEtablissementObject() {
-
-      return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
-  }
-
-  public function getTypeParcellaire() {
+    public function getTypeParcellaire() {
     	if ($this->_id) {
     		if (preg_match('/^([A-Z]*)-([A-Z0-9]*)-([0-9]{4})/', $this->_id, $result)) {
     			return $result[1];
     		}
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
+    }
+
+  public function getEtablissementObject() {
+
+      return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
   }
 
   public function initDoc($identifiant, $campagne, $date) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;
-      $this->date = $date;
-      $this->constructId();
+      $this->set('_id', ParcellaireAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne);
       $this->storeDeclarant();
   }
 
-  
-
   public function updateParcelles() {
-      return;
-  	$this->addParcellesFromParcellaire();
+  	$this->addParcellesFromParcellaire(array_keys($this->getDgc()));
   }
 
   public function getConfiguration() {
@@ -111,11 +100,34 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       	         }
       	     }
       	}
+      	$toDelete = array();
+      	$parcelles = array_keys($this->getParcelles());
+      	if (count($parcelles) > 0) {
+      	    $parcellaireParcelles = array_keys($parcellaire->getParcelles());
+      	    foreach ($parcelles as $parcelleLieu) {
+      	        $parcelle =  preg_replace('/\/lieux\/[A-Za-z0-9]+\/couleurs\//', '/lieux/'.Configuration::DEFAULT_KEY.'/couleurs/', $parcelleLieu);
+      	        if (!in_array($parcelle, $parcellaireParcelles)) {
+      	            $toDelete[str_replace('/declaration/', '', $parcelleLieu)] = 1;
+      	        }
+      	    }
+      	}
+      	foreach ($this->getParcelles() as $parcelleLieu => $parcelleLieuObject) {
+      	    if (preg_match('/\/lieux\/([A-Za-z0-9]+)\/couleurs\//', $parcelleLieu, $m)) {
+      	        if (!in_array($m[1], $lieux)) {
+      	            $toDelete[str_replace('/declaration/', '', $parcelleLieuObject->getProduit()->getHash())] = 1;
+      	        }
+      	    }
+      	}
+      	foreach ($toDelete as $hash => $v) {
+      	    if ($this->declaration->exist($hash)) {
+      	     $this->declaration->remove($hash);
+      	    }
+      	}
       	foreach ($parcellaire as $hash => $parcellaireProduit) {
       	    foreach ($parcellaireProduit->detail as $parcelle) {
       	        if (isset($denominations[$parcelle->code_commune])) {
       	            foreach ($denominations[$parcelle->code_commune] as $lieu) {
-      	                $hashWithLieu = str_replace('lieux/DEFAUT', 'lieux/'.$lieu, $hash);
+      	                $hashWithLieu = str_replace('lieux/'.Configuration::DEFAULT_KEY, 'lieux/'.$lieu, $hash);
       	            }
       	            if (!$this->getConfiguration()->declaration->exist($hashWithLieu)) {
       	                continue;
@@ -123,8 +135,15 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       	            if (!isset($libelleProduits[$hashWithLieu])) {
       	                $libelleProduits[$hashWithLieu] = $this->getConfiguration()->declaration->get($hashWithLieu)->getLibelleFormat();
       	            }
-      	            $item = $this->declaration->add($hashWithLieu);
-      	            $item->libelle = $libelleProduits[$hashWithLieu];
+      	            if ($this->declaration->exist($hashWithLieu)) {
+      	                $item = $this->declaration->get($hashWithLieu);
+      	            } else {
+      	                $item = $this->declaration->add($hashWithLieu);
+      	                $item->libelle = $libelleProduits[$hashWithLieu];
+      	            }
+      	            if ($item->detail->exist($parcelle->getKey())) {
+      	                continue;
+      	            }
       	            $subitem = $item->detail->add($parcelle->getKey());
       	            $subitem->superficie = $parcelle->superficie;
       	            $subitem->commune = $parcelle->commune;
@@ -134,17 +153,28 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       	            $subitem->idu = $parcelle->idu;
       	            $subitem->lieu = $parcelle->lieu;
       	            $subitem->cepage = $parcelle->cepage;
-      	            $subitem->active = 0;
+      	            $subitem->active = 1;
       	            $subitem->remove('vtsgn');
       	            if($parcelle->exist('vtsgn')) {
       	                $subitem->add('vtsgn', (int)$parcelle->vtsgn);
       	            }
       	            $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
+      	            $subitem->affectation = 0;
       	        }
       	    }
       	}
     }
-
+    
+    public function storeEtape($etape) {
+        if ($etape == $this->etape) {
+    
+            return false;
+        }
+    
+        $this->add('etape', $etape);
+    
+        return true;
+    }
 
     public function getDeclarantSiret(){
         $siret = "";
@@ -168,9 +198,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->validation = null;
       $this->validation_odg = null;
       $this->etape = null;
-      foreach($this->getAcheteursByCVI() as $acheteur) {
-          $acheteur->email_envoye = null;
-      }
   }
 
   public function validateOdg() {
@@ -188,13 +215,87 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
 	public function isValidee(){
-		return $this->validation || $this->validation_odg;
+		return $this->validation;
 	}
-
-    public function getDateFr() {
-        $date = new DateTime($this->date);
-
-        return $date->format('d/m/Y');
+    
+    public function getDgc($onlyAffectes = false) {
+      $lieux = array();
+      $configuration = $this->getConfiguration();
+      foreach ($this->declaration as $hash => $produit) {
+          if ($onlyAffectes) {
+              $hasParcelle = false;
+              foreach ($produit->detail as $detail) {
+                  if ($detail->affectation) {
+                      $hasParcelle = true;
+                      break;
+                  }
+              }
+              if (!$hasParcelle) {
+                  continue;
+              }
+          }
+        $lieu = $configuration->declaration->get($hash)->getLieu();
+        $lieux[$lieu->getKey()] = $lieu->getLibelle();
+      }
+      ksort($lieux);
+      return $lieux;
+    }
+    
+    public function getDgcLibelle($dgc) {
+        $dgcs = $this->getDgc();
+        return (isset($dgcs[$dgc]))? $dgcs[$dgc] : null;
+    }
+    
+    public function getNextDgc($dgc = null) {
+        $dgcs = array_keys($this->getDgc());
+        $nb = count($dgcs);
+        if (!$nb) {
+            return null;
+        }
+        if (!$dgc) {
+            return $dgcs[0];
+        }
+        $key = array_search($dgc, $dgcs);
+        if ($key === false) {
+            return null;
+        }
+        if ($key+1 >= $nb) {
+            return null;
+        }
+        return $dgcs[$key+1];
+    }
+    
+    public function getPrevDgc($dgc = null) {
+        $dgcs = array_keys($this->getDgc());
+        $nb = count($dgcs);
+        if (!$nb) {
+            return null;
+        }
+        if (!$dgc) {
+            return $dgcs[$nb-1];
+        }
+        $key = array_search($dgc, $dgcs);
+        if ($key === false) {
+            return null;
+        }
+        if ($key-1 <= 0) {
+            return null;
+        }
+        return $dgcs[$key-1];
+    }
+    
+    public function existDgcFromParcellaire($dgc) {
+        $parcellaire = $this->getParcellesFromLastParcellaire();
+        $communesDenominations = sfConfig::get('app_communes_denominations');
+        if (isset($communesDenominations[$dgc])) {
+            $codesInsee = $communesDenominations[$dgc];
+            foreach ($parcellaire->getParcelles() as $parcelle) {
+                if (in_array($parcelle->code_commune, $codesInsee)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
   /*** DECLARATION DOCUMENT ***/
@@ -230,21 +331,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles affectées au '.$this->getDateFr().' '.$complement,
+            'libelle' => 'Identification des parcelles affectées '.$this->campagne.' '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null
         ));
-    }
-    
-    public function getDgc(){
-      $lieux = array();
-      foreach ($this->declaration as $hash => $produit) {
-        $lieu = $this->getConfiguration()->declaration->get($hash)->getLieu();
-        $lieux[$lieu->getKey()] = $lieu->getLibelle();
-      }
-      ksort($lieux);
-      return $lieux;
     }
 
     public function generatePieces() {

@@ -6,10 +6,16 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public function getParcellesByCommune() {
+    public function getParcellesByCommune($lieu = null, $onlyAffectes = false) {
         $parcelles = array();
 
-        foreach($this->getParcelles() as $parcelle) {
+        foreach($this->getParcelles() as $hash => $parcelle) {
+            if ($lieu && !preg_match('/\/lieux\/'.$lieu.'\/couleurs\//', $hash)) {
+                continue;
+            }
+            if ($onlyAffectes && !$parcelle->affectation) {
+                continue;
+            }
             if(!isset($parcelles[$parcelle->commune])) {
                 $parcelles[$parcelle->commune] = array();
             }
@@ -35,7 +41,6 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         foreach($this as $hash => $produit) {
             
             foreach ($produit->detail as $parcelle) {
-                //var_dump($hash);
                 if(in_array($parcelle->get("code_commune"), $commune_dgc)){
                     var_dump($parcelle->commune);
                 }

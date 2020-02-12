@@ -277,7 +277,6 @@
     }
     $.initBsSwitchCheckbox = function ()
     {
-
     	if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
         	$('.bootstrap-switch-activeall').hide();
         	$('.bootstrap-switch-removeall').show();

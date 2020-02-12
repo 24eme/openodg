@@ -5,13 +5,11 @@ ParcellaireAffectation:
       _id: { }
       _rev: { }
       type: { }
+      campagne: { }
       identifiant: { }
       etape: { }
       validation: { }
       validation_odg: { }
-      campagne: { }
-      date: { }
-      lecture_seule: { required: false }
       signataire: { }
       papier: { required: false, type: integer }
       declarant:
@@ -64,10 +62,8 @@ ParcellaireAffectation:
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
-                              materiel: {  }
-                              ressource: {  }
-                              irrigation: {  }
-                              date_irrigation: {  }
+                              affectation: { type: integer }
+                              date_affectation: {  }
       observations: {  }
       pieces:
         type: array_collection
