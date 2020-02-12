@@ -176,7 +176,7 @@ $list_idu = [];
                                 <?php if(isset($import)): ?>
                                 <td>
                                     <div id="<?php echo $detail->idu; ?>" class="clearfix liencarto">
-                                        <a href="#carte" onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
+                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
                                             <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
                                         </a>
                                     </div>

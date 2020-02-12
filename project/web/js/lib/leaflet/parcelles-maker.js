@@ -219,7 +219,8 @@ function showParcelle(id, htmlObj){
                         }).addTo(map);
                         
                         this.map.fitBounds(this.myLayer.getBounds());
-                        $(window).scrollTop(0);
+                        var carte = document.getElementById("jump");
+                        carte.scrollIntoView();
                     }
                     
                 }   
