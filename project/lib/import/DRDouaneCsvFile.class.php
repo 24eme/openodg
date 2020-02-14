@@ -135,6 +135,16 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			continue;
         		}
 
+                //info motif de non récolte
+                if ($values[0] == 22) {
+                    for ($i = 2; $i < count($values); $i++) {
+                        if ($values[$i]) {
+                            $exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), null, null, self::cleanStr($values[$i]), null, null);
+                        }
+                    }
+                    continue;
+                }
+
         		if (is_numeric($values[0]) && $values[0] > 21) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
