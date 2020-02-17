@@ -55,6 +55,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $this->date_facturation = date('Y-m-d');
         $dateFacturation = explode('-', $this->date_facturation);
         $this->campagne = $dateFacturation[0];
+        if(FactureConfiguration::getInstance()->getNumeroCampagne()){
+          $c = explode('-', ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date_facturation));
+          $this->campagne = $c[0];
+        }
     }
 
     public function constructIds($doc) {
@@ -62,7 +66,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
         $this->identifiant = $doc->identifiant;
-        $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, date('Ymd'));
+        if($format = FactureConfiguration::getInstance()->getNumeroFormat()){
+          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
+        }else{
+          $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, date('Ymd'));
+        }
         $this->_id = FactureClient::getInstance()->getId($this->identifiant, $this->numero_facture);
     }
 
@@ -493,6 +501,21 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function hasAvoir(){
         return ($this->exist('avoir') && !is_null($this->get('avoir')));
+    }
+
+    public function getCvi(){
+      $societeMasterCompte = $this->getSociete()->getMasterCompte();
+      if($societeMasterCompte->exist('etablissement_informations') &&
+         $societeMasterCompte->etablissement_informations->exist('cvi') &&
+         $cvi = $societeMasterCompte->etablissement_informations->cvi){
+           return $cvi;
+      }
+      $etablissement = $this->getSociete()->getEtablissementPrincipal();
+      if($etablissement->exist('cvi') &&
+         $cvi = $etablissement->cvi){
+           return $cvi;
+      }
+      return null;
     }
 
     public function isAvoir() {
