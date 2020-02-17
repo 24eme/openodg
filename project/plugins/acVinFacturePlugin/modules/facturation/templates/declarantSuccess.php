@@ -117,9 +117,9 @@
                         <li class="disabled"><a href="">Modifier</a></li>
                     <?php endif; ?>
                     <?php if(!$facture->isAvoir()): ?>
-                    <li><a href="<?php echo url_for("facturation_avoir", array("id" => $facture->_id)) ?>">Créér un avoir <small>(à partir de cette facture)</small></a></li>
+                    <li><a href="<?php echo url_for("facturation_avoir", array("id" => $facture->_id)) ?>" onclick="return confirm('Êtes vous sûr de vouloir créer un avoir sur cette facture ?')" >Créer un avoir <small>(à partir de cette facture)</small></a></li>
                     <?php else: ?>
-                        <li class="disabled"><a href="">Créér un avoir <small>(à partir de cette facture)</small></a></li>
+                        <li class="disabled"><a href="">Créer un avoir <small>(à partir de cette facture)</small></a></li>
                     <?php endif; ?>
                     <?php if(!$facture->isAvoir() && !$facture->isPayee() && !$facture->versement_comptable): ?>
                         <li><a onclick='return confirm("Étes vous sûr de vouloir regénérer la facture ?");' href="<?php echo url_for("facturation_regenerate", array("id" => $facture->_id)) ?>">Regénerer</a></li>
