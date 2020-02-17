@@ -206,6 +206,19 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
             $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
             $this->add('region', $this->getEtablissement()->region);
+        } elseif ($this->isSocieteContact()) {
+            $cvis = array();
+            $ppms = array();
+            $regions = array();
+            foreach ($this->getSociete()->getEtablissementsObj() as $etb) {
+                $cvis[] = $etb->etablissement->cvi;
+                $ppms[] = $etb->etablissement->ppm;
+                $regions[] = $etb->etablissement->region;
+            }
+            $this->etablissement_informations->cvi = implode('|', $cvis);
+            $this->etablissement_informations->ppm = implode('|', $ppms);
+            $this->add('region', implode('|', $regions));
+
         }else{
             $this->etablissement_informations->cvi = null;
             $this->etablissement_informations->ppm = null;
