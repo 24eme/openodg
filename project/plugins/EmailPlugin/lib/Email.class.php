@@ -42,8 +42,9 @@ class Email {
                 ->setBody($body)
                 ->setContentType('text/plain');
 
-            return $this->getMailer()->send($message);
+            $res = $this->getMailer()->send($message) && $res;
         }
+        return $res;
     }
 
     public function sendDRevConfirmee($drev) {

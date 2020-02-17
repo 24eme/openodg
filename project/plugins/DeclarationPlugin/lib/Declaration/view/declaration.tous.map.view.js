@@ -65,6 +65,11 @@ function(doc) {
         email = doc.declarant.email;
     }
 
+    var cvi = null;
+    if(doc.declarant && doc.declarant.cvi) {
+        cvi = doc.declarant.cvi;
+    }
+
     var mode = "Télédeclaration";
 
     if(doc.automatique) {
@@ -116,10 +121,10 @@ function(doc) {
                 if(doc.declaration[key][detailKey].validation_odg){
                   statutProduit = "Approuvé";
                 }
-    	          emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email], 1);
+                    emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
               }
            }
     }else{
-             emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email], 1);
+             emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
     }
 }

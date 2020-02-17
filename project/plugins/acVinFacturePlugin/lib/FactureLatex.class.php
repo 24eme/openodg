@@ -31,8 +31,11 @@ class FactureLatex extends GenericLatex {
   private function getFileNameWithoutExtention() {
       $commune = KeyInflector::slugify($this->facture->declarant->commune);
       $nom = KeyInflector::slugify(EtablissementClient::cleanCivilite($this->facture->declarant->nom));
-
-      return  'facture_'.str_replace('/', '-', $this->facture->numero_odg).'_'.$commune.'_'.$nom.'_'.$this->facture->identifiant.'_'.$this->facture->numero_facture.'_'.$this->facture->_rev;
+      $termFacture = 'facture_';
+      if($this->facture->isAvoir()){
+        $termFacture = 'avoir_';
+      }
+      return  $termFacture.str_replace('/', '-', $this->facture->numero_odg).'_'.$commune.'_'.$nom.'_'.$this->facture->identifiant.'_'.$this->facture->numero_facture.'_'.$this->facture->_rev;
   }
 
   public function getLatexFileNameWithoutExtention() {

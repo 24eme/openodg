@@ -23,10 +23,10 @@
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
             <tr>
-                <th class="col-xs-<?php echo ($noeud->getConfig()->getRendementVci() > 0) ? "4" : "6"; ?>">Produits</th>
-                	<th class="text-center <?php echo ($noeud->getConfig()->getRendementVci() > 0) ? "2" : "3"; ?>">Superficie vinifiée <small class="text-muted">(ares)</small></th>
-                	<th class="text-center <?php echo ($noeud->getConfig()->getRendementVci() > 0) ? "2" : "3"; ?>">Volume revendiqué <br /> issu de la récolte <small class="text-muted">(hl)</small></th>
-                    <?php if($noeud->getConfig()->getRendementVci() > 0): ?>
+                <th class="col-xs-<?php echo ($form->canHaveVci()) ? "4" : "6"; ?>">Produits</th>
+                	<th class="text-center <?php echo ($form->canHaveVci()) ? "2" : "3"; ?>">Superficie vinifiée <small class="text-muted">(ares)</small></th>
+                	<th class="text-center <?php echo ($form->canHaveVci()) ? "2" : "3"; ?>">Volume revendiqué <br /> issu de la récolte <small class="text-muted">(hl)</small></th>
+                    <?php if($form->canHaveVci()): ?>
                         <th class="text-center col-xs-2">VCI constitué<br /> en <?php echo $drev->campagne ?> <small class="text-muted">(hl)</small></th>
                         <th class="text-center col-xs-2">Possède du Stock<br /> VCI <?php echo ($drev->campagne - 1) ?> <small class="text-muted">(hl)</small></th>
                     <?php endif; ?>
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                     </td>
-                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
+                    <?php if ($form->canHaveVci()): ?>
                     <td class="text-center">
                     	<?php if (isset($embedForm['vci_constitue'])): ?>
                         <div class="form-group <?php if($embedForm['vci_constitue']->hasError()): ?>has-error<?php endif; ?>">
@@ -103,7 +103,7 @@
                     <?php else: ?>
                     <td></td>
                     <?php endif; ?>
-                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
+                    <?php if ($form->canHaveVci()): ?>
                     <td class="text-center"></td>
                     <td class="text-center"></td>
                     <?php endif; ?>
@@ -132,7 +132,7 @@
                     <?php else: ?>
                     <td></td>
                     <?php endif; ?>
-                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
+                    <?php if ($form->canHaveVci()): ?>
                     <td class="text-center"></td>
                     <td class="text-center"></td>
                     <?php endif; ?>
@@ -146,7 +146,7 @@
                     </td>
                     <td></td>
                     <td></td>
-                    <?php if ($noeud->getConfig()->getRendementVci() > 0): ?>
+                    <?php if ($form->canHaveVci()): ?>
                         <td></td>
                         <td></td>
                     <?php endif; ?>

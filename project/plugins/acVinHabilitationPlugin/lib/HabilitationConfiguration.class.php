@@ -29,6 +29,11 @@ class HabilitationConfiguration {
         return $this->configuration['activites'];
     }
 
+    public function isSuiviParDemande() {
+
+        return count($this->getDemandeStatuts()) > 0;
+    }
+
     public function getDemandeStatuts() {
         if(!isset($this->configuration['demande']['statuts'])) {
 

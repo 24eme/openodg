@@ -19,7 +19,7 @@
       <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?><span class="btn btn-default-step btn-xs">Facturé</span><?php endif; ?>
     <?php endif; ?>
     <?php if ($sf_user->isAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'OI le ".format_date($drev->envoi_oi, 'dd/MM/yyyy') ; } ?>
-    <?php if ($sf_user->isAdmin() && $drev->validation_odg): ?><a href="<?php echo url_for('drev_send_oi', $drev); ?>" onclick='return confirm("Êtes vous sûr de vouloir envoyer la DRev à lOI ?");'  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a><?php endif; ?>
+    <?php if ($sf_user->isAdmin() && $drev->validation_odg): ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a><?php endif; ?>
   </small>
     </h2>
 </div>
@@ -69,12 +69,13 @@
             </a>
     </div>
 
-    <div class="col-xs-4 text-right">
-        <?php
-        if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
-                    <a class="btn btn-xs btn-default pull-left" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-        <?php elseif ($drev->validation && ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()) && !$drev->isLectureSeule()): ?>
+    <div class="col-xs-2 text-right">
+        <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION) && !$drev->isFactures()): ?>
+                    <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+        <?php elseif ($drev->validation && $sf_user->isAdmin() && !$drev->isLectureSeule() && !$drev->isFactures()): ?>
                   <a class="btn btn-xs btn-default-step pull-right hidden-xs" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+        <?php elseif ($drev->isFactures()): ?>
+                  <span class="text-mutted">DRev facturée.</span>
         <?php endif; ?>
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>

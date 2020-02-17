@@ -52,6 +52,14 @@ class Cotisation
 		return $this->getConfig()->callback;
 	}
 
+	protected function getConfigCallbackParameters() {
+		if(!$this->getConfig()->exist('callback_parameters')) {
+			return array();
+		}
+		return $this->getConfig()->callback_parameters->toArray(true, false);
+	}
+
+
 	protected function getDoc() {
 
 		return $this->doc;
@@ -100,5 +108,13 @@ class Cotisation
 	{
 
 		return str_replace('%complement_libelle%', $this->getConfigComplementLibelle(), $this->getConfigLibelle());
+	}
+
+	public function getUnite() {
+		if(!$this->getConfig()->exist('unite')) {
+			return null;
+		}
+
+		return $this->getConfig()->unite;
 	}
 }

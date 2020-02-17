@@ -180,80 +180,26 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $ligne->updateTotaux();
         }
         foreach ($mouvements as $key => $mouvement) {
-            if($template->cotisations->exist($mouvement["categorie"])){
-                $configCollection = $template->cotisations->get($mouvement["categorie"]);
-                $config = $configCollection->details->get($mouvement["type_hash"]);
-                $ligne = $this->addLigne($configCollection);
-                foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
-                    foreach($mouvKeys as $mouvKey) {
-                        $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
-                    }
+            $configCollection = $template->cotisations->get($mouvement["categorie"]);
+            $config = $configCollection->details->get($mouvement["type_hash"]);
+
+            $ligne = $this->addLigne($configCollection);
+            foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
+                foreach($mouvKeys as $mouvKey) {
+                    $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
                 }
-                $d = $ligne->details->add();
-                $d->libelle = $mouvement["type_libelle"];
-                $d->quantite = $mouvement["quantite"];
-                $d->prix_unitaire = $mouvement["taux"];
-                $d->taux_tva = $config->tva;
-
-                $ligne->updateTotaux();
             }
-      }
-    }
-
-    public function storeLignes($mouvements) {
-    	foreach ($mouvements as $key => $cotisation) {
-    		$ligne = $this->lignes->add($key);
-    		$ligne->libelle = $cotisation["libelle"];
-            $ligne->produit_identifiant_analytique = $cotisation["code_comptable"];
-            $ligne->origine_mouvements = $cotisation["origines"];
-    		$total = 0;
-    		$totalTva = 0;
-    		foreach ($cotisation["details"] as $detail) {
-    			$d = $ligne->details->add();
-    			$d->libelle = $detail["libelle"];
-                $d->quantite = $detail["quantite"];
-                $d->prix_unitaire = $detail["prix"];
-                $d->taux_tva = $detail["taux"];
-                $d->montant_tva = $detail["tva"];
-                $d->montant_ht = $detail["total"];
-                $total += $detail["total"];
-                $totalTva += $detail["tva"];
-    		}
-
-    		$totalTva = round($totalTva, 2);
-    		$total = round($total, 2);
+            $d = $ligne->details->add();
+            $d->libelle = $mouvement["type_libelle"];
+            $d->quantite = $mouvement["quantite"];
+            $d->prix_unitaire = $mouvement["taux"];
+            $d->taux_tva = array_key_exists("tva", $mouvement) ? $mouvement["tva"] : $config->tva;
+            if(array_key_exists("unite", $mouvement)) {
+                $d->add('unite', $mouvement["unite"]);
+            }
 
             $ligne->updateTotaux();
-
-            if($totalTva != $ligne->montant_tva) {
-                throw new sfException("Incohérence");
-            }
-
-            if($total != $ligne->montant_ht) {
-                throw new sfException("Incohérence");
-            }
-    	}
-    }
-
-    protected function verifLigneAndVolumeOrigines($ligne) {
-        $volume = 0;
-        foreach($ligne->origine_mouvements as $doc_id => $keys) {
-            $doc = acCouchdbManager::getClient()->find($doc_id, acCouchdbClient::HYDRATE_JSON);
-            foreach($keys as $key) {
-                foreach($doc->mouvements as $identifiant => $mouvements) {
-                    if(!preg_match("/^".$this->identifiant."/", $identifiant)) {
-                        continue;
-                    }
-
-                    $mouvement = $mouvements->$key;
-                    $volume += $mouvement->volume;
-                }
-            }
-        }
-        if(round($ligne->volume, 2) != round($volume, 2)) {
-
-            throw new sfException(sprintf("Le volume de la ligne %s de %s hl ne correspond pas à la somme des volumes des mouvements %s hl", $ligne->getKey(), round($ligne->volume, 2), round($volume, 2)));
-        }
+      }
     }
 
     private function createLigneOriginesMouvements($ligne, $originesTable) {
@@ -319,11 +265,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $montant_papillon_str = sprintf("%01.02f",$montant_papillon);
         $cumul += floatval($montant_papillon_str);
         $dateField = $pvalue["field"];
-        if($pvalue["calcul"]){
+        if($pvalue["date_jour_mois"]){
           $d = $this->get($dateField);
           $date_echeance = new DateTime($d);
-          $date_echeance->modify($pvalue["calcul"]);
-          $this->updateEcheance($pvalue["libelle"],$date_echeance->format("d.m.Y"),$montant_papillon_str);
+          $date_jour_mois = $pvalue["date_jour_mois"].".".date('Y');
+          $this->updateEcheance($pvalue["libelle"],$date_jour_mois,$montant_papillon_str);
         }
         else{
           $this->updateEcheance($pvalue["libelle"],$pvalue["libelle_date"],$montant_papillon_str);

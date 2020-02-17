@@ -3,7 +3,7 @@
 class habilitationActions extends sfActions {
 
 
-  public function executeIndex(sfWebRequest $request)
+  public function executeIndexDemande(sfWebRequest $request)
   {
         $filtre = $request->getParameter('filtre', null);
         $filtres = array();
@@ -63,7 +63,7 @@ class habilitationActions extends sfActions {
         return sfView::NONE;
     }
 
-  public function executeSuivi(sfWebRequest $request)
+  public function executeIndexHabilitation(sfWebRequest $request)
   {
       $this->buildSearch($request,
                         'habilitation',
@@ -72,7 +72,11 @@ class habilitationActions extends sfActions {
                               "Activité" => HabilitationActiviteView::KEY_ACTIVITE,
                               "Produit" => HabilitationActiviteView::KEY_PRODUIT_LIBELLE),
                         array("Défaut" => array(HabilitationActiviteView::KEY_DATE => 1, HabilitationActiviteView::KEY_IDENTIFIANT => 1, HabilitationActiviteView::KEY_PRODUIT_LIBELLE => 1 , HabilitationActiviteView::KEY_ACTIVITE => 1)),
-                        30
+                        30,
+                        array(),
+                        null,
+                        false,
+                        array("Statut" => HabilitationClient::STATUT_DEMANDE_HABILITATION)
                         );
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
@@ -395,7 +399,7 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(), $traitements = null, $without_group_by = false) {
+    protected function buildSearch($request, $viewCat, $viewName, $facets, $sorts, $nbResultatsParPage, $filtres = array(), $traitements = null, $without_group_by = false, $defaults = array()) {
         $rows = array();
         if(!$without_group_by){
             $rows = acCouchdbManager::getClient()
@@ -410,7 +414,7 @@ class habilitationActions extends sfActions {
         }
         $this->sorts = $sorts;
         $this->sort = $request->getParameter('sort', key($this->sorts));
-        $this->query = $request->getParameter('query', array());
+        $this->query = $request->getParameter('query', $defaults);
         $this->docs = array();
 
         if(!$this->query || !count($this->query)) {
@@ -435,6 +439,9 @@ class habilitationActions extends sfActions {
                 $find = true;
                 if($this->query) {
                     foreach($this->query as $queryKey => $queryValue) {
+                        if(!array_key_exists($queryValue, $this->facets[$queryKey])) {
+                            $this->facets[$queryKey][$queryValue] = 0;
+                        }
                         if($queryValue != $row->key[$facets[$queryKey]]) {
                             $find = false;
                             break;

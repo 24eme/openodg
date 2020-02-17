@@ -4,7 +4,7 @@ all:
       activites:
         PRODUCTEUR: "Producteur de raisins"
         PRODUCTEUR_MOUTS: "Producteur de moût"
-        VINIFICATEUR: "Vinificateur"
-        ELEVEUR_DGC: "Éleveur de DGC"
-        VRAC: "Détenteur de vin en vrac"
         CONDITIONNEUR: "Conditionneur"
+        ELEVEUR_DGC: "Éleveur de DGC"
+        VINIFICATEUR: "Vinificateur"
+        VRAC: "Détenteur de vin en vrac"

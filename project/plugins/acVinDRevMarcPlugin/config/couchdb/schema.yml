@@ -16,6 +16,7 @@ DRevMarc:
       validation: { }
       validation_odg: { }
       papier: { required: false, type: integer }
+      lecture_seule: { required: false }
       declarant:
         type: collection
         definition:
