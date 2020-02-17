@@ -1,15 +1,15 @@
 <?php
-class ParcellaireAffectationRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
+class parcellaireAffectationRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
-    protected $ParcellaireAffectation = null;
+    protected $parcellaireAffectation = null;
 
     protected function getObjectForParameters($parameters = null) {
-        $this->ParcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($parameters['id']);
-        if (!$this->ParcellaireAffectation) {
+        $this->parcellaireAffectation = parcellaireAffectationClient::getInstance()->find($parameters['id']);
+        if (!$this->parcellaireAffectation) {
 
-            throw new sfError404Exception(sprintf('No ParcellaireAffectation found with the id "%s".', $parameters['id']));
+            throw new sfError404Exception(sprintf('No parcellaireAffectation found with the id "%s".', $parameters['id']));
         }
-        return $this->ParcellaireAffectation;
+        return $this->parcellaireAffectation;
     }
 
     protected function doConvertObjectToArray($object = null) {
@@ -17,15 +17,15 @@ class ParcellaireAffectationRoute extends EtablissementRoute implements Interfac
         return $parameters;
     }
 
-    public function getParcellaireAffectation() {
-        if (!$this->ParcellaireAffectation) {
+    public function getparcellaireAffectation() {
+        if (!$this->parcellaireAffectation) {
             $this->getObject();
         }
-        return $this->ParcellaireAffectation;
+        return $this->parcellaireAffectation;
     }
 
     public function getEtablissement() {
 
-        return $this->getParcellaireIrrigable()->getEtablissementObject();
+        return $this->getparcellaireAffectation()->getEtablissementObject();
     }
 }

@@ -52,8 +52,6 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getDelimitations($communes){
         $scrapydocs = sfConfig::get('app_scrapy_documents');
-        // $dir = sfConfig::get('sf_apps_dir');
-        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
         $geojson = [];
         $files = '';
         foreach ($communes as $id => $commune) {
@@ -78,12 +76,7 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireCSV($cvi)
     {
         $scrapydocs = sfConfig::get('app_scrapy_documents');
-        $scrapybin = sfConfig::get('app_scrapy_bin');
-        
-        // $dir = sfConfig::get('sf_apps_dir');
-        // $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
-        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
-        
+        $scrapybin = sfConfig::get('app_scrapy_bin');     
 
         exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
        
@@ -108,10 +101,6 @@ class ParcellaireClient extends acCouchdbClient {
         
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
-        // $dir = sfConfig::get('sf_apps_dir');
-        // $scrapybin = $dir.'/../../../prodouane_scrapy/bin';
-        // $scrapydocs = $dir.'/../../../prodouane_scrapy/documents';
-
         
         exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
 

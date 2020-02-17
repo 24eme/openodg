@@ -2,22 +2,12 @@
 
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
-<?php include_partial('parcellaireAffectation/nav', array('etablissement' => $etablissement, 'campagne' => $campagne, 'papier' => $papier, 'parcellaireAffectation' => $parcellaireAffectation, 'current' => $lieu)); ?>
+<?php include_partial('parcellaireAffectation/step', array('step' => 'affectations', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 
-<div class="page-header no-border">
-    <h2>Identification des parcelles <strong><?php echo $parcellaireAffectation->getDgcLibelle($lieu); ?></strong>
-    <?php if($parcellaireAffectation->isPapier()): ?>
-    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier</small>
-    <?php endif; ?>
-    </h2>
-</div>
-
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
+<?php include_partial('parcellaireAffectation/nav', array('parcellaireAffectation' => $parcellaireAffectation, 'current' => $lieu)); ?>
 
 
-<form id="validation-form" action="<?php echo url_for("parcellaireAffectation_edit", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier, 'lieu' => $lieu)) ?>" method="post" class="form-horizontal">
+<form id="validation-form" action="<?php echo url_for("parcellaireaffectation_affectations", array('sf_subject' => $parcellaireAffectation, 'lieu' => $lieu)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -55,10 +45,6 @@
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
-            	<?php if($parcelle->affectation && $parcelle->date_affectation && $parcellaireAffectation->date && $parcelle->date_affectation != $parcellaireAffectation->date): ?>
-            	<td class="text-center text-success"><span class="glyphicon glyphicon-ok-sign"></span></td>
-            	<td class="text-center"><?php echo format_date($parcelle->date_affectation, "dd/MM/yyyy", "fr_FR"); ?></td>
-            	<?php else: ?>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectation']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['affectation']->renderError() ?>
@@ -68,20 +54,14 @@
                     </div>
             	</td>
             	<td></td>
-            	<?php endif; ?>
             </tr>
         <?php  endif; endforeach; ?>
         </tbody>
 	</table>
     <?php  endforeach; ?>
 	<div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo ($prevLieu = $parcellaireAffectation->getPrevDgc($lieu))? url_for("parcellaireAffectation_edit", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier, 'lieu' => $prevLieu)) : url_for("parcellaireAffectation_create", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo ($prevLieu = $parcellaireAffectation->getPrevDgc($lieu))? url_for("parcellaireaffectation_affectations", array('sf_subject' => $parcellaireAffectation, 'lieu' => $prevLieu)) : url_for("parcellaireaffectation_denominations", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
-            <?php if($parcellaireAffectation->isValidee()): ?>
-                <a href="<?php echo url_for('parcellaireAffectation_export_pdf', $parcellaireAffectation) ?>" class="btn btn-success">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
-                </a>
-            <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>

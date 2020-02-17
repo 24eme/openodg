@@ -18,8 +18,61 @@
     <div class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></div>
 <?php endif; ?>
 
+
+<div class="page-header">
+    <h2>Espace Facture</h2>
+</div>
+
+<h3>Liste des factures</h3>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-2">Date</th>
+            <th class="col-xs-2">Numéro</th>
+            <th class="col-xs-2">Type</th>
+            <th class="col-xs-4">Libellé</th>
+            <th class="col-xs-2">Montant TTC</th>
+            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <th style="witdth: 0;"></th>
+            <?php endif; ?>
+            <th style="witdth: 0;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($factures as $facture) : ?>
+        <tr>
+            <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
+            <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
+            <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
+            <td><?php if(!$facture->isAvoir()): ?><?php echo $facture->getTemplate()->libelle ?><?php endif; ?></td>
+            <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
+            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <td class="text-center">
+                <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement && !$facture->exist('avoir')): ?>
+                  <a href="<?php echo url_for("facturation_avoir_defacturant", array("id" => $facture->_id)) ?>" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-repeat"></span> Créér un avoir
+                    </a>
+                <?php endif; ?>
+            </td>
+           <?php endif; ?>
+            <td class="text-right">
+                <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+            </td>
+        </tr>
+        <?php endforeach;
+          if(!count($factures)):
+        ?>
+        <tr>
+            <td colspan="<?php echo intval($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))+6 ?>">Aucune factures éditées</td>
+        </tr>
+      <?php endif; ?>
+    </tbody>
+</table>
+
+<hr />
+
 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-<h3>Générer une facture</h3>
+<h3>Génération de facture</h3>
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -56,28 +109,22 @@
 </form>
 <?php endif; ?>
 
-<div class="page-header">
-    <h2>Espace Facture</h2>
-</div>
-
-<table class="table table-bordered table-striped">
+<?php if(count($mouvements) && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+  <h3>Mouvements en attente de facturation</h3>
+  <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-1">Date</th>
-            <th class="col-xs-1">Numéro</th>
-            <th class="col-xs-1">Type</th>
-            <th class="col-xs-3">Libellé</th>
-            <th class="col-xs-2">Montant TTC</th>
-            <th class="col-xs-2">Paiement</th>
-            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-            <th class="text-center" style="width: 0;"><span class="glyphicon glyphicon-list-alt"></span></th>
-            <th class="text-center" style="width: 0;"><span class="glyphicon glyphicon-euro"></span></th>
-            <th style="witdth: 0;"></th>
-            <?php endif; ?>
-            <th style="witdth: 0;"></th>
+            <th class="col-xs-1">Document</th>
+            <th class="col-xs-1">Campagne</th>
+            <th class="col-xs-4">Cotisation</th>
+            <th class="col-xs-1">Quantite</th>
+            <th class="col-xs-1">Prix unit.</th>
+            <th class="col-xs-1">Tva</th>
+            <th class="col-xs-2">Montant HT</th>
         </tr>
     </thead>
     <tbody>
+<<<<<<< HEAD
         <?php foreach ($factures as $facture) : ?>
         <tr>
             <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
@@ -140,4 +187,19 @@
         </tr>
         <?php endforeach; ?>
     </tbody>
+=======
+  <?php foreach ($mouvements as $keyMvt => $mvt): ?>
+    <tr>
+        <td><?php echo $mvt->getDocument()->getType();?></td>
+        <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
+        <td><?php echo ucfirst($mvt->categorie); ?> <?php echo $mvt->type_libelle; ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->quantite); ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux); ?></td>
+        <td class="text-right"><?php echo echoFloat($mvt->tva); ?>&nbsp;%</td>
+        <td class="text-right"><?php echo echoFloat($mvt->taux * $mvt->quantite); ?>&nbsp;€</td>
+    </tr>
+  <?php endforeach; ?>
+  </tbody>
+>>>>>>> 5951f5157d72da1de371a2d3b398441c50d2d1d0
 </table>
+<?php endif; ?>

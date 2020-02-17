@@ -49,8 +49,16 @@ class ParcellaireAffectationChoixDgcForm extends acCouchdbObjectForm {
 
     public function formatter($widget, $inputs) {
         $rows = array();
+        $denominations = array_flip($this->configuration->getLieux());
         foreach ($inputs as $input) {
-            $rows[] = '<tr><td>'.strip_tags($input['label']).'</td><td>'.$input['input'].'</td></tr>';
+            $libelle = strip_tags($input['label']);
+            $code = (isset($denominations[$libelle]))? $denominations[$libelle] : null;
+            $existChoice = ($code)? $this->getObject()->existDgcFromParcellaire($code) : false; 
+            if ($existChoice) {
+                $rows[] = '<tr><td>'.strip_tags($input['label']).'</td><td>'.$input['input'].'</td></tr>';
+            } else {
+                $rows[] = '<tr><td><span class="text-muted">'.strip_tags($input['label']).'</span></td><td>'.preg_replace('/>$/', ' disabled="disabled">', $input['input']).'</td></tr>';
+            }
         }
 
         return!$rows ? '' : implode($widget->getOption('separator'), $rows);

@@ -1,22 +1,103 @@
-parcellaireAffectation_create:
+parcellaireaffectation_create:
   url: /parcellaire-affectation/creation/:identifiant
-  param: { module: parcellaireAffectation, action: choixDgc }
+  param: { module: parcellaireAffectation, action: create }
   class: EtablissementRoute
   options:
     model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectation_create_papier:
+  url: /parcellaire-affectation/creation-papier/:identifiant
+  param: { module: parcellaireAffectation, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectation_edit:
+  url: /parcellaire-affectation/edition/:id
+  param: { module: parcellaireAffectation, action: edit }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectation_delete:
+  url: /parcellaire-affectation/suppression/:id
+  param: { module: parcellaireAffectation, action: delete }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectation_devalidation:
+  url: /parcellaire-affectation/devalidation/:id
+  param: { module: parcellaireAffectation, action: devalidation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get]
+    
+parcellaireaffectation_exploitation:
+  url: /parcellaire-affectation/exploitation/:id
+  param: { module: parcellaireAffectation, action: exploitation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
+parcellaireaffectation_denominations:
+  url: /parcellaire-affectation/denominations/:id
+  param: { module: parcellaireAffectation, action: denominations }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
+parcellaireaffectation_affectations:
+  url: /parcellaire-affectation/affectations/:id/:lieu
+  param: { module: parcellaireAffectation, action: affectations, lieu: null }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
     type:     object
   requirements:
     sf_method: [get, post]
 
-parcellaireAffectation_edit:
-  url: /parcellaire-affectation/edition/:identifiant/:lieu
-  param: { module: parcellaireAffectation, action: affectation }
-  class: EtablissementRoute
+parcellaireaffectation_validation:
+  url: /parcellaire-affectation/validation/:id
+  param: { module: parcellaireAffectation, action: validation }
+  class: ParcellaireAffectationRoute
   options:
-    model:    Etablissement
+    model:    ParcellaireAffectation
     type:     object
   requirements:
     sf_method: [get, post]
+
+parcellaireaffectation_visualisation:
+  url: /parcellaire-affectation/visualisation/:id
+  param: { module: parcellaireAffectation, action: visualisation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
 parcellaireaffectation_export_pdf:
   url: /parcellaire-affectation/pdf/:id
   param: { module: parcellaireAffectation, action: PDF }

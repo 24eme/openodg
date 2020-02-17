@@ -9,6 +9,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $declarant_document = null;
   protected $piece_document = null;
 
+  public function isAdresseLogementDifferente() {
+      return false;
+  }
   public function __construct() {
       parent::__construct();
       $this->initDocuments();
@@ -23,16 +26,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   	$this->constructId();
   }
 
-  private function getTheoriticalId() {
-    $date = str_ireplace("-","",$this->date);
-    return ParcellaireAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$date;
-  }
-
-  public function constructId() {
-      $id = $this->getTheoriticalId();
-      $this->set('_id', $id);
-  }
-
   protected function initDocuments() {
       $this->declarant_document = new DeclarantDocument($this);
       $this->piece_document = new PieceDocument($this);
@@ -42,25 +35,24 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->declarant_document->storeDeclarant();
   }
 
-  public function getEtablissementObject() {
-
-      return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
-  }
-
-  public function getTypeParcellaire() {
+    public function getTypeParcellaire() {
     	if ($this->_id) {
     		if (preg_match('/^([A-Z]*)-([A-Z0-9]*)-([0-9]{4})/', $this->_id, $result)) {
     			return $result[1];
     		}
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
+    }
+
+  public function getEtablissementObject() {
+
+      return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
   }
 
   public function initDoc($identifiant, $campagne, $date) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;
-      $this->date = $date;
-      $this->constructId();
+      $this->set('_id', ParcellaireAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne);
       $this->storeDeclarant();
   }
 
@@ -172,7 +164,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       	    }
       	}
     }
-
+    
+    public function storeEtape($etape) {
+        if ($etape == $this->etape) {
+    
+            return false;
+        }
+    
+        $this->add('etape', $etape);
+    
+        return true;
+    }
 
     public function getDeclarantSiret(){
         $siret = "";
@@ -196,9 +198,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->validation = null;
       $this->validation_odg = null;
       $this->etape = null;
-      foreach($this->getAcheteursByCVI() as $acheteur) {
-          $acheteur->email_envoye = null;
-      }
   }
 
   public function validateOdg() {
@@ -216,59 +215,25 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
 	public function isValidee(){
-		return $this->validation || $this->validation_odg;
+		return $this->validation;
 	}
-
-    public function getDateFr() {
-        $date = new DateTime($this->date);
-
-        return $date->format('d/m/Y');
-    }
-
-  /*** DECLARATION DOCUMENT ***/
-
-  public function isPapier() {
-
-      return $this->exist('papier') && $this->get('papier');
-  }
-
-  public function isLectureSeule() {
-
-      return $this->exist('lecture_seule') && $this->get('lecture_seule');
-  }
-
-  public function isAutomatique() {
-
-      return $this->exist('automatique') && $this->get('automatique');
-  }
-
-  public function getValidation() {
-
-      return $this->_get('validation');
-  }
-
-  public function getValidationOdg() {
-
-      return $this->_get('validation_odg');
-  }
-    /*** FIN DECLARATION DOCUMENT ***/
-
-    public function getAllPieces() {
-        $complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
-        return (!$this->getValidation())? array() : array(array(
-            'identifiant' => $this->getIdentifiant(),
-            'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles affectées au '.$this->getDateFr().' '.$complement,
-            'mime' => Piece::MIME_PDF,
-            'visibilite' => 1,
-            'source' => null
-        ));
-    }
     
-    public function getDgc() {
+    public function getDgc($onlyAffectes = false) {
       $lieux = array();
       $configuration = $this->getConfiguration();
       foreach ($this->declaration as $hash => $produit) {
+          if ($onlyAffectes) {
+              $hasParcelle = false;
+              foreach ($produit->detail as $detail) {
+                  if ($detail->affectation) {
+                      $hasParcelle = true;
+                      break;
+                  }
+              }
+              if (!$hasParcelle) {
+                  continue;
+              }
+          }
         $lieu = $configuration->declaration->get($hash)->getLieu();
         $lieux[$lieu->getKey()] = $lieu->getLibelle();
       }
@@ -317,6 +282,60 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             return null;
         }
         return $dgcs[$key-1];
+    }
+    
+    public function existDgcFromParcellaire($dgc) {
+        $parcellaire = $this->getParcellesFromLastParcellaire();
+        $communesDenominations = sfConfig::get('app_communes_denominations');
+        if (isset($communesDenominations[$dgc])) {
+            $codesInsee = $communesDenominations[$dgc];
+            foreach ($parcellaire->getParcelles() as $parcelle) {
+                if (in_array($parcelle->code_commune, $codesInsee)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+  /*** DECLARATION DOCUMENT ***/
+
+  public function isPapier() {
+
+      return $this->exist('papier') && $this->get('papier');
+  }
+
+  public function isLectureSeule() {
+
+      return $this->exist('lecture_seule') && $this->get('lecture_seule');
+  }
+
+  public function isAutomatique() {
+
+      return $this->exist('automatique') && $this->get('automatique');
+  }
+
+  public function getValidation() {
+
+      return $this->_get('validation');
+  }
+
+  public function getValidationOdg() {
+
+      return $this->_get('validation_odg');
+  }
+    /*** FIN DECLARATION DOCUMENT ***/
+
+    public function getAllPieces() {
+        $complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+        return (!$this->getValidation())? array() : array(array(
+            'identifiant' => $this->getIdentifiant(),
+            'date_depot' => $this->getValidation(),
+            'libelle' => 'Identification des parcelles affectées '.$this->campagne.' '.$complement,
+            'mime' => Piece::MIME_PDF,
+            'visibilite' => 1,
+            'source' => null
+        ));
     }
 
     public function generatePieces() {
