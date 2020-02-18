@@ -7,7 +7,7 @@ class importDRevCSVTask extends sfBaseTask
 
     const CSV_MILLESIME             = 0; // = campagne
     const CSV_DATE_RECEPTION        = 1;
-    const CSV_CVI_OP                 = 2;
+    const CSV_CVI_OP                = 2;
     const CSV_PRODUIT               = 3;
 
     const CSV_SURFACE               = 5;
@@ -40,13 +40,16 @@ class importDRevCSVTask extends sfBaseTask
         "C.A Gam Rosé" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT",""),
         "C.A Gam Rouge" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT",""),
         "C.A Malvoisie" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MALVOISIE",""),
-        "C.A Pineau Blanc" => array("",""), // ???
+        "C.A Pineau Blanc" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT",""),
+        // qualifié en "Coteaux d'Ancenis Blanc Chenin"
         "Gros Plant" =>array( "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/GPL/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/FBL",""),
         "Gros Plant S/Lie" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/GPL/mentions/LIE/lieux/DEFAUT/couleurs/blanc/cepages/FBL",""),
         "Mus AC" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
-        "Mus AC Cru Communal" => array("",""), // ??? = Mus AC
+        "Mus AC Cru Communal" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","Cru Communal"),
+        // qualifié en "Muscadet AC"
         "Mus  AC S/Lie" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/LIE/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
-        "Muscadet Appellation Communale" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
+        "Muscadet Appellation Communale" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","Appellation Communale"),
+        // qualifié en "Muscadet Appellation Communale"
         "Muscadet S/ Maine CHATEAU THEBAUD" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","CHATEAU THEBAUD"),
         "Muscadet S/Maine MAISDON" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","MAISDON"),
         "Muscadet S/Maine RUBIS DE SANGUEZE" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","RUBIS DE SANGUEZE"),
@@ -55,22 +58,31 @@ class importDRevCSVTask extends sfBaseTask
         "Mus CL CHAMPTOCEAUX" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSCDL/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","CHAMPTOCEAUX"),
         "Mus CL S/ Lie" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSCDL/mentions/LIE/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
         "Mus  G/ Lieu" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSCGL/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
-        "Mus G/Lieu cru communal" => array("",""), // ??? = Mus  G/ Lieu classique
+        "Mus G/Lieu cru communal" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSCGL/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","cru communal"),
+        // qualifié en "Muscadet Côtes de Grand Lieu"
         "Mus G/Lieu S/Lie" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSCGL/mentions/LIE/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
-        "Mus Primeur" => array("",""), // est-ce du Muscadet AC Primeur ???
+        "Mus Primeur" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/PRI/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
+        // qualifié en "Muscadet AC Primeur"
         "Mus S/ Maine" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
         "Mus S/M" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","CH. THEBAUD"),
         "Mus S/M CLISSON" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/CLISSON/couleurs/blanc/cepages/MEL",""),
         "Mus S/M GORGES" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/GORGES/couleurs/blanc/cepages/MEL",""),
-        "Mus S/M GOULAINE" => array("",""), // ancien cru?
-        "Mus S/M H. FOUASSIERE" => array("",""), // ancien cru?
+        "Mus S/M GOULAINE" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","GOULAINE"),
+         // qualifié en "Muscadet Sèvre et Maine" dénomination "GOULAINE"
+        "Mus S/M H. FOUASSIERE" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","H. FOUASSIERE"),
+        // qualifié en "Muscadet Sèvre et Maine" dénomination "H. FOUASSIERE"
         "Mus S/M LE PALLET" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/LEPALLET/couleurs/blanc/cepages/MEL",""),
-        "Mus S/M MON.ST FIACRE" => array("",""), // ancien cru?
-        "Mus S/M MOUZ.TILLIERES" => array("",""), // ancien cru?
+        "Mus S/M MON.ST FIACRE" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","MON.ST FIACRE"),
+        // qualifié en "Muscadet Sèvre et Maine" dénomination "MON.ST FIACRE"
+        "Mus S/M MOUZ.TILLIERES" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","MOUZ.TILLIERES"),
+        // qualifié en "Muscadet Sèvre et Maine" dénomination "MOUZ.TILLIERES"
         "Mus S/M S/Lie" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/LIE/lieux/DEFAUT/couleurs/blanc/cepages/MEL",""),
-        "Mus S/M VALLET" => array("",""), // ancien cru?
-        "Mus S/M VERTOU" => array("",""), // ancien cru?
-        "Sèvre et Maine Cru Communal" => array("",""),
+        "Mus S/M VALLET" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","VALLET"),
+        // qualifié en "Muscadet Sèvre et Maine" dénomination "VALLET"
+        "Mus S/M VERTOU" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","VERTOU"),
+        // qualifié en "Muscadet Sèvre et Maine" dénomination "VERTOU"
+        "Sèvre et Maine Cru Communal" => array("certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL","Cru Communal"),
+        // qualifié en "Muscadet Sèvre et Maine" dénomination "Cru Communal"
     );
 
     protected function configure()

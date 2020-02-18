@@ -124,7 +124,6 @@
         </tr>
     </thead>
     <tbody>
-<<<<<<< HEAD
         <?php foreach ($factures as $facture) : ?>
         <tr>
             <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
@@ -187,7 +186,7 @@
         </tr>
         <?php endforeach; ?>
     </tbody>
-=======
+
   <?php foreach ($mouvements as $keyMvt => $mvt): ?>
     <tr>
         <td><?php echo $mvt->getDocument()->getType();?></td>
@@ -200,6 +199,5 @@
     </tr>
   <?php endforeach; ?>
   </tbody>
->>>>>>> 5951f5157d72da1de371a2d3b398441c50d2d1d0
 </table>
 <?php endif; ?>
