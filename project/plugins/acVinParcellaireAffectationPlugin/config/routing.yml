@@ -18,6 +18,16 @@ parcellaireaffectation_create_papier:
   requirements:
     sf_method: [get]
 
+parcellaireintentionaffectation_edit:
+  url: /parcellaire-intention-affectation/edition/:identifiant
+  param: { module: parcellaireIntentionAffectation, action: edit }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireaffectation_edit:
   url: /parcellaire-affectation/edition/:id
   param: { module: parcellaireAffectation, action: edit }
