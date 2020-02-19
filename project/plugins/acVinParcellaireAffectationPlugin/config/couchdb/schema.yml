@@ -10,8 +10,10 @@ ParcellaireAffectation:
       etape: { }
       validation: { }
       validation_odg: { }
-      signataire: { }
+      lecture_seule: {}
+      signataire: { required: false }
       papier: { required: false, type: integer }
+      date: { }
       declarant:
         type: collection
         class: ParcellaireAffectationDeclarant

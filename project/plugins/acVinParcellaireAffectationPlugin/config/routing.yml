@@ -1,3 +1,13 @@
+parcellaireintentionaffectation_create:
+  url: /parcellaire-intention-affectation/creation/:identifiant
+  param: { module: parcellaireIntentionAffectation, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaireaffectation_create:
   url: /parcellaire-affectation/creation/:identifiant
   param: { module: parcellaireAffectation, action: create }
@@ -14,6 +24,16 @@ parcellaireaffectation_create_papier:
   class: EtablissementRoute
   options:
     model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireintentionaffectation_edit:
+  url: /parcellaire-intention-affectation/edition/:id
+  param: { module: parcellaireIntentionAffectation, action: edit }
+  class: ParcellaireIntentionAffectationRoute
+  options:
+    model:    ParcellaireIntentionAffectation
     type:     object
   requirements:
     sf_method: [get]
@@ -47,6 +67,16 @@ parcellaireaffectation_devalidation:
     type:     object
   requirements:
     sf_method: [get]
+
+parcellaireintentionaffectation_exploitation:
+  url: /parcellaire-intention-affectation/exploitation/:id
+  param: { module: parcellaireIntentionAffectation, action: exploitation }
+  class: ParcellaireIntentionAffectationRoute
+  options:
+    model:    ParcellaireIntentionAffectation
+    type:     object
+  requirements:
+    sf_method: [get, post]
     
 parcellaireaffectation_exploitation:
   url: /parcellaire-affectation/exploitation/:id
