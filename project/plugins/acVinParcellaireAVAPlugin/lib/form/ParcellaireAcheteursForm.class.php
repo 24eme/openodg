@@ -7,35 +7,47 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         $this->updateDefaults($doc);
     }
 
+    public static function buildLibelle($cepage) {
+        $lieu_libelle = self::buildLieuLibelle($cepage);
+
+        if ($cepage->getCouleur()->getLieu()->getAppellation()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
+            $lieu_libelle = "VT/SGN";
+        }
+
+        return sprintf("%s - %s - %s",
+            ParcellaireClient::getAppellationLibelle($cepage->getCouleur()->getLieu()->getAppellation()->getKey()),
+            $lieu_libelle,
+            $cepage->libelle
+        );
+    }
+
+    public static function buildLieuLibelle($cepage) {
+        $lieux_editable = $cepage->getDocument()->declaration->getLieuxEditable();
+
+        $lieu_libelle = $cepage->getCouleur()->getLieu()->getLibelle();
+        if($cepage->getConfig()->hasLieuEditable()) {
+            $lieu_libelle = $lieux_editable[preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash)];
+        }
+
+        return $lieu_libelle;
+    }
+
     public function configure() {
-        
+
         $produits = $this->getDocument()->declaration->getProduitsWithLieuEditable();
         ksort($produits);
 
-        $lieux_editable = $this->getDocument()->declaration->getLieuxEditable();
-
         foreach($produits as $hash => $cepage) {
-            $lieu_libelle = $cepage->getCouleur()->getLieu()->getLibelle();
             $lieu_affecte = null;
             if($cepage->getConfig()->hasLieuEditable()) {
-                $lieu_libelle = $lieux_editable[preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash)];
-                $lieu_affecte = $lieu_libelle;
-            }
-            if ($cepage->getCouleur()->getLieu()->getAppellation()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
-            	$lieu_libelle = "VT/SGN";
+                $lieu_affecte = self::buildLieuLibelle($cepage);
             }
             if(!$cepage->isAffectee($lieu_affecte)) {
             	continue;
             }
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
-            $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
-            $this->getWidget($hash)->setLabel(
-                sprintf("%s - %s - %s", 
-                    ParcellaireClient::getAppellationLibelle($cepage->getCouleur()->getLieu()->getAppellation()->getKey()),
-                    $lieu_libelle,
-                    $cepage->libelle
-                )
-            );
+            $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));
+            $this->getWidget($hash)->setLabel(self::buildLibelle($cepage));
         }
 
         if($this->hasProduits() > 0) {
