@@ -1,19 +1,9 @@
 <?php
 
 class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
-    
-    protected $lieu;
-    
-    public function __construct(acCouchdbJson $object, $lieu, $options = array(), $CSRFSecret = null) {
-        $this->lieu = $lieu;
-        parent::__construct($object, $options, $CSRFSecret);
-    }
 
     public function configure() {
 		foreach ($this->getObject()->declaration as $key => $value) {
-		    if (!preg_match('/\/lieux\/'.$this->lieu.'\/couleurs\//', $key)) {
-		        continue;
-		    }
 			$this->embedForm($key, new ParcellaireAffectationProduitAffectesForm($value));
 		}
 
@@ -28,7 +18,14 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     			$node = $this->getObject()->declaration->get($produit);
     			$node = $node->detail->get($detail);
     			foreach ($items as $k => $v) {
+    			    var_dump($node->affectation, $node->date_affectation, $k, $v);
     				$node->add($k, $v);
+    				if (!$node->date_affectation && $v) {
+    				    $node->date_affectation = date('Y-m-d');
+    				}
+    				if ($node->date_affectation && !$v) {
+    				    $node->date_affectation = null;
+    				}
     			}
     		}
     	}

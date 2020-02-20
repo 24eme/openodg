@@ -8,31 +8,30 @@ class parcellaireIntentionAffectationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
     
-        $this->papier = true;
+        $this->papier = 1;
         $this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
     
         $this->parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
-    
-        $this->form = null;
-    
+
+        $this->form = new ParcellaireAffectationProduitsForm($this->parcellaireIntentionAffectation);
+
         if (!$request->isMethod(sfWebRequest::POST)) {
-    
+
             return sfView::SUCCESS;
         }
-    
+
         $this->form->bind($request->getParameter($this->form->getName()));
-    
+
         if (!$this->form->isValid()) {
-    
+
             return sfView::SUCCESS;
         }
-    
+
         $this->form->save();
+        
+        $this->getUser()->setFlash("notice", "Vos intentions d'affectation parcellaire ont bien été enregistrées");
     
-        $this->getUser()->setFlash("notice", "Vos parcelles irriguées ont bien été enregistrées");
-    
-        return $this->redirect('parcellaireirrigue_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne, 'papier' => $this->papier));
-    
+        return $this->redirect('parcellaireintentionaffectation_edit', ['sf_subject' => $this->etablissement, 'campagne' => $this->campagne]);
     }
     
     protected function secure($droits, $doc) {
