@@ -52,4 +52,13 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
 
         return $this->getProduit()->getConfig()->getLieu();
     }
+
+    public function getDateAffectationFr() {
+        if (!$this->date_affectation) {
+            return null;
+        }
+        $date = new DateTime($this->date_affectation);
+    
+        return $date->format('d/m/Y');
+    }
 }

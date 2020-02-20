@@ -4,11 +4,11 @@
  *
  */
 
-class ParcellaireIntentionAffectationProduit extends BaseParcellaireIntentionAffectationProduit {
+class ParcellaireIntentionAffectationProduit extends ParcellaireAffectationProduit {
 
-    public function getConfig() {
-
-        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+    public function configureTree() {
+       $this->_root_class_name = 'ParcellaireItentionAffectation';
+       $this->_tree_class_name = 'ParcellaireIntentionAffectationProduit';
     }
 
 }
