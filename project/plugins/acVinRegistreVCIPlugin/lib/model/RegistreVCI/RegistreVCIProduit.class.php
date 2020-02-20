@@ -56,7 +56,7 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
   }
 
   public function getStockFinal() {
-      $this->stock_final = round($this->stock_final, 2);
+      $this->_set('stock_final') = round($this->_get('stock_final'), 2);
 
       return $this->_get('stock_final');
   }
