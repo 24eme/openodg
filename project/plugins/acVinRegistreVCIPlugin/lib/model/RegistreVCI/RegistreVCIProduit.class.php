@@ -55,6 +55,12 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
     $this->_set('stock_final', $this->stock_final + $volume * RegistreVCIClient::MOUVEMENT_SENS($mouvement_type));
   }
 
+  public function getStockFinal() {
+      $this->stock_final = round($this->stock_final, 2);
+
+      return $this->_get('stock_final');
+  }
+
   public function setStockPrecedent($v) {
       throw new sfException('Not callable, use setStockPrecedent in detail');
   }
