@@ -323,6 +323,45 @@ class parcellaireActions extends sfActions {
         return $this->redirect('parcellaire_validation', $this->parcellaire);
     }
 
+    public function executeAcheteursParcelles(sfWebRequest $request) {
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_ACHETEURS))) {
+            $this->parcellaire->save();
+        }
+
+        $this->form = new ParcellaireAcheteursParcellesForm($this->parcellaire);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->update();
+        $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->parcellaire->_id, "revision" => $this->parcellaire->_rev))));
+        }
+
+        if ($request->getParameter('redirect', null)) {
+
+            return $this->redirect('parcellaire_validation', $this->parcellaire);
+        }
+
+        return $this->redirect('parcellaire_validation', $this->parcellaire);
+    }
+
     public function executeValidation(sfWebRequest $request) {
         set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();

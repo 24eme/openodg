@@ -159,6 +159,16 @@ parcellaire_acheteurs:
   requirements:
     sf_method: [get,post]
 
+parcellaire_acheteurs_parcelles:
+  url: /parcellaire/acheteurs-parcelles/:id
+  param: { module: parcellaire, action: acheteursParcelles }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
 parcellaire_validation:
   url: /parcellaire/validation/:id
   param: { module: parcellaire, action: validation }

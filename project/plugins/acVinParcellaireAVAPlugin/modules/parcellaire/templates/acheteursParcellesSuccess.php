@@ -6,8 +6,8 @@
 </div>
 
 <ul class="nav nav-tabs">
-    <li class="active"><a href="<?php echo url_for('parcellaire_acheteurs', array('id' => $parcellaire->_id)) ?>" class="ajax">Répartition par produits</a></li>
-    <li><a href="<?php echo url_for('parcellaire_acheteurs_parcelles', array('id' => $parcellaire->_id)) ?>" class="ajax">Répartition par parcelles</a></li>
+    <li><a href="<?php echo url_for('parcellaire_acheteurs', array('id' => $parcellaire->_id)) ?>" class="ajax">Répartition par produits</a></li>
+    <li class="active"><a href="<?php echo url_for('parcellaire_acheteurs_parcelles', array('id' => $parcellaire->_id)) ?>" class="ajax">Répartition par parcelles</a></li>
 </ul>
 
 <form action="<?php echo url_for("parcellaire_acheteurs", $parcellaire) ?>" method="post" class="ajaxForm">
@@ -29,14 +29,19 @@
                     <tbody>
                     <?php foreach($form as $key => $field) : ?>
                     <?php if($field->isHidden()) { continue; } ?>
-                    <tr>
+                    <?php $categorie = !preg_match('|/detail/|', $key); ?>
+                    <tr style="<?php if ($categorie): ?>border-top: 1px solid #cbcbcb;<?php endif; ?>">
                         <td>
-                            <?php echo $field->renderLabel(null, array('style' => 'font-weight: normal')) ?>
+                            <?php if ($categorie): ?>
+                                <?php echo $field->renderLabel(null) ?>
+                            <?php else: ?>
+                                <?php echo $field->renderLabel(null, array('style' => 'font-weight: normal; padding-left: 8px;')) ?>
+                            <?php endif; ?>
                             <?php echo $field->renderError() ?>
                         </td>
                         <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>
                         <td class="text-center tdAcheteur" >
-                            <input class="acheteur_checkbox" type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> />
+                            <input class="acheteur_checkbox" <?php if($categorie): ?>disabled="disabled"<?php endif; ?> type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> />
                         </td>
                         <?php endforeach; ?>
                     </tr>
@@ -52,7 +57,7 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for("parcellaire_parcelles", array('sf_subject' => $parcellaire, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation($parcellaire->getTypeParcellaire()))) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
+            <a href="<?php echo url_for("parcellaire_acheteurs", array('sf_subject' => $parcellaire)) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireEtapes::ETAPE_VALIDATION): ?>
