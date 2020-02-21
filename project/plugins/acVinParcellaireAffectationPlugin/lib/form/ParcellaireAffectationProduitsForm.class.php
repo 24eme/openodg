@@ -25,6 +25,9 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     				if ($node->date_affectation && !$v) {
     				    $node->date_affectation = null;
     				}
+    				if (!$v) {
+    				    $node->superficie_affectation = $node->superficie;
+    				}
     			}
     		}
     	}

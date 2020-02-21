@@ -7,7 +7,8 @@
 class ParcellaireIntentionAffectation extends ParcellaireAffectation {
 
   private function getTheoriticalId() {
-    return ParcellaireIntentionAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne;
+    $date = str_ireplace("-","",$this->date);
+    return ParcellaireIntentionAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$date;
   }
 
   public function constructId() {
@@ -36,6 +37,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   		    if ($parcellaireIntentionAffectation->exist($hash) && $parcellaireIntentionAffectation->get($hash)->affectation) {
   		        $parcelle->affectation = 1;
   		        $parcelle->date_affectation = $parcellaireIntentionAffectation->get($hash)->date_affectation;
+  		        $parcelle->superficie_affectation = $parcellaireIntentionAffectation->get($hash)->superficie_affectation;
   		    }
   		}
   	}

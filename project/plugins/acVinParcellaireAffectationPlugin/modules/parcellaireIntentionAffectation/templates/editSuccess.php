@@ -11,6 +11,9 @@
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
+<?php if ($sf_request->isMethod(sfWebRequest::POST) && !$form->isValid()): ?>
+ 	<div class="alert alert-danger" role="alert">La saisie des surfaces affectables est invalide</div>
+<?php endif; ?>
 
 <p>Veuillez activer les parcelles pouvant prétendre à une dénomination complémentaire.</p>
 
@@ -65,9 +68,8 @@
             	<td class="text-center"><?php echo $parcelle->getDateAffectationFr() ?></td>
                 <td class="text-center">
                     <div style="margin-bottom: 0;" id = "surface" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['superficie_affectation']->hasError()): ?>has-error<?php endif; ?>">
-                        <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->renderError() ?>
-                        <div class="col-xs-10">
-                            <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(array('class' => 'disabled form-control text-center input-rounded num_float' , 'placeholder' => "aire")); ?>
+                        <div class="col-xs-12">
+                            <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(array('class' => 'form-control text-center bsswitch-input' , 'placeholder' => $parcelle->superficie)); ?>
                         </div>
                     </div>
                 </td>
@@ -84,4 +86,3 @@
     </div>
 </form>
 </div>
-
