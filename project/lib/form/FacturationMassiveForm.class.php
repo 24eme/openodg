@@ -14,7 +14,7 @@ class FacturationMassiveForm extends acCouchdbForm {
           $this->setWidget('requete'   , new sfWidgetFormInput());
           $this->widgetSchema->setLabel('modele'  , 'Template de facture');
           $this->widgetSchema->setLabel('libelle'  , 'Libellé');
-          $this->widgetSchema->setLabel('requete'  , 'Reqûete');
+          $this->widgetSchema->setLabel('requete'  , 'Requête');
           $this->setValidator('requete' , new sfValidatorString(array("required" => true)));
           $this->setValidator('modele' , new sfValidatorChoice(array('choices' => array_keys($modeles), 'multiple' => false, 'required' => true)));
           $this->setValidator('libelle' , new sfValidatorString(array("required" => true)));
