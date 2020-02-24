@@ -320,6 +320,11 @@ class parcellaireActions extends sfActions {
             return $this->redirect('parcellaire_validation', $this->parcellaire);
         }
 
+        if($this->parcellaire->hasProduitWithMultipleAcheteur()) {
+
+            return $this->redirect('parcellaire_acheteurs_parcelles', $this->parcellaire);
+        }
+
         return $this->redirect('parcellaire_validation', $this->parcellaire);
     }
 
