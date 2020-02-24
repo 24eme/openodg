@@ -4,13 +4,11 @@ class ParcellaireAffectationProduitAffecteForm extends acCouchdbObjectForm {
 
     public function configure() {
 	    	$this->setWidgets(array(
-	    			'affectation' => new WidgetFormInputCheckbox(),
-	    			'superficie_affectation' => new sfWidgetFormInputFloat(array(), array("disabled" => "disabled")),
+	    			'affectee' => new WidgetFormInputCheckbox(),
 	    	));
 
     	$this->setValidators(array(
-    			'affectation' => new ValidatorBoolean(),
-    			'superficie_affectation'=> new sfValidatorNumber(array('required' => false, 'max' => $this->getObject()->superficie))
+    			'affectee' => new ValidatorBoolean(),
     	));
         $this->widgetSchema->setNameFormat('parcellaire_affectation[%s]');
     }

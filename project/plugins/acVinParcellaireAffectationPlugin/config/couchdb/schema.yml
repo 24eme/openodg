@@ -66,6 +66,7 @@ ParcellaireAffectation:
                               campagne_plantation: {  }
                               affectation: { type: integer }
                               date_affectation: {  }
+                              affectee: { type: integer }
       observations: {  }
       pieces:
         type: array_collection

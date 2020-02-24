@@ -7,8 +7,8 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         $this->updateDefaults($doc);
     }
 
-    public static function buildLibelle($cepage) {
-        $lieu_libelle = self::buildLieuLibelle($cepage);
+    public static function buildLibelle($cepage, $hash) {
+        $lieu_libelle = self::buildLieuLibelle($cepage, $hash);
 
         if ($cepage->getCouleur()->getLieu()->getAppellation()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
             $lieu_libelle = "VT/SGN";
@@ -21,7 +21,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         );
     }
 
-    public static function buildLieuLibelle($cepage) {
+    public static function buildLieuLibelle($cepage, $hash) {
         $lieux_editable = $cepage->getDocument()->declaration->getLieuxEditable();
 
         $lieu_libelle = $cepage->getCouleur()->getLieu()->getLibelle();
@@ -40,14 +40,14 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         foreach($produits as $hash => $cepage) {
             $lieu_affecte = null;
             if($cepage->getConfig()->hasLieuEditable()) {
-                $lieu_affecte = self::buildLieuLibelle($cepage);
+                $lieu_affecte = self::buildLieuLibelle($cepage, $hash);
             }
             if(!$cepage->isAffectee($lieu_affecte)) {
             	continue;
             }
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
             $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));
-            $this->getWidget($hash)->setLabel(self::buildLibelle($cepage));
+            $this->getWidget($hash)->setLabel(self::buildLibelle($cepage, $hash));
         }
 
         if($this->hasProduits() > 0) {

@@ -3,9 +3,7 @@
 <?php include_partial('parcellaireIntentionAffectation/breadcrumb', array('parcellaireIntentionAffectation' => $parcellaireIntentionAffectation)); ?>
 
 <div class="page-header no-border">
-    <h2>Intention d'affectation parcellaire
-    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier</small>
-    </h2>
+    <h2>Intention d'affectation parcellaire</h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -15,7 +13,7 @@
  	<div class="alert alert-danger" role="alert">La saisie des surfaces affectables est invalide</div>
 <?php endif; ?>
 
-<p>Veuillez activer les parcelles pouvant prétendre à une dénomination complémentaire.</p>
+<p>Veuillez activer les parcelles pouvant prétendre à l'affectation d'une dénomination complémentaire.</p>
 
 <form id="validation-form" action="<?php echo url_for("parcellaireintentionaffectation_edit", array("sf_subject" => $etablissement, "campagne" => $campagne)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
@@ -27,7 +25,7 @@
             <h3><?php echo $commune; ?></h3>
         </div>
         <div class="col-xs-6">
-           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont affectées</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
+           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont affectables</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
        </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
@@ -39,9 +37,9 @@
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
                 <th class="col-xs-2">Dénom. compl.</th>
-                <th class="col-xs-1">Affectation?</th>
-                <th class="col-xs-1">Date affectation</th>
-                <th class="col-xs-1" style="text-align: right;">Surf. affectatable <span class="text-muted small">(ha)</span></th>
+                <th class="col-xs-1">Affectable?</th>
+                <th class="col-xs-1">Date affectable</th>
+                <th class="col-xs-1" style="text-align: right;">Surf. affectable <span class="text-muted small">(ha)</span></th>
             </tr>
 		</thead>
 		<tbody>
@@ -82,7 +80,7 @@
         <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
-        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
     </div>
 </form>
 </div>

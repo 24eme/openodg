@@ -13,7 +13,7 @@ class parcellaireIntentionAffectationActions extends sfActions {
     
         $this->parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
 
-        $this->form = new ParcellaireAffectationProduitsForm($this->parcellaireIntentionAffectation);
+        $this->form = new ParcellaireIntentionAffectationProduitsForm($this->parcellaireIntentionAffectation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
