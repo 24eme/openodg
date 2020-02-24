@@ -148,6 +148,12 @@ Parcellaire:
                                                                   departement: {  }
                                                                   active: { type: integer }
                                                                   vtsgn: { type: integer }
+                                                                  acheteurs:
+                                                                    required: false
+                                                                    type: array_collection
+                                                                    definition:
+                                                                      fields:
+                                                                        '*' : { }
       pieces:
         type: array_collection
         definition:

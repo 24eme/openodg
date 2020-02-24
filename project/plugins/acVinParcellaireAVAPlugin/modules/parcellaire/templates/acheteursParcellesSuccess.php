@@ -10,7 +10,9 @@
     <li class="active"><a href="<?php echo url_for('parcellaire_acheteurs_parcelles', array('id' => $parcellaire->_id)) ?>" class="ajax">Répartition par parcelles</a></li>
 </ul>
 
-<form action="<?php echo url_for("parcellaire_acheteurs", $parcellaire) ?>" method="post" class="ajaxForm">
+<p class="text-muted">Vous pouvez dans cet écran affiner les destinations de vos parcelles, dans le cas où un même produit à plusieurs destinations</p>
+
+<form action="<?php echo url_for("parcellaire_acheteurs_parcelles", $parcellaire) ?>" method="post" class="ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
     <?php if($form->hasGlobalErrors()): ?><div class="alert alert-danger"><?php echo $form->renderGlobalErrors(array("class" => "text-left")) ?></div><?php endif; ?>
     <div class="row">
@@ -27,12 +29,17 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <?php $categorieField = null; ?>
                     <?php foreach($form as $key => $field) : ?>
                     <?php if($field->isHidden()) { continue; } ?>
-                    <?php $categorie = !preg_match('|/detail/|', $key); ?>
-                    <tr style="<?php if ($categorie): ?>border-top: 1px solid #cbcbcb;<?php endif; ?>">
+                    <?php $isCategorie = false; ?>
+                    <?php if(!preg_match('|/detail/|', $key)): ?>
+                        <?php $isCategorie = true; ?>
+                        <?php $categorieField = $field; ?>
+                    <?php endif; ?>
+                    <tr style="<?php if ($isCategorie): ?>border-top: 1px solid #cbcbcb;<?php endif; ?>">
                         <td>
-                            <?php if ($categorie): ?>
+                            <?php if ($isCategorie): ?>
                                 <?php echo $field->renderLabel(null) ?>
                             <?php else: ?>
                                 <?php echo $field->renderLabel(null, array('style' => 'font-weight: normal; padding-left: 8px;')) ?>
@@ -40,8 +47,8 @@
                             <?php echo $field->renderError() ?>
                         </td>
                         <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>
-                        <td class="text-center tdAcheteur" >
-                            <input class="acheteur_checkbox" <?php if($categorie): ?>disabled="disabled"<?php endif; ?> type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> />
+                        <td class="text-center tdAcheteur">
+                            <input class="acheteur_checkbox" <?php if($categorieField->getValue() && !in_array($key, $categorieField->getValue()) || $isCategorie): ?>disabled="disabled"<?php endif; ?> type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> style="<?php if (!in_array($key, $categorieField->getValue())): ?>opacity: 0.5;<?php endif; ?>" />
                         </td>
                         <?php endforeach; ?>
                     </tr>

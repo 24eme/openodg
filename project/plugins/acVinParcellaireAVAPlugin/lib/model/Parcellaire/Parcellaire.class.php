@@ -391,6 +391,17 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         return $parcellesByLieuxCommuneAndCepage;
     }
 
+    public function hasProduitWithMultipleAcheteur() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->hasMultipleAcheteur()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function validate($date = null) {
         if (is_null($date)) {
             $date = date('Y-m-d');
