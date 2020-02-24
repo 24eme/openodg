@@ -13,7 +13,6 @@ ParcellaireAffectation:
       lecture_seule: {}
       signataire: { required: false }
       papier: { required: false, type: integer }
-      date: { }
       declarant:
         type: collection
         class: ParcellaireAffectationDeclarant
@@ -53,6 +52,7 @@ ParcellaireAffectation:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_affectation: { type: float }
                               commune: { }
                               code_commune: { }
                               section: { }
@@ -88,3 +88,73 @@ ParcellaireAffectation:
                     definition:
                       fields:
                         '*': { }
+#PARCELLAIREAFFECTATION
+ParcellaireIntentionAffectation:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      etape: { }
+      validation: { }
+      validation_odg: { }
+      lecture_seule: {}
+      signataire: { required: false }
+      papier: { required: false, type: integer }
+      date: { }
+      declarant:
+        type: collection
+        class: ParcellaireIntentionAffectationDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+      declaration:
+        type: collection
+        class: ParcellaireIntentionAffectationDeclaration
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ParcellaireIntentionAffectationProduit
+              definition:
+                fields:
+                  libelle: { }
+                  detail:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          class: ParcellaireIntentionAffectationProduitDetail
+                          definition:
+                            fields:
+                              superficie: { type: float }
+                              superficie_affectation: { type: float }
+                              commune: { }
+                              code_commune: { }
+                              section: { }
+                              numero_parcelle: { }
+                              idu: { }
+                              lieu: {  }
+                              cepage: {  }
+                              departement: { required: false }
+                              active: { type: integer }
+                              vtsgn: { type: integer, required: false }
+                              campagne_plantation: {  }
+                              affectation: { type: integer }
+                              date_affectation: {  }
+      observations: {  }

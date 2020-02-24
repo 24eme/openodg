@@ -160,6 +160,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       	            }
       	            $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
       	            $subitem->affectation = 0;
+      	            $subitem->superficie_affectation = $parcelle->superficie;
       	        }
       	    }
       	}
@@ -343,7 +344,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function generateUrlPiece($source = null) {
-        return sfContext::getInstance()->getRouting()->generate('ParcellaireAffectation_export_pdf', $this);
+        return sfContext::getInstance()->getRouting()->generate('parcellaireaffectation_export_pdf', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {

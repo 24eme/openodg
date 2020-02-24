@@ -19,6 +19,15 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     			$node = $node->detail->get($detail);
     			foreach ($items as $k => $v) {
     				$node->add($k, $v);
+    				if (!$node->date_affectation && $v) {
+    				    $node->date_affectation = date('Y-m-d');
+    				}
+    				if ($node->date_affectation && !$v) {
+    				    $node->date_affectation = null;
+    				}
+    				if (!$v) {
+    				    $node->superficie_affectation = $node->superficie;
+    				}
     			}
     		}
     	}

@@ -4,30 +4,10 @@
  *
  */
 
-class ParcellaireIntentionAffectationDeclaration extends BaseParcellaireIntentionAffectationDeclaration {
+class ParcellaireIntentionAffectationDeclaration extends ParcellaireAffectationDeclaration {
 
-    public function getParcellesByCommune() {
-        $parcelles = array();
-
-        foreach($this->getParcelles() as $parcelle) {
-            if(!isset($parcelles[$parcelle->commune])) {
-                $parcelles[$parcelle->commune] = array();
-            }
-            $parcelles[$parcelle->commune][$parcelle->getHash()] = $parcelle;
-        }
-
-        ksort($parcelles);
-        return $parcelles;
-    }
-
-    public function getParcelles() {
-        $parcelles = array();
-        foreach($this as $produit) {
-            foreach ($produit->detail as $parcelle) {
-                $parcelles[$parcelle->getHash()] = $parcelle;
-            }
-        }
-
-        return $parcelles;
+    public function configureTree() {
+        $this->_root_class_name = 'ParcellaireIntentionAffectation';
+        $this->_tree_class_name = 'ParcellaireIntentionAffectationDeclaration';
     }
 }

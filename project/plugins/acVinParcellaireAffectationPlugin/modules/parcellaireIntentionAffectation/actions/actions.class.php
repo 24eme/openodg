@@ -8,11 +8,10 @@ class parcellaireIntentionAffectationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
     
-        $this->papier = true;
+        $this->papier = 1;
         $this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
     
         $this->parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
-    
 
         $this->form = new ParcellaireAffectationProduitsForm($this->parcellaireIntentionAffectation);
 
@@ -29,6 +28,8 @@ class parcellaireIntentionAffectationActions extends sfActions {
         }
 
         $this->form->save();
+        
+        $this->getUser()->setFlash("notice", "Vos intentions d'affectation parcellaire ont bien été enregistrées");
     
         return $this->redirect('parcellaireintentionaffectation_edit', ['sf_subject' => $this->etablissement, 'campagne' => $this->campagne]);
     }
