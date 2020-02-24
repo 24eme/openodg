@@ -160,6 +160,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       	            }
       	            $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
       	            $subitem->affectation = 0;
+      	            $subitem->superficie_affectation = $parcelle->superficie;
       	        }
       	    }
       	}

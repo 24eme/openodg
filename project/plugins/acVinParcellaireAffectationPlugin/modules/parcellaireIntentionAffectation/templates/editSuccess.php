@@ -11,6 +11,9 @@
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
+<?php if ($sf_request->isMethod(sfWebRequest::POST) && !$form->isValid()): ?>
+ 	<div class="alert alert-danger" role="alert">La saisie des surfaces affectables est invalide</div>
+<?php endif; ?>
 
 <p>Veuillez activer les parcelles pouvant prétendre à une dénomination complémentaire.</p>
 
@@ -38,7 +41,7 @@
                 <th class="col-xs-2">Dénom. compl.</th>
                 <th class="col-xs-1">Affectation?</th>
                 <th class="col-xs-1">Date affectation</th>
-
+                <th class="col-xs-1" style="text-align: right;">Surf. affectatable <span class="text-muted small">(ha)</span></th>
             </tr>
 		</thead>
 		<tbody>
@@ -55,7 +58,7 @@
                 <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
             	<td><?php echo $parcelle->getDgcLibelle(); ?></td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectation']->hasError()): ?>has-error<?php endif; ?>">
+                	<div style="margin-bottom: 0;" id = "affectation" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectation']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['affectation']->renderError() ?>
                         <div class="col-xs-12">
 			            	<?php echo $form[$produitKey][$parcelle->getKey()]['affectation']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
@@ -63,6 +66,13 @@
                     </div>
             	</td>
             	<td class="text-center"><?php echo $parcelle->getDateAffectationFr() ?></td>
+                <td class="text-center">
+                    <div style="margin-bottom: 0;" id = "surface" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['superficie_affectation']->hasError()): ?>has-error<?php endif; ?>">
+                        <div class="col-xs-12">
+                            <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(array('class' => 'form-control text-center bsswitch-input' , 'placeholder' => $parcelle->superficie)); ?>
+                        </div>
+                    </div>
+                </td>
             </tr>
         <?php  endif; endforeach; ?>
         </tbody>
@@ -76,4 +86,3 @@
     </div>
 </form>
 </div>
-

@@ -52,6 +52,7 @@ ParcellaireAffectation:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_affectation: { type: float }
                               commune: { }
                               code_commune: { }
                               section: { }
@@ -142,6 +143,7 @@ ParcellaireIntentionAffectation:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_affectation: { type: float }
                               commune: { }
                               code_commune: { }
                               section: { }
