@@ -41,6 +41,10 @@ class FacturationMassiveForm extends acCouchdbForm {
     public static function getModelesByObject($modeles) {
         $choices = [];
 
+        if ($modeles === null) {
+            $modeles = [];
+        }
+
         foreach ($modeles as $templateFacture) {
             $choices[$templateFacture->_id] = $templateFacture->libelle;
         }
