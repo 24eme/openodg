@@ -837,12 +837,18 @@
             if(checkbox.attr('readonly')) {
                 return;
             }
+            if(checkbox.attr('disabled')) {
+                return;
+            }
             checkbox.prop('checked',!checkbox.is(':checked'));
         });
 
         $('.table td.pointer_checkbox input[type=checkbox]').click(function(e) {
             e.stopPropagation();
             if($(this).attr('readonly')) {
+                return false;
+            }
+            if($(this).attr('disabled')) {
                 return false;
             }
         });

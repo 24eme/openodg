@@ -119,7 +119,7 @@ EOF;
 
             $this->importLineDrev($data);
         }
-        
+
         foreach(file($arguments['fileVci']) as $line) {
             $line = str_replace("\n", "", $line);
 
@@ -168,37 +168,22 @@ EOF;
             echo "Ajout d'une revendication produit ".self::$produitsKey[$produit_file][0]." à la drev $drev->_id \n";
 
             $surface = $data[self::CSV_SURFACE] / 100.0;
-            $produit->superficie_revendique = $this->convertFloat($surface);
-            $produit->recolte->superficie_total = $this->convertFloat($surface);
+            $produit->superficie_revendique += $this->convertFloat($surface);
+            $produit->recolte->superficie_total += $this->convertFloat($surface);
+
             $volume_brut = $data[self::CSV_VOLUME_BRUT] / 100.00;
 
-            $produit->recolte->volume_total = $this->convertFloat($volume_brut);
+            $produit->recolte->volume_total += $this->convertFloat($volume_brut);
 
-            $produit->recolte->recolte_nette = $this->convertFloat($volume_brut);
-            $produit->recolte->volume_sur_place = $this->convertFloat($volume_brut);
+            $produit->recolte->recolte_nette += $this->convertFloat($volume_brut);
+            $produit->recolte->volume_sur_place += $this->convertFloat($volume_brut);
 
             $volume_rev = $data[self::CSV_VOLUME] / 100.00;
 
-            $produit->volume_revendique_total = $this->convertFloat($volume_rev);
+            $produit->volume_revendique_total += $this->convertFloat($volume_rev);
 
-            $volume_recolte = $data[self::CSV_VOLUME_BRUT] / 100.00;
-            $produit->volume_revendique_issu_recolte = $this->convertFloat($volume_recolte);
+            $produit->volume_revendique_issu_recolte += $this->convertFloat($volume_rev);
 
-
-
-        /*
-        if($data[self::CSV_TYPE] == "VCI"){
-            $bio = ($data[self::CSV_AB])? "AB" : null;
-            $produit = $drev->addProduit(self::$produitsKey[$data[self::CSV_PRODUIT]],$bio);
-            echo "Ajout du vci produit ".self::$produitsKey[$data[self::CSV_PRODUIT]]." à la drev $drev->_id \n";
-            $produit->vci->stock_precedent = 0;
-            $volumeVci = $this->convertFloat($data[self::CSV_VOLUME]);
-            $produit->vci->constitue = $volumeVci;
-            $produit->vci->stock_final = $volumeVci;
-            $this->stockVCI2016[$idEtb.$produit->getHash()] = $volumeVci;
-
-        }
-        */
         $date_reception = DateTime::createFromformat("d/m/Y",$data[self::CSV_DATE_RECEPTION]);
         $drev->add('validation',$date_reception->format('Y-m-d'));
         $drev->add('validation_odg',$date_reception->format('Y-m-d'));
