@@ -77,7 +77,7 @@
     <?php include_component('parcellaireIntentionAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireCremant") && in_array('parcellaireCremant', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
@@ -102,11 +102,9 @@
             </div>
             <div class="panel-body">
                 <p>Accéder à l'espace de mise à disposition de vos factures en téléchargement</p>
-            </div>
-            <div class="panel-bottom">
-                <p style="margin-top: 50px;">
+                <div style="margin-top: 50px;">
                     <a class="btn btn-lg btn-block btn-primary" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
-                </p>
+                </div>
             </div>
         </div>
     </div>
