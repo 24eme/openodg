@@ -10,12 +10,6 @@ generation_delete:
   requirements:
     sf_method: [get]
 
-generation_regenerate:
-  url: /generation/:type_document/:date_emission/regenerer
-  param: { module: generation, action: regenerate }
-  requirements:
-    sf_method: [get]
-
 generation_reload:
   url: /generation/:type_document/:date_emission/reload
   param: { module: generation, action: reload }
