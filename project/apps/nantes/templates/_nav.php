@@ -6,6 +6,10 @@
     <?php $etablissement = $route->getEtablissement(); ?>
     <?php $compte = $etablissement->getMasterCompte(); ?>
 <?php endif; ?>
+<?php if($route instanceof InterfaceFacturationRoute): ?>
+    <?php $compte = $route->getCompte(); ?>
+    <?php $etablissement = $compte->getEtablissement(); ?>
+<?php endif; ?>
 <?php if($route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
     <?php $etablissement = $compte->getEtablissement(); ?>
