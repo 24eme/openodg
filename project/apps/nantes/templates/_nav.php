@@ -8,7 +8,7 @@
 <?php endif; ?>
 <?php if($route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
-    <?php //$etablissement = $compte->getEtablissementObj(); ?>
+    <?php $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 <?php if($route instanceof SocieteRoute): ?>
     <?php $etablissement = $route->getEtablissement(); ?>
