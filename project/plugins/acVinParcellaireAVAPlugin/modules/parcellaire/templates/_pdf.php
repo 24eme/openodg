@@ -33,14 +33,18 @@
                 </tr>
             </table>
         </td></tr></table>
-<br /> 
+<br />
 <?php if (count($parcellesForDetail->acheteurs)): ?>
-    <br /> 
+    <br />
     <span class="h3Alt">&nbsp;Destination des raisins&nbsp;</span><br/>
     <table class="tableAlt"><tr><td>
                 <table border="0">
                     <?php if(!$cviFilter): ?>
-                        <?php foreach ($parcellesForDetail->acheteurs as $type => $acheteurs): ?>
+                        <?php $types = array(); ?>
+                        <?php foreach ($parcellesForDetail->acheteurs as $acheteur): ?>
+                            <?php $types[$acheteur->getParent()->getKey()][] = $acheteur; ?>
+                        <?php endforeach;?>
+                        <?php foreach ($types as $type => $acheteurs): ?>
                             <tr>
                                 <td><span style="font-family: Dejavusans">☒</span>&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
                                     <?php
@@ -60,10 +64,8 @@
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        
-                        <?php $acheteursByCvi = array(); foreach($parcellesForDetail->acheteurs as $type => $acheteurs) { foreach ($acheteurs as $acheteur) { $acheteursByCvi[$acheteur->cvi] = $acheteur->nom; }} ?>
                         <tr>
-                            <td><?php if(count($acheteursByCvi) > 1): ?>Partagés entre plusieurs destinataires dont <?php echo $acheteursByCvi[$cviFilter]; ?> <?php else: ?>Dédiés à <?php echo $acheteursByCvi[$cviFilter]; ?><?php endif; ?></td>
+                            <td><?php if(count($parcellesForDetail->acheteurs) > 1): ?>Partagés entre plusieurs destinataires dont <?php echo $parcellesForDetail->acheteurs[$cviFilter]->nom; ?> <?php else: ?>Dédiés à <?php echo $parcellesForDetail->acheteurs[$cviFilter]->nom; ?><?php endif; ?></td>
                         </tr>
                     <?php endif; ?>
                 </table>
