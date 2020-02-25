@@ -214,6 +214,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $cvis[] = $etb->etablissement->cvi;
                 $ppms[] = $etb->etablissement->ppm;
                 $regions[] = $etb->etablissement->region;
+                $this->addTag('automatique', $etb->etablissement->famille);
             }
             $this->etablissement_informations->cvi = implode('|', $cvis);
             $this->etablissement_informations->ppm = implode('|', $ppms);
