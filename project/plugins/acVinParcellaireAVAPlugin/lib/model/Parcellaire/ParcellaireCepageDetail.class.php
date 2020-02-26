@@ -18,25 +18,67 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $this->filter('^mention');
     }
 
-    public function addAcheteur($acheteur) {
-
-        return $this->getCepage()->addAcheteurFromNode($acheteur, $this->lieu);
-    }
-
-    public function getAcheteurs() {
+    public function getAcheteursCepage() {
 
         return $this->getCepage()->getAcheteursNode($this->lieu);
     }
 
-    public function getAcheteursByCVI() {
+    public function getAcheteursCepageByCVI() {
         $acheteursCvi = array();
-        foreach($this->getAcheteurs() as $type => $acheteurs) {
+        foreach($this->getAcheteursCepage() as $type => $acheteurs) {
             foreach($acheteurs as $cvi => $acheteur) {
                 $acheteursCvi[$cvi] = $acheteur;
             }
         }
 
         return $acheteursCvi;
+    }
+
+    public function getAcheteursByCVI() {
+        if(!$this->exist('acheteurs')) {
+            return $this->getAcheteursCepageByCVI();
+        }
+        $acheteursCvi = array();
+        foreach($this->getAcheteursCepageByCVI() as $cvi => $acheteur) {
+            if(!in_array($cvi, $this->acheteurs->toArray(true, false))) {
+
+                continue;
+            }
+
+            $acheteursCvi[$cvi] = $acheteur;
+        }
+
+        return $acheteursCvi;
+    }
+
+    public function hasMultipleAcheteur() {
+        $nbParcelle = 0;
+        foreach($this->getCepage()->getProduitsCepageDetails() as $p) {
+            if($this->lieu && $this->lieu != $p->lieu) {
+                continue;
+            }
+            $nbParcelle++;
+        }
+
+        if($nbParcelle <= 1) {
+
+            return false;
+        }
+
+        $acheteurs = $this->getAcheteursCepageByCVI();
+        foreach($acheteurs as $acheteur) {
+            if($acheteur->cvi == $this->getDocument()->identifiant) {
+                unset($acheteurs[$acheteur->cvi]);
+            }
+
+        }
+
+        if(count($acheteurs) <= 1) {
+
+            return false;
+        }
+
+        return true;
     }
 
     public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
@@ -104,7 +146,9 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function cleanNode() {
-
+        if(!$this->hasMultipleAcheteur()) {
+            $this->remove('acheteurs');
+        }
         return false;
     }
 

@@ -6,14 +6,11 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public function getParcellesByCommune($lieu = null, $onlyAffectes = false) {
+    public function getParcellesByCommune($onlyAffectee = false) {
         $parcelles = array();
 
         foreach($this->getParcelles() as $hash => $parcelle) {
-            if ($lieu && !preg_match('/\/lieux\/'.$lieu.'\/couleurs\//', $hash)) {
-                continue;
-            }
-            if ($onlyAffectes && !$parcelle->affectation) {
+            if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
             if(!isset($parcelles[$parcelle->commune])) {

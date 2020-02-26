@@ -18,6 +18,16 @@ parcellaireaffectation_create_papier:
   requirements:
     sf_method: [get]
 
+parcellaireintentionaffectation_edit:
+  url: /parcellaire-intention-affectation/edition/:identifiant
+  param: { module: parcellaireIntentionAffectation, action: edit }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireaffectation_edit:
   url: /parcellaire-affectation/edition/:id
   param: { module: parcellaireAffectation, action: edit }
@@ -58,19 +68,9 @@ parcellaireaffectation_exploitation:
   requirements:
     sf_method: [get, post]
     
-parcellaireaffectation_denominations:
-  url: /parcellaire-affectation/denominations/:id
-  param: { module: parcellaireAffectation, action: denominations }
-  class: ParcellaireAffectationRoute
-  options:
-    model:    ParcellaireAffectation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-    
 parcellaireaffectation_affectations:
-  url: /parcellaire-affectation/affectations/:id/:lieu
-  param: { module: parcellaireAffectation, action: affectations, lieu: null }
+  url: /parcellaire-affectation/affectations/:id
+  param: { module: parcellaireAffectation, action: affectations }
   class: ParcellaireAffectationRoute
   options:
     model:    ParcellaireAffectation

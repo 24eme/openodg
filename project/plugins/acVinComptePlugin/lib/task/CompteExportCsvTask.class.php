@@ -33,7 +33,7 @@ EOF;
         $i = 0;
         foreach($comptes as $row) {
             $compte = CompteClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
-            if(!$compte->mot_de_passe && !$compte->etablissement_informations->cvi) {
+            if((!$compte->mot_de_passe && !$compte->etablissement_informations->cvi) || (!preg_match('/^.SHA./', $compte->mot_de_passe) && strlen($compte->identifiant) > 6)) {
                 continue;
             }
             $login = preg_replace("/^([0-9]{6})([0-9]+)$/", '\1', $compte->identifiant);

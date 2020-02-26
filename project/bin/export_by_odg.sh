@@ -17,7 +17,7 @@ done
 sleep 10
 
 bash bin/export_docs.sh DR 30 > $EXPORTDIR/dr.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part | grep -vE ";Motif de non r" > $EXPORTDIR/dr.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
 rm $EXPORTDIR/dr.csv.part
 
 bash bin/export_docs.sh SV12 30 > $EXPORTDIR/sv12.csv.part

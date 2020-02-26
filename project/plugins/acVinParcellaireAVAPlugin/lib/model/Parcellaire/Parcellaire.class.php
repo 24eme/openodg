@@ -300,8 +300,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         $parcellesByAppellations = array();
         $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->getTypeParcellaire())));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            $acheteurs = $parcelle->getAcheteursByCVI();
             if($cviFilter) {
-                $acheteurs = $parcelle->getAcheteursByCVI();
                 if(!array_key_exists($cviFilter, $acheteurs)) {
                     continue;
                 }
@@ -316,7 +316,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
                 $parcellesByAppellations[$keyApp]->acheteurs = array();
             }
 
-            $parcellesByAppellations[$keyApp]->acheteurs = array_merge_recursive($parcellesByAppellations[$keyApp]->acheteurs, $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter));
+            $parcellesByAppellations[$keyApp]->acheteurs = $parcellesByAppellations[$keyApp]->acheteurs + $acheteurs;
 
             $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()] = new stdClass();
             $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->cepage_libelle = ($parcelle->getLieuLibelle()) ? $parcelle->getLieuLibelle().' - ' : '';
@@ -334,8 +334,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         $parcellesByLieux = array();
         $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->getTypeParcellaire())));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            $acheteurs = $parcelle->getAcheteursByCVI();
             if($cviFilter) {
-                $acheteurs = $parcelle->getAcheteursByCVI();
                 if(!array_key_exists($cviFilter, $acheteurs)) {
                     continue;
                 }
@@ -347,8 +347,9 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
                 $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
                 $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
                 $parcellesByLieux[$keyLieu]->parcelles = array();
-                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter);
+                $parcellesByLieux[$keyLieu]->acheteurs = array();
             }
+            $parcellesByLieux[$keyLieu]->acheteurs = $parcellesByLieux[$keyLieu]->acheteurs + $acheteurs;
 
             $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
             $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->cepage_libelle = $parcelle->getCepageLibelle();
@@ -389,6 +390,17 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         }
 
         return $parcellesByLieuxCommuneAndCepage;
+    }
+
+    public function hasProduitWithMultipleAcheteur() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->hasMultipleAcheteur()) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function validate($date = null) {

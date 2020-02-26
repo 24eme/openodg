@@ -66,6 +66,9 @@ class DRevValidation extends DocumentValidation {
 
     public function controle() {
         $revendicationProduits = $this->document->declaration->getProduits();
+        if(!$this->document->isNonRecoltant()) {
+            $this->document->populateVCIFromRegistre();
+        }
         foreach ($revendicationProduits as $hash => $revendicationProduit) {
             $this->controleWarningDrSurface($revendicationProduit);
             $this->controleWarningDrVolume($revendicationProduit);

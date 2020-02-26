@@ -17,7 +17,7 @@ class parcellaireAffectationRoute extends EtablissementRoute implements Interfac
         return $parameters;
     }
 
-    public function getparcellaireAffectation() {
+    public function getParcellaireAffectation() {
         if (!$this->parcellaireAffectation) {
             $this->getObject();
         }
@@ -26,6 +26,6 @@ class parcellaireAffectationRoute extends EtablissementRoute implements Interfac
 
     public function getEtablissement() {
 
-        return $this->getparcellaireAffectation()->getEtablissementObject();
+        return $this->getParcellaireAffectation()->getEtablissementObject();
     }
 }

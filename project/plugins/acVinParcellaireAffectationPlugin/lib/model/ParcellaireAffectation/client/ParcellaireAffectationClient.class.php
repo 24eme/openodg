@@ -26,7 +26,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
       }
 
       public function createDoc($identifiant, $campagne, $papier = false, $type = self::TYPE_COUCHDB) {
-          $parcellaireAffectation = new parcellaireAffectation();
+          $parcellaireAffectation = new ParcellaireAffectation();
           $parcellaireAffectation->initDoc($identifiant, $campagne, $type);
           if($papier) {
           	$parcellaireAffectation->add('papier', 1);
