@@ -38,6 +38,9 @@ EOF;
         $csv = $csvFile->getCsv();
         $cvis = null;
         foreach($csv as $ligne => $data) {
+            if(!$data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
+                continue;
+            }
             $cvi = $data[ExportDRevCSV::CSV_CVI];
             $campagne = $data[ExportDRevCSV::CSV_CAMPAGNE];
             $cvis[$cvi."_".$campagne][] = $ligne;
@@ -63,14 +66,21 @@ EOF;
                 }
 
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+                $drev->importFromDocumentDouanier();
 
+                foreach($drev->getProduits() as $produit) {
+                    $produit->superficie_revendique = null;
+                    $produit->remove('vci');
+                    $produit->add('vci');
+                    $produit->volume_revendique_issu_recolte = null;
+                }
 
                 foreach($lignes as $ligne) {
                     $data = $csv[$ligne];
                     $hash = "/declaration/certifications/".$data[ExportDRevCSV::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[ExportDRevCSV::CSV_PRODUIT_GENRE]."/appellations/".$data[ExportDRevCSV::CSV_PRODUIT_APPELLATION]."/mentions/".$data[ExportDRevCSV::CSV_PRODUIT_MENTION]."/lieux/".$data[ExportDRevCSV::CSV_PRODUIT_LIEU]."/couleurs/".$data[ExportDRevCSV::CSV_PRODUIT_COULEUR]."/cepages/".$data[ExportDRevCSV::CSV_PRODUIT_CEPAGE];
 
                     if(!$drev->getConfiguration()->exist($hash)) {
-                        return null;
+                        continue;
                     }
 
                     $produit = $drev->addProduit($hash);
