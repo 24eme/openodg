@@ -42,6 +42,9 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
 
   public function addParcellesFromParcellaire(array $lieux) {
       $parcellaire = $this->getParcellesFromLastParcellaire();
+      if (!$parcellaire) {
+          return;
+      }
       $communesDenominations = sfConfig::get('app_communes_denominations');
       $denominations = array();
       $libelleProduits = array();
@@ -132,12 +135,18 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
   
   public function getParcellaireCurrent() {
-  
       return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+  }
+  
+  public function hasParcellaire() {
+      return ($this->getParcellaireCurrent())? true : false;
   }
 
   public function existDgcFromParcellaire($dgc) {
       $parcellaire = $this->getParcellesFromLastParcellaire();
+      if (!$parcellaire) {
+          return;
+      }
       $communesDenominations = sfConfig::get('app_communes_denominations');
       if (isset($communesDenominations[$dgc])) {
           $codesInsee = $communesDenominations[$dgc];
