@@ -1,11 +1,11 @@
 <?php
 
-function formatFloat($number, $decimalSeparator = ".") {
+function formatFloat($number, $decimalSeparator = ".", $decimals = 3) {
     $arrondi = round($number, 2);
     if ($number == $arrondi) {
     	return number_format($number, 2, $decimalSeparator, ' ');
     } else {
-    	return number_format($number, 3, $decimalSeparator, ' ');
+        return number_format($number, $decimals, $decimalSeparator, ' ');
     }
 }
 
