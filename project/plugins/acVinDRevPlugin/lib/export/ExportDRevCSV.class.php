@@ -68,7 +68,6 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
         }
         $date_vci = $this->drev->validation;
         $date_odg = $this->drev->validation_odg;
-
         foreach($this->drev->declaration->getProduitsWithoutLots($this->region) as $produit) {
 
             $configProduit = $produit->getConfig();
@@ -82,14 +81,14 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $inao = $configProduit->getCodeDouane();
 
             $libelle_complet = $produit->getLibelleComplet();
-
+            $validation_odg = ($produit->exist('validation_odg') && $produit->validation_odg)? $produit->validation_odg : $date_odg;
             $csv .= $ligneBase;
-            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao, trim($libelle_complet), $this->formatFloat($produit->superficie_revendique),
                 $this->formatFloat($produit->volume_revendique_issu_recolte), $this->formatFloat($produit->volume_revendique_issu_vci), $this->formatFloat($produit->volume_revendique_total),
                 $this->formatFloat($produit->vci->stock_precedent), $this->formatFloat($produit->vci->destruction),$this->formatFloat($produit->vci->complement),
                 $this->formatFloat($produit->vci->substitution), $this->formatFloat($produit->vci->rafraichi), $this->formatFloat($produit->vci->constitue), $this->formatFloat($produit->vci->stock_final),
-                $mode, $date_envoi_oi, null, null, null, null, $date_vci, $date_odg
+                $mode, $date_envoi_oi, null, null, null, null, $date_vci, $validation_odg
                 );
         }
         if($this->drev->exist('lots') && count($this->drev->lots) && (is_null($this->region) || $this->region == DeclarationClient::REGION_LOT)){
@@ -116,7 +115,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
                 trim($libelle_complet), null, $this->formatFloat($lot->volume), null, $this->formatFloat($lot->volume), null,null,null, null, null, null, null,
                 $mode, $date_envoi_oi, $numLot, $dateRev, $lot->millesime,$destination, $date_vci, $date_odg
             );
-        }
+          }
         }
         return $csv;
     }
