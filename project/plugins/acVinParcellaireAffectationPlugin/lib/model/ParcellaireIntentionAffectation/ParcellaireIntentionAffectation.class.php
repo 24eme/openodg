@@ -6,7 +6,7 @@
 
 class ParcellaireIntentionAffectation extends ParcellaireAffectation {
 
-  private function getTheoriticalId() {
+  protected function getTheoriticalId() {
     $date = str_ireplace("-","",$this->date);
     return ParcellaireIntentionAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$date;
   }
