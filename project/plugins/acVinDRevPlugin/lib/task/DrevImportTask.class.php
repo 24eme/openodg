@@ -66,14 +66,14 @@ EOF;
                 }
 
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-                $drev->importFromDocumentDouanier();
+                /*$drev->importFromDocumentDouanier();
 
                 foreach($drev->getProduits() as $produit) {
                     $produit->superficie_revendique = null;
                     $produit->remove('vci');
                     $produit->add('vci');
                     $produit->volume_revendique_issu_recolte = null;
-                }
+                }*/
 
                 foreach($lignes as $ligne) {
                     $data = $csv[$ligne];
@@ -83,7 +83,7 @@ EOF;
                         continue;
                     }
 
-                    $produit = $drev->addProduit($hash);
+                    $produit = $drev->addProduit($hash, $data[ExportDRevCSV::CSV_PRODUIT_DENOMINATION_COMPLEMENTAIRE]);
                     $produit->superficie_revendique += $this->formatFloat($data[ExportDRevCSV::CSV_SUPERFICIE_REVENDIQUE]);
                     $produit->volume_revendique_issu_recolte += $this->formatFloat($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE_ISSU_RECOLTE]);
                     $produit->vci->stock_precedent += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_PRECEDENT]);

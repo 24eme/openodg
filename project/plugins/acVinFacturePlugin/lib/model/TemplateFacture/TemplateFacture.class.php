@@ -36,7 +36,6 @@ class TemplateFacture extends BaseTemplateFacture
 	{
 		$client = acCouchdbManager::getClient($docModele);
 		if ($client instanceof FacturableClient) {
-
 			return $client->findFacturable($identifiant, $campagne);
 		}
 		throw new sfException($docModele.'Client must implements FacturableClient interface');
