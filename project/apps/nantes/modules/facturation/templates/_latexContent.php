@@ -141,9 +141,7 @@
 \end{center}
 
 \begin{minipage}{0.5\textwidth}
-Modalités de paiements : \\
-- par chèque en 3, 6, 8 ou 9 fois l'ordre de la FVN \\
-- par prélevement automatique en 9 fois de mars 2020 à novembre 2020 \\
+<?= escape_string_for_latex(sfConfig::get('facture_configuration_facture')['modalite_paiement']) ?>
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \renewcommand{\arraystretch}{1.5}
