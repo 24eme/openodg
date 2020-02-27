@@ -73,10 +73,10 @@ EOF;
                 }
                 if ($parcelle->idu == $idu && $parcelle->cepage == $cepage) {
                     $findIduCepage = true;
-                    $findByTrying = $this->looping($parcelle->superficie, $parcelles, $index; $surface);
+                    $findByTrying = $this->looping($parcelle->superficie, $parcelles, $index, $surface);
                 }
                 $index++;
-                
+
             }
             if (!$findParfait) {
                 if ($findIduCepage) {
