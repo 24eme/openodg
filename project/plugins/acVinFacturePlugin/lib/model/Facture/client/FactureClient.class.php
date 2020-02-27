@@ -29,14 +29,20 @@ class FactureClient extends acCouchdbClient {
 
     public function getNextNoFacture($idClient,$date)
     {
-        $id = '';
+      $id = '';
     	$facture = self::getAtDate($idClient,$date, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         if (count($facture) > 0) {
             $id .= ((double)str_replace('FACTURE-'.$idClient.'-', '', max($facture)) + 1);
         } else {
             $id.= $date.'01';
         }
-        return $id;
+      return $id;
+    }
+
+    public function getNextNoFactureCampagneFormatted($idClient, $campagne, $format){
+        $annee = DateTime::createFromFormat("Y",$campagne)->format("y");
+        $archiveNumero = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne("Facture", $campagne);
+        return sprintf($format, $annee, intval($archiveNumero) + 1);
     }
 
     public function getAtDate($idClient,$date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -119,21 +125,23 @@ class FactureClient extends acCouchdbClient {
                     "categorie" => $mouv->categorie,
                     "type_hash" => $mouv->type_hash,
                     "type_libelle" => $mouv->type_libelle,
-                    "quantite" => $mouv->quantite,
+                    "quantite" => 0,
                     "taux" => $mouv->taux,
-                    "origines" => array($mouv->getDocument()->_id => array($mouv->getKey())),
+                    "origines" => array(),
                 );
                 if($mouv->exist("tva")){
-                  $mouvementsAggreges[$key] = array_merge($mouvementsAggreges[$key],array("tva" => $mouv->tva));
+                    $mouvementsAggreges[$key]["tva"] = $mouv->tva;
                 }
-            } else {
-                $mouvementsAggreges[$key]["type_libelle"] = $mouv->type_libelle;
-                $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
-                if(!isset($mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id])) {
-                    $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id] = array();
+                if($mouv->exist("unite")){
+                  $mouvementsAggreges[$key]["unite"] = $mouv->unite;
                 }
-                $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id][] = $mouv->getKey();
             }
+
+            $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
+            if(!isset($mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id])) {
+                $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id] = array();
+            }
+            $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id][] = $mouv->getKey();
         }
 
         return array_values($mouvementsAggreges);

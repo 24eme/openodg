@@ -31,6 +31,16 @@ class Configuration extends BaseConfiguration {
         return $this->declaration->getProduits();
     }
 
+    public function getLieux(){
+      $lieux = [];
+      foreach ($this->getProduits() as $p) {
+          if($p->getLieu()->getKey() != self::DEFAULT_KEY){
+            $lieux[$p->getLieu()->getKey()] = $p->getLieu()->getLibelle();
+          }
+      }
+      return $lieux;
+    }
+
     public function formatProduits($date = null, $format = "%format_libelle% (%code_produit%)", $attributes = array()) {
 
         return $this->declaration->formatProduits($date, null, null, $format, $attributes);

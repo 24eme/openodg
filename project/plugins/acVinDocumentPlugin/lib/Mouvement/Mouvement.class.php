@@ -15,6 +15,9 @@ abstract class Mouvement extends acCouchdbDocumentTree
         $this->quantite = $cotisation->getQuantite();
         $this->taux = $cotisation->getPrix();
         $this->tva = $cotisation->getTva();
+        if($cotisation->getUnite()) {
+            $this->add('unite', $cotisation->getUnite());
+        }
     }
 
     public function setProduitHash($value) {

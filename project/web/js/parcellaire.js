@@ -16,11 +16,17 @@ $(document).ready(function()
     $(".tdAcheteur").click(function(evt) {
         if (evt.target.nodeName == 'TD') {
             var input = $(this).children('input');
+            if(input.attr('disabled') == 'disabled') {
+                return false;
+            }
+            if(input.attr('readonly') == 'readonly') {
+                return false;
+            }
             input.prop("checked", !input.prop("checked"));
             return false;
         }
-    });   
-    
+    });
+
     $("form.parcellaireForm").each(function(){
         $(this).find("td input").click(function(){
             $(this).select();

@@ -1,5 +1,9 @@
 <ol class="breadcrumb">
-  <li><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>
+    <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+        <li><a href="<?php echo url_for('habilitation_demande'); ?>">Habilitations</a></li>
+    <?php else : ?>
+        <li><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>
+    <?php endif; ?>
   <li><a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Habilitation de <?php echo $habilitation->getEtablissementObject()->getNom() ?> (<?php echo $habilitation->getEtablissementObject()->identifiant ?>) </a></li>
   <?php if(!$habilitation->isLastOne()): ?>
     <li class="active"><a href="<?php echo url_for('habilitation_edition', array('id' => $habilitation->_id)); ?>">Habilitation au <?php echo Date::francizeDate($habilitation->getDate()); ?> </a></li>

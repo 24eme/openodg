@@ -4,7 +4,7 @@
 
 <div id="map" class="col-12" style="height: 350px; margin-bottom: 20px;">
 	<button id="refreshButton" onclick="zoomOnMap()"><i class="glyphicon glyphicon-fullscreen"></i></button>
-	<button id="locate-position"><i class="glyphicon glyphicon-user"></i></button>
+	<button id="locate-position"><i class="glyphicon glyphicon-screenshot"></i></button>
 </div>
 
 
@@ -18,6 +18,5 @@ $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissem
 	var parcelles = JSON.parse('<?php echo $import; ?>');
 	var delimitation = '<?php echo $list_communes; ?>';
 </script>
-<?php use_javascript('hamza_style.js'); ?>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>
 

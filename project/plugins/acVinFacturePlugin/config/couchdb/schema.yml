@@ -86,6 +86,7 @@ Facture:
                             fields:
                               libelle: {}
                               quantite: {type: float}
+                              unite: { required: false }
                               taux_tva: {type: float}
                               prix_unitaire: {type: float}
                               montant_tva: {type: float}
@@ -194,6 +195,7 @@ TemplateFacture:
                               minimum: { required: false }
                               complement: { required: false }
                               complement_libelle: { }
+                              unite: { required: false }
                               intervalles:
                                 required: false
                                 type: collection

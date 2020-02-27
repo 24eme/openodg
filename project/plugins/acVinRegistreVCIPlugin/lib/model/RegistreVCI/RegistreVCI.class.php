@@ -122,11 +122,18 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
             $produit->clear();
           }
 
-          foreach($this->getProduitDetails() as $detail) {
-            if($detail->stock_final !== 0) {
-             throw new Exception("Génération impossible, tout le stock de l'année précédente n'a pas été utilisé");
-            }
+          foreach($this->getProduitsWithPseudoAppelations() as $produit) {
+              if(!$produit->isPseudoAppellation()) {
+                  continue;
+              }
+              if(round($produit->stock_final, 4) == 0) {
+                  continue;
+              }
 
+              throw new Exception("Génération impossible, tout le stock de l'année précédente n'a pas été utilisé");
+          }
+
+          foreach($this->getProduitDetails() as $detail) {
             $detailSuivant = $registreSuivant->get($detail->getHash());
             $detailSuivant->stock_precedent = $detail->rafraichi;
           }

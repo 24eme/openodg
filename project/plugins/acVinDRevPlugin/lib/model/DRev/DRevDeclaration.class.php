@@ -100,6 +100,16 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getProduitsWithoutLots($region = null){
 		$produits = array();
 
+		if(count(DRevConfiguration::getInstance()->getOdgRegions()) == 0) {
+			foreach ($this->getProduits($region) as $produit) {
+				if($produit->getConfig()->isRevendicationParLots()){
+					continue;
+				}
+				$produits[$produit->getHash()] = $produit;
+			}
+			return $produits;
+		}
+
 		if($region){
 			return $this->getProduitsWithoutLotsByRegion($region);
 		}
@@ -110,8 +120,8 @@ class DRevDeclaration extends BaseDRevDeclaration
 				$produits = array_merge($produits,$produitsByRegion);
 			}
 
-			return $produits;
-		}
+		return $produits;
+	}
 
 	public function getProduitsWithoutLotsByRegion($region = null){
 		$produits = array();
@@ -234,6 +244,15 @@ class DRevDeclaration extends BaseDRevDeclaration
         }
         return $total;
     }
+
+	public function getTotalVolumeRevendiqueVCI()
+    {
+		$total = 0;
+        foreach($this->getProduits() as $key => $item) {
+            $total += $item->volume_revendique_issu_vci;
+        }
+        return $total;
+	}
 
 		public static function sortByLibelle($p1,$p2){
 			return strcmp($p1->getLibelle(), $p2->getLibelle());

@@ -109,4 +109,12 @@ class Cotisation
 
 		return str_replace('%complement_libelle%', $this->getConfigComplementLibelle(), $this->getConfigLibelle());
 	}
+
+	public function getUnite() {
+		if(!$this->getConfig()->exist('unite')) {
+			return null;
+		}
+
+		return $this->getConfig()->unite;
+	}
 }
