@@ -66,6 +66,10 @@ EOF;
                 }
 
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+                if(!$drev->getDocumentDouanier()) {
+                    echo "ERREUR;$etablissement->_id ($etablissement->cvi);pas de dr\n";
+                    continue;
+                }
                 /*$drev->importFromDocumentDouanier();
 
                 foreach($drev->getProduits() as $produit) {
