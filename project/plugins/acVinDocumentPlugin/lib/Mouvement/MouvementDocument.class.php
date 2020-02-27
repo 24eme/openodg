@@ -31,7 +31,7 @@ class MouvementDocument
     }
 
     public function isFactures() {
-      if(!$this->document->exist('mouvements') || !count($this->document->getMouvements())){
+      if(!$this->document->exist('mouvements') || !count($this->document->getMouvements())){
         return false;
       }
 
