@@ -15,6 +15,7 @@ DR:
               definition:
                 fields:
                   produit: { }
+                  produit_libelle: { }
                   complement: { }
                   categorie: { }
                   valeur: { }

@@ -25,6 +25,11 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
 		$this->set('_id', 'DR-' . $this->identifiant . '-' . $this->campagne);
 	}
 
+	public function getConfiguration() {
+
+		return ConfigurationClient::getConfiguration($this->campagne.'-12-10');
+	}
+
     public static function isPieceEditable($admin = false) {
     	return ($admin)? true : false;
     }
@@ -33,33 +38,45 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
     	$export = new ExportDRCSV($this, false);
     	$csv = explode(PHP_EOL, $export->export());
     	if (!$this->exist('donnees') || count($this->donnees) < 1) {
-    		$donnees = $this->add('donnees');
+    		$this->add('donnees');
     		$generate = false;
 	    	foreach ($csv as $datas) {
-	    		$data = str_getcsv($datas, ";");
-	    		if ($data && isset($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]) && !empty($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION])) {
-	    			$generate = true;
-	    			$item = $donnees->add();
-	    			$item->produit = "certifications/".$data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[DouaneCsvFile::CSV_PRODUIT_GENRE]."/appellations/".$data[DouaneCsvFile::CSV_PRODUIT_APPELLATION]."/mentions/".$data[DouaneCsvFile::CSV_PRODUIT_MENTION]."/lieux/".$data[DouaneCsvFile::CSV_PRODUIT_LIEU]."/couleurs/".$data[DouaneCsvFile::CSV_PRODUIT_COULEUR]."/cepages/".$data[DouaneCsvFile::CSV_PRODUIT_CEPAGE];
-	    			$item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
-	    			$item->categorie = $data[DouaneCsvFile::CSV_LIGNE_CODE];
-	    			$item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
-	    			if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {
-	    				if ($tiers = EtablissementClient::getInstance()->findByCvi($data[DouaneCsvFile::CSV_TIERS_CVI])) {
-	    					$item->tiers = $tiers->_id;
-	    				}
-	    			}
-	    			if ($data[DouaneCsvFile::CSV_BAILLEUR_PPM]) {
-	    				if ($tiers = EtablissementClient::getInstance()->findByPPM($data[DouaneCsvFile::CSV_BAILLEUR_PPM])) {
-	    					$item->bailleur = $tiers->_id;
-	    				}
-	    			}
-	    		}
+	    		$this->addDonnee(str_getcsv($datas, ";"));
 	    	}
-	    	return $generate;
     	}
     	return false;
     }
+
+	public function addDonnee($data) {
+		if (!$data || !isset($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]) || empty($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION])) {
+			return null;
+		}
+
+		$hash = "certifications/".$data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[DouaneCsvFile::CSV_PRODUIT_GENRE]."/appellations/".$data[DouaneCsvFile::CSV_PRODUIT_APPELLATION]."/mentions/".$data[DouaneCsvFile::CSV_PRODUIT_MENTION]."/lieux/".$data[DouaneCsvFile::CSV_PRODUIT_LIEU]."/couleurs/".$data[DouaneCsvFile::CSV_PRODUIT_COULEUR]."/cepages/".$data[DouaneCsvFile::CSV_PRODUIT_CEPAGE];
+
+		if(!$this->getConfiguration()->declaration->exist($hash)) {
+			return null;
+		}
+
+		$item = $this->donnees->add();
+		$item->produit = $hash;
+		$item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
+		$item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
+		$item->categorie = $data[DouaneCsvFile::CSV_LIGNE_CODE];
+		$item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
+		if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {
+			if ($tiers = EtablissementClient::getInstance()->findByCvi($data[DouaneCsvFile::CSV_TIERS_CVI])) {
+				$item->tiers = $tiers->_id;
+			}
+		}
+		if ($data[DouaneCsvFile::CSV_BAILLEUR_PPM]) {
+			if ($tiers = EtablissementClient::getInstance()->findByPPM($data[DouaneCsvFile::CSV_BAILLEUR_PPM])) {
+				$item->bailleur = $tiers->_id;
+			}
+		}
+
+		return $item;
+	}
 
 	public function getCategorie(){
 		return strtolower($this->type);
@@ -120,6 +137,11 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
       if(!$templateFacture) {
           return array();
       }
+
+			$drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->getCampagne());
+			if($this->getTotalValeur("15") && !$drev){
+			 	throw new FacturationPassException("L15 et pas de Drev : ".$this->_id." on skip la facture");
+			}
 
       $cotisations = $templateFacture->generateCotisations($this);
 

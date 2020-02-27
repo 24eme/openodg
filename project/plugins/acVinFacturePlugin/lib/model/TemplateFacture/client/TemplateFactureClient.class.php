@@ -26,8 +26,6 @@ class TemplateFactureClient extends acCouchdbClient {
         return $this->startkey_docid(sprintf("TEMPLATE-FACTURE-%s", ""))
         ->endkey_docid(sprintf("TEMPLATE-FACTURE-%s", "Z"))
                     ->execute();
-
-        return $ids;
     }
 
 }

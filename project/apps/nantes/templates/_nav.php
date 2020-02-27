@@ -2,17 +2,13 @@
 <?php $etablissement = null ?>
 <?php $compte = null; ?>
 
-<?php if($route instanceof EtablissementRoute): ?>
+<?php if ($route instanceof EtablissementRoute || $route instanceof SocieteRoute): ?>
     <?php $etablissement = $route->getEtablissement(); ?>
     <?php $compte = $etablissement->getMasterCompte(); ?>
 <?php endif; ?>
-<?php if($route instanceof CompteRoute): ?>
+<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
-    <?php //$etablissement = $compte->getEtablissementObj(); ?>
-<?php endif; ?>
-<?php if($route instanceof SocieteRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
+    <?php $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 
 <?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>

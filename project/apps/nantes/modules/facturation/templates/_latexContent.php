@@ -31,7 +31,7 @@
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_nantes_complet.png}
-\def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
+\def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Relevé de Cotisations<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
@@ -43,12 +43,13 @@
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
+\def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
-\def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht); ?>}
-\def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe); ?>}
-\def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc); ?>}
+\def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht, ','); ?>}
+\def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe, ','); ?>}
+\def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc, ','); ?>}
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0cm}
@@ -81,7 +82,7 @@
   width=8.9cm,
   padding={0.2cm,0.2cm},
   text-align=center
-]{\textbf{\LARGE{Relevé de Cotisations}}}}
+]{\textbf{\LARGE{\TYPEFACTURE}}}}
 
 \\\vspace{12mm}
 
@@ -97,9 +98,9 @@
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{7.5cm}|}
+\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
 \hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{CVI :} & \tabularnewline
+\cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
 \hhline{|-|-|}
 \end{tabular}
 
@@ -121,15 +122,16 @@
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.8cm}|>{\raggedleft}m{1.6cm}|>{\raggedleft}m{2.2cm}|}
+\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
   \hline
-  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~unitaire} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
+  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>
-  	    <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire); ?> €} & {<?php echo formatFloat($detail->quantite); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->taux_tva*100)." \%" : null; ?> & <?php echo formatFloat($detail->montant_ht); ?> € \tabularnewline
+            <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
+            <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} & {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> & <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
   	<?php endforeach; ?>
-	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht); ?> €}  \tabularnewline
+	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
 	\hline
   <?php endforeach; ?>
   \end{tabular}
@@ -139,9 +141,7 @@
 \end{center}
 
 \begin{minipage}{0.5\textwidth}
-Modalités de paiements : \\
-- par chèque en 3, 6, 8 ou 9 fois l'ordre de la FVN \\
-- par prélevement automatique en 9 fois de mars 2020 à novembre 2020 \\
+<?= escape_string_for_latex(sfConfig::get('facture_configuration_facture')['modalite_paiement']) ?>
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \renewcommand{\arraystretch}{1.5}
@@ -150,7 +150,7 @@ Modalités de paiements : \\
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL HT} & \textbf{\FACTURETOTALHT~€} \tabularnewline
   \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{TOTAL TVA}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
+  & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{NET À PAYER}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}

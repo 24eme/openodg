@@ -29,14 +29,20 @@ class FactureClient extends acCouchdbClient {
 
     public function getNextNoFacture($idClient,$date)
     {
-        $id = '';
+      $id = '';
     	$facture = self::getAtDate($idClient,$date, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         if (count($facture) > 0) {
             $id .= ((double)str_replace('FACTURE-'.$idClient.'-', '', max($facture)) + 1);
         } else {
             $id.= $date.'01';
         }
-        return $id;
+      return $id;
+    }
+
+    public function getNextNoFactureCampagneFormatted($idClient, $campagne, $format){
+        $annee = DateTime::createFromFormat("Y",$campagne)->format("y");
+        $archiveNumero = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne("Facture", $campagne);
+        return sprintf($format, $annee, intval($archiveNumero) + 1);
     }
 
     public function getAtDate($idClient,$date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -141,7 +147,7 @@ class FactureClient extends acCouchdbClient {
         return array_values($mouvementsAggreges);
     }
 
-    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
+    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {      
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
         // Attention le compte utilisé pour OpenOdg est celui de la société
