@@ -7,9 +7,9 @@ default:
     X-UA-Compatible: IE=edge
 
   metas:
-    title:            "Plateforme de télédéclaration VinsValDeLoire.pro"
+    title:            "Plateforme de télédéclaration vinsdenantes.com"
     charset:          "utf-8"
-    description:      "Plateforme de télédéclaration VinsValDeLoire.pro"
+    description:      "Plateforme de télédéclaration vinsdenantes.com"
     robots:           "index,follow"
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"
