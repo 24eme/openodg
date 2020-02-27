@@ -90,6 +90,20 @@ EOF;
 
     }
 
+    protected function looping($parcelleAire, $parcelles, $index, $surface){
+        $find = false;
+        if($index == $count($parcelles)){
+            return $find;
+        }
+        for($i = $index+1; $i < $count($parcelles); $i++) {
+            if(($parcelleAire + $parcelles[$i]->superficie) == $surface){
+                return true;
+            }
+            $find = looping(($parcelleAire + $parcelles[$i]->superficie), $parcelles, $i, $surface);
+        }
+        return $find;
+    }
+
     protected function formatFloat($value) {
 
         return str_replace(',', '.', $value)*1.0;
