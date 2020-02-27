@@ -127,12 +127,25 @@
   \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-  	<?php foreach ($ligne->details as $detail): ?>
-            <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
-            <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} & {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> & <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
-  	<?php endforeach; ?>
-	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
-	\hline
+    <?php if (count($ligne->details) === 1): ?>
+        \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
+        <?php echo formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
+        <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo $ligne->details[0]->unite ?>} &
+        \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} &
+        \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
+        \hline
+        <?php continue ?>
+    <?php endif; ?>
+    <?php foreach ($ligne->details as $detail): ?>
+        <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
+        <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
+        {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
+        {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} &
+        <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
+        <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
+    <?php endforeach; ?>
+    \textbf{<?php echo $ligne->libelle; ?>} \textbf{Total} & & & \textbf{<?= ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',').' €'; ?> } & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
+    \hline
   <?php endforeach; ?>
   \end{tabular}
 
@@ -141,9 +154,7 @@
 \end{center}
 
 \begin{minipage}{0.5\textwidth}
-Modalités de paiements : \\
-- par chèque en 3, 6, 8 ou 9 fois l'ordre de la FVN \\
-- par prélevement automatique en 9 fois de mars 2020 à novembre 2020 \\
+<?= escape_string_for_latex(sfConfig::get('facture_configuration_facture')['modalite_paiement']) ?>
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \renewcommand{\arraystretch}{1.5}
