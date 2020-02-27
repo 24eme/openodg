@@ -12,7 +12,7 @@ class importDRevCSVTask extends sfBaseTask
 
     const CSV_SURFACE               = 5;
     const CSV_VOLUME                = 6;
-    const CSV_VOLUME_BRUT           = 7;
+    const CSV_VOLUME_NET           = 7;
 
 
     const CSV_VOLUME_REPLIE         = 8; // Ca sert à quoi?
@@ -168,14 +168,15 @@ EOF;
             echo "Ajout d'une revendication produit ".self::$produitsKey[$produit_file][0]." à la drev $drev->_id \n";
 
             $surface = $data[self::CSV_SURFACE] / 10000.0;
-            $volume_brut = $data[self::CSV_VOLUME_BRUT] / 100.00;
+            $volume_net = $data[self::CSV_VOLUME_NET] / 100.00;
             $volume_rev = $data[self::CSV_VOLUME] / 100.00;
 
-            if(!$volume_rev) {
-                continue;
-            }
+            $produit->recolte->recolte_nette += $this->convertFloat($volume_net);
+            $produit->recolte->superficie_total += $this->convertFloat($surface);
 
-            $produit->superficie_revendique += $this->convertFloat($surface);
+            if($volume_rev > 0) {
+                $produit->superficie_revendique += $this->convertFloat($surface);
+            }
             $produit->volume_revendique_issu_recolte += $this->convertFloat($volume_rev);
 
         $date_reception = DateTime::createFromformat("d/m/Y",$data[self::CSV_DATE_RECEPTION]);
