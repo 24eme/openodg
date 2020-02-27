@@ -62,17 +62,21 @@ EOF;
             $findParfait = false;
             $findIduCepage = false;
             $findIdu = false;
+            $index = 0;
             foreach ($parcelles as $parcelle) {
+                if ($parcelle->idu == $idu && $parcelle->cepage == $cepage && $parcelle->superficie == $surface) {
+                    $findParfait = true;
+                    break;
+                }
                 if ($parcelle->idu == $idu) {
                     $findIdu = true;
                 }
                 if ($parcelle->idu == $idu && $parcelle->cepage == $cepage) {
                     $findIduCepage = true;
+                    $findByTrying = $this->looping($parcelle->superficie, $parcelles, $index; $surface);
                 }
-                if ($parcelle->idu == $idu && $parcelle->cepage == $cepage && $parcelle->superficie == $surface) {
-                    $findParfait = true;
-                    break;
-                }
+                $index++;
+                
             }
             if (!$findParfait) {
                 if ($findIduCepage) {
@@ -89,18 +93,29 @@ EOF;
         }
 
     }
-
+    /**
+    * Recursive function 
+    **/
     protected function looping($parcelleAire, $parcelles, $index, $surface){
         $find = false;
-        if($index == $count($parcelles)){
+        if($parcelleAire < $surface){ //la surface à comparer doit être d'abord inferieur
+            if($index == $count($parcelles)){//si on arrive à la fin du tableau des parcelles on sort directement
             return $find;
-        }
-        for($i = $index+1; $i < $count($parcelles); $i++) {
-            if(($parcelleAire + $parcelles[$i]->superficie) == $surface){
-                return true;
             }
-            $find = looping(($parcelleAire + $parcelles[$i]->superficie), $parcelles, $i, $surface);
+            for($i = $index+1; $i < $count($parcelles); $i++) {
+                $sumParcelleAetB = $parcelleAire + $parcelles[$i]->superficie;
+                $tenPourcent = $surface * 0.1; //10% de la surface à comparée
+                if($sumParcelleAetB == $surface || ($sumParcelleAetB > ($surface - $tenPourcent) && $sumParcelleAetB < $surface)){//si la somme des superficies des parcelles sont strictement égales à la surface voulue OU comprise entre [90%, 100%] de la surface à comparée 
+                    return true;
+                }
+                //on rappel la fonction looping avec la somme des parcelles et l'index i
+                $find = $this->looping($sumParcelleAetB, $parcelles, $i, $surface);
+                if($find){
+                    return true;
+                }
+            }
         }
+        //A ce niveau on a rien trouvé
         return $find;
     }
 
