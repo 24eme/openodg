@@ -127,10 +127,10 @@
   \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-    <?php if (strpos($ligne->libelle, 'I.N.A.O') !== false || count($ligne->details) === 1): ?>
+    <?php if (count($ligne->details) === 1): ?>
         \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
-        <?= formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
-        <?= formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?= $ligne->details[0]->unite ?>} &
+        <?php echo formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
+        <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo $ligne->details[0]->unite ?>} &
         \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} &
         \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
         \hline
