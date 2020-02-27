@@ -28,7 +28,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination (Date);Date de validation Déclarant;Date de validation ODG\n";
+        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Dénomination complémentaire;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination;Date de validation Déclarant;Date de validation ODG\n";
     }
 
     public function __construct($drev, $header = true, $region = null) {
@@ -81,11 +81,12 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $cepage = $configProduit->getCepage()->getKey();
             $inao = $configProduit->getCodeDouane();
 
+            $denomination = $produit->denomination_complementaire;
             $libelle_complet = $produit->getLibelleComplet();
             $validation_odg = ($produit->exist('validation_odg') && $produit->validation_odg)? $produit->validation_odg : $date_odg;
             $csv .= $ligneBase;
             $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-                $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao, trim($libelle_complet), $this->formatFloat($produit->superficie_revendique),
+                $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$denomination,trim($libelle_complet), $this->formatFloat($produit->superficie_revendique),
                 $this->formatFloat($produit->volume_revendique_issu_recolte), $this->formatFloat($produit->volume_revendique_issu_vci), $this->formatFloat($produit->volume_revendique_total),
                 $this->formatFloat($produit->vci->stock_precedent), $this->formatFloat($produit->vci->destruction),$this->formatFloat($produit->vci->complement),
                 $this->formatFloat($produit->vci->substitution), $this->formatFloat($produit->vci->rafraichi), $this->formatFloat($produit->vci->constitue), $this->formatFloat($produit->vci->stock_final),
@@ -112,7 +113,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
             $csv .= $ligneBase;
             $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-                $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,
+                $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,null,
                 trim($libelle_complet), null, $this->formatFloat($lot->volume), null, $this->formatFloat($lot->volume), null,null,null, null, null, null, null,
                 $mode, $date_envoi_oi, $numLot, $dateRev, $lot->millesime,$destination, $date_declarant, $date_odg
             );
