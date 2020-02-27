@@ -127,12 +127,25 @@
   \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-  	<?php foreach ($ligne->details as $detail): ?>
-            <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
-            <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} & {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> & <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
-  	<?php endforeach; ?>
-	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
-	\hline
+    <?php if (strpos($ligne->libelle, 'I.N.A.O') !== false || count($ligne->details) === 1): ?>
+        \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
+        <?= formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
+        <?= formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?= $ligne->details[0]->unite ?>} &
+        \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} &
+        \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
+        \hline
+        <?php continue ?>
+    <?php endif; ?>
+    <?php foreach ($ligne->details as $detail): ?>
+        <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
+        <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
+        {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
+        {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} &
+        <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
+        <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
+    <?php endforeach; ?>
+    \textbf{<?php echo $ligne->libelle; ?>} \textbf{Total} & & & \textbf{<?= ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',').' €'; ?> } & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
+    \hline
   <?php endforeach; ?>
   \end{tabular}
 
