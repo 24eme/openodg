@@ -64,6 +64,8 @@ EOF;
 
                 $dr->remove('donnees');
                 $dr->add('donnees');
+                $dr->remove('mouvements');
+                $dr->add('mouvements');
 
                 foreach($lignes as $ligne) {
                     $dr->addDonnee($csv[$ligne]);
