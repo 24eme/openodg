@@ -147,7 +147,7 @@ class FactureClient extends acCouchdbClient {
         return array_values($mouvementsAggreges);
     }
 
-    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
+    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {      
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
         // Attention le compte utilisé pour OpenOdg est celui de la société

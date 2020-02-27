@@ -79,6 +79,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
             return $this->_get('numero_ava');
         }
+        if(FactureConfiguration::getInstance()->getNumeroCampagne()){
+          return $this->numero_facture;
+        }
 
         return preg_replace('/^\d{2}(\d{2}).*/', '$1', $this->date_facturation) . $this->numero_archive;
     }
