@@ -168,13 +168,14 @@ EOF;
             $volume_net = $data[self::CSV_VOLUME_DR] / 100.00;
             $volume_rev = $data[self::CSV_VOLUME] / 100.00;
             $volume_replie = $data[self::CSV_VOLUME_REPLIE] / 100.00;
-
-            if($volume_replie) {
-                self::$produitsKey[$produit_file][1] .= ' Replié';
-                trim(self::$produitsKey[$produit_file][1]);
+            $hashProduit = self::$produitsKey[$produit_file][0];
+            $complement = self::$produitsKey[$produit_file][1];
+            if($volume_replie > 0) {
+                $complement .= ' Replié '.$this->convertFloat($volume_replie)." hl";
+                $complement = trim($complement);
             }
 
-            $produit = $drev->addProduit(self::$produitsKey[$produit_file][0],self::$produitsKey[$produit_file][1]);
+            $produit = $drev->addProduit($hashProduit, $complement);
 
             echo "Ajout d'une revendication produit ".self::$produitsKey[$produit_file][0]." à la drev $drev->_id \n";
 
