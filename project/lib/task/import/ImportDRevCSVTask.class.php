@@ -150,7 +150,7 @@ EOF;
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($idEtb,$campagne);
 
         if(!$drev){
-            $drev = DRevClient::getInstance()->createDoc($idEtb,$campagne,true);
+            $drev = DRevClient::getInstance()->createDoc($idEtb,$campagne,true, false);
             echo "Création de la drev $drev->_id \n";
         }
         try {
