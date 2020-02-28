@@ -78,4 +78,8 @@ class FactureConfiguration {
       return $this->configuration['numero_format'];
     }
 
+    public function getModaliteDePaiement()
+    {
+        return ($this->configuration['modalite_paiement']) ?: '';
+    }
 }
