@@ -62,32 +62,73 @@ EOF;
             $findParfait = false;
             $findIduCepage = false;
             $findIdu = false;
+            $findIduSup = false;
+            $parcellesTotest = array();
             foreach ($parcelles as $parcelle) {
-                if ($parcelle->idu == $idu) {
+                if ($parcelle->idu != $idu) {
+                    continue;
+                } else {
                     $findIdu = true;
-                }
-                if ($parcelle->idu == $idu && $parcelle->cepage == $cepage) {
-                    $findIduCepage = true;
                 }
                 if ($parcelle->idu == $idu && $parcelle->cepage == $cepage && $parcelle->superficie == $surface) {
                     $findParfait = true;
                     break;
                 }
+                if ($parcelle->idu == $idu && $parcelle->cepage == $cepage) {
+                    $findIduCepage = true;
+                    $parcellesTotest[] = $parcelle;
+                }
+                if ($parcelle->idu == $idu && $parcelle->superficie == $surface) {
+                    $findIduSup = true;
+                }
             }
-            if (!$findParfait) {
-                if ($findIduCepage) {
+            if ($findParfait || $findIduSup) {
+                continue;
+            }
+            if ($findIduCepage) {
+                $index = 0;
+                $findByTrying = false;
+                foreach ($parcellesTotest as $parcelleTotest) {
+                    if ($findByTrying = $this->looping($parcelleTotest->superficie, $parcellesTotest, $index, $surface)) {
+                        break;
+                    }
+                    $index++;
+                }
+                if (!$findByTrying) {
                     echo sprintf("ERROR;Idu et cepage trouvés surface non identifié;%s;%s %s %s\n", $data[0], $idu, $cepage, $surface);
                     continue;
-                } elseif ($findIdu) {
-                    echo sprintf("ERROR;Idu trouvé cepage et surface non identifié;%s;%s %s %s\n", $data[0], $idu, $cepage, $surface);
-                    continue;
-                } else {
-                    echo sprintf("ERROR;Parcelle non identifiée;%s;%s %s %s\n", $data[0], $idu, $cepage, $surface);
-                    continue;
                 }
+            } elseif ($findIdu) {
+                echo sprintf("ERROR;Idu trouvé cepage et surface non identifié;%s;%s %s %s\n", $data[0], $idu, $cepage, $surface);
+                continue;
+            } else {
+                echo sprintf("ERROR;Parcelle non identifiée;%s;%s %s %s\n", $data[0], $idu, $cepage, $surface);
+                continue;
             }
         }
 
+    }
+    /**
+    * Recursive function 
+    **/
+    protected function looping($parcelleAire, $parcelles, $index, $surface){
+        $find = false;
+        if($parcelleAire < $surface){ //la surface à comparer doit être d'abord inferieur
+            $nbParcelle = count($parcelles);
+            if($index == ($nbParcelle-1)) {//si on arrive à la fin du tableau des parcelles on sort directement
+                return $find;
+            }
+            for($i = ($index+1); $i < $nbParcelle; $i++) {
+                $sumParcelleAetB = round($parcelleAire + $parcelles[$i]->superficie,4);
+                if($sumParcelleAetB == $surface) {
+                    return true;
+                }
+                return $this->looping($sumParcelleAetB, $parcelles, $i, $surface);
+            }
+        } elseif ($parcelleAire == $surface) {
+            $find = true;
+        }
+        return $find;
     }
 
     protected function formatFloat($value) {

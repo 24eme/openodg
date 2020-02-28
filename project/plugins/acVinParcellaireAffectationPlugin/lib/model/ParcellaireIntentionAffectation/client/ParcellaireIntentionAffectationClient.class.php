@@ -32,6 +32,7 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
               $parcellaireIntentionAffectation->constructId();
               $parcellaireIntentionAffectation->updateParcelles();
           }
+          //$parcellaireIntentionAffectation->save();
           return $parcellaireIntentionAffectation;
       }
 

@@ -76,6 +76,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   		            $item = $this->declaration->add($hash);
   		            $item->libelle = $prod->libelle;
   		        }
+  		        $parcelle->origine_doc = $intention->_id;
+  		        unset($parcelle['origine_hash']);
   		        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
   		    }
   		}
@@ -154,7 +156,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                   continue;
               }
           }
-        $lieu = $configuration->declaration->get($hash)->getLieu();
+        $lieu = $configuration->declaration->get($hash);
         $lieux[$lieu->getKey()] = $lieu->getLibelle();
       }
       ksort($lieux);
