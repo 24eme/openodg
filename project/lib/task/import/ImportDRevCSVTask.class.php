@@ -167,25 +167,37 @@ EOF;
             $surface = $data[self::CSV_SURFACE] / 10000.0;
             $volume_net = $data[self::CSV_VOLUME_DR] / 100.00;
             $volume_rev = $data[self::CSV_VOLUME] / 100.00;
-            $volume_replie = $data[self::CSV_VOLUME_REPLIE] / 100.00;
             $hashProduit = self::$produitsKey[$produit_file][0];
             $complement = self::$produitsKey[$produit_file][1];
-            if($volume_replie > 0) {
-                $complement .= ' Replié '.$this->convertFloat($volume_replie)." hl";
-                $complement = trim($complement);
-            }
 
             $produit = $drev->addProduit($hashProduit, $complement);
 
             echo "Ajout d'une revendication produit ".self::$produitsKey[$produit_file][0]." à la drev $drev->_id \n";
 
-            $produit->recolte->recolte_nette += $this->convertFloat($volume_net);
-            $produit->recolte->superficie_total += $this->convertFloat($surface);
-            $produit->superficie_revendique += $this->convertFloat($surface);
-            $produit->volume_revendique_issu_recolte += $this->convertFloat($volume_rev);
+            if($v_net = $this->convertFloat($volume_net)){
+              $produit->recolte->recolte_nette += $v_net;
+            }
+            if($sur = $this->convertFloat($surface)){
+              $produit->recolte->superficie_total += $sur;
+              $produit->superficie_revendique += $sur;
+            }
+            if($v_rev = $this->convertFloat($volume_rev)){
+              $produit->volume_revendique_issu_recolte += $v_rev;
+            }
 
         $date_reception = DateTime::createFromformat("d/m/Y",$data[self::CSV_DATE_RECEPTION]);
         $drev->update();
+
+        $volume_supplementaire = $data[self::CSV_VOLUME_SUPLEMENTAIRE] / 100.00;
+        if($volume_supplementaire > 0) {
+            $complement .= ' Achat ';
+            $complement = trim($complement);
+            $produit_suppl = $drev->addProduit($hashProduit, $complement);
+            $produit_suppl->volume_revendique_issu_recolte = $volume_supplementaire;
+            $drev->update();
+        }
+
+
         $drev->validate($date_reception->format('Y-m-d'));
         $drev->validateOdg($date_reception->format('Y-m-d'));
         $drev->save();

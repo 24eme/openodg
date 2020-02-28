@@ -161,6 +161,7 @@ class FactureClient extends acCouchdbClient {
         $facture->updateTotaux();
         $facture->storeOrigines();
         $facture->storeTemplates($template);
+        $facture->modalite_paiement = FactureConfiguration::getInstance()->getModaliteDePaiement();
         $facture->arguments = $arguments;
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
