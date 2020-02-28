@@ -114,6 +114,7 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
+      modalite_paiement: {}
       pieces:
         type: array_collection
         definition:
