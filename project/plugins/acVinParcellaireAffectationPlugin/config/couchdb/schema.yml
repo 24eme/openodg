@@ -51,6 +51,7 @@ ParcellaireAffectation:
                           class: ParcellaireAffectationProduitDetail
                           definition:
                             fields:
+                              origine_doc: { }
                               superficie: { type: float }
                               superficie_affectation: { type: float }
                               commune: { }
@@ -143,6 +144,8 @@ ParcellaireIntentionAffectation:
                           class: ParcellaireIntentionAffectationProduitDetail
                           definition:
                             fields:
+                              origine_doc: { }
+                              origine_hash: { }
                               superficie: { type: float }
                               superficie_affectation: { type: float }
                               commune: { }

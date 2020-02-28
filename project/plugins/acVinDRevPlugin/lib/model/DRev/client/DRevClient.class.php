@@ -62,7 +62,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $drev;
     }
 
-    public function createDoc($identifiant, $campagne, $papier = false)
+    public function createDoc($identifiant, $campagne, $papier = false, $reprisePrecedente = true)
     {
         $drev = new DRev();
         $drev->initDoc($identifiant, $campagne);
@@ -83,15 +83,18 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $drev->add('papier', 1);
         }
 
-        $previous_drev = self::findMasterByIdentifiantAndCampagne($identifiant, $campagne - 1 );
-        if ($previous_drev) {
-            $drev->set('chais', $previous_drev->chais->toArray(true, false));
-          foreach($previous_drev->getProduitsVci() as $produit) {
-            if ($produit->vci->stock_final) {
-              $drev->cloneProduit($produit);
+        if($reprisePrecedente) {
+            $previous_drev = self::findMasterByIdentifiantAndCampagne($identifiant, $campagne - 1 );
+            if ($previous_drev) {
+                $drev->set('chais', $previous_drev->chais->toArray(true, false));
+              foreach($previous_drev->getProduitsVci() as $produit) {
+                if ($produit->vci->stock_final) {
+                  $drev->cloneProduit($produit);
+                }
+              }
             }
-          }
         }
+
         return $drev;
     }
 
