@@ -12,7 +12,7 @@ class importDRevCSVTask extends sfBaseTask
 
     const CSV_SURFACE               = 5;
     const CSV_VOLUME                = 6;
-    const CSV_VOLUME_NET           = 7;
+    const CSV_VOLUME_DR           = 7;
 
 
     const CSV_VOLUME_REPLIE         = 8; // Ca sert à quoi?
@@ -163,20 +163,24 @@ EOF;
               echo sprintf("!!! Etablissement %s => produit %s non trouvé \n", $idEtb,$produit_file);
               return "";
             }
+
+            $surface = $data[self::CSV_SURFACE] / 10000.0;
+            $volume_net = $data[self::CSV_VOLUME_DR] / 100.00;
+            $volume_rev = $data[self::CSV_VOLUME] / 100.00;
+            $volume_replie = $data[self::CSV_VOLUME_REPLIE] / 100.00;
+
+            if($volume_replie) {
+                self::$produitsKey[$produit_file][1] .= ' Replié';
+                trim(self::$produitsKey[$produit_file][1]);
+            }
+
             $produit = $drev->addProduit(self::$produitsKey[$produit_file][0],self::$produitsKey[$produit_file][1]);
 
             echo "Ajout d'une revendication produit ".self::$produitsKey[$produit_file][0]." à la drev $drev->_id \n";
 
-            $surface = $data[self::CSV_SURFACE] / 10000.0;
-            $volume_net = $data[self::CSV_VOLUME_NET] / 100.00;
-            $volume_rev = $data[self::CSV_VOLUME] / 100.00;
-
             $produit->recolte->recolte_nette += $this->convertFloat($volume_net);
             $produit->recolte->superficie_total += $this->convertFloat($surface);
-
-            if($volume_rev > 0) {
-                $produit->superficie_revendique += $this->convertFloat($surface);
-            }
+            $produit->superficie_revendique += $this->convertFloat($surface);
             $produit->volume_revendique_issu_recolte += $this->convertFloat($volume_rev);
 
         $date_reception = DateTime::createFromformat("d/m/Y",$data[self::CSV_DATE_RECEPTION]);
