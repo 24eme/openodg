@@ -154,7 +154,9 @@
 \end{center}
 
 \begin{minipage}{0.5\textwidth}
-<?= escape_string_for_latex(($facture->modalite_paiement) ?: FactureConfiguration::getInstance()->getModaliteDePaiement()) ?>
+<?= escape_string_for_latex(
+    ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
+) ?>
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \renewcommand{\arraystretch}{1.5}
