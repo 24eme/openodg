@@ -434,11 +434,14 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         if ($compteOrEtablissement->nom != $this->raison_sociale) {
           $compteOrEtablissement->nom = $this->raison_sociale;
         }
-        if($compteOrEtablissement->exist('raison_sociale') && $compteOrEtablissement->raison_sociale != $this->raison_sociale){
-          $compteOrEtablissement->raison_sociale  = $this->raison_sociale;          
-        }
         $needSave = true;
     }
+
+    if($compteOrEtablissement->exist('raison_sociale') && $compteOrEtablissement->raison_sociale != $this->raison_sociale){
+      $compteOrEtablissement->raison_sociale  = $this->raison_sociale;
+      $needSave = true;
+    }
+
     if (CompteGenerique::isSameAdresseComptes($compteOrEtablissement, $compteMasterOrigin)) {
         $ret = $this->pushAdresseTo($compteOrEtablissement);
         $needSave = $needSave || $ret;
