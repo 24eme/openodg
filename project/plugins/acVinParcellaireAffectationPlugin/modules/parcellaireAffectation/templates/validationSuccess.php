@@ -46,7 +46,7 @@
    </div>
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
-        	<a href="<?php echo ($prevLieu = $parcellaireAffectation->getPrevDgc())? url_for("parcellaireaffectation_affectations", array('sf_subject' => $parcellaireAffectation, 'lieu' => $prevLieu)) : url_for("parcellaireaffectation_denominations", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+        	<a href="<?php echo url_for("parcellaireaffectation_affectations", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('parcellaireaffectation_export_pdf', $parcellaireAffectation) ?>" class="btn btn-primary">

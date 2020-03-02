@@ -64,4 +64,22 @@ class FactureConfiguration {
       return $this->configuration['export_sage_width_txt'];
     }
 
+    public function getNumeroCampagne(){
+      if(!isset($this->configuration['numero_campagne']) || !$this->configuration['numero_campagne']){
+        return false;
+      }
+      return $this->configuration['numero_campagne'];
+    }
+
+    public function getNumeroFormat(){
+      if(!isset($this->configuration['numero_format']) || !$this->configuration['numero_format']){
+        return "";
+      }
+      return $this->configuration['numero_format'];
+    }
+
+    public function getModaliteDePaiement()
+    {
+        return ($this->configuration['modalite_paiement']) ?: '';
+    }
 }
