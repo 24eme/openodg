@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel  <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>panel-success<?php else : ?>panel-primary<?php endif; ?>">
+    <div class="block_declaration panel  <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>panel-success<?php elseif (($parcellaireAffectation) || ($intentionParcellaireAffectation && ParcellaireAffectationClient::getInstance()->isOpen())): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Déclaration d'affectation parcellaire</h3>
         </div>
@@ -31,12 +31,12 @@
                     <?php endif; ?>
                     <div style="margin-top: 50px;">
                         <?php if ($sf_user->isAdmin()): ?>
-                                <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireaffectation_create', array('sf_subject' => $etablissement, 'campagne' => $campagne+1)) ?>">Démarrer la télédéclaration</a>
-                                <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireaffectation_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne+1)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                                <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireaffectation_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
+                                <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireaffectation_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                         <?php endif; ?>
                     </div>
                 </div>
-            <?php else:  ?>
+            <?php elseif($intentionParcellaireAffectation):  ?>
             <div class="panel-body">
                 <p>Identifier ou mettre à jour l'affectation de vos<br />parcelles<br /></p>
             	<div style="margin-top: 50px;">
@@ -46,6 +46,11 @@
                     <?php endif; ?>
                 </div>
             </div>
+            <?php else: ?>
+                <div class="panel-body">
+                    <p>Le Téléservice est fermé car des données sont manquantes. Veuillez contacter directement l'ODG.</p>
+                    <div style="margin-top: 77px;">&nbsp;</div>
+                </div>
             <?php endif; ?>
     </div>
 </div>

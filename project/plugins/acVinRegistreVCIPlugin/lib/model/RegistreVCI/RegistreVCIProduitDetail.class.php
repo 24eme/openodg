@@ -64,6 +64,12 @@ class RegistreVCIProduitDetail extends BaseRegistreVCIProduitDetail {
       return $this->stockage_libelle;
     }
 
+    public function getStockFinal() {
+        $this->_set('stock_final', round($this->_get('stock_final'), 2));
+
+        return $this->_get('stock_final');
+    }
+
     public function clear() {
         $this->_set('stock_precedent', null);
         $this->_set('destruction', null);

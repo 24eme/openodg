@@ -40,14 +40,6 @@ class generationActions extends sfActions {
       $this->historyGeneration = GenerationClient::getInstance()->findHistoryWithType($this->type);
   }
 
-  public function executeRegenerate(sfWebRequest $request) {
-      $generation = $this->getGenerationFromRequest($request);
-      $generation->regenerate();
-      $generation->save();
-
-      return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
-  }
-
   public function executeReload(sfWebRequest $request) {
       $generation = $this->getGenerationFromRequest($request);
       $generation->reload();

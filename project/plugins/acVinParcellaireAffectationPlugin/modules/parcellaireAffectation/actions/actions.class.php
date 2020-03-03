@@ -99,36 +99,7 @@ class parcellaireAffectationActions extends sfActions {
     		return $this->redirect('parcellaireaffectation_validation', $this->parcellaireAffectation);
     	}
 
-    	return $this->redirect('parcellaireaffectation_denominations', $this->parcellaireAffectation);
-    }
-    
-    public function executeDenominations(sfWebRequest $request) {
-        $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
-    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
-
-    	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_DENOMINATIONS))) {
-    		$this->parcellaireAffectation->save();
-    	}
-
-    	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
-    	
-        $this->form = new ParcellaireAffectationChoixDgcForm($this->parcellaireAffectation);
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-
-        	return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-        	return sfView::SUCCESS;
-        }
-
-        $obj = $this->form->save();
-
-		$this->redirect('parcellaireaffectation_affectations', array('sf_subject' => $this->parcellaireAffectation, 'lieu' => $this->parcellaireAffectation->getNextDgc()));
+    	return $this->redirect('parcellaireaffectation_affectations', $this->parcellaireAffectation);
     }
 
     public function executeAffectations(sfWebRequest $request) {
@@ -140,12 +111,8 @@ class parcellaireAffectationActions extends sfActions {
     	}
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
-        $this->lieu = $request->getParameter('lieu', null);
-        if (!$this->lieu) {
-            $this->lieu = $this->parcellaireAffectation->getNextDgc();
-        }
 
-		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->lieu);
+		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -161,11 +128,7 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->form->save();
 
-        if ($nextLieu = $this->parcellaireAffectation->getNextDgc($this->lieu)) {
-            return $this->redirect('parcellaireaffectation_affectations', array('sf_subject' => $this->parcellaireAffectation, 'lieu' => $nextLieu));
-        } else {
-            return $this->redirect('parcellaireaffectation_validation', $this->parcellaireAffectation);
-        }
+        return $this->redirect('parcellaireaffectation_validation', $this->parcellaireAffectation);
 
     }
 

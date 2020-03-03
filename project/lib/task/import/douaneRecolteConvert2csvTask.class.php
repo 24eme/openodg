@@ -43,7 +43,7 @@ EOF;
           throw new sfException("extention de ".$file."non géré");
         }
         if (isset($options['header']) && $options['header']) {
-            echo "type;année;id interne;cvi;raison sociale;réservé;commune;tiers;tiers id;categorie;genre;denomination;mention;lieu;couleur;cepage;inao;libelle;denomination complementaire;ligne numero;ligne libelle;ligne valeur;acheteur id;acheteur raison sociale;réservé;ville apporteur (sv)\n";
+            echo DouaneCsvFile::CSV_ENTETES;
         }
         $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($file), $csvfile);
         $m = array();
