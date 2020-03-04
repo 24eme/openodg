@@ -42,6 +42,8 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_CONDITIONNEUR = 27;
     const CSV_ELEVEUR = 28;
 
+    const CSV_ARCHIVE = 29;
+
 
 
 
@@ -165,7 +167,9 @@ EOF;
             }
 
             $societe->email = str_replace("'","",trim($data[self::CSV_EMAIL]));
-
+            if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
+              $societe->statut = SocieteClient::STATUT_SUSPENDU;
+            }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
             return $societe;
@@ -202,6 +206,9 @@ EOF;
           if(trim($data[self::CSV_OBSERVATION])){
               $etablissement->setCommentaire($data[self::CSV_OBSERVATION]);
           }
+          if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
+            $etablissement->statut = SocieteClient::STATUT_SUSPENDU;
+          }
           $etablissement->save();
 
           return $etablissement;
@@ -214,6 +221,9 @@ EOF;
       $contact->prenom = trim($data[self::CSV_CONTACT_PRENOM]);
       $contact->fonction = trim($data[self::CSV_CONTACT_FONCTION]);
       $contact->telephone = $data[self::CSV_CONTACT_TELEPHONE];
+      if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
+        $contact->statut = SocieteClient::STATUT_SUSPENDU;
+      }
       $contact->save();
 
     }
