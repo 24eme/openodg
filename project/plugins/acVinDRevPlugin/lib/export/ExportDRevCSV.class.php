@@ -87,7 +87,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $libelle_complet = $produit->getLibelleComplet();
             $validation_odg = ($produit->exist('validation_odg') && $produit->validation_odg)? $produit->validation_odg : $date_odg;
             $csv .= $ligneBase;
-            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$denomination,trim($libelle_complet), $this->formatFloat($produit->superficie_revendique),
                 $this->formatFloat($produit->volume_revendique_issu_recolte), $this->formatFloat($produit->volume_revendique_issu_vci), $this->formatFloat($produit->volume_revendique_total),
                 $this->formatFloat($produit->vci->stock_precedent), $this->formatFloat($produit->vci->destruction),$this->formatFloat($produit->vci->complement),
