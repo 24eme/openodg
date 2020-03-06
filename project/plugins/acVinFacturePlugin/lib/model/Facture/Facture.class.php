@@ -186,9 +186,14 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function storeLignesByMouvements($mouvements, $template) {
+        $fallback_used = array();
         foreach($template->cotisations as $configCollection) {
+            // Si ligne de fallback on réserve la place
             $ligne = $this->addLigne($configCollection);
             $ligne->updateTotaux();
+            if($configCollection->exist("fallback") && $configCollection->fallback){
+              $fallback_used[$ligne->getHash()] = false;
+            }
         }
         foreach ($mouvements as $key => $mouvement) {
             $configCollection = $template->cotisations->get($mouvement["categorie"]);
@@ -210,6 +215,31 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             }
 
             $ligne->updateTotaux();
+
+            if($configCollection->exist('minimum') && ($min = $configCollection->minimum)
+              && $configCollection->exist('minimum_fallback') && ($fallback_name = $configCollection->minimum_fallback)
+              && $template->cotisations->exist($fallback_name) && ($fallback_cotisation = $template->cotisations->$fallback_name)
+              && ($ligne->montant_ht <= $min) && ($ligne_fallback = $this->lignes->get($fallback_name))
+              && !$fallback_used[$ligne_fallback->getHash()]){
+
+              // on retire la ligne classique
+              $this->remove($ligne->getHash());
+
+              // traitement de la ligne de fallback
+              $d_fallback = $ligne_fallback->details->add();
+              $d_fallback->libelle = $fallback_cotisation->details->forfait->libelle;
+              $d_fallback->quantite = 1;
+              $d_fallback->add('unite',$fallback_cotisation->details->forfait->unite);
+              $d_fallback->prix_unitaire = $fallback_cotisation->details->forfait->prix;
+              $ligne_fallback->updateTotaux();
+              $fallback_used[$ligne_fallback->getHash()] = true;
+            }
+      }
+
+      foreach ($fallback_used as $fallback_hash => $used) {
+        if(!$used){
+          $this->remove($fallback_hash);
+        }
       }
     }
 
