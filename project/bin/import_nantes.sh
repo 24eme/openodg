@@ -87,13 +87,20 @@ cat $NANTES_IMPORT_TMP/VCI_constitue_2018.txt | tr '\r' ' ' | sed -r 's|\t|;|g' 
 php symfony import:drev-csv $NANTES_IMPORT_TMP/lignes_de_revendication.csv $NANTES_IMPORT_TMP/VCI_constitue_2018.csv --application="nantes" --trace
 
 echo ""
-echo "Import des DR"
+echo "Import des DR depuis Prodouane"
 sleep 2
 echo ""
-php symfony dr:import $URLDRCSV --application=nantes
+php symfony dr:import $URL_EXPORT_LOIRE/2019_dr_douane.csv --application=nantes
+
+
+echo ""
+echo "Import des DR depuis VINSI"
+sleep 2
+echo ""
+php symfony dr:import $URL_EXPORT_LOIRE/dr.csv --application=nantes
 
 echo ""
 echo "Import des DRev de cette année"
 sleep 2
 echo ""
-php symfony drev:import $URLDREVCSV --application=nantes
+php symfony drev:import $URL_EXPORT_LOIRE/drev.csv --application=nantes
