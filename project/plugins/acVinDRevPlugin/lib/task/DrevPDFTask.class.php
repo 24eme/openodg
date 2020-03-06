@@ -38,7 +38,7 @@ EOF;
         $document = new ExportDRevPdf($drev, $region, 'pdf', false);
         $document->setPartialFunction(array($this, 'getPartial'));
         $document->generate();
-        echo $drev->_id.";".$drev->declarant->cvi.":".$document->getFile()."\n";
+        echo "DREV;".$drev->campagne.";".$drev->identifiant.";".$drev->declarant->cvi.";".$drev->_id.";".$document->getFile()."\n";
     }
 
     public function getPartial($templateName, $vars = null) {
