@@ -31,7 +31,7 @@ EOF;
         $dr = FichierClient::getInstance()->find($arguments['dr_id']);
         $file_path = $arguments['file_path'];
 
-        mkdir(dirname($file_path), '0755', true);
+        mkdir(dirname($file_path), 0755, true);
 
         if(!$dr) {
             die("DR ".$arguments['dr_id']." non trouvée");
