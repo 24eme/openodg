@@ -26,7 +26,7 @@ class CotisationsCollection
 		if($this->config->exist('minimum') && ($minimum = $this->config->minimum)
       && $this->config->exist('minimum_fallback') && ($minimum_fallback_name = $this->config->minimum_fallback)
 			&& $this->config->getDocument()->cotisations->exist($minimum_fallback_name) && ($minimum_fallback = $this->config->getDocument()->cotisations->$minimum_fallback_name)
-			&& ($total <= $minimum)){
+			&& ($total <= $minimum) && ($total > 0)){
 				return $minimum_fallback->generateCotisations($this->getDoc());
 		}
 
