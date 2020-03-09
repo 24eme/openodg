@@ -1,6 +1,6 @@
 <?php
 
-class DRClient extends acCouchdbClient implements FacturableClient {
+class DRClient extends acCouchdbClient implements FacturableClient, DouaneClient {
 	const TYPE_MODEL = 'DR';
     public static function getInstance()
     {
