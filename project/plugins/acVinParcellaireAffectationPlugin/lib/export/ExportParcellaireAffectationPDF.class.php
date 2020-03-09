@@ -30,9 +30,9 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         
         $dgcs = $this->parcellaireAffectation->getDgc(true);
 
-       $parcellesByCommune = $this->parcellaireAffectation->declaration->getParcellesByCommune(null, true);
+       $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
 
-       if(count($parcellesByCommune) == 0) {
+       if(count($parcellesByDgc) == 0) {
            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
 
            return;
@@ -49,8 +49,8 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
        $page = 0;
 
         $currentPage = array();
-        foreach ($parcellesByCommune as $commune => $parcelles) {
-            $libelleTableau = $commune;
+        foreach ($parcellesByDgc as $dgc => $parcelles) {
+            $libelleTableau = str_replace("-", " ", $dgc);
             if(($unite + $uniteTableau + $uniteLigne) > $uniteParPage) {
                 $parcellesByPage[] = $currentPage;
                 $currentPage = array();

@@ -23,6 +23,26 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         return $parcelles;
     }
 
+    public function getParcellesByDgc($onlyAffectee = false) {
+        $parcelles = array();
+
+        foreach($this->getParcelles() as $hash => $parcelle) {
+            $key = str_replace(" ", "-", $parcelle->getDgcLibelle());
+            
+            if ($onlyAffectee && !$parcelle->affectee) {
+                continue;
+            }
+            
+            if(!isset($parcelles[$key])) {
+                $parcelles[$key] = array();
+            }
+            $parcelles[$key][$parcelle->getHash()] = $parcelle;
+        }
+
+        ksort($parcelles);
+        return $parcelles;
+    }
+
     public function getParcelles() {
         $parcelles = array();
         foreach($this as $produit) {
