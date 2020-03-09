@@ -1,6 +1,6 @@
 <?php
 
-class DRImportTask extends sfBaseTask
+class DouaneImportTask extends sfBaseTask
 {
 
     protected function configure()
@@ -15,7 +15,7 @@ class DRImportTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace = 'dr';
+        $this->namespace = 'douane';
         $this->name = 'import';
         $this->briefDescription = "Import de la DR";
         $this->detailedDescription = <<<EOF
@@ -38,18 +38,14 @@ EOF;
         $csv = $csvFile->getCsv();
         $cvis = null;
         foreach($csv as $ligne => $data) {
-            if($data[DouaneCsvFile::CSV_TYPE] != "DR") {
-                continue;
-            }
-            $cvi = $data[DouaneCsvFile::CSV_RECOLTANT_CVI];
-            $campagne = $data[DouaneCsvFile::CSV_CAMPAGNE];
-            $cvis[$cvi."_".$campagne][] = $ligne;
+            $cvis[$data[DouaneCsvFile::CSV_RECOLTANT_CVI]."_".$data[DouaneCsvFile::CSV_CAMPAGNE].'_'.$data[DouaneCsvFile::CSV_TYPE]][] = $ligne;
         }
 
         foreach($cvis as $cviCamapagne => $lignes) {
                 $cviParts = explode('_', $cviCamapagne);
                 $cvi = $cviParts[0];
                 $campagne = $cviParts[1];
+                $type = $cviParts[2];
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
 
@@ -59,24 +55,27 @@ EOF;
                     continue;
                 }
 
-                $dr = DRClient::getInstance()->findByArgs($etablissement->identifiant, $campagne);
+                $fichier = FichierClient::getInstance()->findByArgs($type, $etablissement->identifiant, $campagne);
 
-                if(!$dr) {
-                    $dr = DRClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+                if(!$fichier) {
+                    $fichier = FichierClient::getClientFromType($type)->createDoc($etablissement->identifiant, $campagne);
                 }
 
-                $dr->remove('donnees');
-                $dr->add('donnees');
-                $dr->remove('mouvements');
-                $dr->add('mouvements');
+                $fichier->remove('donnees');
+                $fichier->add('donnees');
+
+                if($fichier->getDefinition()->exist('mouvements')) {
+                    $fichier->remove('mouvements');
+                    $fichier->add('mouvements');
+                }
 
                 foreach($lignes as $ligne) {
-                    $dr->addDonnee($csv[$ligne]);
+                    $fichier->addDonnee($csv[$ligne]);
                 }
 
-                $dr->save();
+                $fichier->save();
 
-                echo "IMPORTE;$dr->_id\n";
+                echo "IMPORTE;$fichier->_id\n";
         }
     }
 }

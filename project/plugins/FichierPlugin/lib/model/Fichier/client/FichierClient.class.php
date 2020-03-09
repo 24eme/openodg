@@ -102,6 +102,12 @@ class FichierClient extends acCouchdbClient {
     	return $files;
     }
 
+    public function findByArgs($type, $identifiant, $annee)
+    {
+
+    	return $this->getClientFromType($type)->findByArgs($identifiant, $annee);
+    }
+
     /**
      * Retourne une instance d'un client en fonction du type
      *
