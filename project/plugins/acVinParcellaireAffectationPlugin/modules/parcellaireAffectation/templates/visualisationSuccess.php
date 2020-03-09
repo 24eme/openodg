@@ -3,7 +3,7 @@
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration d'affectation parcellaire
+    <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence
     <?php if($parcellaireAffectation->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaireAffectation->validation && $parcellaireAffectation->validation !== true): ?> reçue le <?php echo format_date($parcellaireAffectation->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($parcellaireAffectation->validation): ?>

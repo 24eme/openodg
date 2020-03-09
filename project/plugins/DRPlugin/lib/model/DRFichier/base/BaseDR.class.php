@@ -43,8 +43,8 @@
  * @method string setCampagne()
  
  */
- 
-abstract class BaseDR extends Fichier {
+
+abstract class BaseDR extends DouaneFichier {
 
     public function getDocumentDefinitionModel() {
         return 'DR';

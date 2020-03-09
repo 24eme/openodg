@@ -36,14 +36,15 @@ echo "Traitement du fichier listes_operateurs.txt"
 recode iso88591..utf8 $NANTES_IMPORT_TMP/listes_operateurs.txt
 cat $NANTES_IMPORT_TMP/listes_operateurs.txt| tr '\r' ' ' | sed 's/ $//' | sed -r 's/(.+)(True|False)$/\1\2£/' | tr '\n' ' ' | tr ';' ' ' | sed -r 's|£\ |\n|g' | sed -r 's|\t|;|g' | sed 's|;Vinificateur;Conditionneur;Eleveur\ |;Vinificateur;Conditionneur;Eleveur\n|' | awk -F ";" 'begin{ cpt=0 }{ print cpt";"$0; cpt++}' | sed 's|;EVV principal;Siret;Forme;|Identifiant ligne;EVV principal;Siret;Forme;|' | sort -t ';' -k 2,2 > $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp
 
+
 cat $NANTES_IMPORT_TMP/EVV_operateur_archives.csv | cut -d ';' -f 1 | grep -vE '^0$' | sed -r "s|(.+)|grep '\1' $NANTES_IMPORT_TMP/listes_operateurs.propre.csv |" | bash > $NANTES_IMPORT_TMP"/operateurs_archives_trouves.csv.tmp"
 
 cat $NANTES_IMPORT_TMP"/operateurs_archives_trouves.csv.tmp" | cut -d ';' -f 1 | sed -r 's|(.+)|\1;1|' | sort -t ';' -k 1,1  > $NANTES_IMPORT_TMP"/operateurs_archives_trouves.csv"
 rm $NANTES_IMPORT_TMP"/operateurs_archives_trouves.csv.tmp"
 
 join -t ";" -1 2 -2 1 -a 1 $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp $NANTES_IMPORT_TMP/operateurs_archives_trouves.csv > $NANTES_IMPORT_TMP/listes_operateurs.notsorted
-
 cat $NANTES_IMPORT_TMP/listes_operateurs.notsorted | sed -r 's|([0-9A-Za-z ]*);([0-9A-Za-z ]+);(.+)|\2;\1;\3|' | sort -t ';' -k 1,1  > $NANTES_IMPORT_TMP/listes_operateurs.csv
+
 
 echo $NANTES_IMPORT_TMP/listes_operateurs.csv
 
@@ -56,7 +57,7 @@ sleep 2
 echo "Traitement de l'import"
 sleep 2
 
-php symfony import:entite-from-csv $NANTES_IMPORT_TMP/listes_operateurs.csv --application="nantes" --trace
+php symfony import:entite-from-csv $NANTES_IMPORT_TMP/listes_operateurs.csv $NANTES_IMPORT_TMP/societe_negoce.csv --application="nantes" --trace
 
 echo ""
 echo ""
@@ -86,13 +87,20 @@ cat $NANTES_IMPORT_TMP/VCI_constitue_2018.txt | tr '\r' ' ' | sed -r 's|\t|;|g' 
 php symfony import:drev-csv $NANTES_IMPORT_TMP/lignes_de_revendication.csv $NANTES_IMPORT_TMP/VCI_constitue_2018.csv --application="nantes" --trace
 
 echo ""
-echo "Import des DR"
+echo "Import des DR depuis Prodouane"
 sleep 2
 echo ""
-php symfony dr:import $URLDRCSV --application=nantes
+php symfony douane:import $URL_EXPORT_LOIRE/2019_dr_douane.csv --application=nantes
+
+
+echo ""
+echo "Import des DR depuis VINSI"
+sleep 2
+echo ""
+php symfony douane:import $URL_EXPORT_LOIRE/dr.csv --application=nantes
 
 echo ""
 echo "Import des DRev de cette année"
 sleep 2
 echo ""
-php symfony drev:import $URLDREVCSV --application=nantes
+php symfony drev:import $URL_EXPORT_LOIRE/drev.csv --application=nantes

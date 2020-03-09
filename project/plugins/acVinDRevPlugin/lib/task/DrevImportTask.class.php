@@ -38,7 +38,7 @@ EOF;
         $csv = $csvFile->getCsv();
         $cvis = null;
         foreach($csv as $ligne => $data) {
-            if($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
+            if(!$data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
                 continue;
             }
             $cvi = $data[ExportDRevCSV::CSV_CVI];
@@ -67,7 +67,7 @@ EOF;
 
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
                 if(!$drev->getDocumentDouanier()) {
-                    echo "ERREUR;$etablissement->_id ($etablissement->cvi);pas de dr\n";
+                    echo "ERROR;$etablissement->_id ($etablissement->cvi);pas de dr\n";
                     continue;
                 }
                 /*$drev->importFromDocumentDouanier();
