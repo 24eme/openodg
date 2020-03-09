@@ -29,6 +29,10 @@ class CotisationsCollection
 			&& ($total <= $minimum) && ($total > 0)){
 				return $minimum_fallback->generateCotisations($this->getDoc());
 		}
+		//A confer pour l'ava pour garder les lignes à 0
+		if(!$total){
+			return null;
+		}
 
 		return $cotisations;
 	}
