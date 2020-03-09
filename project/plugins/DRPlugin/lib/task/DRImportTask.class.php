@@ -38,6 +38,9 @@ EOF;
         $csv = $csvFile->getCsv();
         $cvis = null;
         foreach($csv as $ligne => $data) {
+            if($data[DouaneCsvFile::CSV_TYPE] != "DR") {
+                continue;
+            }
             $cvi = $data[DouaneCsvFile::CSV_RECOLTANT_CVI];
             $campagne = $data[DouaneCsvFile::CSV_CAMPAGNE];
             $cvis[$cvi."_".$campagne][] = $ligne;
