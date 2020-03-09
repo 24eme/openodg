@@ -90,14 +90,14 @@ echo ""
 echo "Import des DR depuis Prodouane"
 sleep 2
 echo ""
-php symfony dr:import $URL_EXPORT_LOIRE/2019_dr_douane.csv --application=nantes
+php symfony douane:import $URL_EXPORT_LOIRE/2019_dr_douane.csv --application=nantes
 
 
 echo ""
 echo "Import des DR depuis VINSI"
 sleep 2
 echo ""
-php symfony dr:import $URL_EXPORT_LOIRE/dr.csv --application=nantes
+php symfony douane:import $URL_EXPORT_LOIRE/dr.csv --application=nantes
 
 echo ""
 echo "Import des DRev de cette année"
