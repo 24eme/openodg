@@ -94,10 +94,12 @@ php symfony douane:import $URL_EXPORT_LOIRE/2019_dr_douane.csv --application=nan
 
 
 echo ""
-echo "Import des DR depuis VINSI"
+echo "Import des DR, SV12 et SV11 depuis VINSI"
 sleep 2
 echo ""
 php symfony douane:import $URL_EXPORT_LOIRE/dr.csv --application=nantes
+php symfony douane:import $URL_EXPORT_LOIRE/sv12.csv --application=nantes
+php symfony douane:import $URL_EXPORT_LOIRE/sv11.csv --application=nantes
 
 echo ""
 echo "Import des DRev de cette année"
