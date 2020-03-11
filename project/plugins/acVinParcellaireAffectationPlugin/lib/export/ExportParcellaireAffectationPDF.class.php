@@ -28,56 +28,57 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
     public function create() {
         
-        $dgcs = $this->parcellaireAffectation->getDgc(true);
+      $dgcs = $this->parcellaireAffectation->getDgc(true);
 
-       $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
+      $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
 
-       if(count($parcellesByDgc) == 0) {
-           $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
+      if(count($parcellesByDgc) == 0) {
+         $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
 
-           return;
-       }
+         return;
+      }
 
-       $unite = 0;
-       $uniteParPage = 23;
-       $uniteTableau = 3;
-       $uniteLigne = 1;
-       $uniteTableauCommentaire = 2;
-       $uniteTableauLigne = 0.75;
-       $uniteMentionBasDePage = 1;
-       $parcellesByPage = array();
-       $page = 0;
+      $unite = 0;
+      $uniteParPage = 23;
+      $uniteTableau = 3;
+      $uniteLigne = 1;
+      $uniteTableauCommentaire = 2;
+      $uniteTableauLigne = 0.75;
+      $uniteMentionBasDePage = 1;
+      $parcellesByPage = array();
+      $page = 0;
 
+      $currentPage = array();
+      foreach ($parcellesByDgc as $dgc => $parcelles) {
+        $libelleTableau = str_replace("-", " ", $dgc);
+        $parcellesByPage = array();
         $currentPage = array();
-        foreach ($parcellesByDgc as $dgc => $parcelles) {
-            $libelleTableau = str_replace("-", " ", $dgc);
-            if(($unite + $uniteTableau + $uniteLigne) > $uniteParPage) {
-                $parcellesByPage[] = $currentPage;
-                $currentPage = array();
-                $unite = 0;
-            }
-            $currentPage[$libelleTableau] = array();
-            $unite += $uniteTableau;
-            foreach($parcelles as $parcelle) {
-               if(($unite + $uniteLigne) > $uniteParPage) {
-                   $parcellesByPage[] = $currentPage;
-                   $currentPage = array();
-                   $unite = 0;
-                   $libelleTableau = $commune . " (suite)";
-                   $currentPage[$libelleTableau] = array();
-                   $unite += $uniteTableau;
-               }
-               $unite += $uniteLigne;
-               $currentPage[$libelleTableau][] = $parcelle;
+        if(($unite + $uniteTableau + $uniteLigne) > $uniteParPage) {
+            $parcellesByPage[] = $currentPage;
+            $currentPage = array();
+            $unite = 0;
+        }
+        $currentPage[$libelleTableau] = array();
+        $unite += $uniteTableau;
+        foreach($parcelles as $parcelle) {
+           if(($unite + $uniteLigne) > $uniteParPage) {
+               $parcellesByPage[] = $currentPage;
+               $currentPage = array();
+               $unite = 0;
+               $libelleTableau = $commune . " (suite)";
+               $currentPage[$libelleTableau] = array();
+               $unite += $uniteTableau;
            }
+           $unite += $uniteLigne;
+           $currentPage[$libelleTableau][] = $parcelle;
         }
 
         if($unite > 0) {
-            $parcellesByPage[] = $currentPage;
+          $parcellesByPage[] = $currentPage;
         }
 
         if($this->parcellaireAffectation->observations) {
-            $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireAffectation->observations));
+          $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireAffectation->observations));
         }
 
         foreach($parcellesByPage as $nbPage => $parcelles) {
@@ -91,10 +92,11 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         if ($this->parcellaireAffectation->observations && $unite > $uniteParPage) {
             $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
                 'parcellaireAffectation' => $this->parcellaireAffectation,
-                'parcellesByCommune' => array(),
+                'parcellesByCommune' => $parcellesByPage,
                 'lastPage' => true,
             )));
         }
+      }
     }
 
     protected function getHeaderTitle() {
