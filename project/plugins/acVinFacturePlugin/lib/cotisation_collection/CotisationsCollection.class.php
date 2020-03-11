@@ -26,9 +26,10 @@ class CotisationsCollection
 		if($this->config->exist('minimum') && ($minimum = $this->config->minimum)
       && $this->config->exist('minimum_fallback') && ($minimum_fallback_name = $this->config->minimum_fallback)
 			&& $this->config->getDocument()->cotisations->exist($minimum_fallback_name) && ($minimum_fallback = $this->config->getDocument()->cotisations->$minimum_fallback_name)
-			&& ($total <= $minimum) && ($total > 0)){
+			&& ($total <= $minimum) && ($total > 0) && (! $this->getDoc() instanceof DRev)){
 				return $minimum_fallback->generateCotisations($this->getDoc());
 		}
+		
 		//A confer pour l'ava pour garder les lignes à 0
 		if(!$total){
 			return null;
