@@ -1,3 +1,6 @@
+<div class="page-header no-border">
+    <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
+</div>
 <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
 <div class="row">
     <div class="col-xs-12">
