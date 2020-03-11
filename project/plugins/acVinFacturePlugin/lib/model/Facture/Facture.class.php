@@ -189,6 +189,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         foreach($template->cotisations as $configCollection) {
             $ligne = $this->addLigne($configCollection);
             $ligne->updateTotaux();
+
         }
         foreach ($mouvements as $key => $mouvement) {
             $configCollection = $template->cotisations->get($mouvement["categorie"]);
@@ -208,8 +209,18 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             if(array_key_exists("unite", $mouvement)) {
                 $d->add('unite', $mouvement["unite"]);
             }
-
             $ligne->updateTotaux();
+      }
+
+      $lignes_to_remove = array();
+      foreach ($this->lignes as $cotisation_key => $cotisation) {
+        if(!count($cotisation->details)){
+            $lignes_to_remove[] = $cotisation_key;
+          }
+      }
+
+      foreach ($lignes_to_remove as $ligne_key) {
+        $this->lignes->remove($ligne_key);
       }
     }
 

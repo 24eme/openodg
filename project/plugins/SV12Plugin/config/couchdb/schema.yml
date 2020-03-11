@@ -4,3 +4,20 @@ SV12:
   definition:
     fields:
       campagne: { }
+      donnees:
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: FichierDonnee
+              type: collection
+              definition:
+                fields:
+                  produit: { }
+                  produit_libelle: { }
+                  complement: { }
+                  categorie: { }
+                  valeur: { }
+                  tiers: { }
+                  bailleur: { }

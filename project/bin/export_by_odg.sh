@@ -55,3 +55,6 @@ cat $DREVPATH | grep -E "      [A-Z_]+\:" | sed -r 's|^([\ ]+)([A-Z_]+)\:|\2|' |
     done
   done
 done
+
+cat $EXPORTDIR/NANTES/dr.csv | grep -v '^#' | awk -F ';' '{cvi=$4 ; insee=substr(cvi,0,5); print "php symfony dr:pdf '$SYMFONYTASKOPTIONS' "$1"-"$3"-"$2" '$EXPORTDIR'/DR/"insee"/"$1"-"cvi"-"$2".pdf"}'  | sort -u | sh
+cat $EXPORTDIR/NANTES/drev.csv | awk -F ';' '{print $40}'   | grep ^DREV | sort -u | while read drev ; do echo php symfony drev:pdf $SYMFONYTASKOPTIONS $drev ; done | sh | awk -F ';' '{cvi=$4 ; insee=substr(cvi,0,5); pdf="'$EXPORTDIR'/NANTES/DREV/"insee"/DREV-"cvi"-"$2".pdf" ; print "mkdir -p $(dirname "pdf") ; cp "$6" "pdf" ;" }' | sh

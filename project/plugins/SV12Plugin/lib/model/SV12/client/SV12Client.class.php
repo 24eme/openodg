@@ -1,6 +1,6 @@
 <?php
 
-class SV12Client extends acCouchdbClient {
+class SV12Client extends acCouchdbClient implements DouaneClient {
 	const TYPE_MODEL = 'SV12';
     public static function getInstance()
     {

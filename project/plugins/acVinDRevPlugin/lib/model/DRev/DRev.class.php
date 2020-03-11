@@ -253,18 +253,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$identifiant) {
             $identifiant = $this->identifiant;
         }
-        $fichier = DRClient::getInstance()->find('DR-'.$identifiant.'-'.$this->campagne);
-        if ($fichier) {
-            return ($ext)? $fichier->getFichier($ext) : $fichier;
-        }
 
-        $fichier = SV12Client::getInstance()->find('SV12-'.$identifiant.'-'.$this->campagne);
-        if ($fichier) {
-            return ($ext)? $fichier->getFichier($ext) : $fichier;
-        }
-
-        $fichier = SV11Client::getInstance()->find('SV11-'.$identifiant.'-'.$this->campagne);
-        if ($fichier) {
+        foreach(array("DR", "SV12", "SV11") as $type) {
+            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $this->campagne);
+            if (!$fichier) {
+                continue;
+            }
             return ($ext)? $fichier->getFichier($ext) : $fichier;
         }
 

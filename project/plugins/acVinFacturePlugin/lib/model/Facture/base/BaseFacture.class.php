@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseFacture
- * 
+ *
  * Base model for Facture
  *
  * @property string $_id
@@ -37,6 +37,8 @@
  * @property acCouchdbJson $echeances
  * @property acCouchdbJson $origines
  * @property acCouchdbJson $templates
+ * @property string $modalite_paiement
+ * @property FacturePaiements $paiements
  * @property acCouchdbJson $pieces
 
  * @method string getId()
@@ -105,15 +107,19 @@
  * @method acCouchdbJson setOrigines()
  * @method acCouchdbJson getTemplates()
  * @method acCouchdbJson setTemplates()
+ * @method string getModalitePaiement()
+ * @method string setModalitePaiement()
+ * @method FacturePaiements getPaiements()
+ * @method FacturePaiements setPaiements()
  * @method acCouchdbJson getPieces()
  * @method acCouchdbJson setPieces()
- 
+
  */
- 
+
 abstract class BaseFacture extends acCouchdbDocument {
 
     public function getDocumentDefinitionModel() {
         return 'Facture';
     }
-    
+
 }

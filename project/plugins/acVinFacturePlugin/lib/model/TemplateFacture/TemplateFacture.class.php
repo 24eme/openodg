@@ -15,6 +15,9 @@ class TemplateFacture extends BaseTemplateFacture
 				continue;
 			}
 			foreach ($config->generateCotisations($document) as $cotisation) {
+				if($config->exist('fallback') && $config->fallback){
+					continue;
+				}
 				$cotisations[$cotisation->getHash()] = $cotisation;
 			}
 		}

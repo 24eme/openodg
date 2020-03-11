@@ -147,7 +147,7 @@ class FactureClient extends acCouchdbClient {
         return array_values($mouvementsAggreges);
     }
 
-    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {      
+    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
         // Attention le compte utilisé pour OpenOdg est celui de la société
@@ -161,10 +161,13 @@ class FactureClient extends acCouchdbClient {
         $facture->updateTotaux();
         $facture->storeOrigines();
         $facture->storeTemplates($template);
-        $facture->modalite_paiement = FactureConfiguration::getInstance()->getModaliteDePaiement();
+        $facture->add('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
         $facture->arguments = $arguments;
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
+        }
+        if(FactureConfiguration::getInstance()->hasPaiements()){
+          $facture->add("paiements",array());
         }
 
         if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
