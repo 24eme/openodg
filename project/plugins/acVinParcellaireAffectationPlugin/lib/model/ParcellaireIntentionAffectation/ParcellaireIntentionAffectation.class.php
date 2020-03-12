@@ -15,6 +15,16 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $id = $this->getTheoriticalId();
       $this->set('_id', $id);
   }
+  public function initDoc($identifiant, $campagne, $date) {
+      $this->identifiant = $identifiant;
+      $this->campagne = $campagne;
+      if ($this->exist('date')) {
+        $this->date = $date;
+      }
+      $this->constructId();
+      $this->storeDeclarant();
+      $this->storeParcelles();
+  }
 
   public function storeParcelles() {
     $lieux = $this->getConfiguration()->getLieux();

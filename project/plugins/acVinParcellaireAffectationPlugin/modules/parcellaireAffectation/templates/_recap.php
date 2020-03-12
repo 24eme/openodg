@@ -27,7 +27,7 @@
             <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
             <td><?php echo $parcelle->cepage; ?></td>
             <td><?php echo $parcelle->campagne_plantation; ?></td>
-            <td style="text-align: right;"><?php if ($parcelle->superficie_affectation != $parcelle->superficie): ?><span style="margin: 3px;" class="pull-left glyphicon glyphicon-exclamation-sign"  data-toggle="tooltip" title="Surface totale <?php echo $parcelle->superficie; ?> ha">&nbsp;</span><?php endif; ?><span><?php echo $parcelle->superficie_affectation; ?></span></td>
+            <td style="text-align: right;"><?php if ($parcelle->superficie_affectation != $parcelle->superficie): ?><span style="margin: 3px;" class="pull-left glyphicon glyphicon-exclamation-sign"  data-toggle="tooltip" title="Surface totale <?php echo $parcelle->superficie; ?> ha">&nbsp;</span><?php endif; ?><span><?php echo number_format($parcelle->superficie_affectation,4); ?></span></td>
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>
             <td style="text-align: center;">
