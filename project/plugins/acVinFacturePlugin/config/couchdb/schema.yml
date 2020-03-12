@@ -115,6 +115,20 @@ Facture:
             #DRM ou SRV ID => "libelle"
             '*': {}
       modalite_paiement: { required: false}
+      paiements:
+        class: FacturePaiements
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: FacturePaiement
+              type: collection
+              definition:
+                fields:
+                  date : { }
+                  montant: { }
+                  commentaire: { }
       pieces:
         type: array_collection
         definition:
