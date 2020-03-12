@@ -62,6 +62,9 @@ EOF;
             $doc = null;
             try{
               $doc = DeclarationClient::getInstance()->find($id);
+              if(method_exists($doc,'getMaster') && $doc->getMaster()->_id != $doc->_id){
+                continue;
+              }
             }catch(sfException $e){
               continue;
             }

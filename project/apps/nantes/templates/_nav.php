@@ -2,17 +2,13 @@
 <?php $etablissement = null ?>
 <?php $compte = null; ?>
 
-<?php if($route instanceof EtablissementRoute): ?>
+<?php if ($route instanceof EtablissementRoute || $route instanceof SocieteRoute): ?>
     <?php $etablissement = $route->getEtablissement(); ?>
     <?php $compte = $etablissement->getMasterCompte(); ?>
 <?php endif; ?>
-<?php if($route instanceof CompteRoute): ?>
+<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
-    <?php //$etablissement = $compte->getEtablissementObj(); ?>
-<?php endif; ?>
-<?php if($route instanceof SocieteRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
+    <?php $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 
 <?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
@@ -39,7 +35,7 @@
                 <li id="nav_item_operateur" class="<?php if(!$compte): ?>disabled<?php endif; ?>"><a <?php if($compte): ?>onclick="document.location = $(this).parents('ul.mode-operateur').find('li.active a').attr('href');"<?php endif; ?> href="#"><span class="glyphicon glyphicon-user"></span></a></li>
                 <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDeclarationRoute): ?><?php echo url_for('declaration_etablissement', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Déclarations</a></li>
                 <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
-                <!--<li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>-->
+                <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
                 <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php else: ?><?php echo url_for('facturation'); ?><?php endif; ?>">Facturation</a></li>
                 <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation'); ?><?php endif; ?>">Habilitations</a></li>
                 <li class="<?php if($route instanceof InterfaceCompteRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>

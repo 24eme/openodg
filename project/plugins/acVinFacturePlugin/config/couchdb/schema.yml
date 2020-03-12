@@ -114,6 +114,21 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
+      modalite_paiement: { required: false}
+      paiements:
+        class: FacturePaiements
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: FacturePaiement
+              type: collection
+              definition:
+                fields:
+                  date : { }
+                  montant: { }
+                  commentaire: { }
       pieces:
         type: array_collection
         definition:
@@ -165,6 +180,9 @@ TemplateFacture:
               definition:
                 fields:
                   modele: {  }
+                  fallback: { required: false }
+                  minimum: { required: false }
+                  minimum_fallback: { required: false }
                   callback: { required: false }
                   libelle: {  }
                   code_comptable: {  }

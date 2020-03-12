@@ -43,8 +43,8 @@
  * @method string setCampagne()
  
  */
- 
-abstract class BaseSV11 extends Fichier {
+
+abstract class BaseSV11 extends DouaneFichier {
 
     public function getDocumentDefinitionModel() {
         return 'SV11';

@@ -61,24 +61,42 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       }
       $this->constructId();
       $this->storeDeclarant();
-      $this->storeParcelles();
+      $this->storeParcellesAffectation();
   }
 
-  public function storeParcelles() {
+  public function updateParcellesAffectation() {
+    $this->storeParcellesAffectation(true);
+  }
+
+  public function storeParcellesAffectation($isUpDate=false) {
+    if(!$this->validation){
       $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant);
   		foreach ($intention->getParcelles() as $parcelle) {
-  		    if ($parcelle->affectation) {
-  		        $prod = $parcelle->getProduit();
-  		        $hash = str_replace('/declaration/', '', $prod->getHash());
-  		        if ($this->declaration->exist($hash)) {
-  		            $item = $this->declaration->get($hash);
-  		        } else {
-  		            $item = $this->declaration->add($hash);
-  		            $item->libelle = $prod->libelle;
-  		        }
-  		        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
-  		    }
+		    $prod = $parcelle->getProduit();
+        $hash = str_replace('/declaration/', '', $prod->getHash());
+        if ($parcelle->affectation) {
+		        if ($this->declaration->exist($hash)) {
+	            $item = $this->declaration->get($hash);                  
+              foreach ($item->getDetail() as $key => $detail) {
+                $parcelle->affectation = $detail->affectation;                    
+              }
+              
+		        } else {
+	            $item = $this->declaration->add($hash);
+	            $item->libelle = $prod->libelle;
+		        }
+		        $parcelle->origine_doc = $intention->_id;
+		        unset($parcelle['origine_hash']);
+		        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
+		    }
+        elseif($isUpDate && $this->declaration->exist($hash) !== null){
+          $item = $this->declaration->get($hash);
+          $parcelle->origine_doc = $intention->_id;
+          unset($parcelle['origine_hash']);
+          $detail = $item->detail->remove($parcelle->getKey(), $parcelle);   
+        }
   		}
+    }
   }
 
   public function getConfiguration() {
@@ -154,7 +172,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                   continue;
               }
           }
-        $lieu = $configuration->declaration->get($hash)->getLieu();
+        $lieu = $configuration->declaration->get($hash);
         $lieux[$lieu->getKey()] = $lieu->getLibelle();
       }
       ksort($lieux);
