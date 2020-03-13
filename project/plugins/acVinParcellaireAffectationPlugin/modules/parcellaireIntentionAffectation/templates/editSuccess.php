@@ -3,7 +3,7 @@
 <?php include_partial('parcellaireIntentionAffectation/breadcrumb', array('parcellaireIntentionAffectation' => $parcellaireIntentionAffectation)); ?>
 
 <div class="page-header no-border">
-    <h2>Intention d'affectation parcellaire</h2>
+    <h2>Intention d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -13,20 +13,15 @@
  	<div class="alert alert-danger" role="alert">La saisie des surfaces affectables est invalide</div>
 <?php endif; ?>
 
-<p>Veuillez activer les parcelles pouvant prétendre à l'affectation d'une dénomination complémentaire.</p>
-
 <form id="validation-form" action="<?php echo url_for("parcellaireintentionaffectation_edit", array("sf_subject" => $etablissement, "campagne" => $campagne)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php foreach ($parcellaireIntentionAffectation->declaration->getParcellesByCommune(null) as $commune => $parcelles): ?>
-	    <div class="row">
-        <div class="col-xs-6">
-            <h3><?php echo $commune; ?></h3>
+    <?php foreach ($parcellaireIntentionAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
+    <div style="margin-bottom: 1em;" class="row">
+        <div class="col-xs-12">
+            <h3>Dénomination complémentaire de <?php echo str_replace("-", " ", $dgc); ?></h3>
         </div>
-        <div class="col-xs-6">
-           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont affectables</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
-       </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 		<thead>
@@ -36,9 +31,8 @@
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-2">Dénom. compl.</th>
                 <th class="col-xs-1">Affectable?</th>
-                <th class="col-xs-1">Date affectable</th>
+                <th class="col-xs-1">Date affectable depuis</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. affectable <span class="text-muted small">(ha)</span></th>
             </tr>
 		</thead>
@@ -53,8 +47,8 @@
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
-            	<td><?php echo $parcelle->getDgcLibelle(); ?></td>
+                <td style="text-align: right;"><?php echo number_format($parcelle->superficie_affectation,4); ?></td>
+
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" id = "affectation" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectation']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['affectation']->renderError() ?>

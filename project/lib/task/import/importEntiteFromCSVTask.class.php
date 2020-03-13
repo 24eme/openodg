@@ -5,7 +5,9 @@ class importEntitesFromCSVTask extends sfBaseTask
 
     protected $file_path = null;
     protected $chaisAttributsInImport = array();
+    protected $negoces = array();
     protected $isSuspendu = false;
+    protected $negoce_file_path = null;
 
 
     const CSV_IDENTIFIANT_LIGNE = 0; // used
@@ -42,13 +44,16 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_CONDITIONNEUR = 27;
     const CSV_ELEVEUR = 28;
 
+    const CSV_ARCHIVE = 29;
+
 
 
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('file_path', sfCommandArgument::REQUIRED, "Fichier csv pour l'import")
+            new sfCommandArgument('file_path', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('negoce_file_path', sfCommandArgument::REQUIRED, "Fichier csv des negociant pour l'import")
         ));
 
         $this->addOptions(array(
@@ -70,6 +75,7 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $this->file_path = $arguments['file_path'];
+        $this->negoce_file_path = $arguments['negoce_file_path'];
 
         error_reporting(E_ERROR | E_PARSE);
 
@@ -79,11 +85,23 @@ EOF;
 
     protected function import(){
 
-      if(!$this->file_path){
+      if(!$this->file_path || !$this->negoce_file_path){
         throw new  sfException("Le paramètre du fichier csv doit être renseigné");
 
       }
       error_reporting(E_ERROR | E_PARSE);
+
+      $this->negoces["cvi"] = array();
+      $this->negoces["siret"] = array();
+      foreach(file($this->negoce_file_path) as $line) {
+        $data = str_getcsv($line, ';');
+        if($cvi = trim($data[2])){
+          $this->negoces["cvi"][] = $cvi;
+        }
+        if($siret = trim($data[3])){
+          $this->negoces["siret"][] = $siret;
+        }
+      }
 
       foreach(file($this->file_path) as $line) {
         if(!preg_match("/^Identifiant ligne/", $line)){
@@ -91,7 +109,7 @@ EOF;
             $this->importEntite($line);
           }
         }
-    }
+  }
 
     protected function importEntite($line){
 
@@ -115,7 +133,10 @@ EOF;
             $societe = new societe();
             $societe->identifiant = $identifiant;
             $cvi = $data[self::CSV_EVV];
+
+
             $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
+
             $societe->constructId();
 
             $societe->raison_sociale = $this->buildRaisonSociete($data);
@@ -165,7 +186,9 @@ EOF;
             }
 
             $societe->email = str_replace("'","",trim($data[self::CSV_EMAIL]));
-
+            if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
+              $societe->statut = SocieteClient::STATUT_SUSPENDU;
+            }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
             return $societe;
@@ -174,7 +197,9 @@ EOF;
     protected function importEtablissement($societe,$data,$identifiant){
 
           $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-          // Type d'établissement????
+          if(in_array($data[self::CSV_EVV],$this->negoces["cvi"]) || in_array($data[self::CSV_SIRET],$this->negoces["siret"])){
+            $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT;
+          }
 
           $cvi = $data[self::CSV_EVV];
           $etablissement = $societe->createEtablissement($type_etablissement);
@@ -202,6 +227,9 @@ EOF;
           if(trim($data[self::CSV_OBSERVATION])){
               $etablissement->setCommentaire($data[self::CSV_OBSERVATION]);
           }
+          if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
+            $etablissement->statut = SocieteClient::STATUT_SUSPENDU;
+          }
           $etablissement->save();
 
           return $etablissement;
@@ -214,6 +242,9 @@ EOF;
       $contact->prenom = trim($data[self::CSV_CONTACT_PRENOM]);
       $contact->fonction = trim($data[self::CSV_CONTACT_FONCTION]);
       $contact->telephone = $data[self::CSV_CONTACT_TELEPHONE];
+      if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
+        $contact->statut = SocieteClient::STATUT_SUSPENDU;
+      }
       $contact->save();
 
     }

@@ -387,7 +387,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
 
             throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
         }
-        
+
         $this->interpro = "INTERPRO-declaration";
         $compteMaster = $this->getMasterCompte();
 
@@ -436,6 +436,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         }
         $needSave = true;
     }
+
+    if($compteOrEtablissement->exist('raison_sociale') && $compteOrEtablissement->raison_sociale != $this->raison_sociale){
+      $compteOrEtablissement->raison_sociale  = $this->raison_sociale;
+      $needSave = true;
+    }
+
     if (CompteGenerique::isSameAdresseComptes($compteOrEtablissement, $compteMasterOrigin)) {
         $ret = $this->pushAdresseTo($compteOrEtablissement);
         $needSave = $needSave || $ret;

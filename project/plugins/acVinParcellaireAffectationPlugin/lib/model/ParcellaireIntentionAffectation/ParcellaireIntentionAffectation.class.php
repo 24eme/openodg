@@ -15,6 +15,16 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $id = $this->getTheoriticalId();
       $this->set('_id', $id);
   }
+  public function initDoc($identifiant, $campagne, $date) {
+      $this->identifiant = $identifiant;
+      $this->campagne = $campagne;
+      if ($this->exist('date')) {
+        $this->date = $date;
+      }
+      $this->constructId();
+      $this->storeDeclarant();
+      $this->storeParcelles();
+  }
 
   public function storeParcelles() {
     $lieux = $this->getConfiguration()->getLieux();
@@ -59,34 +69,22 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
               }
           }
       }
-      $toDelete = array();
-      $parcelles = array_keys($this->getParcelles());
+      $affectees = array();
+      $parcelles = $this->getParcelles();
       if (count($parcelles) > 0) {
-          $parcellaireParcelles = array_keys($parcellaire->getParcelles());
-          foreach ($parcelles as $parcelleLieu) {
-              $parcelle =  preg_replace('/\/lieux\/[A-Za-z0-9]+\/couleurs\//', '/lieux/'.Configuration::DEFAULT_KEY.'/couleurs/', $parcelleLieu);
-              if (!in_array($parcelle, $parcellaireParcelles)) {
-                  $toDelete[str_replace('/declaration/', '', $parcelleLieu)] = 1;
+          foreach ($parcelles as $parcelle) {
+              if ($parcelle->affectation) {
+                  $affectees[$parcelle->getKey()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
               }
           }
       }
-      foreach ($this->getParcelles() as $parcelleLieu => $parcelleLieuObject) {
-          if (preg_match('/\/lieux\/([A-Za-z0-9]+)\/couleurs\//', $parcelleLieu, $m)) {
-              if (!in_array($m[1], $lieux)) {
-                  $toDelete[str_replace('/declaration/', '', $parcelleLieuObject->getProduit()->getHash())] = 1;
-              }
-          }
-      }
-      foreach ($toDelete as $hash => $v) {
-          if ($this->declaration->exist($hash)) {
-        	     $this->declaration->remove($hash);
-          }
-      }
+      $this->remove('declaration');
+      $this->add('declaration');
       foreach ($parcellaire as $hash => $parcellaireProduit) {
           foreach ($parcellaireProduit->detail as $parcelle) {
               if (isset($denominations[$parcelle->code_commune])) {
                   foreach ($denominations[$parcelle->code_commune] as $lieu) {
-                      $hashWithLieu = str_replace('lieux/'.Configuration::DEFAULT_KEY, 'lieux/'.$lieu, $hash);
+                      $hashWithLieu = preg_replace('/lieux\/'.Configuration::DEFAULT_KEY.'\/couleurs\/[a-zA-Z0-9]+\/cepages\/[a-zA-Z0-9]+$/', 'lieux/'.$lieu, $hash);
                   }
                   if (!$this->getConfiguration()->declaration->exist($hashWithLieu)) {
                       continue;
@@ -118,8 +116,16 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       $subitem->add('vtsgn', (int)$parcelle->vtsgn);
                   }
                   $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
-                  $subitem->affectation = 0;
-                  $subitem->superficie_affectation = $parcelle->superficie;
+                  if (isset($affectees[$parcelle->getKey()])) {
+                      $subitem->affectation = 1;
+                      $subitem->date_affectation = $affectees[$parcelle->getKey()]['date'];
+                      $subitem->superficie_affectation  = $affectees[$parcelle->getKey()]['superficie'];
+                  } else {
+                    $subitem->affectation = 0;
+                    $subitem->superficie_affectation = $parcelle->superficie;
+                  }
+                  $subitem->origine_doc = $parcelle->getDocument()->_id;
+                  $subitem->origine_hash = $parcelle->getHash();
               }
           }
       }
