@@ -23,6 +23,9 @@
 
  * @method float getSuperficie()
  * @method float setSuperficie()
+ * @method float getSuperficieAffectation()
+ * @method float setSuperficieAffectation()
+
  * @method string getCommune()
  * @method string setCommune()
  * @method string getCodeCommune()

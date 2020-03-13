@@ -90,7 +90,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function calculateVolumeRevendiqueVCI()
     {
     	$vci = array();
+        foreach($this->getProduits() as $produit) {
+            if(!$produit->exist('volume_revendique_vci') || $this->isNonRecoltant()) {
+                continue;
+            }
+            $produit->volume_revendique_vci = 0;
+        }
     	foreach ($this->getProduitsVci() as $produit) {
+            if(!$this->isNonRecoltant() && $produit->getKey() != RegistreVCIClient::LIEU_CAVEPARTICULIERE && $produit->getKey() != $this->identifiant) {
+                continue;
+            }
     		if (!isset($vci[$produit->getCouleur()->getHash()])) {
                 $vci[$produit->getCouleur()->getHash()] = 0;
     		}
