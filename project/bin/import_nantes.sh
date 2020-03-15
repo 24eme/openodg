@@ -34,7 +34,7 @@ NANTES_IMPORT_TMP=$DATA_DIR"/Nantes"
 
 echo "Traitement du fichier listes_operateurs.txt"
 recode iso88591..utf8 $NANTES_IMPORT_TMP/listes_operateurs.txt
-cat $NANTES_IMPORT_TMP/listes_operateurs.txt| tr '\r' ' ' | sed 's/ $//' | sed -r 's/(.+)(True|False)$/\1\2£/' | tr '\n' ' ' | tr ';' ' ' | sed -r 's|£\ |\n|g' | sed -r 's|\t|;|g' | sed 's|;Vinificateur;Conditionneur;Eleveur\ |;Vinificateur;Conditionneur;Eleveur\n|' | awk -F ";" 'begin{ cpt=0 }{ print cpt";"$0; cpt++}' | sed 's|;EVV principal;Siret;Forme;|Identifiant ligne;EVV principal;Siret;Forme;|' | sort -t ';' -k 2,2 > $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp
+cat $NANTES_IMPORT_TMP/listes_operateurs.txt | sed 's|EARL DOMAINE DE LA COMBE|DOMAINE DE LA COMBE|' | tr '\r' ' ' | sed 's/ $//' | sed -r 's/(.+)(True|False)$/\1\2£/' | tr '\n' ' ' | tr ';' ' ' | sed -r 's|£\ |\n|g' | sed -r 's|\t|;|g' | sed 's|;Vinificateur;Conditionneur;Eleveur\ |;Vinificateur;Conditionneur;Eleveur\n|' | awk -F ";" 'begin{ cpt=0 }{ print cpt";"$0; cpt++}' | sed 's|;EVV principal;Siret;Forme;|Identifiant ligne;EVV principal;Siret;Forme;|' | sort -t ';' -k 2,2 > $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp
 
 
 cat $NANTES_IMPORT_TMP/EVV_operateur_archives.csv | cut -d ';' -f 1 | grep -vE '^0$' | sed -r "s|(.+)|grep '\1' $NANTES_IMPORT_TMP/listes_operateurs.propre.csv |" | bash > $NANTES_IMPORT_TMP"/operateurs_archives_trouves.csv.tmp"
@@ -94,10 +94,12 @@ php symfony douane:import $URL_EXPORT_LOIRE/2019_dr_douane.csv --application=nan
 
 
 echo ""
-echo "Import des DR depuis VINSI"
+echo "Import des DR, SV12 et SV11 depuis VINSI"
 sleep 2
 echo ""
 php symfony douane:import $URL_EXPORT_LOIRE/dr.csv --application=nantes
+php symfony douane:import $URL_EXPORT_LOIRE/sv12.csv --application=nantes
+php symfony douane:import $URL_EXPORT_LOIRE/sv11.csv --application=nantes
 
 echo ""
 echo "Import des DRev de cette année"

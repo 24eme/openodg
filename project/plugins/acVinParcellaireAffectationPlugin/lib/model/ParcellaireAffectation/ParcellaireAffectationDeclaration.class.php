@@ -27,6 +27,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         $parcelles = array();
 
         foreach($this->getParcelles() as $hash => $parcelle) {
+            //print_r($parcelle->getDgcLibelle());exit();
             $key = str_replace(" ", "-", $parcelle->getDgcLibelle());
             
             if ($onlyAffectee && !$parcelle->affectee) {

@@ -2,7 +2,9 @@
 
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 <?php include_partial('parcellaireAffectation/step', array('step' => 'affectations', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
-
+<div class="page-header no-border">
+    <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
+</div>
 <form id="validation-form" action="<?php echo url_for("parcellaireaffectation_affectations", $parcellaireAffectation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -39,7 +41,9 @@
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
-                <td style="justify-content: space-between; display: flex;"><span style=""  class="text-muted"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo ceil($percent)."%"; ?>&nbsp;</span><span style="text-align: right;"><?php echo  number_format($parcelle->superficie_affectation,4); ?></span></td>
+                <td>
+                    <span  class="text-muted"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo ceil($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
+                </td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['affectee']->renderError() ?>

@@ -166,6 +166,9 @@ class FactureClient extends acCouchdbClient {
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
+        if(FactureConfiguration::getInstance()->hasPaiements()){
+          $facture->add("paiements",array());
+        }
 
         if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
           return null;
