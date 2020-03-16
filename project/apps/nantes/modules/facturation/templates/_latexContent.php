@@ -61,8 +61,8 @@
 }
 \cfoot{\small{
 	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE - \EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT - \EMETTEUREMAIL \\
+	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
+	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
 	N°TVA : FR96803741834
 }}
 
@@ -124,14 +124,14 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
   \hline
-  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
+  \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-    <?php if (count($ligne->details) === 1): ?>
+    <?php if (count($ligne->details) === 1 && !$ligne->details->getFirst()->libelle): ?>
         \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
         <?php echo formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
-        <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo $ligne->details[0]->unite ?>} &
-        \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} &
+        <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo ($ligne->details[0]->exist('unite') && $ligne->details[0]->unite)? $ligne->details[0]->unite : "~~" ?>} &
+        \textbf{<?php echo ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',')." €"; ?>} &
         \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
         \hline
         <?php continue ?>
@@ -154,7 +154,9 @@
 \end{center}
 
 \begin{minipage}{0.5\textwidth}
-<?= escape_string_for_latex(sfConfig::get('facture_configuration_facture')['modalite_paiement']) ?>
+<?= escape_string_for_latex(
+    ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
+) ?>
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \renewcommand{\arraystretch}{1.5}

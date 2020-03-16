@@ -116,6 +116,10 @@ class habilitationActions extends sfActions {
             $this->filtre = $request->getParameter('filtre');
         }
 
+        if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
+          $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
+        }
+
         if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
             $this->editForm = new HabilitationEditionForm($this->habilitation);
         }
@@ -286,7 +290,7 @@ class habilitationActions extends sfActions {
             $this->formDemandeEdition->save();
         } catch (Exception $e) {
             $this->getUser()->setFlash('erreur', $e->getMessage());
-            
+
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
 
