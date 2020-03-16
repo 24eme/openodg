@@ -206,6 +206,9 @@ EOF;
     public function importLineDrevCVI($data) {
         $cviEtb = strtoupper($data[self::CSVVCI_ID_OP]);
         $etablissement =  EtablissementClient::getInstance()->findByCvi($cviEtb);
+        if(!$etablissement){
+          return;
+        }
         $idEtb = $etablissement->getIdentifiant();
         $produitFile = trim($data[self::CSVVCI_PRODUIT]);
         $campagne = $data[self::CSVVCI_CAMPAGNE];
