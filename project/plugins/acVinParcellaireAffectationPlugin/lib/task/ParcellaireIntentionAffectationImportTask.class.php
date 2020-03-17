@@ -69,7 +69,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                     break;
                 }
             }
-            if ($find) { continue; }
+            if ($find) { $intentionDpap->save(); continue; }
             /*
              * AFFECTATION : IDU + SUPERFICIE (- CEPAGE)
              */
@@ -83,7 +83,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                     break;
                 }
             }
-            if ($find) { continue; }
+            if ($find) { $intentionDpap->save(); continue; }
             /*
              * AFFECTATION IDU et/ou CEPAGE : 1 PARCELLE
              */
@@ -104,7 +104,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 $find = true;
                 echo sprintf("SUCCESS;IDU + CEPAGE UNE PARCELLE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
             }
-            if ($find) { continue; }
+            if ($find) { $intentionDpap->save(); continue; }
             if (count($foundIdu) == 1) {
                 $parcelle = current($foundIdu);
                 $parcelle->affectation = 1;
@@ -113,7 +113,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 $find = true;
                 echo sprintf("SUCCESS;IDU UNE PARCELLE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
             }
-            if ($find) { continue; }
+            if ($find) { $intentionDpap->save(); continue; }
             /*
              * AFFECTATION : COMBINAISON IDU+CEPAGE
              */
@@ -158,7 +158,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 }
                 
             }
-            if ($find) { continue; }
+            if ($find) { $intentionDpap->save(); continue; }
             $findIdu = false;
             $findIduCep = false;
             foreach ($parcelles as $parcelle) {
