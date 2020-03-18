@@ -41,20 +41,29 @@ EOF;
             $cvis[$data[DouaneCsvFile::CSV_RECOLTANT_CVI]."_".$data[DouaneCsvFile::CSV_CAMPAGNE].'_'.$data[DouaneCsvFile::CSV_TYPE]][] = $ligne;
         }
 
-        foreach($cvis as $cviCamapagne => $lignes) {
-                $cviParts = explode('_', $cviCamapagne);
+        foreach($cvis as $cviCampagne => $lignes) {
+                $cviParts = explode('_', $cviCampagne);
                 $cvi = $cviParts[0];
                 $campagne = $cviParts[1];
                 $type = $cviParts[2];
 
-                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
+                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi,true);
 
                 if(!$etablissement) {
-                    echo "ERREUR;$cvi;cvi non trouvé\n";
+                    echo "$type;ERREUR;$cvi;cvi non trouvé\n";
 
                     continue;
                 }
 
+                if(is_array($etablissement) && count($etablissement) > 1) {
+                    echo "$type;ERREUR;$cvi;plusieurs établissements ont ce cvi\n";
+
+                    continue;
+                }
+
+                if($etablissement->isSuspendu()){
+                  echo "$type;WARNING;$cvi;cvi opérateur archivé\n";
+                }
                 $fichier = FichierClient::getInstance()->findByArgs($type, $etablissement->identifiant, $campagne);
 
                 if(!$fichier) {

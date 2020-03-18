@@ -57,7 +57,7 @@ sleep 2
 echo "Traitement de l'import"
 sleep 2
 
-php symfony import:entite-from-csv $NANTES_IMPORT_TMP/listes_operateurs.csv $NANTES_IMPORT_TMP/societe_negoce.csv --application="nantes" --trace
+php symfony import:entite-from-csv $NANTES_IMPORT_TMP/listes_operateurs.csv $NANTES_IMPORT_TMP/societe_negoce.csv $NANTES_IMPORT_TMP/EVV_operateur_archives.csv --application="nantes" --trace
 
 echo ""
 echo ""
