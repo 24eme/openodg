@@ -62,7 +62,8 @@ EOF;
                 }
 
                 if($etablissement->isSuspendu()){
-                  echo "$type;WARNING;$cvi;cvi opérateur archivé\n";
+                  echo "$type;ERREUR;$cvi;cvi opérateur archivé, pas de reprise\n";
+                  continue;
                 }
                 $fichier = FichierClient::getInstance()->findByArgs($type, $etablissement->identifiant, $campagne);
 

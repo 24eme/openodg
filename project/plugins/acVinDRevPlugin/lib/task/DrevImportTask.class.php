@@ -65,7 +65,8 @@ EOF;
                     continue;
                 }
                 if($etablissement->isSuspendu()){
-                  echo "DREV;WARNING;$cvi;cvi opérateur archivé\n";
+                  echo "DREV;ERROR;$cvi;cvi opérateur archivé, pas de reprise\n";
+                  continue;
                 }
                 $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
 
