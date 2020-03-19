@@ -36,7 +36,7 @@ echo "Traitement du fichier listes_operateurs.txt"
 # recode iso88591..utf8 $NANTES_IMPORT_TMP/listes_operateurs.txt
 # cat $NANTES_IMPORT_TMP/listes_operateurs.txt | sed 's|EARL DOMAINE DE LA COMBE|DOMAINE DE LA COMBE|' | tr '\r' ' ' | sed 's/ $//' | sed -r 's/(.+)(True|False)$/\1\2£/' | tr '\n' ' ' | tr ';' ' ' | sed -r 's|£\ |\n|g' | sed -r 's|\t|;|g' | sed 's|;Vinificateur;Conditionneur;Eleveur\ |;Vinificateur;Conditionneur;Eleveur\n|' | awk -F ";" 'begin{ cpt=0 }{ print cpt";"$0; cpt++}' | sed 's|;EVV principal;Siret;Forme;|Identifiant ligne;EVV principal;Siret;Forme;|' | sort -t ';' -k 2,2 > $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp
 
-cat $NANTES_IMPORT_TMP/listes_operateurs.propre.v2.csv | sed 's|;Vinificateur;Conditionneur;Eleveur\ |;Vinificateur;Conditionneur;Eleveur\n|' | awk -F ";" 'begin{ cpt=0 }{ print cpt";"$0; cpt++}' | sed 's|;EVV principal;Siret;Forme;|Identifiant ligne;EVV principal;Siret;Forme;|' | sort -t ';' -k 2,2 > $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp
+cat $NANTES_IMPORT_TMP/listes_operateurs.propre.v2.csv | sort -t ';' -k 2,2 > $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp
 
 
 cat $NANTES_IMPORT_TMP/EVV_operateur_archives.csv | cut -d ';' -f 1 | grep -vE '^0$' | sed -r "s|(.+)|grep '\1' $NANTES_IMPORT_TMP/listes_operateurs.propre.csv |" | bash > $NANTES_IMPORT_TMP"/operateurs_archives_trouves.csv.tmp"
@@ -48,18 +48,17 @@ join -t ";" -1 2 -2 1 -a 1 $NANTES_IMPORT_TMP/listes_operateurs.csv.tmp $NANTES_
 cat $NANTES_IMPORT_TMP/listes_operateurs.notsorted | sed -r 's|([0-9A-Za-z ]*);([0-9A-Za-z ]+);(.+)|\2;\1;\3|' | sort -t ';' -k 1,1  > $NANTES_IMPORT_TMP/listes_operateurs.csv
 
 
-echo $NANTES_IMPORT_TMP/listes_operateurs.csv
 
 echo "CSV listes_operateurs.csv créé :"
 sleep 2
-cat $NANTES_IMPORT_TMP/listes_operateurs.csv
+cat $NANTES_IMPORT_TMP/listes_operateurs.propre.v2.csv
 echo ""
 echo ""
 sleep 2
 echo "Traitement de l'import"
 sleep 2
 
-php symfony import:entite-from-csv $NANTES_IMPORT_TMP/listes_operateurs.csv $NANTES_IMPORT_TMP/societe_negoce.csv $NANTES_IMPORT_TMP/EVV_operateur_archives.csv --application="nantes" --trace
+php symfony import:entite-from-csv $NANTES_IMPORT_TMP/listes_operateurs.propre.v2.csv $NANTES_IMPORT_TMP/societe_negoce.csv $NANTES_IMPORT_TMP/EVV_operateur_archives.csv --application="nantes" --trace
 
 echo ""
 echo ""
