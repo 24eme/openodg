@@ -18,4 +18,4 @@ echo "Génération des abonnements"
 bash bin/compte/update.sh "php symfony abonnement:generate \$id $CAMPAGNE_FACTURATION --application=ava"
 
 echo "Génération des registres VCI ayant consituté du VCI à partir des DR"
-php symfony import:VCIFromDR $CAMPAGNE" data/dr/$CAMPAGNE.csv --trace --application=ava
+php symfony import:VCIFromDR $CAMPAGNE data/dr/$CAMPAGNE.csv --application=ava
