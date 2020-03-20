@@ -45,3 +45,7 @@ cat $EXPORTDIR/facture.csv | iconv -f ISO88591//TRANSLIT -t UTF-8 | cut -d ";" -
 done;
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/facture_stats.csv.part > $EXPORTDIR/facture_stats.csv
 rm $EXPORTDIR/facture_stats.csv.part
+
+for ((i=2015 ; $(date +%Y) -i ; i++)); do
+       curl "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/dr_"$i".csv
+done

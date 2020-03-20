@@ -1,9 +1,9 @@
 {
-   "_id": "TEMPLATE-FACTURE-AOC-2018",
+   "_id": "TEMPLATE-FACTURE-AOC-2019",
    "type": "TemplateFacture",
-   "campagne": "2018",
+   "campagne": "2019",
    "template": "AOC",
-   "libelle": "2019 - AOC Alsace",
+   "libelle": "2020 - AOC Alsace",
    "docs": [
        "DRev",
        "RegistreVCI"
@@ -44,7 +44,7 @@
                    "modele": "CotisationVariable",
                    "prix": 40.74,
                    "tva": 0,
-                   "libelle": "hectares vinifiés (récolte 2018)",
+                   "libelle": "hectares vinifiés (récolte 2019)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -148,7 +148,7 @@
                },
                "COMPTE-S006195": {
                    "modele": "CotisationFixe",
-                   "prix": 15,
+                   "prix": 16,
                    "tva": 0,
                    "libelle": "Cotisation syndicat viticole BERGHOLTZ",
                    "complement_libelle": "",
@@ -333,7 +333,7 @@
                },
                "COMPTE-S006232": {
                    "modele": "CotisationFixe",
-                   "prix": 7.5,
+                   "prix": 10,
                    "tva": 0,
                    "libelle": "Cotisation syndicat viticole KINTZHEIM",
                    "complement_libelle": "",
@@ -344,7 +344,7 @@
                },
                "COMPTE-S006235": {
                    "modele": "CotisationFixe",
-                   "prix": 11,
+                   "prix": 20,
                    "tva": 0,
                    "libelle": "Cotisation syndicat viticole MITTELWIHR",
                    "complement_libelle": "",
@@ -665,7 +665,7 @@
                },
                "COMPTE-S006245": {
                    "modele": "CotisationTrancheFixe",
-                   "prix": 5,
+                   "prix": 3,
                    "tva": 0,
                    "tranche": 100,
                    "depart": 0,
@@ -679,7 +679,7 @@
                },
                "COMPTE-S006251": {
                    "modele": "CotisationTrancheFixe",
-                   "prix": 1,
+                   "prix": 1.5,
                    "tva": 0,
                    "tranche": 100,
                    "depart": 0,
@@ -1622,7 +1622,7 @@
                    "modele": "CotisationVariable",
                    "prix": 14.58,
                    "tva": 0.2,
-                   "libelle": "hectares vinifiés (récolte 2018)",
+                   "libelle": "hectares vinifiés (récolte 2019)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -1641,7 +1641,7 @@
                    "modele": "CotisationVariable",
                    "prix": 0.15,
                    "tva": 0,
-                   "libelle": "hl de vin revendiqué (récolte 2018)",
+                   "libelle": "hl de vin revendiqué (récolte 2019)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -1653,36 +1653,17 @@
        "flavescence": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Fonds dédié flavescence dorée",
-           "code_comptable": "467750",
+           "libelle": "Contribution Flavescence dorée",
+           "code_comptable": "706470",
            "details": {
                "cotisation": {
                    "modele": "CotisationVariable",
                    "prix": 0.04,
                    "tva": 0,
-                   "libelle": "surface totale déclaration de récolte 2018 (ares)",
+                   "libelle": "surface totale déclaration de récolte 2019 (ares)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
-                   ],
-                   "callback": "getSurfaceFacturable"
-               }
-           }
-       },
-       "vci": {
-           "modele": "CotisationsCollection",
-           "callback": "",
-           "libelle": "VCI",
-           "code_comptable": "706700",
-           "details": {
-               "cotisation": {
-                   "modele": "CotisationVariable",
-                   "prix": 15,
-                   "tva": 0,
-                   "libelle": "hectares (récolte 2018)",
-                   "complement_libelle": "",
-                   "docs": [
-                       "RegistreVCI"
                    ],
                    "callback": "getSurfaceFacturable"
                }
