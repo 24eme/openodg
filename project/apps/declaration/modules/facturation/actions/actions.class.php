@@ -174,6 +174,11 @@ class facturationActions extends sfActions
 
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
+
+        if(!$this->getUser()->isAdmin() && !$this->facture->exist('date_telechargement')) {
+            $this->facture->add('date_telechargement', date('Y-m-d'));
+            $this->facture->save();
+        }
         exit;
     }
 
