@@ -42,7 +42,7 @@
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
                 <td>
-                    <span  class="text-muted"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo ceil($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
+                    <span  class="text-muted"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
                 </td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
