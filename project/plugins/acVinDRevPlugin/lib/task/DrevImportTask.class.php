@@ -36,7 +36,7 @@ EOF;
 
         $csvFile = new CsvFile($arguments['csv']);
         $csv = $csvFile->getCsv();
-        $cvis = null;
+        $cvis = array();
         foreach($csv as $ligne => $data) {
             if(!$data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
                 continue;
@@ -46,19 +46,28 @@ EOF;
             $cvis[$cvi."_".$campagne][] = $ligne;
         }
 
-        foreach($cvis as $cviCamapagne => $lignes) {
-                $cviParts = explode('_', $cviCamapagne);
+        foreach($cvis as $cviCampagne => $lignes) {
+                $cviParts = explode('_', $cviCampagne);
                 $cvi = $cviParts[0];
                 $campagne = $cviParts[1];
 
-                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
+                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi,true);
 
                 if(!$etablissement) {
-                    echo "ERREUR;$cvi;cvi non trouvé\n";
+                    echo "DREV;ERREUR;$cvi;cvi non trouvé\n";
 
                     continue;
                 }
 
+                if(is_array($etablissement) && count($etablissement) > 1) {
+                    echo "DREV;ERREUR;$type;$cvi;plusieurs établissements ont ce cvi\n";
+
+                    continue;
+                }
+                if($etablissement->isSuspendu()){
+                  echo "DREV;ERROR;$cvi;cvi opérateur archivé, pas de reprise\n";
+                  continue;
+                }
                 $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
 
                 if($drev) {
