@@ -7,7 +7,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Dénomination complémentaire;Surface identifiée;Signataire;Date de validation;Type de declaration\n";
+        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Dénomination complémentaire;Surface identifiée;Signataire;Date de validation;Type de declaration\n";
     }
 
     public function __construct($doc, $header = true) {
@@ -52,13 +52,10 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
             	$appellation = $configProduit->getAppellation()->getKey();
             	$mention = $configProduit->getMention()->getKey();
             	$lieu = $configProduit->getLieu()->getKey();
-            	$couleur = $configProduit->getCouleur()->getKey();
-            	$cepage = $configProduit->getCepage()->getKey();
-            	$inao = $configProduit->getCodeDouane();
 
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-            	$csv .= sprintf("%s;Parcellaire Affectation;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
-            	$certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$libelle_complet,
+            	$csv .= sprintf("%s;Parcellaire Affectation;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+            	$certification,$genre,$appellation,$mention,$lieu,$libelle_complet,
             	$this->protectStr($parcelle->idu),
             	$parcelle->code_commune,
             	$this->protectStr($parcelle->commune),

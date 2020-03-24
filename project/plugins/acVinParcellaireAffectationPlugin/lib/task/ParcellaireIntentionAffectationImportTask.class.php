@@ -26,6 +26,15 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
     {
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+        $ids = DeclarationClient::getInstance()->getIds("ParcellaireIntentionAffectation", "TOUT");
+        foreach($ids as $id) {
+            if ($doc = DeclarationClient::getInstance()->find($id)) {
+                $doc->validation = $doc->date;
+                $doc->validation_odg = $doc->date;
+                $doc->save();
+            }
+        }
+        exit;
         if(!file_exists($arguments['csv'])) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['csv']);
             return;

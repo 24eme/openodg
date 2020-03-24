@@ -42,6 +42,16 @@ class ConfigurationLieu extends BaseConfigurationLieu {
         return $this->getAppellation()->getCertification();
     }
 
+    public function getGenre() {
+    
+        return $this->getAppellation()->getGenre();
+    }
+    
+    public function getLieu() {
+    
+        return $this;
+    }
+
     public function getLabels($interpro) {
 
         return $this->getCertification()->getLabels($interpro);
