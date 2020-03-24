@@ -42,7 +42,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
         $ligne_base = sprintf("%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->campagne, $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->doc->declarant->siret, $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $this->doc->declarant->email);
         foreach ($this->doc->declaration->getParcellesByDgc() as $dgc => $parcelles) {
         	foreach ($parcelles as $parcelle) {
-                if (!$parcelle->affectatee) {
+                if (!$parcelle->affectee) {
                     continue;
                 }
             	$configProduit = $parcelle->getProduit()->getConfig();

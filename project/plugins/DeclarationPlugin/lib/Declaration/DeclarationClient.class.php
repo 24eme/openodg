@@ -90,6 +90,16 @@ class DeclarationClient
             return 'ExportRegistreVCICSV';
         }
 
+        if(class_exists("ParcellaireAffectationClient") && $type == ParcellaireAffectationClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireAffectationCSV';
+        }
+
+        if(class_exists("ParcellaireIntentionAffectationClient") && $type == ParcellaireIntentionAffectationClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireIntentionAffectationCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
