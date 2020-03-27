@@ -15,7 +15,7 @@
             <th class="col-xs-2">Cépage</th>
             <th class="col-xs-1">Année plantat°</th>
             <th class="col-xs-1" style="text-align: right;">Surf. affectable&nbsp;<span class="text-muted small">(ha)</span></th>            
-            <th class="col-xs-1">Type</th>
+            <th class="col-xs-1">Affectation</th>
         </tr>
     </thead>
     <tbody>
@@ -31,9 +31,9 @@
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>
             <td style="text-align: center;">
-                    <?php if ($parcelle->superficie_affectation != $parcelle->superficie): ?>
-                        <span>Partiel</span>
-                    <?php else: ?><span>Total</span>
+                    <?php if (round($parcelle->superficie_affectation,4) != round($parcelle->superficie,4)): ?>
+                        <span>Partielle</span>
+                    <?php else: ?><span>Totale</span>
                 <?php endif; ?>
             </td>
         </tr>
