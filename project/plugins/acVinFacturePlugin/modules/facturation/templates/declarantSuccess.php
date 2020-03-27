@@ -27,11 +27,12 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-2">Date</th>
-            <th class="col-xs-2">Numéro</th>
+            <th class="col-xs-1">Date</th>
+            <th class="col-xs-1">Numéro</th>
             <th class="col-xs-2">Type</th>
             <th class="col-xs-4">Libellé</th>
-            <th class="col-xs-2">Montant TTC</th>
+            <th class="col-xs-2">Montant TTC Facture</th>
+            <th class="col-xs-2">Montant payé</th>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <th style="witdth: 0;"></th>
             <?php endif; ?>
@@ -46,6 +47,7 @@
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
             <td><?php if(!$facture->isAvoir()): ?><?php echo $facture->getTemplate()->libelle ?><?php endif; ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
+            <td class="text-right"><?php echo echoFloat($facture->getMontantPaiement()); ?>&nbsp;€</td>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <td class="text-center dropdown">
               <button type="button" class="btn btn-default btn-default-step btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
