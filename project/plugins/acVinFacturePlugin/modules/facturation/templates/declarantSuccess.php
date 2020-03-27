@@ -31,8 +31,8 @@
             <th class="col-xs-1">Numéro</th>
             <th class="col-xs-2">Type</th>
             <th class="col-xs-4">Libellé</th>
-            <th class="col-xs-2">Montant TTC Facture</th>
-            <th class="col-xs-2">Montant payé</th>
+            <th class="col-xs-2 text-right">Montant TTC Facture</th>
+            <th class="col-xs-2 text-right">Montant payé</th>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <th style="witdth: 0;"></th>
             <?php endif; ?>
