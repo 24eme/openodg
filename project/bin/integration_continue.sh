@@ -26,7 +26,7 @@ fi
 
 echo $$ > $PID_PATH
 
-mkdir $XMLTESTDIR 2> /dev/null
+mkdir -p $XMLTESTDIR 2> /dev/null
 
 git fetch
 git reset --hard origin/master
