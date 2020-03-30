@@ -5,13 +5,6 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
     protected $facture = null;
     protected $header = false;
 
-    const TYPE_LIGNE_LIGNE = 'LIGNE';
-    const TYPE_LIGNE_PAIEMENT = 'PAIEMENT';
-    const TYPE_LIGNE_ECHEANCE = 'ECHEANCE';
-    const TYPE_LIGNE_TVA = 'TVA';
-    const CODE_JOURNAL_FACTURE = "VE00";
-    const CODE_JOURNAL_PAIEMENT = "5200";
-
     public function __construct($doc_or_id, $header = true) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
@@ -28,8 +21,7 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-
-        return "code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire\n";
+        return "Crée le;Nom relation;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Cotisation valorisation HT;Cotisation valorisation TVA;Cotisation valorisation TTC;Cotisation ODG TOTAL ou forfait;Droits I.N.A.O.;Cotisation ODG TOTAL ou forfait + INAO;Total Facture TTC\n";
     }
 
     public function export() {
@@ -39,90 +31,76 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         }
 
         $csv .= $this->exportFacture();
-        $csv .= $this->exportPaiement();
 
         return $csv;
     }
 
-    public function getLibelleFacture() {
-
-        return (($this->facture->isAvoir()) ? "Avoir" : "Facture") . " n°" . $this->facture->getNumeroOdg();
-    }
 
     public function exportFacture() {
-        $csv = "";
 
-        if(!$this->facture->code_comptable_client) {
+        $declarant = $this->facture->declarant;
+        $societe = $this->facture->getSociete();
 
-            throw new sfException(sprintf("Code comptable inexistant %s", $f->_id));
+        $date_facturation = DateTime::createFromFormat("Y-m-d",$this->facture->date_facturation)->format("d/m/Y");
+
+        $csv = $date_facturation.";"
+              .$declarant->nom.";"
+              .$declarant->adresse.";"
+              .$declarant->code_postal.";"
+              .$declarant->commune.";"
+              .$societe->telephone_bureau.";"
+              .$societe->telephone_mobile.";"
+              .$societe->email.";"
+              .$this->facture->numero_facture.";";
+
+        // valorisations
+        $valorisation = $this->getCotisationNode('valorisation');
+
+        if($valorisation){
+          $csv.= $valorisation->montant_ht.";".$valorisation->montant_tva.";".($valorisation->montant_ht+$valorisation->montant_tva).";";
+        }else{
+          $csv.= ";;;";
         }
 
-        $libelle = $this->getLibelleFacture();
+        // odg ou forfait
+        $odg_ou_forfait = $this->getCotisationNode('odg');
+        $odg_ou_forfait_inao_total=0.0;
 
-        foreach ($this->facture->lignes as $l) {
-            if($l->montant_ht === 0) {
-                continue;
-            }
-
-            $commentaire = null;
-            if($l->getKey() == 'syndicat_viticole' && count($l->details) >= 1) {
-                $commentaire = $l->details[0]->libelle;
-            }
-
-            if(in_array($l->getKey(), array('odg_ava', 'ava_syndicale')) && isset($l->details[1])) {
-                preg_match('/\(([0-9\.]+)[ ares]*\)/', $l->details[1]->libelle, $matches);
-                $commentaire = $matches[1];
-            }
-
-            $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_ht) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
-
-            $csv .= "\n";
-            if($l->montant_tva) {
-                $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$this->getSageCompteGeneral($l).';;;;' . (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_tva) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
-
-                $csv .= "\n";
-            }
-
-
+        if(!$odg_ou_forfait){
+          $odg_ou_forfait = $this->getCotisationNode('forfait');
         }
 
-        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
+        if($odg_ou_forfait){
+          $csv .= $odg_ou_forfait->montant_ht.";";
+          $odg_ou_forfait_inao_total+=$odg_ou_forfait->montant_ht;
+        }else{
+          $csv .= ";";
+        }
 
-        $csv .= "\n";
+        // inao
+        $inao = $this->getCotisationNode('inao');
+        if($inao){
+          $csv .= $inao->montant_ht.";";
+          $odg_ou_forfait_inao_total+=$inao->montant_ht;
+        }else{
+          $csv .= ";";
+        }
+
+        // odg + inao
+        $csv .= ($odg_ou_forfait_inao_total)? $odg_ou_forfait_inao_total.";" : ";";
+
+        //total
+        $csv .= $this->facture->total_ttc."\n";
 
         return $csv;
     }
 
-    public function exportPaiement() {
-        $csv = "";
-
-        if($this->facture->isAvoir()) {
-
-            return;
-        }
-
-        if($this->facture->isPayee()) {
-            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';CREDIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;".$this->facture->reglement_paiement;
-            $csv .= "\n";
-            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';511150;;;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
-            $csv .= "\n";
-        }
-
-        return $csv;
+    public function getCotisationNode($cotisation){
+      if($this->facture->lignes->exist($cotisation) && $this->facture->lignes->$cotisation && count($this->facture->lignes->$cotisation)){
+        return $this->facture->lignes->$cotisation;
+      }
+      return null;
     }
 
-    protected function getSageCompteGeneral($ligne) {
-        if ($ligne->getTauxTva() == 0.20) {
-
-            return "445710";
-        }
-
-        if ($ligne->getTauxTva() == 0.021) {
-
-            return "445711";
-        }
-
-        throw new sfException(sprintf("Code sage du Taux de TVA introuvable : %s (%s)", $ligne->getTauxTva(), $ligne->getDocument()->_id));
-    }
 
 }
