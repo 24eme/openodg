@@ -25,7 +25,7 @@
                 <th class="col-xs-1" style="text-align: right;">Surf. totale <span class="text-muted small">(ha)</span></th>
                 <th class="col-xs-1" style="text-align: right;">Surf. dédiée&nbsp;<span class="text-muted small">(ha)</span></th>
                 <th class="col-xs-1">Affectée?</th>
-                <th class="col-xs-1">Type</th>
+                <th class="col-xs-1">Affectation</th>
 
             </tr>
 		</thead>
@@ -42,7 +42,7 @@
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
                 <td>
-                    <span  class="text-muted"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo ceil($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
+                    <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pull-right"><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
                 </td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
@@ -53,9 +53,9 @@
                     </div>
             	</td>
                 <td style="text-align: center;">
-                    <?php if ($parcelle->superficie_affectation != $parcelle->superficie): ?>
-                        <span>Partiel</span>
-                    <?php else: ?><span>Total</span>
+                    <?php if (round($parcelle->superficie_affectation,4) != round($parcelle->superficie,4)): ?>
+                        <span>Partielle</span>
+                    <?php else: ?><span>Totale</span>
                 <?php endif; ?>
                 </td>
             </tr>

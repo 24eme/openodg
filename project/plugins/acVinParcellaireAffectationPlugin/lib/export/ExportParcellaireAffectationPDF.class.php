@@ -100,7 +100,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaireAffectation->campagne."-".($this->parcellaireAffectation->campagne + 1));
+        return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaireAffectation->campagne);
     }
 
     protected function getHeaderSubtitle() {

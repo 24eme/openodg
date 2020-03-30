@@ -30,6 +30,7 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
               $doc_found->date = $date;
               $parcellaireIntentionAffectation = clone $doc_found;
               $parcellaireIntentionAffectation->constructId();
+              $parcellaireIntentionAffectation->updateValidationDoc();
               $parcellaireIntentionAffectation->updateParcelles();
           }
           //$parcellaireIntentionAffectation->save();

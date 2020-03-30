@@ -20,10 +20,16 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $this->campagne = $campagne;
       if ($this->exist('date')) {
         $this->date = $date;
+        $this->updateValidationDoc();
       }
       $this->constructId();
       $this->storeDeclarant();
       $this->storeParcelles();
+  }
+  
+  public function updateValidationDoc() {
+      $this->validation = $this->date;
+      $this->validation_odg = $this->date;
   }
 
   public function storeParcelles() {

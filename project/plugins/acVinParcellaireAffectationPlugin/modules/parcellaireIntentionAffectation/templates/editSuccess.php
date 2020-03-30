@@ -3,7 +3,7 @@
 <?php include_partial('parcellaireIntentionAffectation/breadcrumb', array('parcellaireIntentionAffectation' => $parcellaireIntentionAffectation)); ?>
 
 <div class="page-header no-border">
-    <h2>Intention d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
+    <h2>Identification parcellaire de l'AOC de Côtes de Provence</h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
