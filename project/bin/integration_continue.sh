@@ -28,7 +28,8 @@ echo $$ > $PID_PATH
 
 mkdir $XMLTESTDIR 2> /dev/null
 
-git pull -f > /dev/null 2>&1
+git fetch
+git reset --hard origin/master
 
 BRANCH=$(cat ../.git/HEAD | sed -r 's|^ref: refs/heads/||')
 LASTCOMMIT=$(cat $WORKINGDIR/../.git/refs/heads/$BRANCH)
