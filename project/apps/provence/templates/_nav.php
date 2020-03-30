@@ -52,11 +52,14 @@
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
                 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <li class="<?php if($route instanceof InterfaceExportRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('export'); ?>"><span class="glyphicon glyphicon-export"></span> Export</a></li>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
+                    <li><a href="<?php echo url_for('export'); ?>">Génération</a></li>
+                    <?php if(sfConfig::get('app_export_webpath', null)): ?>
+                    <li><a href="<?php echo sfConfig::get('app_export_webpath', null) ?>">Export</a></li>
+                    <?php endif; ?>
                   </ul>
                 </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
