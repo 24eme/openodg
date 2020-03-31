@@ -90,7 +90,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
           foreach ($parcellaireProduit->detail as $parcelle) {
               if (isset($denominations[$parcelle->code_commune])) {
                   foreach ($denominations[$parcelle->code_commune] as $lieu) {
-                      $hashWithLieu = preg_replace('/lieux\/'.Configuration::DEFAULT_KEY.'\/couleurs\/[a-zA-Z0-9]+\/cepages\/[a-zA-Z0-9]+$/', 'lieux/'.$lieu, $hash);
+                      $hashWithLieu = preg_replace('/lieux\/[a-zA-Z0-9]+\/couleurs\/[a-zA-Z0-9]+\/cepages\/[a-zA-Z0-9]+$/', 'lieux/'.$lieu, $hash);
                   }
                   if (!$this->getConfiguration()->declaration->exist($hashWithLieu)) {
                       continue;
