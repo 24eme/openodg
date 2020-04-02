@@ -5,6 +5,8 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
     protected $facture = null;
     protected $header = false;
 
+    protected $floatHelper = null;
+
     public function __construct($doc_or_id, $header = true) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
@@ -16,6 +18,7 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
             echo sprintf("WARNING;Le document n'existe pas %s\n", $doc_or_id);
             return;
         }
+       $this->floatHelper = FloatHelper::getInstance();
 
         $this->header = $header;
     }
@@ -55,9 +58,8 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
 
         // valorisations
         $valorisation = $this->getCotisationNode('valorisation');
-
         if($valorisation){
-          $csv.= $valorisation->montant_ht.";".$valorisation->montant_tva.";".($valorisation->montant_ht+$valorisation->montant_tva).";";
+          $csv.= $this->floatHelper->formatFr($valorisation->montant_ht, 2, 2).";".$this->floatHelper->formatFr($valorisation->montant_tva, 2, 2).";".$this->floatHelper->formatFr(($valorisation->montant_ht+$valorisation->montant_tva), 2, 2).";";
         }else{
           $csv.= ";;;";
         }
@@ -67,11 +69,11 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         $odg_ou_forfait_inao_total=0.0;
 
         if(!$odg_ou_forfait){
-          $odg_ou_forfait = $this->getCotisationNode('forfait');
+          $odg_ou_forfait = $this->getCotisationNode('odg_forfait');
         }
 
         if($odg_ou_forfait){
-          $csv .= $odg_ou_forfait->montant_ht.";";
+          $csv .= $this->floatHelper->formatFr($odg_ou_forfait->montant_ht, 2, 2).";";
           $odg_ou_forfait_inao_total+=$odg_ou_forfait->montant_ht;
         }else{
           $csv .= ";";
@@ -80,17 +82,17 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         // inao
         $inao = $this->getCotisationNode('inao');
         if($inao){
-          $csv .= $inao->montant_ht.";";
+          $csv .= $this->floatHelper->formatFr($inao->montant_ht, 2 ,2).";";
           $odg_ou_forfait_inao_total+=$inao->montant_ht;
         }else{
           $csv .= ";";
         }
 
         // odg + inao
-        $csv .= ($odg_ou_forfait_inao_total)? $odg_ou_forfait_inao_total.";" : ";";
+        $csv .= ($odg_ou_forfait_inao_total)? $this->floatHelper->formatFr($odg_ou_forfait_inao_total, 2, 2).";" : ";";
 
         //total
-        $csv .= $this->facture->total_ttc."\n";
+        $csv .= $this->floatHelper->formatFr($this->facture->total_ttc, 2, 2)."\n";
 
         return $csv;
     }
