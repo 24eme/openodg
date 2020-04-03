@@ -59,7 +59,7 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        $this->setDefault('has_stock_vci',  $this->getObject()->hasVci());
+        $this->setDefault('has_stock_vci', ($this->getObject()->getNoeudVci() && $this->getObject()->getNoeudVci()->exist('vci')));
 
         if(!$this->getObject()->exist('volume_revendique_recolte')) {
            $this->setDefault('volume_revendique_recolte',  $this->getObject()->volume_revendique);

@@ -14,6 +14,7 @@ Facture:
       date_facturation: {}
       date_paiement: {}
       date_echeance: {}
+      date_telechargement: { required: false }
       reglement_paiement: {}
       montant_paiement: {}
       campagne: {}
@@ -115,6 +116,21 @@ Facture:
             #DRM ou SRV ID => "libelle"
             '*': {}
       modalite_paiement: { required: false}
+      paiements:
+        class: FacturePaiements
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: FacturePaiement
+              type: collection
+              definition:
+                fields:
+                  date : { }
+                  montant: { }
+                  type_reglement: { }
+                  commentaire: { }
       pieces:
         type: array_collection
         definition:

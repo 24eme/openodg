@@ -18,12 +18,13 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
+          "callback" : null,
           "prix": 170,
           "tva": 0,
           "unite": "",
           "libelle": "",
           "complement_libelle": "",
-          "docs": []
+          "docs": ["DR"]
         }
       }
     },

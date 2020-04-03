@@ -4,10 +4,12 @@ class importEntitesFromCSVTask extends sfBaseTask
 {
 
     protected $file_path = null;
+    protected $negoce_file_path = null;
+    protected $file_archives = null;
+
     protected $chaisAttributsInImport = array();
     protected $negoces = array();
     protected $isSuspendu = false;
-    protected $negoce_file_path = null;
 
 
     const CSV_IDENTIFIANT_LIGNE = 0; // used
@@ -44,16 +46,16 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_CONDITIONNEUR = 27;
     const CSV_ELEVEUR = 28;
 
-    const CSV_ARCHIVE = 29;
 
-
-
+    const CSV_ARCHIVE_CVI = 0;
+    const CSV_ARCHIVE_NOM = 1;
 
     protected function configure()
     {
         $this->addArguments(array(
             new sfCommandArgument('file_path', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
-            new sfCommandArgument('negoce_file_path', sfCommandArgument::REQUIRED, "Fichier csv des negociant pour l'import")
+            new sfCommandArgument('negoce_file_path', sfCommandArgument::REQUIRED, "Fichier csv des negociant pour l'import"),
+            new sfCommandArgument('file_archives', sfCommandArgument::OPTIONAL, "Fichier csv des operateurs archivés")
         ));
 
         $this->addOptions(array(
@@ -76,7 +78,7 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $this->file_path = $arguments['file_path'];
         $this->negoce_file_path = $arguments['negoce_file_path'];
-
+        $this->file_archives = $arguments['file_archives'];
         error_reporting(E_ERROR | E_PARSE);
 
         $this->import();
@@ -109,6 +111,13 @@ EOF;
             $this->importEntite($line);
           }
         }
+
+        foreach (file($this->file_archives) as $line) {
+          if(!preg_match("/^EVV principal;Nom relation/", $line)){
+              $line = str_replace("\n", "", $line);
+              $this->importArchives($line);
+            }
+        }
   }
 
     protected function importEntite($line){
@@ -121,7 +130,6 @@ EOF;
                 $soc = $this->importSociete($data,$identifiant);
                 $etb = $this->importEtablissement($soc,$data,$identifiant);
                 $compte = $this->importContactAssocie($soc,$data,$identifiant);
-                echo "\n";
             }else{
                $etb = $soc->getEtablissementPrincipal();
                echo "La société : ".$identifiant." est déjà dans la base\n";
@@ -142,8 +150,8 @@ EOF;
             $societe->raison_sociale = $this->buildRaisonSociete($data);
 
             $societe->add('date_creation', date("Y-m-d"));
-            if($date_creation = trim($data["CSV_DATE_CREATION"]) != "00/00/00"){
-              $societe->add('date_creation', date("Y-m-d",DateTime::createFromFormat("d/m/y",$date_creation)));
+            if(trim($data["CSV_DATE_CREATION"]) && trim($data["CSV_DATE_CREATION"]) != "00/00/00"){
+              $societe->add('date_creation', date("Y-m-d",DateTime::createFromFormat("d/m/y",trim($data["CSV_DATE_CREATION"]))));
             }
 
             $societe->code_comptable_client = null; // pas de code comptable?
@@ -186,9 +194,7 @@ EOF;
             }
 
             $societe->email = str_replace("'","",trim($data[self::CSV_EMAIL]));
-            if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
-              $societe->statut = SocieteClient::STATUT_SUSPENDU;
-            }
+
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
             return $societe;
@@ -227,9 +233,7 @@ EOF;
           if(trim($data[self::CSV_OBSERVATION])){
               $etablissement->setCommentaire($data[self::CSV_OBSERVATION]);
           }
-          if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
-            $etablissement->statut = SocieteClient::STATUT_SUSPENDU;
-          }
+
           $etablissement->save();
 
           return $etablissement;
@@ -242,12 +246,44 @@ EOF;
       $contact->prenom = trim($data[self::CSV_CONTACT_PRENOM]);
       $contact->fonction = trim($data[self::CSV_CONTACT_FONCTION]);
       $contact->telephone = $data[self::CSV_CONTACT_TELEPHONE];
-      if(isset($data[self::CSV_ARCHIVE]) && $data[self::CSV_ARCHIVE]){
-        $contact->statut = SocieteClient::STATUT_SUSPENDU;
-      }
+
       $contact->save();
 
     }
+
+    protected function importArchives($line){
+
+            $data = str_getcsv($line, ';');
+
+            $rs = $data[self::CSV_ARCHIVE_NOM];
+            $cvi = trim($data[self::CSV_ARCHIVE_CVI]);
+            $etbExist = EtablissementClient::getInstance()->findByCvi($cvi,true);
+            if($rs && $cvi && !$etbExist){
+              $societe = SocieteClient::getInstance()->createSociete($rs);
+              $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
+              $societe->add('date_creation', date("Y-m-d"));
+              $societe->statut = SocieteClient::STATUT_SUSPENDU;
+              $societe->save();
+
+              $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+              if(in_array($cvi,$this->negoces["cvi"])){
+                $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT;
+              }
+
+              $etablissement = $societe->createEtablissement($type_etablissement);
+              $etablissement->constructId();
+              $etablissement->cvi = $cvi;
+              $etablissement->statut = SocieteClient::STATUT_SUSPENDU;
+              $etablissement->nom = $rs;
+
+              if(count(EtablissementClient::getRegions()) == 1){
+                $regions = array_keys(EtablissementClient::getRegions());
+                $etablissement->region = $regions[0];
+              }
+              $etablissement->save();
+              echo "L'entité $etablissement->identifiant CVI (".$etablissement->cvi.")  etablissement =>  $etablissement->_id  \n";
+            }
+      }
 
     protected function buildRaisonSociete($data){
       if($data[self::CSV_FORME_SOCIETE]){
@@ -272,7 +308,7 @@ EOF;
 ////////////////////////////////////// ci dessous probablement inutil
 
 
-        protected function addChaiForEtablissement($etb,$data){
+    protected function addChaiForEtablissement($etb,$data){
 
           $newChai = $etb->getOrAdd('chais')->add();
           $newChai->nom = $data[self::CSV_CHAIS_VILLE];
