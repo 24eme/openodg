@@ -129,6 +129,7 @@ Facture:
                 fields:
                   date : { }
                   montant: { }
+                  type_reglement: { }
                   commentaire: { }
       pieces:
         type: array_collection

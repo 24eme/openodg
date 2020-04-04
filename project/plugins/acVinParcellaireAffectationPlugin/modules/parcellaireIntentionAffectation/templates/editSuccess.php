@@ -3,7 +3,7 @@
 <?php include_partial('parcellaireIntentionAffectation/breadcrumb', array('parcellaireIntentionAffectation' => $parcellaireIntentionAffectation)); ?>
 
 <div class="page-header no-border">
-    <h2>Intention d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
+    <h2>Identification parcellaire de l'AOC de Côtes de Provence</h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -20,7 +20,7 @@
     <?php foreach ($parcellaireIntentionAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
     <div style="margin-bottom: 1em;" class="row">
         <div class="col-xs-12">
-            <h3>Dénomination complémentaire de <?php echo str_replace("-", " ", $dgc); ?></h3>
+            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
         </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">

@@ -127,7 +127,7 @@
   \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-    <?php if (count($ligne->details) === 1): ?>
+    <?php if (count($ligne->details) === 1 && !$ligne->details->getFirst()->libelle): ?>
         \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
         <?php echo formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
         <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo ($ligne->details[0]->exist('unite') && $ligne->details[0]->unite)? $ligne->details[0]->unite : "~~" ?>} &
@@ -172,4 +172,30 @@
 \end{tabular}
 \end{minipage}
 
+<?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
+\begin{center}
+\\\vspace{2cm}
+\flushleft \textbf{\large{Encours de règlement}}}
+\\\vspace{0.5cm}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|m{5cm}|>{\raggedleft}m{8cm}|>{\raggedleft}m{5cm}|}
+  \hline
+  \rowcolor{verttresclair} \textbf{Date de règlement} & \multicolumn{1}{c|}{\textbf{Type de règlement}} & \multicolumn{1}{c|}{\textbf{Montant}}  \tabularnewline
+  \hline
+  <?php foreach ($facture->paiements as $paiement): ?>
+				<?php echo DateTime::createFromformat("Y-m-d",$paiement->date)->format('d/m/Y'); ?>&
+				<?php echo ($paiement->type_reglement)? FactureClient::$types_paiements[$paiement->type_reglement] : ""; ?>&
+				<?php echo formatFloat($paiement->montant,',').' €'; ?>
+				\tabularnewline
+        \hline
+		<?php endforeach; ?>
+    \multicolumn{2}{|c}{~} & \textbf{Total payé: <?php echo formatFloat($facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+		\hline
+		\multicolumn{2}{|c}{~} & \textbf{Restant à payer : <?php echo formatFloat($facture->total_ttc - $facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+    \hline
+  \end{tabular}
+	\begin{minipage}{0.5\textwidth}
+\end{minipage}
+<?php endif; ?>
+\end{center}
 \end{document}

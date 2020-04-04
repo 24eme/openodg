@@ -124,20 +124,26 @@ EOF;
             $line = str_replace("\n", "", $line);
 
             $data = str_getcsv($line, ';');
-            $this->importLineDrevCVI($data);
+            $this->importLineDrevVCI($data);
         }
     }
 
     public function importLineDrev($data) {
 
         $cviEtb = strtoupper($data[self::CSV_CVI_OP]);
-        $etablissement = EtablissementClient::getInstance()->findByCvi($cviEtb);
+        $etablissement = EtablissementClient::getInstance()->findByCvi($cviEtb, true);
 
         if(!$etablissement) {
           echo sprintf("!!! Etablissement %s does not exist \n", $cviEtb);
           return null;
           // $this->createEtablissementAndSociete($data);
           // $etablissement = EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $idEtb));
+        }
+
+
+        if(is_array($etablissement) && count($etablissement) > 1) {
+          echo sprintf("!!! plusieurs établissements ont ce cvi %s \n", $cviEtb);
+          return null;
         }
 
         $idEtb = $etablissement->getIdentifiant();
@@ -203,20 +209,24 @@ EOF;
         $drev->save();
     }
 
-    public function importLineDrevCVI($data) {
+    public function importLineDrevVCI($data) {
         $cviEtb = strtoupper($data[self::CSVVCI_ID_OP]);
         $etablissement =  EtablissementClient::getInstance()->findByCvi($cviEtb);
+        if(!$etablissement){
+          return;
+        }
         $idEtb = $etablissement->getIdentifiant();
         $produitFile = trim($data[self::CSVVCI_PRODUIT]);
         $campagne = $data[self::CSVVCI_CAMPAGNE];
 
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($idEtb,$campagne);
         if($drev){
-          $nodeKey = (self::$produitsKey[$produitFile][1])? self::$produitsKey[$produitFile][1] : "DEFAUT";
-          $produitNode = $drev->declaration->get(self::$produitsKey[$produitFile][0]."/".$nodeKey);
+          $hashProduit = self::$produitsKey[$produitFile][0];
+          $complement = self::$produitsKey[$produitFile][1];
+          $produit = $drev->addProduit($hashProduit, $complement);
 
           $constitue = $data[self::CSVVCI_VCICONSTITUE];
-          $produitNode->vci->constitue = $this->convertFloat($constitue);
+          $produit->vci->constitue = $this->convertFloat($constitue);
           $drev->update();
           $drev->save();
           }else{
