@@ -116,14 +116,20 @@ class compteActions extends sfCredentialActions {
 
     private function initSearch(sfWebRequest $request, $extratag = null, $excludeextratag = false) {
       $query = $request->getParameter('q', '*');
+      $this->hasFilters = false;
       if($query == ""){
         $query.="*";
+      } else {
+          $this->hasFilters = true;
       }
       if (! $request->getParameter('contacts_all') ) {
 		      $query .= " doc.statut:ACTIF";
       }
       $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
       $this->selected_typetags = array();
+      if (count(selected_rawtags) > 0) {
+          $this->hasFilters = true;
+      }
       foreach ($this->selected_rawtags as $t) {
 		if (preg_match('/^([^:]+):(.+)$/', $t, $m)) {
 	  		if (!isset($this->selected_typetags[$m[1]])) {
@@ -223,7 +229,7 @@ class compteActions extends sfCredentialActions {
       if (!$tag) {
 		throw new sfException("Un tag doit être fourni pour pouvoir être ajouté");
       }
-      if (!$this->real_q) {
+      if (!$this->real_q || !$this->hasFilters) {
 		throw new sfException("Il n'est pas possible d'ajouter un tag sur l'ensemble des contacts");
       }
       $cpt = 0;
