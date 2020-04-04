@@ -230,7 +230,7 @@ class compteActions extends sfCredentialActions {
       if (!$tag) {
 		throw new sfException("Un tag doit être fourni pour pouvoir être ajouté");
       }
-      if (!$this->real_q || !$this->hasFilters) {
+      if ((!$this->real_q || !$this->hasFilters) && !$remove) {
 		throw new sfException("Il n'est pas possible d'ajouter un tag sur l'ensemble des contacts");
       }
       $cpt = 0;
