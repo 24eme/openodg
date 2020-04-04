@@ -119,7 +119,8 @@ class compteActions extends sfCredentialActions {
       $this->hasFilters = false;
       if($query == ""){
         $query.="*";
-      } else {
+      }
+      if (trim($query, "* ") != "") {
           $this->hasFilters = true;
       }
       if (! $request->getParameter('contacts_all') ) {
@@ -127,7 +128,7 @@ class compteActions extends sfCredentialActions {
       }
       $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
       $this->selected_typetags = array();
-      if (count(selected_rawtags) > 0) {
+      if (count($this->selected_rawtags) > 0) {
           $this->hasFilters = true;
       }
       foreach ($this->selected_rawtags as $t) {
