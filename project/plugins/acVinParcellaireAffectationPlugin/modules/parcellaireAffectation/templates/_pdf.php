@@ -52,7 +52,7 @@
 
 <?php foreach($parcellesByCommune as $dgc => $parcelles): ?>
 <br />
-<div><span class="h3">&nbsp;Dénomination complémentaire de <?php echo str_replace("-", " ", $dgc); ?>&nbsp;</span></div>
+<div><span class="h3">&nbsp;Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?>&nbsp;</span></div>
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>

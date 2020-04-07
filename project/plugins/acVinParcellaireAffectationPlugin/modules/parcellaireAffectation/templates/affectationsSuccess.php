@@ -12,7 +12,7 @@
     <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
     <div style="margin-bottom: 1em;" class="row">
         <div class="col-xs-12">
-            <h3>Dénomination complémentaire de <?php echo str_replace("-", " ", $dgc); ?></h3>
+            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
         </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
