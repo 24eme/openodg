@@ -69,10 +69,10 @@ class compteActions extends sfActions {
         $q = new acElasticaQuery();
         $q->setQuery($qm);
         $elasticaFacet = new acElasticaFacetTerms('manuels');
-        $elasticaFacet->setField('tags.manuels');
+        $elasticaFacet->setField('doc.tags.manuels');
         $elasticaFacet->setSize(200);
         $q->addFacet($elasticaFacet);
-        $index = acElasticaManager::getType('compte');
+        $index = acElasticaManager::getType('COMPTE');
         $resset = $index->search($q);
         $this->facets = $resset->getFacets();
 
@@ -96,7 +96,7 @@ class compteActions extends sfActions {
         $from = $res_by_page * ($page - 1);
         $q->setLimit($res_by_page);
         $q->setFrom($from);
-        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels', 'syndicats' => 'tags.syndicats', 'produits' => 'tags.produits');
+        $facets = array('automatiques' => 'doc.tags.automatiques', 'attributs' => 'doc.tags.attributs', 'manuels' => 'doc.tags.manuels', 'syndicats' => 'doc.tags.syndicats', 'produits' => 'doc.tags.produits');
         $this->facets_libelle = array('automatiques' => 'Par types', 'attributs' => 'Par attributs', 'manuels' => 'Par mots clés', 'syndicats' => 'Par syndicats', 'produits' => 'Par produits');
         foreach ($facets as $nom => $f) {
             $elasticaFacet = new acElasticaFacetTerms($nom);
@@ -105,7 +105,7 @@ class compteActions extends sfActions {
             $q->addFacet($elasticaFacet);
         }
 
-        $index = acElasticaManager::getType('compte');
+        $index = acElasticaManager::getType('COMPTE');
         $resset = $index->search($q);
         $this->results = $resset->getResults();
         $this->nb_results = $resset->getTotalHits();
@@ -148,7 +148,7 @@ class compteActions extends sfActions {
         $q = $this->initSearch($request);
         $q->setLimit(99999);
 
-        $index = acElasticaManager::getType('compte');
+        $index = acElasticaManager::getType('COMPTE');
         $resset = $index->search($q);
         $this->results = $resset->getResults();
 
@@ -161,13 +161,13 @@ class compteActions extends sfActions {
         $type_compte = $request->getParameter('type_compte', "ETABLISSEMENT");
 
         if($request->getParameter('q')) {
-            $request->setParameter('q', "*".$request->getParameter('q')."* type_compte:".$type_compte);
+            $request->setParameter('q', "*".$request->getParameter('q')."* doc.type_compte:".$type_compte);
         }
 
         $q = $this->initSearch($request);
 
         $q->setLimit(60);
-        $index = acElasticaManager::getType('compte');
+        $index = acElasticaManager::getType('COMPTE');
 
         $resset = $index->search($q);
         $results = $resset->getResults();
@@ -206,11 +206,11 @@ class compteActions extends sfActions {
         $all = isset($arguments['all']) ? $arguments['all'] : 0;
 
         if (!$all) {
-            $query .= " statut:ACTIF";
+            $query .= " doc.statut:ACTIF";
         }
         foreach ($tags as $tag) {
             $explodeTag = explode(':', $tag);
-            $query .= ' tags.' . $explodeTag[0] . ':"' . html_entity_decode($explodeTag[1], ENT_QUOTES) . '"';
+            $query .= ' doc.tags.' . $explodeTag[0] . ':"' . html_entity_decode($explodeTag[1], ENT_QUOTES) . '"';
         }
 
         return $query;
