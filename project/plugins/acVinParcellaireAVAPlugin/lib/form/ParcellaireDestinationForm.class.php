@@ -92,20 +92,20 @@ class ParcellaireDestinationForm extends acCouchdbForm {
         foreach($values["acheteurs"] as $cvi) {
             $this->getDocument()->getDocument()->addAcheteur($type, $cvi);
         }
-        
+
     }
 
     public function getTypesProprietaire() {
-        
+
         return ParcellaireClient::$type_proprietaire_libelles;
     }
 
     public function getAcheteurs($type) {
         $types_acheteurs = array($type);
 
-        $query = "statut:ACTIF AND (";
+        $query = "doc.statut:ACTIF AND (";
         foreach ($types_acheteurs as $type_acheteurs) {
-            $query .="infos.attributs." . $type_acheteurs . ":\"" . CompteClient::getInstance()->getAttributLibelle($type_acheteurs) . "\" OR ";
+            $query .="doc.infos.attributs." . $type_acheteurs . ":\"" . CompteClient::getInstance()->getAttributLibelle($type_acheteurs) . "\" OR ";
         }
         $query = substr($query, 0, strlen($query) - 4) . ")";
 
@@ -114,14 +114,14 @@ class ParcellaireDestinationForm extends acCouchdbForm {
         $q->setLimit(9999);
         $q->setQuery($qs);
 
-        $index = acElasticaManager::getType('compte');
+        $index = acElasticaManager::getType('COMPTE');
 
         $resset = $index->search($q);
         $results = $resset->getResults();
 
         $list = array();
         foreach ($results as $res) {
-            $data = $res->getData();
+            $data = $res->getData()['doc'];
             $list[$data['cvi']] = sprintf("%s - %s - %s", $data['nom_a_afficher'], $data['cvi'], $data['commune']);
         }
 
