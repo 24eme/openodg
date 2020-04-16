@@ -139,7 +139,7 @@ class compteActions extends sfActions {
             }
         }
 
-        return $this->redirect('compte_recherche', array("q" => "(cvi:" . implode(" OR cvi:", $cvis) . ")", "all" => 1));
+        return $this->redirect('compte_recherche', array("q" => "(doc.cvi:" . implode(" OR doc.cvi:", $cvis) . ")", "all" => 1));
     }
 
     public function executeRechercheCsv(sfWebRequest $request) {

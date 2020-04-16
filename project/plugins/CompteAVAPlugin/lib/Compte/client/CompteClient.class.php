@@ -224,7 +224,7 @@ class CompteClient extends acCouchdbClient {
         $q->setQuery($qs);
         $q->setLimit(99999);
 
-        $index = acElasticaManager::getType('compte');
+        $index = acElasticaManager::getType('COMPTE');
         $resset = $index->search($q);
 
         return $resset->getResults();
