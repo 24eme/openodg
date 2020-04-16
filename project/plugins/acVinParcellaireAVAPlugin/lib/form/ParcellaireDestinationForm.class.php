@@ -105,7 +105,7 @@ class ParcellaireDestinationForm extends acCouchdbForm {
 
         $query = "doc.statut:ACTIF AND (";
         foreach ($types_acheteurs as $type_acheteurs) {
-            $query .="doc.infos.attributs." . $type_acheteurs . ":\"" . CompteClient::getInstance()->getAttributLibelle($type_acheteurs) . "\" OR ";
+            $query .="doc.tags.attributs." . $type_acheteurs . ":\"" . CompteClient::getInstance()->getAttributLibelle($type_acheteurs) . "\" OR ";
         }
         $query = substr($query, 0, strlen($query) - 4) . ")";
 
