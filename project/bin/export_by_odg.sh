@@ -54,6 +54,10 @@ cat $DREVPATH | grep -E "      [A-Z_]+\:" | sed -r 's|^([\ ]+)([A-Z_]+)\:|\2|' |
       echo $line >> $EXPORTDIR"/"$odg"/pieces.csv"
     done
   done
+  ruby -ryaml -e "puts YAML::load(open(ARGV.first).read)['all']['configuration']['drev']['odg']['"$odg"']['produits']" apps/loire/config/drev.yml 2> /dev/null > "/tmp/"$odg".produits"
+  head -n 1 web/exports/dr_igploire_2019.csv > "web/exports/"$odg"/2019_dr_douane.csv"
+  cat "/tmp/"$odg".produits"  | sed 's/ * - "//' | sed 's/"//'  | sed 's|/|;|g' | sed 's/\(appellations\|mentions\|certifications\|genres\);//g'  | sed 's/^;*/;/' | sed 's/;*$/;/'  | while read produit ; do grep $produit web/exports/dr_igploire_2019.csv | awk -F ';' '{print $3";"$4}' | sort -u ; done | sort -u  | while read cvi ; do grep $cvi web/exports/dr_igploire_2019.csv ; done >> "web/exports/"$odg"/2019_dr_douane.csv"
+  rm "/tmp/"$odg".produits"
 done
 
 cat $EXPORTDIR/NANTES/dr.csv | grep -v '^#' | awk -F ';' '{cvi=$4 ; insee=substr(cvi,0,5); print "php symfony dr:pdf '$SYMFONYTASKOPTIONS' "$1"-"$3"-"$2" '$EXPORTDIR'/DR/"insee"/"$1"-"cvi"-"$2".pdf"}'  | sort -u | sh
