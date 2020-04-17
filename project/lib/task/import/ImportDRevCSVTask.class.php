@@ -12,7 +12,7 @@ class importDRevCSVTask extends sfBaseTask
 
     const CSV_SURFACE               = 5;
     const CSV_VOLUME                = 6;
-    const CSV_VOLUME_BRUT           = 7;
+    const CSV_VOLUME_DR           = 7;
 
 
     const CSV_VOLUME_REPLIE         = 8; // Ca sert à quoi?
@@ -124,20 +124,26 @@ EOF;
             $line = str_replace("\n", "", $line);
 
             $data = str_getcsv($line, ';');
-            $this->importLineDrevCVI($data);
+            $this->importLineDrevVCI($data);
         }
     }
 
     public function importLineDrev($data) {
 
         $cviEtb = strtoupper($data[self::CSV_CVI_OP]);
-        $etablissement = EtablissementClient::getInstance()->findByCvi($cviEtb);
+        $etablissement = EtablissementClient::getInstance()->findByCvi($cviEtb, true);
 
         if(!$etablissement) {
           echo sprintf("!!! Etablissement %s does not exist \n", $cviEtb);
           return null;
           // $this->createEtablissementAndSociete($data);
           // $etablissement = EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $idEtb));
+        }
+
+
+        if(is_array($etablissement) && count($etablissement) > 1) {
+          echo sprintf("!!! plusieurs établissements ont ce cvi %s \n", $cviEtb);
+          return null;
         }
 
         $idEtb = $etablissement->getIdentifiant();
@@ -150,7 +156,7 @@ EOF;
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($idEtb,$campagne);
 
         if(!$drev){
-            $drev = DRevClient::getInstance()->createDoc($idEtb,$campagne,true);
+            $drev = DRevClient::getInstance()->createDoc($idEtb,$campagne,true, false);
             echo "Création de la drev $drev->_id \n";
         }
         try {
@@ -163,48 +169,64 @@ EOF;
               echo sprintf("!!! Etablissement %s => produit %s non trouvé \n", $idEtb,$produit_file);
               return "";
             }
-            $produit = $drev->addProduit(self::$produitsKey[$produit_file][0],self::$produitsKey[$produit_file][1]);
+
+            $surface = $data[self::CSV_SURFACE] / 10000.0;
+            $volume_net = $data[self::CSV_VOLUME_DR] / 100.00;
+            $volume_rev = $data[self::CSV_VOLUME] / 100.00;
+            $hashProduit = self::$produitsKey[$produit_file][0];
+            $complement = self::$produitsKey[$produit_file][1];
+
+            $produit = $drev->addProduit($hashProduit, $complement);
 
             echo "Ajout d'une revendication produit ".self::$produitsKey[$produit_file][0]." à la drev $drev->_id \n";
 
-            $surface = $data[self::CSV_SURFACE] / 100.0;
-            $produit->superficie_revendique += $this->convertFloat($surface);
-            $produit->recolte->superficie_total += $this->convertFloat($surface);
-
-            $volume_brut = $data[self::CSV_VOLUME_BRUT] / 100.00;
-
-            $produit->recolte->volume_total += $this->convertFloat($volume_brut);
-
-            $produit->recolte->recolte_nette += $this->convertFloat($volume_brut);
-            $produit->recolte->volume_sur_place += $this->convertFloat($volume_brut);
-
-            $volume_rev = $data[self::CSV_VOLUME] / 100.00;
-
-            $produit->volume_revendique_total += $this->convertFloat($volume_rev);
-
-            $produit->volume_revendique_issu_recolte += $this->convertFloat($volume_rev);
+            if($v_net = $this->convertFloat($volume_net)){
+              $produit->recolte->recolte_nette += $v_net;
+            }
+            if($sur = $this->convertFloat($surface)){
+              $produit->recolte->superficie_total += $sur;
+              $produit->superficie_revendique += $sur;
+            }
+            if($v_rev = $this->convertFloat($volume_rev)){
+              $produit->volume_revendique_issu_recolte += $v_rev;
+            }
 
         $date_reception = DateTime::createFromformat("d/m/Y",$data[self::CSV_DATE_RECEPTION]);
-        $drev->add('validation',$date_reception->format('Y-m-d'));
-        $drev->add('validation_odg',$date_reception->format('Y-m-d'));
+        $drev->update();
+
+        $volume_supplementaire = $data[self::CSV_VOLUME_SUPLEMENTAIRE] / 100.00;
+        if($volume_supplementaire > 0) {
+            $complement .= ' Achat ';
+            $complement = trim($complement);
+            $produit_suppl = $drev->addProduit($hashProduit, $complement);
+            $produit_suppl->volume_revendique_issu_recolte = $volume_supplementaire;
+            $drev->update();
+        }
+
+
         $drev->validate($date_reception->format('Y-m-d'));
+        $drev->validateOdg($date_reception->format('Y-m-d'));
         $drev->save();
     }
 
-    public function importLineDrevCVI($data) {
+    public function importLineDrevVCI($data) {
         $cviEtb = strtoupper($data[self::CSVVCI_ID_OP]);
         $etablissement =  EtablissementClient::getInstance()->findByCvi($cviEtb);
+        if(!$etablissement){
+          return;
+        }
         $idEtb = $etablissement->getIdentifiant();
         $produitFile = trim($data[self::CSVVCI_PRODUIT]);
         $campagne = $data[self::CSVVCI_CAMPAGNE];
 
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($idEtb,$campagne);
         if($drev){
-          $nodeKey = (self::$produitsKey[$produitFile][1])? self::$produitsKey[$produitFile][1] : "DEFAUT";
-          $produitNode = $drev->declaration->get(self::$produitsKey[$produitFile][0]."/".$nodeKey);
+          $hashProduit = self::$produitsKey[$produitFile][0];
+          $complement = self::$produitsKey[$produitFile][1];
+          $produit = $drev->addProduit($hashProduit, $complement);
 
           $constitue = $data[self::CSVVCI_VCICONSTITUE];
-          $produitNode->vci->constitue = $this->convertFloat($constitue);
+          $produit->vci->constitue = $this->convertFloat($constitue);
           $drev->update();
           $drev->save();
           }else{

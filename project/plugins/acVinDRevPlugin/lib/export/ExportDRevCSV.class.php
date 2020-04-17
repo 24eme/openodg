@@ -25,6 +25,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     const CSV_VCI_STOCK_SUBSTITUTION = 27;
     const CSV_VCI_STOCK_RAFRAICHI = 28;
     const CSV_VCI_STOCK_CONSTITUE = 29;
+    const CSV_DATE_VALIDATION_DECLARANT = 37;
     const CSV_DATE_VALIDATION_ODG = 38;
 
     public static function getHeaderCsv() {

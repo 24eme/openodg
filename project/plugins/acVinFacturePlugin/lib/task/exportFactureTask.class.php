@@ -29,11 +29,27 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $export = new ExportFactureCSV();
-        $export->printHeader();
+        if(!$options['application']){
+          throw new sfException("Le choix de l'application est obligatoire");
 
-        foreach(FactureEtablissementView::getInstance()->getFactureNonVerseeEnCompta() as $vfacture) {
-    	     $export->printFacture($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+        }
+        $app = $options['application'];
+        $classExportFactureCsv = 'ExportFactureCSV_'.$app;
+
+        echo $classExportFactureCsv::getHeaderCsv();
+        $all_factures = acCouchdbManager::getClient()
+                    ->startkey(array("Facture"))
+                    ->endkey(array("Facture", array()))
+                    ->reduce(false)
+                    ->getView('declaration', 'export')->rows;
+        foreach($all_factures as $vfacture) {
+
+          $facture = FactureClient::getInstance()->find($vfacture->id);
+          if(!$facture) {
+              throw new sfException(sprintf("Document %s introuvable", $vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]));
+          }
+          $export = new $classExportFactureCsv($facture, false);
+          echo $export->exportFacture();
         }
     }
 }

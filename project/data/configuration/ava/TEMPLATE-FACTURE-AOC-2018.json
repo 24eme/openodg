@@ -1608,7 +1608,7 @@
                    "docs": [
                        "DRev"
                    ]
-               },
+               }
            },
            "callback": "getSyndicatsViticole"
        },

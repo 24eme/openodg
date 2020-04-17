@@ -68,6 +68,14 @@ bash bin/export_docs.sh ParcellaireIrrigue > $EXPORTDIR/parcellaireirrigue.csv.p
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigue.csv.part > $EXPORTDIR/parcellaireirrigue.csv
 rm $EXPORTDIR/parcellaireirrigue.csv.part
 
+bash bin/export_docs.sh ParcellaireIntentionAffectation > $EXPORTDIR/parcellaireintentionaffectation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireintentionaffectation.csv.part > $EXPORTDIR/parcellaireintentionaffectation.csv
+rm $EXPORTDIR/parcellaireintentionaffectation.csv.part
+
+bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaireaffectation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireaffectation.csv.part > $EXPORTDIR/parcellaireaffectation.csv
+rm $EXPORTDIR/parcellaireaffectation.csv.part
+
 php symfony export:habilitation-demandes-publipostage $SYMFONYTASKOPTIONS > web/exports/habilitation_demandes_publipostage.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_publipostage.csv.part > $EXPORTDIR/habilitation_demandes_publipostage.csv
 rm $EXPORTDIR/habilitation_demandes_publipostage.csv.part

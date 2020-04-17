@@ -10,6 +10,7 @@
  * @property string $mime
  * @property integer $visibilite
  * @property string $source
+ * @property acCouchdbJson $fichiers
 
  * @method string getIdentifiant()
  * @method string setIdentifiant()
@@ -23,6 +24,8 @@
  * @method integer setVisibilite()
  * @method string getSource()
  * @method string setSource()
+ * @method acCouchdbJson getFichiers()
+ * @method acCouchdbJson setFichiers()
  
  */
 

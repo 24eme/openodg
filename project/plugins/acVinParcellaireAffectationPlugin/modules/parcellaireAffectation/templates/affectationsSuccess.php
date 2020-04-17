@@ -2,19 +2,18 @@
 
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 <?php include_partial('parcellaireAffectation/step', array('step' => 'affectations', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
-
+<div class="page-header no-border">
+    <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
+</div>
 <form id="validation-form" action="<?php echo url_for("parcellaireaffectation_affectations", $parcellaireAffectation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php foreach ($parcellaireAffectation->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
-	    <div class="row">
-        <div class="col-xs-6">
-            <h3><?php echo $commune; ?></h3>
+    <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
+    <div style="margin-bottom: 1em;" class="row">
+        <div class="col-xs-12">
+            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
         </div>
-        <div class="col-xs-6">
-           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont affectées</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
-       </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 		<thead>
@@ -23,10 +22,10 @@
                 <th class="col-xs-1">Section /<br />N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
-                <th class="col-xs-2">Dénom. compl.</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. totale <span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-1" style="text-align: right;">Surf. affectable&nbsp;<span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-1">Affectatée?</th>
+                <th class="col-xs-1" style="text-align: right;">Surf. dédiée&nbsp;<span class="text-muted small">(ha)</span></th>
+                <th class="col-xs-1">Affectée?</th>
+                <th class="col-xs-1">Affectation</th>
 
             </tr>
 		</thead>
@@ -41,9 +40,10 @@
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td><?php echo $parcelle->getDgcLibelle(); ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
-                <td style="text-align: right;"><?php if ($parcelle->superficie_affectation != $parcelle->superficie): ?><span style="margin: 3px;" class="pull-left glyphicon glyphicon-exclamation-sign">&nbsp;</span><?php endif; ?><span class="<?php if ($parcelle->superficie_affectation == $parcelle->superficie): ?>text-muted<?php endif; ?>"><?php echo $parcelle->superficie_affectation; ?></span></td>
+                <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
+                <td>
+                    <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pull-right"><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
+                </td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['affectee']->renderError() ?>
@@ -52,6 +52,12 @@
                         </div>
                     </div>
             	</td>
+                <td style="text-align: center;">
+                    <?php if (round($parcelle->superficie_affectation,4) != round($parcelle->superficie,4)): ?>
+                        <span>Partielle</span>
+                    <?php else: ?><span>Totale</span>
+                <?php endif; ?>
+                </td>
             </tr>
         <?php  endif; endforeach; ?>
         </tbody>

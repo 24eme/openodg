@@ -29,7 +29,7 @@ class parcellaireIntentionAffectationActions extends sfActions {
 
         $this->form->save();
         
-        $this->getUser()->setFlash("notice", "Vos intentions d'affectation parcellaire ont bien été enregistrées");
+        $this->getUser()->setFlash("notice", "L'identification parcellaire a bien été enregistrée");
     
         return $this->redirect('parcellaireintentionaffectation_edit', ['sf_subject' => $this->etablissement, 'campagne' => $this->campagne]);
     }
