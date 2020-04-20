@@ -107,7 +107,7 @@ EOF;
                 break;
             }
 
-            //$registre->save();
+            $registre->save();
             echo "Registre mise à jour ".$registre->_id." : stock fin ".$produitDetail->stock_final." hl (".$pseudoAppellation->getStockFinal()." hl) \n";
         }
     }
