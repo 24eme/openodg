@@ -67,7 +67,7 @@ EOF;
                 $produit = $registre->get($confProduit->getHash());
 
                 if(!$produit->exist('details/'.$cvi)) {
-                    echo "Registre stockage non trouvé : ".$data[10]."\n";
+                    echo "Registre stockage non trouvé ".$registre->_id." : ".$data[10]."\n";
                     continue;
                 }
 
