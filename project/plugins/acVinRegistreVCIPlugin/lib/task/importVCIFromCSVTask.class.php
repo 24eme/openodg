@@ -63,6 +63,7 @@ EOF;
 
             if(!$registre->exist($confProduit->getHash())) {
                 echo "(Registre produit ajouté : ".$registre->_id.":".$confProduit->getHash().")\n";
+                continue;
             } else {
                 $produit = $registre->get($confProduit->getHash());
 
