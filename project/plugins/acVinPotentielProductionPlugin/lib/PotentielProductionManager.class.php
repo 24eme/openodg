@@ -22,4 +22,14 @@ class PotentielProductionManager
     {
         return $this->generator->infos();
     }
+    
+    public function getSuperfices()
+    {
+        return $this->generator->getSuperfices();
+    }
+    
+    public function respecteRegles()
+    {
+        return $this->generator->respecteRegles();
+    }
 }

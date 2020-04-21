@@ -28,4 +28,8 @@ abstract class PotentielProductionGenerator
     public function infos() {
         return  ' - Etablissement : '.$this->etablissement->_id."\n - Dernier parcellaire : ".$this->parcellaire->_id."\n";
     }
+    
+    abstract public function getSuperfices();
+    abstract protected function respecteReglesEncepagement($parcelle);
+    abstract public function respecteRegles();
 }
