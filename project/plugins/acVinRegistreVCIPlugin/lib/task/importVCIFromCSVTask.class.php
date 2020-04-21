@@ -63,6 +63,7 @@ EOF;
 
             if(!$registre->exist($confProduit->getHash())) {
                 echo "(Registre produit ajouté : ".$registre->_id.":".$confProduit->getHash().")\n";
+                continue;
             } else {
                 $produit = $registre->get($confProduit->getHash());
 
@@ -78,7 +79,10 @@ EOF;
                     continue;
                 }
             }
-
+            
+            if($data[16] && (!$produitDetail || $produitDetail->constitue != $this->formatFloat($data[16]))) {
+                $registre->addLigne($confProduit->getHash(), 'constitue', $this->formatFloat($data[16]), $cvi);
+            }
             if($data[12] && (!$produitDetail || $produitDetail->destruction != $this->formatFloat($data[12]))) {
                 $registre->addLigne($confProduit->getHash(), 'destruction', $this->formatFloat($data[12]), $cvi);
             }
@@ -90,9 +94,6 @@ EOF;
             }
             if($data[15] && (!$produitDetail || $produitDetail->rafraichi != $this->formatFloat($data[15]))) {
                 $registre->addLigne($confProduit->getHash(), 'rafraichi', $this->formatFloat($data[15]), $cvi);
-            }
-            if($data[16] && (!$produitDetail || $produitDetail->constitue != $this->formatFloat($data[16]))) {
-                $registre->addLigne($confProduit->getHash(), 'constitue', $this->formatFloat($data[16]), $cvi);
             }
 
             $produitDetail = $registre->get($confProduit->getHash())->get('details/'.$cvi);

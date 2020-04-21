@@ -47,5 +47,5 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/facture_stats.csv.part > $EXPORTD
 rm $EXPORTDIR/facture_stats.csv.part
 
 for ((i=2015 ; $(date +%Y) -i ; i++)); do
-       curl "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/dr_"$i".csv
+       curl -s "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/dr_"$i".csv
 done
