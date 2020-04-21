@@ -38,3 +38,7 @@ all:
       PIE : [83033,83034,83043,83049,83054,83062,83144,83098,83091,83100,83130,83047]
       LLO : [83019,83047,83069,83071]
   potentielproductiongenerator: "PotentielProductionProvenceGenerator"
+  potentielproduction:
+    cepagesprincipaux: ["GRENACHE N", "SYRAH N", "MOURVEDRE N", "TIBOUREN N", "CINSAUT N"]
+    cepagessecondairesnoirs: ["CARIGNAN N", "CABERNET SAUVIGNON N", "CALITOR NOIR N", "BARBAROUX RS"]
+    cepagessecondairesblancs: ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
