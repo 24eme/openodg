@@ -26,15 +26,6 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
     {
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        $ids = DeclarationClient::getInstance()->getIds("ParcellaireIntentionAffectation", "TOUT");
-        foreach($ids as $id) {
-            if ($doc = DeclarationClient::getInstance()->find($id)) {
-                $doc->validation = $doc->date;
-                $doc->validation_odg = $doc->date;
-                $doc->save();
-            }
-        }
-        exit;
         if(!file_exists($arguments['csv'])) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['csv']);
             return;
@@ -53,6 +44,18 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             $surface = round($this->formatFloat($data[2]),4);
             $cepage = $data[3];
             $dgc = $data[4];
+            
+            $identifiantIdu = null;
+            $items = TmpParcellesView::getInstance()->findByIdu($idu);
+            foreach ($items as $item) {
+                if (preg_match('/^PARCELLAIRE-(.+)-[0-9]{8}$/', $item->id, $m)) {
+                    $identifiantIdu = $m[1];
+                    break;
+                }
+            }
+            if ($identifiantIdu && $identifiantIdu != $identifiant) {
+                $identifiant = $identifiantIdu;
+            }
             $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
             if (!$etablissement) {
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));
