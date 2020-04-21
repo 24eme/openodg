@@ -71,6 +71,18 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
       }
 
+      public function clotureStock() {
+          if(!$this->isStockUtiliseEntierement()) {
+              return;
+          }
+          foreach($this->getProduits() as $produit) {
+                $produit->_set('stock_final', 0);
+                foreach($produit->details as $detail) {
+                    $detail->_set('stock_final', 0);
+                }
+          }
+      }
+
       public function addLigne($produit, $mouvement_type, $volume, $lieu) {
           if (is_string($produit)) {
             $hproduit = preg_replace('/\/*declaration\//', '', $produit);
@@ -106,6 +118,22 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         $this->piece_document->generatePieces();
       }
 
+
+      public function isStockUtiliseEntierement() {
+          foreach($this->getProduitsWithPseudoAppelations() as $produit) {
+              if(!$produit->isPseudoAppellation()) {
+                  continue;
+              }
+              if(round($produit->stock_final, 4) == 0) {
+                  continue;
+              }
+
+              return false;
+          }
+
+          return true;
+      }
+
       public function generateSuivante() {
           $registreSuivant = clone $this;
 
@@ -122,16 +150,9 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
             $produit->clear();
           }
 
-          foreach($this->getProduitsWithPseudoAppelations() as $produit) {
-              if(!$produit->isPseudoAppellation()) {
-                  continue;
-              }
-              if(round($produit->stock_final, 4) == 0) {
-                  continue;
-              }
-
-              throw new Exception("Génération impossible, tout le stock de l'année précédente n'a pas été utilisé");
-          }
+           if(!$this->isStockUtiliseEntierement()) {
+               throw new Exception("Génération impossible, tout le stock de l'année précédente n'a pas été utilisé");
+            }
 
           foreach($this->getProduitDetails() as $detail) {
             $detailSuivant = $registreSuivant->get($detail->getHash());
