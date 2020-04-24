@@ -17,7 +17,7 @@ class DeclarationsExportCsvTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
             new sfCommandOption('sleep_second', null, sfCommandOption::PARAMETER_REQUIRED, 'secont to wait', false),
-            new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', false),
+            new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', 1000),
         ));
 
         $this->namespace = 'declarations';
@@ -46,25 +46,33 @@ EOF;
             $sleepSecond = $options['sleep_second']*1;
         }
 
-        $sleepStep = false;
-        if($options['sleep_step']) {
-            $sleepStep = $options['sleep_step']*1;
-        }
+        $sleepStep = $options['sleep_step']*1;
 
         $step = 0;
         foreach($ids as $id) {
-            $doc = DeclarationClient::getInstance()->find($id);
-            $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
+            $tobeexported = true;
+            while ($tobeexported) {
+                try  {
+                    $doc = DeclarationClient::getInstance()->find($id);
+                    $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
 
-            if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
-                continue;
+                    if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
+                        $tobeexported = false;
+                        continue 2;
+                    }
+
+                    if(method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
+                        $tobeexported = false;
+                        continue 2;
+                    }
+
+                    echo $export->export();
+                }catch(sfException $e) {
+                    sleep(60);
+                    continue;
+                }
+                $tobeexported = false;
             }
-
-            if(method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
-                continue;
-            }
-
-            echo $export->export();
             $step++;
             if($sleepStep && $sleepSecond && $step > $sleepStep) {
                 sleep($sleepSecond);
