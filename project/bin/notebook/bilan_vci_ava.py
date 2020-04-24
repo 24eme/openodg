@@ -36,8 +36,8 @@ except:
 
 
 campagne_prev = str(int(campagne) - 1)
-vci = pd.read_csv(exports_path + "/registre_vci.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'CVI': 'str', 'SIRET': 'str', 'Produit': 'str'}, low_memory=False)
-drev = pd.read_csv(exports_path + "/drev.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'CVI Opérateur': 'str'}, low_memory=False)
+vci = pd.read_csv(exports_path + "/registre_vci.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'CVI': 'str', 'SIRET': 'str', 'Produit': 'str', 'Campagne': 'str'}, low_memory=False)
+drev = pd.read_csv(exports_path + "/drev.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'CVI Opérateur': 'str', 'Campagne': 'str'}, low_memory=False)
 vci_curr = vci.query("Campagne == @campagne").reset_index(drop=True)
 vci_prev = vci.query("Campagne == @campagne_prev").reset_index(drop=True)
 drev_curr = drev.query("Campagne == @campagne").reset_index(drop=True)
