@@ -67,7 +67,8 @@ EOF;
                     }
 
                     echo $export->export();
-                }catch(sfException $e) {
+
+                }catch(InvalidArgumentException $e) {
                     sleep(60);
                     continue;
                 }
