@@ -45,15 +45,10 @@ EOF;
         if($options['sleep_second']) {
             $sleepSecond = $options['sleep_second']*1;
         }
-
         $sleepStep = $options['sleep_step']*1;
-
         $step = 0;
 
-        $region = null;
-        if($options["region"]) {
-            $region = $options['region'];
-        }
+        $region = $options['region'];
 
         foreach($ids as $id) {
             $tobeexported = true;
