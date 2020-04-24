@@ -61,8 +61,8 @@
 }
 \cfoot{\small{
 	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE - \EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT - \EMETTEUREMAIL \\
+	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
+	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
 	N°TVA : FR96803741834
 }}
 
@@ -124,14 +124,28 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
   \hline
-  \rowcolor{verttresclair} \textbf{Désignation} & \textbf{Prix~uni.} & \textbf{Quantité} & \textbf{TVA} & \textbf{Total HT}  \tabularnewline
+  \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-  	<?php foreach ($ligne->details as $detail): ?>
-  	    <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> & {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} & {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} & <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> & <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
-  	<?php endforeach; ?>
-	\textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} & & & \textbf{<?php echo formatFloat($ligne->montant_tva, ','); ?> €} & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
-	\hline
+    <?php if (count($ligne->details) === 1 && !$ligne->details->getFirst()->libelle): ?>
+        \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
+        <?php echo formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
+        <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo ($ligne->details[0]->exist('unite') && $ligne->details[0]->unite)? $ligne->details[0]->unite : "~~" ?>} &
+        \textbf{<?php echo ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',')." €"; ?>} &
+        \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
+        \hline
+        <?php continue ?>
+    <?php endif; ?>
+    <?php foreach ($ligne->details as $detail): ?>
+        <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
+        <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
+        {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
+        {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?> \texttt{<?php echo $detail->unite ?>} &
+        <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
+        <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
+    <?php endforeach; ?>
+    \textbf{<?php echo $ligne->libelle; ?>} \textbf{Total} & & & \textbf{<?= ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',').' €'; ?> } & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
+    \hline
   <?php endforeach; ?>
   \end{tabular}
 
@@ -140,9 +154,9 @@
 \end{center}
 
 \begin{minipage}{0.5\textwidth}
-Modalités de paiements : \\
-- par chèque en 3, 6, 8 ou 9 fois l'ordre de la FVN \\
-- par prélevement automatique en 9 fois de mars 2020 à novembre 2020 \\
+<?= escape_string_for_latex(
+    ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
+) ?>
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \renewcommand{\arraystretch}{1.5}
@@ -158,4 +172,30 @@ Modalités de paiements : \\
 \end{tabular}
 \end{minipage}
 
+<?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
+\begin{center}
+\\\vspace{2cm}
+\flushleft \textbf{\large{Encours de règlement}}}
+\\\vspace{0.5cm}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|m{5cm}|>{\raggedleft}m{8cm}|>{\raggedleft}m{5cm}|}
+  \hline
+  \rowcolor{verttresclair} \textbf{Date de règlement} & \multicolumn{1}{c|}{\textbf{Type de règlement}} & \multicolumn{1}{c|}{\textbf{Montant}}  \tabularnewline
+  \hline
+  <?php foreach ($facture->paiements as $paiement): ?>
+				<?php echo DateTime::createFromformat("Y-m-d",$paiement->date)->format('d/m/Y'); ?>&
+				<?php echo ($paiement->type_reglement)? FactureClient::$types_paiements[$paiement->type_reglement] : ""; ?>&
+				<?php echo formatFloat($paiement->montant,',').' €'; ?>
+				\tabularnewline
+        \hline
+		<?php endforeach; ?>
+    \multicolumn{2}{|c}{~} & \textbf{Déjà réglé: <?php echo formatFloat($facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+		\hline
+		\multicolumn{2}{|c}{~} & \textbf{NET A PAYER : <?php echo formatFloat($facture->total_ttc - $facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+    \hline
+  \end{tabular}
+	\begin{minipage}{0.5\textwidth}
+\end{minipage}
+<?php endif; ?>
+\end{center}
 \end{document}

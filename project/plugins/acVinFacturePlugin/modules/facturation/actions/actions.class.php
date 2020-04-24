@@ -200,6 +200,34 @@ class facturationActions extends sfActions
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
+    public function executePaiements(sfWebRequest $request) {
+        $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if(!$this->facture) {
+
+            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
+        }
+
+        $this->form = new FacturePaiementsMultipleForm($this->facture);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        $this->getUser()->setFlash("notice", "Les paiement ont bien été enregistrés");
+
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+    }
+
     public function executeLatex(sfWebRequest $request) {
         $this->setLayout(false);
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
@@ -214,6 +242,11 @@ class facturationActions extends sfActions
 
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
+
+        if(!$this->getUser()->isAdmin() && !$this->facture->exist('date_telechargement')) {
+            $this->facture->add('date_telechargement', date('Y-m-d'));
+            $this->facture->save();
+        }
         exit;
     }
 
@@ -249,9 +282,12 @@ class facturationActions extends sfActions
 
         $this->mouvements = array();
 
-        foreach ($this->templatesFactures as $key => $templateFacture) {
-          $this->mouvements = array_merge($templateFacture->getMouvements($this->compte->identifiant),$this->mouvements);
-        }
+        try {
+          foreach ($this->templatesFactures as $key => $templateFacture) {
+            $this->mouvements = array_merge($templateFacture->getMouvements($this->compte->identifiant),$this->mouvements);
+          }
+        } catch (FacturationPassException $e) { }
+
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

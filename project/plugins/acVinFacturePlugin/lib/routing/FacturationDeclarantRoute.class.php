@@ -1,5 +1,5 @@
 <?php
-class FacturationDeclarantRoute extends CompteRoute implements InterfaceFacturationRoute {
+class FacturationDeclarantRoute extends sfObjectRoute implements InterfaceFacturationRoute {
 
     protected $compte = null;
 

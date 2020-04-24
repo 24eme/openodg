@@ -62,18 +62,19 @@ EOF;
                     $doc = null;
                     try{
                       $doc = DeclarationClient::getInstance()->find($id);
+                      if(method_exists($doc,'getMaster') && $doc->getMaster()->_id != $doc->_id){
+                        continue 2;
+                      }
                     }catch(sfException $e){
                       continue 2;
                     }
                     $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false, $region);
 
                     if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
-                        $tobeexported = false;
                         continue 2;
                     }
 
                     if(method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
-                        $tobeexported = false;
                         continue 2;
                     }
 
@@ -83,7 +84,9 @@ EOF;
                     sleep(60);
                     continue;
                 }
+
                 $tobeexported = false;
+
             }
             $step++;
             if($sleepStep && $sleepSecond && $step > $sleepStep) {

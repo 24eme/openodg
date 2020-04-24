@@ -26,6 +26,10 @@
         </div>
     </div>
     <?php endif; ?>
+    
+    <div class="page-header no-border">
+        <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
+    </div>
 
     <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
@@ -46,7 +50,7 @@
    </div>
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
-        	<a href="<?php echo ($prevLieu = $parcellaireAffectation->getPrevDgc())? url_for("parcellaireaffectation_affectations", array('sf_subject' => $parcellaireAffectation, 'lieu' => $prevLieu)) : url_for("parcellaireaffectation_denominations", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+        	<a href="<?php echo url_for("parcellaireaffectation_affectations", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('parcellaireaffectation_export_pdf', $parcellaireAffectation) ?>" class="btn btn-primary">

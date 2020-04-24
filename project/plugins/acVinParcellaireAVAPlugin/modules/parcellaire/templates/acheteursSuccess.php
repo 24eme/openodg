@@ -5,6 +5,13 @@
     <h2>Répartition des acheteurs&nbsp;<small>Les parcelles sont à ventiler en fonction de vos acheteurs.</small></h2>
 </div>
 
+<ul class="nav nav-tabs">
+    <li class="active"><a href="<?php echo url_for('parcellaire_acheteurs', array('id' => $parcellaire->_id)) ?>" class="ajax">Répartition par produits</a></li>
+    <li <?php if(!$parcellaire->hasProduitWithMultipleAcheteur()): ?>class="disabled" style="opacity: 0.4;"<?php endif; ?>><a href="<?php echo url_for('parcellaire_acheteurs_parcelles', array('id' => $parcellaire->_id)) ?>" class="ajax">Répartition par parcelles</a></li>
+</ul>
+
+<p class="text-muted">Par soucis de simplification de saisie nous vous proposons de répartir vos acheteurs par produit, ainsi toutes les parcelles du produit seront affectées à la destination indiquée. En cas de destination plurielle vous serez invité à préciser ces destinations par parcelle dans un écran suivant.</p>
+
 <form action="<?php echo url_for("parcellaire_acheteurs", $parcellaire) ?>" method="post" class="ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
     <?php if($form->hasGlobalErrors()): ?><div class="alert alert-danger"><?php echo $form->renderGlobalErrors(array("class" => "text-left")) ?></div><?php endif; ?>

@@ -121,8 +121,24 @@ class ParcellaireCepage extends BaseParcellaireCepage {
     }
 
     public function addAcheteurFromNode($acheteur, $lieu = null) {
-        
+
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
+    }
+
+    public function hasMultipleAcheteur($lieu = null) {
+        foreach($this->getProduitsCepageDetails() as $parcelle) {
+            if($lieu && $parcelle->lieu != $lieu) {
+
+                continue;
+            }
+            
+            if($parcelle->hasMultipleAcheteur()) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {

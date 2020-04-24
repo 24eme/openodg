@@ -45,3 +45,20 @@ cat $EXPORTDIR/facture.csv | iconv -f ISO88591//TRANSLIT -t UTF-8 | cut -d ";" -
 done;
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/facture_stats.csv.part > $EXPORTDIR/facture_stats.csv
 rm $EXPORTDIR/facture_stats.csv.part
+
+for ((i=2015 ; $(date +%Y) -i ; i++)); do
+       curl -s "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/dr_"$i".csv
+done
+
+rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
+python3 bin/notebook/bilan_vci_ava.py "9999" "" $EXPORTDIR $EXPORTDIR/bilan_vci.tmp.csv #Permet de générer juste les entetes
+cat $EXPORTDIR/bilan_vci.tmp.csv > $EXPORTDIR/bilan_vci.csv
+for ((i=2018 ; $(date +%Y) -i ; i++)); do
+    rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
+    python3 bin/notebook/bilan_vci_ava.py "$i" "AOC Crémant d'Alsace" $EXPORTDIR $EXPORTDIR/bilan_vci.tmp.csv
+    cat $EXPORTDIR/bilan_vci.tmp.csv | tail -n +2 >> $EXPORTDIR/bilan_vci.csv
+    rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
+    python3 bin/notebook/bilan_vci_ava.py "$i" "AOC Alsace blanc" $EXPORTDIR $EXPORTDIR/bilan_vci.tmp.csv
+    cat $EXPORTDIR/bilan_vci.tmp.csv | tail -n +2 >> $EXPORTDIR/bilan_vci.csv
+done
+rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null

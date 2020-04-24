@@ -1,6 +1,6 @@
 <?php
 
-class DRImportTask extends sfBaseTask
+class DouaneImportTask extends sfBaseTask
 {
 
     protected function configure()
@@ -15,7 +15,7 @@ class DRImportTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace = 'dr';
+        $this->namespace = 'douane';
         $this->name = 'import';
         $this->briefDescription = "Import de la DR";
         $this->detailedDescription = <<<EOF
@@ -38,40 +38,54 @@ EOF;
         $csv = $csvFile->getCsv();
         $cvis = null;
         foreach($csv as $ligne => $data) {
-            $cvi = $data[DouaneCsvFile::CSV_RECOLTANT_CVI];
-            $campagne = $data[DouaneCsvFile::CSV_CAMPAGNE];
-            $cvis[$cvi."_".$campagne][] = $ligne;
+            $cvis[$data[DouaneCsvFile::CSV_RECOLTANT_CVI]."_".$data[DouaneCsvFile::CSV_CAMPAGNE].'_'.$data[DouaneCsvFile::CSV_TYPE]][] = $ligne;
         }
 
-        foreach($cvis as $cviCamapagne => $lignes) {
-                $cviParts = explode('_', $cviCamapagne);
+        foreach($cvis as $cviCampagne => $lignes) {
+                $cviParts = explode('_', $cviCampagne);
                 $cvi = $cviParts[0];
                 $campagne = $cviParts[1];
+                $type = $cviParts[2];
 
-                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
+                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi,true);
 
                 if(!$etablissement) {
-                    echo "ERREUR;$cvi;cvi non trouvé\n";
+                    echo "$type;ERREUR;$cvi;cvi non trouvé\n";
 
                     continue;
                 }
 
-                $dr = DRClient::getInstance()->findByArgs($etablissement->identifiant, $campagne);
+                if(is_array($etablissement) && count($etablissement) > 1) {
+                    echo "$type;ERREUR;$cvi;plusieurs établissements ont ce cvi\n";
 
-                if(!$dr) {
-                    $dr = DRClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+                    continue;
                 }
 
-                $dr->remove('donnees');
-                $dr->add('donnees');
+                if($etablissement->isSuspendu()){
+                  echo "$type;ERREUR;$cvi;cvi opérateur archivé, pas de reprise\n";
+                  continue;
+                }
+                $fichier = FichierClient::getInstance()->findByArgs($type, $etablissement->identifiant, $campagne);
+
+                if(!$fichier) {
+                    $fichier = FichierClient::getClientFromType($type)->createDoc($etablissement->identifiant, $campagne);
+                }
+
+                $fichier->remove('donnees');
+                $fichier->add('donnees');
+
+                if($fichier->getDefinition()->exist('mouvements')) {
+                    $fichier->remove('mouvements');
+                    $fichier->add('mouvements');
+                }
 
                 foreach($lignes as $ligne) {
-                    $dr->addDonnee($csv[$ligne]);
+                    $fichier->addDonnee($csv[$ligne]);
                 }
 
-                $dr->save();
+                $fichier->save();
 
-                echo "IMPORTE;$dr->_id\n";
+                echo "IMPORTE;$fichier->_id\n";
         }
     }
 }
