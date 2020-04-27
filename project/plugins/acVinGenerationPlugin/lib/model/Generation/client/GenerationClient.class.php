@@ -47,17 +47,12 @@ class GenerationClient extends acCouchdbClient {
 
     public function findHistoryWithType($type, $limit = 100) {
         $views = acCouchdbManager::getClient()
-                ->startkey(array($type))
-                ->endkey(array($type, array()));
-	$rows = $views->getView("generation", "history")->rows;
-        uasort($rows, "GenerationClient::sortHistory");
-        $cpt = count($rows) - 1;
-        $result = array();
-        while($cpt > (count($rows) - $limit) && $cpt > -1){
-         $result[] = $rows[$cpt]; 
-         $cpt--;
-        }
-	return $result;
+            ->startkey(array($type, array()))
+            ->endkey(array($type))
+            ->descending(true)
+            ->limit($limit);
+	    $rows = $views->getView("generation", "history")->rows;
+	    return $rows;
     }
 
     public static function sortHistory($a, $b) {
