@@ -5,8 +5,7 @@
    "template": "AOC",
    "libelle": "2020 - AOC Alsace",
    "docs": [
-       "DRev",
-       "RegistreVCI"
+       "DRev"
    ],
    "cotisations": {
        "odg_ava": {
