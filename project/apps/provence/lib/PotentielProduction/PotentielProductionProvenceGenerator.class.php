@@ -149,7 +149,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         return $aggCepage;
     }
     
-    protected function getAggSuperfices()
+    protected function getSuperfices()
     {
         $superficies = [];
         // CDP + DGC
@@ -187,10 +187,12 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         return $superficies;
     }
     
-    public function getSuperfices()
+    public function getRevendicables()
     {
-        $superficies = $this->getAggSuperfices();
-        return $this->calculateRevendicable($superficies['CDP']);
+        $superficies = $this->getSuperfices();
+        $revendicables = [];
+        $revendicables['CDP'] = $this->calculateRevendicable($superficies['CDP']);
+        return $revendicables;
     }
     
     protected function calculateRevendicable($superficies)

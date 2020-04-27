@@ -25,9 +25,7 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
         
         $ppmanager = new PotentielProductionManager($arguments['identifiant']);
         echo $ppmanager->calculate()."\n";
-        print_r($ppmanager->getSuperfices());
-        echo "\n";
-        //print_r($ppmanager->respecteRegles());
+        print_r($ppmanager->getRevendicables());
         echo "\n";
     }
     
