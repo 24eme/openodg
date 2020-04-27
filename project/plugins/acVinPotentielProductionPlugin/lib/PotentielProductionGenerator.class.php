@@ -31,5 +31,4 @@ abstract class PotentielProductionGenerator
     
     abstract public function getSuperfices();
     abstract protected function respecteReglesEncepagement($parcelle);
-    abstract public function respecteRegles();
 }
