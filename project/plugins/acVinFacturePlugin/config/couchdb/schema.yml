@@ -166,6 +166,7 @@ TemplateFacture:
                 fields:
                   modele: {  }
                   callback: { required: false }
+                  required: { required: false }
                   libelle: {  }
                   code_comptable: {  }
                   details:
