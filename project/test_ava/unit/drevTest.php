@@ -76,18 +76,18 @@ $produit2 = $drev->get($produit_hash2);
 
 $produit1->superficie_vinifiee = 100;
 $produit1->superficie_revendique = 200;
-$produit1->volume_revendique = 80;
+$produit1->volume_revendique = 0;
 
 $produit2->superficie_vinifiee = 150;
 $produit2->superficie_revendique = 150;
-$produit2->volume_revendique = 110;
+$produit2->volume_revendique = 0;
 
 $drev->save();
 
 $t->is(count($drev->getProduits()), 2, "La drev a 2 produits");
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est 350");
 $t->is($drev->declaration->getTotalSuperficieVinifiee(), 2.5, "La superficie vinifié totale est 250");
-$t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est 190");
+$t->is($drev->declaration->getTotalVolumeRevendique(), 0, "Le volume revendiqué totale est 190");
 
 $t->comment("Validation");
 
