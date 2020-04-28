@@ -17,7 +17,15 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         return  ($this->identificationParcellaire)? $infos.' - Identification parcellaire : '.$this->identificationParcellaire->_id."\n" : $infos." - Identification parcellaire : null\n";
     }
     
-    public function getCepages($lieu = null, $couleur = null)
+    public function getRevendicables()
+    {
+        $superficies = $this->getSuperfices();
+        $revendicables = [];
+        $revendicables['CDP'] = $this->calculateRevendicableCDP($superficies['CDP']);
+        return $revendicables;
+    }
+    
+    protected function getCepages($lieu = null, $couleur = null)
     {
         if ($lieu && !in_array($lieu, ['SVI', 'FRE', 'LLO', 'PIE', 'NDA'])) {
             throw new Exception("Lieu $lieu inconnu.");
@@ -31,60 +39,51 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         if ($lieu == 'SVI' && $couleur == 'rouge') {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "CINSAUT N"],
-                'secondairesNoirs' => ["CARIGNAN N", "CABERNET SAUVIGNON N", "MOURVEDRE N"],
-                'secondairesBlancs' => ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
+                'secondaires' => ["CARIGNAN N", "CABERNET SAUVIGNON N", "MOURVEDRE N", "CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
             ];
         } elseif ($lieu == 'SVI' && $couleur == 'rose') {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "CINSAUT N"],
-                'secondairesNoirs' => ["CARIGNAN N", "CABERNET SAUVIGNON N", "MOURVEDRE N"],
-                'secondairesBlancs' => ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
+                'secondaires' => ["CARIGNAN N", "CABERNET SAUVIGNON N", "MOURVEDRE N", "CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
             ];
         } elseif ($lieu == 'SVI' && $couleur == 'blanc') {
             return [];
         } elseif ($lieu == 'FRE' && $couleur == 'rouge') {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "MOURVEDRE N"],
-                'secondairesNoirs' => [],
-                'secondairesBlancs' => []
+                'secondaires' => []
             ];
         } elseif ($lieu == 'FRE' && $couleur == 'rose') {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "MOURVEDRE N", "TIBOUREN N"],
-                'secondairesNoirs' => ["CINSAUT N"],
-                'secondairesBlancs' => []
+                'secondaires' => ["CINSAUT N"]
             ];
         } elseif ($lieu == 'FRE' && $couleur == 'blanc') {
             return [];
         } elseif ($lieu == 'LLO' && $couleur == 'rouge') {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "MOURVEDRE N"],
-                'secondairesNoirs' => ["CARIGNAN N", "CABERNET SAUVIGNON N"],
-                'secondairesBlancs' => []
+                'secondaires' => ["CARIGNAN N", "CABERNET SAUVIGNON N"]
             ];
         } elseif ($lieu == 'LLO' && $couleur == 'rose') {
             return [
                 'principaux' => ["GRENACHE N", "CINSAUT N"],
-                'secondairesNoirs' => ["CARIGNAN N", "SYRAH N", "MOURVEDRE N", "TIBOUREN N"],
-                'secondairesBlancs' => ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
+                'secondaires' => ["CARIGNAN N", "SYRAH N", "MOURVEDRE N", "TIBOUREN N", "CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
             ];
         } elseif ($lieu == 'LLO' && $couleur == 'blanc') {
             return [
                 'principaux' => ["VERMENTINO B"],
-                'secondairesNoirs' => [],
-                'secondairesBlancs' => ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B"]
+                'secondaires' => ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B"]
             ];
         } elseif ($lieu == 'PIE' && $couleur == 'rouge') {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "MOURVEDRE N"],
-                'secondairesNoirs' => ["CARIGNAN N", "CABERNET SAUVIGNON N"],
-                'secondairesBlancs' => []
+                'secondaires' => ["CARIGNAN N", "CABERNET SAUVIGNON N"]
             ];
         } elseif ($lieu == 'PIE' && $couleur == 'rose') {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "CINSAUT N"],
-                'secondairesNoirs' => ["MOURVEDRE N", "TIBOUREN N"],
-                'secondairesBlancs' => ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
+                'secondaires' => ["MOURVEDRE N", "TIBOUREN N", "CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
             ];
         } elseif ($lieu == 'PIE' && $couleur == 'blanc') {
             return [];
@@ -93,8 +92,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         } else {
             return [
                 'principaux' => ["GRENACHE N", "SYRAH N", "MOURVEDRE N", "TIBOUREN N", "CINSAUT N"],
-                'secondairesNoirs' => ["CARIGNAN N", "CABERNET SAUVIGNON N", "CALITOR NOIR N", "BARBAROUX RS"],
-                'secondairesBlancs' => ["CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
+                'secondaires' => ["CARIGNAN N", "CABERNET SAUVIGNON N", "CALITOR NOIR N", "BARBAROUX RS", "CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
             ];
         }
         return $cepages;
@@ -102,7 +100,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     
     protected function aggSuperficesByCepages($parcelles, $cepages)
     {
-        $agg = ['principaux' => ['TOTAL' => 0], 'secondairesnoirs' => ['TOTAL' => 0], 'secondairesblancs' => ['TOTAL' => 0], 'TOTAL' => 0];
+        $agg = ['principaux' => ['TOTAL' => 0], 'secondaires' => ['TOTAL' => 0], 'TOTAL' => 0];
         foreach ($parcelles as $parcelle) {
             if (!$this->respecteReglesEncepagement($parcelle)) {
                 continue;
@@ -113,40 +111,16 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
                 }
                 $agg['principaux'][$parcelle->cepage] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
                 $agg['principaux']['TOTAL'] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
-            } elseif (in_array($parcelle->cepage, $cepages['secondairesNoirs'])) {
-                if (!isset($agg['secondairesnoirs'][$parcelle->cepage])) {
-                    $agg['secondairesnoirs'][$parcelle->cepage] = 0;
+            } elseif (in_array($parcelle->cepage, $cepages['secondaires'])) {
+                if (!isset($agg['secondaires'][$parcelle->cepage])) {
+                    $agg['secondaires'][$parcelle->cepage] = 0;
                 }
-                $agg['secondairesnoirs'][$parcelle->cepage] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
-                $agg['secondairesnoirs']['TOTAL'] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
-            } elseif (in_array($parcelle->cepage, $cepages['secondairesBlancs'])) {
-                if (!isset($agg['secondairesblancs'][$parcelle->cepage])) {
-                    $agg['secondairesblancs'][$parcelle->cepage] = 0;
-                }
-                $agg['secondairesblancs'][$parcelle->cepage] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
-                $agg['secondairesblancs']['TOTAL'] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
+                $agg['secondaires'][$parcelle->cepage] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
+                $agg['secondaires']['TOTAL'] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
             }
             $agg['TOTAL'] += ($parcelle->exist('superficie_affectation') && $parcelle->superficie_affectation)? $parcelle->superficie_affectation : $parcelle->superficie;
         }
         return $agg;
-    }
-    
-    protected function getDgcSuperficiesByCepage($dgc)
-    {
-        $aggCepage = [];
-        foreach ($dgc as $couleur => $agg) {
-            foreach ($agg as $parcelles) {
-                foreach ($parcelles as $cepage => $superficie) {
-                    if ($cepage == 'TOTAL') {
-                        continue;
-                    }
-                    if (!isset($aggCepage[$cepage]) || $aggCepage[$cepage] > $superficie) {
-                        $aggCepage[$cepage] = $superficie;
-                    }
-                }
-            }
-        }
-        return $aggCepage;
     }
     
     protected function getSuperfices()
@@ -171,7 +145,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             foreach ($superficies as $id => $dgc) {
                 $soustraire[$id] = $this->getDgcSuperficiesByCepage($dgc);
             }
-            foreach (array('principaux', 'secondairesnoirs', 'secondairesblancs') as $cat) {
+            foreach (array('principaux', 'secondaires') as $cat) {
                 foreach ($cdp[$cat] as $k => $v) {
                     foreach ($soustraire as $cepages) {
                         if (isset($cepages[$k])) {
@@ -181,27 +155,122 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
                     }
                 }
             }
-            $cdp['TOTAL'] = round($cdp['principaux']['TOTAL'] + $cdp['secondairesblancs']['TOTAL'] + $cdp['secondairesnoirs']['TOTAL'], 4);
+            $cdp['TOTAL'] = round($cdp['principaux']['TOTAL'] + $cdp['secondaires']['TOTAL'], 4);
         }
         $superficies['CDP'] = $cdp;
         return $superficies;
     }
     
-    public function getRevendicables()
+    protected function calculateRevendicableCDP($superficies)
     {
-        $superficies = $this->getSuperfices();
         $revendicables = [];
-        $revendicables['CDP'] = $this->calculateRevendicable($superficies['CDP']);
+        $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
+        if ($revendicables['principaux'] > 0) {
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 90);
+        }
+        $revendicableSecondaires = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 30/70, $superficies['secondaires']['TOTAL']);
+        $blancs = $this->getCepagesBlancs($superficies['secondaires']);
+        $revendicableSecondairesTotalBlancs = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/70, round(array_sum($blancs), 4));
+        if (isset($blancs['VERMENTINO B'])) {
+            unset($blancs['VERMENTINO B']);
+        }
+        $revendicableSecondairesAutresBlancs = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 10/70, round(array_sum($blancs), 4));
+        $revendicables['secondairesnoirs'] = round($revendicableSecondaires - $revendicableSecondairesTotalBlancs, 4);
+        $revendicables['secondairesblancs'] = round($revendicableSecondairesTotalBlancs, 4);
+        $revendicables['secondairesvermentinob'] = round($revendicableSecondairesTotalBlancs - $revendicableSecondairesAutresBlancs, 4);
+        $revendicables['secondairesautresblancs'] = $revendicableSecondairesAutresBlancs;
         return $revendicables;
     }
     
+    protected function getCepagesBlancs($cepages, $exceptions = [])
+    {
+        $blancs = [];
+        foreach ($cepages as $cepage => $superficie) {
+            if (strtoupper(substr(trim($cepage), -1)) == 'B' && !in_array($cepage, $exceptions)) {
+                $blancs[$cepage] = $superficie;
+            }
+        }
+        return $blancs;
+    }
+
+    protected function getDgcSuperficiesByCepage($dgc)
+    {
+        $aggCepage = [];
+        foreach ($dgc as $couleur => $agg) {
+            foreach ($agg as $parcelles) {
+                foreach ($parcelles as $cepage => $superficie) {
+                    if ($cepage == 'TOTAL') {
+                        continue;
+                    }
+                    if (!isset($aggCepage[$cepage]) || $aggCepage[$cepage] > $superficie) {
+                        $aggCepage[$cepage] = $superficie;
+                    }
+                }
+            }
+        }
+        return $aggCepage;
+    }
+
+    protected function respecteReglesEncepagement($parcelle)
+    {
+        $dgc = null;
+        if ($parcelle->exist('affectee') && $parcelle->affectee) {
+            $dgc = $parcelle->getDgcLibelle();
+        } elseif ($parcelle->exist('affectation') && $parcelle->affectation) {
+            $dgc = $parcelle->getDgcLibelle();
+        }
+        if (in_array($parcelle->cepage, array('CALITOR NOIR N', 'BARBAROUX RS'))) {
+            if ($dgc) {
+                return false;
+            }
+            if (!$parcelle->campagne_plantation || intval(substr($parcelle->campagne_plantation, -4)) > 1994) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    //******* REGLES CALCULS
+    
+    // $revendicablePrincipaux = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
+    protected function regleNbCepageMin_GetRevendicable($cepages, $min)
+    {
+        return (count($cepages) - 1 < $min)? 0 : $cepages['TOTAL'];
+    }
+    
+    // $revendicablePrincipaux = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 90);
+    protected function reglePourcentageCepageMax_GetRevendicable($cepages, $encepagement, $pourcentage)
+    {
+        $max = round(($encepagement*($pourcentage/100)), 4);
+        $revendicable = $cepages['TOTAL'];
+        unset($cepages['TOTAL']);
+        foreach ($cepages as $cepage => $superficie) {
+            if ($superficie > $max) {
+                $revendicable = round(($encepagement - $superficie) * ($pourcentage/10), 4);
+                break;
+            }
+        }
+        return $revendicable;
+    }
+    
+    // $revendicableSecondairesMax = $this->regleSuperficieSecondairesMax_GetRevendicable($revendicablePrincipaux, 30/70, $superficies['secondaires']['TOTAL']);
+    protected function regleRatioMax_GetRevendicable($encepagementCepagesPrincipaux, $ratioSecondairePrincipal, $encepagementCepagesSecondaires)
+    {
+        $encepagementMaxCepagesSecondaires = round($encepagementCepagesPrincipaux*$ratioSecondairePrincipal, 4);
+        return ($encepagementCepagesSecondaires > $encepagementMaxCepagesSecondaires)? $encepagementMaxCepagesSecondaires : $encepagementCepagesSecondaires;
+    }
+    
+    //****** FIN REGLES
+    
+
+    // TMP : Pour comparaison 
     protected function calculateRevendicable($superficies)
     {
         $revendicables = array();
         // Regle des 2 cepages principaux min.
         if (count($superficies['principaux']) - 1 < 2) {
             foreach ($superficies['principaux'] as $cepage => $superficie) {
-               $revendicables['principaux'] = array('TOTAL' => 0);
+                $revendicables['principaux'] = array('TOTAL' => 0);
             }
         } else {
             // Regle des 90%
@@ -223,7 +292,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
                     $revendicables['principaux']['TOTAL'] = round($total + $revendicables['principaux'][$cepage], 4);
                 }
             }
-            
+    
             $revendicables['secondairesblancs']['TOTAL'] = $superficies['secondairesblancs']['TOTAL'];
             $revendicables['TOTAL'] = round($superficies['principaux']['TOTAL'] + $superficies['secondairesblancs']['TOTAL'] + $superficies['secondairesnoirs']['TOTAL'], 4);
         }
@@ -255,13 +324,13 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         $superficiesBlancsSaisies = round($superficies['secondairesblancs']['TOTAL'],4);
         $superficieVermentinoBSaisie = (isset($superficies['secondairesblancs']['VERMENTINO B']))? round($superficiesBlancsSaisies - $superficies['secondairesblancs']['VERMENTINO B'],4) : 0;
         $superficiesAutresBlancsSaisies = round($superficiesBlancsSaisies - $superficieVermentinoBSaisie, 4);
-        
+    
         $maxDixPourcentRevendicable = round(($revendicables['principaux']['TOTAL'] + $revendicables['secondairesnoirs']['TOTAL'] + $superficieVermentinoBSaisie) / 9, 4);
         $dixPourcentRevendicable = ($superficiesAutresBlancsSaisies > $maxDixPourcentRevendicable)? $maxDixPourcentRevendicable : $superficiesAutresBlancsSaisies;
         if ($dixPourcentRevendicable > $revendicables['secondairesblancs']['TOTAL']) {
             $dixPourcentRevendicable = $revendicables['secondairesblancs']['TOTAL'];
         }
-        
+    
         $maxVermentinoBRevendicable = round($revendicables['secondairesblancs']['TOTAL']-$dixPourcentRevendicable, 4);
         $vermentinoBRevendicable = ($superficieVermentinoBSaisie > $maxVermentinoBRevendicable)? $maxVermentinoBRevendicable : $superficieVermentinoBSaisie;
         $revendicables['secondairesblancs']['TOTAL'] = round($vermentinoBRevendicable + $dixPourcentRevendicable, 4);
@@ -270,24 +339,5 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         $revendicables['TOTAL'] = round($revendicables['principaux']['TOTAL'] + $revendicables['secondairesblancs']['TOTAL'] + $revendicables['secondairesnoirs']['TOTAL'], 4);
         $revendicables['BLANC'] = round(round($superficies['secondairesblancs']['TOTAL'], 4) - $revendicables['secondairesblancs']['TOTAL'], 4);
         return $revendicables;
-    }
-    
-    protected function respecteReglesEncepagement($parcelle)
-    {
-        $dgc = null;
-        if ($parcelle->exist('affectee') && $parcelle->affectee) {
-            $dgc = $parcelle->getDgcLibelle();
-        } elseif ($parcelle->exist('affectation') && $parcelle->affectation) {
-            $dgc = $parcelle->getDgcLibelle();
-        }
-        if (in_array($parcelle->cepage, array('CALITOR NOIR N', 'BARBAROUX RS'))) {
-            if ($dgc) {
-                return false;
-            }
-            if (!$parcelle->campagne_plantation || intval(substr($parcelle->campagne_plantation, -4)) > 1994) {
-                return false;
-            }
-        }
-        return true;
     }
 }
