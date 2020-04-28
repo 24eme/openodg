@@ -1,15 +1,15 @@
 {
-   "_id": "TEMPLATE-FACTURE-MARC-2016",
-   "campagne": 2016,
+   "_id": "TEMPLATE-FACTURE-MARC-2018",
+   "campagne": 2018,
    "type": "TemplateFacture",
    "template": "MARC",
-   "libelle": "2017 - Marc d'Alsace Gewurztraminer",
+   "libelle": "2019 - Marc d'Alsace Gewurztraminer",
    "docs": [
        "DRevMarc"
    ],
    "cotisations": {
        "marc_alsace_gewurztraminer": {
-           "libelle": "Cotisation ODG - AVA / Droits INAO / Contrôle externe 2017 AOC Marc d'Alsace Gewurztraminer",
+           "libelle": "Cotisation ODG - AVA / Droits INAO / Contrôle externe 2019 AOC Marc d'Alsace Gewurztraminer",
            "modele": "CotisationsCollection",
            "required": true,
            "callback": "",

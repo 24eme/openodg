@@ -1,12 +1,11 @@
 {
-   "_id": "TEMPLATE-FACTURE-AOC-2017",
+   "_id": "TEMPLATE-FACTURE-AOC-2016",
    "type": "TemplateFacture",
-   "campagne": 2017,
+   "campagne": 2016,
    "template": "AOC",
-   "libelle": "2018 - AOC Alsace",
+   "libelle": "2017 - AOC Alsace",
    "docs": [
-       "DRev",
-       "RegistreVCI"
+       "DRev"
    ],
    "cotisations": {
        "odg_ava": {
@@ -45,7 +44,7 @@
                    "modele": "CotisationVariable",
                    "prix": 40.74,
                    "tva": 0,
-                   "libelle": "hectares vinifiés (récolte 2017)",
+                   "libelle": "hectares vinifiés (récolte 2016)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -194,15 +193,12 @@
                    ]
                },
                "COMPTE-S006205": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 0.1,
+                   "modele": "CotisationFixe",
+                   "prix": 0,
                    "tva": 0,
-                   "tranche": 1,
-                   "depart": 100,
-                   "complement": 20,
                    "libelle": "Cotisation syndicat viticole COLMAR",
-                   "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
+                   "callback": "",
                    "docs": [
                        "DRev"
                    ]
@@ -241,15 +237,12 @@
                    ]
                },
                "COMPTE-S006213": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 3,
+                   "modele": "CotisationFixe",
+                   "prix": 0,
                    "tva": 0,
-                   "tranche": 100,
-                   "depart": 0,
-                   "complement": 0,
                    "libelle": "Cotisation syndicat viticole EPFIG",
-                   "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
+                   "callback": "",
                    "docs": [
                        "DRev"
                    ]
@@ -561,7 +554,7 @@
                    "tranche": 100,
                    "depart": 0,
                    "complement": 0,
-                   "libelle": "Cotisation syndicat viticole SCHIEFERBERG",
+                   "libelle": "Cotisation syndicat viticole SCHIEFFERBERG",
                    "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
                    "docs": [
@@ -923,17 +916,6 @@
                    "libelle": "Cotisation syndicat viticole TRAENHEIM",
                    "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ]
-               },
-               "COMPTE-S006201": {
-                   "modele": "CotisationFixe",
-                   "prix": 11,
-                   "tva": 0,
-                   "libelle": "Cotisation syndicat viticole BOERSCH",
-                   "complement_libelle": "",
-                   "callback": "",
                    "docs": [
                        "DRev"
                    ]
@@ -1611,20 +1593,6 @@
                    "docs": [
                        "DRev"
                    ]
-               },
-               "COMPTE-S014382": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 2,
-                   "tva": 0,
-                   "tranche": 100,
-                   "depart": 0,
-                   "complement": 20,
-                   "libelle": "Cotisation syndicat viticole KIRCHHEIM-ODRATZHEIM",
-                   "callback": "getSurfaceFacturable",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ]
                }
            },
            "callback": "getSyndicatsViticole"
@@ -1640,7 +1608,7 @@
                    "modele": "CotisationVariable",
                    "prix": 14.58,
                    "tva": 0.2,
-                   "libelle": "hectares vinifiés (récolte 2017)",
+                   "libelle": "hectares vinifiés (récolte 2016)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -1653,14 +1621,14 @@
            "modele": "CotisationsCollection",
            "required": true,
            "callback": "",
-           "libelle": "Droit INAO",
+           "libelle": "Droit INAO 2016",
            "code_comptable": "706450",
            "details": {
                "cotisation": {
                    "modele": "CotisationVariable",
                    "prix": 0.15,
                    "tva": 0,
-                   "libelle": "hl de vin revendiqué (récolte 2017)",
+                   "libelle": "hl de vin revendiqué (récolte 2016)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -1680,30 +1648,10 @@
                    "modele": "CotisationVariable",
                    "prix": 0.02,
                    "tva": 0,
-                   "libelle": "surface totale déclaration de récolte 2017 (ares)",
+                   "libelle": "surface totale déclaration de récolte 2016 (ares)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
-                   ],
-                   "callback": "getSurfaceFacturable"
-               }
-           }
-       },
-       "vci": {
-           "modele": "CotisationsCollection",
-           "required": true,
-           "callback": "",
-           "libelle": "VCI",
-           "code_comptable": "706700",
-           "details": {
-               "cotisation": {
-                   "modele": "CotisationVariable",
-                   "prix": 25,
-                   "tva": 0,
-                   "libelle": "hectares (récolte 2017)",
-                   "complement_libelle": "",
-                   "docs": [
-                       "RegistreVCI"
                    ],
                    "callback": "getSurfaceFacturable"
                }
