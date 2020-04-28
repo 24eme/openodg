@@ -1,9 +1,9 @@
 {
-   "_id": "TEMPLATE-FACTURE-ABONNEMENT-20180101-20181231",
+   "_id": "TEMPLATE-FACTURE-ABONNEMENT-20150101-20151231",
    "type": "TemplateFacture",
-   "campagne": "20180101-20181231",
+   "campagne": "20150101-20151231",
    "template": "ABONNEMENT",
-   "libelle": "2018 - Abonnement à la revue",
+   "libelle": "2015 - Abonnement à la revue",
    "docs": [
        "Abonnement"
    ],
@@ -17,10 +17,10 @@
            "details": {
                "abonnement_fixe": {
                    "modele": "CotisationFixe",
-                   "prix": 50.93,
+                   "prix": 47.99,
                    "tva": 0.021,
-                   "libelle": "Abonnement au tarif Membre - Année 2018 (12 numéros)",
-                   "complement_libelle": "",
+                   "libelle": "Abonnement au tarif Membre - Année 2015 (13 numéros)",
+                   "complement_libelle": "test",
                    "callback": "",
                    "docs": [
                        "Abonnement"
