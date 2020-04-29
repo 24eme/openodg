@@ -5,10 +5,12 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     
     public function __construct($identifiant_or_etablissement)
     {
-        parent::__construct($identifiant_or_etablissement);
-        $this->identificationParcellaire = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
-        if (!$this->identificationParcellaire) {
-            $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+        if ($identifiant_or_etablissement) {
+            parent::__construct($identifiant_or_etablissement);
+            $this->identificationParcellaire = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+            if (!$this->identificationParcellaire) {
+                $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+            }
         }
     }
     public function infos() 
@@ -17,15 +19,15 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         return  ($this->identificationParcellaire)? $infos.' - Identification parcellaire : '.$this->identificationParcellaire->_id."\n" : $infos." - Identification parcellaire : null\n";
     }
     
-    public function getRevendicables()
+    public function getRevendicables($superficies = null)
     {
-        $superficies = $this->getSuperfices();
+        $superficies = ($superficies)? $superficies : $this->getSuperfices();
         $revendicables = [];
         $revendicables['CDP'] = $this->calculateRevendicableCDP($superficies['CDP']);
         return $revendicables;
     }
     
-    protected function getCepages($lieu = null, $couleur = null)
+    public function getCepages($lieu = null, $couleur = null)
     {
         if ($lieu && !in_array($lieu, ['SVI', 'FRE', 'LLO', 'PIE', 'NDA'])) {
             throw new Exception("Lieu $lieu inconnu.");
@@ -95,7 +97,6 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
                 'secondaires' => ["CARIGNAN N", "CABERNET SAUVIGNON N", "CALITOR NOIR N", "BARBAROUX RS", "CLAIRETTE B", "SEMILLON B", "UGNI BLANC B", "VERMENTINO B"]
             ];
         }
-        return $cepages;
     }
     
     protected function aggSuperficesByCepages($parcelles, $cepages)
@@ -233,13 +234,13 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     //******* REGLES CALCULS
     
     // $revendicablePrincipaux = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
-    protected function regleNbCepageMin_GetRevendicable($cepages, $min)
+    public function regleNbCepageMin_GetRevendicable($cepages, $min)
     {
         return (count($cepages) - 1 < $min)? 0 : $cepages['TOTAL'];
     }
     
     // $revendicablePrincipaux = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 90);
-    protected function reglePourcentageCepageMax_GetRevendicable($cepages, $encepagement, $pourcentage)
+    public function reglePourcentageCepageMax_GetRevendicable($cepages, $encepagement, $pourcentage)
     {
         $max = round(($encepagement*($pourcentage/100)), 4);
         $revendicable = $cepages['TOTAL'];
@@ -254,7 +255,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     }
     
     // $revendicableSecondairesMax = $this->regleSuperficieSecondairesMax_GetRevendicable($revendicablePrincipaux, 30/70, $superficies['secondaires']['TOTAL']);
-    protected function regleRatioMax_GetRevendicable($encepagementCepagesPrincipaux, $ratioSecondairePrincipal, $encepagementCepagesSecondaires)
+    public function regleRatioMax_GetRevendicable($encepagementCepagesPrincipaux, $ratioSecondairePrincipal, $encepagementCepagesSecondaires)
     {
         $encepagementMaxCepagesSecondaires = round($encepagementCepagesPrincipaux*$ratioSecondairePrincipal, 4);
         return ($encepagementCepagesSecondaires > $encepagementMaxCepagesSecondaires)? $encepagementMaxCepagesSecondaires : $encepagementCepagesSecondaires;

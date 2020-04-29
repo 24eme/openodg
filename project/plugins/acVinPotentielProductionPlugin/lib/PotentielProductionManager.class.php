@@ -13,7 +13,7 @@ class PotentielProductionManager
            throw new sfException("La classe $ppGenerator n'existe pas");
         }
         $this->generator = new $ppGenerator($identifiant_or_etablissement);
-        if ($generator instanceof PotentielProductionGenerator) {
+        if (!($this->generator instanceof PotentielProductionGenerator)) {
             throw new sfException("La classe $ppGenerator doit étendre la classe PotentielProductionGenerator");
         }
     }
@@ -31,5 +31,10 @@ class PotentielProductionManager
     public function respecteRegles()
     {
         return $this->generator->respecteRegles();
+    }
+    
+    public function getGenerator()
+    {
+        return $this->generator;
     }
 }
