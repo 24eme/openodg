@@ -1,7 +1,11 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation") {
+    if(doc.type != "DRev" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation" && doc.type != "Parcellaire") {
 
+        return;
+    }
+
+    if(!doc.campagne) {
         return;
     }
 
@@ -94,6 +98,7 @@ function(doc) {
 	    statut = "À approuver";
         infos = null;
         if(nb_doc_en_attente) {
+            statutProduit = "En attente";
            infos = nb_doc_en_attente + " pièce(s) en attente";
 	    }
     }
@@ -113,7 +118,8 @@ function(doc) {
 	    type = "Intention Crémant";
     }
 
-    if(doc.type == "DRev"){
+    var nb_emits = 0;
+    if(doc.type == "DRev" && !doc.declaration.certification){
            for (key in doc.declaration) {
               statutProduit = statut;
               for(detailKey in doc.declaration[key]){
@@ -122,9 +128,12 @@ function(doc) {
                   statutProduit = "Approuvé";
                 }
     	          emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                  nb_emits = nb_emits + 1;
               }
            }
-    }else{
-             emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+    }
+
+    if(!nb_emits){
+        emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
     }
 }
