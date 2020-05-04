@@ -279,6 +279,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         $superficies['secondaires']['TOTAL'] -= $superficies['secondaires']['CABERNET SAUVIGNON N'];
         $superficies['secondaires']['CABERNET SAUVIGNON N'] = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 10/80, $superficies['secondaires']['CABERNET SAUVIGNON N']);
         $superficies['secondaires']['TOTAL'] += $superficies['secondaires']['CABERNET SAUVIGNON N'];
+        $revendicables['secondaires'] = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80, $superficies['secondaires']['TOTAL']);
         return $revendicables;
     }
     

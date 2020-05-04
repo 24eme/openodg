@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(8);
+$t = new lime_test(10);
 
 $ppmanager = new PotentielProductionManager(null);
 $generator = $ppmanager->getGenerator(); 
@@ -43,7 +43,7 @@ sort($cepages['principaux']);
 sort($cepages['secondaires']);
 
 $t->is_deeply($cepages['principaux'], $principaux, "Règle 0 : Cépages principaux respectés pour le rouge.");
-$t->is_deeply($cepages['secondaires'], $secondaires, "Règle 0b : Cépages secondaires respectés pour le rose.");
+$t->is_deeply($cepages['secondaires'], $secondaires, "Règle 0 : Cépages secondaires respectés pour le rose.");
 
 $cepages = $generator->getCepages('SVI', 'rose');
 $principaux = $superficiesRose['principaux'];
@@ -56,7 +56,7 @@ sort($secondaires);
 sort($cepages['principaux']);
 sort($cepages['secondaires']);
 
-$t->is_deeply($cepages['principaux'], $principaux, "Règle 0 : Cépages principaux respectés pour le rouge.");
+$t->is_deeply($cepages['principaux'], $principaux, "Règle 0b : Cépages principaux respectés pour le rouge.");
 $t->is_deeply($cepages['secondaires'], $secondaires, "Règle 0b : Cépages secondaires respectés pour le rose.");
 
 // Test 1 : regle des 2 cepages principaux sup ou egal a encepagement
@@ -68,11 +68,19 @@ $regle2 = $generator->regleRatioMax_GetRevendicable($superficiesRouge['principau
 $t->ok($regle2 <= round($superficiesRouge['TOTAL'] * 0.1), "Règle 2 OK : 10% du CABERNET SAUVIGNON N max");
 
 // Test 3 : verification du potentiel de production calculé pour le rosé
-$revendicables = $generator->calculateRevendicableSVIRose($superficiesRose);
+$revendicablesRose = $generator->calculateRevendicableSVIRose($superficiesRose);
 $result = ['principaux' => 24.1681, 'secondairesnoirs' => 0, 'secondairesblancs' => 6.042, 'secondairesvermentinob' => 3.021, 'secondairesautresblancs' => 3.021];
-$t->is_deeply($revendicables, $result, "Règle 3 : Calcul du potentiel de production SVI Rose OK.");
+$t->is_deeply($revendicablesRose, $result, "Règle 3 : Calcul du potentiel de production SVI Rose OK.");
 
 // Test 4 : verification du potentiel de production calculé pour le rouge
-$revendicables = $generator->calculateRevendicableSVIRouge($superficiesRouge);
+$revendicablesRouge = $generator->calculateRevendicableSVIRouge($superficiesRouge);
 $result = ['principaux' => 24.1681, 'secondairesnoirs' => 0, 'secondairesblancs' => 6.042, 'secondairesvermentinob' => 3.021, 'secondairesautresblancs' => 3.021];
-$t->is_deeply($revendicables, $result, "Règle 4 : Calcul du potentiel de production SVI Rouge OK.");
+$t->is_deeply($revendicablesRouge, $result, "Règle 4 : Calcul du potentiel de production SVI Rouge OK.");
+
+// Test 5 : comparaison rosé avec la calculette
+$result = ['principaux' => 24.1681, 'secondairesnoirs' => 4.1592, 'secondairesblancs' => 6.1986, 'secondairesvermentinob' => 2.4586, 'secondairesautresblancs' => 3.74];
+$t->is_deeply($revendicablesRose, $result, "Règle 5 : Comparaison rosé avec la calculette");
+
+// Test 6 : comparaison rouge avec la calculette
+$result = ['principaux' => 24.1681, 'secondairesnoirs' => 4.1592, 'secondairesblancs' => 1.8828, 'secondairesvermentinob' => 0, 'secondairesautresblancs' => 1.8828];
+$t->is_deeply($revendicablesRouge, $result, "Règle 6 : Comparaison rouge avec la calculette");
