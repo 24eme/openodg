@@ -184,6 +184,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return (isset($dgcs[$dgc]))? $dgcs[$dgc] : null;
     }
 
+    public function getParcellesByIduSurface($idu, $surface) {
+        $parcelles = $this->getParcelles();
+        $find = array();
+        foreach ($parcelles as $parcelle) {
+            if ($parcelle->idu == $idu && round($parcelle->superficie_affectation,4) == round($surface,4)) {
+                $find[] = $parcelle;
+            }
+        }
+        return $find;
+    }
+
   /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {

@@ -38,7 +38,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $libelle_complet = $produit->getLibelleComplet();
             $superficie = $produit->superficie_revendique;
             $superficie_vtsgn = ($produit->exist('superficie_revendique_vtsgn')) ? $produit->superficie_revendique_vtsgn : 0;
-            $superficie_vinifiee = $produit->superficie_vinifiee;
+            $superficie_vinifiee = ($produit->exist('superficie_vinifiee')) ? $produit->superficie_vinifiee : 0;
             $superficie_vinifiee_vtsgn = ($produit->exist('superficie_vinifiee_vtsgn')) ? $produit->superficie_vinifiee_vtsgn : 0;
             $volume_vci = ($produit->exist('volume_revendique_vci')) ? $produit->volume_revendique_vci : 0;
             $volume = $produit->volume_revendique;

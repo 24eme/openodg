@@ -3,7 +3,6 @@
 
 # default values
 all:
-  elasticversion: '1.6.2'
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4

@@ -251,6 +251,52 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         return $appellation;
     }
 
+    public function updateAcheteursInfos() {
+        foreach($this->acheteurs as $type => $acheteurs) {
+            foreach($acheteurs as $cvi => $acheteur) {
+                if ($cvi == $this->identifiant) {
+                    continue;
+                }
+                $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-' . $cvi, acCouchdbClient::HYDRATE_JSON);
+
+                if (!$etablissement) {
+                    throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-' . $cvi));
+                }
+
+                $change = false;
+                if($acheteur->nom != $etablissement->raison_sociale || $acheteur->commune != $etablissement->commune || $acheteur->email != $etablissement->email) {
+                    $change = true;
+                }
+
+                $acheteur->nom = $etablissement->raison_sociale;
+                $acheteur->commune = $etablissement->commune;
+                $acheteur->email = $etablissement->email;
+
+                if($change && $acheteur->email_envoye)  {
+                    $acheteur->email_envoye = null;
+                }
+
+
+            }
+        }
+
+        foreach($this->getProduits() as $produit) {
+            foreach($produit->acheteurs as $lieu => $lieux) {
+                foreach($lieux as $type => $types) {
+                    foreach($types as $cvi => $acheteur) {
+                        if ($cvi == $this->identifiant) {
+                            continue;
+                        }
+                        $a = $this->acheteurs->get($type)->get($cvi);
+                        $acheteur->nom = $a->nom;
+                        $acheteur->cvi = $a->cvi;
+                        $acheteur->commune = $a->commune;
+                    }
+                }
+            }
+        }
+    }
+
     public function addAcheteur($type, $cvi) {
         if ($this->acheteurs->add($type)->exist($cvi)) {
 

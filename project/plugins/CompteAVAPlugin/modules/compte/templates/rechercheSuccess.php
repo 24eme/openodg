@@ -35,7 +35,7 @@
         <?php if ($nb_results > 0): ?>
             <div class="list-group" style="margin-top: 15px">
             <?php foreach ($results as $res): ?>
-            <?php $data = $res->getData(); ?>
+            <?php $data = $res->getData()['doc']; ?>
                 <a style="<?php if($data['statut'] != CompteClient::STATUT_ACTIF): ?>opacity: 0.6<?php endif ?>" href="<?php echo url_for('compte_visualisation', array("id" => $data["_id"])); ?>" class="list-group-item">
                     <h3 class="list-group-item-heading"><?php echo Anonymization::hideIfNeeded($data['nom_a_afficher']); ?> <?php if($data['cvi'] || $data['siren']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siren']): ?> / <?php endif; ?><?php if($data['siren']): ?><?php echo Anonymization::hideIfNeeded($data['siren']) ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
                     <p class="list-group-item-text">
