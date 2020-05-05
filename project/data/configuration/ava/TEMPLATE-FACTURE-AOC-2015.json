@@ -1,12 +1,11 @@
 {
-   "_id": "TEMPLATE-FACTURE-AOC-2017",
+   "_id": "TEMPLATE-FACTURE-AOC-2015",
    "type": "TemplateFacture",
-   "campagne": 2017,
+   "campagne": 2015,
    "template": "AOC",
-   "libelle": "2018 - AOC Alsace",
+   "libelle": "2016 - AOC Alsace",
    "docs": [
-       "DRev",
-       "RegistreVCI"
+       "DRev"
    ],
    "cotisations": {
        "odg_ava": {
@@ -18,7 +17,7 @@
            "details": {
                "raisins_fixe": {
                    "modele": "CotisationFixe",
-                   "prix": 16,
+                   "prix": 11.95,
                    "tva": 0,
                    "libelle": "Fixe",
                    "complement_libelle": "",
@@ -29,7 +28,7 @@
                },
                "raisins_tranche": {
                    "modele": "CotisationTranche",
-                   "prix": 5.26,
+                   "prix": 3.93,
                    "tva": 0,
                    "depart": 1,
                    "complement": 0,
@@ -43,14 +42,14 @@
                },
                "vinification": {
                    "modele": "CotisationVariable",
-                   "prix": 40.74,
+                   "prix": 0.53,
                    "tva": 0,
-                   "libelle": "hectares vinifiés (récolte 2017)",
+                   "libelle": "hl de vin revendiqué (récolte 2015)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getSurfaceVinifieeFacturable"
+                   "callback": "getVolumeFacturable"
                }
            }
        },
@@ -63,7 +62,7 @@
            "details": {
                "syndicale_fixe": {
                    "modele": "CotisationFixe",
-                   "prix": 8.12,
+                   "prix": 6.1,
                    "tva": 0,
                    "libelle": "Fixe",
                    "complement_libelle": "",
@@ -74,7 +73,7 @@
                },
                "syndicale_tranche": {
                    "modele": "CotisationTranche",
-                   "prix": 2.69,
+                   "prix": 2.02,
                    "tva": 0,
                    "depart": 1,
                    "complement": 0,
@@ -194,15 +193,12 @@
                    ]
                },
                "COMPTE-S006205": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 0.1,
+                   "modele": "CotisationFixe",
+                   "prix": 0,
                    "tva": 0,
-                   "tranche": 1,
-                   "depart": 100,
-                   "complement": 20,
                    "libelle": "Cotisation syndicat viticole COLMAR",
-                   "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
+                   "callback": "",
                    "docs": [
                        "DRev"
                    ]
@@ -241,15 +237,12 @@
                    ]
                },
                "COMPTE-S006213": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 3,
+                   "modele": "CotisationFixe",
+                   "prix": 0,
                    "tva": 0,
-                   "tranche": 100,
-                   "depart": 0,
-                   "complement": 0,
                    "libelle": "Cotisation syndicat viticole EPFIG",
-                   "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
+                   "callback": "",
                    "docs": [
                        "DRev"
                    ]
@@ -561,7 +554,7 @@
                    "tranche": 100,
                    "depart": 0,
                    "complement": 0,
-                   "libelle": "Cotisation syndicat viticole SCHIEFERBERG",
+                   "libelle": "Cotisation syndicat viticole SCHIEFFERBERG",
                    "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
                    "docs": [
@@ -618,20 +611,6 @@
                    "depart": 0,
                    "complement": 0,
                    "libelle": "Cotisation syndicat viticole HEILIGENSTEIN",
-                   "callback": "getSurfaceFacturable",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ]
-               },
-               "COMPTE-S006231": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 4,
-                   "tva": 0,
-                   "tranche": 100,
-                   "depart": 0,
-                   "complement": 0,
-                   "libelle": "Cotisation syndicat viticole KIENTZHEIM-KAYSERSBERG",
                    "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
                    "docs": [
@@ -844,6 +823,19 @@
                        "DRev"
                    ]
                },
+               "COMPTE-S006231": {
+                   "modele": "CotisationCotisationFixe",
+                   "prix": 0.2,
+                   "tva": 0,
+                   "minimum": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole KIENTZHEIM-KAYSERSBERG",
+                   "callback": "cotisations/ava_syndicale",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
                "COMPTE-S006234": {
                    "modele": "CotisationCotisationFixe",
                    "prix": 0.1,
@@ -923,17 +915,6 @@
                    "libelle": "Cotisation syndicat viticole TRAENHEIM",
                    "callback": "getSurfaceFacturable",
                    "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ]
-               },
-               "COMPTE-S006201": {
-                   "modele": "CotisationFixe",
-                   "prix": 11,
-                   "tva": 0,
-                   "libelle": "Cotisation syndicat viticole BOERSCH",
-                   "complement_libelle": "",
-                   "callback": "",
                    "docs": [
                        "DRev"
                    ]
@@ -1611,20 +1592,6 @@
                    "docs": [
                        "DRev"
                    ]
-               },
-               "COMPTE-S014382": {
-                   "modele": "CotisationTrancheFixe",
-                   "prix": 2,
-                   "tva": 0,
-                   "tranche": 100,
-                   "depart": 0,
-                   "complement": 20,
-                   "libelle": "Cotisation syndicat viticole KIRCHHEIM-ODRATZHEIM",
-                   "callback": "getSurfaceFacturable",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ]
                }
            },
            "callback": "getSyndicatsViticole"
@@ -1638,14 +1605,14 @@
            "details": {
                "cotisation": {
                    "modele": "CotisationVariable",
-                   "prix": 14.58,
+                   "prix": 0.218,
                    "tva": 0.2,
-                   "libelle": "hectares vinifiés (récolte 2017)",
+                   "libelle": "hl de vin revendiqué (récolte 2015)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getSurfaceVinifieeFacturable"
+                   "callback": "getVolumeFacturable"
                }
            }
        },
@@ -1653,14 +1620,14 @@
            "modele": "CotisationsCollection",
            "required": true,
            "callback": "",
-           "libelle": "Droit INAO",
+           "libelle": "Droit INAO 2015",
            "code_comptable": "706450",
            "details": {
                "cotisation": {
                    "modele": "CotisationVariable",
-                   "prix": 0.15,
+                   "prix": 0.144,
                    "tva": 0,
-                   "libelle": "hl de vin revendiqué (récolte 2017)",
+                   "libelle": "hl de vin revendiqué (récolte 2015)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -1680,30 +1647,10 @@
                    "modele": "CotisationVariable",
                    "prix": 0.02,
                    "tva": 0,
-                   "libelle": "surface totale déclaration de récolte 2017 (ares)",
+                   "libelle": "surface totale déclaration de récolte 2015 (ares)",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
-                   ],
-                   "callback": "getSurfaceFacturable"
-               }
-           }
-       },
-       "vci": {
-           "modele": "CotisationsCollection",
-           "required": true,
-           "callback": "",
-           "libelle": "VCI",
-           "code_comptable": "706700",
-           "details": {
-               "cotisation": {
-                   "modele": "CotisationVariable",
-                   "prix": 25,
-                   "tva": 0,
-                   "libelle": "hectares (récolte 2017)",
-                   "complement_libelle": "",
-                   "docs": [
-                       "RegistreVCI"
                    ],
                    "callback": "getSurfaceFacturable"
                }

@@ -29,7 +29,6 @@ abstract class PotentielProductionGenerator
         return  ' - Etablissement : '.$this->etablissement->_id."\n - Dernier parcellaire : ".$this->parcellaire->_id."\n";
     }
     
-    abstract public function getSuperfices();
+    abstract public function getRevendicables($superficies = null);
     abstract protected function respecteReglesEncepagement($parcelle);
-    abstract public function respecteRegles();
 }

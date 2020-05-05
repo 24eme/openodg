@@ -1,32 +1,41 @@
 <?php
 
-class PotentielProductionByEtablissementTask extends sfBaseTask
+class ParcellaireUpdateAcheteursInfosTask extends sfBaseTask
 {
+
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('identifiant', sfCommandArgument::REQUIRED, "Identifiant de l'etablissement"),
+            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Document id"),
         ));
+
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
-        $this->namespace = 'potentiel-production';
-        $this->name = 'etablissement';
-        $this->briefDescription = "Get potentiel de production by etablissement";
-        $this->detailedDescription = "";
+
+        $this->namespace = 'parcellaire';
+        $this->name = 'update-acheteurs-infos';
+        $this->briefDescription = "Envoi d'un mail de rappel des pièces non recus";
+        $this->detailedDescription = <<<EOF
+EOF;
     }
 
     protected function execute($arguments = array(), $options = array())
     {
+        // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        
-        $ppmanager = new PotentielProductionManager($arguments['identifiant']);
-        echo $ppmanager->calculate()."\n";
-        print_r($ppmanager->getRevendicables());
-        echo "\n";
+
+        $parcellaire = ParcellaireClient::getInstance()->find($arguments['doc_id']);
+        $parcellaire->updateAcheteursInfos();
+
+        if($parcellaire->isModified()) {
+            echo $parcellaire->_id.":".json_encode($parcellaire->getModifications())."\n";
+            $parcellaire->save();
+        }
+
+
     }
-    
 }

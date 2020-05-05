@@ -237,7 +237,6 @@ class declarationActions extends sfActions {
         $configurations = array();
         $this->produitsLibelles = array();
         foreach($rows as $row) {
-            $addition = 0;
             if($hasProduitsFilter){
               $not_in_result = false;
               if($this->produitsFiltre){
@@ -285,7 +284,6 @@ class declarationActions extends sfActions {
                 }
                 if(!isset($documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])])){
                   $this->facets[$facetNom][$row->key[$facetKey]] += 1;
-                  $addition += $row->value;
                   $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = 1;
                 }
                 $this->docs[$row->id] = $row;
