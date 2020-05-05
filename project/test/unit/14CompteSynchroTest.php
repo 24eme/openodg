@@ -98,6 +98,8 @@ $t->is($societe->siret, $societe->getMasterCompte()->societe_informations->siret
 
 $t->comment("Dissociation du compte d'établissement et de la société");
 
+$etablissement = EtablissementClient::getInstance()->find($etbId);
+
 $etablissement->adresse = "rue dulud";
 $etablissement->region = "PIERREFEU_83";
 $etablissement->save();
