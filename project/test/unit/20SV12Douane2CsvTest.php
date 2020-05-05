@@ -19,7 +19,7 @@ unlink($csvTmpFile);
 
 $lines = explode("\n", $csvConvert);
 
-$t = new lime_test(28);
+$t = new lime_test(27);
 
 $nb = 0;
 foreach($lines as $line) {
@@ -49,7 +49,6 @@ $t->is($line[SV12CsvFile::CSV_PRODUIT_INAO], $produit->getCodeDouane(), "Le code
 $t->is($line[SV12CsvFile::CSV_PRODUIT_LIBELLE], $produit->getLibelleComplet(), "Libelle complet OK");
 
 $t->is($line[SV12CsvFile::CSV_LIGNE_CODE], "07", "Code du type de mouvement");
-$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "Quantité de VF", "Libelle du type de mouvement");
 $t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "Quantité de VF", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV12CsvFile::CSV_VALEUR]), 4), 25105, "Valeur");
 
