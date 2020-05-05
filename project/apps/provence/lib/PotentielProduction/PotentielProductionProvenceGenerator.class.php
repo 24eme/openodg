@@ -178,6 +178,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         }
         $revendicableSecondairesAutresBlancs = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 10/70, round(array_sum($blancs), 4));
         $revendicableSecondairesAutresBlancs = ($revendicableSecondairesAutresBlancs > 0)? $revendicableSecondairesAutresBlancs : 0;
+        
         $revendicables['secondairesnoirs'] = ($revendicableSecondaires - $revendicableSecondairesTotalBlancs > 0)? round($revendicableSecondaires - $revendicableSecondairesTotalBlancs, 4) : 0;
         $revendicables['secondairesblancs'] = round($revendicableSecondairesTotalBlancs, 4);
         $vermontinoMax = ($revendicableSecondairesTotalBlancs - $revendicableSecondairesAutresBlancs > 0)? round($revendicableSecondairesTotalBlancs - $revendicableSecondairesAutresBlancs, 4) : 0;
@@ -411,17 +412,19 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     public function reglePourcentageCepageMax_GetRevendicable($cepages, $encepagement, $pourcentage)
     {
         $max = round(($encepagement*($pourcentage/100)), 4);
-        $revendicable = $cepages['TOTAL'];
-        if (isset($cepages['TOTAL'])) {
-            unset($cepages['TOTAL']);
-        }
+        $revendicable = 0;
+        $total = 0;
         foreach ($cepages as $cepage => $superficie) {
+            if ($cepage == 'TOTAL') {
+                continue;
+            }
             if ($superficie > $max) {
-                $revendicable = round(($encepagement - $superficie) * ($pourcentage/10), 4);
-                break;
+                $revendicable = round(($encepagement - $superficie) * ($pourcentage/(100-$pourcentage)), 4);
+            } else {
+                $total += $superficie;
             }
         }
-        return $revendicable;
+        return ($revendicable)? round($revendicable + $total, 4) : $cepages['TOTAL'];
     }
     
     // $revendicableSecondairesMax = $this->regleSuperficieSecondairesMax_GetRevendicable($revendicablePrincipaux, 30/70, $superficies['secondaires']['TOTAL']);
