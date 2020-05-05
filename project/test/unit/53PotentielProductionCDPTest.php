@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(9);
+$t = new lime_test(10);
 
 $ppmanager = new PotentielProductionManager(null);
 $generator = $ppmanager->getGenerator(); 
@@ -81,3 +81,7 @@ $t->ok($revendicableSecondairesAutresBlancs <= $test6, "Règle 6 OK : La proport
 $revendicables = $generator->calculateRevendicableCDP($superficies);
 $result = ['principaux' => 118.1768, 'secondairesnoirs' => 9.1592, 'secondairesblancs' => 19.0955, 'secondairesvermentinob' => 12.857, 'secondairesautresblancs' => 6.2385];
 $t->is_deeply($revendicables, $result, "Règle 7 : Calcul du potentiel de production OK.");
+
+// Test 8 : comparaison avec la calculette
+$result = ['principaux' => 118.1768, 'secondairesnoirs' => 9.1592, 'secondairesblancs' => 19.0955, 'secondairesvermentinob' => 12.857, 'secondairesautresblancs' => 6.2385];
+$t->is_deeply($revendicables, $result, "Règle 8 : Comparaison avec la calculette");
