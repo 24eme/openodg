@@ -23,6 +23,29 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
     HabilitationClient::getInstance()->deleteDoc(HabilitationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
+$config = ConfigurationClient::getCurrent();
+$produit1 = null;
+$produit2 = null;
+foreach($config->getProduits() as $produit) {
+    if(!$produit->getRendement()) {
+        continue;
+    }
+    if(!$produit1) {
+        $produit1 = $produit;
+        continue;
+    } elseif(!$produit2) {
+        $produit2 = $produit;
+        continue;
+    }
+
+    break;
+}
+
+$csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
+
+$csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
+file_put_contents($csvTmpFile, str_replace(array("%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
+
 $campagne = (date('Y')-1)."";
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -34,7 +57,7 @@ $dr = DRClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");
 $dr->save();
-$dr->storeFichier(dirname(__FILE__).'/../data/dr_douane_'.$application.'.csv');
+$dr->storeFichier($csvTmpFile);
 $dr->save();
 
 $drev->importFromDocumentDouanier();
