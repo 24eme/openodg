@@ -75,7 +75,7 @@ foreach($drev->getProduits() as $produit) {
 }
 
 foreach($produits2Delete as $hash) {
-    //$drev->remove($hash);
+    $drev->remove($hash);
 }
 
 $produits = $drev->getProduits();
@@ -271,7 +271,7 @@ if($application == "rhone") {
 }
 $t->ok(!isset($vigilances['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
 $t->ok(!isset($vigilances['declaration_neant']), "Pas de point vigilance sur la declaration neant");
-$t->ok(!isset($vigilances['declaration_produits_incoherence']), "Pas de point vigilance sur les produits declarés sur la DR et la DRev");
+$t->ok(isset($vigilances['declaration_produits_incoherence']), "Point vigilance sur les produits declarés sur la DR et pas dans la DRev");
 $t->ok(!isset($vigilances['declaration_surface_bailleur']), "Pas de point vigilance sur la repartition de la surface avec le bailleur");
 $t->ok(!isset($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
 
@@ -336,4 +336,4 @@ $export = new ExportDRevCSV($drev);
 
 $csvContent = $export->export();
 
-$t->is(count(explode("\n", $csvContent)), 6, "L'export fait 4 lignes");
+$t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");
