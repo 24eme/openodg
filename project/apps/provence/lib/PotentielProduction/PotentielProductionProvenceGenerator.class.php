@@ -21,7 +21,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     
     public function getRevendicables($superficies = null)
     {
-        $superficies = ($superficies)? $superficies : $this->getSuperfices();
+        $superficies = ($superficies)? $superficies : $this->getSuperficies();
         $revendicables = [];
         $revendicables['CDP'] = $this->calculateRevendicableCDP($superficies['CDP']);
         return $revendicables;
@@ -124,7 +124,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         return $agg;
     }
     
-    protected function getSuperfices()
+    public function getSuperficies($structured = false)
     {
         $superficies = [];
         // CDP + DGC
@@ -182,7 +182,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         $revendicables['secondairesnoirs'] = ($revendicableSecondaires - $revendicableSecondairesTotalBlancs > 0)? round($revendicableSecondaires - $revendicableSecondairesTotalBlancs, 4) : 0;
         $revendicables['secondairesblancs'] = round($revendicableSecondairesTotalBlancs, 4);
         $vermontinoMax = ($revendicableSecondairesTotalBlancs - $revendicableSecondairesAutresBlancs > 0)? round($revendicableSecondairesTotalBlancs - $revendicableSecondairesAutresBlancs, 4) : 0;
-        $revendicables['secondairesvermentinob'] = ($superficies['secondaires']['VERMENTINO B'] > $vermontinoMax)? $vermontinoMax : $superficies['secondaires']['VERMENTINO B'];
+        if (isset($superficies['secondaires']['VERMENTINO B'])) {
+            $revendicables['secondairesvermentinob'] = ($superficies['secondaires']['VERMENTINO B'] > $vermontinoMax)? $vermontinoMax : $superficies['secondaires']['VERMENTINO B'];
+        } else {
+            $revendicables['secondairesvermentinob'] = 0;
+        }
         $revendicables['secondairesautresblancs'] = $revendicableSecondairesAutresBlancs;
         return $revendicables;
     }
@@ -367,7 +371,8 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     {
         $aggCepage = [];
         foreach ($dgc as $couleur => $agg) {
-            foreach ($agg as $parcelles) {
+            foreach ($agg as $k => $parcelles) {
+                if ($k == 'TOTAL') continue;
                 foreach ($parcelles as $cepage => $superficie) {
                     if ($cepage == 'TOTAL') {
                         continue;

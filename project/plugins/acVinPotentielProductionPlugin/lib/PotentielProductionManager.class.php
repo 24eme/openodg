@@ -28,6 +28,11 @@ class PotentielProductionManager
         return $this->generator->getRevendicables();
     }
     
+    public function getSuperficies()
+    {
+        return $this->generator->getSuperficies();
+    }
+    
     public function respecteRegles()
     {
         return $this->generator->respecteRegles();
