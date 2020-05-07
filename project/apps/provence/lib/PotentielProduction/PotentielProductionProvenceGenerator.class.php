@@ -23,7 +23,17 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     {
         $superficies = ($superficies)? $superficies : $this->getSuperficies();
         $revendicables = [];
-        $revendicables['CDP'] = $this->calculateRevendicableCDP($superficies['CDP']);
+        foreach ($superficies as $appellation => $items) {
+            if($appellation == 'CDP') { $items = [0 => $items]; }
+            foreach ($items as $couleur => $superficie) {
+                if ($couleur) {
+                    $fct = 'calculateRevendicable'.strtoupper($appellation).ucfirst(strtolower($couleur));
+                    $revendicables[$appellation][$couleur] = $this->$fct($superficies[$appellation][$couleur]);
+                } else {
+                    $revendicables[$appellation] = $this->calculateRevendicableCDP($superficies[$appellation]);
+                }
+            }
+        }
         return $revendicables;
     }
     
@@ -169,6 +179,9 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         if ($revendicables['principaux'] > 0) {
             $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 90);
         }
+        if (!isset($superficies['secondaires']['VERMENTINO B'])) {
+            $superficies['secondaires']['VERMENTINO B'] = 0;
+        }
         $revendicableSecondaires = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 30/70, $superficies['secondaires']['TOTAL']);
         $blancs = $this->getCepagesBlancs($superficies['secondaires']);
         $revendicableSecondairesTotalBlancs = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/70, round(array_sum($blancs), 4));
@@ -200,6 +213,9 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             $revendicable2 = $this->reglePourcentageCepageMinPrincipaux_GetRevendicable(["GRENACHE N" => $superficies['principaux']["GRENACHE N"], "SYRAH N" => $superficies['principaux']["SYRAH N"]], $superficies['TOTAL'], 50, $superficies['principaux']['TOTAL']);
             $revendicables['principaux'] = ($revendicable1 > $revendicable2)? $revendicable2 : $revendicable1;
         }
+        if (!isset($superficies['secondaires']['VERMENTINO B'])) {
+            $superficies['secondaires']['VERMENTINO B'] = 0;
+        }
         $revendicableSecondaires = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80, $superficies['secondaires']['TOTAL']);
         $blancs = $this->getCepagesBlancs($superficies['secondaires']);
         $revendicableSecondairesTotalBlancs = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80, round(array_sum($blancs), 4));
@@ -225,6 +241,12 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             $revendicable1 = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 80);
             $revendicable2 = $this->reglePourcentageCepageMinPrincipaux_GetRevendicable(["GRENACHE N" => $superficies['principaux']["GRENACHE N"], "SYRAH N" => $superficies['principaux']["SYRAH N"]], $superficies['TOTAL'], 50, $superficies['principaux']['TOTAL']);
             $revendicables['principaux'] = ($revendicable1 > $revendicable2)? $revendicable2 : $revendicable1;
+        }
+        if (!isset($superficies['secondaires']['CABERNET SAUVIGNON N'])) {
+            $superficies['secondaires']['CABERNET SAUVIGNON N'] = 0;
+        }
+        if (!isset($superficies['secondaires']['VERMENTINO B'])) {
+            $superficies['secondaires']['VERMENTINO B'] = 0;
         }
         $superficies['secondaires']['TOTAL'] -= $superficies['secondaires']['CABERNET SAUVIGNON N'];
         $superficies['secondaires']['CABERNET SAUVIGNON N'] = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 10/80, $superficies['secondaires']['CABERNET SAUVIGNON N']);
@@ -281,6 +303,10 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             $revendicable2 = $this->reglePourcentageCepageMinPrincipaux_GetRevendicable(["GRENACHE N" => $superficies['principaux']["GRENACHE N"], "SYRAH N" => $superficies['principaux']["SYRAH N"]], $superficies['TOTAL'], 50, $superficies['principaux']['TOTAL']);
             $revendicables['principaux'] = ($revendicable1 > $revendicable2)? $revendicable2 : $revendicable1;
         }
+
+        if (!isset($superficies['secondaires']['CABERNET SAUVIGNON N'])) {
+            $superficies['secondaires']['CABERNET SAUVIGNON N'] = 0;
+        }
         $superficies['secondaires']['TOTAL'] -= $superficies['secondaires']['CABERNET SAUVIGNON N'];
         $superficies['secondaires']['CABERNET SAUVIGNON N'] = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 10/80, $superficies['secondaires']['CABERNET SAUVIGNON N']);
         $superficies['secondaires']['TOTAL'] += $superficies['secondaires']['CABERNET SAUVIGNON N'];
@@ -294,6 +320,9 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
             $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 60);
+        }
+        if (!isset($superficies['secondaires']['VERMENTINO B'])) {
+            $superficies['secondaires']['VERMENTINO B'] = 0;
         }
         $revendicableSecondaires = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80, $superficies['secondaires']['TOTAL']);
         $blancs = $this->getCepagesBlancs($superficies['secondaires']);
@@ -329,6 +358,9 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
             $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 80);
+        }
+        if (!isset($superficies['secondaires']['VERMENTINO B'])) {
+            $superficies['secondaires']['VERMENTINO B'] = 0;
         }
         $revendicableSecondaires = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80, $superficies['secondaires']['TOTAL']);
         $blancs = $this->getCepagesBlancs($superficies['secondaires']);
