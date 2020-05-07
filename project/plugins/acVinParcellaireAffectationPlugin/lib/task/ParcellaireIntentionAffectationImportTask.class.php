@@ -44,6 +44,18 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             $surface = round($this->formatFloat($data[2]),4);
             $cepage = $data[3];
             $dgc = $data[4];
+            
+            $identifiantIdu = null;
+            $items = TmpParcellesView::getInstance()->findByIdu($idu);
+            foreach ($items as $item) {
+                if (preg_match('/^PARCELLAIRE-(.+)-[0-9]{8}$/', $item->id, $m)) {
+                    $identifiantIdu = $m[1];
+                    break;
+                }
+            }
+            if ($identifiantIdu && $identifiantIdu != $identifiant) {
+                $identifiant = $identifiantIdu;
+            }
             $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
             if (!$etablissement) {
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));

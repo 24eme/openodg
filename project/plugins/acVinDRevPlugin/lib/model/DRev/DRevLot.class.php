@@ -94,6 +94,11 @@ class DRevLot extends BaseDRevLot
     }
 
     public function isCleanable() {
+
+        if(!$this->exist('produit_hash') || !$this->produit_hash){
+          return true;
+        }
+
         foreach($this as $key => $value) {
             if($key == 'millesime' && $value = $this->getDocument()->getCampagne()) {
 
