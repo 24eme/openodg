@@ -21,11 +21,31 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 
 $campagne = (date('Y')-1)."";
 
+$config = ConfigurationClient::getCurrent();
+foreach($config->getProduits() as $produit) {
+    if(!$produit->getRendement()) {
+        continue;
+    }
+    break;
+}
+
+$csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv12_douane.csv');
+
+$csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg.').".csv";
+file_put_contents(
+    $csvTmpFile,
+    str_replace(
+        array("%code_inao%", "%libelle_produit%"),
+        array($produit->getCodeDouane(), $produit->getLibelleComplet()),
+        $csvContentTemplate
+    )
+);
+
 $dr = SV12Client::getInstance()->createDoc($viti->identifiant, $campagne);
 $dr->setLibelle("SV12 $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");
 $dr->save();
-$dr->storeFichier(dirname(__FILE__).'/../data/sv12_douane_'.$application.'.csv');
+$dr->storeFichier($csvTmpFile);
 $dr->save();
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -34,7 +54,7 @@ $drev->save();
 $drev->importFromDocumentDouanier();
 $drev->save();
 
-$t->is(count($drev->getProduits()), 5, "La DRev a repris 5 produits du csv de la SV12");
+$t->is(count($drev->getProduits()), 1, "La DRev a repris 1 produit du csv de la SV12");
 
 $produits = $drev->getProduits();
 
