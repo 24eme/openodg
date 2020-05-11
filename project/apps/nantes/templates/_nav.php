@@ -2,9 +2,13 @@
 <?php $etablissement = null ?>
 <?php $compte = null; ?>
 
-<?php if ($route instanceof EtablissementRoute || $route instanceof SocieteRoute): ?>
+<?php if ($route instanceof EtablissementRoute): ?>
     <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $etablissement->getMasterCompte(); ?>
+    <?php $compte =  $etablissement->getMasterCompte(); ?>
+<?php endif; ?>
+<?php if ($route instanceof SocieteRoute): ?>
+    <?php $societe = $route->getSociete(); ?>
+    <?php $compte =  $societe->getMasterCompte(); ?>
 <?php endif; ?>
 <?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
