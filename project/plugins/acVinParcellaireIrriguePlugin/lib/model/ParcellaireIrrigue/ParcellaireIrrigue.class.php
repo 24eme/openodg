@@ -23,6 +23,10 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   	$this->constructId();
   }
 
+  public function isAdresseLogementDifferente() {
+      return false;
+  }
+
   private function getTheoriticalId() {
     $date = str_ireplace("-","",$this->date);
     return ParcellaireIrrigueClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$date;
