@@ -11,6 +11,7 @@
        "marc_alsace_gewurztraminer": {
            "libelle": "Cotisation ODG - AVA / Droits INAO / Contrôle externe 2017 AOC Marc d'Alsace Gewurztraminer",
            "modele": "CotisationsCollection",
+           "required": true,
            "callback": "",
            "code_comptable": "706200",
            "details": {

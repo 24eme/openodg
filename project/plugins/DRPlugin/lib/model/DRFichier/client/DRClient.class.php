@@ -1,16 +1,16 @@
 <?php
 
-class DRClient extends acCouchdbClient {
+class DRClient extends acCouchdbClient implements FacturableClient, DouaneClient {
 	const TYPE_MODEL = 'DR';
     public static function getInstance()
     {
       return acCouchdbManager::getClient("DR");
     }
 
-    public function findByArgs($identifiant, $annee)
+    public function findByArgs($identifiant, $annee, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
     	$id = 'DR-' . $identifiant . '-' . $annee;
-    	return $this->find($id);
+    	return $this->find($id, $hydrate);
     }
 
     public function createDoc($identifiant, $campagne, $papier = false)
@@ -34,5 +34,16 @@ class DRClient extends acCouchdbClient {
     		$view->limit($limit);
     	}
     	return $view->execute($hydrate)->getDatas();
+    }
+
+	public function findFacturable($identifiant, $campagne) {
+    	$dr = $this->find('DR-'.$identifiant.'-'.$campagne);
+
+        if($dr && !$dr->exist('donnees')) {
+
+            return null;
+        }
+
+        return $dr;
     }
 }

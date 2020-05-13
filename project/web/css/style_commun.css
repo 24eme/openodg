@@ -34,3 +34,8 @@
 .transparence-xs {
     opacity: 0.80;
 }
+
+.panel-body-success {
+  
+  border-color: rgba(130, 147, 69, 0.4);
+}

@@ -50,6 +50,21 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
+    public function getDelimitations($communes){
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $geojson = [];
+        $files = '';
+        foreach ($communes as $id => $commune) {
+            $file_name = $scrapydocs.'/delimitation-'.$commune.'.json';
+            $files = glob($file_name);
+            if (!empty($files)) {
+                $contents = file_get_contents($file_name);
+                array_push($geojson, $contents);
+            }
+        }
+        return $geojson;
+    }
+
     /**
      * Scrape le site des douanes via le scrapy
      *
@@ -58,15 +73,49 @@ class ParcellaireClient extends acCouchdbClient {
      * @throws Exception Si aucun CVI trouvé
      * @return string Le fichier le plus récent
      */
-    public function scrapeParcellaire($cvi)
+    public function scrapeParcellaireCSV($cvi)
+    {
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapybin = sfConfig::get('app_scrapy_bin');     
+
+        exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
+
+        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
+
+        if (empty($files) || $status != 0) {
+            throw new Exception("Le scraping n'a retourné aucun résultat.");
+        }
+
+        return array_pop($files);
+    }
+    /**
+     * Scrape le site des douanes via le scrapy
+     *
+     * @param string $cvi Le numéro du CVI à scraper
+     *
+     * @throws Exception Si aucun CVI trouvé
+     * @return string Le fichier le plus récent
+     */
+    public function scrapeParcellaireJSON($cvi)
     {
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
 
-        exec("$scrapybin/download_parcellaire.sh $cvi");
-        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'-*.csv');
+        exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
+
+        $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
+        $message = "";
+
         if (empty($files)) {
-            throw new Exception("Le scraping n'a retourné aucun résultat");
+            $message = "Les parcelles n'existent pas dans les fichier du Cadastre. ";
+
+            if($status != 0){
+                $message .= "La récupération des geojson n'a pas fonctionné.";
+            }
+        }
+
+        if(!empty($message)){
+            throw new Exception($message);
         }
 
         return array_pop($files);
@@ -78,23 +127,70 @@ class ParcellaireClient extends acCouchdbClient {
      * sauver
      *
      * @param Etablissement $etablissement L'établissement à mettre à jour
-     * @param string $path Le chemin du fichier
-     * @param string &$error Le potentiel message d'erreur de retour
+     * @param Array &$error Le potentiel message d'erreur de retour
      *
      * @return bool
      */
-    public function saveParcellaire(Etablissement $etablissement, $path, &$error)
+    public function saveParcellaire(Etablissement $etablissement, Array &$errors)
     {
+        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi);
+        $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi);
+        return $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv']) &&
+            $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
+    }
+
+    public function getParcellaireGeoJson($identifiant, $cvi){
+        $file_name = "import-cadastre-".$cvi."-parcelles.json";
+
+        $parcellaire = $this->getLast($identifiant);
+        
+        $uri = $parcellaire->getAttachmentUri($file_name);
+        
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $uri);
+
+    
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $import = curl_exec($ch);
+        curl_close($ch);      
+        if(strpos($import, "Document is missing attachment"))
+            return false;
+        return $import;
+      
+        
+    }
+
+    public function saveParcellaireGeoJson($etablissement, $path, &$error){
+        try {
+            
+            $parcellaire = new ParcellaireJsonFile($etablissement, $path, new ParcellaireCsvFormat);
+            
+            $parcellaire->save();
+
+        } catch (Exception $e) {
+            $error = "Une erreur lors du sauvégardage !";
+            return false;
+        }
+
+        return true;
+        
+    }
+
+    public function saveParcellaireCSV(Etablissement $etablissement, $path, &$error){
         try {
             $csv = new Csv($path);
             $parcellaire = new ParcellaireCsvFile($etablissement, $csv, new ParcellaireCsvFormat);
             $parcellaire->convert();
+            
         } catch (Exception $e) {
             $error = $e->getMessage();
             return false;
         }
 
         $parcellaire->save();
+        
         return true;
     }
 
@@ -110,11 +206,38 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function findOrCreate($identifiant, $date = null, $source = null, $type = self::TYPE_COUCHDB) {
+        if (! $date) {
+            $date = date('Ymd');
+        }
+        $parcellaire = $this->getLast($identifiant);
+        if ($parcellaire && $parcellaire->date == $date) {
+            return $parcellaire;
+        }
         $parcellaire = new Parcellaire();
         $parcellaire->initDoc($identifiant, $date);
         $parcellaire->source = $source;
-
+       
         return $parcellaire;
+    }
+
+    public function findOrCreateDocJson($identifiant, $date = null, $source = null, $path=null, $cvi, $type = self::TYPE_COUCHDB) {
+        if (! $date) {
+            $date = date('Ymd');
+        }
+        $parcellaire = $this->getLast($identifiant);
+        $declaration = $parcellaire->getDeclaration();        
+        
+        if ($parcellaire && $parcellaire->date == $date) {
+            if($path){
+                $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
+                $parcellaire->setDeclaration($declaration);
+                
+                $parcellaire->save();
+            }
+            
+            return $parcellaire;
+        }
+    
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {

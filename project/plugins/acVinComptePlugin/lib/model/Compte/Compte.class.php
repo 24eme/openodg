@@ -150,6 +150,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+
         $this->tags->remove('automatique');
         $this->tags->add('automatique');
         if ($this->exist('teledeclaration_active') && $this->teledeclaration_active) {
@@ -184,6 +189,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
             $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
             $this->add('region', $this->getEtablissement()->region);
+        } elseif ($this->isSocieteContact()) {
+            $cvis = array();
+            $ppms = array();
+            $regions = array();
+            foreach ($this->getSociete()->getEtablissementsObj() as $etb) {
+                $cvis[] = $etb->etablissement->cvi;
+                $ppms[] = $etb->etablissement->ppm;
+                $regions[] = $etb->etablissement->region;
+                $this->addTag('automatique', $etb->etablissement->famille);
+            }
+            $this->etablissement_informations->cvi = implode('|', $cvis);
+            $this->etablissement_informations->ppm = implode('|', $ppms);
+            $this->add('region', implode('|', $regions));
+
         }else{
             $this->etablissement_informations->cvi = null;
             $this->etablissement_informations->ppm = null;
@@ -437,8 +456,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return false;
         }
         $droits = $this->get('droits')->toArray(0, 1);
-        foreach($droits as $key => $droit) {
-            $droitTab = explode(":", $droit);
+        foreach($droits as $key => $d) {
+            $droitTab = explode(":", $d);
             $droits[$key] = $droitTab[0];
         }
 
@@ -706,6 +725,13 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function getIdentifiantAAfficher(){
       return $this->getIdentifiant();
+    }
+
+    public function getRegion() {
+        if (!$this->exist('region')) {
+            return null;
+        }
+        return $this->_get('region');
     }
 
     public function getRegionViticole(){

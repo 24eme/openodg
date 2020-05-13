@@ -1,9 +1,9 @@
 <?php
 /**
- * Model for ParcellairePiece
+ * Model for DRevPiece
  *
  */
 
-class ParcellaireAffectationPiece extends BaseParcellairePiece {
+class ParcellaireAffectationPiece extends BaseParcellaireAffectationPiece {
 
 }

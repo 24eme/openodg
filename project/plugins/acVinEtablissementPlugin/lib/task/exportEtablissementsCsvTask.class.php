@@ -38,7 +38,7 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "Identifiant,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut\n";
+        echo "Identifiant,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut,PPM\n";
 
        $cpt = 0;
         foreach($results->rows as $row) {
@@ -89,21 +89,13 @@ EOF;
                 $ordre .= substr($etablissement->region, -2);
             }
 
-            $intitules = "EARL|EI|ETS|EURL|GAEC|GFA|HOIRIE|IND|M|MM|Mme|MME|MR|SA|SARL|SAS|SASU|SC|SCA|SCE|SCEA|SCEV|SCI|SCV|SFF|SICA|SNC|SPH|STE|STEF";
-            $intitule = null;
-            $raisonSociale = $etablissement->raison_sociale;
+            $extractIntitule = Etablissement::extractIntitule($etablissement->raison_sociale);
+            $intitule = $extractIntitule[0];
+            $raisonSociale = $extractIntitule[1];
 
-            if(preg_match("/^(".$intitules.") /", $raisonSociale, $matches)) {
-                $intitule = $matches[1];
-                $raisonSociale = preg_replace("/^".$intitule." /", "", $raisonSociale);
-            }
-
-            if(preg_match("/ \((".$intitules.")\)$/", $raisonSociale, $matches)) {
-                $intitule = $matches[1];
-                $raisonSociale = preg_replace("/ \((".$intitule.")\)$/", "", $raisonSociale);
-            }
-$adresses_complementaires = explode(' − ', str_replace(array('"',','),array('',''), $etablissement->adresse_complementaire));
-$adresse_complementaire = array_shift($adresses_complementaires);
+            $adresses_complementaires = explode(' − ', str_replace(array('"',','),array('',''), $etablissement->adresse_complementaire));
+            $adresse_complementaire = array_shift($adresses_complementaires);
+            
             echo
             $societe->identifiant.",".
             $intitule.",".
@@ -134,6 +126,7 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             $etablissement->famille.",".
             $compte->date_modification.",".
             $etablissement->statut.",".
+            $etablissement->ppm.",".
             "\n";
         }
     }

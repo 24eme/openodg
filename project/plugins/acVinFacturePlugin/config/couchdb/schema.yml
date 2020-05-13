@@ -87,6 +87,7 @@ Facture:
                             fields:
                               libelle: {}
                               quantite: {type: float}
+                              unite: { required: false }
                               taux_tva: {type: float}
                               prix_unitaire: {type: float}
                               montant_tva: {type: float}
@@ -114,6 +115,22 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
+      modalite_paiement: { required: false}
+      paiements:
+        class: FacturePaiements
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: FacturePaiement
+              type: collection
+              definition:
+                fields:
+                  date : { }
+                  montant: { }
+                  type_reglement: { }
+                  commentaire: { }
       pieces:
         type: array_collection
         definition:
@@ -165,6 +182,9 @@ TemplateFacture:
               definition:
                 fields:
                   modele: {  }
+                  fallback: { required: false }
+                  minimum: { required: false }
+                  minimum_fallback: { required: false }
                   callback: { required: false }
                   required: { required: false }
                   libelle: {  }
@@ -186,10 +206,17 @@ TemplateFacture:
                               tranche: { required: false }
                               reference: { required: false }
                               callback: { required: false }
+                              callback_parameters:
+                                type: array_collection
+                                required: false
+                                definition:
+                                  fields:
+                                    '*': {  }
                               depart: { required: false }
                               minimum: { required: false }
                               complement: { required: false }
                               complement_libelle: { }
+                              unite: { required: false }
                               intervalles:
                                 required: false
                                 type: collection

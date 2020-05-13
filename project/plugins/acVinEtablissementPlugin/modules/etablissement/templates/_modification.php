@@ -20,12 +20,13 @@
         <?php echo $etablissementForm['nature_inao']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
         <div class="col-xs-8"><?php echo $etablissementForm['nature_inao']->render(); ?></div>
     </div>
-
-    <div class="form-group<?php if($etablissementForm['region']->hasError()): ?> has-error<?php endif; ?>">
-            <?php echo $etablissementForm['region']->renderError(); ?>
-            <?php echo $etablissementForm['region']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-            <div class="col-xs-8"><?php echo $etablissementForm['region']->render(); ?></div>
-    </div>
+    <?php if(isset($etablissementForm['region'])): ?>
+      <div class="form-group<?php if($etablissementForm['region']->hasError()): ?> has-error<?php endif; ?>">
+              <?php echo $etablissementForm['region']->renderError(); ?>
+              <?php echo $etablissementForm['region']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+              <div class="col-xs-8"><?php echo $etablissementForm['region']->render(); ?></div>
+      </div>
+    <?php endif; ?>
     <?php if (!$etablissement->isCourtier()): ?>
         <div class="form-group<?php if($etablissementForm['cvi']->hasError()): ?> has-error<?php endif; ?>">
             <?php echo $etablissementForm['cvi']->renderError(); ?>

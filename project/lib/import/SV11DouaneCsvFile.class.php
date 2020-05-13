@@ -16,6 +16,8 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $communeTiers = null;
         $libellesLigne = null;
         $tabValues = array(3,4,9,10,11,12,13);
+        $cpt = 1;
+        
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
@@ -36,17 +38,24 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         			$communeTiers = $m[1];
         			continue;
         		}
+                $known_produit = array();
         		if (isset($values[7]) && !empty($values[7]) && !preg_match('/libell.+[\s]*du[\s]*produit/i', $values[7])) {
         			foreach ($tabValues as $v) {
         				if (!$values[$v]) {
         					continue;
         				}
-        				$p = $this->configuration->findProductByCodeDouane($values[6]);
-        				if (!$p) {
-        					$produit = array(null, null, null, null, null, null, null);
-        				} else {
-        					$produit = array($p->getCertification()->getKey(), $p->getGenre()->getKey(), $p->getAppellation()->getKey(), $p->getMention()->getKey(), $p->getLieu()->getKey(), $p->getCouleur()->getKey(), $p->getCepage()->getKey());
-        				}
+
+                        if (!isset($known_produit[$values[6]])) {
+        				    $p = $this->configuration->findProductByCodeDouane($values[6]);
+        				    if (!$p) {
+        					    $produit = array(null, null, null, null, null, null, null);
+        				    } else {
+        					    $produit = array($p->getCertification()->getKey(), $p->getGenre()->getKey(), $p->getAppellation()->getKey(), $p->getMention()->getKey(), $p->getLieu()->getKey(), $p->getCouleur()->getKey(), $p->getCepage()->getKey());
+        				    }
+                            $known_produit[$values[6]] = $produit;
+                        }else{
+                            $produit = $known_produit[$values[6]];
+                        }
 	        			$produit[] = $values[6];
 	        			$produit[] = $values[7];
 	        			$produit[] = $values[8];
@@ -61,8 +70,10 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
+                        $produit[] = $cpt;
 	        			$produits[] = $produit;
         			}
+                    $cpt++;
         		}
         	}
         }
@@ -73,6 +84,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         foreach ($produits as $p) {
 	    	$csv .= implode(';', $doc).';;;'.implode(';', $p)."\n";
         }
+
         return $csv;
     }
 }

@@ -2,6 +2,16 @@ drev_index:
   url: /drev
   param: { module: drev, action: index }
 
+drev_societe_choix_etablissement:
+  url: /drev/societe/:identifiant/choix-etablissement
+  param: { module: drev, action: societeChoixEtablissement }
+  class: EtablissementRoute
+  options:
+    model:    Societe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_request_dr:
   url: /drev/dr/request
   param: { module: drev, action: requestDR }
@@ -124,9 +134,9 @@ drev_dr_import:
   requirements:
     sf_method: [get, post]
 
-drev_dr_pdf:
-  url: /drev/dr-pdf/:id
-  param: { module: drev, action: drPdf }
+drev_document_douanier_pdf:
+  url: /drev/document_douanier_pdf/:id
+  param: { module: drev, action: documentDouanierPdf }
   class: DRevRoute
   options:
     model:    DRev
@@ -218,6 +228,16 @@ drev_vci:
 drev_lots:
   url: /drev/lots/:id/:appellation
   param: { module: drev, action: lots, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_lots_delete:
+  url: /drev/lots/:id/:appellation/supprimer
+  param: { module: drev, action: deleteLots, appellation: 0 }
   class: DRevRoute
   options:
     model:    DRev

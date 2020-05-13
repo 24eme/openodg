@@ -26,7 +26,7 @@ class DouaneImportCsvFile {
     }
 
     public static function cleanStr($val) {
-    	return str_replace(array("\r", "\r\n", "\n"), ' ', $val);
+    	return str_replace(';', ' - ', preg_replace('/^ */', '', preg_replace('/ *$/', '', str_replace(array("\r", "\r\n", "\n"), ' ', html_entity_decode($val)))));
     }
 
     public static function getNewInstanceFromType($type, $file, $doc = null)  {

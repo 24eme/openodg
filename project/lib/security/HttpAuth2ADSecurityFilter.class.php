@@ -30,7 +30,7 @@ class HttpAuth2ADSecurityFilter extends sfBasicSecurityFilter
       }
       $rights = $ad->getDescription($_SERVER['PHP_AUTH_USER']);
     }catch(Exception $e) {
-      if (!sfConfig::get('app_ad_basebn')) {
+      if (!sfConfig::get('app_ad_basedn')) {
           $rights = sfConfig::get('app_no_ad_rights', 'ADMIN');
       }
     }

@@ -1,5 +1,10 @@
 <?php use_helper("Date"); ?>
-<?php $last = null; ?>
+<?php
+$parcellaire_client = ParcellaireClient::getInstance();
+$last = null;
+$list_communes = [];
+$list_idu = [];
+?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
     <ol class="breadcrumb">
@@ -33,6 +38,11 @@
     <strong>Erreur :</strong> <?= $sf_user->getFlash('erreur_import') ?>
 </div>
 <?php endif; ?>
+<?php if ($sf_user->hasFlash('success_import')): ?>
+<div class="alert alert-success" role="alert">
+    <strong>Succès :</strong> <?= $sf_user->getFlash('success_import') ?>
+</div>
+<?php endif; ?>
 
 <?php if(isset($form)): ?>
 <div class="row row-margin">
@@ -47,17 +57,33 @@
         <?php if($parcellaire): ?>
             <div class="well">
                 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>
-        <?php else: ?>
-            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+            </div>            
         <?php endif; ?>
     </div>
 </div>
-
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
+    <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
+    $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()); ?>
+    <?php if(!empty($import)): ?>
+     <div class="row" id="jump">
+            <div class="col-xs-12">
+                <a name="carte"/><h3>Filtrer</h3>
+                <div class="form-group">
+                    <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
+        <div>
+            <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
+        </div>
+    <?php endif; ?>
+
+
     <div class="row">
         <div class="col-xs-12">
-            <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
+            <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
             	<h3><?php echo $commune ?></h3>
 
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
@@ -66,19 +92,18 @@
 		                <th class="col-xs-2">Lieu-dit</th>
                     <th class="col-xs-1" style="text-align: right;">Section</th>
                     <th class="col-xs-1">N° parcelle</th>
-                    <th class="col-xs-4">Cépage</th>
+                    <th class="col-xs-3">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                     <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
+                    <?php if(!empty($import)): ?>
+                    <th class="col-xs-1">Carte</th>
+                    <?php endif; ?>
 		            </tr>
                   </thead>
                     <tbody>
-
-
-
-                        <?php
-                        foreach ($parcelles as $detail):
+                        <?php foreach ($parcelles as $detail):
                             $classline = '';
                             $styleline = '';
                             $styleproduit = '';
@@ -128,25 +153,46 @@
                               $classcepage .= ' text-danger strong';
                             }
                             ?>
-                            <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
+                            <?php 
+                                $lieu = $detail->lieu;
+                                $compagne = $detail->campagne_plantation;
+                                $section = $detail->section;
+                                $num_parcelle = $detail->numero_parcelle;
+                                $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
+                                $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
+                                $cepage = $detail->cepage;
+                            ?>
+                            <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
 
-                                <td style="<?php echo $styleproduit; ?>"><?php echo $detail->lieu; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $detail->section; ?></td>
-                                <td class=""><?php echo $detail->numero_parcelle; ?></td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $detail->cepage; ?></td>
-                                <td class="" style="text-align: center;"><?php echo $detail->campagne_plantation; ?></td>
+                                <td style="<?php echo $styleproduit; ?>"><?php echo $lieu; ?></td>
+                                <td class="" style="text-align: right;"><?php echo $section; $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
+                                <td class=""><?php echo $num_parcelle; ?></td>
+                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
+                                <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
                                 <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
 
+                                <?php if(!empty($import)): ?>
+                                <td>
+                                    <div id="<?php echo $detail->idu; ?>" class="clearfix liencarto">
+                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
+                                            <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
+                                        </a>
+                                    </div>
+                                </td>
+                                <?php endif; ?>
                             </tr>
-                            <?php
-                        endforeach;
-
-                        ?>
+                            <?php endforeach; ?>
                     </tbody>
                 </table>
     <?php endforeach; ?>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
         </div>
     </div>
 <?php endif; ?>
@@ -157,4 +203,9 @@
         <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaire->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
 </div>
-<?php endif; ?>
+<?php endif;?>
+<?php use_javascript('hamza_style.js'); ?>
+<script type="text/javascript">
+    var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
+</script>
+

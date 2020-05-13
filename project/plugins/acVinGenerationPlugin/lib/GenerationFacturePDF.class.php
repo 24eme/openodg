@@ -43,8 +43,13 @@ class GenerationFacturePDF extends GenerationPDF {
             if(!$compte) {
                 continue;
             }
+            try {
+              $facture = FactureClient::getInstance()->createFactureByTemplate($template, $compte, $date_facturation, $message_communication);
+            } catch (FacturationPassException $e) {
+              echo $e->getMessage()."\n";
+              continue;              
+            }
 
-            $facture = FactureClient::getInstance()->createFactureByTemplate($template, $compte, $date_facturation, $message_communication);
 
             if(!$facture) {
                 continue;

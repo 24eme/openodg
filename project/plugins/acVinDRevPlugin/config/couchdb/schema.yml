@@ -16,6 +16,7 @@ DRev:
       type: { }
       campagne: { }
       etape: { required: false }
+      achat_tolerance: { required: false }
       identifiant: { }
       validation: { }
       validation_odg: { }
@@ -68,6 +69,7 @@ DRev:
                         volume_revendique_issu_recolte: { type: float }
                         volume_revendique_issu_vci: { type: float }
                         volume_revendique_total: { type: float }
+                        validation_odg: { required: false }
                         vci:
                           type: collection
                           definition:
@@ -78,6 +80,7 @@ DRev:
                               substitution: { type: float }
                               rafraichi: { type: float }
                               constitue: { type: float }
+                              ajustement: { type: float }
                               stock_final: { type: float }
                         recolte:
                           type: collection
@@ -107,6 +110,8 @@ DRev:
               class: DRevLot
               definition:
                 fields:
+                  date: { }
+                  id_document: { }
                   numero: { }
                   millesime: { }
                   volume: { type: float }
@@ -114,6 +119,11 @@ DRev:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
       documents:
         required: false
         class: DRevDocuments
@@ -142,13 +152,9 @@ DRev:
         type: collection
         definition:
           fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  adresse: { }
-                  commune: { }
-                  code_postal: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
       mouvements:
         type: collection
         definition:
@@ -172,6 +178,7 @@ DRev:
                         detail_identifiant: {  }
                         detail_libelle: {  }
                         quantite: { type: float }
+                        unite: { required: false }
                         taux: { }
                         tva: { }
                         facture: { type: integer }

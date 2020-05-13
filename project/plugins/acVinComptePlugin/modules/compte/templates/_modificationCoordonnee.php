@@ -113,7 +113,7 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
         </div>
     </div>
 
-    <?php if (false && $isCompteSociete) : ?>
+    <?php if ($isCompteSociete) : ?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">Droits</h4><span class="pull-right" style="margin-top: -20px; font-size: 15px;" >
@@ -122,8 +122,12 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
             </div>
             <div class="panel-body">
                 <div class="form-group">
-                    <?php echo $compteForm['droits']->renderError(); ?>
-                    <div class="col-xs-12"><?php echo $compteForm['droits']->render(); ?></div>
+                    <div class="col-xs-12"><?php echo $compteForm['droits']->renderError(); ?></div>
+                    <?php echo $compteForm['droits']->renderLabel(null, array('class' => 'col-xs-3 control-label')); ?>
+                    <div class="col-xs-9"><?php echo $compteForm['droits']->render(); ?></div>
+                    <div class="col-xs-12"><?php echo $compteForm['alternative_logins']->renderError(); ?></div>
+                    <?php echo $compteForm['alternative_logins']->renderLabel(null, array('class' => 'col-xs-3 control-label select2')); ?>
+                    <div class="col-xs-9"><?php echo $compteForm['alternative_logins']->render(); ?></div>
                 </div>
             </div>
         </div>

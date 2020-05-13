@@ -1,39 +1,27 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of ParcellaireAppellationProduitsForm
- *
- * @author mathurin
- */
-class ParcellaireAffectationAppellationProduitsForm extends sfForm {
-
-    protected $parcelles;
-
-    public function __construct($parcelles, $appellationKey, $defaults = array(), $options = array(), $CSRFSecret = null) {
-        $this->parcelles = $parcelles;
-        $this->appellationKey = $appellationKey;
-        parent::__construct($defaults, $options, $CSRFSecret);
-    }
+class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
 
     public function configure() {
-        if (count($this->parcelles)) {
-            foreach ($this->parcelles as $key => $parcelle) {
-                $form = new ParcellaireAffectationAppellationParcelleForm($parcelle, $this->appellationKey);
-                $this->embedForm($parcelle->getHashForKey(), $form);
-            }
-        }
+		foreach ($this->getObject()->declaration as $key => $value) {
+			$this->embedForm($key, new ParcellaireAffectationProduitAffectesForm($value));
+		}
+
+        $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
 
-    public function doUpdateObject($values) {
-        foreach ($this->getEmbeddedForms() as $key => $embedForm) {
-            unset($values[$key]['_revision']);
-            $embedForm->doUpdateObject($values[$key]);
+
+    protected function doUpdateObject($values) {
+        parent::doUpdateObject($values);
+        foreach ($values as $produit => $value) {
+            if (!is_array($value)) continue;
+            foreach ($value as $detail => $items) {
+                $node = $this->getObject()->declaration->get($produit);
+                $node = $node->detail->get($detail);
+                foreach ($items as $k => $v) {
+                    $node->add($k, $v);
+                }
+            }
         }
     }
 

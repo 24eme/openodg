@@ -1,11 +1,11 @@
-habilitation:
-  url: /habilitation
-  param: { module: habilitation, action: index }
+habilitation_demande:
+  url: /habilitation_demande
+  param: { module: habilitation, action: indexDemande }
   class: HabilitationGeneralRoute
 
-habilitation_suivi:
-  url: /habilitation/suivi
-  param: { module: habilitation, action: suivi }
+habilitation:
+  url: /habilitation
+  param: { module: habilitation, action: indexHabilitation }
   class: HabilitationGeneralRoute
 
 habilitation_export:

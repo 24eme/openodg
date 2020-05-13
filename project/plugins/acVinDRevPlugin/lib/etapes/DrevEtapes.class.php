@@ -30,12 +30,12 @@ class DrevEtapes extends Etapes
     );
 
 	public static $libelles = array(
-            self::ETAPE_EXPLOITATION => "Exploitation",
-            self::ETAPE_DR_DOUANE => "Déclaration de récolte",
+            self::ETAPE_EXPLOITATION => "Entreprise",
+            self::ETAPE_DR_DOUANE => "Document douanier",
             self::ETAPE_REVENDICATION_SUPERFICIE => "Superficies",
             self::ETAPE_VCI => "Répartition du VCI %campagne%",
-			self::ETAPE_LOTS => "Lots",
-			self::ETAPE_REVENDICATION => "Volumes",
+			self::ETAPE_LOTS => "Lots IGP",
+			self::ETAPE_REVENDICATION => "Volumes AOP",
             self::ETAPE_VALIDATION => "Validation"
     );
 
@@ -73,7 +73,7 @@ class DrevEtapes extends Etapes
 
 		if($step == self::ETAPE_DR_DOUANE) {
 
-			return $doc->getDocumentDouanierTypeLibelle();
+			return $doc->getDocumentDouanierType();
 		}
 
 		return parent::getLibelle($step, $doc);
@@ -92,7 +92,23 @@ class DrevEtapes extends Etapes
 			return true;
 		}
 
-		if($etape == self::ETAPE_LOTS && !count($doc->getProduitsLots())) {
+		if($etape != self::ETAPE_LOTS && $etape != self::ETAPE_VALIDATION && $doc->isModificative()){
+			return true;
+		}
+
+		if($etape == self::ETAPE_LOTS) {
+			if (count($doc->getProduitsLots())) {
+				return false;
+			}
+			foreach ($doc->getLots() as $lot) {
+				if ($lot->lotPossible()) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		if($etape == self::ETAPE_REVENDICATION && !count($doc->getProduitsWithoutLots())) {
 
 			return true;
 		}

@@ -3,6 +3,7 @@
 class DeclarationClient
 {
     protected static $self = null;
+    const REGION_LOT = 'IGP_VALDELOIRE';
 
     public static function getInstance() {
         if(is_null(self::$self)) {
@@ -89,13 +90,22 @@ class DeclarationClient
             return 'ExportRegistreVCICSV';
         }
 
+        if(class_exists("ParcellaireAffectationClient") && $type == ParcellaireAffectationClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireAffectationCSV';
+        }
+
+        if(class_exists("ParcellaireIntentionAffectationClient") && $type == ParcellaireIntentionAffectationClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireIntentionAffectationCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
-    public function getExportCsvObject($doc, $header = true) {
+    public function getExportCsvObject($doc, $header = true, $region = null) {
         $className = $this->getExportCsvClassName($doc->type);
-
-        return new $className($doc, $header);
+        return new $className($doc, $header, $region);
     }
 
     public function getTypesAndCampagneForExport() {

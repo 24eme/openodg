@@ -191,6 +191,54 @@ class societeActions extends sfCredentialActions {
         }
     }
 
+    public function executeExport(sfWebRequest $request) {
+        $identifiant = $request->getParameter('identifiant');
+        if(!$identifiant) {
+            $identifiant = $request->getParameter('login');
+        }
+        $type = $request->getParameter('type', 'csv');
+
+        if(!in_array($type, array('csv', 'json'))) {
+            $this->response->setStatusCode('404');
+
+            return sfView::NONE;
+        }
+
+
+
+        if(!$this->getUser()->isAdmin() && !$this->getUser()->hasCredential($request->getParameter('droit'))) {
+            $this->response->setStatusCode('403');
+
+            return sfView::NONE;
+        }
+
+        $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
+        if(!$compte) {
+            $this->response->setStatusCode('404');
+
+            return sfView::NONE;
+        }
+
+        if(!$request->getParameter('droit') || !$compte->hasDroit($request->getParameter('droit'))) {
+            $this->response->setStatusCode('403');
+
+            return sfView::NONE;
+        }
+
+        $this->response->setContentType('text/'.$type);
+
+        $societe = $compte->getSociete();
+        $export = new ExportSocieteCSV($societe);
+
+        if($type == 'json') {
+            $this->response->setContent($export->exportJson());
+        } else {
+            $this->response->setContent($export->export());
+        }
+
+        return sfView::NONE;
+    }
+
     protected function matchCompte($view_res, $term, $limit) {
         $json = array();
         foreach ($view_res as $key => $one_row) {

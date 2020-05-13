@@ -25,6 +25,8 @@ class PageablePDF extends PageableOutput {
 
         $this->pdf->SetHeaderData($config->header_logo, $config->header_logo_width, $config->header_title, $config->header_string);
 
+        $this->pdf->SetFooterData(array(0,0,0), array(0,0,0), $config->footer_text);
+
         // set header and footer fonts
         $this->pdf->setHeaderFont(Array($config->font_name_main, '',  $config->font_size_main));
         $this->pdf->setFooterFont(Array($config->font_name_data, '', $config->font_size_data));

@@ -18,22 +18,33 @@ class Email {
     }
 
     public function sendDRevValidation($drev) {
-        if (!$drev->declarant->email) {
-
-            return;
-        }
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-        $to = array($drev->declarant->email);
-        $subject = 'Validation de votre Déclaration de Revendication';
-        $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
-        $message = Swift_Message::newInstance()
+        $odgs = sfConfig::get('drev_configuration_drev', []);
+        foreach ($drev->declaration->getSyndicats() as $syndicat) {
+            $infos = DrevConfiguration::getInstance()->getOdgRegionInfos($syndicat);
+            if($drev->isValidateOdgByRegion($syndicat)) {
+                continue;
+            }
+            $email_syndicat = (isset($infos['email_notification'])) ? $infos['email_notification'] : false;
+            if (!$email_syndicat) {
+                continue;
+            }
+            $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
+            if(empty($body)) {
+                continue;
+            }
+            $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
+            $to = array($email_syndicat);
+            $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
 
-        return $this->getMailer()->send($message);
+            $res = $this->getMailer()->send($message) && $res;
+        }
+        return $res;
     }
 
     public function sendDRevConfirmee($drev) {

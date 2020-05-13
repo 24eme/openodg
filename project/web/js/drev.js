@@ -10,14 +10,17 @@
         $('#btn_exploitation_modifier').click(function(e) {
             $('#btn_exploitation_modifier').addClass("hidden")
             $('#btn_exploitation_annuler').removeClass("hidden")
-            $('#row_form_exploitation').removeClass("hidden");
-            $('#row_info_exploitation').addClass("hidden");
+            $('.row_form_exploitation').removeClass("hidden");
+            $('.row_info_exploitation').addClass("hidden");
         });
         if($('#drevDenominationAuto').length){
             if($('#drevDenominationAuto').data("auto")){
                 $('#drevDenominationAuto').modal('show');
             }
         }
+        $('#checkbox_logement_vin').on('change', function() {
+            $('#form_logement_vin').find('input').val("");
+        });
     }
 
     $.initPrelevement = function()
@@ -182,17 +185,50 @@
 
     }
 
+    $.initSocieteChoixEtablissement = function() {
+        $('.societe_choix_etablissement').on('change', function (e) {
+          if($(this).val() != "0"){
+            $("#choix_etablissement").submit();
+          }
+        });
+    }
+
     $.initLots = function() {
         if ($('#form_drev_lots').length == 0)
         {
             return;
         }
 
+        $('div.checkboxlots input[type="checkbox"]').click(function(e){
+          e.preventDefault();
+        });
+
         var checkBlocsLot = function() {
             $('#form_drev_lots .bloc-lot').each(function() {
                 var saisi = false;
                 $(this).find('input, select').each(function() {
-                    if($(this).val() || $(this).is(":focus")  ) {
+                    if(($(this).val() && $(this).attr('data-default-value') != $(this).val()) || $(this).is(":focus")) {
+                        saisi = true;
+                    }
+                });
+                if(!saisi) {
+                    $(this).addClass('transparence-sm');
+                } else {
+                    $(this).removeClass('transparence-sm');
+                }
+            });
+        }
+
+        var checkBlocsLotCepages = function() {
+            $('#form_drev_lots .ligne_lot_cepage').each(function() {
+                var saisi = true;
+                $(this).find('input, select').each(function() {
+                    if(!$(this).val()) {
+                        saisi = false;
+                    }
+                });
+                $(this).find('input, select').each(function() {
+                    if($(this).is(":focus")) {
                         saisi = true;
                     }
                 });
@@ -203,21 +239,74 @@
                 }
             });
 
+            $('#form_drev_lots .modal_lot_cepages').each(function() {
+
+                var libelle = "";
+                var volume = 0.0;
+                var total = 0.0;
+                $(this).find('.ligne_lot_cepage').each(function() {
+                    total += ($(this).find('.input-float').val())? parseFloat($(this).find('.input-float').val()) : 0;
+                });
+                $(this).find('.ligne_lot_cepage').each(function() {
+                    var ligne = $(this);
+                    var cepage = $(this).find('.select2 option:selected').text();
+                    var volume = parseFloat($(this).find('.input-float').val());
+                    if(cepage && volume > 0) {
+                        if(libelle) {
+                            libelle = libelle + ", ";
+                        }
+                        var p = (total)? parseInt((volume/total) * 100) : 0;
+                        libelle = libelle + cepage + "&nbsp;("+p+"%)";
+                        $(this).removeClass('transparence-sm');
+                    } else {
+                        $(this).addClass('transparence-sm');
+                    }
+
+                    $(this).find('input, select').each(function() {
+                        if($(this).is(":focus")) {
+                            ligne.removeClass('transparence-sm');
+                        }
+                    });
+                });
+                if(!libelle) {
+                    libelle = "Assemblage";
+                    $('#lien_'+$(this).attr('id')).removeAttr("checked");
+                }else{
+                  $('#lien_'+$(this).attr('id')).prop("checked","checked");
+                }
+                $('span.checkboxtext_'+$(this).attr('id')).html(libelle);
+            });
         }
 
+
         checkBlocsLot();
-        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot()});
-        $('#form_drev_lots select').on('change', function() { checkBlocsLot()});
-        $('#form_drev_lots input').on('focus', function() { checkBlocsLot()});
-        $('#form_drev_lots select').on('focus', function() { checkBlocsLot()});
-        $('#form_drev_lots input').on('blur', function() { checkBlocsLot()});
-        $('#form_drev_lots select').on('blur', function() { checkBlocsLot()});
+        checkBlocsLotCepages();
+    //    $('#form_drev_lots .modal_lot_cepages').on('hidden.bs.modal', function () { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots select').on('change', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots input').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots select').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots input').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots select').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
 
         if(window.location.hash == "#dernier") {
             $('#form_drev_lots .bloc-lot:last input:first').focus();
         } else {
             $('#form_drev_lots .bloc-lot:first input:first').focus();
         }
+
+        $('#form_drev_lots .lot-delete').on('click', function() {
+            if(!confirm("Étes vous sûr de vouloir supprimer ce lot ?")) {
+
+                return;
+            }
+
+            $(this).parents('.bloc-lot').find('input, select').each(function() {
+                $(this).val("");
+            });
+            $(this).parents('.bloc-lot').find('.select2autocomplete').select2('val', "");
+            $(this).parents('.bloc-lot').hide();
+        })
     }
 
     /* =================================================================================== */
@@ -237,6 +326,7 @@
         $.initLots();
         $.initRecapEventsAccordion();
         $.initValidationDeclaration();
+        $.initSocieteChoixEtablissement();
 
     });
 

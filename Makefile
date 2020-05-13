@@ -25,7 +25,7 @@ all: .views/etablissements.json .views/societe.json .views/compte.json .views/de
 	perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Archivage/views/archivage.all.map.view.js project/plugins/acVinDocumentPlugin/lib/Archivage/views/archivage.all.reduce.view.js > $@ || rm >@
 
 .views:
-	mkdir .views
+	mkdir -p .views
 
 clean:
-	rm -f .views/*
+	rm -f .views/*; mkdir -p .views

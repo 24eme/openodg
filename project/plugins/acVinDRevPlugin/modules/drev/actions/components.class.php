@@ -15,8 +15,4 @@ class drevComponents extends sfComponents {
         $this->drevsHistory = DRevClient::getInstance()->getHistory($this->etablissement->identifiant);
     }
 
-    public function executeStepRevendication(sfWebRequest $request) {
-        $this->ajoutForm = new DRevAjoutAppellationForm($this->drev);
-    }
-
 }

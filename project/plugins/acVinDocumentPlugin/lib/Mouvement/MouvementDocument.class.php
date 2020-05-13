@@ -31,7 +31,11 @@ class MouvementDocument
     }
 
     public function isFactures() {
-        foreach($this->document->getMouvements() as $mouvements) {
+      if(!$this->document->exist('mouvements') || !count($this->document->getMouvements())){
+        return false;
+      }
+
+      foreach($this->document->getMouvements() as $mouvements) {
             foreach($mouvements as $mouvement) {
                 if(!$mouvement->isFacture()) {
                     return false;

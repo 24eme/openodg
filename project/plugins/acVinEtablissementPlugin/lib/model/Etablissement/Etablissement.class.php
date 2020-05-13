@@ -279,6 +279,10 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
 
         $societe = $this->getSociete();
 
@@ -421,14 +425,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function getEmailTeledeclaration() {
+        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
+            return $this->teledeclaration_email;
+        }
     	if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
 	            return $compteSociete->societe_information->email;
 	        }
 	        return $compteSociete->email;
-        }
-        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return $this->teledeclaration_email;
         }
         if ($this->exist('email') && $this->email) {
             return $this->email;
@@ -510,6 +514,21 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
     public function getAdresseComplementaire() {
         return Anonymization::hideIfNeeded($this->_get('adresse_complementaire'));
+    }
+
+    public function getMeAndLiaisonOfType($type) {
+        $etablissements = array($this);
+        if ($this->exist('liaisons_operateurs')) {
+            foreach ($this->liaisons_operateurs as $k => $o) {
+                if ($o->type_liaison == $type) {
+                    $e = EtablissementClient::getInstance()->find($o->id_etablissement);
+                    if ($e && $e->cvi) {
+                        $etablissements[] = $e;
+                    }
+                }
+            }
+        }
+        return $etablissements;
     }
 
 }
