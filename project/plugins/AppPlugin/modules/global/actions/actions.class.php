@@ -7,7 +7,7 @@ class globalActions extends sfActions {
     }
 
     public function executeError403() {
-
+        $this->getResponse()->setStatusCode(403);
     }
 
     public function executeSetFlash(sfWebRequest $request) {
