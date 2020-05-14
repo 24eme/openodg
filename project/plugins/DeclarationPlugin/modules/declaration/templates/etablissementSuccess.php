@@ -32,7 +32,7 @@
         <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
-    <?php  if(!$sf_user->isAdmin() && (count($etablissement->getSociete()->getEtablissementsObj(false)) > 1)): ?>
+    <?php  if(!$sf_user->isAdmin() && ($etablissement->getSociete() && count($etablissement->getSociete()->getEtablissementsObj(false)) > 1)): ?>
       <section id="principal">
           <form id="choix_etablissement" method="post" action="<?php echo url_for('drev_societe_choix_etablissement', array('identifiant' => $etablissement->identifiant)) ?>">
             <br/>
