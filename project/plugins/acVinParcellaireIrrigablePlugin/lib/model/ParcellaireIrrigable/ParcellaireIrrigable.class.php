@@ -18,6 +18,10 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       $this->initDocuments();
   }
 
+  public function isAdresseLogementDifferente() {
+      return false;
+  }
+
   protected function initDocuments() {
       $this->declarant_document = new DeclarantDocument($this);
       $this->piece_document = new PieceDocument($this);
