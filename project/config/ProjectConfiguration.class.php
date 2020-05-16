@@ -54,6 +54,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('DRPlugin');
         $this->enablePlugins('SV11Plugin');
         $this->enablePlugins('SV12Plugin');
+        $this->enablePlugins('acVinPotentielProductionPlugin');
     }
 
     public function setRootDir($rootDir)

@@ -186,6 +186,7 @@ TemplateFacture:
                   minimum: { required: false }
                   minimum_fallback: { required: false }
                   callback: { required: false }
+                  required: { required: false }
                   libelle: {  }
                   code_comptable: {  }
                   details:

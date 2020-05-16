@@ -82,12 +82,12 @@ class declarationActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIRE"))) {
+        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIREAFFECTATION"))) {
 
             return $this->redirect("parcellaireaffectation_visualisation", array("id" => $doc_id));
         }
@@ -237,7 +237,6 @@ class declarationActions extends sfActions {
         $configurations = array();
         $this->produitsLibelles = array();
         foreach($rows as $row) {
-            $addition = 0;
             if($hasProduitsFilter){
               $not_in_result = false;
               if($this->produitsFiltre){
@@ -285,7 +284,6 @@ class declarationActions extends sfActions {
                 }
                 if(!isset($documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])])){
                   $this->facets[$facetNom][$row->key[$facetKey]] += 1;
-                  $addition += $row->value;
                   $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = 1;
                 }
                 $this->docs[$row->id] = $row;

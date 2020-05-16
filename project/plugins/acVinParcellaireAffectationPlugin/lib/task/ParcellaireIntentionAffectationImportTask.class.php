@@ -26,15 +26,6 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
     {
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        $ids = DeclarationClient::getInstance()->getIds("ParcellaireIntentionAffectation", "TOUT");
-        foreach($ids as $id) {
-            if ($doc = DeclarationClient::getInstance()->find($id)) {
-                $doc->validation = $doc->date;
-                $doc->validation_odg = $doc->date;
-                $doc->save();
-            }
-        }
-        exit;
         if(!file_exists($arguments['csv'])) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['csv']);
             return;
@@ -53,6 +44,18 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             $surface = round($this->formatFloat($data[2]),4);
             $cepage = $data[3];
             $dgc = $data[4];
+            
+            $identifiantIdu = null;
+            $items = TmpParcellesView::getInstance()->findByIdu($idu);
+            foreach ($items as $item) {
+                if (preg_match('/^PARCELLAIRE-(.+)-[0-9]{8}$/', $item->id, $m)) {
+                    $identifiantIdu = $m[1];
+                    break;
+                }
+            }
+            if ($identifiantIdu && $identifiantIdu != $identifiant) {
+                $identifiant = $identifiantIdu;
+            }
             $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
             if (!$etablissement) {
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));
@@ -137,35 +140,47 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             if ($find) {
                 $parcellesHash = $this->affecteParcelles($this->currentCombinaison, $arguments['date']);
                 echo sprintf("SUCCESS;COMBINAISON IDU+CEPAGE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, implode(",", $parcellesHash));
-                // on squeeze la meilleure combinaison car tres peu de cas
-            } elseif (1==2) {
-                ksort($this->combinaisons);
-                $combinaison = current($this->combinaisons);
-                $totalSuperficie = $this->getSurface($combinaison);
-                $diff = abs(round((($surface-$totalSuperficie)/$totalSuperficie)*100));
-                if ($totalSuperficie >= $surface) {
-                    usort($combinaison, array("ParcellaireIntentionAffectationImportTask", "sorting"));
-                    $parcellesHash = array();
-                    $superficie = 0;
-                    foreach ($combinaison as $parcelle) {
-                        $tmp = round($superficie+$parcelle->superficie,4);
-                        $parcelle->affectation = 1;
-                        $parcelle->date_affectation = $date;
-                        $parcelle->superficie_affectation = ($tmp > $surface)? round($surface - $superficie,4) : round($parcelle->superficie,4);
-                        $parcellesHash[] = $parcelle->getHash();
-                        if (($tmp > $surface)) {
-                            break;
-                        }
-                        $superficie = round($superficie+$parcelle->superficie,4);
+            } else {
+                $index = 0;
+                $this->combinaisons = array();
+                foreach ($foundIdu as $parcelle) {
+                    if ($find = $this->looping(array($parcelle), $foundIdu, $index, $surface)) {
+                        break;
                     }
-                    $find = true;
-                    echo sprintf("SUCCESS;MEILLEURE COMBINAISON IDU+CEPAGE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, implode(",", $parcellesHash));
-                } elseif ($diff <= 10) {
-                    $parcellesHash = $this->affecteParcelles($combinaison, $arguments['date']);
-                    $find = true;
-                    echo sprintf("SUCCESS;MEILLEURE COMBINAISON IDU+CEPAGE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, implode(",", $parcellesHash));
+                    $index++;
                 }
-                
+                if ($find) {
+                    $parcellesHash = $this->affecteParcelles($this->currentCombinaison, $arguments['date']);
+                    echo sprintf("SUCCESS;COMBINAISON IDU;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, implode(",", $parcellesHash));
+                    // on squeeze la meilleure combinaison car tres peu de cas
+                } elseif (1==2) {
+                    ksort($this->combinaisons);
+                    $combinaison = current($this->combinaisons);
+                    $totalSuperficie = $this->getSurface($combinaison);
+                    $diff = abs(round((($surface-$totalSuperficie)/$totalSuperficie)*100));
+                    if ($totalSuperficie >= $surface) {
+                        usort($combinaison, array("ParcellaireIntentionAffectationImportTask", "sorting"));
+                        $parcellesHash = array();
+                        $superficie = 0;
+                        foreach ($combinaison as $parcelle) {
+                            $tmp = round($superficie+$parcelle->superficie,4);
+                            $parcelle->affectation = 1;
+                            $parcelle->date_affectation = $date;
+                            $parcelle->superficie_affectation = ($tmp > $surface)? round($surface - $superficie,4) : round($parcelle->superficie,4);
+                            $parcellesHash[] = $parcelle->getHash();
+                            if (($tmp > $surface)) {
+                                break;
+                            }
+                            $superficie = round($superficie+$parcelle->superficie,4);
+                        }
+                        $find = true;
+                        echo sprintf("SUCCESS;MEILLEURE COMBINAISON IDU+CEPAGE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, implode(",", $parcellesHash));
+                    } elseif ($diff <= 10) {
+                        $parcellesHash = $this->affecteParcelles($combinaison, $arguments['date']);
+                        $find = true;
+                        echo sprintf("SUCCESS;MEILLEURE COMBINAISON IDU+CEPAGE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, implode(",", $parcellesHash));
+                    }
+                }  
             }
             if ($find) { $intentionDpap->save(); continue; }
             $findIdu = false;
@@ -215,7 +230,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
     
     protected function affecteParcelles(&$parcelles, $date) {
         $parcellesHash = array();
-        foreach (parcelles as $parcelle) {
+        foreach ($parcelles as $parcelle) {
             $parcelle->affectation = 1;
             $parcelle->date_affectation = $date;
             $parcelle->superficie_affectation = round($parcelle->superficie,4);

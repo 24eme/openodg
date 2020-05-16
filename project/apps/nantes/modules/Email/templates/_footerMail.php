@@ -1,2 +1,1 @@
-Le Syndicat des Vins Côtes de Provence
-contact@odg-cotesdeprovence.com
+La Fédération des Vins de Nantes

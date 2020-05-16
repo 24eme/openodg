@@ -213,8 +213,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
       }
 
       $lignes_to_remove = array();
-      foreach ($this->lignes as $cotisation_key => $cotisation) {
-        if(!count($cotisation->details)){
+      foreach ($this->lignes as $cotisation_key => $ligne) {
+        if(!count($ligne->details) && !$template->cotisations->get($cotisation_key)->isRequired()){
             $lignes_to_remove[] = $cotisation_key;
           }
       }

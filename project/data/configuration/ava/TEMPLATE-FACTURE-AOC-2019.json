@@ -5,12 +5,12 @@
    "template": "AOC",
    "libelle": "2020 - AOC Alsace",
    "docs": [
-       "DRev",
-       "RegistreVCI"
+       "DRev"
    ],
    "cotisations": {
        "odg_ava": {
            "modele": "CotisationsCollection",
+           "required": true,
            "callback": "",
            "libelle": "Cotisation ODG-AVA",
            "code_comptable": "706300",
@@ -55,6 +55,7 @@
        },
        "ava_syndicale": {
            "modele": "CotisationsCollectionCondition",
+           "required": true,
            "callback": "isAdherentSyndicat",
            "libelle": "Cotisation AVA Syndicale",
            "code_comptable": "751100",
@@ -88,6 +89,7 @@
        },
        "syndicat_viticole": {
            "modele": "CotisationsCollectionSelection",
+           "required": true,
            "libelle": "Cotisation syndicat viticole",
            "code_comptable": "467700",
            "details": {
@@ -1614,6 +1616,7 @@
        },
        "controle_externe": {
            "modele": "CotisationsCollection",
+           "required": true,
            "callback": "",
            "libelle": "Coût contrôle externe",
            "code_comptable": "706400",
@@ -1633,6 +1636,7 @@
        },
        "inao": {
            "modele": "CotisationsCollection",
+           "required": true,
            "callback": "",
            "libelle": "Droit INAO",
            "code_comptable": "706450",
@@ -1652,6 +1656,7 @@
        },
        "flavescence": {
            "modele": "CotisationsCollection",
+           "required": true,
            "callback": "",
            "libelle": "Contribution Flavescence dorée",
            "code_comptable": "706470",

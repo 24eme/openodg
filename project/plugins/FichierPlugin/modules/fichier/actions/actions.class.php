@@ -118,11 +118,17 @@ class fichierActions extends sfActions
 		$this->year = $request->getParameter('annee', 0);
 		$this->category = $request->getParameter('categorie');
 
+		$piecesSocietes = array();
+
+		if($this->societe) {
+			$piecesSocietes = PieceAllView::getInstance()->getPiecesByEtablissement($this->societe->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN));
+		}
+
 		$allHistory = array_merge(
 										PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)),
-										PieceAllView::getInstance()->getPiecesByEtablissement($this->societe->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN))
+										$piecesSocietes
 									);
-									
+
 		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN), $this->year.'-01-01', $this->year.'-12-31') : $allHistory;
 		foreach($this->history as $key => $item) {
 			if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && $item->key[PieceAllView::KEYS_CATEGORIE] != "Identification") {
