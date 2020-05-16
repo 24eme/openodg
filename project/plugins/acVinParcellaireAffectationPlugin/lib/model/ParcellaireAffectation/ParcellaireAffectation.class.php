@@ -86,7 +86,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 		        unset($parcelle['origine_hash']);
 		        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
 		    }
-        elseif($isUpDate && $this->declaration->exist($hash) !== null){
+        elseif($isUpDate && $this->declaration->exist($hash)){
           $item = $this->declaration->get($hash);
           $parcelle->origine_doc = $intention->_id;
           unset($parcelle['origine_hash']);
