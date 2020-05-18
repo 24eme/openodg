@@ -62,8 +62,10 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
 
     public function doUpdateObject($values) {
       $attributs = array();
-      foreach ($values["attributs"] as $attribut) {
-        $attributs[$attribut] = EtablissementClient::$chaisAttributsLibelles[$attribut];
+      if(isset($values["attributs"])) {
+          foreach ($values["attributs"] as $attribut) {
+            $attributs[$attribut] = EtablissementClient::$chaisAttributsLibelles[$attribut];
+          }
       }
       $values["attributs"] = $attributs;
       $values['partage'] = (isset($values['partage']) && $values['partage']);
