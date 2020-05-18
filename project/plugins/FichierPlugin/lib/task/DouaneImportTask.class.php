@@ -76,14 +76,6 @@ EOF;
                     $fichier = FichierClient::getClientFromType($type)->createDoc($etablissement->identifiant, $campagne);
                 }
 
-                $fichier->remove('donnees');
-                $fichier->add('donnees');
-
-                if($fichier->getDefinition()->exist('mouvements')) {
-                    $fichier->remove('mouvements');
-                    $fichier->add('mouvements');
-                }
-
                 foreach($lignes as $ligne) {
                     $fichier->addDonnee($csv[$ligne]);
                 }
