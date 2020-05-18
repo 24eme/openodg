@@ -18,9 +18,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function __clone() {
-  	if ($this->_id == $this->getTheoriticalId()) {
-  		throw new sfException("La date du parcellaire affecté doit être différente de celle du document d'origine");
-  	}
   	parent::__clone();
   	$this->initDocuments();
   	$this->constructId();
@@ -89,7 +86,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 		        unset($parcelle['origine_hash']);
 		        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
 		    }
-        elseif($isUpDate && $this->declaration->exist($hash) !== null){
+        elseif($isUpDate && $this->declaration->exist($hash)){
           $item = $this->declaration->get($hash);
           $parcelle->origine_doc = $intention->_id;
           unset($parcelle['origine_hash']);
