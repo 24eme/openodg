@@ -67,6 +67,11 @@ EOF;
                 }
                 $fichier = FichierClient::getInstance()->findByArgs($type, $etablissement->identifiant, $campagne);
 
+                if($fichier) {
+
+                    continue;
+                }
+
                 if(!$fichier) {
                     $fichier = FichierClient::getClientFromType($type)->createDoc($etablissement->identifiant, $campagne);
                 }
