@@ -37,6 +37,10 @@ class etablissementActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+            return $this->forwardSecure();
+        }
+
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->societe = $this->etablissement->getSociete();
         $this->applyRights();

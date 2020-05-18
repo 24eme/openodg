@@ -138,6 +138,10 @@ class societeActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+            return $this->forwardSecure();
+        }
+
         $this->societe = $this->getRoute()->getSociete();
         $this->applyRights();
         $this->societe_compte = $this->societe->getMasterCompte();
