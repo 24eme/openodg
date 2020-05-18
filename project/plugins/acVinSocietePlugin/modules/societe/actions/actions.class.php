@@ -35,8 +35,10 @@ class societeActions extends sfCredentialActions {
         $type_societe = explode(",",$request->getParameter('type'));
         $q = $request->getParameter('q');
         $limit = $request->getParameter('limit', 100);
-        $societes = SocieteAllView::getInstance()->findByInterproAndStatut($interpro, SocieteClient::STATUT_ACTIF, $type_societe, $q, $limit);
+        $societes = SocieteAllView::getInstance()->findByInterproAndStatut($interpro, SocieteClient::STATUT_ACTIF, $q, $limit);
         $json = $this->matchSociete($societes, $q, $limit);
+
+        $this->getResponse()->setContentType('text/json');
         return $this->renderText(json_encode($json));
     }
 
