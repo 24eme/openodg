@@ -4,8 +4,8 @@
 
 if ! test "$URL_EXPORT_REMOTE_OPENDOG"
 then
-    "Aucune instance distance d'openodg défini, set URL_EXPORT_REMOTE_OPENDOG in config.inc"
-
+    echo "Aucune instance distante d'openodg définie, set URL_EXPORT_REMOTE_OPENDOG in config_extra.inc"
+    exit;
 fi
 
 php symfony douane:import $URL_EXPORT_REMOTE_OPENDOG/dr.csv $SYMFONYTASKOPTIONS
