@@ -26,8 +26,17 @@ class ParcellaireAffectationClient extends acCouchdbClient {
       }
 
       public function createDoc($identifiant, $campagne, $papier = false, $type = self::TYPE_COUCHDB) {
-          $parcellaireAffectation = new ParcellaireAffectation();
-          $parcellaireAffectation->initDoc($identifiant, $campagne, $type);
+          $previous = $this->findPreviousByIdentifiantAndDate($identifiant, $campagne-1);
+          if ($previous && $previous->isValidee()) {
+              $previous->devalidate();
+              $previous->campagne = $campagne;
+              $parcellaireAffectation = clone $previous;
+              $parcellaireAffectation->constructId();
+              $parcellaireAffectation->updateParcellesAffectation();
+          } else {
+            $parcellaireAffectation = new ParcellaireAffectation();
+            $parcellaireAffectation->initDoc($identifiant, $campagne, $type);
+          }
           if($papier) {
           	$parcellaireAffectation->add('papier', 1);
           }

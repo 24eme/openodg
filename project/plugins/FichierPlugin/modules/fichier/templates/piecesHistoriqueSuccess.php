@@ -43,7 +43,7 @@
 					<a href="<?php echo $urlVisu ?>" ><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
 				<?php endif; ?>
 			<?php else: ?>
-				<?php if(count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
+				<?php if($document->value[PieceAllView::VALUES_FICHIERS] && count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
 				  	<a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown" data-toggle-second="tooltip" title="Accéder au documents" aria-haspopup="true" aria-expanded="false"><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
 				  	<ul class="dropdown-menu">
 				  		<?php
@@ -63,7 +63,7 @@
 			<?php endif; ?>
 		</span>
 		<span class="col-sm-2 col-xs-12">
-		<?php if(count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
+		<?php if($document->value[PieceAllView::VALUES_FICHIERS] && count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
 		  	<a href="#" class="pull-right dropdown-toggle" type="button" data-toggle="dropdown" data-toggle-second="tooltip" title="Accéder au documents" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-duplicate"></span></a>
 		  	<ul class="dropdown-menu">
 		  		<?php
