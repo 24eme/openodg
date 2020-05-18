@@ -239,6 +239,14 @@ class societeActions extends sfCredentialActions {
         return sfView::NONE;
     }
 
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        $this->getResponse()->setStatusCode('403');
+
+        throw new sfStopException();
+    }
+
     protected function matchCompte($view_res, $term, $limit) {
         $json = array();
         foreach ($view_res as $key => $one_row) {

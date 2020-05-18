@@ -163,4 +163,12 @@ class etablissementActions extends sfCredentialActions {
         $this->redirect('etablissement_visualisation', array('identifiant' => $this->etablissement->identifiant));
     }
 
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        $this->getResponse()->setStatusCode('403');
+
+        throw new sfStopException();
+    }
+
 }
