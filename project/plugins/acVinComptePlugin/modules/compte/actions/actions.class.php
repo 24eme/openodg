@@ -58,6 +58,10 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+            return $this->forwardSecure();
+        }
+
         $this->compte = $this->getRoute()->getCompte();
         $this->societe = $this->compte->getSociete();
         $this->formAjoutGroupe = new CompteGroupeAjoutForm('INTERPRO-declaration');
@@ -72,6 +76,7 @@ class compteActions extends sfCredentialActions {
         if($this->compte->isSocieteContact()) {
             return $this->redirect('societe_visualisation',array('identifiant' => $this->societe->identifiant));
         }
+        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
     public function executeSwitchStatus(sfWebRequest $request) {

@@ -20,7 +20,7 @@
               <br/>
             <?php endforeach; ?>
             <?php if(isset($formAjoutGroupe) && $modifiable): ?>
-              <form method="GET" class="form-horizontal" action="<?php echo url_for('compte_addingroupe',array('identifiant'=> $compte->getIdentifiant())); ?>">
+              <form id="form_ajout_groupe" method="GET" class="form-horizontal" action="<?php echo url_for('compte_addingroupe',array('identifiant'=> $compte->getIdentifiant())); ?>">
                   <?php echo $formAjoutGroupe->renderHiddenFields() ?>
                   <?php echo $formAjoutGroupe->renderGlobalErrors() ?>
                   <div class="btn-group">

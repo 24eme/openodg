@@ -6,12 +6,27 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
 
     protected function getObjectForParameters($parameters = null) {
       $this->compte = CompteClient::getInstance()->find(CompteClient::getInstance()->getId($parameters['identifiant']));
+
+      $myUser = sfContext::getInstance()->getUser();
+      if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin() &&
+            $myUser->getCompte()->identifiant != $this->getCompte()->getSociete()->getMasterCompte()->identifiant) {
+
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+      }
+
       return $this->compte;
     }
 
     protected function doConvertObjectToArray($object = null) {
       $this->compte = $object;
       return array("identifiant" => $object->getIdentifiant());
+    }
+
+    public function getSociete() {
+      if (!$this->societe) {
+           $this->societe = $this->getObject();
+      }
+      return $this->societe;
     }
 
     public function getCompte() {
