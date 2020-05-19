@@ -1,16 +1,25 @@
 <?php $hasManuel = false; ?>
+<?php $modifiable = !isset($modifiable) || $modifiable; ?>
     <div style="margin-bottom: 10px;">
       <div class="row" style="margin-bottom: 10px;">
         <div class="col-xs-2 text-muted">Groupes&nbsp;:</div>
         <div class="col-xs-10">
             <?php foreach($compte->getGroupesSortedNom() as $key => $grp) : ?>
+                <?php if($modifiable): ?>
               <div class="btn-group" style="padding-bottom : 3px;">
                 <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_groupe', array("groupeName" => str_replace('.','!',sfOutputEscaper::unescape($grp['nom'])))); ?>"><?php echo $grp['nom']; ?></a>
                 <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => str_replace('.','!',sfOutputEscaper::unescape($grp['nom'])))); ?>"><?php echo $grp['fonction']; ?></a>
                 <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removegroupe', array("groupeName" => str_replace('.','!',sfOutputEscaper::unescape($grp['nom'])), "identifiant" => $compte->identifiant, "retour" => "visu")); ?>"><span class="glyphicon glyphicon-trash"/></a>
-              </div><br/>
+              </div>
+              <?php else: ?>
+                  <div class="btn-group" style="padding-bottom : 3px;">
+                    <button class="btn btn-sm btn-default"><?php echo $grp['nom']; ?></button>
+                    <button class="btn btn-sm btn-primary"><?php echo $grp['fonction']; ?></button>
+                  </div>
+              <?php endif; ?>
+              <br/>
             <?php endforeach; ?>
-            <?php if(isset($formAjoutGroupe)): ?>
+            <?php if(isset($formAjoutGroupe) && $modifiable): ?>
               <form method="GET" class="form-horizontal" action="<?php echo url_for('compte_addingroupe',array('identifiant'=> $compte->getIdentifiant())); ?>">
                   <?php echo $formAjoutGroupe->renderHiddenFields() ?>
                   <?php echo $formAjoutGroupe->renderGlobalErrors() ?>
@@ -34,6 +43,7 @@
         <div class="row" style="margin-bottom: 10px;">
           <div class="col-xs-2 text-muted"><?php echo ucfirst($type_tag) ?>&nbsp;:</div>
           <div class="col-xs-10">
+            <?php if($modifiable): ?>
             <?php foreach ($tags as $t): ?>
                 <div class="btn-group">
                     <a class="btn btn-sm <?php if($type_tag == "automatique"): ?>btn-link<?php endif; ?> <?php if($type_tag == "manuel"): ?>btn-default<?php endif; ?>"
@@ -43,7 +53,13 @@
                     <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', array('q' => "doc.identifiant:".$compte->identifiant, 'tag' => $t)) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
                 </div>
             <?php endforeach; ?>
-            <?php if($type_tag == 'manuel'): ?>
+            <?php else: ?>
+                <?php foreach ($tags as $t): ?>
+                    <small style="margin-right: 5px"><?php echo ucfirst(str_replace('_', ' ', $t)) ?></small>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+            <?php if($type_tag == 'manuel' && $modifiable): ?>
               <?php $hasManuel = true; ?>
                 <div class="btn-group">
                   <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()):
@@ -66,7 +82,7 @@
         </div>
       </div>
       <?php endforeach; ?>
-      <?php if(!$hasManuel): ?>
+      <?php if(!$hasManuel && $modifiable): ?>
       <div class="row" style="margin-bottom: 5px;">
         <div class="col-xs-2 text-muted">Manuel&nbsp;:</div>
         <div class="col-xs-10">

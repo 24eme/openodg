@@ -33,6 +33,8 @@ $etablissement = EtablissementClient::getInstance()->find($etablissementIdentifi
 $compteEtablissement = $etablissement->getMasterCompte();
 $compteEtablissement->addTag('test', 'test_functionnal');
 $compteEtablissement->addTag('test', 'test_functionnal_etablissement');
+$compteEtablissement->addInGroupes('test', 'testeurs');
+$compteEtablissement->addTag('manuel', 'test_manuel');
 $compteEtablissement->save();
 
 $b->get('/etablissement/'.$societeAnnexe->getIdentifiant().'/nouveau')->click('#btn_valider')->followRedirect();
@@ -43,6 +45,9 @@ $compteEtablissementAnnexe = $etablissementAnnexe->getMasterCompte();
 $compteEtablissementAnnexe->addTag('test', 'test_functionnal');
 $compteEtablissementAnnexe->addTag('test', 'test_functionnal_etablissement_2');
 $compteEtablissementAnnexe->save();
+
+$etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR, $etablissementAnnexe, false);
+$etablissement->save();
 
 $b->get('/etablissement/'.$etablissementIdentifiant.'/chai-ajout');
 $b->click('#btn_valider')->followRedirect();
@@ -59,7 +64,7 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 200, "Visualisation établissement accessible");
     $b->isForwardedTo('etablissement', 'visualisation');
-    testVisualisationLimite($b, $societeIdentifiant, $etablissementIdentifiant);
+    testVisualisationLimite($b, $societeIdentifiant, $etablissement);
 
     $b->get('/etablissement/'.$etablissementAnnexe->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'un établissement d'une autre société accessible");
@@ -82,7 +87,7 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation de l'établissement accessible");
     $b->isForwardedTo('etablissement', 'visualisation');
-    testVisualisationLimite($b, $societeIdentifiant, $etablissementIdentifiant);
+    testVisualisationLimite($b, $societeIdentifiant, $etablissement);
     $b->get('/etablissement/'.$etablissementAnnexe->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un établissement d'une autre société protégée");
 } else {
@@ -90,7 +95,7 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation établissement protégée");
 }
 
-function testVisualisationLimite($b, $societeIdentifiant, $etablissementIdentifiant) {
+function testVisualisationLimite($b, $societeIdentifiant, $etablissement) {
 
     $t = $b->test();
 
@@ -101,26 +106,31 @@ function testVisualisationLimite($b, $societeIdentifiant, $etablissementIdentifi
     $t->is($c->matchSingle('a[href*="/chai-ajout"]')->getNode(), null, "Bouton \"Ajouter un chai\" absent");
     $t->is($c->matchSingle('a[href*="/chai-modification/"]')->getNode(), null, "Bouton \"Modifier un chai\" absent");
     $t->is($c->matchSingle('a[href*="/relation-ajout"]')->getNode(), null, "Bouton \"Ajouter une relation\" absent");
+    $t->is($c->matchSingle('a[href*="/relation-suppression"]')->getNode(), null, "Bouton \"Suppression d'une relation\" absent");
     $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
+    $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
     $t->is($c->matchSingle('form.form_ajout_tag')->getNode(), null, "Form d'ajout d'un tag absent");
 
     $b->get('/etablissement/'.$societeIdentifiant.'/nouveau');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter un établissement protégée");
 
-    $b->get('/etablissement/'.$etablissementIdentifiant.'/modification');
+    $b->get('/etablissement/'.$etablissement->getIdentifiant().'/modification');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de modification d'un établissement protégée");
 
-    $b->get('/etablissement/'.$etablissementIdentifiant.'/switchStatus');
+    $b->get('/etablissement/'.$etablissement->getIdentifiant().'/switchStatus');
     $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un établissement protégé");
 
-    $b->get('/etablissement/'.$etablissementIdentifiant.'/chai-ajout');
+    $b->get('/etablissement/'.$etablissement->getIdentifiant().'/chai-ajout');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter un chai dans un établissement protégé");
 
-    $b->get('/etablissement/'.$etablissementIdentifiant.'/chai-modification/0');
+    $b->get('/etablissement/'.$etablissement->getIdentifiant().'/chai-modification/0');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page modifier un chai dans un établissement protégée");
 
-    $b->get('/etablissement/'.$etablissementIdentifiant.'/relation-ajout');
+    $b->get('/etablissement/'.$etablissement->getIdentifiant().'/relation-suppression/'.$etablissement->liaisons_operateurs->getFirst()->getKey());
+    $t->is($b->getResponse()->getStatuscode(), 403, "Page supprimer une relation protégée");
+
+    $b->get('/etablissement/'.$etablissement->getIdentifiant().'/relation-ajout');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter une relation dans un établissement protégée");
 
 }

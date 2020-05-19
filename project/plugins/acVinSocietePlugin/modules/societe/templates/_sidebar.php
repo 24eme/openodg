@@ -15,9 +15,11 @@
             </div>
         <?php endforeach; ?>
     </div>
+    <?php if($modifiable): ?>
     <div class="panel-footer text-center">
         <a class="btn btn-xs btn-link" href="<?php echo url_for('etablissement_ajout', array('identifiant' => $societe->identifiant)); ?>"><span class="glyphicon glyphicon-plus-sign"></span> Créer un établissement</a>
     </div>
+    <?php endif; ?>
 </div>
 <?php
   $points = array();
@@ -62,7 +64,9 @@
         <span class="text-muted">Aucun interlocuteur</span>
     </div>
     <?php endif; ?>
+    <?php if($modifiable): ?>
     <div class="panel-footer text-center">
         <a class="btn btn-xs btn-link" href="<?php echo url_for('compte_ajout', array('identifiant' => $societe->identifiant)); ?>"><span class="glyphicon glyphicon-plus-sign"></span> Créer un interlocuteur</a>
     </div>
+    <?php endif; ?>
 </div>
