@@ -37,6 +37,10 @@ class etablissementActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+            return $this->forwardSecure();
+        }
+
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->societe = $this->etablissement->getSociete();
         $this->applyRights();
@@ -161,6 +165,14 @@ class etablissementActions extends sfCredentialActions {
         $this->etablissement->save();
 
         $this->redirect('etablissement_visualisation', array('identifiant' => $this->etablissement->identifiant));
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        $this->getResponse()->setStatusCode('403');
+
+        throw new sfStopException();
     }
 
 }

@@ -279,7 +279,7 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public static function getRegions() {
-    	return sfConfig::get('app_donnees_viticoles_regions');
+    	return sfConfig::get('app_donnees_viticoles_regions', array());
     }
 
     public static function getNaturesInao() {

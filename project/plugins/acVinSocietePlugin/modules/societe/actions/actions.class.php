@@ -35,8 +35,10 @@ class societeActions extends sfCredentialActions {
         $type_societe = explode(",",$request->getParameter('type'));
         $q = $request->getParameter('q');
         $limit = $request->getParameter('limit', 100);
-        $societes = SocieteAllView::getInstance()->findByInterproAndStatut($interpro, SocieteClient::STATUT_ACTIF, $type_societe, $q, $limit);
+        $societes = SocieteAllView::getInstance()->findByInterproAndStatut($interpro, SocieteClient::STATUT_ACTIF, $q, $limit);
         $json = $this->matchSociete($societes, $q, $limit);
+
+        $this->getResponse()->setContentType('text/json');
         return $this->renderText(json_encode($json));
     }
 
@@ -138,6 +140,10 @@ class societeActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+            return $this->forwardSecure();
+        }
+
         $this->societe = $this->getRoute()->getSociete();
         $this->applyRights();
         $this->societe_compte = $this->societe->getMasterCompte();
@@ -237,6 +243,14 @@ class societeActions extends sfCredentialActions {
         }
 
         return sfView::NONE;
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        $this->getResponse()->setStatusCode('403');
+
+        throw new sfStopException();
     }
 
     protected function matchCompte($view_res, $term, $limit) {
