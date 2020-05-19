@@ -4,7 +4,7 @@ include dirname(__FILE__).'/../../bootstrap/functional.php';
 
 foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal_interlocuteur') as $k => $v) {
     if (preg_match('/COMPTE-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
-      $compte = CompteClient::getInstance()->find("COMPTE-".$m[1]);
+      $compte = CompteClient::getInstance()->find($m[1]);
       $compte->delete();
     }
 }
@@ -30,7 +30,7 @@ $b->isForwardedTo('compte', 'visualisation');
 preg_match("|/compte/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
 $compteIdentifiant = $matches[1];
 
-$compte = CompteClient::getInstance()->find("COMPTE-".$compteIdentifiant);
+$compte = CompteClient::getInstance()->find($compteIdentifiant);
 $compte->addTag('test', 'test_functionnal');
 $compte->addTag('test', 'test_functionnal_interlocuteur');
 $compte->addInGroupes('test', 'testeurs');
@@ -40,7 +40,7 @@ $compte->save();
 $b->get('/compte/'.$societeAnnexe->getIdentifiant().'/nouveau')->click('#btn_valider', array('compte_modification' => array('nom' => 'Testeur')))->followRedirect();
 preg_match("|/compte/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
 
-$compteAnnexe = CompteClient::getInstance()->find("COMPTE-".$matches[1]);
+$compteAnnexe = CompteClient::getInstance()->find($matches[1]);
 $compteAnnexe->addTag('test', 'test_functionnal');
 $compteAnnexe->addTag('test', 'test_functionnal_interlocuteur_2');
 $compteAnnexe->save();
