@@ -152,6 +152,8 @@ class societeActions extends sfCredentialActions {
           $compte->updateCoordonneesLongLat();
           $compte->save();
         }
+
+        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
     public function executeAnnulation(sfWebRequest $request) {

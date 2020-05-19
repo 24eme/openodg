@@ -13,6 +13,7 @@
                         <h4><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> Societe n° <?php echo $societe->identifiant; ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
+                        <?php if($modifiable): ?>
                         <div class="btn-group">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu text-left">
@@ -22,6 +23,7 @@
                                 <li><a href="<?php echo url_for('compte_switch_en_alerte', array('identifiant' => $societe->getMasterCompte()->identifiant)); ?>"><?php echo ($societe->getMasterCompte()->exist('en_alerte') && $societe->getMasterCompte()->en_alerte)? 'Retirer alerte' : 'Mettre en alerte' ?></a></li>
                             </ul>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -68,7 +70,7 @@
                 <?php include_partial('compte/visualisationLogin', array('compte' => $societe->getMasterCompte())); ?>
                 <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
-                <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte())); ?>
+                <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte(), 'modifiable' => $modifiable)); ?>
                 <?php if ($societe->commentaire) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
@@ -78,6 +80,6 @@
         </div>
     </div>
     <div class="col-xs-4">
-        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $societe)); ?>
+        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $societe, 'modifiable' => $modifiable)); ?>
     </div>
 </div>

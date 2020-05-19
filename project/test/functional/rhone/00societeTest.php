@@ -32,6 +32,7 @@ $societe = SocieteClient::getInstance()->find($societeIdentifiant);
 $compteSociete = $societe->getMasterCompte();
 $compteSociete->addTag('test', 'test_functionnal');
 $compteSociete->addTag('test', 'test_functionnal_societe');
+$compteSociete->addInGroupes('test', 'testeurs');
 $compteSociete->save();
 
 $b->post('/societe-creation', array('societe-creation' => array("raison_sociale" => 'Societe TESTFUNCTIONNAL '.uniqid())))->followRedirect()->followRedirect()->followRedirect()->click('button#btn_valider')->followRedirect();
@@ -94,6 +95,7 @@ function testVisualisationLimite($b, $societeIdentifiant) {
     $t->is($c->matchSingle('a[href*="/switchStatus"]')->getNode(), null, "Bouton \"Archiver\" absent");
     $t->is($c->matchSingle('a[href*="/switchEnAlerte"]')->getNode(), null, "Bouton \"Mettre en alerte\" absent");
     $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
+    $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
 
     $b->get('/societe-creation');
