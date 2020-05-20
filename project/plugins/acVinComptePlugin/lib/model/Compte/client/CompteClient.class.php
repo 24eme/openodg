@@ -22,15 +22,13 @@ class CompteClient extends acCouchdbClient {
 
     public function getId($id_or_identifiant) {
         $id = $id_or_identifiant;
-        if (strpos($id_or_identifiant, 'COMPTE-') === false) {
+        if (strpos($id_or_identifiant, '-') === false ) {
             $id = 'COMPTE-' . $id_or_identifiant;
         }
-
         return $id;
     }
 
     public function find($id_or_identifiant, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
-
         return parent::find($this->getId($id_or_identifiant), $hydrate, $force_return_ls);
     }
 
