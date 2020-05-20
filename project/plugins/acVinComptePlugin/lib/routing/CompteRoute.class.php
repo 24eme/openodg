@@ -13,7 +13,10 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
 
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
       }
+      if(!$myUser->isAdmin() && $myUser->hasCredential(myUser::CREDENTIAL_HABILITATION) && $myUser->getCompte()->identifiant != $this->getCompte()->getSociete()->getMasterCompte()->identifiant && $this->getCompte()->getSociete()->type_societe != SocieteClient::TYPE_OPERATEUR) {
 
+          throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+      }
       return $this->compte;
     }
 

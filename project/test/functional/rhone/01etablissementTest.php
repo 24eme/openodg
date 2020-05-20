@@ -65,9 +65,6 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $t->is($b->getResponse()->getStatuscode(), 200, "Visualisation établissement accessible");
     $b->isForwardedTo('etablissement', 'visualisation');
     testVisualisationLimite($b, $societeIdentifiant, $etablissement);
-
-    $b->get('/etablissement/'.$etablissementAnnexe->getIdentifiant().'/visualisation');
-    $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'un établissement d'une autre société accessible");
 } else {
     $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation établissement protégé");

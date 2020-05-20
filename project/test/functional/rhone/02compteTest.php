@@ -11,6 +11,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal_int
 
 $societe = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_societe')->getSociete();
 $societeAnnexe = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_societe_2')->getSociete();
+$societeAutre = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_societe_autre')->getSociete();
 
 $b = new sfTestFunctional(new sfBrowser());
 $t = $b->test();
@@ -45,6 +46,14 @@ $compteAnnexe->addTag('test', 'test_functionnal');
 $compteAnnexe->addTag('test', 'test_functionnal_interlocuteur_2');
 $compteAnnexe->save();
 
+$b->get('/compte/'.$societeAutre->getIdentifiant().'/nouveau')->click('#btn_valider', array('compte_modification' => array('nom' => 'Testeur')))->followRedirect();
+preg_match("|/compte/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
+
+$compteAutre = CompteClient::getInstance()->find($matches[1]);
+$compteAutre->addTag('test', 'test_functionnal');
+$compteAutre->addTag('test', 'test_functionnal_interlocuteur_autre');
+$compteAutre->save();
+
 $t->comment('En mode habilitation');
 
 $b->get('/logout');
@@ -58,8 +67,8 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->isForwardedTo('compte', 'visualisation');
     testVisualisationLimite($b, $societeIdentifiant, $compte);
 
-    $b->get('/compte/'.$compteAnnexe->getIdentifiant().'/visualisation');
-    $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'un interlocuteur d'une autre société accessible");
+    $b->get('/compte/'.$compteAutre->getIdentifiant().'/visualisation');
+    $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
 } else {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur protégé");
@@ -81,7 +90,7 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->isForwardedTo('compte', 'visualisation');
     testVisualisationLimite($b, $societeIdentifiant, $compte);
     $b->get('/compte/'.$compteAnnexe->getIdentifiant().'/visualisation');
-    $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une autre société protégée");
+    $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
 } else {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une interlocuteur protégée");
