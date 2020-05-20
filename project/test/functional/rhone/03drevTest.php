@@ -3,6 +3,7 @@
 include dirname(__FILE__).'/../../bootstrap/functional.php';
 
 $etablissement = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_etablissement')->getEtablissement();
+$societe = $etablissement->getSociete();
 
 foreach(DRevClient::getInstance()->getHistory($etablissement->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
@@ -22,7 +23,7 @@ foreach(ConfigurationClient::getCurrent()->getProduits() as $produit) {
 $b = new sfTestFunctional(new sfBrowser());
 $t = $b->test();
 
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH'));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));
 
 $t->comment("Saisie d'une DRev");
 
@@ -61,3 +62,35 @@ $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 $b->click('button[type="submit"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
+
+preg_match("|/drev/visualisation/([^/]+)|", $b->getRequest()->getUri(), $matches);
+$drevId = $matches[1];
+
+$t->comment('En mode habilitation');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('habilitation')));
+$b->restart();
+
+$b->get('/declarations/'.$etablissement->identifiant);
+$t->is($b->getResponse()->getStatuscode(), 403, "Page declaration protégé");
+
+$b->get('/drev/visualisation/'.$drevId);
+$t->is($b->getResponse()->getStatuscode(), 403, "Visu de la DRev protégé");
+
+$t->comment('En mode télédéclarant');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
+$b->restart();
+
+$b->post('/login_no_cas', array('admin' => array('login' => $societe->getIdentifiant())));
+$t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
+
+$b->get('/declarations/'.$etablissement->identifiant);
+$b->isForwardedTo('declaration', 'etablissement');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page declaration");
+
+$b->get('/drev/visualisation/'.$drevId);
+$b->isForwardedTo('drev', 'visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Visu de la DRev");
