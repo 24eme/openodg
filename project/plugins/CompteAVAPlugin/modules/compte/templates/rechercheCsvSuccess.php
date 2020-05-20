@@ -31,10 +31,10 @@ foreach ($results as $res) {
     echo '"' . escapeCSVValue($data['date_archivage']) . '";';  
     echo '"' . escapeCSVValue($data['identifiant_interne']) . '";';  
     echo '"' . escapeCSVValue($data['_id']) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['attributs'])) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['produits'])) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['syndicats'])) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['manuels'])) . '";';
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['attributs'])) . '";';  
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['produits'])) . '";';  
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['syndicats'])) . '";';  
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['manuels'])) . '";';
     echo '"';
     if(isset($data['formations'])) {
         $i = 0;

@@ -630,8 +630,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
         $file = file_get_contents($url);
         $result = json_decode($file);
-
-        if(!count($result)){
+        if(!$result || !count($result->response->docs)){
             return false;
         }
         if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
