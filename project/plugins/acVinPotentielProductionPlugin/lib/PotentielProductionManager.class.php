@@ -18,24 +18,14 @@ class PotentielProductionManager
         }
     }
     
-    public function calculate()
+    public function getDonnees($superficies = null)
     {
-        return $this->generator->infos();
-    }
-    
-    public function getRevendicables()
-    {
-        return $this->generator->getRevendicables();
+        return $this->generator->getDonnees($superficies);
     }
     
     public function getSuperficies()
     {
         return $this->generator->getSuperficies();
-    }
-    
-    public function respecteRegles()
-    {
-        return $this->generator->respecteRegles();
     }
     
     public function getGenerator()
