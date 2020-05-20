@@ -5,6 +5,7 @@ abstract class DocumentSecurity implements SecurityInterface {
     const EDITION = 'EDITION';
     const VALIDATION_ADMIN = 'VALIDATION_ADMIN';
     const VISUALISATION = 'VISUALISATION';
+    const PDF = 'PDF';
     const DEVALIDATION = 'DEVALIDATION';
 
     protected $doc;
@@ -25,7 +26,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             $droits = array($droits);
         }
 
-        if(!$this->isAdmin() && $this->user->getCompte()->getSociete() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
+        if(in_array(self::PDF, $droits) && $this->user->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 
             return true;
         }
