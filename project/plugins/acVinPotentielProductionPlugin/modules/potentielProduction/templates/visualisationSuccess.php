@@ -19,12 +19,12 @@ use_helper('Compte');
     <?php if($appellation == 'CDP') { $items = [0 => $items]; } ?>
     <?php foreach ($items as $couleur => $superficie): ?>
 	<?php if (count($superficie) > 0): ?>
+    <?php if (!$superficie['TOTAL']) continue; ?>
     <?php if ($couleur): ?>
     	<h3><?php echo echoAppellation($appellation).' '.ucfirst(strtolower($couleur)); ?></h3>
     <?php else: ?>
     	<h3><?php echo echoAppellation($appellation); ?></h3>
     <?php endif; ?>
-    <?php if (!$superficie['TOTAL']) continue; ?>
 	<div class="row">
 		<div class="col-md-6">
 			<table class="table table-bordered table-striped table-condensed">

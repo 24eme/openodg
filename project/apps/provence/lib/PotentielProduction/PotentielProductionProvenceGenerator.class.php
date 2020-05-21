@@ -521,7 +521,9 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     {
         $declassements = [];
         foreach (self::$categories as $cat) {
-            $declassements[$cat] = round($superficies[$cat]['TOTAL'] - $revendicables[$cat], 4);
+            if (isset($revendicables[$cat])) {
+                $declassements[$cat] = round($superficies[$cat]['TOTAL'] - $revendicables[$cat], 4);
+            }
         }
         return ['revendicables' => $revendicables, 'declassements' => $declassements];
     }
