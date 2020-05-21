@@ -17,7 +17,7 @@ function comptePictoCssClass($compte) {
         $hasTagEtablissement = false;
         
         $tagsAutomatique = null;
-        if (isset($compte['tags']['automatique'])) {
+        if (isset($compte['tags']) && isset($compte['tags']['automatique'])) {
             $tagsAutomatique = (is_object($compte['tags']['automatique']))? $compte['tags']['automatique']->toArray(true, false) : $compte['tags']['automatique'];
         }
 
