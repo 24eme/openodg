@@ -3,6 +3,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
 {
     protected $identificationParcellaire;
     public static $categories = ['principaux', 'secondairesNoirs', 'secondairesBlancsVermentino', 'secondairesBlancsAutres'];
+    protected $isPetiteSurface;
     
     public function __construct($identifiant_or_etablissement)
     {
@@ -11,6 +12,10 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             $this->identificationParcellaire = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
             if (!$this->identificationParcellaire) {
                 $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+            }
+            $cdp = $this->aggSuperficesByCepages($this->parcellaire->getParcelles(), $this->getCepages());
+            if ($this->etablissement->isViticulteur() && $cdp['TOTAL'] < 1.5) {
+                $this->isPetiteSurface = true;
             }
         }
     }
@@ -106,9 +111,9 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             foreach ($items as $couleur => $superficie) {
                 if ($couleur) {
                     $fct = 'calculateRevendicable'.strtoupper($appellation).ucfirst(strtolower($couleur));
-                    $revendicables[$appellation][$couleur] = $this->$fct($superficies[$appellation][$couleur]);
+                    $revendicables[$appellation][$couleur] = ($this->isPetiteSurface)? $this->calculateRevendicablePetiteSurface($superficies[$appellation][$couleur]) : $this->$fct($superficies[$appellation][$couleur]);
                 } else {
-                    $revendicables[$appellation] = $this->calculateRevendicableCDP($superficies[$appellation]);
+                    $revendicables[$appellation] = ($this->isPetiteSurface)? $this->calculateRevendicablePetiteSurface($superficies[$appellation]) : $this->calculateRevendicableCDP($superficies[$appellation]);
                 }
             }
         }

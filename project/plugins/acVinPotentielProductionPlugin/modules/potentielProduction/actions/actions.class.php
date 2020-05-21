@@ -4,6 +4,7 @@ class potentielProductionActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
+    	$this->societe = $this->etablissement->getSociete();
         //$this->secureEtablissement(EtablissementSecurity::DECLARANT_POTENTIEL_PRODUCTION, $this->etablissement);
         $ppmanager = new PotentielProductionManager($this->etablissement->identifiant);
         $this->superficies = $ppmanager->getSuperficies();

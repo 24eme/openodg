@@ -200,6 +200,11 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                         <a href="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter une relation</a>
                     <?php endif; ?>
                 </div>
+                <?php if ($etablissement->isViticulteur() && sfConfig::get("app_potentiel_production_enabled")): ?>
+                <hr />
+                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Potentiel de production</strong></h5>
+                <a href="<?php echo url_for('potentielproduction_visualisation', $etablissement) ?>">Consulter le calcul du potentiel maximum de production</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

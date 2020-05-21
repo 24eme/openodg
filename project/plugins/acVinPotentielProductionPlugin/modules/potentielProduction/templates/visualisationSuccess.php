@@ -1,5 +1,16 @@
-<?php use_helper('Date') ?>
-<?php use_helper('PotentielProduction') ?>
+<?php 
+use_helper('Date');
+use_helper('PotentielProduction');
+use_helper('Compte');
+?>
+
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
+    <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?> (<?php echo $societe->identifiant ?>)</a></li>
+    <li><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $etablissement->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> <?php echo $etablissement->nom; ?></a></li>
+    <li class="active"><a href="<?php echo url_for('potentielproduction_visualisation', array('identifiant' => $etablissement->identifiant)); ?>">Potentiel de production</a></li>
+</ol>
+
 <div class="page-header no-border">
     <h2>Potentiel maximum de production Côtes de Provence</h2>
 </div>
@@ -115,10 +126,3 @@
 	<?php endforeach; ?>
 	<?php endif; ?>
 <?php endforeach; ?>
-
-
-<div class="row row-margin row-button">
-    <div class="col-xs-5">
-        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
-    </div>
-</div>
