@@ -130,19 +130,11 @@ class fichierActions extends sfActions
 									);
 
 		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN), $this->year.'-01-01', $this->year.'-12-31') : $allHistory;
-		foreach($this->history as $key => $item) {
-			if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && $item->key[PieceAllView::KEYS_CATEGORIE] != "Identification") {
-				unset($this->history[$key]);
-			}
-		}
 
 		$this->years = array();
 		$this->categories = array();
 		$this->decreases = 0;
 		foreach ($allHistory as $doc) {
-			if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && $doc->key[PieceAllView::KEYS_CATEGORIE] != "Identification") {
-				continue;
-			}
 			if (preg_match('/^([0-9]{4})-[0-9]{2}-[0-9]{2}$/', $doc->key[PieceAllView::KEYS_DATE_DEPOT], $m)) {
 				$this->years[$m[1]] = $m[1];
 			}

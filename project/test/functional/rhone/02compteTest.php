@@ -16,7 +16,7 @@ $societeAutre = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_
 $b = new sfTestFunctional(new sfBrowser());
 $t = $b->test();
 
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH'));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));
 
 $societeIdentifiant = $societe->getIdentifiant();
 
