@@ -16,6 +16,7 @@ if (!isset($app))
 
   $dirPieces = explode(DIRECTORY_SEPARATOR, dirname($caller['file']));
   $app = array_pop($dirPieces);
+
 }
 
 require_once dirname(__FILE__).'/../../config/ProjectConfiguration.class.php';
@@ -24,3 +25,5 @@ sfContext::createInstance($configuration);
 
 // remove all cache
 sfToolkit::clearDirectory(sfConfig::get('sf_app_cache_dir'));
+
+define ('K_PATH_CACHE', sys_get_temp_dir().'/');
