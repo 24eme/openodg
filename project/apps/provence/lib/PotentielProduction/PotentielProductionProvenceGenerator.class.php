@@ -232,7 +232,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 80);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 80);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
@@ -262,7 +266,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 80);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 80);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
@@ -306,7 +314,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 60);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 60);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires noirs
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
@@ -341,7 +353,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 60);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 60);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires noirs
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
