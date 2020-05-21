@@ -16,6 +16,14 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') a
                     $drev = DRevClient::getInstance()->find($k);
                     $drev->delete(false);
                 }
+                foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, true) as $piece) {
+                    if(strpos($piece->id, 'FICHIER-') === false) {
+                        continue;
+                    }
+
+                    $fichier = FichierClient::getInstance()->find($piece->id);
+                    $fichier->delete();
+                }
             }
         }
         $soc->delete();
