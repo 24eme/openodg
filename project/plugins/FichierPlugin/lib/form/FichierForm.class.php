@@ -50,6 +50,10 @@ class FichierForm extends BaseForm
     }
 
 	public function getCategories() {
+		if($this->getOption('categories')) {
+
+			return $this->getOption('categories');
+		}
 
 		return array_merge(array("" => "Fichier"), FichierClient::getInstance()->getCategories());
 	}

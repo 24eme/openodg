@@ -92,9 +92,23 @@ class fichierActions extends sfActions
 
     public function executeUpload(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
+
+		if($request->getParameter('fichier_id') && !$this->getUser()->isAdmin()) {
+
+			throw new sfError403Exception();
+		}
+
     	$this->fichier_id = $request->getParameter('fichier_id');
+
     	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
-    	$this->form = new FichierForm($this->fichier);
+
+		$categories = null;
+
+		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+			$categories = array('Identification' => "Identification");
+		}
+
+    	$this->form = new FichierForm($this->fichier, null, array('categories' => $categories));
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
     		return sfView::SUCCESS;

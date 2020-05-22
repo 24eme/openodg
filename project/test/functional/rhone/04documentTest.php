@@ -26,8 +26,8 @@ $b->click('a[href*="/fichier/upload/"]');
 $b->isForwardedTo('fichier', 'upload');
 $t->is($b->getResponse()->getStatusCode(), 200, "Page d'upload de document");
 
-$b->click('button[type="submit"]', array('fichier' => array('libelle' => 'DI', 'file' => dirname(__FILE__).'/../../data/dr_douane.csv', 'categorie' => 'Identification')))->followRedirect();
-$b->isForwardedTo('fichier', 'upload');
+$b->click('.row-button button[type="submit"]', array('fichier' => array('libelle' => "Fichier déposé par l'admin", 'file' => dirname(__FILE__).'/../../data/dr_douane.csv')))->followRedirect();
+$b->isForwardedTo('fichier', 'piecesHistorique');
 $t->is($b->getResponse()->getStatusCode(), 200, "Formulaire d'upload d'un document");
 
 $b->get('/documents/'.$etablissement->identifiant);
@@ -45,6 +45,12 @@ $b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
 $b->isForwardedTo('fichier', 'get');
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier uploadé");
 
+preg_match("|/fichier/get/([^/]+)|", $b->getRequest()->getUri(), $matches);
+
+$b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$matches[1]);
+$b->isForwardedTo('fichier', 'upload');
+$t->is($b->getResponse()->getStatusCode(), 200, "Page de modification accessible");
+
 $t->comment('En mode habilitation');
 
 $b->get('/logout');
@@ -56,26 +62,44 @@ $b->isForwardedTo('fichier', 'piecesHistorique');
 $t->is($b->getResponse()->getStatusCode(), 200, 'Page Historique');
 
 $c = new sfDomCssSelector($b->getResponseDom());
-$t->is($c->matchSingle('a[href*="/fichier/upload/"]')->getNode(), null, "Bouton \"Ajouter un document\" et \"Modification de document\" absents");
+$t->ok($c->matchSingle('.page-header a[href*="/fichier/upload/"]')->getNode(), "Bouton \"Ajouter un document\"");
+$t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), null, "Boutons \"Modifier un document\" absent");
 $t->ok($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), "Ligne du fichier uploadé");
 $t->ok($c->matchSingle('a[href*="/piece/get/DREV-"]')->getNode(), "Ligne de la DREV");
 $t->ok($c->matchSingle('a[href*="/piece/get/DR-"]')->getNode(), "Ligne de la DR");
 $t->is($c->matchSingle('a[href*="/drev/visualisation"]')->getNode(), null, "Lien vers la visu de la DREV absent");
 
-$b->get('/documents/'.$etablissement->identifiant);
+$b->get('/documents/'.$etablissement->identifiant."?categorie=fichier");
 $b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
 $b->isForwardedTo('fichier', 'get');
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier uploadé");
 
-$b->get('/documents/'.$etablissement->identifiant);
+$b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
 $b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
 $b->isForwardedTo('drev', 'PDF');
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
 
-$b->get('/documents/'.$etablissement->identifiant);
+$b->get('/documents/'.$etablissement->identifiant."?categorie=dr");
 $b->click('a[href*="/piece/get/DR-"]')->followRedirect();
 $b->isForwardedTo('fichier', 'get');
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
 
 $b->get('/fichier/upload/'.$etablissement->identifiant);
-$t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
+$t->is($b->getResponse()->getStatusCode(), 200, "Page d'upload accessible");
+
+$b->click('button[type="submit"]', array('fichier' => array('libelle' => 'Document déposé par un compte ayant le droit habilition', 'file' => dirname(__FILE__).'/../../data/dr_douane.csv')))->followRedirect();
+$b->isForwardedTo('fichier', 'piecesHistorique');
+$t->is($b->getResponse()->getStatusCode(), 200, "Formulaire d'upload d'un document");
+
+$b->get('documents/'.$etablissement->identifiant.'?categorie=identification');
+$b->isForwardedTo('fichier', 'piecesHistorique');
+$t->is($b->getResponse()->getStatusCode(), 200, "Page historique ayant la catégorie \"Identification\"");
+
+$b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
+$b->isForwardedTo('fichier', 'get');
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier uploadé");
+
+preg_match("|/fichier/get/([^/]+)|", $b->getRequest()->getUri(), $matches);
+
+$b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$matches[1]);
+$t->is($b->getResponse()->getStatusCode(), 403, "Page de modification protégé");
