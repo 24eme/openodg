@@ -34,7 +34,7 @@ class fichierActions extends sfActions
     	$fichier = $this->getRoute()->getFichier();
     	$fileParam = $request->getParameter('file', null);
 		$this->secureEtablissement($fichier->getEtablissementObject());
-		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 			return $this->forwardSecure();
 		}
     	if (!$fichier->hasFichiers()) {
@@ -132,18 +132,20 @@ class fichierActions extends sfActions
 		$this->year = $request->getParameter('annee', 0);
 		$this->category = $request->getParameter('categorie');
 
+		$visibilite = $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) || $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION);
+
 		$piecesSocietes = array();
 
 		if($this->societe) {
-			$piecesSocietes = PieceAllView::getInstance()->getPiecesByEtablissement($this->societe->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN));
+			$piecesSocietes = PieceAllView::getInstance()->getPiecesByEtablissement($this->societe->identifiant, $visibilite);
 		}
 
 		$allHistory = array_merge(
-										PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)),
+										PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite),
 										$piecesSocietes
 									);
 
-		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN), $this->year.'-01-01', $this->year.'-12-31') : $allHistory;
+		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, $this->year.'-01-01', $this->year.'-12-31') : $allHistory;
 
 		$this->years = array();
 		$this->categories = array();
