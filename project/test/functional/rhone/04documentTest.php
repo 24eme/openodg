@@ -3,6 +3,7 @@
 include dirname(__FILE__).'/../../bootstrap/functional.php';
 
 $etablissement = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_etablissement')->getEtablissement();
+$societe = $etablissement->getSociete();
 
 foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, true) as $piece) {
     if(strpos($piece->id, 'FICHIER-') === false) {
@@ -91,7 +92,7 @@ $b->click('button[type="submit"]', array('fichier' => array('libelle' => 'Docume
 $b->isForwardedTo('fichier', 'piecesHistorique');
 $t->is($b->getResponse()->getStatusCode(), 200, "Formulaire d'upload d'un document");
 
-$b->get('documents/'.$etablissement->identifiant.'?categorie=identification');
+$b->get('/documents/'.$etablissement->identifiant.'?categorie=identification');
 $b->isForwardedTo('fichier', 'piecesHistorique');
 $t->is($b->getResponse()->getStatusCode(), 200, "Page historique ayant la catégorie \"Identification\"");
 
@@ -103,3 +104,47 @@ preg_match("|/fichier/get/([^/]+)|", $b->getRequest()->getUri(), $matches);
 
 $b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$matches[1]);
 $t->is($b->getResponse()->getStatusCode(), 403, "Page de modification de ce fichier protégé");
+
+$t->comment('En mode télédéclarant');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
+$b->restart();
+
+$b->post('/login_no_cas', array('admin' => array('login' => $societe->getIdentifiant())));
+$t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
+
+$b->get('/documents/'.$etablissement->identifiant);
+$b->isForwardedTo('fichier', 'piecesHistorique');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page Historique");
+
+$c = new sfDomCssSelector($b->getResponseDom());
+$t->is($c->matchSingle('.page-header a[href*="/fichier/upload/"]')->getNode(), null, "Bouton \"Ajouter un document\"");
+$t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), null, "Boutons \"Modifier un document\" absent");
+$t->ok($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), "Ligne des fichiers uploadé");
+$t->ok($c->matchSingle('a[href*="/piece/get/DREV-"]')->getNode(), "Ligne de la DREV");
+$t->ok($c->matchSingle('a[href*="/piece/get/DR-"]')->getNode(), "Ligne de la DR");
+$t->ok($c->matchSingle('a[href*="/drev/visualisation"]')->getNode(), "Lien vers la visu de la DREV");
+
+$b->get('/fichier/upload/'.$etablissement->identifiant);
+$t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
+
+$b->get('/documents/'.$etablissement->identifiant."?categorie=fichier");
+$b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
+$b->isForwardedTo('fichier', 'get');
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier fichier");
+
+$b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
+$b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
+$b->isForwardedTo('drev', 'PDF');
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
+
+$b->get('/documents/'.$etablissement->identifiant."?categorie=dr");
+$b->click('a[href*="/piece/get/DR-"]')->followRedirect();
+$b->isForwardedTo('fichier', 'get');
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+
+$b->get('/documents/'.$etablissement->identifiant."?categorie=identification");
+$b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
+$b->isForwardedTo('fichier', 'get');
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier identifiation");
