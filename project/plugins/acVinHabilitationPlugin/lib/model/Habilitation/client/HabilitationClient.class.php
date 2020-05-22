@@ -17,29 +17,35 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
     const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
+    const STATUT_DEMANDE_RESILIATION = "DEMANDE_RESILIATION";
     const STATUT_HABILITE = "HABILITE";
     const STATUT_SUSPENDU = "SUSPENDU";
     const STATUT_REFUS = "REFUS";
     const STATUT_RETRAIT = "RETRAIT";
+    const STATUT_RESILIE = "RESILIE";
     const STATUT_ANNULE = "ANNULÉ";
     const STATUT_ARCHIVE = "ARCHIVE";
 
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
+    const DEMANDE_RESILIATION = "RESILIATION";
 
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
         self::DEMANDE_RETRAIT => "Retrait",
+        self::DEMANDE_RESILIATION => "Résiliation",
     );
 
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
                                              self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
+                                             self::STATUT_DEMANDE_RESILIATION => "Demande de résiliation",
                                              self::STATUT_HABILITE => "Habilité",
                                              self::STATUT_SUSPENDU => "Suspendu",
                                              self::STATUT_REFUS => "Refus",
                                              self::STATUT_ANNULE => "Annulé",
                                              self::STATUT_RETRAIT => "Retrait",
+                                             self::STATUT_RESILIE => "Résilié",
                                             self::STATUT_ARCHIVE => "Archivé");
 
     public static function getInstance()
