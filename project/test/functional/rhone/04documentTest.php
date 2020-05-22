@@ -36,6 +36,11 @@ $b->isForwardedTo('drev', 'PDF');
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
 
 $b->get('/documents/'.$etablissement->identifiant);
+$b->click('a[href*="/piece/get/DR-"]')->followRedirect();
+$b->isForwardedTo('fichier', 'get');
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+
+$b->get('/documents/'.$etablissement->identifiant);
 $b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
 $b->isForwardedTo('fichier', 'get');
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier uploadé");
@@ -54,6 +59,7 @@ $c = new sfDomCssSelector($b->getResponseDom());
 $t->is($c->matchSingle('a[href*="/fichier/upload/"]')->getNode(), null, "Bouton \"Ajouter un document\" et \"Modification de document\" absents");
 $t->ok($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), "Ligne du fichier uploadé");
 $t->ok($c->matchSingle('a[href*="/piece/get/DREV-"]')->getNode(), "Ligne de la DREV");
+$t->ok($c->matchSingle('a[href*="/piece/get/DR-"]')->getNode(), "Ligne de la DR");
 $t->is($c->matchSingle('a[href*="/drev/visualisation"]')->getNode(), null, "Lien vers la visu de la DREV absent");
 
 $b->get('/documents/'.$etablissement->identifiant);
@@ -65,6 +71,11 @@ $b->get('/documents/'.$etablissement->identifiant);
 $b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
 $b->isForwardedTo('drev', 'PDF');
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
+
+$b->get('/documents/'.$etablissement->identifiant);
+$b->click('a[href*="/piece/get/DR-"]')->followRedirect();
+$b->isForwardedTo('fichier', 'get');
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
 
 $b->get('/fichier/upload/'.$etablissement->identifiant);
 $t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
