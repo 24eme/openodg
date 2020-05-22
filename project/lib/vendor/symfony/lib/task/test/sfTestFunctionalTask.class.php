@@ -71,6 +71,7 @@ EOF;
   protected function execute($arguments = array(), $options = array())
   {
     $app = $arguments['application'];
+    putenv("APPLICATION=".$app);
 
     if (count($arguments['controller']))
     {

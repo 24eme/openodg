@@ -16,7 +16,10 @@ if (!isset($app))
 
   $dirPieces = explode(DIRECTORY_SEPARATOR, dirname($caller['file']));
   $app = array_pop($dirPieces);
+}
 
+if(!$app || $app == "app") {
+    $app = (getenv("APPLICATION")) ? getenv("APPLICATION") : 'rhone';
 }
 
 require_once dirname(__FILE__).'/../../config/ProjectConfiguration.class.php';
