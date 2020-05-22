@@ -3,6 +3,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
 {
     protected $identificationParcellaire;
     public static $categories = ['principaux', 'secondairesNoirs', 'secondairesBlancsVermentino', 'secondairesBlancsAutres'];
+    protected $isPetiteSurface;
     
     public function __construct($identifiant_or_etablissement)
     {
@@ -11,6 +12,10 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             $this->identificationParcellaire = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
             if (!$this->identificationParcellaire) {
                 $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+            }
+            $cdp = $this->aggSuperficesByCepages($this->parcellaire->getParcelles(), $this->getCepages());
+            if ($this->etablissement->isViticulteur() && $cdp['TOTAL'] < 1.5) {
+                $this->isPetiteSurface = true;
             }
         }
     }
@@ -106,9 +111,9 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
             foreach ($items as $couleur => $superficie) {
                 if ($couleur) {
                     $fct = 'calculateRevendicable'.strtoupper($appellation).ucfirst(strtolower($couleur));
-                    $revendicables[$appellation][$couleur] = $this->$fct($superficies[$appellation][$couleur]);
+                    $revendicables[$appellation][$couleur] = ($this->isPetiteSurface)? $this->calculateRevendicablePetiteSurface($superficies[$appellation][$couleur]) : $this->$fct($superficies[$appellation][$couleur]);
                 } else {
-                    $revendicables[$appellation] = $this->calculateRevendicableCDP($superficies[$appellation]);
+                    $revendicables[$appellation] = ($this->isPetiteSurface)? $this->calculateRevendicablePetiteSurface($superficies[$appellation]) : $this->calculateRevendicableCDP($superficies[$appellation]);
                 }
             }
         }
@@ -119,13 +124,15 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     {
         $superficies = [];
         // CDP + DGC
-        if ($dgcs = $this->identificationParcellaire->getDgc()) {
-            $parcelles = $this->identificationParcellaire->getParcelles();
-            foreach ($dgcs as $dgcId => $dgcLib) {
-                $superficies[$dgcId] = [];
-                foreach (array('rouge', 'rose', 'blanc') as $couleur) {
-                    if ($cepages = $this->getCepages($dgcId, $couleur)) {
-                        $superficies[$dgcId][$couleur] = $this->aggSuperficesByCepages($parcelles, $cepages);
+        if ($this->identificationParcellaire) {
+            if ($dgcs = $this->identificationParcellaire->getDgc()) {
+                $parcelles = $this->identificationParcellaire->getParcelles();
+                foreach ($dgcs as $dgcId => $dgcLib) {
+                    $superficies[$dgcId] = [];
+                    foreach (array('rouge', 'rose', 'blanc') as $couleur) {
+                        if ($cepages = $this->getCepages($dgcId, $couleur)) {
+                            $superficies[$dgcId][$couleur] = $this->aggSuperficesByCepages($parcelles, $cepages);
+                        }
                     }
                 }
             }
@@ -225,7 +232,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 80);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 80);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
@@ -255,7 +266,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 80);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 80);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
@@ -299,7 +314,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 60);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 60);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires noirs
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
@@ -317,7 +336,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $superficies['principaux']['TOTAL'];
         // Affectation revendicables secondaires blancs autres
-        $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 50/50);
+        $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 50/100);
         if ($superficies['secondairesBlancsAutres']['TOTAL'] <= $revendicableSecondairesMax) {
             $revendicables['secondairesBlancsAutres'] = $superficies['secondairesBlancsAutres']['TOTAL'];
         } else {
@@ -334,7 +353,11 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $this->regleNbCepageMin_GetRevendicable($superficies['principaux'], 2);
         if ($revendicables['principaux'] > 0) {
-            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $encepagementTotal, 60);
+            $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 60);
+            $principaux = round($encepagementTotal*80/100,4);
+            if ($principaux < $revendicables['principaux']) {
+                $revendicables['principaux'] = $principaux;
+            }
         }
         // Affectation revendicables secondaires noirs
         $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/80);
@@ -500,21 +523,23 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         // Affectation renvendicables principaux
         $revendicables['principaux'] = $superficies['principaux']['TOTAL'];
         // Affectation revendicables secondaires
-        $secondaires = round($superficies['secondairesNoirs']['TOTAL'] + $superficies['secondairesNoirs']['TOTAL'] + $superficies['secondairesNoirs']['TOTAL'], 4);
-        $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 50/50);
+        $secondaires = round($superficies['secondairesNoirs']['TOTAL'] + $superficies['secondairesBlancsVermentino']['TOTAL'] + $superficies['secondairesBlancsAutres']['TOTAL'], 4);
+        $revendicableSecondairesMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 50/100);
         if ($secondaires <= $revendicableSecondairesMax) {
             $revendicables['secondaires'] = $secondaires;
         } else {
             $revendicables['secondaires'] = $revendicableSecondairesMax;
         }
-        return ['revendicables' => $revendicables, 'declassements' => ['principaux' => $superficies['principaux']['TOTAL'], 'secondaires' => round($secondaires - $revendicables['secondaires'], 4)]];
+        return ['revendicables' => $revendicables, 'declassements' => ['principaux' => 0, 'secondaires' => round($secondaires - $revendicables['secondaires'], 4)]];
     }
     
     protected function generateResultRevendicabe($revendicables, $superficies)
     {
         $declassements = [];
         foreach (self::$categories as $cat) {
-            $declassements[$cat] = round($superficies[$cat]['TOTAL'] - $revendicables[$cat], 4);
+            if (isset($revendicables[$cat])) {
+                $declassements[$cat] = round($superficies[$cat]['TOTAL'] - $revendicables[$cat], 4);
+            }
         }
         return ['revendicables' => $revendicables, 'declassements' => $declassements];
     }
