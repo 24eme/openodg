@@ -102,4 +102,4 @@ $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier upl
 preg_match("|/fichier/get/([^/]+)|", $b->getRequest()->getUri(), $matches);
 
 $b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$matches[1]);
-$t->is($b->getResponse()->getStatusCode(), 403, "Page de modification protégé");
+$t->is($b->getResponse()->getStatusCode(), 403, "Page de modification de ce fichier protégé");
