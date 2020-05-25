@@ -80,7 +80,7 @@ class ParcellaireClient extends acCouchdbClient {
 
         sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".$scrapybin."/download_parcellaire.sh $cvi");
         exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
-        sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".$output);
+        sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
 
         $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
 
@@ -92,7 +92,7 @@ class ParcellaireClient extends acCouchdbClient {
         }
 
         if (empty($files) || $status != 0) {
-            sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".$output);
+            sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
             throw new Exception("Le scraping n'a retourné aucun résultat.");
         }
 
@@ -113,7 +113,7 @@ class ParcellaireClient extends acCouchdbClient {
 
         sfContext::getInstance()->getLogger()->info("scrapeParcellaireJSON:  $scrapybin/download_parcellaire_geojson.sh $cvi");
         exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
-        sfContext::getInstance()->getLogger()->info("scrapeParcellaireJSON: output: ".$output);
+        sfContext::getInstance()->getLogger()->info("scrapeParcellaireJSON: output: ".implode(' - ', $output));
         $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
         $message = "";
 
