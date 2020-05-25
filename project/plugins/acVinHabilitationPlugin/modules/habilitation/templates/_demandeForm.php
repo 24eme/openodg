@@ -87,15 +87,13 @@
         <div class="col-xs-6">
             <p class="form-control-static">
                 <?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()); ?> <?php if(count($demande->getActivitesLibelle()) > 1): ?>
-                <a onclick="if(!confirm('Étes vous sûr de vouloir sépaper les activités de cette demande ?')) { return false; } document.getElementById('bloc_activite_division').classList.remove('hidden'); document.getElementById('bloc_activite_info').classList.add('hidden'); return false;" href="" style="opacity: 0.6;" class="small">(Séparer)</a><?php endif; ?>
+                <small><a onclick="if(!confirm('Étes vous sûr de vouloir séparer les activités de cette demande ?')) { return false; } document.getElementById('bloc_activite_division').classList.remove('hidden'); document.getElementById('bloc_activite_info').classList.add('hidden'); return false;" href="" style="opacity: 0.6;" class="small">Séparer</a></small><?php endif; ?>
             </p>
         </div>
     </div>
     <div id="bloc_activite_division" class="row form-group hidden">
         <div class="col-xs-4 text-right control-label">
             Activités :
-            <br />
-            <a onclick="document.getElementById('bloc_activite_info').classList.remove('hidden'); document.getElementById('bloc_activite_division').classList.add('hidden'); return false;" href="" class="small">(Annuler)</a>
         </div>
         <div class="col-xs-6">
             <span class="text-danger"><?php echo $form['activites']->renderError() ?></span>
@@ -107,7 +105,9 @@
                         </label>
                     </div>
                 <?php endforeach; ?>
-
+                <div style="margin-top: 10px;">
+                <a onclick="document.getElementById('bloc_activite_info').classList.remove('hidden'); document.getElementById('bloc_activite_division').classList.add('hidden'); return false;" href="" class="small">Annuler</a>
+                </div>
         </div>
     </div>
 <?php endif; ?>
