@@ -170,6 +170,7 @@ class ParcellaireClient extends acCouchdbClient {
         if(strpos($import, "Document is missing attachment")) {
             sfContext::getInstance()->getLogger()->info("getParcellaireGeoJson() : Document is missing attachment");
             return false;
+        }
         return $import;
       
         
