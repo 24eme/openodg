@@ -246,7 +246,7 @@ $form = new HabilitationDemandeEditionForm($demande);
 
 $defaults = $form->getDefaults();
 
-$t->is($defaults, array('_revision' => $habilitation->_rev), "Les valeurs par défaut du formulaire sont diponibles");
+$t->is($defaults, array('_revision' => $habilitation->_rev, 'activites' => $demande->getActivites()->toArray()), "Les valeurs par défaut du formulaire sont diponibles");
 
 $values = array(
     '_revision' => $habilitation->_rev,
@@ -354,3 +354,5 @@ foreach($habilitationLast->getFullHistorique() as $h) {
     $historiqueInitiale[] = $h;
 }
 $t->is(count($historiqueInitiale), 0, "L'historique de la demande initiale a été supprimé");
+
+HabilitationClient::getInstance()->splitDemandeAndSave($viti->identifiant, $newDemandes[0]->getKey(), array(HabilitationClient::ACTIVITE_PRODUCTEUR));

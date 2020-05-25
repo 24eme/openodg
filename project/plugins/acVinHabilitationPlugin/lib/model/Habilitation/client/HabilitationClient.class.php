@@ -294,13 +294,17 @@ class HabilitationClient extends acCouchdbClient {
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
             ksort($demandesKey);
-            $i = 1;
+            $biggerNum = 0;
             foreach($demandesKey as $demandeKey) {
-                if($demandeKey == sprintf($baseKey."%02d", $i)) {
-                    $i++;
+                if(!preg_match('/^'.$baseKey.'([0-9]+)$/', $demandeKey, $matches)) {
+                    continue;
+                }
+
+                if((int) $matches[1] > $biggerNum) {
+                    $biggerNum = (int) $matches[1];
                 }
             }
-            $key = sprintf($baseKey."%02d", $i);
+            $key = sprintf($baseKey."%02d", $biggerNum + 1);
             $demande = $habilitation->demandes->add($key);
 
             $demande->produit = $produitHash;
