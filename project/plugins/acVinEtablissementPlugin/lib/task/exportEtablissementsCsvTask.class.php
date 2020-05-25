@@ -126,8 +126,8 @@ EOF;
             $etablissement->famille.",".
             $compte->date_modification.",".
             $etablissement->statut.",".
-            $etablissement->ppm.",".
-            $etablissement->_id.",".
+            $etablissement->ppm.",\"".
+            $etablissement->identifiant."\",".
             "\n";
         }
     }
