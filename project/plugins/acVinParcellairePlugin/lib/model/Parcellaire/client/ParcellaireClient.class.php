@@ -88,7 +88,7 @@ class ParcellaireClient extends acCouchdbClient {
             sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
         }
         if ($status != 0) {
-            sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique";
+            sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique");
         }
 
         if (empty($files) || $status != 0) {
@@ -146,7 +146,7 @@ class ParcellaireClient extends acCouchdbClient {
     public function saveParcellaire(Etablissement $etablissement, Array &$errors)
     {
         $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi);
-        $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'])
+        $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv']);
         $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi);
         return $return && $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
     }
