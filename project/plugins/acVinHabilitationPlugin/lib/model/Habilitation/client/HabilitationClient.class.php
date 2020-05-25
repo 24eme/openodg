@@ -229,8 +229,8 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activites, $statut, $commentaire = "") {
-            $last = HabilitationClient::getInstance()->getLastHabilitation($etablissementIdentifiant);
-            $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
+            $last = $this->getLastHabilitation($etablissementIdentifiant);
+            $habilitation = $this->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
 
             if($habilitation->_id < $last->_id) {
                 foreach($activites as $activiteKey) {
@@ -279,6 +279,12 @@ class HabilitationClient extends acCouchdbClient {
 
         public function getDemande($identifiant, $keyDemande, $date) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+
+            return $habilitation->demandes->get($keyDemande);
+        }
+
+        public function getLastDemande($identifiant, $keyDemande) {
+            $habilitation = $this->getLastHabilitation($identifiant);
 
             return $habilitation->demandes->get($keyDemande);
         }
@@ -345,14 +351,36 @@ class HabilitationClient extends acCouchdbClient {
             $historique->iddoc .= ":".$demande->getHash();
         }
 
+        public function deleteDemandeAndSave($identifiant, $keyDemande) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+            while($habilitation) {
+                if(!$habilitation->demandes->exist($keyDemande)) {
+                    break;
+                }
+                $newHistorique = array();
+                foreach($habilitation->historique as $h) {
+                    if(preg_match("/".$keyDemande."/", $h->iddoc)) {
+                        continue;
+                    }
+
+                    $newHistorique[] = $h;
+                }
+                $habilitation->remove('historique');
+                $habilitation->add('historique', $newHistorique);
+                $habilitation->demandes->remove($keyDemande);
+                $habilitation->save();
+
+                $date = new DateTime($habilitation->date);
+                $date = $date->modify('-1 day');
+
+                $habilitation = $this->findPreviousByIdentifiantAndDate($habilitation->identifiant, $date->format('Y-m-d'));
+            }
+        }
+
         public function deleteDemandeLastStatutAndSave($identifiant, $keyDemande) {
             $habilitation = $this->getLastHabilitation($identifiant);
 
             $demande = $this->getDemande($identifiant, $keyDemande, $habilitation->demandes->get($keyDemande)->date);
-
-            if($this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut)) {
-                //return;
-            }
 
             $historiquePrec = $demande->getHistoriquePrecedent($demande->statut, $demande->date);
 
@@ -388,6 +416,37 @@ class HabilitationClient extends acCouchdbClient {
             }
 
             $this->replicateDemandeAndSave($demande, true);
+        }
+
+        public function splitDemandeAndSave($identifiant, $keyDemande, $activites) {
+            $demande = $this->getLastDemande($identifiant, $keyDemande);
+            $activitesToKeep = array();
+            foreach($demande->activites as $activite) {
+                if(in_array($activite, $activites)) {
+                    continue;
+                }
+                $activitesToKeep[] = $activite;
+            }
+            if(!count($activitesToKeep)) {
+                return null;
+            }
+
+            $newKeyDemande1 = null;
+            $newKeyDemande2 = null;
+            foreach($demande->getFullHistorique() as $historique) {
+                if(!$newKeyDemande1) {
+                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activitesToKeep, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    continue;
+                }
+
+                $this->updateDemandeAndSave($identifiant, $newKeyDemande1, $historique->date, $historique->statut, $historique->commentaire, $historique->auteur, false);
+                $this->updateDemandeAndSave($identifiant, $newKeyDemande2, $historique->date, $historique->statut, $historique->commentaire, $historique->auteur, false);
+            }
+
+            $this->deleteDemandeAndSave($identifiant, $keyDemande);
+
+            return array($this->getLastDemande($identifiant, $newKeyDemande1), $this->getLastDemande($identifiant, $newKeyDemande2));
         }
 
         protected function postSaveDemande($demande, $commentaire, $auteur, $trigger) {
