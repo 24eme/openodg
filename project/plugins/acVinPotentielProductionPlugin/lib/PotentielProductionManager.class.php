@@ -13,23 +13,23 @@ class PotentielProductionManager
            throw new sfException("La classe $ppGenerator n'existe pas");
         }
         $this->generator = new $ppGenerator($identifiant_or_etablissement);
-        if ($generator instanceof PotentielProductionGenerator) {
+        if (!($this->generator instanceof PotentielProductionGenerator)) {
             throw new sfException("La classe $ppGenerator doit étendre la classe PotentielProductionGenerator");
         }
     }
     
-    public function calculate()
+    public function getDonnees($superficies = null)
     {
-        return $this->generator->infos();
+        return $this->generator->getDonnees($superficies);
     }
     
-    public function getSuperfices()
+    public function getSuperficies()
     {
-        return $this->generator->getSuperfices();
+        return $this->generator->getSuperficies();
     }
     
-    public function respecteRegles()
+    public function getGenerator()
     {
-        return $this->generator->respecteRegles();
+        return $this->generator;
     }
 }

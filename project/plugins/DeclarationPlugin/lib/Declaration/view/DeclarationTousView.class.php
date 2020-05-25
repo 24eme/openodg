@@ -30,7 +30,7 @@ class DeclarationTousView extends acCouchdbView
     }
 
     public static function constructIdentifiantDocument($result,$facetName =""){
-      return $result->key[self::KEY_TYPE].$result->key[self::KEY_CAMPAGNE].$result->key[self::KEY_IDENTIFIANT].$facetName;
+      return $result->id.$facetName;
     }
 
 }

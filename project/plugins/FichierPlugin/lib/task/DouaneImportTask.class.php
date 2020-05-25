@@ -67,16 +67,13 @@ EOF;
                 }
                 $fichier = FichierClient::getInstance()->findByArgs($type, $etablissement->identifiant, $campagne);
 
-                if(!$fichier) {
-                    $fichier = FichierClient::getClientFromType($type)->createDoc($etablissement->identifiant, $campagne);
+                if($fichier) {
+
+                    continue;
                 }
 
-                $fichier->remove('donnees');
-                $fichier->add('donnees');
-
-                if($fichier->getDefinition()->exist('mouvements')) {
-                    $fichier->remove('mouvements');
-                    $fichier->add('mouvements');
+                if(!$fichier) {
+                    $fichier = FichierClient::getClientFromType($type)->createDoc($etablissement->identifiant, $campagne);
                 }
 
                 foreach($lignes as $ligne) {

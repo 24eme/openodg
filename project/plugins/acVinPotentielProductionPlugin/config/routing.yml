@@ -1,0 +1,9 @@
+potentielproduction_visualisation:
+  url: /potentiel-production/visualisation/:identifiant
+  param: { module: potentielProduction, action: visualisation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]

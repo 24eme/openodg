@@ -26,6 +26,7 @@
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 		<thead>
         	<tr>
+                <th class="col-xs-2">Commune</th>
                 <th class="col-xs-2">Lieu-dit</th>
                 <th class="col-xs-1">Section /<br />N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
@@ -43,6 +44,7 @@
 			if (isset($form[$produitKey][$parcelle->getKey()])):
 		?>
 			<tr class="vertical-center" id="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>">
+				<td><?php echo $parcelle->commune; ?></td>
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
