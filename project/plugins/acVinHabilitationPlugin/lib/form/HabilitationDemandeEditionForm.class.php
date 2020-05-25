@@ -7,6 +7,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
         if($doc instanceof HabilitationDemande) {
             $this->demande = $doc;
             $doc = $doc->getDocument();
+            $defaults['activites'] = $this->demande->activites->toArray(true, false);
         }
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
@@ -17,17 +18,20 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
         $statuts = $this->getStatuts();
 
         $this->setWidgets(array(
+            'activites' => new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getActivites())),
             'date' => new sfWidgetFormInput(array(), array()),
             'statut' => new sfWidgetFormChoice(array('choices' => $statuts)),
             'commentaire' => new sfWidgetFormInput(array(), array()),
         ));
         $this->widgetSchema->setLabels(array(
+            'activites' => 'Activités: ',
             'date' => 'Date: ',
             'statut' => 'Statut: ',
             'commentaire' => 'Commentaire: ',
         ));
 
         $this->setValidators(array(
+            'activites' => new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getActivites()))),
             'date' => new sfValidatorDate(
                 array('date_output' => 'Y-m-d',
                 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
@@ -38,6 +42,15 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
         ));
 
         $this->widgetSchema->setNameFormat('habilitation_demande_edition[%s]');
+    }
+
+    public function getActivites() {
+
+        if(!$this->demande) {
+            return array();
+        }
+
+        return $this->demande->getActivitesLibelle();
     }
 
     public function getStatuts(){
@@ -66,9 +79,18 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             throw new Exception("/!\ Changement non enregistré, car il n'est pas possible de saisir un statut à une date qui est inférieure à celle du dernier statut");
         }
 
+        $demandeKey = $this->demande->getKey();
+
+        if($values['activites'] && count($values['activites']) && count($values['activites']) < count($this->demande->getActivitesLibelle())) {
+
+            $newDemandes = HabilitationClient::getInstance()->splitDemandeAndSave($this->getDocument()->identifiant, $demandeKey, $values['activites']);
+
+            $demandeKey = $newDemandes[0]->getKey();
+        }
+
         $demande = HabilitationClient::getInstance()->updateDemandeAndSave(
                                                               $this->getDocument()->identifiant,
-                                                              $this->demande->getKey(),
+                                                              $demandeKey,
                                                               $values['date'],
                                                               $values['statut'],
                                                               $values['commentaire'],
