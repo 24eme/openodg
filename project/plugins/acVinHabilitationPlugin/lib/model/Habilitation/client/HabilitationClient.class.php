@@ -36,6 +36,10 @@ class HabilitationClient extends acCouchdbClient {
         self::DEMANDE_RESILIATION => "Résiliation",
     );
 
+    public static $demande_droits = array(
+        self::DEMANDE_RETRAIT => "INAO",
+    );
+
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
                                              self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
@@ -58,9 +62,28 @@ class HabilitationClient extends acCouchdbClient {
         return HabilitationConfiguration::getInstance()->getActivites();
     }
 
-    public function getDemandeStatuts() {
+    public function getDemandes($filtre = null) {
+        $demandes = self::$demande_libelles;
 
-        return HabilitationConfiguration::getInstance()->getDemandeStatuts();
+        if($filtre) {
+            $demandes = array_filter($demandes, function($key) use ($filtre) {
+                return isset(self::$demande_droits[$key]) && self::$demande_droits[$key] && preg_match("/".$filtre."/i", self::$demande_droits[$key]);
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
+        return $demandes;
+    }
+
+    public function getDemandeStatuts($filtre = null) {
+        $statuts = HabilitationConfiguration::getInstance()->getDemandeStatuts();
+
+        if($filtre) {
+            $statuts = array_filter($statuts, function($key) use ($filtre) {
+                return preg_match("/".$filtre."/i", $key);
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
+        return $statuts;
     }
 
     public function getStatutsFerme() {
