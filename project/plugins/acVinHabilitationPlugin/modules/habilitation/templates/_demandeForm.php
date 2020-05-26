@@ -69,7 +69,7 @@
 <?php endif; ?>
 
 
-<?php if(isset($demande) && isset($form['activites'])): ?>
+<?php if(isset($demande)): ?>
     <div class="row form-group">
         <div class="col-xs-4 text-right control-label">
             Produit :
@@ -87,10 +87,13 @@
         <div class="col-xs-6">
             <p class="form-control-static">
                 <?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()); ?> <?php if(count($demande->getActivitesLibelle()) > 1): ?>
-                <small><a onclick="if(!confirm('Étes vous sûr de vouloir séparer les activités de cette demande ?')) { return false; } document.getElementById('bloc_activite_division').classList.remove('hidden'); document.getElementById('bloc_activite_info').classList.add('hidden'); return false;" href="" style="opacity: 0.6;" class="small">Séparer</a></small><?php endif; ?>
+                <?php if(isset($form['activites'])): ?>
+                <small><a id="btn_demande_separer" onclick="if(!confirm('Étes vous sûr de vouloir séparer les activités de cette demande ?')) { return false; } document.getElementById('bloc_activite_division').classList.remove('hidden'); document.getElementById('bloc_activite_info').classList.add('hidden'); return false;" href="" style="opacity: 0.6;" class="small">Séparer</a></small><?php endif; ?>
+                <?php endif; ?>
             </p>
         </div>
     </div>
+    <?php if(isset($form['activites'])): ?>
     <div id="bloc_activite_division" class="row form-group hidden">
         <div class="col-xs-4 text-right control-label">
             Activités :
@@ -110,6 +113,7 @@
                 </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endif; ?>
 
 <div class="row form-group">

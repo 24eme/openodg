@@ -7,7 +7,7 @@
                     <h4 class="modal-title" id="myModalLabel">Demande <?php echo elision("de", strtolower($demande->getDemandeLibelle())) ?></h4>
 					<?php echo $demande->libelle ?>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="padding-bottom: 0;">
 					<table class="table table-condensed table-bordered table-striped">
 					    <thead>
 					        <tr>
@@ -39,7 +39,7 @@
 				</div>
 			<form method="post" action="" role="form" class="form-horizontal">
 				<?php if($form instanceof sfForm): ?>
-				<hr style="margin-top: 0;" />
+				<hr style="margin-top: 0; margin-bottom: 0;" />
 				<div class="modal-body">
 					<?php include_partial('habilitation/demandeForm', array('form' => $form, 'demande' => $demande)); ?>
 				</div>

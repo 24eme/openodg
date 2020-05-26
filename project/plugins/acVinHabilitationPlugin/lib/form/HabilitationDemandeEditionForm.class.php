@@ -18,20 +18,17 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
         $statuts = $this->getStatuts();
 
         $this->setWidgets(array(
-            'activites' => new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getActivites())),
             'date' => new sfWidgetFormInput(array(), array()),
             'statut' => new sfWidgetFormChoice(array('choices' => $statuts)),
             'commentaire' => new sfWidgetFormInput(array(), array()),
         ));
         $this->widgetSchema->setLabels(array(
-            'activites' => 'Activités: ',
             'date' => 'Date: ',
             'statut' => 'Statut: ',
             'commentaire' => 'Commentaire: ',
         ));
 
         $this->setValidators(array(
-            'activites' => new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getActivites()))),
             'date' => new sfValidatorDate(
                 array('date_output' => 'Y-m-d',
                 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
@@ -40,6 +37,12 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             'statut' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($statuts))),
             'commentaire' => new sfValidatorString(array("required" => false)),
         ));
+
+        if(sfContext::getInstance()->getUser()->isAdmin()) {
+            $this->setWidget('activites', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getActivites())));
+            $this->getWidget('activites')->setLabel('Activités');
+            $this->setValidator('activites', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getActivites()))));
+        }
 
         $this->widgetSchema->setNameFormat('habilitation_demande_edition[%s]');
     }

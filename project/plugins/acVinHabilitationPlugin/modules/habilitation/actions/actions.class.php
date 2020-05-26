@@ -292,6 +292,12 @@ class habilitationActions extends sfActions {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
 
+        if(!$this->demande->isOuvert()) {
+            $this->formDemandeEdition = false;
+
+            return $this->executeDeclarant($request);
+        }
+
         if($this->filtre && !preg_match("/".$this->filtre."/i", $this->demande->getStatut())) {
             $this->formDemandeEdition = false;
 
