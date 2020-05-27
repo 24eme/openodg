@@ -88,7 +88,7 @@ $b->isForwardedTo('habilitation', 'demandeEdition');
 $t->is($b->getResponse()->getStatusCode(), 200, "Page de d'édition d'une demande");
 
 $c = new sfDomCssSelector($b->getResponseDom());
-$t->is($c->matchSingle('.modal-demande #btn_demande_separer')->getNode(), null, "Pas de bouton \"Séparer\"");
+$t->ok($c->matchSingle('.modal-demande #btn_demande_separer')->getNode(), "Pas de bouton \"Séparer\"");
 
 $b->click('.modal-demande .modal-footer button[type="submit"]', array('habilitation_demande_edition' =>
     array('statut' => 'VALIDE_INAO',
