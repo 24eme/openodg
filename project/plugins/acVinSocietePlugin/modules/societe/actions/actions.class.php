@@ -152,6 +152,8 @@ class societeActions extends sfCredentialActions {
           $compte->updateCoordonneesLongLat();
           $compte->save();
         }
+
+        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
     public function executeAnnulation(sfWebRequest $request) {
@@ -246,11 +248,8 @@ class societeActions extends sfCredentialActions {
     }
 
     protected function forwardSecure() {
-        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
 
-        $this->getResponse()->setStatusCode('403');
-
-        throw new sfStopException();
+        throw new sfError403Exception();
     }
 
     protected function matchCompte($view_res, $term, $limit) {

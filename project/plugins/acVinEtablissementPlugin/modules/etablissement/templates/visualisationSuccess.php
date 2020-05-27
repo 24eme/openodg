@@ -21,6 +21,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                         <h4><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> Établissement n° <?php echo $etablissement->getNumeroCourt(); ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
+                        <?php if($modifiable): ?>
                         <div class="btn-group">
                             <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu text-left">
@@ -30,6 +31,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <li><a href="<?php echo url_for('compte_switch_en_alerte', array('identifiant' => $etablissement->getMasterCompte()->identifiant)); ?>"><?php echo ($etablissement->getMasterCompte()->exist('en_alerte') && $etablissement->getMasterCompte()->en_alerte)? 'Retirer alerte' : 'Mettre en alerte' ?></a></li>
                             </ul>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -102,7 +104,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <hr />
                 <?php endif; ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
-                <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>
+                <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte(), 'modifiable' => $modifiable)); ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Chais</strong></h5>
                 <?php if(($etablissement->exist('chais')  && count($etablissement->chais)) || $etablissement->hasLiaisonsChai()): ?>
@@ -112,7 +114,9 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <th class="col-xs-5">Adresse</th>
                             <th class="col-xs-4">Attributs</th>
                             <th class="col-xs-2">Infos</th>
+                            <?php if($modifiable): ?>
                             <th></th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,7 +128,9 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                     <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                     <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
                                     <td><?php if($chai->partage): ?>Partagé<br /><?php endif; ?><?php if($chai->archive): ?>Archivé<?php endif; ?></td>
+                                    <?php if($modifiable): ?>
                                     <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -149,7 +155,9 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                     <p class="text-muted">Aucun chai</p>
                 <?php endif; ?>
                 <div class="text-right">
+                    <?php if($modifiable): ?>
                   <a href="<?php echo url_for("etablissement_ajout_chai", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un chai</a>
+                    <?php endif; ?>
                 </div>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Relations</strong></h5>
@@ -160,16 +168,26 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <th class="col-xs-3">Relation</th>
                             <th class="col-xs-5">Nom</th>
                             <th class="col-xs-4">Numéro CVI/PPM</th>
+                            <?php if($modifiable): ?>
                             <th class="col-xs-1"></th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
                             <tr>
                                 <td><?php echo $liaison->getTypeLiaisonLibelle() ?></td>
-                                <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a></td>
+                                <td>
+                                <?php if($modifiable): ?>
+                                    <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a>
+                                <?php else: ?>
+                                    <?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a>
+                                <?php endif; ?>
+                                </td>
                                 <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
+                                <?php if($modifiable): ?>
                                 <td class="text-center"><a onclick="return confirm('Étes vous sûr de vouloir supprimer la relations ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -178,12 +196,19 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                     <p class="text-muted">Aucune relation</p>
                 <?php endif; ?>
                 <div class="text-right">
-                  <a href="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter une relation</a>
+                    <?php if($modifiable): ?>
+                        <a href="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter une relation</a>
+                    <?php endif; ?>
                 </div>
+                <?php if ($etablissement->isViticulteur() && sfConfig::get("app_potentiel_production_enabled")): ?>
+                <hr />
+                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Potentiel de production</strong></h5>
+                <a href="<?php echo url_for('potentielproduction_visualisation', $etablissement) ?>">Consulter le calcul du potentiel maximum de production</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
     <div class="col-xs-4">
-        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $etablissement)); ?>
+        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $etablissement, 'modifiable' => $modifiable)); ?>
     </div>
 </div>

@@ -47,7 +47,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
         $activitesLibelle = array();
 
         foreach($this->activites as $activite) {
-            $activitesLibelle[] = HabilitationClient::getInstance()->getLibelleActivite($activite);
+            $activitesLibelle[$activite] = HabilitationClient::getInstance()->getLibelleActivite($activite);
         }
 
         return $activitesLibelle;
@@ -92,7 +92,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
             return null;
         }
-        
+
         foreach($habilitationLast->get($this->getHash())->getFullHistorique() as $h) {
             if($finded == true) {
                 return $h;

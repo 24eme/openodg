@@ -101,14 +101,16 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		$this->piece_document->generatePieces();
 	}
 
-	public function storeFichier($file) {
+	public function storeFichier($file, $extension = null) {
 		if (!is_file($file)) {
 			throw new sfException($file." n'est pas un fichier valide");
 		}
-		$pathinfos = pathinfo($file);
-		$extension = (isset($pathinfos['extension']) && $pathinfos['extension'])? strtolower($pathinfos['extension']): null;
+        if(is_null($extension)) {
+		   $pathinfos = pathinfo($file);
+		   $extension = (isset($pathinfos['extension']) && $pathinfos['extension'])? strtolower($pathinfos['extension']): null;
+        }
 		$fileName = ($extension)? uniqid().'.'.$extension : uniqid();
-		$couchinfos = $this->getFileinfos($pathinfos['extension']);
+		$couchinfos = $this->getFileinfos($extension);
 		$store4real = true;
 		if (isset($couchinfos['digest'])) {
 			$digest = explode('-', $couchinfos['digest']);

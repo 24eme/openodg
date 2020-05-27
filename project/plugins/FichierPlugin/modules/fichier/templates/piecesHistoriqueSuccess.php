@@ -8,7 +8,7 @@
 <div class="page-header">
     <h2>
     	Historique des documents
-        <?php if ($sf_user->isAdmin()): ?>
+        <?php if ($sf_user->isAdmin() || $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
         <a class="btn btn-sm btn-primary pull-right" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
         <?php endif; ?>
     </h2>
@@ -38,7 +38,7 @@
 			<?php echo (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $document->key[PieceAllView::KEYS_DATE_DEPOT]))? format_date($document->key[PieceAllView::KEYS_DATE_DEPOT], "dd/MM/yyyy", "fr_FR") : null; ?>
 		</span>
 		<span class="col-sm-8 col-xs-12">
-			<?php if (Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+			<?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) &&  Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 				<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 					<a href="<?php echo $urlVisu ?>" ><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
 				<?php endif; ?>
@@ -80,7 +80,7 @@
 		<?php else: ?>
 		<a class="pull-right" href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><span class="glyphicon glyphicon-file"></span></a>
 		<?php endif; ?>
-		<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+		<?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) && $urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 			<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;" data-toggle-second="tooltip" title="Modifier le document"><span class="glyphicon glyphicon-edit"></span></a>
 		<?php endif; ?>
 		<?php if (Piece::isPieceEditable($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>

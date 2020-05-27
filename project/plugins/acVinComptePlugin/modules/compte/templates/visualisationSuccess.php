@@ -14,6 +14,7 @@
                         <h4><span class="glyphicon glyphicon-user"></span> Compte de <?php echo $compte->getNomAAfficher(); ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
+                        <?php if($modifiable): ?>
                         <div class="btn-group">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu text-left">
@@ -24,6 +25,7 @@
                                 <li><a onclick='return confirm("Êtes vous sûr de vouloir supprimer cet interlocuteur ?");' href="<?php echo url_for('compte_interlocuteur_delete', array('identifiant' => $compte->identifiant)); ?>">Supprimer</a></li>
                             </ul>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -55,7 +57,7 @@
                 </div>
                 <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
-                <?php include_partial('compte/visualisationTags', array('compte' => $compte, 'formAjoutGroupe' => $formAjoutGroupe)); ?>
+                <?php include_partial('compte/visualisationTags', array('compte' => $compte, 'formAjoutGroupe' => $formAjoutGroupe, 'modifiable' => $modifiable)); ?>
                 <?php if ($compte->commentaire) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
@@ -65,6 +67,6 @@
         </div>
     </div>
     <div class="col-xs-4">
-        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $compte)); ?>
+        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $compte, 'modifiable' => $modifiable)); ?>
     </div>
 </div>

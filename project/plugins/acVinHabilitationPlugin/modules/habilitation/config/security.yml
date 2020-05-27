@@ -8,10 +8,10 @@ edition:
   credentials: ADMIN
 
 demandeGlobale:
-  credentials: ADMIN
+  credentials:  [[ADMIN, habilitation]]
 
 demandeCreation:
-  credentials: ADMIN
+  credentials: [[ADMIN, habilitation]]
 
 export:
   credentials: ADMIN

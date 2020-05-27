@@ -66,7 +66,7 @@ php symfony cc
 
 XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"_"$BRANCH".xml
 
-APPLICATION=$APPLICATION NODELETE=1 php symfony test:unit --xml=$XMLFILE
+APPLICATION=$APPLICATION NODELETE=1 php symfony test:all --xml=$XMLFILE
 sed -i "s|$WORKINGDIR/||" $XMLFILE
 
 rm $PID_PATH

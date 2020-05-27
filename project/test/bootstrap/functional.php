@@ -18,9 +18,15 @@ if (!isset($app))
   $app = array_pop($dirPieces);
 }
 
+if(!$app || $app == "app") {
+    $app = (getenv("APPLICATION")) ? getenv("APPLICATION") : 'rhone';
+}
+
 require_once dirname(__FILE__).'/../../config/ProjectConfiguration.class.php';
 $configuration = ProjectConfiguration::getApplicationConfiguration($app, 'test', isset($debug) ? $debug : true);
 sfContext::createInstance($configuration);
 
 // remove all cache
 sfToolkit::clearDirectory(sfConfig::get('sf_app_cache_dir'));
+
+define ('K_PATH_CACHE', sys_get_temp_dir().'/');

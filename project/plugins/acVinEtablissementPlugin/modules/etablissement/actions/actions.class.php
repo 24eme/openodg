@@ -48,8 +48,8 @@ class etablissementActions extends sfCredentialActions {
         if((!$this->compte->lat && !$this->compte->lon) || !$this->compte->hasLatLonChais()){
           $this->compte->updateCoordonneesLongLat(true);
           $this->compte->save();
-
         }
+        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
      public function executeSwitchStatus(sfWebRequest $request) {
