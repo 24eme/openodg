@@ -196,7 +196,7 @@ bilan_infos['adresse'] = bilan_infos["Adresse"]
 bilan_infos['commune'] = bilan_infos["Commune"]
 bilan_infos['code_postal'] = bilan_infos["Code postal"]
 bilan_infos['siret'] = bilan_infos["SIRET"]
-bilan_infos['stock_vci_n-1'] = round(bilan_infos["Constitue_x"] + bilan["Stock précédent_x"], 2)
+bilan_infos['stock_vci_n-1'] = round(bilan_infos["Constitue_x"] + bilan_infos["Stock précédent_x"], 2)
 bilan_infos['dr_surface'] = bilan_infos["Superficie revendiqué"]
 bilan_infos['dr_volume'] = bilan_infos["Volume revendiqué"]
 bilan_infos['dr_vci'] = bilan_infos["Constitue_y"]
@@ -204,7 +204,7 @@ bilan_infos['vci_complement'] = bilan_infos["Complément_x"]
 bilan_infos['vci_substitution'] = bilan_infos["Substitution_x"]
 bilan_infos['vci_rafraichi'] = bilan_infos["Rafraichi_x"]
 bilan_infos['vci_desctruction'] = bilan_infos["Destruction_x"]
-bilan_infos['drev_revendique_n'] = round(bilan_infos["Volume revendiqué"] - bilan["Volume revendiqué issu du VCI"], 2)
+bilan_infos['drev_revendique_n'] = round(bilan_infos["Volume revendiqué"] - bilan_infos["Volume revendiqué issu du VCI"], 2)
 bilan_infos['drev_revendique_n-1'] = bilan_infos["Volume revendiqué issu du VCI"]
 bilan_infos['stock_vci_n'] = bilan_infos["Stock_y"]
 
