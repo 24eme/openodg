@@ -99,7 +99,7 @@ class habilitationActions extends sfActions {
       $form->bind($request->getParameter($form->getName()));
       if (!$form->isValid()) {
 
-          return $this->redirect('habilitation');
+          return (HabilitationConfiguration::getInstance()->isSuiviParDemande()) ? $this->redirect('habilitation_demande') : $this->redirect('habilitation');
       }
 
       return $this->redirect('habilitation_declarant', $form->getEtablissement());
