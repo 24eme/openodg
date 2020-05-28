@@ -84,7 +84,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
              */
             $find = false;
             foreach ($parcelles as $parcelle) {
-                if ($parcelle->idu == $idu && $parcelle->cepage == $cepage && round($parcelle->superficie,4) == $surface) {
+                if (!$parcelle->affectation && $parcelle->idu == $idu && $parcelle->cepage == $cepage && round($parcelle->superficie,4) == $surface) {
                     $parcelle->affectation = 1;
                     $parcelle->date_affectation = $arguments['date'];
                     $parcelle->superficie_affectation = $surface;
@@ -95,7 +95,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             }
             if (!$find) {
                 foreach ($parcelles as $parcelle) {
-                    if ($parcelle->idu == $idu && $parcelle->cepage == $cepage && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
+                    if (!$parcelle->affectation && $parcelle->idu == $idu && $parcelle->cepage == $cepage && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
                         $parcelle->affectation = 1;
                         $parcelle->date_affectation = $arguments['date'];
                         $parcelle->superficie_affectation = $parcelle->superficie;
@@ -110,7 +110,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
              * AFFECTATION : IDU + SUPERFICIE (- CEPAGE)
              */
             foreach ($parcelles as $parcelle) {
-                if ($parcelle->idu == $idu && round($parcelle->superficie,4) == $surface) {
+                if (!$parcelle->affectation && $parcelle->idu == $idu && round($parcelle->superficie,4) == $surface) {
                     $parcelle->affectation = 1;
                     $parcelle->date_affectation = $arguments['date'];
                     $parcelle->superficie_affectation = $surface;
@@ -122,7 +122,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
 
             if (!$find) {
                 foreach ($parcelles as $parcelle) {
-                    if ($parcelle->idu == $idu && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
+                    if (!$parcelle->affectation && $parcelle->idu == $idu && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
                         $parcelle->affectation = 1;
                         $parcelle->date_affectation = $arguments['date'];
                         $parcelle->superficie_affectation = $parcelle->superficie;
@@ -139,9 +139,9 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             $foundIduCep = array();
             $foundIdu = array();
             foreach ($parcelles as $parcelle) {
-                if ($parcelle->idu == $idu && $parcelle->cepage == $cepage) {
+                if (!$parcelle->affectation && $parcelle->idu == $idu && $parcelle->cepage == $cepage) {
                     $foundIduCep[] = $parcelle;
-                } elseif ($parcelle->idu == $idu) {
+                } elseif (!$parcelle->affectation && $parcelle->idu == $idu) {
                     $foundIdu[] = $parcelle;
                 }
             }
@@ -169,6 +169,9 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             $index = 0;
             $this->combinaisons = array();
             foreach ($foundIduCep as $parcelle) {
+                if ($parcelle->affectation) {
+                    continue;
+                }
                 if ($find = $this->looping(array($parcelle), $foundIduCep, $index, $surface)) {
                     break;
                 }
@@ -181,6 +184,9 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 $index = 0;
                 $this->combinaisons = array();
                 foreach ($foundIdu as $parcelle) {
+                    if ($parcelle->affectation) {
+                        continue;
+                    }
                     if ($find = $this->looping(array($parcelle), $foundIdu, $index, $surface)) {
                         break;
                     }
@@ -257,6 +263,9 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
         }
         $nbParcelle = count($parcelles);
         for($i = ($index+1); $i < $nbParcelle; $i++) {
+            if (($parcelles[$i])->affectation) {
+                continue;
+            }
             $combinaisons[] = $parcelles[$i];
             if ($this->looping($combinaisons, $parcelles, $i, $surface)) {
                 return true;
