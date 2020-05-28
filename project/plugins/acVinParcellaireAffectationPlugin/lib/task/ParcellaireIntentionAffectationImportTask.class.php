@@ -39,29 +39,41 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
         $csv = $csvFile->getCsv();
         $index = 0;
         foreach($csv as $ligne => $data) {
-            $identifiant = $data[0];
+            $identifiant = $data[0]."01";
             $idu = $data[1];
             $surface = round($this->formatFloat($data[2]),4);
             $cepage = $data[3];
             $dgc = $data[4];
             
-            $identifiantIdu = null;
             $items = TmpParcellesView::getInstance()->findByIdu($idu);
+            $identifiants = array();
             foreach ($items as $item) {
                 if (preg_match('/^PARCELLAIRE-(.+)-[0-9]{8}$/', $item->id, $m)) {
-                    $identifiantIdu = $m[1];
-                    break;
+                    if (!in_array($m[1], $identifiants)) {
+                        $etab = EtablissementClient::getInstance()->findByIdentifiant($m[1]);
+                        if ($etab && $etab->statut == 'ACTIF') {
+                            $identifiants[$m[1]] = EtablissementClient::getInstance()->findByIdentifiant($m[1]);
+                        }
+                    }
                 }
             }
-            if ($identifiantIdu && $identifiantIdu != $identifiant) {
-                $identifiant = $identifiantIdu;
+            $identifiantIdu = null;
+            if (count($identifiants) == 1) {
+                $identifiantIdu = (current($identifiants))->identifiant;
+            } else {
+                foreach ($identifiants as $id => $obj) {
+                    if ($id == $identifiant) {
+                        $identifiantIdu = $id;
+                        break;
+                    }
+                }
             }
-            $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
+            $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiantIdu);
             if (!$etablissement) {
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));
                 continue;
             }
-            $intentionDpap = ParcellaireIntentionAffectationClient::getInstance()->createDoc($identifiant, $campagne, 1, $arguments['date']);
+            $intentionDpap = ParcellaireIntentionAffectationClient::getInstance()->createDoc($etablissement->identifiant, $campagne, 1, $arguments['date']);
             if (!$intentionDpap->hasParcellaire()) {
                 echo sprintf("ERROR;Pas de parcellaire;%s\n", implode(';', $data));
                 continue;
@@ -81,6 +93,18 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                     break;
                 }
             }
+            if (!$find) {
+                foreach ($parcelles as $parcelle) {
+                    if ($parcelle->idu == $idu && $parcelle->cepage == $cepage && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
+                        $parcelle->affectation = 1;
+                        $parcelle->date_affectation = $arguments['date'];
+                        $parcelle->superficie_affectation = $parcelle->superficie;
+                        $find = true;
+                        echo sprintf("SUCCESS;IDU+CEP+SUPERFICIE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
+                        break;
+                    }
+                }
+            }
             if ($find) { $intentionDpap->save(); continue; }
             /*
              * AFFECTATION : IDU + SUPERFICIE (- CEPAGE)
@@ -93,6 +117,19 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                     $find = true;
                     echo sprintf("SUCCESS;IDU+SUPERFICIE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
                     break;
+                }
+            }
+
+            if (!$find) {
+                foreach ($parcelles as $parcelle) {
+                    if ($parcelle->idu == $idu && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
+                        $parcelle->affectation = 1;
+                        $parcelle->date_affectation = $arguments['date'];
+                        $parcelle->superficie_affectation = $parcelle->superficie;
+                        $find = true;
+                        echo sprintf("SUCCESS;IDU+SUPERFICIE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
+                        break;
+                    }
                 }
             }
             if ($find) { $intentionDpap->save(); continue; }
