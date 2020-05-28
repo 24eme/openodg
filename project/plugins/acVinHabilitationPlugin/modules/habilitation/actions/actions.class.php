@@ -5,7 +5,6 @@ class habilitationActions extends sfActions {
 
   public function executeIndexDemande(sfWebRequest $request)
   {
-        $filtre = $request->getParameter('filtre', null);
         $filtres = array();
 
         $this->voirtout = (bool) $request->getParameter('voirtout');
@@ -100,7 +99,7 @@ class habilitationActions extends sfActions {
       $form->bind($request->getParameter($form->getName()));
       if (!$form->isValid()) {
 
-          return $this->redirect('habilitation');
+          return (HabilitationConfiguration::getInstance()->isSuiviParDemande()) ? $this->redirect('habilitation_demande') : $this->redirect('habilitation');
       }
 
       return $this->redirect('habilitation_declarant', $form->getEtablissement());
@@ -112,8 +111,10 @@ class habilitationActions extends sfActions {
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        if(!$this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+        if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
+        } else {
+            $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
 
         if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
@@ -214,7 +215,18 @@ class habilitationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
-        $this->formDemandeGlobale = new HabilitationDemandeGlobaleForm($this->habilitation);
+        if($this->getUser()->isAdmin()) {
+            $this->filtre = $request->getParameter('filtre');
+        } else {
+            $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
+        }
+
+        if(!count(HabilitationClient::getInstance()->getDemandes($this->filtre))) {
+
+            throw new sfError403Exception();
+        }
+
+        $this->formDemandeGlobale = new HabilitationDemandeGlobaleForm($this->habilitation, array(), array('filtre' => $this->filtre));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -237,7 +249,18 @@ class habilitationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
-        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation);
+        if($this->getUser()->isAdmin()) {
+            $this->filtre = $request->getParameter('filtre');
+        } else {
+            $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
+        }
+
+        if(!count(HabilitationClient::getInstance()->getDemandes($this->filtre))) {
+
+            throw new sfError403Exception();
+        }
+
+        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation, array(), array('filtre' => $this->filtre));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -263,9 +286,18 @@ class habilitationActions extends sfActions {
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
 
         $this->urlRetour = $request->getParameter('retour', false);
-        if(!$this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation')) {
+        if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
+        } else {
+            $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
+
+        if(!$this->demande->isOuvert()) {
+            $this->formDemandeEdition = false;
+
+            return $this->executeDeclarant($request);
+        }
+
         if($this->filtre && !preg_match("/".$this->filtre."/i", $this->demande->getStatut())) {
             $this->formDemandeEdition = false;
 

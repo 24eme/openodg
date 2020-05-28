@@ -7,6 +7,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
         if($doc instanceof HabilitationDemande) {
             $this->demande = $doc;
             $doc = $doc->getDocument();
+            $defaults['activites'] = $this->demande->activites->toArray(true, false);
         }
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
@@ -37,22 +38,30 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             'commentaire' => new sfValidatorString(array("required" => false)),
         ));
 
+        if(sfContext::getInstance()->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+            $this->setWidget('activites', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getActivites())));
+            $this->getWidget('activites')->setLabel('Activités');
+            $this->setValidator('activites', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getActivites()))));
+        }
+
         $this->widgetSchema->setNameFormat('habilitation_demande_edition[%s]');
     }
 
+    public function getActivites() {
+
+        if(!$this->demande) {
+            return array();
+        }
+
+        return $this->demande->getActivitesLibelle();
+    }
+
     public function getStatuts(){
-
-        $statuts = HabilitationClient::getInstance()->getDemandeStatuts();
+        $statuts = HabilitationClient::getInstance()->getDemandeStatuts($this->getOption('filtre'));
         foreach($statuts as $key => $libelle) {
-            if($this->getOption('filtre') && !preg_match("/".$this->getOption('filtre')."/i", $key)) {
-                unset($statuts[$key]);
-                continue;
-            }
-
             if(HabilitationClient::getInstance()->getDemandeAutomatiqueStatut($key)) {
                 $statuts[$key] .= ' ('.HabilitationClient::getInstance()->getDemandeStatutLibelle(HabilitationClient::getInstance()->getDemandeAutomatiqueStatut($key)).')';
             }
-
         }
 
         return array_merge(array("" => ""), $statuts);
@@ -66,9 +75,18 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             throw new Exception("/!\ Changement non enregistré, car il n'est pas possible de saisir un statut à une date qui est inférieure à celle du dernier statut");
         }
 
+        $demandeKey = $this->demande->getKey();
+
+        if($values['activites'] && count($values['activites']) && count($values['activites']) < count($this->demande->getActivitesLibelle())) {
+
+            $newDemandes = HabilitationClient::getInstance()->splitDemandeAndSave($this->getDocument()->identifiant, $demandeKey, $values['activites']);
+
+            $demandeKey = $newDemandes[0]->getKey();
+        }
+
         $demande = HabilitationClient::getInstance()->updateDemandeAndSave(
                                                               $this->getDocument()->identifiant,
-                                                              $this->demande->getKey(),
+                                                              $demandeKey,
                                                               $values['date'],
                                                               $values['statut'],
                                                               $values['commentaire'],

@@ -114,7 +114,7 @@ class AppUser extends sfBasicSecurityUser {
     	$compte->identifiant = self::CREDENTIAL_ADMIN;
     	$compte->add('login', self::CREDENTIAL_ADMIN);
 
-    	$compte->add("droits", array(self::CREDENTIAL_ADMIN));
+    	$compte->add("droits", sfConfig::get('app_auth_rights', array(self::CREDENTIAL_ADMIN)));
 
     	return $compte;
     }

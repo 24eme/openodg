@@ -10,15 +10,38 @@ foreach(DRevClient::getInstance()->getHistory($etablissement->identifiant, acCou
     $drev->delete(false);
 }
 
-$produit_hash = null;
+foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, true) as $piece) {
+    if(strpos($piece->id, 'DR-') === false) {
+        continue;
+    }
 
-foreach(ConfigurationClient::getCurrent()->getProduits() as $produit) {
+    $fichier = FichierClient::getInstance()->find($piece->id);
+    $fichier->delete();
+}
+
+$config = ConfigurationClient::getCurrent();
+$produit1 = null;
+$produit2 = null;
+foreach($config->getProduits() as $produit) {
     if(!$produit->getRendement()) {
         continue;
     }
-    $produit_hash = $produit->getHash();
+    if(!$produit1) {
+        $produit1 = $produit;
+        continue;
+    } elseif(!$produit2) {
+        $produit2 = $produit;
+        continue;
+    }
+
     break;
 }
+
+$csvContentTemplate = file_get_contents(dirname(__FILE__).'/../../data/dr_douane.csv');
+
+$csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
+    file_put_contents($csvTmpFile, str_replace(array("%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
+
 
 $b = new sfTestFunctional(new sfBrowser());
 $t = $b->test();
@@ -31,7 +54,7 @@ $b->get('/declarations/'.$etablissement->identifiant);
 $b->isForwardedTo('declaration', 'etablissement');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page declaration");
 
-$b->click('a[href*="/drev/creation-papier"]')->followRedirect()->followRedirect();
+$b->click('a[href*="/drev/creation-papier/"]')->followRedirect()->followRedirect();
 $b->isForwardedTo('drev', 'exploitation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape exploitation");
 
@@ -43,19 +66,21 @@ $b->click('button[type="submit"]')->followRedirect();
 $b->isForwardedTo('drev', 'drUpload');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape dr upload");
 
+$b->click('button[type="submit"]', array('fichier' => array('file' => $csvTmpFile)))->followRedirect();
+$b->isForwardedTo('drev', 'revendicationSuperficie');
+$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire upload et étape superficie");
+
+unlink($csvTmpFile);
+
 $b->click('button[type="submit"]')->followRedirect();
-$b->isForwardedTo('drev', 'revendicationSuperficie');
-$t->is($b->getResponse()->getStatuscode(), 200, "Étape superficie");
+$b->isForwardedTo('drev', 'vci');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape vci");
 
-$b->click('#popupForm button[type="submit"]', array('drev_revendication_ajout_produit' => array('hashref' => $produit_hash)))->followRedirect();
-$b->isForwardedTo('drev', 'revendicationSuperficie');
-$t->is($b->getResponse()->getStatuscode(), 200, "Étape superficie après ajout d'un produit");
-
-$b->click('button[type="submit"]', array("drev_superficie" => array("produits" => array("/declaration/certifications/AOP/genres/TRANQ/appellations/CDR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT/DEFAUT" => array("recolte" => array("superficie_total" => 100), "superficie_revendique" => 100)))))->followRedirect()->followRedirect();
+$b->click('button[type="submit"]')->followRedirect();
 $b->isForwardedTo('drev', 'revendication');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape volume");
 
-$b->click('button[type="submit"]', array("drev_produits" => array("produits" => array("/declaration/certifications/AOP/genres/TRANQ/appellations/CDR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT/DEFAUT" => array("recolte" => array("volume_total" => 50, "volume_sur_place" => 50, "recolte_nette" => 49, "vci_constitue" => 0), "volume_revendique_issu_recolte" => 49)))))->followRedirect();
+$b->click('button[type="submit"]')->followRedirect();
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 

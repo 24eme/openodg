@@ -8,7 +8,7 @@
 <div class="page-header">
     <h2>
     	Historique des documents
-        <?php if ($sf_user->isAdmin()): ?>
+        <?php if ($sf_user->isAdmin() || $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
         <a class="btn btn-sm btn-primary pull-right" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
         <?php endif; ?>
     </h2>

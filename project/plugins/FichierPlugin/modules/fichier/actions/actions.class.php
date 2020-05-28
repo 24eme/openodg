@@ -34,9 +34,16 @@ class fichierActions extends sfActions
     	$fichier = $this->getRoute()->getFichier();
     	$fileParam = $request->getParameter('file', null);
 		$this->secureEtablissement($fichier->getEtablissementObject());
-		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
-			return $this->forwardSecure();
+		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+
+			throw new sfError403Exception();
 		}
+
+		if($this->getCategoriesLimitation() && !in_array($fichier->categorie, $this->getCategoriesLimitation())) {
+
+			throw new sfError403Exception();
+		}
+
     	if (!$fichier->hasFichiers()) {
     		return $this->forward404("Aucun fichier pour ".$fichier->_id);
     	}
@@ -92,9 +99,23 @@ class fichierActions extends sfActions
 
     public function executeUpload(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
+
+		if($request->getParameter('fichier_id') && !$this->getUser()->isAdmin()) {
+
+			throw new sfError403Exception();
+		}
+
     	$this->fichier_id = $request->getParameter('fichier_id');
+
     	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
-    	$this->form = new FichierForm($this->fichier);
+
+		$categories = null;
+
+		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+			$categories = array('Identification' => "Identification");
+		}
+
+    	$this->form = new FichierForm($this->fichier, null, array('categories' => $categories));
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
     		return sfView::SUCCESS;
@@ -110,6 +131,14 @@ class fichierActions extends sfActions
     	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('pieces_historique', $this->etablissement);
     }
 
+	protected function getCategoriesLimitation() {
+		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+			return array('Identification', 'dr', 'drev');
+		}
+
+		return null;
+	}
+
 	public function executePiecesHistorique(sfWebRequest $request) {
 		$this->etablissement = $this->getRoute()->getEtablissement();
 		$this->societe = $this->etablissement->getSociete();
@@ -118,18 +147,22 @@ class fichierActions extends sfActions
 		$this->year = $request->getParameter('annee', 0);
 		$this->category = $request->getParameter('categorie');
 
+		$this->categoriesLimitation = $this->getCategoriesLimitation();
+
+		$visibilite = $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) || $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION);
+
 		$piecesSocietes = array();
 
 		if($this->societe) {
-			$piecesSocietes = PieceAllView::getInstance()->getPiecesByEtablissement($this->societe->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN));
+			$piecesSocietes = PieceAllView::getInstance()->getPiecesByEtablissement($this->societe->identifiant, $visibilite, null, null, $this->categoriesLimitation);
 		}
 
 		$allHistory = array_merge(
-										PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)),
+										PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, null, null, $this->categoriesLimitation),
 										$piecesSocietes
 									);
 
-		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN), $this->year.'-01-01', $this->year.'-12-31') : $allHistory;
+		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, $this->year.'-01-01', $this->year.'-12-31', $this->categoriesLimitation) : $allHistory;
 
 		$this->years = array();
 		$this->categories = array();
