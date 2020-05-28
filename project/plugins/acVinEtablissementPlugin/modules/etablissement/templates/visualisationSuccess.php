@@ -2,7 +2,11 @@
 $types_liaisons = EtablissementClient::getTypesLiaisons();
 ?>
 <ol class="breadcrumb">
-    <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
+    <?php if(!$sf_user->hasCredential('contacts')): ?>
+        <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>">Contacts</a></li>
+    <?php else: ?>
+        <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
+    <?php endif; ?>
     <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?> (<?php echo $societe->identifiant ?>)</a></li>
     <li class="active"><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $etablissement->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> <?php echo $etablissement->nom; ?></a></li>
 </ol>
