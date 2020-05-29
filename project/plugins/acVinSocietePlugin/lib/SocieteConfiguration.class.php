@@ -25,6 +25,11 @@ class SocieteConfiguration {
         return isset($this->configuration['disable_save']) && boolval($this->configuration['disable_save']);
     }
 
+    public function isVisualisationTeledeclaration() {
+
+        return isset($this->configuration['visualisation_teledeclaration']) && boolval($this->configuration['visualisation_teledeclaration']);
+    }
+
     public function getDroits() {
         if(!isset($this->configuration['droits'])) {
 

@@ -575,6 +575,7 @@
     }
 
     $.initValidationDeclaration = function() {
+	$('#btn-validation-document').attr('type', 'button');
         $('#submit-confirmation-validation').click(function() {
             $('#validation-form').submit();
         });

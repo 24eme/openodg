@@ -28,4 +28,9 @@ class TemplateFactureCotisation extends BaseTemplateFactureCotisation {
 
 		return false;
 	}
+
+	public function isRequired() {
+
+		return $this->exist('required') && $this->get('required');
+	}
 }

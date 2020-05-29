@@ -27,7 +27,7 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
 
     public function getDemandes(){
 
-        return array_merge(array("" => ""), HabilitationClient::$demande_libelles);
+        return array_merge(array("" => ""), HabilitationClient::getInstance()->getDemandes($this->getOption('filtre')));
     }
 
     public function getProduits()

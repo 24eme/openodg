@@ -195,9 +195,8 @@ class sfException extends Exception
       }
     }
 
-    // when using CLI, we force the format to be TXT. Compare exactly to 
-    // the string 'cli' because the php 5.4 server is identified by 'cli-server'
-    if ('cli' == PHP_SAPI)
+    // when using CLI, we force the format to be TXT
+    if (0 == strncasecmp(PHP_SAPI, 'cli', 3) && !isset($_SERVER['SERVER_PORT']))
     {
       $format = 'txt';
     }
