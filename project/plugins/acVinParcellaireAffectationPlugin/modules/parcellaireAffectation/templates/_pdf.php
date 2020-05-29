@@ -56,18 +56,20 @@
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: center; width: 230px;">Lieu-dit</th>
-        <th class="th" style="text-align: center; width: 120px;">Section</th>
-        <th class="th" style="text-align: center; width: 120px;">N° p<sup>lle</sup></th>
-        <th class="th" style="text-align: center; width: 200px;">Cépage</th>
-        <th class="th" style="text-align: center; width: 130px;">Année de plantation</th>
-        <th class="th" style="text-align: center; width: 150px;">Surface</th>
+    	<th class="th" style="text-align: center; width: 200px;">Commune</th>
+        <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
+        <th class="th" style="text-align: center; width: 80px;">Section</th>
+        <th class="th" style="text-align: center; width: 80px;">N° p<sup>lle</sup></th>
+        <th class="th" style="text-align: center; width: 180px;">Cépage</th>
+        <th class="th" style="text-align: center; width: 100px;">Année de plantation</th>
+        <th class="th" style="text-align: center; width: 100px;">Surface</th>
     </tr>
     <?php foreach ($parcelles as $parcelle):
             if($parcelle->affectation):
                 $date_affectation = new DateTime($parcelle->date_affectation);
          ?>
     	<tr>
+    		<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->commune; ?>&nbsp;</td>
 			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->lieu; ?>&nbsp;</td>
 			<td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section; ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->numero_parcelle; ?>&nbsp;</td>

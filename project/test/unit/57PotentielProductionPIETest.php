@@ -4,6 +4,11 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
+if($application != 'provence') {
+    $t = new lime_test(0);
+    exit;
+}
+
 $t = new lime_test(8);
 
 $ppmanager = new PotentielProductionManager(null);
