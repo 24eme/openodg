@@ -114,7 +114,7 @@ class AppUser extends sfBasicSecurityUser {
     	$compte->identifiant = self::CREDENTIAL_ADMIN;
     	$compte->add('login', self::CREDENTIAL_ADMIN);
 
-    	$compte->add("droits", array(self::CREDENTIAL_ADMIN));
+    	$compte->add("droits", sfConfig::get('app_auth_rights', array(self::CREDENTIAL_ADMIN)));
 
     	return $compte;
     }
@@ -146,7 +146,7 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function hasTeledeclaration() {
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION);
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin();
     }
 
     public function hasDrevAdmin() {

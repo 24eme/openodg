@@ -50,6 +50,10 @@ class FichierForm extends BaseForm
     }
 
 	public function getCategories() {
+		if($this->getOption('categories')) {
+
+			return $this->getOption('categories');
+		}
 
 		return array_merge(array("" => "Fichier"), FichierClient::getInstance()->getCategories());
 	}
@@ -75,7 +79,11 @@ class FichierForm extends BaseForm
     	}
     	if ($file) {
 	    	try {
-	    		$this->fichier->storeFichier($file->getSavedName());
+				$forceExtension = null;
+				if($file->getOriginalExtension() == '.csv' && $file->getExtension() == '.txt') {
+					$forceExtension = 'csv';
+				}
+	    		$this->fichier->storeFichier($file->getSavedName(), $forceExtension);
 	    	} catch (sfException $e) {
 	    		if ($isNew) {
 	    			$this->fichier->remove();
