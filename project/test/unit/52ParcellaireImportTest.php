@@ -39,7 +39,7 @@ fclose($handle);
 $t->comment("import $tempfname ");
 
 $csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -89,7 +89,7 @@ fclose($handle);
 
 
 $csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -110,7 +110,7 @@ fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;C
 fclose($handle);
 
 $csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 $parcellaire = $parcellaireloader->getParcellaire();
