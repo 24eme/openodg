@@ -49,7 +49,7 @@
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo number_format($parcelle->superficie_affectation,4); ?></td>
+                <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
 
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" id = "affectation" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectation']->hasError()): ?>has-error<?php endif; ?>">
