@@ -11,8 +11,9 @@ class DRevLot extends BaseDRevLot
     }
 
     public function getConfig() {
-
-        return $this->getDocument()->getConfiguration()->get($this->produit_hash);
+        if ($this->produit_hash) {
+            return $this->getDocument()->getConfiguration()->get($this->produit_hash);
+        }
     }
     public function getNumero(){
         return $this->_get('numero');

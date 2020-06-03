@@ -523,7 +523,7 @@ abstract class sfBrowserBase
    */
   public function checkCurrentExceptionIsEmpty()
   {
-    return null === $this->getCurrentException() || $this->getCurrentException() instanceof sfError404Exception;
+    return null === $this->getCurrentException() || $this->getCurrentException() instanceof sfError404Exception || $this->getCurrentException() instanceof sfError403Exception;
   }
 
   /**
@@ -925,7 +925,7 @@ abstract class sfBrowserBase
     if (false !== $pos = strpos($name, '['))
     {
       $var = &$vars;
-      $tmps = array_filter(preg_split('/(\[ | \[\] | \])/x', $name), create_function('$s', 'return $s !== "";'));
+      $tmps = array_filter(preg_split('/(\[ | \[\] | \])/x', $name), function($s) { return $s !== ""; });
       foreach ($tmps as $tmp)
       {
         $var = &$var[$tmp];

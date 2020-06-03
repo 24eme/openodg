@@ -24,9 +24,9 @@ $code_commune = key($communes);
 $numero_ordre_key = "00";
 
 $array = [
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', 'Propriétaire'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', 'Propriétaire'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'GRENACHE N','1.1', '1.1', '2001-2002','100','250', 'Fermier']
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0036', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0037', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', '750630000AM0152', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'GRENACHE N','1.1', '1.1', '2001-2002','100','250', 'Fermier']
 ];
 
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-7 day"),)."-");
@@ -39,7 +39,7 @@ fclose($handle);
 $t->comment("import $tempfname ");
 
 $csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -76,8 +76,8 @@ $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDate
 $t->comment("import d'un fichier avec une parcelle en moins $tempfname ");
 
 $array = [
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', 'Propriétaire'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0036', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0037', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', 'Propriétaire'],
 ];
 
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-6 day"),)."-");
@@ -89,7 +89,7 @@ fclose($handle);
 
 
 $csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -110,7 +110,7 @@ fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;C
 fclose($handle);
 
 $csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test, new ParcellaireCsvFormat);
+$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 $parcellaire = $parcellaireloader->getParcellaire();

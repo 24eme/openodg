@@ -37,16 +37,14 @@ class ParcellaireAffectationClient extends acCouchdbClient {
             $parcellaireAffectation = new ParcellaireAffectation();
             $parcellaireAffectation->initDoc($identifiant, $campagne, $type);
           }
-          if($papier) {
-          	$parcellaireAffectation->add('papier', 1);
-          }
+          $parcellaireAffectation->add('papier', ($papier) * 1);
           return $parcellaireAffectation;
       }
 
       public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           return $this->findPreviousByIdentifiantAndDate($identifiant, $max_annee, $hydrate);
       }
-      
+
       public function findPreviousByIdentifiantAndDate($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
           $h = $this->getHistory($identifiant, $max_annee, $hydrate);
           if (!count($h)) {

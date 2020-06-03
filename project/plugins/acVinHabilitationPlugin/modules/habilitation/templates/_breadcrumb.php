@@ -1,5 +1,7 @@
 <ol class="breadcrumb">
-    <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if(!$sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION)): ?>
+        <li><a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Habilitations</a></li>
+    <?php elseif(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <li><a href="<?php echo url_for('habilitation_demande'); ?>">Habilitations</a></li>
     <?php else : ?>
         <li><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>

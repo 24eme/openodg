@@ -9,3 +9,4 @@ all:
         "habilitation:odg": "Habilitation ODG"
         "api": "API"
         "timbre": "Timbre"
+      visualisation_teledeclaration: true

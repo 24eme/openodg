@@ -7,14 +7,16 @@
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
 
+<?php if(isset($form)): ?>
 <div class="row row-margin">
     <div class="col-xs-12">
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'),  'noautofocus' => true)); ?>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="well">
-    <?php if ($sf_user->isAdmin() && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if ($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
 <a style="margin-bottom: 30px;" class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_globale', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification globale</a>
 
 <?php endif; ?>
@@ -72,7 +74,7 @@
         </tbody>
     </table>
 
-    <?php if ($sf_user->isAdmin() && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if ($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
         <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
         </div>
@@ -105,7 +107,14 @@
                 <td><?php echo $d->getLibelle() ?> <?php if($d->commentaire): ?><span class="text-muted">(<?php echo $d->commentaire; ?>)</span><?php endif; ?></td>
                 <td><?php echo Date::francizeDate($d->date); ?></td>
                 <td><?php echo $d->getStatutLibelle() ?></td>
-                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir<?php if(!$filtre || preg_match("/".$filtre."/i", $d->getStatut())): ?>&nbsp;/&nbsp;Modifier<?php endif; ?></a><?php endif; ?></td>
+                <td class="text-center">
+                    <?php if($habilitation->isLastOne()): ?>
+                    <?php if($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
+                        <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
+                    <?php else: ?>
+                        <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir</a></td>
+                    <?php endif; ?>
+                    <?php endif; ?>
             </tr>
             <?php endforeach; ?>
         </tbody>
