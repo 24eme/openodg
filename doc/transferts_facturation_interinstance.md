@@ -65,11 +65,11 @@ Si l'application est bien configurée, cela aura pour effet d'importer les nouve
 
 # Tableau récapitulatif
 
-| Drev existe | Brouillon | Validée | Validée ODG | DR | SV11 | SV12 | > | Drev | DR | SV11 | SV12 |
-| ------------| :-------: | :-----: | :----------: | :-: | :----: | :----: | :-: | :--: | :-: | :---: | :---: |
-| X  |  | X | X | X | | | | X | X | | |
-| X  |  | X | X | | X | | | X | | X | |
-| X  |  | X | X | | | X | | | | | X |
-| X  |  X  |  |  | X | | | | | X | | |
-| X  |  X  |  |  | | X | | | | | X | |
-| X  |  X  |  |  | | | X | | | | | X |
+| <td colspan=5>Instance A</td><td colspan=1> > </td><td colspan=2> Instance B</td>
+| ------------| :-------: | :-----: | :----------: | :-: | :----: | :----: | :-: |
+| DRev existe | Brouillon | Validée | Validée ODG | DR/SV11/SV12 | > | DRev | DR/SV11/SV12 |
+| X  | X |  |  | | | |  |
+|   |  |  |  | X | | |  |
+| X  |  | X | X | X | | X | X |
+| X  |  | X | X | | | X | |
+| X  | X |  |  | X | | | X |
