@@ -65,9 +65,28 @@ Si l'application est bien configurée, cela aura pour effet d'importer les nouve
 
 # Tableau récapitulatif
 
-| <td colspan=5>Instance A</td><td colspan=1> > </td><td colspan=2> Instance B</td>
+<table>
+  <tr><th colspan=5>Instance A</th><th> > </th><th colspan=2>Instance B</th></tr>
+  <tr>
+    <th> DRev existe </th>
+    <th> Brouillon </th>
+    <th> Validée </th>
+    <th> Validée ODG </th>
+    <th> DR/SV11/SV12 </th>
+    <th> > </th>
+    <th> DRev </th>
+    <th> DR/SV11/SV12 </th>
+  </tr>
+  <tr>
+  </tr>
+  <tr><td>&&</td><td>Logical and</td></tr>
+  <tr><td>||</td><td>Logical or</td></tr>
+  <tr><td>!</td><td>Logical not</td></tr>
+  <tr><td>? :</td><td>Logical ternary</td></tr>
+</table>
+
+|  |  |  |  |  | > | DRev |  |
 | ------------| :-------: | :-----: | :----------: | :-: | :----: | :----: | :-: |
-| DRev existe | Brouillon | Validée | Validée ODG | DR/SV11/SV12 | > | DRev | DR/SV11/SV12 |
 | X  | X |  |  | | | |  |
 |   |  |  |  | X | | |  |
 | X  |  | X | X | X | | X | X |
