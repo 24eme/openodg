@@ -15,8 +15,7 @@ $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissem
 ?>
 
 <script type="text/javascript">
-	var parcelles = JSON.parse('<?php echo $import; ?>');
-	var delimitation = '<?php echo $list_communes; ?>';
+	var parcelles = JSON.parse('<?php echo addslashes($import); ?>');
+	var delimitation = '<?php echo addslashes($list_communes); ?>';
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>
-
