@@ -172,15 +172,15 @@ class ParcellaireClient extends acCouchdbClient {
             return false;
         }
         return $import;
-      
-        
+
+
     }
 
     public function saveParcellaireGeoJson($etablissement, $path, &$error){
         try {
-            
-            $parcellaire = new ParcellaireJsonFile($etablissement, $path, new ParcellaireCsvFormat);
-            
+
+            $parcellaire = new ParcellaireJsonFile($etablissement, $path);
+
             $parcellaire->save();
 
         } catch (Exception $e) {
