@@ -67,7 +67,7 @@ EOF;
 
         // Mettre en forme le fichier via la classe
         try {
-            $new_parcellaire = new ParcellaireCsvFile($csv, new ParcellaireCsvFormat);
+            $new_parcellaire = new ParcellaireCsvFile($etablissement, $csv);
             $new_parcellaire->convert();
         } catch (Exception $e) {
             echo $e->getMessage()."\n";
