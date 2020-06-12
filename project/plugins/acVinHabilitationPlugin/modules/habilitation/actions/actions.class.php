@@ -281,7 +281,7 @@ class habilitationActions extends sfActions {
             throw new sfError403Exception();
         }
 
-        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation, array(), array('filtre' => $this->filtre));
+        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation, array(), array('filtre' => $this->filtre, 'controle_habilitation' => true));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -295,7 +295,13 @@ class habilitationActions extends sfActions {
             return $this->executeDeclarant($request);
         }
 
-        $this->formDemandeCreation->save();
+        try {
+            $this->formDemandeCreation->save();
+        } catch (Exception $e) {
+            $this->getUser()->setFlash('erreur', $e->getMessage());
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
 
         return $this->redirect('habilitation_declarant', $this->etablissement);
     }
