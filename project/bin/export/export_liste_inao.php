@@ -147,12 +147,12 @@ foreach ($selected_datas as $k => $d) {
                 $date_decision = $decision->format('d/m/Y');
             }
 
-            if(!$date_depot) {
-                $date_depot = $date_decision;
-            }
-
             if(!$date_enregistrement) {
                 $date_enregistrement = $date_decision;
+            }
+
+            if(!$date_depot) {
+                $date_depot = $date_enregistrement;
             }
 
             if ($config && !isset($etablissements[$datas[2]])) {
