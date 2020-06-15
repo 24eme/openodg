@@ -4,7 +4,7 @@ class FacturePaiementEmbedForm extends acCouchdbObjectForm {
 
     public function configure()
     {
-        $this->setWidget('montant', new sfWidgetFormInputFloat());
+        $this->setWidget('montant', new bsWidgetFormInputFloat());
         $this->setValidator('montant', new sfValidatorNumber(array('required' => false)));
 
         $this->setWidget('date', new sfWidgetFormInput(array(), array()));
