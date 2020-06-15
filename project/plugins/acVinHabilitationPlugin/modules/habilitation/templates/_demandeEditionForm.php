@@ -38,6 +38,12 @@
 							<?php endforeach; ?>
 					    </tbody>
 					</table>
+
+					<?php if($sf_user->getFlash('info')): ?>
+					<div class="alert alert-info">
+						<?php echo $sf_user->getFlash('info'); ?>
+					</div>
+					<?php endif; ?>
 				</div>
 			<form method="post" action="" role="form" class="form-horizontal">
 				<?php if($form instanceof sfForm): ?>
