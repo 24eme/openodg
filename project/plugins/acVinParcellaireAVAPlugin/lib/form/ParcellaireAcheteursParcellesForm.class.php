@@ -33,7 +33,7 @@ class ParcellaireAcheteursParcellesForm extends ParcellaireAcheteursForm {
                     continue;
                 }
 
-                if ($parcelle->active === 0) {
+                if (! $parcelle->active) {
                     continue;
                 }
 
