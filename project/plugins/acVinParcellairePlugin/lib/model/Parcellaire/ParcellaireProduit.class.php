@@ -116,7 +116,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = 0, $strictNumOrdre = false) {
+    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
 
         $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
 
@@ -125,7 +125,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         }
         $sameParcelle = $this->getDocument()->countSameParcelle($commune,$section,$numero_parcelle,$lieu);
 
-        if(!$strictNumOrdre && $sameParcelle) {
+        if(is_null($numero_ordre) && !$strictNumOrdre && $sameParcelle) {
            $numero_ordre = $sameParcelle;
            $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
         }

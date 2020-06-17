@@ -55,6 +55,7 @@
                     <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>">Déclarations</a></li>
                     <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('pieces_historique', $etablissement); ?>">Documents</a></li>
                     <?php if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()): ?>
+                    <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('habilitation_declarant', $etablissement); ?>">Habilitations</a></li>
                     <li class="<?php if($route instanceof InterfaceCompteRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('compte_visualisation', $compte); ?>">Contacts</a></li>
                     <?php endif; ?>
                 </ul>

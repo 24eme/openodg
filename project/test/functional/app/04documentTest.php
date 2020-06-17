@@ -48,7 +48,9 @@ $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier upl
 
 preg_match("|/fichier/get/([^/]+)|", $b->getRequest()->getUri(), $matches);
 
-$b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$matches[1]);
+$fichierId = $matches[1];
+
+$b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$fichierId);
 $b->isForwardedTo('fichier', 'upload');
 $t->is($b->getResponse()->getStatusCode(), 200, "Page de modification accessible");
 
@@ -67,9 +69,11 @@ $t->ok($c->matchSingle('.page-header a[href*="/fichier/upload/"]')->getNode(), "
 $t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), null, "Boutons \"Modifier un document\" absent");
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=fichier");
-$b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
-$b->isForwardedTo('fichier', 'get');
-$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier uploadé");
+$c = new sfDomCssSelector($b->getResponseDom());
+$t->is($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), null, "Aucun fichier");
+
+$b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
+$t->is($b->getResponse()->getStatusCode(), 403, "Téléchargement du fichier protégé");
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
 $c = new sfDomCssSelector($b->getResponseDom());
@@ -100,7 +104,9 @@ $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier Ide
 
 preg_match("|/fichier/get/([^/]+)|", $b->getRequest()->getUri(), $matches);
 
-$b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$matches[1]);
+$fichierIdentificationId = $matches[1];
+
+$b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$fichierIdentificationId);
 $t->is($b->getResponse()->getStatusCode(), 403, "Page de modification de ce fichier protégé");
 
 $t->comment('En mode télédéclarant');
@@ -126,6 +132,9 @@ $t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
 $b->get('/documents/'.$etablissement->identifiant."?categorie=fichier");
 $c = new sfDomCssSelector($b->getResponseDom());
 $t->is($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), null, "Aucun fichier");
+
+$b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
+$t->is($b->getResponse()->getStatusCode(), 403, "Téléchargement du fichier protégé");
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
 $c = new sfDomCssSelector($b->getResponseDom());
