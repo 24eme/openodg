@@ -19,3 +19,11 @@ all:
           produits:
             - "TRANQ/appellations/VAC"
           inao: "data/drev/VACQUEYRAS.csv"
+        CAIRANNE:
+          nom: "Syndicat de l’AOC Cairanne"
+          adresse: "6 place des Vignerons, 84290 CAIRANNE"
+          telephone: "%app_drev_CAIRANNE_telephone%"
+          email: "%app_drev_CAIRANNE_email%"
+          produits:
+            - "TRANQ/appellations/CAR"
+          inao: "data/drev/CAIRANNE.csv"
