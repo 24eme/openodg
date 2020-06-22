@@ -282,7 +282,7 @@ class declarationActions extends sfActions {
                 if(isset($row->key[$facetKey]) && !isset($this->facets[$facetNom][$row->key[$facetKey]])) {
                     $this->facets[$facetNom][$row->key[$facetKey]] = 0;
                 }
-                if(!isset($documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])])){
+                if(isset($row->key[$facetKey]) && !isset($documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])])){
                   $this->facets[$facetNom][$row->key[$facetKey]] += 1;
                   $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = 1;
                 }
