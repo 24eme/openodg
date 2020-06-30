@@ -64,6 +64,11 @@ class habilitationActions extends sfActions {
 
   public function executeIndexHabilitation(sfWebRequest $request)
   {
+      if(HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
+
+          return $this->redirect('habilitation_demande');
+      }
+
       $this->buildSearch($request,
                         'habilitation',
                         'activites',
@@ -281,7 +286,7 @@ class habilitationActions extends sfActions {
             throw new sfError403Exception();
         }
 
-        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation, array(), array('filtre' => $this->filtre));
+        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation, array(), array('filtre' => $this->filtre, 'controle_habilitation' => true));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -295,7 +300,13 @@ class habilitationActions extends sfActions {
             return $this->executeDeclarant($request);
         }
 
-        $this->formDemandeCreation->save();
+        try {
+            $this->formDemandeCreation->save();
+        } catch (Exception $e) {
+            $this->getUser()->setFlash('erreur', $e->getMessage());
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
 
         return $this->redirect('habilitation_declarant', $this->etablissement);
     }
@@ -394,6 +405,11 @@ class habilitationActions extends sfActions {
         }
 
         HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->etablissement->identifiant, $request->getParameter('demande'));
+
+        if(HabilitationClient::getInstance()->getDemandeHabilitationsByTypeDemandeAndStatut($this->demande->demande, $this->demande->statut)) {
+            $this->getUser()->setFlash('info', "Cette suppression n'a pas fait évoluer le statut de l'habilitation, il faudra le faire manuellement si besoin.");
+        }
+
 
         return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->etablissement->identifiant, 'demande' => $request->getParameter('demande')));
     }

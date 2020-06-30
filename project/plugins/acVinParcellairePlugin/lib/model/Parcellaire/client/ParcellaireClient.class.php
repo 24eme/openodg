@@ -172,15 +172,15 @@ class ParcellaireClient extends acCouchdbClient {
             return false;
         }
         return $import;
-      
-        
+
+
     }
 
     public function saveParcellaireGeoJson($etablissement, $path, &$error){
         try {
-            
-            $parcellaire = new ParcellaireJsonFile($etablissement, $path, new ParcellaireCsvFormat);
-            
+
+            $parcellaire = new ParcellaireJsonFile($etablissement, $path);
+
             $parcellaire->save();
 
         } catch (Exception $e) {
@@ -190,15 +190,15 @@ class ParcellaireClient extends acCouchdbClient {
         }
 
         return true;
-        
+
     }
 
     public function saveParcellaireCSV(Etablissement $etablissement, $path, &$error){
         try {
             $csv = new Csv($path);
-            $parcellaire = new ParcellaireCsvFile($etablissement, $csv, new ParcellaireCsvFormat);
+            $parcellaire = new ParcellaireCsvFile($etablissement, $csv);
             $parcellaire->convert();
-            
+
         } catch (Exception $e) {
             sfContext::getInstance()->getLogger()->info("saveParcellaireCSV() : exception ".$e->getMessage());
             $error = $e->getMessage();

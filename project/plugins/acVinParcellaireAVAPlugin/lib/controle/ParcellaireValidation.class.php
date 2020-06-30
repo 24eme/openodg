@@ -97,7 +97,7 @@ class ParcellaireValidation extends DocumentValidation {
         }
 
         foreach($this->document->declaration->getProduitsCepageDetails() as $detail) {
-            if($detail->hasMultipleAcheteur() && (!$detail->exist('acheteurs'))) {
+            if($detail->active && $detail->hasMultipleAcheteur() && (!$detail->exist('acheteurs'))) {
                 $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition_parcelles', 'Terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs_parcelles', array('id' => $this->document->_id)));
                 break;
             }

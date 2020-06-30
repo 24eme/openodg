@@ -75,7 +75,7 @@
                 <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte(), 'modifiable' => $modifiable)); ?>
-                <?php if ($societe->commentaire) : ?>
+                <?php if ($societe->commentaire && $modifiable) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
                 <pre><?php echo html_entity_decode($societe->commentaire); ?></pre>
