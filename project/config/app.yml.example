@@ -1,6 +1,8 @@
 all:
   routing_context_production_host: declaration.ava-aoc.fr
-  auth_mode: NO_CAS #NO_CAS, CAS, NO_AUTH
+  auth
+    mode: NO_CAS #NO_CAS, CAS, NO_AUTH
+#    rights: [] 
   cas:
     domain: login.cas
     port: 443
@@ -94,6 +96,17 @@ all:
     mdp: motdepasse
     domain_action: actions.example.org
     url_http: http://actions.example.org/Service.asmx
+    regions:
+      REGION1:
+        login: utilisateur_region_1
+        mdp: motdepasse_region_1
+        domain_action: actions.example.org
+        url_http: http://actions.example.org/Service.asmx
+      REGION2:
+        login: utilisateur_region_1
+        mdp: motdepasse_region_1
+        domain_action: actions.example.org
+        url_http: http://actions.example.org/Service.asmx
   dr:
     categories:
       '04': "4. Superficie de récolte"

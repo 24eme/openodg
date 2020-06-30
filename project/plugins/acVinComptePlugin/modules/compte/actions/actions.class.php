@@ -58,6 +58,11 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+
+            throw new sfError403Exception();
+        }
+
         $this->compte = $this->getRoute()->getCompte();
         $this->societe = $this->compte->getSociete();
         $this->formAjoutGroupe = new CompteGroupeAjoutForm('INTERPRO-declaration');
@@ -72,6 +77,7 @@ class compteActions extends sfCredentialActions {
         if($this->compte->isSocieteContact()) {
             return $this->redirect('societe_visualisation',array('identifiant' => $this->societe->identifiant));
         }
+        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
     public function executeSwitchStatus(sfWebRequest $request) {
@@ -116,14 +122,21 @@ class compteActions extends sfCredentialActions {
 
     private function initSearch(sfWebRequest $request, $extratag = null, $excludeextratag = false) {
       $query = $request->getParameter('q', '*');
+      $this->hasFilters = false;
       if($query == ""){
         $query.="*";
+      }
+      if (trim($query, "* ") != "") {
+          $this->hasFilters = true;
       }
       if (! $request->getParameter('contacts_all') ) {
 		      $query .= " doc.statut:ACTIF";
       }
       $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
       $this->selected_typetags = array();
+      if (count($this->selected_rawtags) > 0) {
+          $this->hasFilters = true;
+      }
       foreach ($this->selected_rawtags as $t) {
 		if (preg_match('/^([^:]+):(.+)$/', $t, $m)) {
 	  		if (!isset($this->selected_typetags[$m[1]])) {
@@ -223,7 +236,7 @@ class compteActions extends sfCredentialActions {
       if (!$tag) {
 		throw new sfException("Un tag doit être fourni pour pouvoir être ajouté");
       }
-      if (!$this->real_q) {
+      if ((!$this->real_q || !$this->hasFilters) && !$remove) {
 		throw new sfException("Il n'est pas possible d'ajouter un tag sur l'ensemble des contacts");
       }
       $cpt = 0;

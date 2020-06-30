@@ -62,6 +62,16 @@ facturation_paiement:
   requirements:
     sf_method: [get, post]
 
+facturation_paiements:
+  url: /facturation/paiements/:id
+  param: { module: facturation, action: paiements }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 facturation_regenerate:
   url: /facturation/regenerer/:id
   param: { module: facturation, action: regenerate }
@@ -81,3 +91,10 @@ facturation_declarant:
     type:     object
   requirements:
     sf_method: [get, post]
+
+facturation_tempalte:
+  url: /facturation/template/:id
+  param: { module: facturation, action: template }
+  requirements:
+    sf_method: [get, post]
+  class: FacturationRoute

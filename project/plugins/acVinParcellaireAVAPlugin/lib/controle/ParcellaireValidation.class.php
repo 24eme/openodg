@@ -18,6 +18,7 @@ class ParcellaireValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
         $this->addControle(self::TYPE_ERROR, 'parcelle_doublon', 'Parcelle doublonnée');
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition', "La répartition des acheteurs n'est pas complète");
+        $this->addControle(self::TYPE_ERROR, 'acheteur_repartition_parcelles', "La répartition des acheteurs par parcelles n'est pas complète");
 
         /*
          * Error
@@ -81,7 +82,7 @@ class ParcellaireValidation extends DocumentValidation {
             $acheteursParcelle = $produit->getAcheteursByHash($lieu_key);
 
             if(!count($acheteursParcelle)) {
-                $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
+                $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'Terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
                 $erreurRepartition = true;
                 break;
             }
@@ -92,7 +93,15 @@ class ParcellaireValidation extends DocumentValidation {
         }
 
         if($hasParcelle && !$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
-            $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
+            $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'Terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
+        }
+
+        foreach($this->document->declaration->getProduitsCepageDetails() as $detail) {
+            if($detail->active && $detail->hasMultipleAcheteur() && (!$detail->exist('acheteurs'))) {
+                $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition_parcelles', 'Terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs_parcelles', array('id' => $this->document->_id)));
+                break;
+            }
+
         }
     }
 }

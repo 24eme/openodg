@@ -60,6 +60,26 @@ bash bin/export_docs.sh SV11 30 > $EXPORTDIR/sv11.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
 rm $EXPORTDIR/sv11.csv.part
 
+bash bin/export_docs.sh ParcellaireIrrigable > $EXPORTDIR/parcellaireirrigable.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigable.csv.part > $EXPORTDIR/parcellaireirrigable.csv
+rm $EXPORTDIR/parcellaireirrigable.csv.part
+
+bash bin/export_docs.sh ParcellaireIrrigue > $EXPORTDIR/parcellaireirrigue.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigue.csv.part > $EXPORTDIR/parcellaireirrigue.csv
+rm $EXPORTDIR/parcellaireirrigue.csv.part
+
+bash bin/export_docs.sh ParcellaireIntentionAffectation > $EXPORTDIR/parcellaireintentionaffectation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireintentionaffectation.csv.part > $EXPORTDIR/parcellaireintentionaffectation.csv
+rm $EXPORTDIR/parcellaireintentionaffectation.csv.part
+
+bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaireaffectation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireaffectation.csv.part > $EXPORTDIR/parcellaireaffectation.csv
+rm $EXPORTDIR/parcellaireaffectation.csv.part
+
+php symfony export:habilitation-demandes-publipostage $SYMFONYTASKOPTIONS > web/exports/habilitation_demandes_publipostage.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_publipostage.csv.part > $EXPORTDIR/habilitation_demandes_publipostage.csv
+rm $EXPORTDIR/habilitation_demandes_publipostage.csv.part
+
 php symfony pieces:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/pieces.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pieces.csv.part > $EXPORTDIR/pieces.csv
 rm $EXPORTDIR/pieces.csv.part
@@ -67,6 +87,12 @@ rm $EXPORTDIR/pieces.csv.part
 php symfony liaisons:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/liaisons.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/liaisons.csv.part > $EXPORTDIR/liaisons.csv
 rm $EXPORTDIR/liaisons.csv.part
+
+php symfony compte:export-all-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes.csv
+rm $EXPORTDIR/comptes.csv.part
+
+find $EXPORTDIR -type f -empty -delete
 
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR

@@ -33,6 +33,10 @@ class DRevRevendicationCepageVCIForm extends acCouchdbObjectForm {
             'rafraichi' => new sfValidatorNumber(array('required' => false))
         ));
 
+        if(!$this->getObject()->getParent()->getParent()->getConfig()->getRendementVciTotal()) {
+            $this->widgetSchema['rafraichi']->setAttribute('disabled', 'disabled');
+        }
+
         if (!$this->stock_editable) {
         	unset($this['stock_precedent']);
         }

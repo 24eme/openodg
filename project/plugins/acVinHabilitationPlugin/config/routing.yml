@@ -1,11 +1,11 @@
-habilitation:
-  url: /habilitation
-  param: { module: habilitation, action: index }
+habilitation_demande:
+  url: /habilitation_demande
+  param: { module: habilitation, action: indexDemande }
   class: HabilitationGeneralRoute
 
-habilitation_suivi:
-  url: /habilitation/suivi
-  param: { module: habilitation, action: suivi }
+habilitation:
+  url: /habilitation
+  param: { module: habilitation, action: indexHabilitation }
   class: HabilitationGeneralRoute
 
 habilitation_export:
@@ -85,6 +85,16 @@ habilitation_demande_edition:
     type:     object
   requirements:
     sf_method: [get, post]
+
+habilitation_demande_visualisation:
+  url: /habilitation/declarant/:identifiant/demande/visualisation/:demande
+  param: { module: habilitation, action: demandeVisualisation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
 
 habilitation_export_historique:
   url: /habilitation/export_historique/:dateFrom/:dateTo

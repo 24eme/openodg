@@ -26,10 +26,15 @@ class TourneeSaisieCreationForm extends acCouchdbObjectForm
                                                         ->genre
                                                         ->get("appellation_".$this->getObject()->appellation)
                                                         ->getLieux();
-        $produits = array("" => "");
+
+        $produits = array();
 
         foreach ($lieux as $key => $lieu) {
-            $produits[$lieu->getHash()] = $lieu->getLibelle();
+            $produits[$lieu->getHash()] = ($lieu->getLibelle()) ? $lieu->getLibelle() : "Aucun lieu" ;
+        }
+
+        if(count($produits) > 1) {
+            $produits = array_merge(array("" => ""), $produits);
         }
 
         return $produits;

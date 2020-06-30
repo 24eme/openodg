@@ -18,9 +18,11 @@ class EtablissementForm extends acCouchdbObjectForm
             "commune" => new sfWidgetFormInput(array("label" => "Commune")),
             "code_postal" => new sfWidgetFormInput(array("label" => "Code Postal")),
             "telephone_bureau" => new sfWidgetFormInput(array("label" => "Tél. Bureau")),
-			"telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
-            "fax" => new sfWidgetFormInput(array("label" => "Fax")),
+						"telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
             "email" => new sfWidgetFormInput(array("label" => "Email")),
+			"chais_adresse" =>  new sfWidgetFormInput(array("label" => "Adresse")),
+			"chais_commune" =>  new sfWidgetFormInput(array("label" => "Commune")),
+			"chais_code_postal" =>  new sfWidgetFormInput(array("label" => "Code postal")),
         ));
 
 				$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
@@ -38,9 +40,11 @@ class EtablissementForm extends acCouchdbObjectForm
             'commune' => new sfValidatorString(array("required" => false)),
             'code_postal' => new sfValidatorString(array("required" => false)),
             'telephone_bureau' => new sfValidatorString(array("required" => false)),
-			'telephone_mobile' => new sfValidatorString(array("required" => false)),
-            'fax' => new sfValidatorString(array("required" => false)),
+						'telephone_mobile' => new sfValidatorString(array("required" => false)),
        	    'email' => new sfValidatorEmailStrict(array("required" => false)),
+			'chais_adresse' => new sfValidatorString(array("required" => false)),
+			'chais_commune' => new sfValidatorString(array("required" => false)),
+			'chais_code_postal' => new sfValidatorString(array("required" => false)),
         ));
 
         if(!$this->getOption("use_email")) {
@@ -64,7 +68,11 @@ class EtablissementForm extends acCouchdbObjectForm
 	public function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $this->getCoordonneesEtablissement();
-
+		if($this->getObject()->getDocument()->isAdresseLogementDifferente()) {
+			$this->setDefault('chais_adresse', $this->getObject()->getDocument()->chais->adresse);
+			$this->setDefault('chais_commune', $this->getObject()->getDocument()->chais->commune);
+			$this->setDefault('chais_code_postal', $this->getObject()->getDocument()->chais->code_postal);
+		}
     }
 
     public function save($con = null) {
@@ -81,6 +89,16 @@ class EtablissementForm extends acCouchdbObjectForm
     		}
     	}
 		parent::doUpdateObject($values);
+        if ($this->getObject()->getDocument()->exist('chais')) {
+		$this->getObject()->getDocument()->chais->adresse = $values['chais_adresse'];
+		$this->getObject()->getDocument()->chais->commune = $values['chais_commune'];
+		$this->getObject()->getDocument()->chais->code_postal = $values['chais_code_postal'];
+
+		if(!$this->getObject()->getDocument()->isAdresseLogementDifferente()) {
+		    $this->getObject()->getDocument()->remove('chais');
+		    $this->getObject()->getDocument()->add('chais');
+		}
+        }
 
 	}
 

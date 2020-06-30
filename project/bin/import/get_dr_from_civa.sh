@@ -34,6 +34,7 @@ wget -O $TMP_CSV_DIR.csv $HTTP_CIVA_DATA/DR/$CAMPAGNE.csv
 mkdir $TMP_CSV_DIR 2> /dev/null
 cat $TMP_CSV_DIR.csv | grep -v '^"CVI acheteur"' | awk -F '";"' '{ print >> ("'$TMP_CSV_DIR'/DR_" $3 "_'$CAMPAGNE'.csv")}'
 rsync -av $TMP_CSV_DIR/*.csv $DATA_DIR/
+cp $TMP_CSV_DIR.csv $DATA_DIR.csv
 rm -rf $TMP_CSV_DIR $TMP_CSV_DIR.csv
 
 echo "CSV synchronisés dans $DATA_DIR"

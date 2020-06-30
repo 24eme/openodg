@@ -118,7 +118,8 @@ EOF;
             try {
                 $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."",  $arguments['campagne']);
             } catch(Exception $e) {
-                echo $recoltant . " : " . $e->getMessage()."\n";
+                $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($recoltant."", $arguments['campagne'], acCouchdbClient::HYDRATE_JSON);
+                echo $recoltant . " : " . $e->getMessage()." ".(($drev && $drev->validation_odg) ? $drev->_id : null)."\n";
                 continue;
             }
             if (!$registre->isNew()) {

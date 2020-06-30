@@ -1,3 +1,7 @@
 all:
   is_secure: true
   credentials: ADMIN
+odg:
+  credentials: [[ADMIN, teledeclaration_drev_admin]]
+habilitation:
+  credentials: [[ADMIN, teledeclaration_drev_admin]]

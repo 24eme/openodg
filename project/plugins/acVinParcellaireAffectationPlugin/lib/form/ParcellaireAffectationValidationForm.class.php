@@ -3,10 +3,6 @@
 class ParcellaireAffectationValidationForm extends acCouchdbObjectForm {
 
     public function configure() {
-        if(!$this->getObject()->isPapier()) {
-            $this->setWidget('autorisation_acheteur', new sfWidgetFormInputCheckbox());
-            $this->setValidator('autorisation_acheteur', new sfValidatorBoolean());
-        }
 
         if($this->getObject()->isPapier()) {
             $this->setWidget('date', new sfWidgetFormInput());
@@ -15,22 +11,30 @@ class ParcellaireAffectationValidationForm extends acCouchdbObjectForm {
             $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");
         }
 
+        if (sfConfig::get('app_document_validation_signataire')) {
+        	$this->setWidget('signataire', new sfWidgetFormInput());
+    		$this->setValidator('signataire', new sfValidatorString(array('required' => true)));
+    		$this->getWidget('signataire')->setLabel("Nom et prénom :");
+            $this->getValidator('signataire')->setMessage("required", "Le nom et prénom du signataire est requise");
+        }
+
+        $this->setWidget('observations',new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
+        $this->setValidator('observations',new sfValidatorString(array('required' => false)));
+
         $this->widgetSchema->setNameFormat('parcellaire_validation[%s]');
     }
 
     protected function doUpdateObject($values) {
-        if(!$this->getObject()->isPapier()) {
-            $this->getObject()->autorisation_acheteur = $values['autorisation_acheteur'];
-            $this->getObject()->validate();
-
-            return;
-        }
-
+		parent::doUpdateObject($values);
         if($this->getObject()->isPapier()) {
-            $this->getObject()->autorisation_acheteur = false;
             $this->getObject()->validate($values['date']);
-
-            return;
+        } else {
+        	$this->getObject()->validate();
+        }
+        foreach ($this->getObject()->getParcelles() as $parcelle) {
+            if ($parcelle->affectation) {
+                $parcelle->date_affectation = date('Y-m-d');
+            }
         }
     }
 

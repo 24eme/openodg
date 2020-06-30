@@ -41,7 +41,7 @@
 </div>
 <hr />
 <?php endif; ?>
-<?php if(!isset($form['produit']) && !isset($form['activite'])): ?>
+<?php if(!isset($form['produit']) && !isset($form['activites'])): ?>
     <?php foreach($form->getDocument()->getProduitsHabilites() as $produit): ?>
     <div class="row form-group">
         <div class="col-xs-4 text-right control-label">
@@ -66,6 +66,54 @@
     <hr />
     <?php endforeach; ?>
 <?php endif; ?>
+<?php endif; ?>
+
+
+<?php if(isset($demande)): ?>
+    <div class="row form-group">
+        <div class="col-xs-4 text-right control-label">
+            Produit :
+        </div>
+        <div class="col-xs-6">
+            <p class="form-control-static">
+                <?php echo $demande->getProduitLibelle(); ?>
+            </p>
+        </div>
+    </div>
+    <div id="bloc_activite_info" class="row form-group">
+        <div class="col-xs-4 text-right control-label">
+            Activites :
+        </div>
+        <div class="col-xs-6">
+            <p class="form-control-static">
+                <?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()); ?> <?php if(count($demande->getActivitesLibelle()) > 1): ?>
+                <?php if(isset($form['activites'])): ?>
+                <small><a id="btn_demande_separer" onclick="if(!confirm('Étes vous sûr de vouloir séparer les activités de cette demande ?')) { return false; } document.getElementById('bloc_activite_division').classList.remove('hidden'); document.getElementById('bloc_activite_info').classList.add('hidden'); return false;" href="" style="opacity: 0.6;" class="small">Séparer</a></small><?php endif; ?>
+                <?php endif; ?>
+            </p>
+        </div>
+    </div>
+    <?php if(isset($form['activites'])): ?>
+    <div id="bloc_activite_division" class="row form-group hidden">
+        <div class="col-xs-4 text-right control-label">
+            Activités :
+        </div>
+        <div class="col-xs-6">
+            <span class="text-danger"><?php echo $form['activites']->renderError() ?></span>
+            <?php $activitesWidget = $form['activites']; ?>
+                <?php foreach($activitesWidget->getWidget()->getChoices() as $key => $option): ?>
+                    <div class="checkbox">
+                        <label>
+                            <input class="acheteur_checkbox" type="checkbox" id="<?php echo $activitesWidget->renderId() ?>_<?php echo $key ?>" name="<?php echo $activitesWidget->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($activitesWidget->getValue()) && in_array($key, $activitesWidget->getValue())): ?>checked="checked"<?php endif; ?> />&nbsp;&nbsp;<?php echo HabilitationClient::getInstance()->getLibelleActivite($key); ?>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+                <div style="margin-top: 10px;">
+                <a onclick="document.getElementById('bloc_activite_info').classList.remove('hidden'); document.getElementById('bloc_activite_division').classList.add('hidden'); return false;" href="" class="small">Annuler</a>
+                </div>
+        </div>
+    </div>
+    <?php endif; ?>
 <?php endif; ?>
 
 <div class="row form-group">

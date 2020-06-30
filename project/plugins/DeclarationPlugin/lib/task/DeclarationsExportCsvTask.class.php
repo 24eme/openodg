@@ -18,6 +18,7 @@ class DeclarationsExportCsvTask extends sfBaseTask
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
             new sfCommandOption('sleep_second', null, sfCommandOption::PARAMETER_REQUIRED, 'secont to wait', false),
             new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', 1000),
+            new sfCommandOption('region', null, sfCommandOption::PARAMETER_REQUIRED, "region de l'ODG (si non renseignée toutes les régions sont utilisées)", null),
         ));
 
         $this->namespace = 'declarations';
@@ -40,29 +41,35 @@ EOF;
 
         $ids = DeclarationClient::getInstance()->getIds($arguments['type'], $arguments['campagne']);
 
-
         $sleepSecond = false;
         if($options['sleep_second']) {
             $sleepSecond = $options['sleep_second']*1;
         }
-
         $sleepStep = $options['sleep_step']*1;
-
         $step = 0;
+
+        $region = $options['region'];
+
         foreach($ids as $id) {
             $tobeexported = true;
             while ($tobeexported) {
-                try  {
-                    $doc = DeclarationClient::getInstance()->find($id);
-                    $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
+                try {
+                    $doc = null;
+                    try{
+                      $doc = DeclarationClient::getInstance()->find($id);
+                      if(method_exists($doc,'getMaster') && $doc->getMaster()->_id != $doc->_id){
+                        continue 2;
+                      }
+                    }catch(sfException $e){
+                      continue 2;
+                    }
+                    $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false, $region);
 
                     if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
-                        $tobeexported = false;
                         continue 2;
                     }
 
                     if(method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
-                        $tobeexported = false;
                         continue 2;
                     }
 
@@ -72,7 +79,9 @@ EOF;
                     sleep(60);
                     continue;
                 }
+
                 $tobeexported = false;
+
             }
             $step++;
             if($sleepStep && $sleepSecond && $step > $sleepStep) {
@@ -80,7 +89,5 @@ EOF;
                 $step = 0;
             }
         }
-
-
     }
 }

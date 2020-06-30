@@ -27,7 +27,7 @@
 \newcommand{\CutlnPapillon}{\Rightscissors \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline
 \\
 }
-\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_provence.png}
+\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_provence2.png}
 
 
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
@@ -45,7 +45,7 @@
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
-\def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
+\def\FACTUREDECLARANTCOMMUNE{<?php echo escape_string_for_latex($facture->declarant->commune); ?>}
 \def\FACTUREMEMBRERS{<?php echo escape_string_for_latex($facture->declarant->raison_sociale); ?>}
 \def\FACTUREMEMBREADRESSE{<?php echo escape_string_for_latex($facture->declarant->adresse); ?>}
 \def\FACTUREMEMBRECOMMUNE{<?php echo escape_string_for_latex($facture->declarant->commune); ?>}
@@ -65,8 +65,8 @@
 \renewcommand{\headrulewidth}{0cm}
 \renewcommand\sfdefault{phv}
 \renewcommand{\familydefault}{\sfdefault}
-\fancyhead[L]{\includegraphics[scale=2.5]{\LOGO}}
-\fancyhead[C]{ \large{\textbf{\EMETTEURLIBELLE} \\ \EMETTEURADRESSE \\
+\fancyhead[L]{\includegraphics[scale=0.11]{\LOGO}}
+\fancyhead[R]{ \large{\textbf{\EMETTEURLIBELLE} \\ \EMETTEURADRESSE \\
 		\EMETTEURCP \\ \EMETTEURVILLE}}
 \fancypagestyle{nofooter}{%
 	  \fancyfoot{}%

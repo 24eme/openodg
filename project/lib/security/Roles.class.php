@@ -44,10 +44,6 @@ class Roles
       );
 
       public static $teledeclarationLibellesShort = array(
-        self::TELEDECLARATION_VRAC => "Signature contrats",
-        self::TELEDECLARATION_VRAC_CREATION => "Création contrats",
-        self::TELEDECLARATION_DRM => "DRM",
-        self::TELEDECLARATION_DOUANE => "Transmission Ciel",
         );
 
     protected static $hierarchy = array(

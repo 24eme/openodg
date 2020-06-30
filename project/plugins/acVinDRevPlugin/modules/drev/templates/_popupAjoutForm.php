@@ -12,7 +12,7 @@
 					<span class="error"><?php echo $form['hashref']->renderError() ?></span>
 					<div class="form-group row">
 						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['hashref']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+						<?php echo $form['hashref']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
 					<?php if(isset($form['lieu'])): ?>
@@ -27,7 +27,7 @@
 					<span class="error"><?php echo $form['denomination_complementaire']->renderError() ?></span>
 					<div class="form-group row">
 						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['denomination_complementaire']->render(array("placeholder" => "Saisissez une mention valorisante", "class" => "form-control", "required" => false)) ?>
+						<?php echo $form['denomination_complementaire']->render(array("placeholder" => "(Optionnel) Saisissez une mention valorisante", "class" => "form-control", "required" => false)) ?>
 						</div>
 					</div>
 					<?php endif; ?>

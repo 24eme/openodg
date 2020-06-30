@@ -18,7 +18,8 @@ foreach ($results as $res) {
   $id_societe = preg_replace('/SOCIETE-/', '', $data['doc']['id_societe']);
   $mot_de_passe = $data['doc']['mot_de_passe'];
   if(!$mot_de_passe){
-    $mot_de_passe = compteClient::getInstance()->find("COMPTE-".$id_societe,acCouchdbClient::HYDRATE_JSON)->mot_de_passe;
+      $compteclient = compteClient::getInstance()->find("COMPTE-".$id_societe,acCouchdbClient::HYDRATE_JSON);
+      $mot_de_passe = ($compteclient) ? $compteclient->mot_de_passe : '';
   }
   $telephone_societe = isset($societe_informations['telephone'])? $societe_informations['telephone'] : '';
   $adresses = Compte::transformAdressesToPostal($data['doc']['adresse'], $data['doc']['adresse_complementaire']);

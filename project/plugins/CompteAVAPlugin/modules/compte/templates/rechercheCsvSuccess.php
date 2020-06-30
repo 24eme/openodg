@@ -5,8 +5,8 @@ printf("\xef\xbb\xbf");//UTF8 BOM (pour windows)
 echo "#nom complet ; type ; raison sociale ; civilité ; nom ; prénom ; adresse complement destinataire ; adresse ; adresse complément lieu; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone privé ; fax ; email ; cvi ;  siret ; statut ; date de création ; date d'archivage ; identifiant interne ; id ; attributs ; produits ; syndicats ; mots clés ; formations ; commentaires\n";
 $allTypeCompte = CompteClient::getInstance()->getAllTypesCompteWithLibelles();
 foreach ($results as $res) {
-    $data = $res->getData()->getRawValue();
-    
+    $data = $res->getData()['doc']->getRawValue();
+
     echo '"' . escapeCSVValue($data['nom_a_afficher']) . '";';
     echo '"' . escapeCSVValue($allTypeCompte[$data['type_compte']]) . '";';
     echo '"' . escapeCSVValue($data['raison_sociale']) . '";';
@@ -31,10 +31,10 @@ foreach ($results as $res) {
     echo '"' . escapeCSVValue($data['date_archivage']) . '";';  
     echo '"' . escapeCSVValue($data['identifiant_interne']) . '";';  
     echo '"' . escapeCSVValue($data['_id']) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['attributs'])) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['produits'])) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['syndicats'])) . '";';  
-    echo '"' . escapeCSVValue(implode(", ", $data['infos']['manuels'])) . '";';
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['attributs'])) . '";';  
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['produits'])) . '";';  
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['syndicats'])) . '";';  
+    echo '"' . escapeCSVValue(implode(", ", $data['tags']['manuels'])) . '";';
     echo '"';
     if(isset($data['formations'])) {
         $i = 0;

@@ -45,3 +45,11 @@ parcellaire_import_csv:
   options:
     model: Etablissement
     type: object
+
+parcellaire_map:
+  url: /parcellaire/map/:identifiant
+  param: { module: parcellaire, action: map}
+  class: ParcellaireDeclarantRoute
+  options:
+    model: Etablissement
+    type: object

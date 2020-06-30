@@ -8,7 +8,7 @@ class DRevUploadDrForm extends FichierForm
 		$this->setWidget('visibilite', new sfWidgetFormInputHidden());
 		$this->widgetSchema->setLabel('file', 'Fichier');
 		$required = (!$this->options['papier']);
-		$this->setValidator('file', new sfValidatorFile(array('required' => $required, 'mime_types' => array('application/vnd.ms-office', 'application/vnd.ms-excel'), 'path' => sfConfig::get('sf_cache_dir')), array('mime_types' => 'Fichier de type xls attendu')));
+		$this->setValidator('file', new sfValidatorFile(array('required' => $required, 'mime_types' => array('application/vnd.ms-office', 'application/vnd.ms-excel', 'text/csv', 'text/plain'), 'path' => sfConfig::get('sf_cache_dir')), array('mime_types' => 'Fichier de type xls ou csv attendu')));
 	}
 
 	public function save() {

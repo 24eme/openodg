@@ -58,7 +58,7 @@
                         <a href="<?php echo url_for('compte_visualisation', $compte); ?>" class="btn btn-default">Annuler</a>
                     <?php endif; ?>
                 </div><div class="col-xs-6 text-right">
-                    <button class="btn btn-success">Valider</button>
+                    <button id="btn_valider" type="submit" class="btn btn-success">Valider</button>
                 </div>
 
             </form>

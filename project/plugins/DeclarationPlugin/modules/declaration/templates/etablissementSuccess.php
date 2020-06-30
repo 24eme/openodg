@@ -1,7 +1,10 @@
 <ol class="breadcrumb">
 
   <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php endif; ?>
+ <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
   <li class="active"><a href=""><?php echo $campagne ?>-<?php echo $campagne +1 ?></a></li>
 </ol>
 
@@ -29,6 +32,25 @@
         <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
+    <?php  if(!$sf_user->isAdmin() && ($etablissement->getSociete() && count($etablissement->getSociete()->getEtablissementsObj(false)) > 1)): ?>
+      <section id="principal">
+          <form id="choix_etablissement" method="post" action="<?php echo url_for('drev_societe_choix_etablissement', array('identifiant' => $etablissement->identifiant)) ?>">
+            <br/>
+               <div >
+                  <div class="bloc_form bloc_form_condensed">
+                  <?php echo $etablissementChoiceForm->renderHiddenFields() ?>
+                  <?php echo $etablissementChoiceForm->renderGlobalErrors() ?>
+
+                  <div class="row">
+                      <?php echo $etablissementChoiceForm['etablissementChoice']->renderError() ?>
+                      <div class="col-md-3"><?php echo $etablissementChoiceForm['etablissementChoice']->renderLabel() ?></div>
+                      <div class="col-md-6"><?php echo $etablissementChoiceForm['etablissementChoice']->render(array('class' => 'select2autocomplete societe_choix_etablissement', 'style' => "width: 100%;")) ?></div>
+                  </div>
+                  </div>
+               </div>
+          </form>
+      </section>
+    <?php  endif; ?>
 </div>
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
@@ -42,9 +64,6 @@
     <?php if(class_exists("TravauxMarc")): ?>
     <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
-    <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
-    <?php endif; ?>
     <?php if(class_exists("Parcellaire") && in_array('parcellaire', sfConfig::get('sf_enabled_modules')) && sfContext::getInstance()->getController()->componentExists('parcellaire', 'monEspace')): ?>
     <?php include_component('parcellaire', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php endif; ?>
@@ -53,6 +72,12 @@
     <?php endif; ?>
     <?php if(class_exists("ParcellaireIrrigue") && in_array('parcellaireIrrigue', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
+    <?php if($sf_user->isAdmin() && class_exists("ParcellaireIntentionAffectation") && in_array('parcellaireIntentionAffectation', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('parcellaireIntentionAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php endif; ?>
+    <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireCremant") && in_array('parcellaireCremant', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
@@ -77,11 +102,9 @@
             </div>
             <div class="panel-body">
                 <p>Accéder à l'espace de mise à disposition de vos factures en téléchargement</p>
-            </div>
-            <div class="panel-bottom">
-                <p style="margin-top: 50px;">
+                <div style="margin-top: 50px;">
                     <a class="btn btn-lg btn-block btn-primary" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
-                </p>
+                </div>
             </div>
         </div>
     </div>

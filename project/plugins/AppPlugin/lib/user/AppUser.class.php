@@ -12,6 +12,7 @@ class AppUser extends sfBasicSecurityUser {
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
     const CREDENTIAL_HABILITATION = "habilitation";
+    const CREDENTIAL_DREV_REGION = "COMPTE_REGION";
 
     public function signInOrigin($login_or_compte) {
 
@@ -113,7 +114,7 @@ class AppUser extends sfBasicSecurityUser {
     	$compte->identifiant = self::CREDENTIAL_ADMIN;
     	$compte->add('login', self::CREDENTIAL_ADMIN);
 
-    	$compte->add("droits", array(self::CREDENTIAL_ADMIN));
+    	$compte->add("droits", sfConfig::get('app_auth_rights', array(self::CREDENTIAL_ADMIN)));
 
     	return $compte;
     }
@@ -145,11 +146,21 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function hasTeledeclaration() {
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION);
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin();
     }
 
-    public function hasTeledeclarationDrevAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN);
+    public function hasDrevAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdmin();
+    }
+
+    public function getTeledeclarationDrevRegion() {
+      $drevConf = DrevConfiguration::getInstance();
+      if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $drevConf->hasValidationOdg()){
+        if(in_array($region, $drevConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
     }
 
 }
