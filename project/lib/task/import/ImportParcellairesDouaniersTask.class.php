@@ -50,7 +50,7 @@ EOF;
         	        $msg = $e->getMessage();
         	    }
         	    if (!empty($msg)) {
-        	        echo sprintf("ERROR;%s\n", $msg);
+        	        echo sprintf("ERROR;%s;%s\n", $item->id, $msg);
         	    } else {
         	        echo sprintf("SUCCESS;Document douanier importé;%s\n", $item->id);
         	    }
