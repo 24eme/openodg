@@ -26,6 +26,7 @@ EOF;
     {
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+        $contextInstance = sfContext::createInstance($this->configuration);
 
 
         $items = EtablissementAllView::getInstance()->findByInterproStatutAndFamilleVIEW('INTERPRO-declaration', 'ACTIF', null);
@@ -42,7 +43,7 @@ EOF;
         	        $errors['csv'] =  '';
         	        $errors['json'] = '';
         	        $msg = '';
-        	        if (!$parcellaire_client->saveParcellaire($etablissement, $errors)) {
+        	        if (!$parcellaire_client->saveParcellaire($etablissement, $errors, $contextInstance)) {
         	            $msg = $errors['csv'].'\n'.$errors['json'];
         	        }
         	    } catch (Exception $e) {
@@ -50,7 +51,6 @@ EOF;
         	    }
         	    if (!empty($msg)) {
         	        echo sprintf("ERROR;%s\n", $msg);
-        	        continue;
         	    } else {
         	        echo sprintf("SUCCESS;Document douanier importé;%s\n", $item->id);
         	    }
