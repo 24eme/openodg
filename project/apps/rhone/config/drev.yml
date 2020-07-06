@@ -1,7 +1,7 @@
 all:
   configuration:
     drev:
-      validation_odg: true
+      validation_odg: false
       odg:
         VINSOBRES:
           nom: "Comité des Vignerons de Vinsobres"
