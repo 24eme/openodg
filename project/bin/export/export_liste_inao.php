@@ -108,7 +108,7 @@ if (($handle = fopen($csv, "r")) !== false) {
 
         $id = generateHash($datas);
 
-        if ($datas[1] != 'VALIDE') {
+        if (!in_array($datas[1], array('VALIDE', 'SUSPENDU'))) {
             continue;
         }
 
