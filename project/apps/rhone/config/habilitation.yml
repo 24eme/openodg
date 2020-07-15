@@ -34,7 +34,6 @@ all:
           VALIDE: "Validé"
           REFUSE: "Refusé"
           ANNULE: "Annulé"
-          SUSPENDU: "Suspendu"
         automatique:
           COMPLET: ENREGISTREMENT
           AVIS_CONFORME_OIVR: TRANSMIS_INAO
@@ -45,7 +44,6 @@ all:
           VALIDE_INAO: VALIDE
           VALIDE_CERTIPAQ: VALIDE
           REFUSE_CERTIPAQ: REFUSE
-          SUSPENDU_INAO: SUSPENDU
         habilitations:
           HABILITATION:
             COMPLET: DEMANDE_HABILITATION
@@ -58,10 +56,10 @@ all:
             VALIDE: RETRAIT
             REFUSE: HABILITE
             ANNULE: HABILITE
-            SUSPENDU: SUSPENDU
+            SUSPENDU_INAO: SUSPENDU
           RESILIATION:
             COMPLET: DEMANDE_RESILIATION
             VALIDE: RESILIE
             REFUSE: HABILITE
             ANNULE: HABILITE
-            SUSPENDU: SUSPENDU
+            SUSPENDU_INAO: SUSPENDU
