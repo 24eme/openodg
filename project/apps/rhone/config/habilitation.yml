@@ -41,7 +41,7 @@ all:
           VALIDE_ODG: VALIDE
           REFUSE_ODG: REFUSE
           VALIDE_INAO: VALIDE
-          VALIDE_INAO: VALIDE
+          REFUSE_INAO: REFUSE
           VALIDE_CERTIPAQ: VALIDE
           REFUSE_CERTIPAQ: REFUSE
         habilitations:
