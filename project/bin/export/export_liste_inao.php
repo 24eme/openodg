@@ -53,7 +53,7 @@ foreach ($historique as $h => $d) {
         if ($tabH[4] == 'ENREGISTREMENT') {
             $dates[$key]['enregistrement'] = $d;
         }
-        if (strpos($tabH[4], 'VALIDE') !== false) {
+        if (strpos($tabH[4], 'VALIDE') !== false || strpos($tabH[4], 'SUSPENDU') !== false) {
             $dates[$key]['decision'] = $d;
         }
     }
@@ -175,6 +175,11 @@ foreach ($selected_datas as $k => $d) {
             $a_comp = (isset($adresses[1]))? $adresses[1] : "";
             $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
+            $statutHabilitation = $datas[7];
+            if($datas[1] != "VALIDE") {
+                $statutHabilitation = $datas[1];
+            }
+
             echo $datas[10].";".$date_depot.";".$date_enregistrement.";".$compte->etablissement_informations->cvi.";".$compte->societe_informations->siret.";".$datas[2].";".$compte->nom_a_afficher.";".$a.";".$a_comp.";".$a_comp1.";";
-            echo $compte->societe_informations->code_postal.";".$compte->societe_informations->commune.";".$compte->telephone_bureau.";".$compte->fax.";".$compte->email.";".$type.";".$datas[7].";".$date_decision.";".$datas[4]."\n";
+            echo $compte->societe_informations->code_postal.";".$compte->societe_informations->commune.";".$compte->telephone_bureau.";".$compte->fax.";".$compte->email.";".$type.";".$statutHabilitation.";".$date_decision.";".$datas[4]."\n";
 }
