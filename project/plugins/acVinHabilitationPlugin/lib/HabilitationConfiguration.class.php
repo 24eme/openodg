@@ -63,7 +63,7 @@ class HabilitationConfiguration {
 
     public function getDemandeStatutsFerme() {
 
-        return array('VALIDE', 'REFUSE', 'ANNULE', 'SUSPENDU');
+        return array('VALIDE', 'REFUSE', 'ANNULE');
     }
 
 }
