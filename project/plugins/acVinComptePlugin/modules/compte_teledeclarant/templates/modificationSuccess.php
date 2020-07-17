@@ -25,7 +25,7 @@ if($compte->getSociete()->isTransaction()){
               </div>
 
                 <?php if ($sf_user->hasFlash('maj')) : ?>
-                    <p class="col-xs-12 flash_message text-info"><?php echo $sf_user->getFlash('maj'); ?></p>
+                    <p class="alert alert-success"><?php echo $sf_user->getFlash('maj'); ?></p>
                 <?php endif; ?>
                 <div class="col-xs-8" >
                   <div class="row">
