@@ -339,7 +339,7 @@ class FactureClient extends acCouchdbClient {
         }else{
           $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
           foreach($comptes as $compte) {
-            $ids[] = $compte->_id;
+            $ids[] = $compte->doc['_id'];
           }
         }
 
