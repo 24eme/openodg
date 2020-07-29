@@ -59,7 +59,7 @@ EOF;
           $csv = explode(';', $line);
 
 
-          if (($csv[self::DRCIVA_APPELLATION] != 'AOC Alsace blanc') && ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace')) {
+          if ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace') {
             continue;
           }
           if ($csv[self::DRCIVA_VTSGN]) {
@@ -167,6 +167,10 @@ EOF;
           if(!$drev || !$drev->validation_odg) {
               echo "Pas de drev ou pas validé : ".$recoltant."\n";
               continue;
+          }
+
+          if($registre->getTotalMouvement(RegistreVCIClient::MOUVEMENT_CONSTITUE) < 1) {
+              $registre->superficies_facturables = 0;
           }
 
           echo "Superficie facturable : ".$registre->superficies_facturables."\n";

@@ -73,7 +73,6 @@ $c = new sfDomCssSelector($b->getResponseDom());
 $t->is($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), null, "Aucun fichier");
 
 $b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
-$b->isForwardedTo('fichier', 'get');
 $t->is($b->getResponse()->getStatusCode(), 403, "Téléchargement du fichier protégé");
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
@@ -135,7 +134,6 @@ $c = new sfDomCssSelector($b->getResponseDom());
 $t->is($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), null, "Aucun fichier");
 
 $b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
-$b->isForwardedTo('fichier', 'get');
 $t->is($b->getResponse()->getStatusCode(), 403, "Téléchargement du fichier protégé");
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");

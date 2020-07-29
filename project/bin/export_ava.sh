@@ -4,12 +4,28 @@
 
 mkdir $EXPORTDIR 2> /dev/null
 
+split_export_by_annee () {
+    EXPORTTYPE=$1
+    FILEPART=$EXPORTDIR/$EXPORTTYPE.csv.part
+    cat $FILEPART | cut -d ";" -f 1 | sort | uniq | grep -E "^[0-9]+" | while read annee; do
+        FILEPARTANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv.part
+        FILEANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv
+        mkdir $EXPORTDIR/$annee 2> /dev/null;
+        head -n 1 $FILEPART > $FILEPARTANNEE
+        cat $FILEPART | sort -t ";" -k 1,1 | grep -E "^$annee;" >> $FILEPARTANNEE
+        iconv -f UTF8 -t ISO88591//TRANSLIT $FILEPARTANNEE > $FILEANNEE
+        rm $FILEPARTANNEE
+    done;
+}
+
 bash bin/export_docs.sh DRev > $EXPORTDIR/drev.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev.csv.part > $EXPORTDIR/drev.csv
+split_export_by_annee "drev"
 rm $EXPORTDIR/drev.csv.part
 
 bash bin/export_docs.sh DRevMarc > $EXPORTDIR/drev_marc.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_marc.csv.part > $EXPORTDIR/drev_marc.csv
+split_export_by_annee "drev_marc"
 rm $EXPORTDIR/drev_marc.csv.part
 
 bash bin/export_docs.sh Facture > $EXPORTDIR/facture.csv.part
@@ -22,18 +38,22 @@ rm $EXPORTDIR/parcellaire.csv.part
 
 bash bin/export_docs.sh TravauxMarc > $EXPORTDIR/travaux_marc.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/travaux_marc.csv.part > $EXPORTDIR/travaux_marc.csv
+split_export_by_annee "travaux_marc"
 rm $EXPORTDIR/travaux_marc.csv.part
 
 bash bin/export_docs.sh Tirage > $EXPORTDIR/tirage.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/tirage.csv.part > $EXPORTDIR/tirage.csv
+split_export_by_annee "tirage"
 rm $EXPORTDIR/tirage.csv.part
 
 bash bin/export_docs.sh RegistreVCI > $EXPORTDIR/registre_vci.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/registre_vci.csv.part > $EXPORTDIR/registre_vci.csv
+split_export_by_annee "registre_vci"
 rm $EXPORTDIR/registre_vci.csv.part
 
 bash bin/export_docs.sh Constats 5 > $EXPORTDIR/constats.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/constats.csv.part > $EXPORTDIR/constats.csv
+split_export_by_annee "constats"
 rm $EXPORTDIR/constats.csv.part
 
 echo "campagne;categorie;nombre opérateurs;superficie totale" > $EXPORTDIR/facture_stats.csv.part;
@@ -47,7 +67,8 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/facture_stats.csv.part > $EXPORTD
 rm $EXPORTDIR/facture_stats.csv.part
 
 for ((i=2015 ; $(date +%Y) -i ; i++)); do
-       curl -s "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/dr_"$i".csv
+    mkdir $EXPORTDIR/$i 2> /dev/null;
+    curl -s "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/$i/"$i"_dr.csv
 done
 
 rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
@@ -62,3 +83,6 @@ for ((i=2018 ; $(date +%Y) -i ; i++)); do
     cat $EXPORTDIR/bilan_vci.tmp.csv | tail -n +2 >> $EXPORTDIR/bilan_vci.csv
 done
 rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
+iconv -f ISO88591//TRANSLIT -t UTF8 $EXPORTDIR/bilan_vci.csv > $EXPORTDIR/bilan_vci.csv.part
+split_export_by_annee "bilan_vci"
+rm $EXPORTDIR/bilan_vci.csv.part

@@ -162,6 +162,16 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return $registreSuivant;
       }
 
+      public function getTotalMouvement($mouvement) {
+          $total = 0;
+
+          foreach($this->getProduits() as $produit) {
+              $total = $total + $produit->get($mouvement);
+          }
+
+          return round($total, 2);
+      }
+
       public function getAllPieces() {
       	$title = 'Registre VCI';
       	return array(array(

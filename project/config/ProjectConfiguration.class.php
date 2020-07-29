@@ -32,7 +32,7 @@ class ProjectConfiguration extends sfProjectConfiguration
             $this->enablePlugins('acVinTiragePlugin');
             $this->enablePlugins('acVinDRevMarcPlugin');
             $this->enablePlugins('acVinTravauxMarcPlugin');
-            $this->enablePlugins('acVinDegustationPlugin');
+            $this->enablePlugins('acVinDegustationAVAPlugin');
             $this->enablePlugins('acVinTourneePlugin');
             $this->enablePlugins('acVinConstatsVTSGNPlugin');
             $this->enablePlugins('acVinRegistreVCIPlugin');
@@ -55,6 +55,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('SV11Plugin');
         $this->enablePlugins('SV12Plugin');
         $this->enablePlugins('acVinPotentielProductionPlugin');
+        $this->enablePlugins('acVinDegustationPlugin');
     }
 
     public function setRootDir($rootDir)
