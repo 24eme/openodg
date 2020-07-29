@@ -23,7 +23,7 @@ class DouaneImportCsvFile {
     }
 
     public static function numerizeVal($val, $nbDecimal = 2) {
-    	return (is_numeric($val))? str_replace('.', ',', sprintf('%01.'.$nbDecimal.'f', $val)) : $val;
+    	return (is_numeric($val))? str_replace('.', ',', sprintf('%01.'.$nbDecimal.'f', str_replace(',', '.', $val))) : str_replace('.', ',', $val);
     }
 
     public static function cleanStr($val) {

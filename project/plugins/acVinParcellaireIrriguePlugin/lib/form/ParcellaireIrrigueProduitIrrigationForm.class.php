@@ -3,7 +3,7 @@
 class ParcellaireIrrigueProduitIrrigationForm extends acCouchdbObjectForm {
 
     public function configure() {
-		if ($this->getObject()->irrigation) {
+		if ($this->getObject()->irrigation && (!$this->getObject()->getDocument()->exist('papier') || !$this->getObject()->getDocument()->papier)) {
 			$this->setWidgets(array(
 					'irrigation' => new sfWidgetFormInputHidden(),
 			));

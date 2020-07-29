@@ -73,26 +73,27 @@ class ParcellaireClient extends acCouchdbClient {
      * @throws Exception Si aucun CVI trouvé
      * @return string Le fichier le plus récent
      */
-    public function scrapeParcellaireCSV($cvi)
+    public function scrapeParcellaireCSV($cvi, $contextInstance = null)
     {
+        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
 
-        sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".$scrapybin."/download_parcellaire.sh $cvi");
+        $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".$scrapybin."/download_parcellaire.sh $cvi");
         exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
-        sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
+        $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
 
         $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
 
         if (empty($files)) {
-            sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
+            $contextInstance->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
         }
         if ($status != 0) {
-            sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique");
+            $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique");
         }
 
         if (empty($files) || $status != 0) {
-            sfContext::getInstance()->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
+            $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
             throw new Exception("Le scraping n'a retourné aucun résultat.");
         }
 
@@ -106,14 +107,15 @@ class ParcellaireClient extends acCouchdbClient {
      * @throws Exception Si aucun CVI trouvé
      * @return string Le fichier le plus récent
      */
-    public function scrapeParcellaireJSON($cvi)
+    public function scrapeParcellaireJSON($cvi, $contextInstance = null)
     {
+        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $scrapydocs = sfConfig::get('app_scrapy_documents');
         $scrapybin = sfConfig::get('app_scrapy_bin');
 
-        sfContext::getInstance()->getLogger()->info("scrapeParcellaireJSON:  $scrapybin/download_parcellaire_geojson.sh $cvi");
+        $contextInstance->getLogger()->info("scrapeParcellaireJSON:  $scrapybin/download_parcellaire_geojson.sh $cvi");
         exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
-        sfContext::getInstance()->getLogger()->info("scrapeParcellaireJSON: output: ".implode(' - ', $output));
+        $contextInstance->getLogger()->info("scrapeParcellaireJSON: output: ".implode(' - ', $output));
         $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
         $message = "";
 
@@ -126,7 +128,7 @@ class ParcellaireClient extends acCouchdbClient {
         }
 
         if(!empty($message)){
-            sfContext::getInstance()->getLogger()->info("scrapeParcellaireJSON: error: ".$message);
+            $contextInstance->getLogger()->info("scrapeParcellaireJSON: error: ".$message);
             throw new Exception($message);
         }
 
@@ -143,11 +145,11 @@ class ParcellaireClient extends acCouchdbClient {
      *
      * @return bool
      */
-    public function saveParcellaire(Etablissement $etablissement, Array &$errors)
+    public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null)
     {
-        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi);
-        $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv']);
-        $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi);
+        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
+        $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
+        $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
         return $return && $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
     }
 
@@ -176,16 +178,17 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public function saveParcellaireGeoJson($etablissement, $path, &$error){
+    public function saveParcellaireGeoJson($etablissement, $path, &$error, $contextInstance = null){
+        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         try {
 
-            $parcellaire = new ParcellaireJsonFile($etablissement, $path);
+            $parcellaire = new ParcellaireJsonFile($etablissement, $path, $contextInstance);
 
             $parcellaire->save();
 
         } catch (Exception $e) {
             $error = "Une erreur lors du sauvégardage !";
-            sfContext::getInstance()->getLogger()->info("saveParcellaireGeoJson() : exception ".$e->getMessage());
+            $contextInstance->getLogger()->info("saveParcellaireGeoJson() : exception ".$e->getMessage());
             return false;
         }
 
@@ -193,14 +196,15 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public function saveParcellaireCSV(Etablissement $etablissement, $path, &$error){
+    public function saveParcellaireCSV(Etablissement $etablissement, $path, &$error, $contextInstance = null){
+        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         try {
             $csv = new Csv($path);
-            $parcellaire = new ParcellaireCsvFile($etablissement, $csv);
+            $parcellaire = new ParcellaireCsvFile($etablissement, $csv, $contextInstance);
             $parcellaire->convert();
 
         } catch (Exception $e) {
-            sfContext::getInstance()->getLogger()->info("saveParcellaireCSV() : exception ".$e->getMessage());
+            $contextInstance->getLogger()->info("saveParcellaireCSV() : exception ".$e->getMessage());
             $error = $e->getMessage();
             return false;
         }
