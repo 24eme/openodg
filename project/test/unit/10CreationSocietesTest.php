@@ -29,7 +29,7 @@ if($application == "ivbd") {
     $codePostalRegion = "24100";
 }
 
-$societeviti = SocieteClient::getInstance()->createSociete("SARL société viti test", SocieteClient::TYPE_OPERATEUR);
+$societeviti = SocieteClient::getInstance()->createSociete("SARL ACTUALYS JEAN", SocieteClient::TYPE_OPERATEUR);
 
 
 $societeviti->email = "email@societe.com";
@@ -54,9 +54,9 @@ $t->ok(preg_match('/^'.SocieteClient::getInstance()->getSocieteFormatIdentifiant
 $t->is($societeviti->date_modification, date('Y-m-d'), "La date de modification de la société à la date du jour");
 $id = $societeviti->getidentifiant();
 $t->is($societeviti->code_comptable_client, $societeviti->identifiant, "Le code comptable a bien été créé");
-$t->is($societeviti->raison_sociale, "SARL société viti test", "La raison sociale est correcte");
+$t->is($societeviti->raison_sociale, "SARL ACTUALYS JEAN", "La raison sociale est correcte");
 $t->is($societeviti->getIntitule(), "SARL", "L'intitulé est SARL");
-$t->is($societeviti->getRaisonSocialeWithoutIntitule(), "société viti test", "La raison sociale sans l'intitule");
+$t->is($societeviti->getRaisonSocialeWithoutIntitule(), "ACTUALYS JEAN", "La raison sociale sans l'intitule");
 
 $compteSociete = CompteClient::getInstance()->findByIdentifiant($id);
 
