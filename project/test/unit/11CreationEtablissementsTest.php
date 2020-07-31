@@ -49,6 +49,7 @@ $etablissementviti->commune = "cummune etb";
 $etablissementviti->pays = "FR";
 $etablissementviti->insee = "98475";
 $etablissementviti->ppm = "P123456798";
+$etablissementviti->cvi = "7523700100";
 
 
 $etablissementviti->save();

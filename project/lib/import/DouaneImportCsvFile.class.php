@@ -12,6 +12,7 @@ class DouaneImportCsvFile {
         $this->doc = $doc;
         $this->campagne = ($doc)? $doc->campagne : date('Y');
         $this->configuration = ConfigurationClient::getConfiguration();
+        $this->cvi = null;
         set_time_limit(30000);
     }
 
