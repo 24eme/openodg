@@ -18,11 +18,12 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_PAIEMENT_CHEQUE = "CHEQUE";
     const FACTURE_PAIEMENT_VIREMENT = "VIREMENT";
     const FACTURE_PAIEMENT_PRELEVEMENT_AUTO = "PRELEVEMENT_AUTO";
+    const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
 
 
     public static $origines = array(self::FACTURE_LIGNE_ORIGINE_TYPE_DRM, self::FACTURE_LIGNE_ORIGINE_TYPE_SV12);
 
-    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique");
+    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
 
     private $documents_origine = array();
 
@@ -338,7 +339,7 @@ class FactureClient extends acCouchdbClient {
         }else{
           $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
           foreach($comptes as $compte) {
-            $ids[] = $compte->_id;
+            $ids[] = $compte->doc['_id'];
           }
         }
 

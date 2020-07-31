@@ -55,7 +55,7 @@
                   <li>
                   <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement && !$facture->exist('avoir')): ?>
                     <li>
-                      <a href="<?php echo url_for("facturation_avoir_defacturant", array("id" => $facture->_id)) ?>" >
+                      <a href="<?php echo url_for("facturation_avoir_defacturant", array("id" => $facture->_id)) ?>" onclick='return confirm("Étes vous sûr de vouloir créer un avoir ?");' >
                           <span class="glyphicon glyphicon-repeat"></span> Créér un avoir
                     </a>
                   </li>

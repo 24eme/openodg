@@ -59,7 +59,8 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
             }
             $identifiantIdu = null;
             if (count($identifiants) == 1) {
-                $identifiantIdu = (current($identifiants))->identifiant;
+                $currentIndex = (current($identifiants));
+                $identifiantIdu = $currentIndex->identifiant;
             } else {
                 foreach ($identifiants as $id => $obj) {
                     if ($id == $identifiant) {
@@ -78,7 +79,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 echo sprintf("ERROR;Pas de parcellaire;%s\n", implode(';', $data));
                 continue;
             }
-            $parcelles = $intentionDpap->getParcelles(); 
+            $parcelles = $intentionDpap->getParcelles();
             /*
              * AFFECTATION PARFAITE : IDU + CEPAGE + SUPERFICIE
              */
@@ -263,7 +264,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
         }
         $nbParcelle = count($parcelles);
         for($i = ($index+1); $i < $nbParcelle; $i++) {
-            if (($parcelles[$i])->affectation) {
+            if ($parcelles[$i]->affectation) {
                 continue;
             }
             $combinaisons[] = $parcelles[$i];

@@ -20,6 +20,11 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
           if ($doc_found && $doc_found->date === $date) {
+              if($papier) {
+                  $doc_found->add('papier', 1);
+              } else {
+                  $doc_found->add('papier', 0);
+              }
               return $doc_found;
           }
           if (!$doc_found || $doc_found->campagne != $campagne) {
@@ -33,6 +38,11 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
               $parcellaireIrrigue = clone $doc_found;
               $parcellaireIrrigue->constructId();
               $parcellaireIrrigue->updateParcelles();
+              if($papier) {
+                  $parcellaireIrrigue->add('papier', 1);
+              } else {
+                  $parcellaireIrrigue->add('papier', 0);
+              }
           }
           return $parcellaireIrrigue;
       }

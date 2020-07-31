@@ -5,7 +5,8 @@
    "template": "AOC",
    "libelle": "2020 - AOC Alsace",
    "docs": [
-       "DRev"
+       "DRev",
+       "RegistreVCI"
    ],
    "cotisations": {
        "odg_ava": {
@@ -1669,6 +1670,26 @@
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
+                   ],
+                   "callback": "getSurfaceFacturable"
+               }
+           }
+       },
+       "vci": {
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "libelle": "VCI",
+           "code_comptable": "706700",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 15,
+                   "tva": 0,
+                   "libelle": "hectares (récolte 2019)",
+                   "complement_libelle": "",
+                   "docs": [
+                       "RegistreVCI"
                    ],
                    "callback": "getSurfaceFacturable"
                }

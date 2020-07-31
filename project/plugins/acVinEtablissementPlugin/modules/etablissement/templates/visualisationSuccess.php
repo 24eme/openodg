@@ -102,7 +102,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
                 <?php include_partial('compte/visualisationLogin', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
-                <?php if ($etablissement->commentaire) : ?>
+                <?php if ($etablissement->commentaire && $modifiable) : ?>
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
                 <p><?php echo nl2br(html_entity_decode($etablissement->commentaire)); ?></p>
                 <hr />
