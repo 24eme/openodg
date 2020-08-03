@@ -157,7 +157,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3R133",
                                                                "cepages_autorises": [
                                                                    "ALIC.H.B.N",
                                                                    "ALPILLES ROUGE",
@@ -253,7 +253,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3S133",
                                                                "cepages_autorises": [
                                                                    "ALIC.H.B.N",
                                                                    "ALPILLES ROSE",
@@ -349,7 +349,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3B133",
                                                                "cepages_autorises": [
                                                                    "ALIC.H.B.N",
                                                                    "ALPILLES BLANC",
@@ -524,7 +524,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3R007",
                                                                "cepages_autorises": [
                                                                    "ABOURIOU N",
                                                                    "ALEATICO N",
@@ -687,7 +687,7 @@
                                                                "code": "",
                                                                "code_produit": "",
                                                                "code_comptable": "",
-                                                               "code_douane": "",
+                                                               "code_douane": "3S007",
                                                                "cepages_autorises": [
                                                                    "ABOURIOU N",
                                                                    "ALEATICO N",
@@ -857,7 +857,7 @@
                                                                "code": "",
                                                                "code_produit": "",
                                                                "code_comptable": "",
-                                                               "code_douane": "",
+                                                               "code_douane": "3B007",
                                                                "cepages_autorises": [
                                                                    "ABONDANT B",
                                                                    "ABOURIOU N",
@@ -1233,7 +1233,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3R071",
                                                                "cepages_autorises": [
                                                                    "ALEATICO N",
                                                                    "ALIC.H.B.N",
@@ -1448,7 +1448,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3S071",
                                                                "cepages_autorises": [
                                                                    "ALEATICO N",
                                                                    "ALIC.H.B.N",
@@ -1661,7 +1661,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3B071",
                                                                "cepages_autorises": [
                                                                    "ALEATICO N",
                                                                    "ALIC.H.B.N",
@@ -1954,7 +1954,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3R131",
                                                                "cepages_autorises": [
                                                                    "ALEATICO N",
                                                                    "ALIC.H.B.N",
@@ -2108,7 +2108,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3S131",
                                                                "cepages_autorises": [
                                                                    "ALEATICO N",
                                                                    "ALIC.H.B.N",
@@ -2260,7 +2260,7 @@
                                                                "code": "",
                                                                "code_produit": null,
                                                                "code_comptable": null,
-                                                               "code_douane": null,
+                                                               "code_douane": "3B131",
                                                                "cepages_autorises": [
                                                                    "ALEATICO N",
                                                                    "ALIC.H.B.N",
