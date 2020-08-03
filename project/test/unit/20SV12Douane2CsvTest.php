@@ -8,6 +8,11 @@ foreach($config->getProduits() as $produit) {
     break;
 }
 
+$t = new lime_test(29);
+
+$t->ok($produit->getLibelleComplet(), "configuration de base est OK : on a un libellé de produit");
+$t->ok($produit->getCodeDouane(), "configuration de base est OK : le produit a un code douane");
+
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv12_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg');
@@ -19,7 +24,6 @@ unlink($csvTmpFile);
 
 $lines = explode("\n", $csvConvert);
 
-$t = new lime_test(27);
 
 $nb = 0;
 foreach($lines as $line) {
