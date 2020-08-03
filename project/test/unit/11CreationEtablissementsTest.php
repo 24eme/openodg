@@ -43,12 +43,16 @@ $etablissementviti->fax = "77 77 77 77 77";
 
 
 $etablissementviti->adresse = "etb Adresse 1 ";
+$etablissementviti->siege->adresse = "etb Adresse 1 ";
 $etablissementviti->adresse_complementaire = "etb Adresse 2 ";
-$etablissementviti->code_postal = '00000';
-$etablissementviti->commune = "cummune etb";
+$etablissementviti->code_postal = '92000';
+$etablissementviti->siege->code_postal = '92000';
+$etablissementviti->commune = "NEUILLY";
+$etablissementviti->siege->commune = "NEUILLY";
 $etablissementviti->pays = "FR";
 $etablissementviti->insee = "98475";
 $etablissementviti->ppm = "P123456798";
+$etablissementviti->cvi = "7523700100";
 
 
 $etablissementviti->save();
@@ -92,6 +96,7 @@ $etablissementnego->save();
 $id = $etablissementnego->getSociete()->getidentifiant();
 $comptenego = CompteClient::getInstance()->findByIdentifiant($id."01");
 $comptenego->addTag('test', 'test');
+$comptenego->addTag('test', 'test_nego');
 $comptenego->save();
 $t->is($comptenego->tags->automatique->toArray(true, false), array('etablissement','negociant'), "Création d'un etablissement nego met à jour le compte");
 $t->is($etablissementnego->region, EtablissementClient::REGION_CVO, "L'établissement est en région CVO après le save");
@@ -157,5 +162,6 @@ $etablissementcoop->save();
 $id = $etablissementcoop->getSociete()->getidentifiant();
 $comptecoop = CompteClient::getInstance()->findByIdentifiant($id."01");
 $comptecoop->addTag('test', 'test');
+$comptecoop->addTag('test', 'test_coop');
 $comptecoop->save();
 $t->is($comptecoop->tags->automatique->toArray(true, false), array( 'etablissement','cooperative'), "Création d'un etablissement coop met à jour le compte");

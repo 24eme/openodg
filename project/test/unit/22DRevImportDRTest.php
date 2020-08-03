@@ -12,6 +12,8 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
+$t->comment("test avec le viti ".$viti->identifiant." (cvi:".$viti->cvi.")");
+
 $campagne = (date('Y')-1)."";
 
 $csvDouane = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane_'.$application.'.csv');

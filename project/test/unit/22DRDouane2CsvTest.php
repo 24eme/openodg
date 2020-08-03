@@ -46,7 +46,7 @@ $line = explode(";", $lines[0]);
 $t->is($line[DRCsvFile::CSV_TYPE], "DR", "Le type de la ligne est DR");
 $t->is($line[DRCsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
 $t->is($line[DRCsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
-$t->is($line[DRCsvFile::CSV_RECOLTANT_LIBELLE], "\"ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
+$t->is($line[DRCsvFile::CSV_RECOLTANT_LIBELLE], "\"SARL ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
 $t->is($line[DRCsvFile::CSV_RECOLTANT_COMMUNE], "NEUILLY", "Le commune est NEUILLY");
 $t->is($line[DRCsvFile::CSV_PRODUIT_CERTIFICATION], $produit1->getCertification()->getKey(), "Certification OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_GENRE], $produit1->getGenre()->getKey(), "Genre OK");
