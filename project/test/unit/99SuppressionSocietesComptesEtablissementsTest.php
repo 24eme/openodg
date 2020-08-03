@@ -33,9 +33,35 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
                   $sv11 = SV11Client::getInstance()->find(str_replace("DREV-", "SV11-", $id), acCouchdbClient::HYDRATE_JSON);
                   if($sv11) { SV11Client::getInstance()->deleteDoc($sv11); }
               }
+              foreach(acCouchdbManager::getClient()
+                          ->reduce(false)
+                          ->getView('declaration', 'tous')->rows as $row) {
+                  if (preg_match('/-'.$etabl->etablissement->identifiant.'-/', $row->id )) {
+                      $doc = acCouchdbManager::getClient()->find($row->id);
+                      $doc->delete();
+                  }
+              }
           }
         }
         $soc->delete();
         $t->is(CompteClient::getInstance()->findByIdentifiant($m[1].'01'), null, "Suppression de la sociétés ".$m[1]." provoque la suppression de son compte");
+    }
+    if (preg_match('/ETABLISSEMENT-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
+        $etab = EtablissementClient::getInstance()->findByIdentifiant($m[1]);
+        if ($etab) {
+            foreach(acCouchdbManager::getClient()
+                        ->reduce(false)
+                        ->getView('declaration', 'tous')->rows as $row) {
+                if (preg_match('/-'.$etabl->identifiant.'-/', $row->id )) {
+                    $doc = acCouchdbManager::getClient()->find($row->id);
+                    $doc->delete();
+                }
+            }
+            $etab->delete();
+        }
+    }
+    $c = CompteClient::getInstance()->find($k);
+    if ($c) {
+        $c->delete();
     }
 }
