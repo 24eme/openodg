@@ -14,6 +14,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
         //     $drm = DRMClient::getInstance()->find($id);
         //     $drm->delete(false);
         //   }
+        $etabl->etablissement->delete();
       }
       $soc->delete();
     }
