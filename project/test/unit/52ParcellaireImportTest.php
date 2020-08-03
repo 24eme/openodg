@@ -5,7 +5,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
 $t = new lime_test(21);
-$viti = CompteClient::getInstance()->findByIdentifiant('CDP0001001')->getEtablissement();
+$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = date('Y-m-d');
 
 foreach(ParcellaireClient::getInstance()->getHistory($viti->identifiant, ParcellaireClient::TYPE_COUCHDB, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
