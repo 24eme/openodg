@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(16);
+$t = new lime_test(17);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = (date('Y') - 1).date('-m-d');
 
@@ -26,6 +26,7 @@ foreach($parcellaire->getConfigProduits() as $produit) {
 }
 
 $communes = CommunesConfiguration::getInstance()->getByCodeCommune();
+$t->ok($communes, "config/communes.yml contient des communes");
 $commune = current($communes);
 $code_commune = key($communes);
 $numero_ordre_key = "00";
