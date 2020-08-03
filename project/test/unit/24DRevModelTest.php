@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(28);
+$t = new lime_test(29);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -103,6 +103,8 @@ $t->is($drev->validation, NULL, "La DRev n'est plus validée");
 
 $drev->validate();
 $drev->save();
+
+$t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
 
 $mouvements = $drev->mouvements->get($viti->identifiant);
 $t->is(count($mouvements), 4, "La DRev a 4 mouvements");
