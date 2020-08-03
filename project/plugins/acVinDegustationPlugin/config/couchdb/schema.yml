@@ -5,8 +5,9 @@ Degustation:
       _id: {  }
       _rev: {  }
       type: {  }
-      millesime: { }
       date: {  }
+      lieu: {  }
+      etape: {  }
       pieces:
         type: array_collection
         definition:

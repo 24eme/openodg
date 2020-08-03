@@ -1,14 +1,16 @@
-<ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
-</ol>
+<?php include_partial('degustation/breadcrumb'); ?>
 
 <h3>Création d'une dégustation</h3>
 <form action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
+    
+    <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
+    </div>
+    
     <div class="row">
         <div class="col-sm-10 col-xs-12">
-            <div class="form-group <?php if($form["date"]->hasError()): ?>has-error<?php endif; ?>">
+            <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date"]->renderError(); ?>
                 <?php echo $form["date"]->renderLabel("Date de dégustation", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-sm-6 col-xs-8">
@@ -18,6 +20,13 @@
                             <span class="glyphicon-calendar glyphicon"></span>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="form-group <?php if($form["lieu"]->getError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["lieu"]->renderError(); ?>
+                <?php echo $form["lieu"]->renderLabel("Lieu de dégustation", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-sm-6 col-xs-8">
+                	<?php echo $form["lieu"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
             <div class="form-group text-right">

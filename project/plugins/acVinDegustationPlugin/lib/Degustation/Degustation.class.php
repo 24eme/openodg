@@ -29,13 +29,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 
     public function getCampagne() {
 
-        return $this->millesime;
+        return substr($this->date, 0, 4);
     }
 
     public function constructId() {
-        $id = sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date));
+        $id = sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, str_replace("-", "", $this->date), $this->getLieuNom(true));
 
         $this->set('_id', $id);
+    }
+    
+    public function getLieuNom($slugify = false) {
+        return self::getNomByLieu($this->lieu, $slugify);
+    }
+    
+    public static function getNomByLieu($lieu, $slugify = false) {
+        if (strpos($lieu, "—") === false) {
+            throw new sfException('Le lieu « '.$lieu.' » n\'est pas correctement formaté dans la configuration. Séparateur « — » non trouvé.');
+        }
+        $lieuExpld = explode('—', $lieu);
+        return ($slugify)? KeyInflector::slugify($lieuExpld[0]) : $lieuExpld[0];
     }
 
     public function getEtablissementObject() {
@@ -47,23 +59,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 		$this->piece_document->generatePieces();
 	}
 
+	public function storeEtape($etape) {
+	    if ($etape == $this->etape) {
+	
+	        return false;
+	    }
+	
+	    $this->add('etape', $etape);
+	
+	    return true;
+	}
+
     /**** PIECES ****/
 
     public function getAllPieces() {
     	$pieces = array();
-    	foreach ($this->prelevements as $key => $prelevement) {
-    		if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) {
-	    		if (!$this->getDateDegustation()) { continue; }
-	    		$pieces[] = array(
-	    			'identifiant' => $this->getIdentifiant(),
-	    			'date_depot' => $this->getDateDegustation(),
-	    			'libelle' => 'Dégustation conseil '.$this->getMillesime().' '.$prelevement->getLibelleProduit().' ('.$prelevement->getLibelle().')',
-	    			'mime' => Piece::MIME_PDF,
-	    			'visibilite' => 1,
-	    			'source' => $key
-	    		);
-    		}
-    	}
     	return $pieces;
     }
 
@@ -72,11 +82,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
     }
 
     public function generateUrlPiece($source = null) {
-    	return sfContext::getInstance()->getRouting()->generate('degustation_courrier_prelevement', $this->prelevements->get($source));
+    	return null;
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return ($admin)? sfContext::getInstance()->getRouting()->generate('degustation_visualisation', array('id' => preg_replace('/DEGUSTATION-[a-zA-Z0-9]*-/', 'TOURNEE-', $id))) : null;
+    	return null;
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
