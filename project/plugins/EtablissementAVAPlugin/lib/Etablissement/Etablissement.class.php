@@ -20,8 +20,7 @@ class Etablissement extends BaseEtablissement {
     }
 
     public function getNom() {
-
-        return $this->getRaisonSociale();
+        return Anonymization::hideIfNeeded($this->getRaisonSociale());
     }
 
     public function hasFamille($famille) {
@@ -33,15 +32,15 @@ class Etablissement extends BaseEtablissement {
 
         if (!$this->_get('siret') && $this->siren) {
 
-            return $this->siren;
+            return Anonymization::hideIfNeeded($this->siren);
         }
 
-        return $this->_get('siret');
+        return Anonymization::hideIfNeeded($this->_get('siret'));
     }
 
     public function getUniqueEmail() {
 
-        return $this->email;
+        return Anonymization::hideIfNeeded($this->email);
     }
 
     public function needEmailConfirmation() {
@@ -53,6 +52,10 @@ class Etablissement extends BaseEtablissement {
             throw new sfException("L'etablissement $this->identifiant ne possède pas de compte");
         }
         return CompteClient::getInstance()->findByIdentifiant($this->compte_id);
+    }
+
+    public function getSociete() {
+        return null;
     }
 
     public function synchroFromCompte($compte) {

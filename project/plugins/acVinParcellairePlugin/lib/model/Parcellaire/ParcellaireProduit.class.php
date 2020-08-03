@@ -116,20 +116,18 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = 0, $strictNumOrdre = false) {
+    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
 
         $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
 
         if($this->detail->exist($key) && $strictNumOrdre) {
-           return null;
+          return null;
         }
-        if($this->detail->exist($key) && !$strictNumOrdre) {
-           $maxNumOrdre = 0;
-           foreach ($this->detail as $key => $value) {
-               $maxNumOrdre = max($maxNumOrdre,$value->get('numero_ordre'));
-           }
-           $maxNumOrdre = $maxNumOrdre+1;
-           $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $maxNumOrdre);
+        $sameParcelle = $this->getDocument()->countSameParcelle($commune,$section,$numero_parcelle,$lieu);
+
+        if(is_null($numero_ordre) && !$strictNumOrdre && $sameParcelle) {
+           $numero_ordre = $sameParcelle;
+           $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
         }
 
 

@@ -11,7 +11,7 @@
         </div>
     </td>
     <?php else: ?>
-    <td class="text-right"><?php echoFloat($produit->constitue); ?>&nbsp;hl &nbsp;</td>
+    <td class="text-right"><?php echoFloat($produit->getTotalStockDebut()); ?>&nbsp;hl &nbsp;</td>
     <?php endif; ?>
     <td class="text-center">
         <div class="form-group <?php if ($form['destruction']->hasError()): ?>has-error<?php endif; ?>">

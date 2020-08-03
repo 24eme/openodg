@@ -15,6 +15,9 @@ class TemplateFacture extends BaseTemplateFacture
 				continue;
 			}
 			foreach ($config->generateCotisations($document) as $cotisation) {
+				if($config->exist('fallback') && $config->fallback){
+					continue;
+				}
 				$cotisations[$cotisation->getHash()] = $cotisation;
 			}
 		}
@@ -36,7 +39,6 @@ class TemplateFacture extends BaseTemplateFacture
 	{
 		$client = acCouchdbManager::getClient($docModele);
 		if ($client instanceof FacturableClient) {
-
 			return $client->findFacturable($identifiant, $campagne);
 		}
 		throw new sfException($docModele.'Client must implements FacturableClient interface');

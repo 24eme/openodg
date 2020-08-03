@@ -24,7 +24,9 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         $this->setWidget('commune', new bsWidgetFormInput());
         $this->setWidget('insee', new bsWidgetFormInput());
         $this->setWidget('pays', new bsWidgetFormChoice(array('choices' => self::getCountryList()), array("class" => "select2 form-control")));
+
         $this->setWidget('droits', new bsWidgetFormChoice(array('choices' => self::getDroits(), 'multiple' => true, 'expanded' => true)));
+        $this->setWidget('alternative_logins', new bsWidgetFormInput());
 
         $this->setWidget('email', new bsWidgetFormInput());
         $this->setWidget('telephone_perso', new bsWidgetFormInput());
@@ -39,7 +41,9 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('insee', 'INSEE');
         $this->widgetSchema->setLabel('commune', 'Ville *');
         $this->widgetSchema->setLabel('pays', 'Pays *');
-        $this->widgetSchema->setLabel('droits', 'Droits *');
+
+        $this->widgetSchema->setLabel('droits', 'Droits');
+        $this->widgetSchema->setLabel('alternative_logins', 'Logins alternatifs');
 
         $this->widgetSchema->setLabel('email', 'E-mail');
         $this->widgetSchema->setLabel('telephone_perso', 'Telephone Perso.');
@@ -55,6 +59,7 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         $this->setValidator('commune', new sfValidatorString(array('required' => false)));
         $this->setValidator('pays', new sfValidatorChoice(array('required' => false, 'choices' => array_keys(self::getCountryList()))));
         $this->setValidator('droits', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys(self::getDroits()))));
+        $this->setValidator('alternative_logins', new sfValidatorString(array('required' => false)));
         $this->setValidator('email', new sfValidatorEmail(array('required' => false), array('invalid' => 'Adresse email invalide.')));
         $this->setValidator('telephone_perso', new sfValidatorRegex(array('required' => false, "pattern" => "/^\+?[0-9 \.]{10,14}$/")), array('invalid' => 'Téléphone invalide : 04 12 34 56 78 ou +33412345678 attendus'));
         $this->setValidator('telephone_bureau', new sfValidatorRegex(array('required' => false, "pattern" => "/^\+?[0-9 \.]{10,14}$/")), array('invalid' => 'Téléphone invalide : 04 12 34 56 78 ou +33412345678 attendus'));
@@ -65,7 +70,6 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-
         $this->setDefault('adresse', $this->getObject()->getAdresse());
         $this->setDefault('code_postal', $this->getObject()->getCodePostal());
         $this->setDefault('commune', $this->getObject()->getCommune());
@@ -80,12 +84,31 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         $this->setDefault('fax', $this->getObject()->getFax());
         $this->setDefault('site_internet', $this->getObject()->getSiteInternet());
 
+        if($this->getObject()->isNew()){
+            $this->setDefault('adresse', $this->getObject()->getSociete()->getAdresse());
+            $this->setDefault('code_postal', $this->getObject()->getSociete()->getCodePostal());
+            $this->setDefault('commune', $this->getObject()->getSociete()->getCommune());
+            $this->setDefault('insee', $this->getObject()->getSociete()->getInsee());
+            $this->setDefault('pays', $this->getObject()->getSociete()->getPays());
+            $this->setDefault('adresse_complementaire', $this->getObject()->getSociete()->getAdresseComplementaire());
+
+            $this->setDefault('email', $this->getObject()->getSociete()->getEmail());
+            $this->setDefault('telephone_perso', $this->getObject()->getSociete()->getTelephonePerso());
+            $this->setDefault('telephone_bureau', $this->getObject()->getSociete()->getTelephoneBureau());
+            $this->setDefault('telephone_mobile', $this->getObject()->getSociete()->getTelephoneMobile());
+            $this->setDefault('fax', $this->getObject()->getSociete()->getFax());
+            $this->setDefault('site_internet', $this->getObject()->getSociete()->getSiteInternet());
+        }
+
         $defaultDroits = array();
         $compte = $this->getObject()->getMasterCompte();
         if($compte) {
             $compte->add('droits');
             foreach ($compte->getDroits() as $droit) {
                 $defaultDroits[] = $droit;
+            }
+            if ($compte->exist('alternative_logins')) {
+                $this->setDefault('alternative_logins', join(',', $compte->alternative_logins->toArray()));
             }
         }
         $this->setDefault('droits', $defaultDroits);
@@ -115,15 +138,15 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         if(isset($values['droits'])){
             $compte->remove("droits");
             $compte->add('droits');
-            $flag = 0;
             foreach ($values['droits'] as $key => $droit) {
-              if(!$flag){
-                $compte->getOrAdd("droits")->add(null, Roles::TELEDECLARATION);
-              }
-              $flag++;
               $compte->getOrAdd("droits")->add(null, $droit);
             }
         }
+
+        if(isset($values['alternative_logins'])){
+            $compte->add('alternative_logins', explode(',', $values['alternative_logins']));
+        }
+
         $compte->save();
       }
 
@@ -145,7 +168,27 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
     }
 
     public function getDroits() {
-        return Roles::$teledeclarationLibellesShort;
+        $droits = SocieteConfiguration::getInstance()->getDroits();
+
+        if($this->getObject() instanceof Compte) {
+            $compte = $this->getObject();
+        } else {
+            $compte = $this->getObject()->getMasterCompte();
+        }
+
+        if(!$compte->exist('droits')) {
+
+            return $droits;
+        }
+
+        foreach($compte->droits as $key) {
+            if(isset($droits[$key])) {
+                continue;
+            }
+            $droits[$key] = $key;
+        }
+
+        return $droits;
     }
 
 }

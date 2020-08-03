@@ -15,6 +15,7 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
 
         	new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, "Type de document", null),
+            new sfCommandOption('forceimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Force import document (exept if manualy edited)", false),
         ));
 
         $this->namespace = 'import';
@@ -70,8 +71,12 @@ EOF;
 
         		$c = FichierClient::getInstance()->getClientFromType($ddType);
 
-        		if ($f = $c->findByArgs($etablissement->identifiant, $annee)) {
-        			echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
+                if ($f = $c->findByArgs($etablissement->identifiant, $annee) && (!($options['forceimport']) || ($f && $f->exist('donnees')))) {
+                    if (!$options['forceimport']) {
+                        echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
+                    }else{
+                        echo sprintf("WARNING;Document douanier en saisie interne %s\n", $f->_id);
+                    }
         			continue;
         		}
 

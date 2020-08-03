@@ -20,9 +20,16 @@ class CompteClient extends acCouchdbClient {
         return acCouchdbManager::getClient("Compte");
     }
 
-    public function getId($identifiant) {
+    public function getId($id_or_identifiant) {
+        $id = $id_or_identifiant;
+        if (strpos($id_or_identifiant, '-') === false ) {
+            $id = 'COMPTE-' . $id_or_identifiant;
+        }
+        return $id;
+    }
 
-        return 'COMPTE-'.$identifiant;
+    public function find($id_or_identifiant, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
+        return parent::find($this->getId($id_or_identifiant), $hydrate, $force_return_ls);
     }
 
     public function getNextIdentifiantForEtablissementInSociete($societe) {
@@ -94,8 +101,13 @@ class CompteClient extends acCouchdbClient {
           $elasticaFacet->setSize(250);
           $q->addFacet($elasticaFacet);
 
-          $index = acElasticaManager::getType('COMPTE');
-          $resset = $index->search($q);
+          try {
+              $index = acElasticaManager::getType('COMPTE');
+              $resset = $index->search($q);
+          } catch(Exception $e) {
+              return array();
+          }
+          
           $results = $resset->getResults();
           $this->facets = $resset->getFacets();
 
@@ -119,7 +131,11 @@ class CompteClient extends acCouchdbClient {
       $elasticaFacet->setField('doc.groupes.nom');
       $elasticaFacet->setSize(250);
       $q->addFacet($elasticaFacet);
-      $index = acElasticaManager::getType('COMPTE');
+      try {
+          $index = acElasticaManager::getType('COMPTE');
+      } catch(Exception $e) {
+          return array();
+      }
       $resset = $index->search($q);
       $facets = $resset->getFacets();
 

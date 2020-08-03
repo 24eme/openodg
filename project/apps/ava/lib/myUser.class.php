@@ -1,7 +1,6 @@
 <?php
 
-class
-myUser extends sfBasicSecurityUser
+class myUser extends sfBasicSecurityUser
 {
 
     const SESSION_LOGIN = "LOGIN";
@@ -12,6 +11,7 @@ myUser extends sfBasicSecurityUser
     const CREDENTIAL_ADMIN = CompteClient::DROIT_ADMIN;
     const CREDENTIAL_TOURNEE = CompteClient::DROIT_TOURNEE;
     const CREDENTIAL_CONTACT = CompteClient::DROIT_CONTACT;
+    const CREDENTIAL_HABILITATION = 'habilitation';
 
     protected $etablissement = null;
     protected $compte = null;
@@ -106,5 +106,14 @@ myUser extends sfBasicSecurityUser
     public function isAdmin()
     {
     	return $this->hasCredential(self::CREDENTIAL_ADMIN);
+    }
+
+    public function getTeledeclarationDrevRegion()
+    {
+        return null;
+    }
+
+    public function hasDrevAdmin() {
+        return $this->isAdmin();
     }
 }

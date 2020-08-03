@@ -2,7 +2,7 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 <div class="row">
-    <div id="row_form_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if(!$form->isBound()): ?>hidden<?php endif; ?>">
+    <div id="row_form_exploitation" class="row row_form_exploitation col-xs-12 <?php if(!$form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
             <?php if($form->getObject()->cvi): ?>
             <div class="form-group">
@@ -94,13 +94,6 @@
                 </div>
             </div>
             <?php endif; ?>
-            <div class="form-group<?php if($form["fax"]->hasError()): ?> has-error<?php endif; ?>">
-                <?php echo $form["fax"]->renderError(); ?>
-                <?php echo $form["fax"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-8">
-                    <?php echo $form["fax"]->render(array("class" => "form-control")); ?>
-                </div>
-            </div>
             <?php if(isset($form["email"])): ?>
             <div class="form-group<?php if($form["email"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["email"]->renderError(); ?>
@@ -112,7 +105,7 @@
             <?php endif; ?>
         </div>
     </div>
-    <div id="row_info_exploitation" class="row col-xs-12 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
+    <div id="row_info_exploitation" class="row row_info_exploitation col-xs-12 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
             <?php if($form->getObject()->cvi): ?>
             <div class="form-group">
@@ -135,7 +128,7 @@
                    <?php echo ($form->getObject()->ppm)? $form->getObject()->ppm : " (non communiqué)"; ?>
                 </span>
             </div>
-        <?php endif; ?> 
+        <?php endif; ?>
 <?php if(isset($extra)): ?>
 <?php foreach($extra as $label => $value): ?>
             <div class="form-group">
@@ -182,12 +175,6 @@
                 <strong class="col-xs-4 text-right">Téléphone Mobile</strong>
                 <span class="col-xs-8">
                    <?php echo $form->getObject()->telephone_mobile; ?>
-                </span>
-            </div>
-            <div class="form-group">
-                <strong class="col-xs-4 text-right">Fax</strong>
-                <span class="col-xs-8">
-                   <?php echo $form->getObject()->fax; ?>
                 </span>
             </div>
             <?php if(isset($form["email"])): ?>

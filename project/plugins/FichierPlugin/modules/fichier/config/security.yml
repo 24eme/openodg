@@ -1,2 +1,12 @@
 all:
-  upload: [[ADMIN]]
+  credentials: [[ADMIN, teledeclaration_drev_admin]]
+index:
+  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation]]
+upload:
+  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation]]
+get:
+  credentials: []
+piecesHistorique:
+  credentials: []
+mesdocuments:
+  credentials: []

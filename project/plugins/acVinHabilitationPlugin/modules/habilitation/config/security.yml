@@ -1,5 +1,26 @@
 all:
   credentials: [[ADMIN, habilitation]]
 
+declarant:
+  credentials: []
+
+visualisation:
+  credentials: []
+
+demandeVisualisation:
+  credentials: []
+
 ajout:
+  credentials: ADMIN
+
+edition:
+  credentials: ADMIN
+
+demandeSuppressionDerniere:
+  credentials: ADMIN
+
+demandeModificationCommentaire:
+  credentials: ADMIN
+
+export:
   credentials: ADMIN

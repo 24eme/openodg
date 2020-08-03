@@ -24,6 +24,14 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
         $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $defaults = $this->getDefaults();
+        $defaults["date_papier"] = date('d/m/Y');
+        $this->setDefaults($defaults);
+        
+    }
+
     protected function doUpdateObject($values) {
 		parent::doUpdateObject($values);
     	if($this->getObject()->isPapier()) {

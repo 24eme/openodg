@@ -683,6 +683,12 @@ class TCPDF {
 	protected $footer_line_color = array(0,0,0);
 
 	/**
+	 * Text for footer line (string).
+	 * @protected
+	 */
+	protected $footer_text = '';
+
+	/**
 	 * Text shadow data array.
 	 * @since 5.9.174 (2012-07-25)
 	 * @protected
@@ -3269,9 +3275,10 @@ class TCPDF {
 	 * @param $lc (array) RGB array color for line.
 	 * @public
 	 */
-	public function setFooterData($tc=array(0,0,0), $lc=array(0,0,0)) {
+	public function setFooterData($tc=array(0,0,0), $lc=array(0,0,0), $text = '') {
 		$this->footer_text_color = $tc;
 		$this->footer_line_color = $lc;
+		$this->footer_text = $text;
 	}
 
 	/**
@@ -3502,9 +3509,17 @@ class TCPDF {
 		if ($this->getRTL()) {
 			$this->SetX($this->original_rMargin);
 			$this->Cell(0, 0, $pagenumtxt, 'T', 0, 'L');
+			if($this->footer_text) {
+				$this->SetX($this->original_lMargin);
+				$this->Cell(0, 0, $this->footer_text, 'T', 0, 'R');
+			}
 		} else {
 			$this->SetX($this->original_lMargin);
 			$this->Cell(0, 0, $this->getAliasRightShift().$pagenumtxt, 'T', 0, 'R');
+			if($this->footer_text) {
+				$this->SetX($this->original_rMargin);
+				$this->Cell(0, 0, $this->footer_text, 'T', 0, 'L');
+			}
 		}
 	}
 
@@ -16539,7 +16554,7 @@ class TCPDF {
 					// get attributes
 					preg_match_all('/([^=\s]*)[\s]*=[\s]*"([^"]*)"/', $element, $attr_array, PREG_PATTERN_ORDER);
 					$dom[$key]['attribute'] = array(); // reset attribute array
-					while (list($id, $name) = each($attr_array[1])) {
+					foreach($attr_array[1] as $id => $name) {
 						$dom[$key]['attribute'][strtolower($name)] = $attr_array[2][$id];
 					}
 					if (!empty($css)) {
@@ -16552,7 +16567,7 @@ class TCPDF {
 						// get style attributes
 						preg_match_all('/([^;:\s]*):([^;]*)/', $dom[$key]['attribute']['style'], $style_array, PREG_PATTERN_ORDER);
 						$dom[$key]['style'] = array(); // reset style attribute array
-						while (list($id, $name) = each($style_array[1])) {
+						foreach($style_array[1] as $id => $name) {
 							// in case of duplicate attribute the last replace the previous
 							$dom[$key]['style'][strtolower($name)] = trim($style_array[2][$id]);
 						}
@@ -17775,7 +17790,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 											// justify block
 											if (!TCPDF_STATIC::empty_string($this->lispacer)) {
 												$this->lispacer = '';
-												continue;
+												continue 2;
 											}
 											preg_match('/([0-9\.\+\-]*)[\s]([0-9\.\+\-]*)[\s]([0-9\.\+\-]*)[\s]('.$strpiece[1][0].')[\s](re)([\s]*)/x', $pmid, $xmatches);
 											if (!isset($xmatches[1])) {

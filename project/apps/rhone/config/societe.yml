@@ -1,0 +1,12 @@
+all:
+  configuration:
+    societe:
+      droits:
+        "ADMIN": "Administrateur"
+        "habilitation": "Habilitation"
+        "habilitation:inao": "Habilitation INAO"
+        "habilitation:oivr": "Habilitation OIVR"
+        "habilitation:odg": "Habilitation ODG"
+        "api": "API"
+        "timbre": "Timbre"
+      visualisation_teledeclaration: true

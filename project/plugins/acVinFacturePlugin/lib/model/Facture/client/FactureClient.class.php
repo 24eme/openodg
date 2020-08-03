@@ -15,7 +15,15 @@ class FactureClient extends acCouchdbClient {
     const STATUT_REDRESSEE = 'REDRESSE';
     const STATUT_NONREDRESSABLE = 'NON_REDRESSABLE';
 
+    const FACTURE_PAIEMENT_CHEQUE = "CHEQUE";
+    const FACTURE_PAIEMENT_VIREMENT = "VIREMENT";
+    const FACTURE_PAIEMENT_PRELEVEMENT_AUTO = "PRELEVEMENT_AUTO";
+    const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
+
+
     public static $origines = array(self::FACTURE_LIGNE_ORIGINE_TYPE_DRM, self::FACTURE_LIGNE_ORIGINE_TYPE_SV12);
+
+    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
 
     private $documents_origine = array();
 
@@ -29,14 +37,20 @@ class FactureClient extends acCouchdbClient {
 
     public function getNextNoFacture($idClient,$date)
     {
-        $id = '';
+      $id = '';
     	$facture = self::getAtDate($idClient,$date, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         if (count($facture) > 0) {
             $id .= ((double)str_replace('FACTURE-'.$idClient.'-', '', max($facture)) + 1);
         } else {
             $id.= $date.'01';
         }
-        return $id;
+      return $id;
+    }
+
+    public function getNextNoFactureCampagneFormatted($idClient, $campagne, $format){
+        $annee = DateTime::createFromFormat("Y",$campagne)->format("y");
+        $archiveNumero = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne("Facture", $campagne);
+        return sprintf($format, $annee, intval($archiveNumero) + 1);
     }
 
     public function getAtDate($idClient,$date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -56,6 +70,10 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function getMouvementsByDocs($compteIdentifiant, $docs, $regenerate = false) {
+        if (!$docs) {
+
+            return array();
+        }
         $mouvements = array();
         if($docs && !is_array($docs)){
           $docs = array($docs);
@@ -115,21 +133,23 @@ class FactureClient extends acCouchdbClient {
                     "categorie" => $mouv->categorie,
                     "type_hash" => $mouv->type_hash,
                     "type_libelle" => $mouv->type_libelle,
-                    "quantite" => $mouv->quantite,
+                    "quantite" => 0,
                     "taux" => $mouv->taux,
-                    "origines" => array($mouv->getDocument()->_id => array($mouv->getKey())),
+                    "origines" => array(),
                 );
                 if($mouv->exist("tva")){
-                  $mouvementsAggreges[$key] = array_merge($mouvementsAggreges[$key],array("tva" => $mouv->tva));
+                    $mouvementsAggreges[$key]["tva"] = $mouv->tva;
                 }
-            } else {
-                $mouvementsAggreges[$key]["type_libelle"] = $mouv->type_libelle;
-                $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
-                if(!isset($mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id])) {
-                    $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id] = array();
+                if($mouv->exist("unite")){
+                  $mouvementsAggreges[$key]["unite"] = $mouv->unite;
                 }
-                $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id][] = $mouv->getKey();
             }
+
+            $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
+            if(!isset($mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id])) {
+                $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id] = array();
+            }
+            $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id][] = $mouv->getKey();
         }
 
         return array_values($mouvementsAggreges);
@@ -149,9 +169,15 @@ class FactureClient extends acCouchdbClient {
         $facture->updateTotaux();
         $facture->storeOrigines();
         $facture->storeTemplates($template);
+        if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
+            $facture->add('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
+        }
         $facture->arguments = $arguments;
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
+        }
+        if(FactureConfiguration::getInstance()->hasPaiements()){
+          $facture->add("paiements",array());
         }
 
         if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
@@ -313,7 +339,7 @@ class FactureClient extends acCouchdbClient {
         }else{
           $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
           foreach($comptes as $compte) {
-            $ids[] = $compte->_id;
+            $ids[] = $compte->doc['_id'];
           }
         }
 

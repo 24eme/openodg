@@ -32,6 +32,7 @@ class acTCPDFConfig
         $this->header_logo_width = 0;
         $this->header_title = PDF_HEADER_TITLE;
         $this->header_string = PDF_HEADER_STRING;
+        $this->footer_text = '';
         $this->creator = PDF_CREATOR;
         $this->author = PDF_AUTHOR;
         $this->title = '';

@@ -101,14 +101,16 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		$this->piece_document->generatePieces();
 	}
 
-	public function storeFichier($file) {
+	public function storeFichier($file, $extension = null) {
 		if (!is_file($file)) {
 			throw new sfException($file." n'est pas un fichier valide");
 		}
-		$pathinfos = pathinfo($file);
-		$extension = (isset($pathinfos['extension']) && $pathinfos['extension'])? strtolower($pathinfos['extension']): null;
+        if(is_null($extension)) {
+		   $pathinfos = pathinfo($file);
+		   $extension = (isset($pathinfos['extension']) && $pathinfos['extension'])? strtolower($pathinfos['extension']): null;
+        }
 		$fileName = ($extension)? uniqid().'.'.$extension : uniqid();
-		$couchinfos = $this->getFileinfos($pathinfos['extension']);
+		$couchinfos = $this->getFileinfos($extension);
 		$store4real = true;
 		if (isset($couchinfos['digest'])) {
 			$digest = explode('-', $couchinfos['digest']);
@@ -184,6 +186,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getDateDepot(),
     		'libelle' => $this->getLibelle().' '.$complement,
+    		'categorie' => $this->getCategorie(),
     		'visibilite' => $this->getVisibilite(),
     		'mime' => null,
     		'source' => null,
@@ -204,8 +207,9 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 			return null;
 		}
 
-		$fichier = FichierClient::getInstance()->find($id);
-    	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $fichier->_id, 'sf_subject' => $fichier->getEtablissementObject()));
+        $identifiant = preg_replace("/^.+-(.+)-.+$/", '\1', $id);
+
+    	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $id, 'identifiant' => $identifiant));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
@@ -213,8 +217,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 			return null;
 		}
 
-		$fichier = FichierClient::getInstance()->find($id);
-    	return sfContext::getInstance()->getRouting()->generate('csvgenerate_fichier', $fichier);
+    	return sfContext::getInstance()->getRouting()->generate('csvgenerate_fichier', array('id' => $id));
     }
 
     public static function isVisualisationMasterUrl($admin = false) {
@@ -226,5 +229,6 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     }
 
     /**** FIN DES PIECES ****/
+
 
 }

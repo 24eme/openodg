@@ -4,7 +4,7 @@ declaration:
   class: DeclarationRoute
 
 declaration_doc:
-  url: /declaration/doc
+  url: /declaration/doc/:id
   param: { module: declaration, action: doc }
 
 declaration_export:
@@ -24,16 +24,6 @@ declaration_etablissement:
     type:     object
   requirements:
     sf_method: [get]
-
-declaration_usurpation:
-  url: /declarations-usurpation/:identifiant
-  param: { module: declaration, action: usurpation }
-  class: DeclarationDeclarantRoute
-  options:
-    model:    EtablissementRoute
-    type:     object
-  requirements:
-    sf_method: [get, post]
 
 export:
   url: /export

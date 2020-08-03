@@ -4,12 +4,22 @@ Parcellaire:
     fields:
       _id: { }
       _rev: { }
+      _attachments:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
       type: { }
       date: { }
       identifiant: { }
       source: { }
       declarant:
         type: collection
+        class: ParcellaireDeclarant
         definition:
           fields:
             nom: { }

@@ -339,13 +339,16 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         if ($this->siege->exist("adresse_complementaire")) {
             $a .= ' ; ' . $this->siege->adresse_complementaire;
         }
-        return $a;
+        return Anonymization::hideIfNeeded($a);
     }
 
 // A VIRER
     protected function createCompteSociete() {
         if ($this->compte_societe) {
-            return $this->getCompte($this->compte_societe);
+            $c = $this->getCompte($this->compte_societe);
+            if ($c) {
+                return $c;
+            }
         }
 
         $compte = CompteClient::getInstance()->findOrCreateCompteSociete($this);
@@ -380,6 +383,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+
         $this->interpro = "INTERPRO-declaration";
         $compteMaster = $this->getMasterCompte();
 
@@ -428,6 +436,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         }
         $needSave = true;
     }
+
+    if($compteOrEtablissement->exist('raison_sociale') && $compteOrEtablissement->raison_sociale != $this->raison_sociale){
+      $compteOrEtablissement->raison_sociale  = $this->raison_sociale;
+      $needSave = true;
+    }
+
     if (CompteGenerique::isSameAdresseComptes($compteOrEtablissement, $compteMasterOrigin)) {
         $ret = $this->pushAdresseTo($compteOrEtablissement);
         $needSave = $needSave || $ret;
@@ -459,17 +473,17 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function getEmailTeledeclaration() {
+        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
+            return Anonymization::hideIfNeeded($this->teledeclaration_email);
+        }
         if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
-	            return $compteSociete->societe_information->email;
+	            return Anonymization::hideIfNeeded($compteSociete->societe_information->email);
 	        }
-	        return $compteSociete->email;
-        }
-        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return $this->teledeclaration_email;
+	        return Anonymization::hideIfNeeded($compteSociete->email);
         }
         if ($this->exist('email') && $this->email) {
-            return $this->email;
+            return Anonymization::hideIfNeeded($this->email);
         }
         return null;
     }
@@ -550,14 +564,23 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       if($this->isSuspendu()){
          $newStatus = SocieteClient::STATUT_ACTIF;
       }
+      $toberemoved = array();
       foreach ($this->contacts as $keyCompte => $compte) {
           $contact = CompteClient::getInstance()->find($keyCompte);
+          if (!$contact) {
+              $toberemoved[] = $keyCompte;
+              continue;
+          }
           $contact->setStatut($newStatus);
           $contact->save();
+      }
+      foreach($toberemoved as $keyCompte) {
+          $this->removeContact($keyCompte);
       }
       foreach ($this->etablissements as $keyEtablissement => $etablissement) {
           $etablissement = EtablissementClient::getInstance()->find($keyEtablissement);
           $etablissement->setStatut($newStatus);
+          $this->addCompte($etablissement->getMasterCompte());
       }
       $this->setStatut($newStatus);
       $this->save();
@@ -577,5 +600,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $this->getCompte($this->compte_societe);
     }
 
+    public function getSiret() {
+        return Anonymization::hideIfNeeded($this->_get('siret'));
+    }
+
+    public function getRaisonSociale() {
+        return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
+    }
 
 }

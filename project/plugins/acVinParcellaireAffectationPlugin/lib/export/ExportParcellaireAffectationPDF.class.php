@@ -13,13 +13,11 @@
  */
 class ExportParcellaireAffectationPDF extends ExportPDF {
 
-    protected $parcellaire = null;
-    protected $cviFilter = null;
+    protected $parcellaireAffectation = null;
     protected $nomFilter = null;
 
-    public function __construct($parcellaire, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
-        $this->parcellaire = $parcellaire;
-        $this->cviFilter = null;
+    public function __construct($parcellaireAffectation, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
+        $this->parcellaireAffectation = $parcellaireAffectation;
         $this->nomFilter = null;
         if(!$filename) {
             $filename = $this->getFileName(true, true);
@@ -28,59 +26,102 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
-    public function setCviFilter($cvi, $nom = null) {
-        $this->cviFilter = $cvi;
-        $this->nomFilter = $nom;
-    }
-
     public function create() {
-        if($this->parcellaire->isParcellaireCremant()){
-            $this->parcellesForDetails = $this->parcellaire->getParcellesByAppellation($this->cviFilter);
-        }else{
-            $this->parcellesForDetails = $this->parcellaire->getParcellesByLieux($this->cviFilter);
-        }
-        $this->parcellesForRecap = $this->parcellaire->getParcellesByLieuxCommuneAndCepage($this->cviFilter);
+        
+      $dgcs = $this->parcellaireAffectation->getDgc(true);
 
-        if(count($this->parcellesForDetails) == 0) {
-            $this->printable_document->addPage($this->getPartial('parcellaire/pdfVide', array('parcellaire' => $this->parcellaire)));
+      $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
 
-            return;
+      if(count($parcellesByDgc) == 0) {
+         $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
+
+         return;
+      }
+
+      $unite = 0;
+      $uniteParPage = 23;
+      $uniteTableau = 3;
+      $uniteLigne = 1;
+      $uniteTableauCommentaire = 2;
+      $uniteTableauLigne = 0.75;
+      $uniteMentionBasDePage = 1;
+      $parcellesByPage = array();
+      $page = 0;
+
+      $currentPage = array();
+      foreach ($parcellesByDgc as $dgc => $parcelles) {
+        $libelleTableau = str_replace("-", " ", $dgc);
+        $parcellesByPage = array();
+        $currentPage = array();
+        if(($unite + $uniteTableau + $uniteLigne) > $uniteParPage) {
+            $parcellesByPage[] = $currentPage;
+            $currentPage = array();
+            $unite = 0;
+        }
+        $currentPage[$libelleTableau] = array();
+        $unite += $uniteTableau;
+        foreach($parcelles as $parcelle) {
+           if(($unite + $uniteLigne) > $uniteParPage) {
+               $parcellesByPage[] = $currentPage;
+               $currentPage = array();
+               $unite = 0;
+               $libelleTableau = $commune . " (suite)";
+               $currentPage[$libelleTableau] = array();
+               $unite += $uniteTableau;
+           }
+           $unite += $uniteLigne;
+           $currentPage[$libelleTableau][] = $parcelle;
         }
 
-        foreach ($this->parcellesForDetails as $pageid => $parcellesForDetail) {
-            $this->printable_document->addPage($this->getPartial('parcellaire/pdf', array('parcellaire' => $this->parcellaire, 'parcellesForDetail' => $parcellesForDetail, 'cviFilter' => $this->cviFilter)));
-        }
-        if ((count($this->parcellesForDetails) == 1) && (count($this->parcellesForDetails[$pageid]->parcelles) < count($this->parcellesForRecap))) {
-            $this->printable_document->addPage($this->getPartial('parcellaire/pdfRecap', array('parcellaire' => $this->parcellaire, 'parcellesForRecap' => $this->parcellesForRecap, 'engagement' => !$this->cviFilter)));
+        if($unite > 0) {
+          $parcellesByPage[] = $currentPage;
         }
 
+        if($this->parcellaireAffectation->observations) {
+          $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireAffectation->observations));
+        }
+
+        foreach($parcellesByPage as $nbPage => $parcelles) {
+            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
+                'parcellaireAffectation' => $this->parcellaireAffectation,
+                'parcellesByCommune' => $parcelles,
+                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->parcellaireAffectation->observations && $unite <= $uniteParPage) || !$this->parcellaireAffectation->observations)),
+            )));
+        }
+
+        if ($this->parcellaireAffectation->observations && $unite > $uniteParPage) {
+            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
+                'parcellaireAffectation' => $this->parcellaireAffectation,
+                'parcellesByCommune' => $parcellesByPage,
+                'lastPage' => true,
+            )));
+        }
+      }
     }
 
     protected function getHeaderTitle() {
-    	if ($this->parcellaire->isIntentionCremant()) {
-    		return sprintf("Déclaration d'intention de production AOC Crémant d'Alsace %s", $this->parcellaire->campagne);
-    	}
-        if($this->parcellaire->isParcellaireCremant()){
-            return sprintf("Déclaration d'affectation parcellaire Crémant %s", $this->parcellaire->campagne);
-        }
-        return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaire->campagne);
+        return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaireAffectation->campagne);
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("%s", $this->parcellaire->declarant->nom);
+        $header_subtitle = sprintf("%s", $this->parcellaireAffectation->declarant->nom);
         $header_subtitle .= "\n\n";
 
-        if (!$this->parcellaire->isPapier()) {
-            if ($this->parcellaire->validation && $this->parcellaire->campagne >= "2015") {
-                $date = new DateTime($this->parcellaire->validation);
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+        if (!$this->parcellaireAffectation->isPapier()) {
+            if ($this->parcellaireAffectation->validation) {
+                $date = new DateTime($this->parcellaireAffectation->validation);
+
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireAffectation->signataire);
+                if($this->parcellaireAffectation->exist('signataire') && $this->parcellaireAffectation->signataire) {
+                    $header_subtitle .= " par " . $this->parcellaireAffectation->signataire;
+                }
             }else{
                 $header_subtitle .= sprintf("Exemplaire brouilllon");
             }
         }
 
-        if ($this->parcellaire->isPapier() && $this->parcellaire->validation && $this->parcellaire->validation !== true) {
-            $date = new DateTime($this->parcellaire->validation);
+        if ($this->parcellaireAffectation->isPapier() && $this->parcellaireAffectation->validation && $this->parcellaireAffectation->validation !== true) {
+            $date = new DateTime($this->parcellaireAffectation->validation);
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
 
@@ -89,20 +130,20 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDRevPDFConfig();
+        return new ExportParcellaireAffectationPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
 
-      return self::buildFileName($this->parcellaire, $with_rev, $this->nomFilter);
+      return self::buildFileName($this->parcellaireAffectation, $with_rev, $this->nomFilter);
     }
 
-    public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
+    public static function buildFileName($parcellaireAffectation, $with_rev = false, $nomFilter = null) {
 
-        $prefixName = $parcellaire->getTypeParcellaire()."_%s_%s";
-        $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
+        $prefixName = $parcellaireAffectation->getTypeParcellaire()."_%s_%s";
+        $filename = sprintf($prefixName, $parcellaireAffectation->identifiant, $parcellaireAffectation->campagne);
 
-        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
+        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaireAffectation->declarant->nom));
         $filename .= '_' . $declarant_nom;
 
         if($nomFilter) {
@@ -110,7 +151,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         }
 
         if ($with_rev) {
-            $filename .= '_' . $parcellaire->_rev;
+            $filename .= '_' . $parcellaireAffectation->_rev;
         }
 
         return $filename . '.pdf';

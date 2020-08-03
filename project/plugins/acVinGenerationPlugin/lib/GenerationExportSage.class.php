@@ -18,14 +18,17 @@ class GenerationExportSage extends GenerationAbstract
         $handle_clients = fopen(sfConfig::get('sf_web_dir')."/".$clientsfile, 'a');
 
         $application = ucfirst(sfConfig::get('sf_app'));
-        $classExportFactureCsv = "ExportFactureCSV".$application;
-        $classExportCompteCsv = "ExportCompteCSV".$application;
+        $classExportFactureCsv = "ExportFactureCSV_".$application;
+        $classExportCompteCsv = "ExportCompteCSV_".$application;
 
         if(!class_exists($classExportFactureCsv)){
-          $classExportFactureCsv = "ExportFactureCSV";
+
+            throw new sfException("La classe $classExportFactureCsv n'existe pas");
         }
-        if(!class_exists($classExportFactureCsv)){
-          $classExportCompteCsv = "ExportCompteCSV";
+
+        if(!class_exists($classExportCompteCsv)){
+
+            throw new sfException("La classe $classExportCompteCsv n'existe pas");
         }
 
         if(!count($this->generation->documents)) {
@@ -46,18 +49,17 @@ class GenerationExportSage extends GenerationAbstract
             $export = new $classExportFactureCsv($facture, false);
 
             if(!$facture->versement_comptable) {
-
                 fwrite($handle_factures, $export->exportFacture());
                 $this->generation->documents->add(null, $facture->_id);
-                // $facture->versement_comptable = 1;
-                // $facture->save();
+                $facture->versement_comptable = 1;
+                $facture->save();
             }
 
-            if($facture->versement_comptable && !$facture->versement_comptable_paiement && $facture->isPayee( )) {
+            if($facture->versement_comptable && !$facture->versement_comptable_paiement && $facture->isPayee()) {
                 fwrite($handle_factures, $export->exportPaiement());
                 $this->generation->documents->add(null, str_replace("FACTURE-", "PAIEMENT-", $facture->_id));
-                // $facture->versement_comptable_paiement = 1;
-                // $facture->save();
+                $facture->versement_comptable_paiement = 1;
+                $facture->save();
             }
 
             $compte = $facture->getCompte();

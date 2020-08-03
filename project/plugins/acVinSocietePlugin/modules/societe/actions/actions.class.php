@@ -35,8 +35,10 @@ class societeActions extends sfCredentialActions {
         $type_societe = explode(",",$request->getParameter('type'));
         $q = $request->getParameter('q');
         $limit = $request->getParameter('limit', 100);
-        $societes = SocieteAllView::getInstance()->findByInterproAndStatut($interpro, SocieteClient::STATUT_ACTIF, $type_societe, $q, $limit);
+        $societes = SocieteAllView::getInstance()->findByInterproAndStatut($interpro, SocieteClient::STATUT_ACTIF, $q, $limit);
         $json = $this->matchSociete($societes, $q, $limit);
+
+        $this->getResponse()->setContentType('text/json');
         return $this->renderText(json_encode($json));
     }
 
@@ -138,6 +140,10 @@ class societeActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+            return $this->forwardSecure();
+        }
+
         $this->societe = $this->getRoute()->getSociete();
         $this->applyRights();
         $this->societe_compte = $this->societe->getMasterCompte();
@@ -146,6 +152,8 @@ class societeActions extends sfCredentialActions {
           $compte->updateCoordonneesLongLat();
           $compte->save();
         }
+
+        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
     public function executeAnnulation(sfWebRequest $request) {
@@ -189,6 +197,59 @@ class societeActions extends sfCredentialActions {
 
             return $this->redirect('societe');
         }
+    }
+
+    public function executeExport(sfWebRequest $request) {
+        $identifiant = $request->getParameter('identifiant');
+        if(!$identifiant) {
+            $identifiant = $request->getParameter('login');
+        }
+        $type = $request->getParameter('type', 'csv');
+
+        if(!in_array($type, array('csv', 'json'))) {
+            $this->response->setStatusCode('404');
+
+            return sfView::NONE;
+        }
+
+
+
+        if(!$this->getUser()->isAdmin() && !$this->getUser()->hasCredential($request->getParameter('droit'))) {
+            $this->response->setStatusCode('403');
+
+            return sfView::NONE;
+        }
+
+        $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
+        if(!$compte) {
+            $this->response->setStatusCode('404');
+
+            return sfView::NONE;
+        }
+
+        if(!$request->getParameter('droit') || !$compte->hasDroit($request->getParameter('droit'))) {
+            $this->response->setStatusCode('403');
+
+            return sfView::NONE;
+        }
+
+        $this->response->setContentType('text/'.$type);
+
+        $societe = $compte->getSociete();
+        $export = new ExportSocieteCSV($societe);
+
+        if($type == 'json') {
+            $this->response->setContent($export->exportJson());
+        } else {
+            $this->response->setContent($export->export());
+        }
+
+        return sfView::NONE;
+    }
+
+    protected function forwardSecure() {
+
+        throw new sfError403Exception();
     }
 
     protected function matchCompte($view_res, $term, $limit) {

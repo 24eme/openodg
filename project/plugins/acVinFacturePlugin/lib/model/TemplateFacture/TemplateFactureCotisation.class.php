@@ -20,12 +20,17 @@ class TemplateFactureCotisation extends BaseTemplateFactureCotisation {
 
 	public function isForType($type) {
 		foreach($this->details as $detail) {
-			if(in_array($type, $detail->docs->toArray(true, false))) {
+			if($detail->isForType($type)) {
 
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	public function isRequired() {
+
+		return $this->exist('required') && $this->get('required');
 	}
 }

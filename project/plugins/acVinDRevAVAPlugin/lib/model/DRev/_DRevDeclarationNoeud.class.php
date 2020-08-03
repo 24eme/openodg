@@ -10,6 +10,11 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
     }
 
+    public function getConfigPrecedente()
+    {
+        return $this->getCouchdbDocument()->getConfigurationPrecedente()->get($this->getHash());
+    }
+
     public function getConfigChidrenNode() {
 
         return $this->getConfig()->getChildrenFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION);
@@ -165,6 +170,15 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     	$total = 0;
         foreach($this->getChildrenNode() as $key => $item) {
             $total += $item->getTotalVolumeRevendique();
+        }
+        return $total;
+    }
+
+    public function getTotalVolumeRevendiqueVCI()
+    {
+    	$total = 0;
+        foreach($this->getChildrenNode() as $key => $item) {
+            $total += $item->getTotalVolumeRevendiqueVCI();
         }
         return $total;
     }

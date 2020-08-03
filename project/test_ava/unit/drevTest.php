@@ -6,7 +6,7 @@ $routing = clone ProjectConfiguration::getAppRouting();
 $context = sfContext::createInstance($configuration);
 $context->set('routing', $routing);
 
-$t = new lime_test(61);
+$t = new lime_test(62);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -76,18 +76,18 @@ $produit2 = $drev->get($produit_hash2);
 
 $produit1->superficie_vinifiee = 100;
 $produit1->superficie_revendique = 200;
-$produit1->volume_revendique = 80;
+$produit1->volume_revendique = 0;
 
 $produit2->superficie_vinifiee = 150;
 $produit2->superficie_revendique = 150;
-$produit2->volume_revendique = 110;
+$produit2->volume_revendique = 0;
 
 $drev->save();
 
 $t->is(count($drev->getProduits()), 2, "La drev a 2 produits");
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est 350");
 $t->is($drev->declaration->getTotalSuperficieVinifiee(), 2.5, "La superficie vinifié totale est 250");
-$t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est 190");
+$t->is($drev->declaration->getTotalVolumeRevendique(), 0, "Le volume revendiqué totale est 190");
 
 $t->comment("Validation");
 
@@ -188,6 +188,11 @@ $t->ok($f->lignes->get('odg_ava')->origine_mouvements->exist($drev->_id), "Les o
 $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "La superifcie vinifiée prise en compte dans la facture est de ".$drev->declaration->getTotalSuperficieVinifiee()." ha");
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
 $t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La volume revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalVolumeRevendique()." hl");
+
+$t->comment("Export csv de la facture");
+
+$export = new ExportFactureCSV_ava($f, false);
+$t->is(count(explode("\n", $export->exportFacture())), 10, "L'export fait 10 lignes");
 
 $t->comment("Envoi de la facture par mail");
 

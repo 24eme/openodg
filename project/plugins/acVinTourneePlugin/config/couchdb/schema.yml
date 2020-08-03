@@ -40,6 +40,7 @@ Tournee:
                 fields:
                   '*':
                     type: collection
+                    class: TourneeDegustateur
                     definition:
                       fields:
                         nom: { }
@@ -54,6 +55,7 @@ Tournee:
           fields:
             '*':
               type: collection
+              class: TourneeAgent
               definition:
                 fields:
                   nom: { }
@@ -74,6 +76,7 @@ Tournee:
           fields:
              '*':
               type: collection
+              class: TourneeRendezVous
               definition:
                 fields:
                   heure: { }

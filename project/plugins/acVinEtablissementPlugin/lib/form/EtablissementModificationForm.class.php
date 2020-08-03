@@ -24,7 +24,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
 
         $this->setWidget('famille', new bsWidgetFormChoice(array('choices' => $this->getFamilles())));
         $this->setWidget('nom', new bsWidgetFormInput());
-        $this->setWidget('region', new bsWidgetFormChoice(array('choices' => self::getRegions())));
+        if(count(self::getRegions()) > 1){
+          $this->setWidget('region', new bsWidgetFormChoice(array('choices' => self::getRegions())));
+        }
         $this->setWidget('nature_inao', new bsWidgetFormChoice(array('choices' => self::getNaturesInao())));
         $this->setWidget('no_accises', new bsWidgetFormInput());
         $this->setWidget('commentaire', new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
@@ -33,7 +35,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         $this->widgetSchema->setLabel('famille', 'Famille *');
         $this->widgetSchema->setLabel('nom', "Nom de l'établissement *");
         $this->widgetSchema->setLabel('nature_inao', 'Nature INAO');
-        $this->widgetSchema->setLabel('region', 'Région viticole');
+        if(count(self::getRegions()) > 1){
+          $this->widgetSchema->setLabel('region', 'Région viticole');
+        }
         $this->widgetSchema->setLabel('no_accises', "N° d'Accise");
         $this->widgetSchema->setLabel('commentaire', 'Commentaire');
         $this->widgetSchema->setLabel('site_fiche', 'Site Fiche Publique');
@@ -41,7 +45,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         $this->setValidator('famille', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getFamilles()))));
         $this->setValidator('nom', new sfValidatorString(array('required' => true)));
         $this->setValidator('nature_inao', new sfValidatorChoice(array('required' => false, 'choices' => array_keys(self::getNaturesInao()))));
-        $this->setValidator('region', new sfValidatorChoice(array('required' => false, 'choices' => array_keys(self::getRegions()))));
+        if(count(self::getRegions()) > 1){
+          $this->setValidator('region', new sfValidatorChoice(array('required' => false, 'choices' => array_keys(self::getRegions()))));
+        }
         $this->setValidator('site_fiche', new sfValidatorString(array('required' => false)));
         $this->setValidator('no_accises', new sfValidatorString(array('required' => false)));
         $this->setValidator('commentaire', new sfValidatorString(array('required' => false)));
@@ -88,6 +94,10 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
     }
 
     public static function getRegions() {
+        if(count(EtablissementClient::getRegions()) <= 1){
+          return EtablissementClient::getRegions();
+        }
+
         return array_merge(array("" => ""),EtablissementClient::getRegions());
     }
 
@@ -106,6 +116,10 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
             $this->etablissement->setCvi($values['cvi']);
         } else {
             $this->etablissement->setCartePro($values['carte_pro']);
+        }
+        if((count(self::getRegions()) == 1)){
+          $regions = array_keys(self::getRegions());
+          $this->etablissement->region = $regions[0];
         }
     }
 

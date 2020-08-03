@@ -1,3 +1,6 @@
+setflash:
+  url: /afficher_message
+  param: { module: global, action: setFlash }
 
 auth_login_no_cas:
   url: /login_no_cas
@@ -6,6 +9,10 @@ auth_login_no_cas:
 auth_logout:
   url: /logout
   param: { module: auth, action: logout }
+
+auth_usurpation:
+  url: /usurpation/:identifiant
+  param: { module: auth, action: usurpation }
 
 auth_deconnexion_usurpation:
   url: /deconnexion_usurpation

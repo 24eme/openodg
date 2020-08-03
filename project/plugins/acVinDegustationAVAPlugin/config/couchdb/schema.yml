@@ -1,0 +1,128 @@
+#Degustation
+Degustation:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      appellation: { }
+      appellation_complement: { }
+      organisme: { }
+      millesime: { }
+      libelle: { }
+      appellation_libelle: { required: false }
+      date_degustation: { }
+      identifiant: { }
+      drev: { }
+      raison_sociale: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }
+      lng: { required: false }
+      date: { required: false }
+      date_prelevement: { }
+      heure: { }
+      position: { required: true }
+      agent: { }
+      telephone_bureau: { }
+      telephone_prive: { }
+      telephone_mobile: { }
+      date_demande: { }
+      reporte: { }
+      force: {required: false}
+      motif_non_prelevement: { }
+      signature_base64: { }
+      prelevements:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: DegustationPrelevement
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  libelle_complet: { required: false }
+                  libelle_produit: { }
+                  denomination_complementaire: { }
+                  vtsgn: { }
+                  volume_revendique: { type: float }
+                  anonymat_prelevement: { type: integer }
+                  anonymat_prelevement_complet: { }
+                  anonymat_degustation: { type: integer }
+                  motif_non_prelevement: { }
+                  cuve: { }
+                  preleve: { }
+                  commission: { type: integer }
+                  appreciations: { }
+                  type_courrier: { }
+                  visite_date: { }
+                  visite_heure: { }
+                  courrier_envoye: { }
+                  notes:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          class: DegustationNote
+                          definition:
+                            fields:
+                              note: { }
+                              defauts:
+                                type: array_collection
+                                definition:
+                                  fields:
+                                    '*': { }
+      reports:
+        type: collection
+        required: false
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
+      lots:
+        type: collection
+        class: DegustationLot
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  libelle_produit: { }
+                  volume_revendique: { type: float }
+                  vtsgn: { }
+                  nb: { }
+                  prelevement: { type: integer }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: DegustationPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

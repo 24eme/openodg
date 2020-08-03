@@ -1,6 +1,10 @@
 <?php use_helper('Compte') ?>
 <ol class="breadcrumb">
-    <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
+    <?php if(!$sf_user->hasCredential('contacts')): ?>
+        <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>">Contacts</a></li>
+    <?php else: ?>
+        <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
+    <?php endif; ?>
     <li class="active"><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?>  (<?php echo $societe->identifiant ?>)</a></li>
 </ol>
 
@@ -13,6 +17,7 @@
                         <h4><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> Societe n° <?php echo $societe->identifiant; ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
+                        <?php if($modifiable): ?>
                         <div class="btn-group">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu text-left">
@@ -22,6 +27,7 @@
                                 <li><a href="<?php echo url_for('compte_switch_en_alerte', array('identifiant' => $societe->getMasterCompte()->identifiant)); ?>"><?php echo ($societe->getMasterCompte()->exist('en_alerte') && $societe->getMasterCompte()->en_alerte)? 'Retirer alerte' : 'Mettre en alerte' ?></a></li>
                             </ul>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -64,9 +70,12 @@
                     </div>
                 </div>
                 <hr />
+                <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
+                <?php include_partial('compte/visualisationLogin', array('compte' => $societe->getMasterCompte())); ?>
+                <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
-                <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte())); ?>
-                <?php if ($societe->commentaire) : ?>
+                <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte(), 'modifiable' => $modifiable)); ?>
+                <?php if ($societe->commentaire && $modifiable) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
                 <pre><?php echo html_entity_decode($societe->commentaire); ?></pre>
@@ -75,6 +84,6 @@
         </div>
     </div>
     <div class="col-xs-4">
-        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $societe)); ?>
+        <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $societe, 'modifiable' => $modifiable)); ?>
     </div>
 </div>

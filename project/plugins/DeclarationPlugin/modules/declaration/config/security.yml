@@ -1,5 +1,5 @@
 all:
-  credentials: [[ADMIN]]
+  credentials: [[ADMIN,teledeclaration_drev_admin]]
 
 etablissement:
   credentials: []

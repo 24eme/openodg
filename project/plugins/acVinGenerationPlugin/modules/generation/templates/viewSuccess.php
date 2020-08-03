@@ -3,17 +3,12 @@
 <?php use_helper("Float"); ?>
 
 <div class="page-header no-border">
-    <div class="btn-group pull-right">
-        <?php if($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && GenerationClient::getInstance()->isRegenerable($generation)): ?>
-        <a href="<?php echo url_for('generation_regenerate', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>" onclick='return confirm("Étes vous sûr de vouloir regénérer les factures ?");' class="btn btn-xs btn-default btn-default-step btn-upper">Regénérer les factures</a>
-        <?php endif; ?>
-    </div>
     <h2>Génération N° <?php echo $generation->identifiant; ?><small> créé le <?php echo GenerationClient::getInstance()->getDateFromIdGeneration($generation->date_maj); ?></small></h2>
 </div>
 
 <?php if($generation->libelle): ?>
 <p class="text-center lead">
-    <?php echo $generation->libelle; ?>
+    <?php echo Anonymization::hideIfNeeded($generation->libelle); ?>
 </p>
 <?php endif; ?>
 

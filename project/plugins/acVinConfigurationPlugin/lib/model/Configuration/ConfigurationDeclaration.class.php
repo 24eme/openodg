@@ -113,6 +113,11 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return 0;
     }
 
+    public function getRendementConseille() {
+
+        return 0;
+    }
+
     public function getRendementVci()  {
 
         return 0;

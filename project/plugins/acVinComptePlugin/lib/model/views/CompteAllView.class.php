@@ -25,6 +25,11 @@ class CompteAllView extends acCouchdbView {
         return acCouchdbManager::getView('compte', 'all', 'Compte');
     }
 
+    public function getAll()
+    {
+        return $this->client->reduce(false)->getView($this->design, $this->view)->rows;
+    }
+
     public function findByInterpro($interpro, $q = null, $limit = 100) {
       try {
 	return $this->findByInterproELASTIC($interpro, $q, $limit);

@@ -1,0 +1,346 @@
+body {
+    background: url('https://teledeclaration.vinsvaldeloire.pro/images/fonds/bg_bouteilles.png') -32px 0;
+}
+
+#content {
+    background: #fff;
+}
+
+#header {
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#content {
+    margin-top: 30px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    border: 0px solid #e8e3dc;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    /*border-top: 4px solid #504f4f;*/
+}
+
+#header {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+#footer {
+    margin-top: 20px;
+}
+
+#footer a {
+    color: #333333;
+}
+
+#menu_navigation {
+    margin-bottom: 0;
+    border-radius: 0;
+    border: none;
+    font-size: 16px;
+}
+
+#menu_navigation .container {
+
+}
+
+table thead {
+    background-color: #ecebeb;
+}
+
+.page-header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+h2, h3{
+    color: #504f4f;
+}
+
+.panel-body > h2  {
+    margin-top: 5px;
+}
+
+h3 {
+    margin-top: 10px;
+}
+
+.breadcrumb {
+    margin-bottom: 10px;
+}
+
+.select2-container.form-control {
+    padding: 0;
+    margin: 0;
+}
+
+.select2-container .select2-choices .select2-search-field input, .select2-container .select2-choice {
+    border-radius: 0 !important;
+}
+
+.select2-container .select2-choice {
+    height: 38px;
+}
+
+.input-group-sm .select2-container .select2-choice {
+    height: 32px;
+}
+
+.select2-container .select2-choice .select2-arrow b, .select2-container .select2-choice div b {
+    background-position: 0 5px;
+}
+
+.input-group-sm .select2-container .select2-choice .select2-arrow b, .select2-container .select2-choice div b {
+    background-position: 0 3px;
+}
+
+.select2-search input {
+    border-radius: 0;
+}
+
+.select2-results .select2-no-results, .select2-results .select2-searching, .select2-results .select2-selection-limit {
+    background-color: #f8f3e8;
+}
+
+.select2-results .select2-highlighted {
+    color: white;
+    background-color: #504f4f;
+}
+
+.nav-step {
+    counter-reset: steps;
+    font-size: 15px;
+}
+
+.nav-step ul.navbar-nav li a::before {
+    display: inline-block;
+    border: 2px solid;
+    box-sizing: content-box;
+    border-radius: 50%;
+    counter-increment: steps;
+    content: counter(steps);
+    margin-right: 8px;
+    line-height: 20px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.nav-step ul.navbar-nav li {
+    border-right: 1px solid #dbd3c8;
+}
+
+.nav-step ul.navbar-nav li:first-child {
+    border-left: 1px solid #dbd3c8;
+}
+
+.list-group-item.active-bordered {
+    border-left: 6px solid #504f4f !important;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #504f4f;
+}
+
+#header header {background-color:#ffffff; background-image: url('/images/provence_grappe.png'); background-position: right; background-repeat: no-repeat; margin-top: 0px; margin-bottom: 20px; padding:0px 0;position:relative}
+#header header #titre {margin: 10px 160px 0 70px;}
+#header header h1 { margin-left: 155px; color: #fff; font-size: 25px; text-align: center;margin: 20px 0 0 0; padding: 0;}
+#header header #logo{float:left;}
+
+.strong {font-weight: bold;}
+
+.tableParcellaire th {
+	text-align: center !important;
+}
+
+.alert-danger a.alert-link {
+	text-decoration: underline;
+}
+.alert-danger a.alert-link:hover, .alert-danger a.alert-link:focus  {
+	text-decoration: none;
+}
+
+/**
+ * Header
+ ******************************************/
+ .visible_desk {
+   display: block !important;
+ }
+ .hidden_desk {
+   display: none !important;
+ }
+#header {
+ display: block;
+}
+#header {
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  margin: 0 0 30px;
+  padding: 15px 0 15px;
+  min-height: 100px;
+}
+#header .contenu {
+  zoom: 1;
+  min-height: 1px;
+  margin: 0 auto;
+  width: 1170px;
+  position: relative;
+}
+#header .contenu:before,
+#header .contenu:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header .contenu:after {
+  clear: both;
+}
+#header .contenu:before,
+#header .contenu:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header .contenu:after {
+  clear: both;
+}
+#header #logo {
+  float: left;
+  margin: 10px 0 0;
+}
+#header .logo_civdl {
+  float: right;
+  border-left: 1px solid #9a9a9a;
+}
+#header .logo_civdl img {
+  height: 60px;
+  margin: 0 10px;
+}
+#header .baseline {
+  font-family: Helvetica, Arial, sans-serif;
+  color: #555353;
+  display: inline-block;
+  font-size: 20px;
+  margin: 0 0 10px;
+}
+#header .conteneur_nav {
+  float: left;
+  margin: 0 0 0 15px;
+  padding: 0 15px;
+  position: relative;
+  width: 656px;
+}
+#header .conteneur_nav:before {
+  bottom: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 10px;
+  border-left: 1px solid #9a9a9a;
+  height: 50px;
+  content: '';
+}
+#header #navigation {
+  line-height: 33px;
+  position: relative;
+}
+#header #navigation ul {
+  zoom: 1;
+  min-height: 1px;
+  list-style: none;
+  display: block;
+  padding-left: 0;
+}
+#header #navigation ul:before,
+#header #navigation ul:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header #navigation ul:after {
+  clear: both;
+}
+#header #navigation ul:before,
+#header #navigation ul:after {
+  content: "\0020";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+#header #navigation ul:after {
+  clear: both;
+}
+#header #navigation li {
+  background: url(https://teledeclaration.vinsvaldeloire.pro/images/fonds/bg_navigation_sep.png) 0 center no-repeat;
+  float: left;
+  padding: 0 2px 0 3px;
+}
+#header #navigation li.actif {
+  font-weight: bold;
+}
+#header #navigation li a {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  padding: 1px 4px;
+}
+#header #navigation li a:hover,
+#header #navigation li a:focus {
+  text-decoration: none;
+}
+#header #navigation li.actif a,
+#header #navigation li a:hover,
+#header #navigation li a:focus {
+  border: 1px solid #9d3032;
+  background: #ca5153;
+  color: #fff;
+  padding: 0 3px;
+}
+#header .btn_menu {
+  background: url('https://teledeclaration.vinsvaldeloire.pro/images/pictos/pi_menu.png') no-repeat;
+  display: none;
+  float: right;
+  height: 20px;
+  margin: 25px 0 0;
+  overflow: hidden;
+  text-indent: 100%;
+  white-space: nowrap;
+  width: 26px;
+}
+#header #actions_utilsateur {
+  float: right;
+  margin: 5px 10px;
+  font-size: 12px;
+}
+#header #actions_utilsateur a {
+  display: block;
+  margin: 10px 0;
+  padding: 0 0 0 20px;
+  position: relative;
+}
+#header #actions_utilsateur a:before {
+  bottom: auto;
+  left: 0;
+  position: absolute;
+  right: auto;
+  top: 4px;
+  height: 0px;
+  width: 0px;
+  border-style: solid;
+  border-width: 6px 0 6px 7px;
+  border-color: transparent transparent transparent #3e3e3e;
+  display: inline-block;
+  content: '';
+}

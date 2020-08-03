@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(30);
+$t = new lime_test(28);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -12,14 +12,10 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-foreach (TemplateFactureClient::getInstance()->findAll() as $templateFacture) {
-  $templateFacture->delete(false);
-}
-
 $campagne = (date('Y')-1)."";
 
 //Début des tests
-$t->comment("Création d'une DRev");
+$t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$campagne.")");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -36,10 +32,16 @@ $t->comment("Saisie des volumes");
 
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
+    if(!$produit->getRendement()) {
+        continue;
+    }
     $produit_hash1 = $produit->getHash();
     break;
 }
 foreach($produits as $produit) {
+    if(!$produit->getRendement()) {
+        continue;
+    }
     $produit_hash2 = $produit->getHash();
 }
 
@@ -72,6 +74,7 @@ $produit3 = $drev->get($produit_hash3);
 $produit1->superficie_revendique = 200;
 $produit1->recolte->superficie_total = 200;
 $produit1->volume_revendique_issu_recolte = 80;
+$produit1->vci->rafraichi = 10;
 
 $produit2->superficie_revendique = 150;
 $produit2->recolte->superficie_total = 150;
@@ -80,29 +83,23 @@ $drev->save();
 
 $t->is(count($drev->getProduits()), 3, "La drev a 3 produits");
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est 350");
-$t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est 190");
+$t->is($drev->declaration->getTotalVolumeRevendique(), 200, "Le volume revendiqué totale est 200");
 
 $t->comment("Validation");
 
 $drev->validate();
+$drev->validateOdg();
 $drev->save();
 
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est toujours de 350");
-$t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est toujours de 190");
+$t->is($drev->declaration->getTotalVolumeRevendique(), 200, "Le volume revendiqué totale est toujours de 200");
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
+$t->is($drev->validation_odg, date('Y-m-d'), "La DRev a la date du jour comme date de validation odg");
 $t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
 
 $drev->devalidate();
 $t->is($drev->validation, NULL, "La DRev n'est plus validée");
-
-$templateFactureJson = file_get_contents(dirname(__FILE__).'/../data/template_facture_'.$application.'.json');
-$templateFacture = acCouchdbManager::getClient()->createDocumentFromData(json_decode($templateFactureJson));
-$templateFacture->save();
-
-$allTemplateFacture = TemplateFactureClient::getInstance()->findAll();
-
-$t->is(count($allTemplateFacture), 1, "Il existe un template de facture");
 
 $drev->validate();
 $drev->save();
@@ -110,12 +107,6 @@ $drev->save();
 $mouvements = $drev->mouvements->get($viti->identifiant);
 $t->is(count($mouvements), 4, "La DRev a 4 mouvements");
 $mouvement = $mouvements->getFirst();
-$volume_revendique_totaux_drev = 0.0;
-foreach ($drev->declaration->getProduits() as $produit) {
-  $volume_revendique_totaux_drev += $produit->volume_revendique_total;
-}
-// $t->ok($mouvement->produit_hash === $produit1->getHash() && $mouvement->produit_libelle === $produit1->getLibelleComplet(), "Le hash et le libellé du produit du mouvement sont corrects");
-$t->is($mouvement->quantite,$volume_revendique_totaux_drev, "La quantité du premier mouvement correspond la somme des volume de la DRev");
 $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
 $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
 $t->comment("Génération d'une modificatrice");
@@ -134,18 +125,14 @@ $produit1M1->superficie_revendique = 120;
 $produit1M1->recolte->superficie_total = 120;
 $produit1M1->volume_revendique_issu_recolte = 90;
 $produit1M1->volume_revendique_total = 90;
+$produit1M1->vci->rafraichi = 20;
 
 $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_revendique'), "La superficie vinifiee est marquée comme modifié par rapport à la précedente");
 
 $t->comment("Validation de la modificatrice");
 
+$drevM1->save();
 $drevM1->validate();
 $drevM1->save();
 
 $t->is(count($drevM1->mouvements->get($viti->identifiant)), 4, "La DRev modificatrice a 4 mouvements");
-$mouvementM1 = $drevM1->mouvements->get($viti->identifiant)->getFirst();
-$volume_revendique_totaux_drevM1 = 0.0;
-foreach ($drevM1->declaration->getProduits() as $produit) {
-  $volume_revendique_totaux_drevM1 += $produit->volume_revendique_total;
-}
-$t->is($mouvementM1->quantite, $volume_revendique_totaux_drevM1 - $volume_revendique_totaux_drev, "La quantité du mouvement correspond à la différence entre les 2 DRev");

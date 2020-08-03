@@ -1,0 +1,6 @@
+all:
+  configuration:
+    societe:
+      disable_save: false
+      droits: []
+      visualisation_teledeclaration: false

@@ -50,14 +50,14 @@ class Parcellaire extends BaseParcellaire {
         $exist = $this->exist('declaration/'.$hashToAdd);
 
         $produit = $this->add('declaration')->add($hashToAdd);
-
         if(!$exist) {
             $this->declaration->reorderByConf();
-        }
+            $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+          }
 
         return $this->get($produit->getHash());
-    }
 
+  }
     public function getConfigProduits() {
 
         return $this->getConfiguration()->declaration->getProduits();
@@ -69,10 +69,25 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = 0, $strictNumOrdre = false) {
-        $config = $this->getConfiguration()->get($hashProduit);
-        $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
-        $produit->getLibelle();
+        $produit = $this->addProduit($hashProduit);
         return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
+    }
+
+    public function countSameParcelle($commune, $section, $numero_parcelle, $lieu){
+        $sameParcelle = 0;
+
+        foreach ($this->declaration as $produitKey => $produitParcelles) {
+          foreach ($produitParcelles->detail as $pKey => $parcelleExists) {
+            if(($parcelleExists->commune == $commune) &&
+                ($parcelleExists->section == $section) &&
+                ($parcelleExists->numero_parcelle == $numero_parcelle) &&
+                ($parcelleExists->lieu == $lieu)){
+                  $sameParcelle++;
+                }
+          }
+        }
+        return $sameParcelle;
+
     }
 
     public function getDateFr() {

@@ -142,7 +142,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
             $mouvement->taux = $cotisation->getPrix();
             $mouvement->facture = 0;
             $mouvement->facturable = 1;
-            $mouvement->date = $this->getCampagne()."110-10";
+            $mouvement->date = $this->getCampagne()."-10-10";
             $mouvement->date_version = $this->validation;
             $mouvement->version = null;
             $mouvement->template = $templateFacture->_id;

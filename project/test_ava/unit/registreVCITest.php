@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(86);
+$t = new lime_test(90);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -52,6 +52,8 @@ $t->is($registre->lignes[0]->produit_libelle, $produit->getLibelleComplet(), 'li
 $t->is($registre->lignes[0]->detail_hash, RegistreVCIClient::LIEU_CAVEPARTICULIERE, 'libelle détail');
 $t->is($registre->lignes[0]->detail_libelle, 'Cave particulière', 'libelle détail');
 $t->is($registre->lignes[0]->mouvement_type, RegistreVCIClient::MOUVEMENT_CONSTITUE, 'mvt type');
+$t->is($registre->getTotalMouvement(RegistreVCIClient::MOUVEMENT_CONSTITUE), 30, "Le total constitue est de 30");
+
 
 $t->comment("VCI rafraichi");
 $registre->addLigne($produit, RegistreVCIClient::MOUVEMENT_RAFRAICHI, 10, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
@@ -133,6 +135,9 @@ $t->is($registre->lignes[7]->produit_libelle, 'AOC Crémant d\'Alsace', 'libelle
 $registre->superficies_facturables = 5;
 $registre->save();
 
+$t->is($registre->getStockPrecedentTotal(), 0, "Le stock total précédent est de 0");
+$t->is($registre->getStockFinalTotal(), 10, "Le stock final total est de 10");
+
 $t->comment("Export CSV");
 
 $export = new ExportRegistreVCICSV($registre);
@@ -176,6 +181,8 @@ $registre->addLigne($produit_hash, RegistreVCIClient::MOUVEMENT_RAFRAICHI, 5, $r
 $registre->addLigne($hash_cremant, RegistreVCIClient::MOUVEMENT_RAFRAICHI, 10, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
 $registreSuivant = $registre->generateSuivante();
 $registreSuivant->save();
+
+$t->is($registreSuivant->getStockPrecedentTotal(), 25, "Le stock total précédent est égal au stock total rafraichi");
 
 $t->is($registreSuivant->campagne, $campagne + 1, "La campagne est la suivante : ".($campagne + 1));
 $t->is($registreSuivant->_id, "REGISTREVCI-".$registreSuivant->identifiant."-".($campagne + 1), "L'id est bien construit");

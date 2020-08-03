@@ -106,7 +106,7 @@ class DRevCouleur extends BaseDRevCouleur
     }
 
 	public function getVolumeRevendiqueRecolte() {
-		if(!$this->exist('volume_revendique_recolte') || is_null($this->_get('volume_revendique_recolte'))) {
+		if(!$this->exist('volume_revendique_recolte')) {
 
 			return $this->volume_revendique;
 		}
@@ -160,6 +160,12 @@ class DRevCouleur extends BaseDRevCouleur
 
     	return $this->volume_revendique + (($this->canHaveVtsgn()) ? $this->volume_revendique_vtsgn : 0);
     }
+
+	public function getTotalVolumeRevendiqueVCI()
+	{
+
+		return $this->exist('volume_revendique_vci') ? $this->volume_revendique_vci : 0;
+	}
 
     public function getTotalSuperficieVinifiee()
     {

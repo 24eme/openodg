@@ -59,7 +59,7 @@ EOF;
           $csv = explode(';', $line);
 
 
-          if (($csv[self::DRCIVA_APPELLATION] != 'AOC Alsace blanc') && ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace')) {
+          if ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace') {
             continue;
           }
           if ($csv[self::DRCIVA_VTSGN]) {
@@ -72,9 +72,6 @@ EOF;
 
           if ($csv[self::DRCIVA_LIEU] == 'TOTAL') {
             @$vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['SUPERFICIE'] += $csv[self::DRCIVA_SUPERFICIE_TOTALE];
-          }
-          if (!$csv[self::DRCIVA_VCI_TOTAL]) {
-            continue;
           }
 
           $oldreporting = error_reporting(0);
@@ -102,7 +99,7 @@ EOF;
               foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
                 foreach($vciacheteur as $cviacheteur => $vcicepage) {
                   foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && !$unvci['DONTVCI'] && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
+                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
                           $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] -= $unvci['VOLUME_TOTAL'];
                           unset($vci[$recoltant][$appellation]['LIEU'][$lieu][$cviacheteur]);
                           break;
@@ -121,12 +118,12 @@ EOF;
             try {
                 $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."",  $arguments['campagne']);
             } catch(Exception $e) {
-                echo $recoltant . " : " . $e->getMessage()."\n";
+                $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($recoltant."", $arguments['campagne'], acCouchdbClient::HYDRATE_JSON);
+                echo $recoltant . " : " . $e->getMessage()." ".(($drev && $drev->validation_odg) ? $drev->_id : null)."\n";
                 continue;
             }
-            if (count($registre->lignes)) {
-                $registre->clear();
-                $registre->save();
+            if (!$registre->isNew()) {
+                continue;
             }
             foreach($vciappellation as $appellation => $vcilieu) {
             $nonsolvable = 0;
@@ -162,13 +159,24 @@ EOF;
               }
             }
           }
-          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
-          if ($registre->exist('lignes') && count($registre->lignes)) {
-            $registre->save();
-            echo $registre->_id." savé\n";
-            }elseif($registre->_id){
-            $registre->delete();
+          if ((!$registre->exist('lignes') || !count($registre->lignes)) && !$registre->getStockFinalTotal() && !$registre->getStockPrecedentTotal()) {
+              continue;
           }
+
+          $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($recoltant."", $arguments['campagne'], acCouchdbClient::HYDRATE_JSON);
+          if(!$drev || !$drev->validation_odg) {
+              echo "Pas de drev ou pas validé : ".$recoltant."\n";
+              continue;
+          }
+
+          if($registre->getTotalMouvement(RegistreVCIClient::MOUVEMENT_CONSTITUE) < 1) {
+              $registre->superficies_facturables = 0;
+          }
+
+          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
+
+          $registre->save();
+          echo $registre->_id." savé\n";
         }
     }
 }

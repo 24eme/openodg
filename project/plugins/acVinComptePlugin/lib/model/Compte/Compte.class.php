@@ -150,6 +150,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+
         $this->tags->remove('automatique');
         $this->tags->add('automatique');
         if ($this->exist('teledeclaration_active') && $this->teledeclaration_active) {
@@ -184,6 +189,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
             $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
             $this->add('region', $this->getEtablissement()->region);
+        } elseif ($this->isSocieteContact()) {
+            $cvis = array();
+            $ppms = array();
+            $regions = array();
+            foreach ($this->getSociete()->getEtablissementsObj() as $etb) {
+                $cvis[] = $etb->etablissement->cvi;
+                $ppms[] = $etb->etablissement->ppm;
+                $regions[] = $etb->etablissement->region;
+                $this->addTag('automatique', $etb->etablissement->famille);
+            }
+            $this->etablissement_informations->cvi = implode('|', $cvis);
+            $this->etablissement_informations->ppm = implode('|', $ppms);
+            $this->add('region', implode('|', $regions));
+
         }else{
             $this->etablissement_informations->cvi = null;
             $this->etablissement_informations->ppm = null;
@@ -437,7 +456,25 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return false;
         }
         $droits = $this->get('droits')->toArray(0, 1);
+        foreach($droits as $key => $d) {
+            $droitTab = explode(":", $d);
+            $droits[$key] = $droitTab[0];
+        }
+
         return in_array($droit, $droits);
+    }
+
+
+    public function getDroitValue($droit) {
+        foreach($this->droits as $d) {
+            $droitTab = explode(":", $d);
+            if($droit != $droitTab[0]) {
+                continue;
+            }
+            return isset($droitTab[1]) ? $droitTab[1] : null;
+        }
+
+        return null;
     }
 
     public function getDroits() {
@@ -530,11 +567,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getAdresse() {
-        return $this->_get('adresse');
+        return Anonymization::hideIfNeeded($this->_get('adresse'));
     }
 
     public function getAdresseComplementaire() {
-        return $this->_get('adresse_complementaire');
+        return Anonymization::hideIfNeeded($this->_get('adresse_complementaire'));
     }
 
     public function getCommune() {
@@ -550,26 +587,26 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getEmail() {
-        return $this->_get('email');
+        return Anonymization::hideIfNeeded($this->_get('email'));
     }
     public function getEmails(){
         return explode(';',$this->email);
     }
 
     public function getTelephoneBureau() {
-        return $this->_get('telephone_bureau');
+        return Anonymization::hideIfNeeded($this->_get('telephone_bureau'));
     }
 
     public function getTelephonePerso() {
-        return $this->_get('telephone_perso');
+        return Anonymization::hideIfNeeded($this->_get('telephone_perso'));
     }
 
     public function getTelephoneMobile() {
-        return $this->_get('telephone_mobile');
+        return Anonymization::hideIfNeeded($this->_get('telephone_mobile'));
     }
 
     public function getFax() {
-        return $this->_get('fax');
+        return Anonymization::hideIfNeeded($this->_get('fax'));
     }
 
     public function getDistances($lat1, $lon1, $lat2, $lon2)
@@ -593,7 +630,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
         $file = file_get_contents($url);
         $result = json_decode($file);
-        if(!count($result)){
+        if(!$result || !count($result->response->docs)){
             return false;
         }
         if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
@@ -682,11 +719,18 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getNomAAfficher(){
-      return $this->getNom();
+      return Anonymization::hideIfNeeded($this->_get('nom_a_afficher'));
     }
 
     public function getIdentifiantAAfficher(){
       return $this->getIdentifiant();
+    }
+
+    public function getRegion() {
+        if (!$this->exist('region')) {
+            return null;
+        }
+        return $this->_get('region');
     }
 
     public function getRegionViticole(){

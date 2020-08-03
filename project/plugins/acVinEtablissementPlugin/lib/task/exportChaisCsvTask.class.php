@@ -35,12 +35,17 @@ EOF;
         $results = EtablissementClient::getInstance()->findAll();
 
         $withoutLiaisons = (isset($options['without-liaisons']) && $options['without-liaisons']);
-        echo "Identifiant chais,Identifiant établissement,Type,Chais Activites,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET\n";
-$cpt = 0;
+        echo "Identifiant chais,Identifiant,Type,Chais Activites,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET\n";
 
         $this->activitesCorespondance = array_flip(EtablissementClient::$chaisAttributsInImport);
         if(!$withoutLiaisons){
+           $cpt = 0;
             foreach($results->rows as $row) {
+               $cpt++;
+               if($cpt > 500) {
+                       sleep(3);
+                       $cpt = 0;
+               }
                 $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
                 if(isset($etablissement->chais)){
                     foreach($etablissement->chais as $numChai => $chai) {
@@ -50,7 +55,13 @@ $cpt = 0;
             }
         }
 
+        $cpt = 0;
         foreach($results->rows as $row) {
+            $cpt++;
+            if($cpt > 500) {
+                sleep(3);
+                $cpt = 0;
+            }
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             if(isset($etablissement->chais)){
                 foreach($etablissement->chais as $numChai => $chai) {
@@ -87,7 +98,7 @@ $cpt = 0;
                         }
                         $keyL = $liaison->id_etablissement.$liaison->hash_chai;
                         if(!array_key_exists($keyL,$this->chais)){
-                            throw new sfException("Le chai $keyL n'a pas été réfenrencé");
+                            throw new sfException("Le chai $keyL n'a pas été réferencé");
                         }
 
                         $chaiDistant = $this->chais[$keyL];
@@ -166,7 +177,7 @@ $cpt = 0;
         }
 
         public function protectIso($str){
-            return str_replace(array('œ'),array(''),$str);
+            return str_replace(array('œ'),array('oe'),$str);
         }
 
         private function transformNom($nom_or_raison_sociale){

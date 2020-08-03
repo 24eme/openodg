@@ -7,10 +7,6 @@ if (getenv("NODELETE")) {
     exit(0);
 }
 $nbtest = 36;
-if(($application == "bivc")){
-  $nbtest = 41;
-}
-
 $t = new lime_test($nbtest);
 
 $t->comment('suppression des différentes sociétés, de leurs établissements et comptes');
@@ -21,40 +17,25 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
         $soc = SocieteClient::getInstance()->findByIdentifiantSociete($m[1]);
         foreach($soc->getEtablissementsObj() as $k => $etabl) {
             if($etabl->etablissement){
-              foreach (VracClient::getInstance()->retrieveBySoussigne($etabl->etablissement->identifiant)->rows as $k => $vrac) {
-                  $vrac_obj = VracClient::getInstance()->find($vrac->id);
-                  $vrac_obj->delete();
-                  $t->is(VracClient::getInstance()->find($vrac->id), null, "Suppression du contrat ".$vrac->id);
-              }
-              foreach (DRMClient::getInstance()->viewByIdentifiant($etabl->etablissement->identifiant) as $id => $drm) {
-                  $drm = DRMClient::getInstance()->find($id);
-                  $drm->delete(false);
-                  $t->is(DRMClient::getInstance()->find($id), null, "Suppression de la DRM ".$id);
-              }
               foreach (HabilitationClient::getInstance()->getHistory($etabl->etablissement->identifiant) as $id => $h) {
                   $h = HabilitationClient::getInstance()->find($id);
                   $h->delete(false);
                   $t->is(HabilitationClient::getInstance()->find($id), null, "Suppression de l'habilitation ".$id);
               }
-              foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $id => $d) {
+              foreach(DRevClient::getInstance()->getHistory($etabl->etablissement->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $id => $d) {
                   $d = DRevClient::getInstance()->find($id);
                   $d->delete(false);
                   $t->is(DRevClient::getInstance()->find($id), null, "Suppression de la drev ".$id);
+                  $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $id), acCouchdbClient::HYDRATE_JSON);
+                  if($dr) { DRClient::getInstance()->deleteDoc($dr); }
+                  $sv12 = SV12Client::getInstance()->find(str_replace("DREV-", "SV12-", $id), acCouchdbClient::HYDRATE_JSON);
+                  if($sv12) { SV12Client::getInstance()->deleteDoc($sv12); }
+                  $sv11 = SV11Client::getInstance()->find(str_replace("DREV-", "SV11-", $id), acCouchdbClient::HYDRATE_JSON);
+                  if($sv11) { SV11Client::getInstance()->deleteDoc($sv11); }
               }
-
           }
-        }
-        foreach (FactureSocieteView::getInstance()->findBySociete($soc) as $id => $facture) {
-            $facture = FactureClient::getInstance()->find($id);
-            $facture->delete();
-            $t->is(FactureClient::getInstance()->find($id), null, "Suppression de la Facture ".$id);
         }
         $soc->delete();
         $t->is(CompteClient::getInstance()->findByIdentifiant($m[1].'01'), null, "Suppression de la sociétés ".$m[1]." provoque la suppression de son compte");
     }
-}
-
-if($doc = MouvementsFactureClient::getInstance()->find("MOUVEMENTSFACTURE-TEST")) {
-    $doc->delete();
-    $t->is(MouvementsFactureClient::getInstance()->find("MOUVEMENTSFACTURE-TEST"), null, "Suppression du document de mouvements de facturation MOUVEMENTSFACTURE-TEST");
 }

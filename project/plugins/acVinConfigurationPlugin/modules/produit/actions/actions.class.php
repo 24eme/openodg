@@ -29,6 +29,31 @@ class produitActions extends sfActions
       $this->notDisplayDroit = true;
   }
 
+  public function executeOdg(sfWebRequest $request) {
+      $this->odg = $request->getParameter('odg');
+      if(!$request->getParameter('date')) {
+
+        return $this->redirect('produits_odg', array('odg' => $this->odg, 'date' => date('Y-m-d')));
+      }
+      set_time_limit(0);
+
+      $this->date = $request->getParameter('date');
+      $this->config = ConfigurationClient::getConfiguration($this->date);
+
+      $this->notDisplayDroit = true;
+      $this->produits = array();
+      $this->produitsOdg = DRevConfiguration::getInstance()->getOdgProduits($this->odg);
+      $this->odgInfos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->odg);
+      foreach($this->config->declaration->getProduits($this->date) as $produit) {
+          foreach($this->produitsOdg as $produitOdgHash) {
+              if(!preg_match('|'.$produitOdgHash.'|', $produit->getHash())) {
+                  continue;
+              }
+              $this->produits[$produit->getHash()] = $produit;
+          }
+      }
+  }
+
   public function executeModification(sfWebRequest $request)
   {
     //throw new sfException("Edition de l'arbre produit désactivé pour le moment");
@@ -85,4 +110,20 @@ class produitActions extends sfActions
 
     return $this->redirect('produit_modification', array('noeud' => $noeud, 'hash' => $hash, 'noeud_to_edit' => implode("|", $noeud_to_edit)));
   }
+
+  public function executeHabilitation(sfWebRequest $request) {
+    $this->odg = $request->getParameter('odg');
+    $this->odgInfos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->odg);
+
+    $this->getResponse()->setHttpHeader('Content-Type', 'application/csv');
+    $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+    $this->getResponse()->setHttpHeader('Pragma', '');
+    $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+    $this->getResponse()->setHttpHeader('Expires', '0');
+
+    $inao_fichier = $this->odgInfos["inao"];
+    
+    return $this->renderText(file_get_contents(sfConfig::get('sf_root_dir').'/'.$inao_fichier));
+    }
+
 }

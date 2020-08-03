@@ -14,7 +14,6 @@
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
-
 <form id="validation-form" action="<?php echo url_for("parcellaireirrigue_edit", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -27,6 +26,7 @@
             <?php endif; ?>
             <?php echo $form["date_papier"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
             <div class="col-xs-4">
+            	<?php echo $form["date_papier"]->renderError() ?>
                 <div class="input-group date-picker">
                     <?php echo $form["date_papier"]->render(array("class" => "form-control")); ?>
                     <div class="input-group-addon">
@@ -76,7 +76,7 @@
                 <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
             	<td><?php echo $parcelle->materiel; ?></td>
             	<td><?php echo $parcelle->ressource; ?></td>
-            	<?php if($parcelle->irrigation): ?>
+            	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>
             	<td class="text-center text-success"><span class="glyphicon glyphicon-ok-sign"></span></td>
             	<td class="text-center"><?php echo format_date($parcelle->date_irrigation, "dd/MM/yyyy", "fr_FR"); ?></td>
             	<?php else: ?>

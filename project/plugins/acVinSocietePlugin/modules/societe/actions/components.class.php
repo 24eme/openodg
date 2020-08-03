@@ -13,6 +13,7 @@ class societeComponents extends sfComponents {
         $this->societe->getMasterCompte()->updateCoordonneesLongLat();
         $this->etablissements = $this->societe->getEtablissementsObject();
         $this->interlocuteurs = array();
+        $this->modifiable = !isset($this->modifiable) || $this->modifiable;
 
         foreach(SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true) as $interlocuteur) {
             if(!$interlocuteur) {

@@ -44,15 +44,6 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $declarant->telephone_mobile = $compte->telephone_mobile;
         $declarant->email = $compte->email ;
 
-        $compteSociete = $etablissement->getSociete()->getMasterCompte();
-        $declarant->adresse_societe = $compteSociete->adresse;
-        $declarant->adresse_complementaire_societe = $compteSociete->adresse_complementaire;
-        $declarant->commune_societe = $compteSociete->commune;
-        $declarant->code_postal_societe = $compteSociete->code_postal;
-        $declarant->telephone_bureau_societe = $compteSociete->telephone_bureau;
-        $declarant->telephone_mobile_societe = $compteSociete->telephone_mobile;
-        $declarant->email_societe = $compteSociete->email ;
-
         return $declarant;
 
     }
@@ -80,6 +71,19 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function getProduitsConfig() {
 
         return $this->getConfiguration()->getProduitsCahierDesCharges();
+    }
+
+    public function getProduitsHabilites() {
+        $produits = array();
+        foreach($this->getProduits() as $produit) {
+            if(!count($produit->getActivitesHabilites())) {
+                continue;
+            }
+
+            $produits[$produit->getHash()] = $produit;
+        }
+
+        return $produits;
     }
 
     public function getProduits($onlyActive = true) {
@@ -157,6 +161,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
+    public function getSociete() {
+        return $this->getEtablissementObject()->getSociete();
+    }
+
   public function isLastOne(){
     $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
     if(!$last) {
@@ -176,15 +184,24 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
       return $precedente;
   }
+
+  public function getNext() {
+      $date = new DateTime($this->date);
+      $suivante = HabilitationClient::getInstance()->findNextByIdentifiantAndDate($this->identifiant, $date->format('Y-m-d'));
+
+      return $suivante;
+  }
+
   private function addHistoriqueNewProduit($complement){
       $this->addHistorique("Ajout du produit : ".$complement);
   }
 
-  public function addHistorique($description, $commentaire = '', $auteur = '') {
+  public function addHistorique($description, $commentaire = '', $auteur = '', $statut = null) {
     $historiqueRow = $this->get('historique')->add(null);
     $historiqueRow->iddoc = $this->_id;
     $historiqueRow->date = $this->getDate();
     $historiqueRow->auteur = $auteur;
+    $historiqueRow->statut = $statut;
     try {
       if (!$auteur && sfContext::getInstance() && sfContext::getInstance()->getUser() && sfContext::getInstance()->getUser()->getCompte()) {
         $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
@@ -193,6 +210,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     $historiqueRow->description = $description;
     $historiqueRow->commentaire = $commentaire;
 
+    return $historiqueRow;
   }
 
   public function getFullHistoriqueReverse(){
@@ -259,6 +277,18 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
             $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $statut, $commentaire, $date);
         }
   }
+
+    public function getDemandesSortedOldToRecent() {
+        $demandes = array();
+
+        foreach($this->demandes as $key => $demande) {
+            $demandes[$demande->date.$demande->getKey()] = $demande;
+        }
+
+        ksort($demandes);
+
+        return $demandes;
+    }
 
     public function save() {
         $this->constructId();
