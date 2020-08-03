@@ -1,6 +1,9 @@
 <?php
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
+$t = new lime_test(1);
+$t->todo("les mettre à jour");
+return;
 
 sfContext::createInstance($configuration);
 
@@ -12,7 +15,7 @@ if($application != 'provence') {
 $t = new lime_test(10);
 
 $ppmanager = new PotentielProductionManager(null);
-$generator = $ppmanager->getGenerator(); 
+$generator = $ppmanager->getGenerator();
 
 $superficiesRouge = $superficiesRose = [
     'principaux' =>
