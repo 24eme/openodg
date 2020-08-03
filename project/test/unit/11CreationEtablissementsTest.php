@@ -23,7 +23,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(27);
+$t = new lime_test(33);
 $t->comment('création des différentes établissements');
 
 $societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
@@ -165,3 +165,18 @@ $comptecoop->addTag('test', 'test');
 $comptecoop->addTag('test', 'test_coop');
 $comptecoop->save();
 $t->is($comptecoop->tags->automatique->toArray(true, false), array( 'etablissement','cooperative'), "Création d'un etablissement coop met à jour le compte");
+
+$viti_compte = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti');
+$t->ok($viti_compte, 'le tag test_viti retourne un compte');
+$viti = $viti_compte->getEtablissement();
+$t->ok($viti, 'le compte test_viti est un établissement');
+
+$nego_compte =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_nego');
+$t->ok($nego_compte, 'le tag test_nego retourne un compte');
+$nego = $nego_compte->getEtablissement();
+$t->ok($nego, "le compte test_nego est un etablissement");
+
+$coop_compte =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_coop');
+$t->ok($coop_compte, 'le tag test_coop retourne un compte');
+$coop = $coop_compte->getEtablissement();
+$t->ok($coop, "le compte test_coop est un etablissement");
