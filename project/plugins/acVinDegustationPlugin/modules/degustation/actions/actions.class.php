@@ -2,8 +2,7 @@
 
 class degustationActions extends sfActions {
 
-    public function executeIndex(sfWebRequest $request) {
-        
+    public function executeIndex(sfWebRequest $request) {        
         $this->form = new DegustationCreationForm(new Degustation());
         
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -18,12 +17,33 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
         
-        $this->form->save();
+        $degustation = $this->form->save();
+        
+        return $this->redirect('degustation_lots', $degustation);
     }
     
-    public function executeDeclarant(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->degustations = DegustationClient::getInstance()->getDegustationsByEtablissement($this->etablissement->identifiant);
+    public function executeLots(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
+            $this->degustation->save();
+        }
+    }
+    
+    public function executeValidation(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
+            $this->degustation->save();
+        }
+    }
+
+    protected function getEtape($doc, $etape, $class = "DegustationEtapes") {
+        $etapes = $class::getInstance();
+        if (!$doc->exist('etape')) {
+            return $etape;
+        }
+        return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
     }
 
     
