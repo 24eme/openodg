@@ -3,15 +3,15 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $t = new lime_test(4);
-
-$compte = CompteClient::getInstance()->find("COMPTE-E7523700100");
-$etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-7523700100");
-
-if($compte) {
-    $compte->delete();
-}
-if($etablissement) {
-    $etablissement->delete();
+foreach(array('E7523700100', '7523700100', '7523700600', 'E7523700600') as $id) {
+    $compte = CompteClient::getInstance()->find("COMPTE-".$id);
+    $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$id);
+    if($compte) {
+        $compte->delete();
+    }
+    if($etablissement) {
+        $etablissement->delete();
+    }
 }
 
 $compte = new Compte(CompteClient::TYPE_COMPTE_ETABLISSEMENT);

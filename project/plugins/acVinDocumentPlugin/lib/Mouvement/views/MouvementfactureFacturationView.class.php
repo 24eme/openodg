@@ -2,7 +2,7 @@
 
 class MouvementfactureFacturationView extends acCouchdbView
 {
-    
+
     const KEYS_FACTURE = 0;
     const KEYS_FACTURABLE = 1;
     const KEYS_REGION = 2;
@@ -15,7 +15,7 @@ class MouvementfactureFacturationView extends acCouchdbView
     const KEYS_VRAC_DEST = 9;
     const KEYS_MVT_TYPE = 10;
     const KEYS_DETAIL_ID = 11;
-                    
+
     const VALUE_PRODUIT_LIBELLE = 0;
     const VALUE_TYPE_LIBELLE = 1;
     const VALUE_VOLUME = 2;
@@ -109,9 +109,9 @@ class MouvementfactureFacturationView extends acCouchdbView
         $mouvement->type_libelle = $row->value[self::VALUE_TYPE_LIBELLE];
         $mouvement->volume = $row->value[self::VALUE_VOLUME];
         $mouvement->detail_libelle = $row->value[self::VALUE_DETAIL_LIBELLE];
-        $mouvement->cvo = $row->value[self::VALUE_CVO];        
-        $mouvement->numero = $row->value[self::VALUE_NUMERO]; 
+        $mouvement->cvo = $row->value[self::VALUE_CVO];
+        $mouvement->numero = $row->value[self::VALUE_NUMERO];
         $mouvement->prix_ht = $mouvement->cvo * -1 * $mouvement->volume;
         return $mouvement;
     }
-}  
+}

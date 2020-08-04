@@ -1,10 +1,10 @@
 <?php
 /**
- * Model for DRevMouvement
+ * Model for AbonnementMouvement
  *
  */
 
-class RegistreVCIMouvement extends BaseRegistreVCIMouvement {
+class AbonnementMouvementFactures extends BaseAbonnementMouvementFactures {
 
     public function getMD5Key() {
         $key = $this->template."_".$this->categorie . '_' .$this->type_hash;

@@ -224,3 +224,5 @@ $drevres = DRevClient::getInstance()->find($res->rows[0]->value->origine_documen
 $t->ok($drevres->get($res->rows[0]->value->origine_hash), 'le mouvement correspond bien à un lot');
 $t->ok($res->rows[0]->value->origine_mouvement, 'le mouvement a bien un origine mouvement');
 $t->is($drevres->get($res->rows[0]->value->origine_mouvement)->origine_mouvement, $res->rows[0]->value->origine_mouvement, "le mouvement l'origine mouvement correspond bien au mouvement");
+
+$t->comment("Gestion du prélèvement");

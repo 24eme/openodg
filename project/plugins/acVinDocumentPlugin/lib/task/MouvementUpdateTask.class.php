@@ -43,10 +43,10 @@ EOF;
         try {
           $doc = acCouchdbManager::getClient()->find($id_doc);
         } catch(Exception $e) {
-          
+
           throw new sfException(sprintf("WARNING; Le document '%s' n'a pas pu être récupéré\n", $id_doc));
         }
-        if(!$doc instanceof InterfaceMouvementDocument) {
+        if(!$doc instanceof InterfaceMouvementFacturesDocument) {
 
           throw new sfException(sprintf("WARNING;Le document '%s' n'est pas un document qui peut accueillir des mouvements\n", $id_doc));
         }

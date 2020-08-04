@@ -1,6 +1,6 @@
 <?php
 
-interface InterfaceMouvementDocument
+interface InterfaceMouvementFacturesDocument
 {
     public function getMouvementsFactures();
     public function getMouvementsFacturesCalcule();

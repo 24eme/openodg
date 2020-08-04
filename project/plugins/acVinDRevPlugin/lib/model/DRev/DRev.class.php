@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -57,7 +57,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
-        $this->mouvement_document = new MouvementDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
         $this->csv_douanier = null;
@@ -1166,7 +1166,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $rienAFacturer = true;
 
       foreach($cotisations as $cotisation) {
-          $mouvement = DRevMouvement::freeInstance($this);
+          $mouvement = DRevMouvementFactures::freeInstance($this);
           $mouvement->fillFromCotisation($cotisation);
           $mouvement->facture = 0;
           $mouvement->facturable = 1;

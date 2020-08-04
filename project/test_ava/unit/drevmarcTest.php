@@ -42,7 +42,7 @@ $t->is(count($drevMarc->mouvements), 0, "Les mouvements n'ont pas été génér�
 $drevMarc->generateMouvementsFactures();
 $drevMarc->save();
 
-$t->ok($drevMarc->mouvements->exist($vitiCompte->identifiant), "Les mouvements ont été générés");
+$t->ok($drevMarc->mouvements->exist($vitiCompte->identifiant), "Le noeud mouvements existe");
 $t->is(count($drevMarc->mouvements->get($vitiCompte->identifiant)), 2, "2 mouvements ont été générés");
 
 $mouvement = $drevMarc->mouvements->get($vitiCompte->identifiant)->getFirst();

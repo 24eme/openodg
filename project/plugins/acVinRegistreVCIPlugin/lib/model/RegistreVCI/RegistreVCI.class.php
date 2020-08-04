@@ -4,7 +4,7 @@
  *
  */
 
-class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfaceMouvementDocument, InterfacePieceDocument {
+class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
       protected $piece_document = null;
       protected $mouvement_document = null;
@@ -34,7 +34,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       protected function initDocuments() {
           $this->piece_document = new PieceDocument($this);
-          $this->mouvement_document = new MouvementDocument($this);
+          $this->mouvement_document = new MouvementFacturesDocument($this);
       }
 
       public function initDoc($identifiant, $campagne) {
@@ -275,7 +275,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           $rienAFacturer = true;
 
           foreach($cotisations as $cotisation) {
-              $mouvement = RegistreVCIMouvement::freeInstance($this);
+              $mouvement = RegistreVCIMouvementFactures::freeInstance($this);
               $mouvement->categorie = $cotisation->getCollectionKey();
               $mouvement->type_hash = $cotisation->getDetailKey();
               $mouvement->type_libelle = $cotisation->getLibelle();

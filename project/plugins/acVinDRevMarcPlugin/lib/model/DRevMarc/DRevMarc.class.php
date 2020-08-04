@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
+class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
@@ -22,7 +22,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
-        $this->mouvement_document = new MouvementDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->piece_document = new PieceDocument($this);
     }
 
@@ -134,7 +134,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
         $rienAFacturer = true;
 
         foreach($cotisations as $cotisation) {
-            $mouvement = DRevMarcMouvement::freeInstance($this);
+            $mouvement = DRevMarcMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
             $mouvement->type_libelle = $cotisation->getLibelle();

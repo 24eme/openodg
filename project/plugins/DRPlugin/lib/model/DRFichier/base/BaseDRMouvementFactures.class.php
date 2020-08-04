@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseDRevMouvement
+ * BaseDRMouvementFactures
  *
- * Base model for DRevMouvement
+ * Base model for DRMouvementFactures
 
  * @property integer $facture
  * @property integer $facturable
@@ -14,11 +14,11 @@
 
  */
 
-abstract class BaseRegistreVCIMouvement extends Mouvement {
+abstract class BaseDRMouvement extends MouvementFactures {
 
     public function configureTree() {
-       $this->_root_class_name = 'RegistreVCI';
-       $this->_tree_class_name = 'RegistreVCIMouvement';
+       $this->_root_class_name = 'DR';
+       $this->_tree_class_name = 'DRMouvement';
     }
 
 }

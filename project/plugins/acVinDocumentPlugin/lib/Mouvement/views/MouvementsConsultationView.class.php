@@ -89,7 +89,7 @@ class MouvementsConsultationView extends acCouchdbView
         $mouvement->type_libelle = $row->value[self::VALUE_TYPE_LIBELLE];
         $mouvement->volume = $row->value[self::VALUE_VOLUME];
         $mouvement->detail_identifiant = $row->key[self::KEY_DETAIL_IDENTIFIANT];
-        $mouvement->detail_libelle = $row->value[self::VALUE_DETAIL_LIBELLE];        
+        $mouvement->detail_libelle = $row->value[self::VALUE_DETAIL_LIBELLE];
         $mouvement->date_version =  $row->value[self::VALUE_DATE_VERSION];
         $mouvement->version = $row->value[self::VALUE_VERSION];
         $mouvement->vrac_numero =  $row->key[self::KEY_VRAC_NUMERO];
@@ -109,7 +109,7 @@ class MouvementsConsultationView extends acCouchdbView
 
     public function getWords($mouvements) {
         $words = array();
-        
+
         foreach($mouvements as $mouvement) {
             $words[] = $this->getWord($mouvement);
         }
@@ -121,4 +121,4 @@ class MouvementsConsultationView extends acCouchdbView
 
     }
 
-}  
+}

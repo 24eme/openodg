@@ -164,8 +164,8 @@ DRev:
               definition:
                 fields:
                   '*':
-                    class: DRevMouvement
-                    inheritance: Mouvement
+                    class: DRevMouvementFactures
+                    inheritance: MouvementFactures
                     type: collection
                     definition:
                       fields:

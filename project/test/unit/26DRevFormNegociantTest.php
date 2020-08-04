@@ -20,6 +20,8 @@ foreach(DRevClient::getInstance()->getHistory($nego->identifiant, acCouchdbClien
 }
 
 $campagne = (date('Y')-1)."";
+$sv12 = SV12Client::getInstance()->find("SV12-".$nego->identifiant.'-'.$campagne, acCouchdbClient::HYDRATE_JSON);
+if ($sv12) {SV12Client::getInstance()->deleteDoc($sv12);}
 
 $config = ConfigurationClient::getCurrent();
 foreach($config->getProduits() as $produit) {
