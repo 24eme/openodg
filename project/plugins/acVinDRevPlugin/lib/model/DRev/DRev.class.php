@@ -1234,6 +1234,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $mvt->details .= $cep.' ('.$pc.'%) ';
             }
             $mvt->region = '';
+            $mvt->campagne = $this->campagne;
             $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
         }
     }

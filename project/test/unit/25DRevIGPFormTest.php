@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(50);
+$t = new lime_test(51);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -214,3 +214,4 @@ $t->is($mvt->declarant_libelle, $drev->declarant->raison_sociale, 'Le mouvement 
 $t->is($mvt->destination_type, $drev->lots[0]->destination_type, 'Le mouvement a le bon type de destination');
 $t->is($mvt->destination_date, $drev->lots[0]->destination_date, 'Le mouvement a la bonne date de destination');
 $t->is($mvt->details, '', "le mouvement n'a pas de détail car il n'a pas de répartition de cépage");
+$t->is($mvt->campagne, $drev->campagne, "le mouvement a la bonne campagne");

@@ -219,6 +219,7 @@ DRev:
                         destination_date: { }
                         details: {}
                         region: {}
+                        campagne: {}
       pieces:
         type: array_collection
         definition:
