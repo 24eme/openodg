@@ -203,8 +203,7 @@ DRev:
                         preleve: { type: integer }
                         produit_hash: {  }
                         produit_libelle: {  }
-                        type_hash: {  }
-                        type_libelle: {  }
+                        produit_couleur: { }
                         volume: { type: float }
                         date: {  }
                         millesime: {  }
