@@ -2,13 +2,13 @@
 
 interface InterfaceMouvementDocument
 {
-    public function getMouvements();
-    public function getMouvementsCalcule();
-    public function getMouvementsCalculeByIdentifiant($identifiant);
-    public function generateMouvements();
-    public function findMouvement($cle, $id = null);
+    public function getMouvementsFactures();
+    public function getMouvementsFacturesCalcule();
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant);
+    public function generateMouvementsFactures();
+    public function findMouvementFactures($cle, $id = null);
     public function facturerMouvements();
-    public function clearMouvements();
+    public function clearMouvementsFactures();
     public function isFactures();
     public function isNonFactures();
 }

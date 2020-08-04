@@ -30,24 +30,24 @@ class MouvementfactureFacturationView extends acCouchdbView
 
         return acCouchdbManager::getView('mouvementfacture', 'facturation');
     }
-    
-    public function getMouvementsByEtablissement($etablissement,$facturee, $facturable) {        
+
+    public function getMouvementsFacturesByEtablissement($etablissement,$facturee, $facturable) {
         return $this->client
             ->startkey(array($facturee,$facturable,$etablissement->region_viticole,$etablissement->identifiant))
             ->endkey(array($facturee,$facturable,$etablissement->region_viticole,$etablissement->identifiant, array()))
             ->reduce(false)
             ->getView($this->design, $this->view)->rows;
     }
-    
-    public function getMouvementsBySociete($societe,$facturee, $facturable) {
+
+    public function getMouvementsFacturesBySociete($societe,$facturee, $facturable) {
 	return $this->client
 	  ->startkey(array($facturee,$facturable,$societe->getRegionViticole(),$societe->identifiant.'00'))
 	  ->endkey(array($facturee,$facturable,$societe->getRegionViticole(),$societe->identifiant.'99', array()))
 	  ->reduce(false)
 	  ->getView($this->design, $this->view)->rows;
     }
-    
-    public function getMouvementsBySocieteWithReduce($societe,$facturee, $facturable,$level)
+
+    public function getMouvementsFacturesBySocieteWithReduce($societe,$facturee, $facturable,$level)
     {
        return $this->consolidationMouvements($this->client
 	  ->startkey(array($facturee,$facturable,$societe->getRegionViticole(),$societe->identifiant.'00'))
@@ -56,7 +56,7 @@ class MouvementfactureFacturationView extends acCouchdbView
 	  ->getView($this->design, $this->view)->rows);
     }
 
-    protected function consolidationMouvements($rows) {
+    protected function consolidationMouvementsFactures($rows) {
         foreach($rows as $row) {
             $rows_mouvements = $this->client
             ->startkey($row->key)
@@ -67,17 +67,17 @@ class MouvementfactureFacturationView extends acCouchdbView
             $row->value[self::VALUE_ID_ORIGINE] = array();
             foreach($rows_mouvements as $row_mouvement) {
                 $row->value[self::VALUE_ID_ORIGINE] = array_merge($row->value[self::VALUE_ID_ORIGINE], array($row_mouvement->value[self::VALUE_ID_ORIGINE]));
-            } 
+            }
         }
 
         return $rows;
     }
 
     public function getMouvementsNonFacturesBySociete($societe) {
-      return $this->buildMouvements($this->getMouvementsBySociete($societe, 0, 1));
+      return $this->buildMouvements($this->getMouvementsFacturesBySociete($societe, 0, 1));
     }
-    
-    public function getMouvements($facturee, $facturable,$level) {
+
+    public function getMouvementsFactures($facturee, $facturable,$level) {
         return $this->consolidationMouvements($this->client
             ->startkey(array($facturee,$facturable))
             ->endkey(array($facturee,$facturable, array()))
@@ -93,16 +93,16 @@ class MouvementfactureFacturationView extends acCouchdbView
             ->getView($this->design, $this->view)->rows);
     }
 
-    protected function buildMouvements($rows) {
+    protected function buildMouvementsFactures($rows) {
         $mouvements = array();
         foreach($rows as $row) {
-            $mouvements[] = $this->buildMouvement($row);
+            $mouvements[] = $this->buildMouvementFactures($row);
         }
 
         return $mouvements;
     }
 
-    protected function buildMouvement($row) {
+    protected function buildMouvementFactures($row) {
         $mouvement = new stdClass();
         $mouvement->date = $row->value[self::VALUE_DATE];
         $mouvement->produit_libelle = $row->value[self::VALUE_PRODUIT_LIBELLE];

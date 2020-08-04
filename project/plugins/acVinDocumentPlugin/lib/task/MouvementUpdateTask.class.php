@@ -71,7 +71,7 @@ EOF;
         }
 
         $doc->storeDroits();
-        $doc->generateMouvements();
+        $doc->generateMouvementsFactures();
         $doc->save();
 
         echo $doc->_id."\n";

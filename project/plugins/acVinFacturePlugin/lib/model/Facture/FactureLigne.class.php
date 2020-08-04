@@ -10,23 +10,23 @@
  * @author mathurin
  */
 class FactureLigne extends BaseFactureLigne {
-    
-    public function getMouvements() {
+
+    public function getMouvementsFactures() {
         $mouvements = array();
         foreach ($this->origine_mouvements as $idDoc => $mouvsKeys) {
             foreach ($mouvsKeys as $mouvKey) {
-                $mouvements[] = Factureclient::getInstance()->getDocumentOrigine($idDoc)->findMouvement($mouvKey, $this->getDocument()->identifiant);
+                $mouvements[] = Factureclient::getInstance()->getDocumentOrigine($idDoc)->findMouvementFactures($mouvKey, $this->getDocument()->identifiant);
             }
         }
         return $mouvements;
     }
-   
-    public function facturerMouvements() {       
-        foreach ($this->getMouvements() as $mouv) {
+
+    public function facturerMouvements() {
+        foreach ($this->getMouvementsFactures() as $mouv) {
             $mouv->facturer();
         }
     }
-   
+
     public function setProduitHash($ph) {
       $ret = $this->_set('produit_hash', $ph);
 
@@ -97,7 +97,7 @@ class FactureLigne extends BaseFactureLigne {
     }
 
     public function defacturerMouvements() {
-        foreach ($this->getMouvements() as $mouv) {
+        foreach ($this->getMouvementsFactures() as $mouv) {
                $mouv->defacturer();
         }
     }

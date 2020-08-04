@@ -76,7 +76,7 @@ EOF;
         $doc = AbonnementClient::getInstance()->findOrCreateDoc($compte->identifiant, $this->getDateDebut($data), $this->getDateFin($data));
 
         $doc->mouvements = array();
-        $doc->generateMouvements();
+        $doc->generateMouvementsFactures();
         $doc->tarif = $this->getTarif($data);
 
         if($doc->tarif == AbonnementClient::TARIF_GRATUIT) {

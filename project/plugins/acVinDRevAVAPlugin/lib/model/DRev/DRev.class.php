@@ -929,12 +929,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
     }
 
-    public function getMouvements() {
+    public function getMouvementsFactures() {
 
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsCalcule() {
+    public function getMouvementsFacturesCalcule() {
         $templateFacture = $this->getTemplateFacture();
 
         if(!$templateFacture) {
@@ -990,12 +990,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return array($identifiantCompte => $mouvements);
     }
 
-    public function getMouvementsCalculeByIdentifiant($identifiant) {
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
 
-        return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
     }
 
-    public function generateMouvements() {
+    public function generateMouvementsFactures() {
         if(!$this->validation_odg) {
 
             return false;
@@ -1006,11 +1006,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return false;
         }
 
-        return $this->mouvement_document->generateMouvements();
+        return $this->mouvement_document->generateMouvementsFactures();
     }
 
-    public function findMouvement($cle, $id = null){
-      return $this->mouvement_document->findMouvement($cle, $id);
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
     }
 
     public function facturerMouvements() {
@@ -1028,7 +1028,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->mouvement_document->isNonFactures();
     }
 
-    public function clearMouvements(){
+    public function clearMouvementsFactures(){
         $this->remove('mouvements');
         $this->add('mouvements');
     }

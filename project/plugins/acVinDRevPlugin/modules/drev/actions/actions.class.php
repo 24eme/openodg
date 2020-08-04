@@ -659,7 +659,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
     }
 
-    public function executeGenerateMouvements(sfWebRequest $request) {
+    public function executeGenerateMouvementsFactures(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
@@ -668,7 +668,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        $this->drev->generateMouvements();
+        $this->drev->generateMouvementsFactures();
         $this->drev->save();
 
         $this->getUser()->setFlash('notice', 'Les mouvements ont été générés');

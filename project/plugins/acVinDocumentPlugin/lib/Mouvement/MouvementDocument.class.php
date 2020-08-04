@@ -8,22 +8,22 @@ class MouvementDocument
     public function __construct(acCouchdbDocument $document)
     {
         $this->document = $document;
-        $this->hash = $document->getMouvements()->getHash();
+        $this->hash = $document->getMouvementsFactures()->getHash();
     }
 
-    public function getMouvementsCalculeByIdentifiant($identifiant) {
-        $mouvements = $this->document->getMouvementsCalcule();
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+        $mouvements = $this->document->getMouvementsFacturesCalcule();
 
         return isset($mouvements[$identifiant]) ? $mouvements[$identifiant] : array();
     }
 
-    public function generateMouvements() {
-        $this->document->clearMouvements();
-        $this->document->set($this->hash, $this->document->getMouvementsCalcule());
+    public function generateMouvementsFactures() {
+        $this->document->clearMouvementsFactures();
+        $this->document->set($this->hash, $this->document->getMouvementsFacturesCalcule());
     }
 
     public function facturerMouvements() {
-        foreach($this->document->getMouvements() as $mouvements) {
+        foreach($this->document->getMouvementsFactures() as $mouvements) {
             foreach($mouvements as $mouvement) {
                 $mouvement->facturer();
             }
@@ -31,11 +31,11 @@ class MouvementDocument
     }
 
     public function isFactures() {
-      if(!$this->document->exist('mouvements') || !count($this->document->getMouvements())){
+      if(!$this->document->exist('mouvements') || !count($this->document->getMouvementsFactures())){
         return false;
       }
 
-      foreach($this->document->getMouvements() as $mouvements) {
+      foreach($this->document->getMouvementsFactures() as $mouvements) {
             foreach($mouvements as $mouvement) {
                 if(!$mouvement->isFacture()) {
                     return false;
@@ -47,7 +47,7 @@ class MouvementDocument
     }
 
     public function isNonFactures() {
-        foreach($this->document->getMouvements() as $mouvements) {
+        foreach($this->document->getMouvementsFactures() as $mouvements) {
             foreach($mouvements as $mouvement) {
                 if(!$mouvement->isNonFacture()) {
                     return false;
@@ -58,8 +58,8 @@ class MouvementDocument
         return true;
     }
 
-    public function findMouvement($cle_mouvement, $part_idetablissement = null){
-        foreach($this->document->getMouvements() as $identifiant => $mouvements) {
+    public function findMouvementFactures($cle_mouvement, $part_idetablissement = null){
+        foreach($this->document->getMouvementsFactures() as $identifiant => $mouvements) {
 	  if ((!$part_idetablissement || preg_match('/^'.$part_idetablissement.'/', $identifiant)) && array_key_exists($cle_mouvement, $mouvements->toArray())) {
                 return $mouvements[$cle_mouvement];
             }
