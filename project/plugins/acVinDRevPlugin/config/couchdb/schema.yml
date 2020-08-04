@@ -187,6 +187,39 @@ DRev:
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    type: collection
+                    definition:
+                      fields:
+                        prelevable: { type: integer }
+                        preleve: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        volume: { type: float }
+                        date: {  }
+                        millesime: {  }
+                        region: {  }
+                        numero: {  }
+                        version: {  }
+                        origine_hash: {  }
+                        origine_type: {  }
+                        origine_document_id: {  }
+                        declarant_id: {  }
+                        declarant_libelle: {  }
+                        destination_type: { }
+                        destination_date: { }
+                        details: {}
+                        region: {}
       pieces:
         type: array_collection
         definition:
