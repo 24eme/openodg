@@ -1222,9 +1222,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $mvt->produit_couleur = $lot->getCouleurLibelle();
             $mvt->region = '';
             $mvt->version = '0';
-            $mvt->origine_hash = 'lots/'.$k;
+            $mvt->origine_hash = $lot->getHash();
             $mvt->origine_type = 'drev';
             $mvt->origine_document_id = $this->_id;
+            $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
             $mvt->identifiant = $this->identifiant;
             $mvt->declarant_libelle = $this->declarant->raison_sociale;
             $mvt->destination_type = $lot->destination_type;

@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(51);
+$t = new lime_test(57);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -206,8 +206,9 @@ $t->is($mvt->millesime, $drev->lots[0]->millesime, 'Le mouvement a le bon milles
 $t->is($mvt->region, '', "Le mouvement a la bonne région");
 $t->is($mvt->numero, $drev->lots[0]->numero, 'Le mouvement a le bon numero');
 $t->is($mvt->version, 0, "Le mouvement a la version 0");
-$t->is($mvt->origine_hash, 'lots/0', 'Le mouvement a bien comme origine le premier lot');
-$t->is($mvt->origine_type, 'drev');
+$t->is($mvt->origine_hash, $drev->lots[0]->getHash(), 'Le mouvement a bien comme origine le premier lot');
+$t->is($mvt->origine_type, 'drev', 'le mouvement a bien comme origine une drev');
+$t->is($mvt->origine_mouvement, $mvt->getHash(), 'le mouvement a bien comme origine de mouvement lui même');
 $t->is($mvt->origine_document_id, $drev->_id, 'Le mouvement a la bonne origine de document');
 $t->is($mvt->identifiant, $drev->identifiant, 'Le mouvement a le bon identifiant');
 $t->is($mvt->declarant_libelle, $drev->declarant->raison_sociale, 'Le mouvement a la bonne raison sociale');
@@ -215,3 +216,11 @@ $t->is($mvt->destination_type, $drev->lots[0]->destination_type, 'Le mouvement a
 $t->is($mvt->destination_date, $drev->lots[0]->destination_date, 'Le mouvement a la bonne date de destination');
 $t->is($mvt->details, '', "le mouvement n'a pas de détail car il n'a pas de répartition de cépage");
 $t->is($mvt->campagne, $drev->campagne, "le mouvement a la bonne campagne");
+
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$t->is(count($res->rows), 1, 'on retrouve le mouvement dans la vue MouvementLot');
+$t->is($res->rows[0]->id, $drev->_id, 'le mouvement correspond bien à notre drev');
+$drevres = DRevClient::getInstance()->find($res->rows[0]->value->origine_document_id);
+$t->ok($drevres->get($res->rows[0]->value->origine_hash), 'le mouvement correspond bien à un lot');
+$t->ok($res->rows[0]->value->origine_mouvement, 'le mouvement a bien un origine mouvement');
+$t->is($drevres->get($res->rows[0]->value->origine_mouvement)->origine_mouvement, $res->rows[0]->value->origine_mouvement, "le mouvement l'origine mouvement correspond bien au mouvement");
