@@ -101,7 +101,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
-                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, );
+                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, 'volume_lots' => 0, 'volume_restant' => 0);
             }
             if($couleurs[$couleur]['volume_total'] !== false && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
                 $couleurs[$couleur]['volume_total'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
@@ -110,6 +110,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
+        }
+        foreach($this->lots as $lot) {
+            $couleur = $lot->getProduitRevendique()->getLibelleComplet();
+            $couleurs[$couleur]['volume_lots'] = $lot->volume;
+        }
+        foreach($couleurs as $k => $couleur) {
+            $couleurs[$k]['volume_restant'] = $couleur['volume_total'] - $couleur['volume_lots'];
         }
         return $couleurs;
     }
@@ -743,7 +750,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $lotsToKeep[] = $lot;
             }
         }
-
          $this->remove('lots');
          $this->add('lots', $lotsToKeep);
     }

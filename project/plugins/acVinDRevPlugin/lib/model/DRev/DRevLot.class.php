@@ -105,12 +105,15 @@ class DRevLot extends BaseDRevLot
 
                 continue;
             }
+            if($key == 'produit_hash' || $key == "produit_libelle") {
+                continue;
+            }
+
             if($value instanceof acCouchdbJson && !count($value->toArray(true, false))) {
                 continue;
             }
 
             if($value) {
-
                 return false;
             }
         }

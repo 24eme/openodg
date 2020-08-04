@@ -84,7 +84,7 @@
                     <td class="text-right <?php echo isVersionnerCssClass($lot, 'volume') ?>"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
                     <td class="text-center <?php echo isVersionnerCssClass($lot, 'destination_type') ?>"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
                 </tr>
-                <?php $volume += $lot->volume ;
+                <?php
                 endforeach;
                 else: ?>
                     <tr>
@@ -102,7 +102,7 @@
                     <td><strong><?php echo $couleur ?></strong><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur])): ?><?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
                     <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur])): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong><?php endif; ?></td>
                     <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong></td>
-                    <td class="text-center"><?php if(isset($synthese_revendication[$couleur])): ?><?php if($synthese_revendication[$couleur]['volume_total'] > 0): ?><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small><?php endif; ?><?php endif; ?></td>
+                    <td class="text-center"><?php if(isset($synthese_revendication[$couleur])): ?><?php if($synthese_revendication[$couleur]['volume_total'] > 0): ?><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?>&nbsp;hl max à revendiquer</span></small><?php endif; ?><?php endif; ?></td>
                 </tr>
 
             <?php endforeach; ?>
