@@ -5,9 +5,9 @@ degustation:
     sf_method: [get]
   class: DegustationGeneralRoute
 
-degustation_lots:
-  url: /degustation/:id/lots
-  param: { module: degustation, action: lots }
+degustation_prelevement_lots:
+  url: /degustation/:id/prelevement-lots
+  param: { module: degustation, action: prelevementLots }
   class: DegustationRoute
   options:
     model:    Degustation

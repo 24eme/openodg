@@ -1,7 +1,9 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
-<h3>Création d'une dégustation</h3>
-<form action="" method="post" class="form-horizontal">
+<div class="page-header no-border">
+    <h2>Création d'une dégustation</h2>
+</div>
+<form action="<?php echo url_for('degustation') ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     
     <div class="bg-danger">
