@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(30);
+$t = new lime_test(50);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -191,3 +191,26 @@ $drev->save();
 $t->comment("DRev validée");
 
 $t->is(count($drev->lots), 1, "La DRev validée ne contient plus que le lot saisi");
+$t->is(count($drev->mouvements_lots->{$drev->identifiant}), 1, "La DRev validée contient le mouvement correspondant au lot saisi");
+foreach ($drev->mouvements_lots->{$drev->identifiant} as $k => $mvt) {
+    break;
+}
+$t->is($mvt->prelevable, 1, "Le mouvement est prelevable");
+$t->is($mvt->preleve, 0, "Le mouvement n'a pas été prelevé");
+$t->is($mvt->produit_hash, $drev->lots[0]->produit_hash, 'Le mouvement a la bonne hash');
+$t->is($mvt->produit_libelle, $drev->lots[0]->produit_libelle, 'Le mouvement a le bon libellé');
+$t->is($mvt->produit_couleur, $drev->lots[0]->getCouleurLibelle(), 'Le mouvement a le bon libellé de couleur');
+$t->is($mvt->volume, $drev->lots[0]->volume, 'Le mouvement a le bon volume');
+$t->is($mvt->date, $drev->lots[0]->date, 'Le mouvement a la bonne date');
+$t->is($mvt->millesime, $drev->lots[0]->millesime, 'Le mouvement a le bon millesime');
+$t->is($mvt->region, '', "Le mouvement a la bonne région");
+$t->is($mvt->numero, $drev->lots[0]->numero, 'Le mouvement a le bon numero');
+$t->is($mvt->version, 0, "Le mouvement a la version 0");
+$t->is($mvt->origine_hash, 'lots/0', 'Le mouvement a bien comme origine le premier lot');
+$t->is($mvt->origine_type, 'drev');
+$t->is($mvt->origine_document_id, $drev->_id, 'Le mouvement a la bonne origine de document');
+$t->is($mvt->identifiant, $drev->identifiant, 'Le mouvement a le bon identifiant');
+$t->is($mvt->declarant_libelle, $drev->declarant->raison_sociale, 'Le mouvement a la bonne raison sociale');
+$t->is($mvt->destination_type, $drev->lots[0]->destination_type, 'Le mouvement a le bon type de destination');
+$t->is($mvt->destination_date, $drev->lots[0]->destination_date, 'Le mouvement a la bonne date de destination');
+$t->is($mvt->details, '', "le mouvement n'a pas de détail car il n'a pas de répartition de cépage");

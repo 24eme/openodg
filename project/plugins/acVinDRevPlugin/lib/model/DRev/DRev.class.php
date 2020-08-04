@@ -825,6 +825,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->cleanDoc();
         $this->validation = $date;
         $this->generateMouvementsFactures();
+        $this->generateMouvementsLots();
 
         if(!count($this->getLotsRevendiques())) {
             foreach($this->getProduitsLots() as $produit) {
@@ -1204,6 +1205,37 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function generateMouvementsFactures() {
 
         return $this->mouvement_document->generateMouvementsFactures();
+    }
+
+    public function generateMouvementsLots() {
+        foreach($this->lots as $k => $lot) {
+            $key = KeyInflector::slugify($lot->produit_hash.'/'.$lot->millesime.'/'.$lot->numero);
+            $mvt = new stdClass();
+            $mvt->prelevable = 1;
+            $mvt->preleve = 0;
+            $mvt->date = $lot->date;
+            $mvt->numero = $lot->numero;
+            $mvt->millesime = $lot->millesime;
+            $mvt->volume = $lot->volume;
+            $mvt->produit_hash = $lot->produit_hash;
+            $mvt->produit_libelle = $lot->produit_libelle;
+            $mvt->produit_couleur = $lot->getCouleurLibelle();
+            $mvt->region = '';
+            $mvt->version = '0';
+            $mvt->origine_hash = 'lots/'.$k;
+            $mvt->origine_type = 'drev';
+            $mvt->origine_document_id = $this->_id;
+            $mvt->identifiant = $this->identifiant;
+            $mvt->declarant_libelle = $this->declarant->raison_sociale;
+            $mvt->destination_type = $lot->destination_type;
+            $mvt->destination_date = $lot->destination_date;
+            $mvt->details = '';
+            foreach($lot->cepages as $cep => $pc) {
+                $mvt->details .= $cep.' ('.$pc.'%) ';
+            }
+            $mvt->region = '';
+            $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
+        }
     }
 
     public function findMouvementFactures($cle, $id = null){

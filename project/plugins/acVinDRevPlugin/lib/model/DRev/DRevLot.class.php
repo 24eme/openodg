@@ -75,6 +75,10 @@ class DRevLot extends BaseDRevLot
         return $this->_get("destination_date");
     }
 
+    public function getCouleurLibelle() {
+        return $this->getConfig()->getCouleur()->getLibelleComplet();
+    }
+
     public function getProduitLibelle() {
 		if(!$this->_get('produit_libelle') && $this->produit_hash) {
 			$this->produit_libelle = $this->getConfig()->getLibelleComplet();
