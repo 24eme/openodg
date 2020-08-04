@@ -19,15 +19,33 @@ class degustationActions extends sfActions {
         
         $degustation = $this->form->save();
         
-        return $this->redirect('degustation_lots', $degustation);
+        return $this->redirect('degustation_prelevement_lots', $degustation);
     }
     
-    public function executeLots(sfWebRequest $request) {
+    public function executePrelevementLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
             $this->degustation->save();
         }
+        
+        $this->form = new DegustationPrelevementLotsForm($this->degustation);
+        
+        if (!$request->isMethod(sfWebRequest::POST)) {
+        
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
+        
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->save();
+        
+        return $this->redirect('degustation_validation', $this->degustation);
     }
     
     public function executeValidation(sfWebRequest $request) {

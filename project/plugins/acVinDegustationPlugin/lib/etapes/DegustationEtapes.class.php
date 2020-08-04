@@ -18,7 +18,7 @@ class DegustationEtapes extends Etapes {
     );
 
     public static $links = array(
-        self::ETAPE_LOTS => 'degustation_lots',
+        self::ETAPE_LOTS => 'degustation_prelevement_lots',
         self::ETAPE_VALIDATION => 'degustation_validation'
     );
 
