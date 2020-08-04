@@ -213,7 +213,7 @@ DRev:
                         origine_hash: {  }
                         origine_type: {  }
                         origine_document_id: {  }
-                        declarant_id: {  }
+                        identifiant: {  }
                         declarant_libelle: {  }
                         destination_type: { }
                         destination_date: { }
