@@ -1,0 +1,24 @@
+<?php
+
+class MouvementLotView extends acCouchdbView
+{
+    const KEY_PRELEVABLE = 0;
+    const KEY_PRELEVE = 1;
+    const KEY_REGION = 2;
+    const KEY_DATE = 3;
+    const KEY_IDENTIFIANT = 4;
+    const KEY_ORIGINE_DOCUMENT_ID = 5;
+
+    const VALUE_LOT = 0;
+
+    public static function getInstance() {
+
+        return acCouchdbManager::getView('mouvement', 'lot');
+    }
+
+    public function getByPrelevablePreleve($prelevable, $preleve) {
+        return $this->client->startkey(array($prelevable, $preleve))
+                            ->endkey(array($prelevable, $preleve, array()))
+                            ->getView($this->design, $this->view);
+    }  
+}  
