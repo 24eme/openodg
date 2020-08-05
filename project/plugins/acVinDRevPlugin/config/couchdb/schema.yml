@@ -196,6 +196,8 @@ DRev:
               definition:
                 fields:
                   '*':
+                    class: DRevMouvementLots
+                    inheritance: MouvementLots
                     type: collection
                     definition:
                       fields:
