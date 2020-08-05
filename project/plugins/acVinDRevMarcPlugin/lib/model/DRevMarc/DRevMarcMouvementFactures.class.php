@@ -1,15 +1,13 @@
 <?php
 /**
- * Model for DRevMouvement
+ * Model for DRevMarcMouvementFactures
  *
  */
 
-class DRevMouvement extends BaseDRevMouvement {
-
+class DRevMarcMouvementFactures extends BaseDRevMarcMouvementFactures {
     public function getMD5Key() {
         $key = $this->template."_".$this->categorie . '_' .$this->type_hash;
 
         return $key;
     }
-
 }

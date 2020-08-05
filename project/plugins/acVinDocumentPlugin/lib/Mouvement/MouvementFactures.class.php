@@ -1,6 +1,6 @@
 <?php
 
-abstract class Mouvement extends acCouchdbDocumentTree
+abstract class MouvementFactures extends acCouchdbDocumentTree implements InterfaceMouvementFactures
 {
     /*const TYPE_HASH_CONTRAT_VRAC = 'vrac_details';
     const TYPE_HASH_CONTRAT_RAISIN = VracClient::TYPE_TRANSACTION_RAISINS;

@@ -4,7 +4,7 @@
  *
  */
 
-class DR extends BaseDR implements InterfaceMouvementDocument {
+class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
 
 	protected $mouvement_document = null;
 
@@ -18,7 +18,7 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
 
 	protected function initDocuments() {
 		parent::initDocuments();
-        $this->mouvement_document = new MouvementDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
     }
 
 	public function constructId() {
@@ -70,7 +70,7 @@ class DR extends BaseDR implements InterfaceMouvementDocument {
       $rienAFacturer = true;
 
       foreach($cotisations as $cotisation) {
-          $mouvement = DRMouvement::freeInstance($this);
+          $mouvement = DRMouvementFactures::freeInstance($this);
           $mouvement->fillFromCotisation($cotisation);
           $mouvement->facture = 0;
           $mouvement->facturable = 1;

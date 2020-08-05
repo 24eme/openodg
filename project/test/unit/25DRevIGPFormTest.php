@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(57);
+$t = new lime_test(63);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -221,6 +221,19 @@ $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifi
 $t->is(count($res->rows), 1, 'on retrouve le mouvement dans la vue MouvementLot');
 $t->is($res->rows[0]->id, $drev->_id, 'le mouvement correspond bien à notre drev');
 $drevres = DRevClient::getInstance()->find($res->rows[0]->value->origine_document_id);
-$t->ok($drevres->get($res->rows[0]->value->origine_hash), 'le mouvement correspond bien à un lot');
-$t->ok($res->rows[0]->value->origine_mouvement, 'le mouvement a bien un origine mouvement');
-$t->is($drevres->get($res->rows[0]->value->origine_mouvement)->origine_mouvement, $res->rows[0]->value->origine_mouvement, "le mouvement l'origine mouvement correspond bien au mouvement");
+$t->ok($drevres, 'le mouvement pointe bien sur une Drev existante');
+$t->ok( ($drevres instanceof InterfaceMouvementLotsDocument) , 'le mouvement pointe bien vers un document de type InterfaceMouvementLotsDocument');
+$lotres = $drevres->get($res->rows[0]->value->origine_hash);
+$t->ok($lotres, 'le mouvement correspond bien à un lot');
+$mvtres = $drevres->get($res->rows[0]->value->origine_mouvement);
+$t->ok($mvtres, 'le mouvement a bien un origine mouvement existant');
+$t->ok( ($mvtres instanceof MouvementLots) , 'le mouvement correspond bien à un lot de type MouvementLots');
+$t->ok( ($mvtres instanceof InterfaceMouvementLots) , 'le mouvement correspond bien à un lot de type InterfaceMouvementLots');
+$t->is($mvtres->origine_mouvement, $res->rows[0]->value->origine_mouvement, "le mouvement l'origine mouvement correspond bien au mouvement");
+
+$t->comment("Gestion du prélèvement");
+$mvtres->prelever();
+$drevres->save();
+$t->ok($mvtres->preleve, "Le mouvement prelevé est bien indiqué comme tel");
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$t->is(count($res->rows), 0, 'on retrouve plus le mouvement prelevé dans la vue MouvementLot');

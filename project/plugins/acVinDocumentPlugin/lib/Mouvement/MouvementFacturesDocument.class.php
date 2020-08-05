@@ -1,6 +1,6 @@
 <?php
 
-class MouvementDocument
+class MouvementFacturesDocument
 {
     protected $document;
     protected $hash;

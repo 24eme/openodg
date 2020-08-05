@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseDRMouvement
+ * BaseAbonnementMouvementFactures
  *
- * Base model for DRMouvement
+ * Base model for AbonnementMouvementFactures
 
  * @property integer $facture
  * @property integer $facturable
@@ -14,11 +14,11 @@
 
  */
 
-abstract class BaseDRMouvement extends Mouvement {
+abstract class BaseAbonnementMouvementFactures extends MouvementFactures {
 
     public function configureTree() {
-       $this->_root_class_name = 'DR';
-       $this->_tree_class_name = 'DRMouvement';
+       $this->_root_class_name = 'Abonnement';
+       $this->_tree_class_name = 'AbonnementMouvement';
     }
 
 }

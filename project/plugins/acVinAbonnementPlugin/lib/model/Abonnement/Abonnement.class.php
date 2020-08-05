@@ -18,7 +18,7 @@ class Abonnement extends BaseAbonnement {
     }
 
     protected function initDocuments() {
-        $this->mouvement_document = new MouvementDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
     }
 
     public function constructId() {
@@ -49,7 +49,7 @@ class Abonnement extends BaseAbonnement {
         $rienAFacturer = true;
 
         foreach($cotisations as $cotisation) {
-            $mouvement = AbonnementMouvement::freeInstance($this);
+            $mouvement = AbonnementMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
             $mouvement->type_libelle = $cotisation->getLibelle();

@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseDRevMouvement
- * 
- * Base model for DRevMouvement
+ * BaseDRevMouvementFactures
+ *
+ * Base model for BaseDRevMouvementFactures
 
  * @property integer $facture
  * @property integer $facturable
@@ -11,14 +11,14 @@
  * @method integer setFacture()
  * @method integer getFacturable()
  * @method integer setFacturable()
- 
+
  */
 
-abstract class BaseDRevMouvement extends Mouvement {
-                
+abstract class BaseDRevMouvementFactures extends MouvementFactures {
+
     public function configureTree() {
        $this->_root_class_name = 'DRev';
-       $this->_tree_class_name = 'DRevMouvement';
+       $this->_tree_class_name = 'DRevMouvementFactures';
     }
-                
+
 }
