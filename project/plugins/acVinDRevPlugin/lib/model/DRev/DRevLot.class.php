@@ -6,6 +6,14 @@
 
 class DRevLot extends BaseDRevLot
 {
+    public function getProduitRevendiqueLibelleComplet() {
+        $p = $this->getProduitRevendique();
+        if ($p) {
+            return $p->getLibelleComplet();
+        }
+        return "";
+    }
+
     public function getProduitRevendique() {
         if($this->getDocument()->exist($this->produit_hash)) {
 
@@ -58,6 +66,10 @@ class DRevLot extends BaseDRevLot
 
     public function getDrevDocOrigine(){
       return parent::getDocOrigine();
+    }
+
+    public function getUnicityKey(){
+        return KeyInflector::slugify($this->produit_hash.'/'.$this->millesime.'/'.$this->numero.'/'.$this->volume);
     }
 
 }

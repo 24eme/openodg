@@ -112,11 +112,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
         }
         foreach($this->lots as $lot) {
-            $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
+            $couleur = $lot->getProduitRevendiqueLibelleComplet();
             $couleurs[$couleur]['volume_lots'] = $lot->volume;
         }
         foreach($couleurs as $k => $couleur) {
-            $couleurs[$k]['volume_restant'] = $couleur['volume_total'] - $couleur['volume_lots'];
+            if (!isset($couleur['volume_lots'])) {
+                $couleur['volume_lots'] = 0;
+            }
+            if (isset($couleur['volume_total'])) {
+                $couleurs[$k]['volume_restant'] = $couleur['volume_total'] - $couleur['volume_lots'];
+            }
         }
         return $couleurs;
     }
@@ -737,6 +742,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function cleanDoc() {
         $this->declaration->cleanNode();
         $this->cleanLots();
+        $this->clearMouvementsLots();
+        $this->clearMouvementsFactures();
     }
 
     public function cleanLots() {
@@ -1206,37 +1213,70 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->mouvement_document->generateMouvementsFactures();
     }
+    public function hasLotUnicityKey($key) {
+        foreach($this->lots as $k => $lot) {
+            if ($lot->getUnicityKey() == $key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function generateMouvementLotsFromLot($lot, $key, $prelevable = 1) {
+        $mvt = new stdClass();
+        $mvt->prelevable = $prelevable;
+        $mvt->preleve = 0;
+        $mvt->date = $lot->date;
+        $mvt->numero = $lot->numero;
+        $mvt->millesime = $lot->millesime;
+        $mvt->volume = $lot->volume;
+        $mvt->produit_hash = $lot->produit_hash;
+        $mvt->produit_libelle = $lot->produit_libelle;
+        $mvt->produit_couleur = $lot->getCouleurLibelle();
+        $mvt->region = '';
+        $mvt->version = $this->getVersion();
+        $mvt->origine_hash = $lot->getHash();
+        $mvt->origine_type = 'drev';
+        $mvt->origine_document_id = $this->_id;
+        $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
+        $mvt->identifiant = $this->identifiant;
+        $mvt->declarant_libelle = $this->declarant->raison_sociale;
+        $mvt->destination_type = $lot->destination_type;
+        $mvt->destination_date = $lot->destination_date;
+        $mvt->details = '';
+        foreach($lot->cepages as $cep => $pc) {
+            $mvt->details .= $cep.' ('.$pc.'%) ';
+        }
+        $mvt->region = '';
+        $mvt->campagne = $this->campagne;
+        return $mvt;
+    }
+
+    private function generateAndAddMouvementLotsFromLot($lot, $key, $prelevable = 1) {
+        $mvt = $this->generateMouvementLotsFromLot($lot, $key, $prelevable);
+        if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
+            $this->add('mouvements_lots')->add($this->identifiant);
+        }
+        return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
+    }
 
     public function generateMouvementsLots() {
+        $prev = $this->getMother();
         foreach($this->lots as $k => $lot) {
-            $key = $lot->getKey();
-            $mvt = new stdClass();
-            $mvt->prelevable = 1;
-            $mvt->preleve = 0;
-            $mvt->date = $lot->date;
-            $mvt->numero = $lot->numero;
-            $mvt->millesime = $lot->millesime;
-            $mvt->volume = $lot->volume;
-            $mvt->produit_hash = $lot->produit_hash;
-            $mvt->produit_libelle = $lot->produit_libelle;
-            $mvt->produit_couleur = $lot->getCouleurLibelle();
-            $mvt->region = '';
-            $mvt->version = '0';
-            $mvt->origine_hash = $lot->getHash();
-            $mvt->origine_type = 'drev';
-            $mvt->origine_document_id = $this->_id;
-            $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
-            $mvt->identifiant = $this->identifiant;
-            $mvt->declarant_libelle = $this->declarant->raison_sociale;
-            $mvt->destination_type = $lot->destination_type;
-            $mvt->destination_date = $lot->destination_date;
-            $mvt->details = '';
-            foreach($lot->cepages as $cep => $pc) {
-                $mvt->details .= $cep.' ('.$pc.'%) ';
+            $key = $lot->getUnicityKey();
+            if ($prev && $prev->hasLotUnicityKey($key)) {
+                continue;
             }
-            $mvt->region = '';
-            $mvt->campagne = $this->campagne;
-            $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
+            $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
+        }
+        if ($prev) {
+            foreach($prev->lots as $k => $lot) {
+                $key = $lot->getUnicityKey();
+                if ($this->hasLotUnicityKey($key)) {
+                    continue;
+                }
+                $this->generateAndAddMouvementLotsFromLot($lot, $key, 0);
+            }
         }
     }
 
@@ -1262,6 +1302,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function clearMouvementsFactures(){
         $this->remove('mouvements');
         $this->add('mouvements');
+    }
+
+    public function clearMouvementsLots(){
+        $this->remove('mouvements_lots');
+        $this->add('mouvements_lots');
     }
 
     /**** FIN DES MOUVEMENTS ****/
@@ -1478,7 +1523,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function generateModificative() {
         $doc = $this->version_document->generateModificative();
-
+        $doc->clearMouvementsLots();
+        $doc->clearMouvementsFactures();
         return $doc;
     }
 
