@@ -6,7 +6,7 @@ if (getenv("NODELETE")) {
     $t = new lime_test(0);
     exit(0);
 }
-$nbtest = 19;
+$nbtest = 21;
 $t = new lime_test($nbtest);
 
 $t->comment('suppression des différentes sociétés, de leurs établissements et comptes');
@@ -39,6 +39,14 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
                   if (preg_match('/-'.$etabl->etablissement->identifiant.'-/', $row->id )) {
                       $doc = acCouchdbManager::getClient()->find($row->id);
                       $doc->delete();
+                      $t->is(acCouchdbManager::getClient()->find($row->id), null, "Suppression de ".$row->id);
+                  }
+              }
+              foreach(PieceAllView::getInstance()->getAll() as $row) {
+                  if (preg_match('/-'.$etabl->etablissement->identifiant.'-/', $row->id )) {
+                      $doc = acCouchdbManager::getClient()->find($row->id);
+                      $doc->delete();
+                      $t->is(acCouchdbManager::getClient()->find($row->id), null, "Suppression de ".$row->id);
                   }
               }
           }
