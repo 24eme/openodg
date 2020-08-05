@@ -19,7 +19,7 @@ class degustationActions extends sfActions {
         
         $degustation = $this->form->save();
         
-        return $this->redirect('degustation_prelevement_lots', $degustation);
+        return ($next = $this->getRouteNextEtape())? $this->redirect($next, $degustation) : $this->redirect('degustation');
     }
     
     public function executePrelevementLots(sfWebRequest $request) {
@@ -45,7 +45,17 @@ class degustationActions extends sfActions {
         
         $this->form->save();
         
-        return $this->redirect('degustation_validation', $this->degustation);
+        return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_LOTS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+    }
+    
+    public function executeSelectionDegustateurs(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
+            $this->degustation->save();
+        }
+        
+        
     }
     
     public function executeValidation(sfWebRequest $request) {
@@ -62,6 +72,17 @@ class degustationActions extends sfActions {
             return $etape;
         }
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
+    }
+    
+    protected function getRouteNextEtape($etape = null, $class = "DegustationEtapes") {
+        $etapes = $class::getInstance();
+        $routes = $etapes->getRouteLinksHash();
+        if (!$etape) {
+            $etape = $etapes->getFirst();
+        } else {
+            $etape = $etapes->getNext($etape);
+        }
+        return (isset($routes[$etape]))? $routes[$etape] : null; 
     }
 
     

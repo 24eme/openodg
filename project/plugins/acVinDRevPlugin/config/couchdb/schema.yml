@@ -108,6 +108,7 @@ DRev:
             '*':
               type: collection
               class: DRevLot
+              inheritance: Lot
               definition:
                 fields:
                   date: { }

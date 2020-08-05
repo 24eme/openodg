@@ -1,4 +1,5 @@
 <?php use_helper("Date"); ?>
+<?php use_helper('Float') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_LOTS)); ?>
@@ -17,19 +18,24 @@
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-        		<th class="col-xs-2">Lot</th>
+        		<th class="col-xs-1">Lot</th>
+        		<th class="col-xs-4">Produit (millésime)</th>
+        		<th class="col-xs-2">Volume</th>
+        		<th class="col-xs-4">Destination (date)</th>
                 <th class="col-xs-1">Prélever?</th>
 
             </tr>
 		</thead>
 		<tbody>
 		<?php
-			foreach ($form->getLotsPrelevables() as $key => $item):
+			foreach ($form->getLotsPrelevables() as $key => $lot):
 			if (isset($form[$key])):
-			$lot = $item->value;
 		?>
 			<tr class="vertical-center">
-				<td><?php echo $lot->produit_libelle; ?></td>
+				<td><?php echo $lot->numero; ?></td>
+				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
+				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+				<td><?php echo MouvementLotView::getDestinationLibelle($lot); ?><?php if ($lot->destination_date): ?>&nbsp;(<?php echo ucfirst(format_date($lot->destination_date, "d/MM/y", "fr_FR")); ?>)<?php endif; ?></td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$key]['preleve']->renderError() ?>
