@@ -10,7 +10,7 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(78);
+$t = new lime_test(66);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -228,7 +228,7 @@ $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->ok(!isset($erreurs['revendication_incomplete_volume']), "Pas de point blocant sur le remplissage des volumes de revendication");
+$t->ok(isset($erreurs['revendication_incomplete_volume']), "Point blocant : tous les volumes de revendication n'ont pas été rempli");
 $t->ok(!isset($erreurs['revendication_incomplete_superficie']), "Pas de point blocant sur le remplissage des superficies de revendication");
 $t->ok(!isset($erreurs['revendication_rendement']), "Pas de point blocant sur le rendement de la revendication");
 $t->ok(!isset($vigilances['revendication_rendement_conseille']), "Point de vigilance sur le dépassement du rendement conseillé de la revendication");
