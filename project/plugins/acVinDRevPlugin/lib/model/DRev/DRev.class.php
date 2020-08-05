@@ -112,7 +112,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
         }
         foreach($this->lots as $lot) {
-            $couleur = $lot->getProduitRevendique()->getLibelleComplet();
+            $couleur = $lot->getConfigProduit()->getCouleur()->getLibelleComplet();
             $couleurs[$couleur]['volume_lots'] = $lot->volume;
         }
         foreach($couleurs as $k => $couleur) {

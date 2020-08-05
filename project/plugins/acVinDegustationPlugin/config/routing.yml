@@ -15,6 +15,16 @@ degustation_prelevement_lots:
   requirements:
     sf_method: [get, post]
 
+degustation_selection_degustateurs:
+  url: /degustation/:id/selection-degustateurs
+  param: { module: degustation, action: selectionDegustateurs }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_validation:
   url: /degustation/:id/validation
   param: { module: degustation, action: validation }

@@ -21,7 +21,12 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     }
     
     public function getLotsPrelevables() {
-        return MouvementLotView::getInstance()->getByPrelevablePreleve(1,0)->rows;
+        $lots = array();
+        foreach (MouvementLotView::getInstance()->getByPrelevablePreleve(1,0)->rows as $item) {
+            $lot = $item->value;
+            $lots[$lot->origine_document_id.'|'.$lot->origine_mouvement] = $lot;
+        }
+        return $lots;
     }
 
 }

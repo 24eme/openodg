@@ -27,5 +27,10 @@ class MouvementLotView extends acCouchdbView
                             ->endkey(array($prelevable, $preleve, $region, $date, $identifiant, $document_id, array()))
                             ->getView($this->design, $this->view);
     }
+    
+    public static function getDestinationLibelle($lot) {
+        $libelles = DRevClient::$lotDestinationsType;
+        return (isset($libelles[$lot->destination_type]))? $libelles[$lot->destination_type] : '';
+    }
 
 }
