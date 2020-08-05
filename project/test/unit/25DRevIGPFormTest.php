@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(63);
+$t = new lime_test(101);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -30,17 +30,21 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 }
 
 $config = ConfigurationClient::getCurrent();
-$produit1 = null;
-$produit2 = null;
-foreach($config->getProduits() as $produit) {
-    if(!$produit->getRendement()) {
+$produitconfig1 = null;
+$produitconfig2 = null;
+$produitconfig_horsDR = null;
+foreach($config->getProduits() as $produitconfig) {
+    if(!$produitconfig->getRendement()) {
         continue;
     }
-    if(!$produit1) {
-        $produit1 = $produit;
+    if(!$produitconfig1) {
+        $produitconfig1 = $produitconfig->getCepage();
         continue;
-    } elseif(!$produit2) {
-        $produit2 = $produit;
+    } elseif(!$produitconfig2) {
+        $produitconfig2 = $produitconfig->getCepage();
+        continue;
+    } elseif(!$produitconfig_horsDR) {
+        $produitconfig_horsDR = $produitconfig->getCepage();
         continue;
     }
 
@@ -50,10 +54,10 @@ foreach($config->getProduits() as $produit) {
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
-file_put_contents($csvTmpFile, str_replace(array("%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($produitconfig1->getCodeDouane(), $produitconfig1->getLibelleComplet(), $produitconfig2->getCodeDouane(), $produitconfig2->getLibelleComplet()), $csvContentTemplate));
 $t->comment("utilise le fichier test/data/dr_douane.csv");
-$t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
-$t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());
+$t->comment("%libelle_produit_1% = ".$produitconfig1->getLibelleComplet());
+$t->comment("%libelle_produit_2% = ".$produitconfig2->getLibelleComplet());
 
 $campagne = (date('Y')-1)."";
 
@@ -72,20 +76,7 @@ $dr->save();
 $drev->importFromDocumentDouanier();
 $drev->save();
 
-$t->is(count($drev->getProduits()), 2 + (!DRevConfiguration::getInstance()->hasDenominationAuto()) * 2, "La DRev a repris le bon nombre de produits du csv de la DR");
-
-$i = 0;
-$produits2Delete = array();
-foreach($drev->getProduits() as $produit) {
-    $i++;
-    if($i > 2) {
-        $produits2Delete[$produit->getHash()] = $produit->getHash();
-    }
-}
-
-foreach($produits2Delete as $hash) {
-    $drev->remove($hash);
-}
+$t->is(count(array_keys($drev->getProduits())), 2 + (!DRevConfiguration::getInstance()->hasDenominationAuto()) * 2, "La DRev a repris le bon nombre (". (2 + (!DRevConfiguration::getInstance()->hasDenominationAuto()) * 2).") de produits du csv de la DR");
 
 $produits = $drev->getProduits();
 
@@ -114,6 +105,8 @@ if($drev->storeEtape(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE)) {
 $form = new DRevSuperficieForm($drev);
 
 $defaults = $form->getDefaults();
+
+$t->is(count(array_keys($form['produits']->getValue())), count(array_keys($drev->getProduits())), "le formulaire a le même nombre de produit (".count(array_keys($drev->getProduits())).") que la DRev (declaration)");
 
 $t->is($form['produits'][$produit_hash1]['recolte']['superficie_total']->getValue(), $produit1->recolte->superficie_total, "La superficie totale de la DR est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $produit1->superficie_revendique, "La superficie revendique est initialisé dans le form");
@@ -179,16 +172,17 @@ if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
 
 $t->comment("Étape validation");
 
-$synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
-$couleur = $produit1->getConfig()->getCouleur()->getLibelleComplet();
-$t->is($synthese_revendication[$couleur]['superficie_totale'], 12.4786, 'la superficite totale pour le produit du lot est bonne dans la synthèse');
-$t->is($synthese_revendication[$couleur]['volume_max'], 208.2, 'le volume max pour le produit du lot est bonne dans la synthèse');
-$t->is($synthese_revendication[$couleur]['volume_restant'], 200, 'le volume restant pour le produit du lot est bonne dans la synthèse');
 
-$drev->validate();
-$drev->save();
+$validation = new DRevValidation($drev);
+$erreurs = $validation->getPointsByCodes('erreur');
+$vigilances = $validation->getPointsByCodes('vigilance');
+
+$t->is($erreurs, null, "pas d'erreur à la validation");
+$t->is($vigilances, null, "un point de vigilance à la validation");
 
 $t->comment("DRev validée");
+$drev->validate();
+$drev->save();
 
 $t->is(count($drev->lots), 1, "La DRev validée ne contient plus que le lot saisi");
 $t->is(count($drev->mouvements_lots->{$drev->identifiant}), 1, "La DRev validée contient le mouvement correspondant au lot saisi");
@@ -237,3 +231,125 @@ $drevres->save();
 $t->ok($mvtres->preleve, "Le mouvement prelevé est bien indiqué comme tel");
 $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res->rows), 0, 'on retrouve plus le mouvement prelevé dans la vue MouvementLot');
+
+$t->comment("Modificatrice ".$drev->_id."-M01");
+$drev_modif = $drev->generateModificative();
+$drev_modif->save();
+$t->is($drev_modif->_id, $drev->_id.'-M01', "La modification a l'identifiant attendu");
+$t->is(count($drev_modif->mouvements_lots), 0, "La Drev modificatrice juste crée a bien aucun mouvement de lots");
+$t->comment("Ajout de lots");
+
+if($drev_modif->storeEtape(DrevEtapes::ETAPE_LOTS)) {
+    $drev_modif->save();
+}
+
+$drev_modif->addLot();
+$drev_modif->addLot();
+$form = new DRevLotsForm($drev_modif);
+$defaults = $form->getDefaults();
+$valuesRev = array(
+    'lots' => $form['lots']->getValue(),
+    '_revision' => $drev_modif->_rev,
+);
+
+$valuesRev['lots']['1']['numero'] = "Cuve B";
+$valuesRev['lots']['1']['volume'] = 1;
+$valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
+$valuesRev['lots']['1']['destination_date'] = '30/11/'.$campagne;
+$valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
+$valuesRev['lots']['1']['millesime'] = '2010';
+
+$valuesRev['lots']['2'] = $valuesRev['lots']['1'];
+$valuesRev['lots']['2']['numero'] = "Cuve C";
+$valuesRev['lots']['2']['produit_hash'] = $produitconfig_horsDR->getHash();
+
+$form->bind($valuesRev);
+
+$t->ok($form->isValid(), "Le formulaire est valide");
+$errors = null;
+foreach ($form->getErrorSchema() as $key => $err) {
+    if ($key) {
+        $errors[$key] = $err->getMessage();
+    }
+}
+$t->is($errors, null, "Pas d'erreur dans le formulaire validé");
+$form->save();
+$t->is($drev_modif->lots[1]->numero, $valuesRev['lots']['1']['numero'], "Le numéro de cuve du lot 2 est bien enregistré");
+$t->is($drev_modif->lots[1]->volume, $valuesRev['lots']['1']['volume'], "Le volume du lot 2 est bien enregistré");
+$t->is($drev_modif->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Le libellé du produit du lot 2 est bien enregistré");
+$t->is($drev_modif->lots[1]->millesime, $valuesRev['lots']['1']['millesime'], "Le millesime du lot 2 est bien enregistré");
+$t->is($drev_modif->lots[2]->numero, $valuesRev['lots']['2']['numero'], "Le numéro de cuve du lot 3 est bien enregistré");
+$t->is($drev_modif->lots[2]->volume, $valuesRev['lots']['2']['volume'], "Le volume du lot 3 est bien enregistré");
+$t->is($drev_modif->lots[2]->produit_libelle, $produitconfig_horsDR->getLibelleComplet(), "Le libellé du produit du lot 3 est bien enregistré");
+$t->is($drev_modif->lots[2]->millesime, $valuesRev['lots']['2']['millesime'], "Le millesime du lot 3 est bien enregistré");
+
+//$drev_modif->remove('/lots/0');
+$drev_modif->save();
+$t->is(count($drev_modif->lots), 3, "l'ajout des deux produit a bien impacté le nombre de lots");
+
+if($drev_modif->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
+    $drev_modif->save();
+}
+$validation = new DRevValidation($drev_modif);
+$erreurs = $validation->getPointsByCodes('erreur');
+$vigilances = $validation->getPointsByCodes('vigilance');
+
+$t->is($erreurs, null, "pas d'erreur");
+$t->is(count($vigilances), 1, "un point de vigilances");
+$t->ok(isset($vigilances['lot_igp_inexistant_dans_dr_warn']), "le point vigilance indique que le produit du 2d lot ne fait pas partie de la DR comme attendu");
+
+$form = new DRevLotsForm($drev_modif);
+$valuesRev = array(
+    'lots' => $form['lots']->getValue(),
+    '_revision' => $drev_modif->_rev,
+);
+$valuesRev['lots']['2']['produit_hash'] = $produitconfig1->getHash();
+$form->bind($valuesRev);
+$t->ok($form->isValid(), "Le formulaire de changement de nom du produit est valide");
+$form->save();
+
+$validation = new DRevValidation($drev_modif);
+$erreurs = $validation->getPointsByCodes('erreur');
+$vigilances = $validation->getPointsByCodes('vigilance');
+$t->is($vigilances, null, "après le changement de produit hors DR, plus de point de vigilances");
+$t->is($erreurs, null, "après le changement de produit hors DR, toujours pas d'erreur");
+
+$drev_modif->validate();
+$drev_modif->save();
+$t->is(count($drev_modif->lots), 3, "Après la validation, le nombre de lots n'a pas changé");
+$t->is($drev_modif->lots[0]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation, le lot 1 n'a pas changé");
+$t->is($drev_modif->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Après la validation, le lot 2 n'a pas changé");
+$t->is($drev_modif->lots[2]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation, le lot 3 n'a pas changé");
+
+$t->is(count($drev_modif->mouvements_lots->{$drev_modif->identifiant}), 2, "La Drev modificatrice validée a bien généré que 2 mouvements de lots (pour les seuls deux nouveaux lots)");
+foreach($drev_modif->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt) {
+    break;
+}
+$t->is($mvt->version, 'M01', 'Le mouvement a le bon numéro de version');
+$t->is($mvt->produit_hash, $produitconfig2->getHash(), 'Le mouvement a le bon hash');
+$t->is($mvt->prelevable, 1, 'Le mouvement est prelevable');
+
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev_modif->lots[0]->date, $drev->identifiant, $drev_modif->_id);
+$t->is(count($res->rows), 2, 'on retrouve plus les 2 mouvements dans la vue MouvementLot');
+
+
+$drev_modif2 = $drev_modif->generateModificative();
+
+$drev_modif2->remove('/lots/0');
+$t->is($drev_modif2->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Après la suppression du lot 1, le 1er lot qui vient d'être ajouté est à la bonne place");
+$t->is($drev_modif2->lots[2]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la suppression du lot 1, le 2d lot qui vient d'être ajouté est à la bonne place");
+$drev_modif2->validate();
+$drev_modif2->save();
+$t->is($drev_modif2->lots[0]->produit_libelle, $produitconfig2->getLibelleComplet(), "Après la validation de la suppression du lot 1, le 1er lot est à la bonne place");
+$t->is($drev_modif2->lots[1]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation de la suppression du lot 1, le 2d lot est à la bonne place");
+$t->is(count($drev_modif2->mouvements_lots->{$drev_modif2->identifiant}), 1, "La 2d Drev modificatrice validée a bien généré que 1 mouvement de lots (celui de la suppression)");
+foreach($drev_modif2->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt) {
+    break;
+}
+$t->is($mvt->version, 'M02', 'Le mouvement a le bon numéro de version');
+$t->is($mvt->produit_hash, $produitconfig1->getHash(), 'Le mouvement a le bon hash');
+$t->is($mvt->prelevable, 0, 'Le mouvement est prelevable');
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
+$t->is(count($res->rows), 0, 'on ne retrouve pas le mouvement comme prelevable dans la vue MouvementLot');
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(0, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
+$t->is(count($res->rows), 0, 'on retrouve le mouvement comme non prelevable dans la vue MouvementLot');

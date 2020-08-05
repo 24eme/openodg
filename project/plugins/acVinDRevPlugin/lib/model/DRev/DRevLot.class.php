@@ -19,6 +19,14 @@ class DRevLot extends BaseDRevLot
         return $this->_get('numero');
     }
 
+    public function getProduitRevendiqueLibelleComplet() {
+        $p = $this->getProduitRevendique();
+        if ($p) {
+            return $p->getLibelleComplet();
+        }
+        return "";
+    }
+
     public function getProduitRevendique() {
         if($this->getDocument()->exist($this->produit_hash)) {
 
@@ -180,6 +188,10 @@ class DRevLot extends BaseDRevLot
 
     public function hasBeenEdited(){
       return ($this->getDocument()->hasVersion() && $this->exist('id_document') && $this->id_document);
+    }
+
+    public function getUnicityKey(){
+        return KeyInflector::slugify($this->produit_hash.'/'.$this->millesime.'/'.$this->numero.'/'.$this->volume);
     }
 
 }
