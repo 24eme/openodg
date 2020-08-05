@@ -1209,7 +1209,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function generateMouvementsLots() {
         foreach($this->lots as $k => $lot) {
-            $key = KeyInflector::slugify($lot->produit_hash.'/'.$lot->millesime.'/'.$lot->numero);
+            $key = $lot->getKey();
             $mvt = new stdClass();
             $mvt->prelevable = 1;
             $mvt->preleve = 0;

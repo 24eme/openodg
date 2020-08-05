@@ -45,7 +45,7 @@ class degustationActions extends sfActions {
         
         $this->form->save();
         
-        return ($next = $this->getRouteNextEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_LOTS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
     
     public function executeSelectionDegustateurs(sfWebRequest $request) {

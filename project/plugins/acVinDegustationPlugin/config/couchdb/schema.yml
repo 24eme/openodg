@@ -8,6 +8,67 @@ Degustation:
       date: {  }
       lieu: {  }
       etape: {  }
+      lots:
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: DegustationLot
+              inheritance: Lot
+              definition:
+                fields:
+                  date: { }
+                  id_document: { }
+                  numero: { }
+                  millesime: { }
+                  volume: { type: float }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: DegustationMouvementLots
+                    inheritance: MouvementLots
+                    type: collection
+                    definition:
+                      fields:
+                        prelevable: { type: integer }
+                        preleve: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        produit_couleur: { }
+                        volume: { type: float }
+                        date: {  }
+                        millesime: {  }
+                        region: {  }
+                        numero: {  }
+                        version: {  }
+                        origine_hash: {  }
+                        origine_type: {  }
+                        origine_document_id: {  }
+                        origine_mouvement: {  }
+                        identifiant: {  }
+                        declarant_libelle: {  }
+                        destination_type: { }
+                        destination_date: { }
+                        details: {}
+                        region: {}
+                        campagne: {}
       pieces:
         type: array_collection
         definition:

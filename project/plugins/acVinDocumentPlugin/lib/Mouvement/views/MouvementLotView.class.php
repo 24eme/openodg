@@ -32,5 +32,26 @@ class MouvementLotView extends acCouchdbView
         $libelles = DRevClient::$lotDestinationsType;
         return (isset($libelles[$lot->destination_type]))? $libelles[$lot->destination_type] : '';
     }
+    
+    public static function generateLotByMvt($mvt) {
+        $lot = new stdClass();
+        $lot->date = $mvt->date;
+        $lot->id_document = $mvt->origine_document_id;
+        $lot->numero = $mvt->numero;
+        $lot->millesime = $mvt->millesime;
+        $lot->volume = $mvt->volume;
+        $lot->destination_type = $mvt->destination_type;
+        $lot->destination_date = $mvt->destination_date;
+        $lot->produit_hash = $mvt->produit_hash;
+        $lot->produit_libelle = $mvt->produit_libelle;
+        if ($mvt->details) {
+            $tab = explode('%)', $mvt->details);
+            foreach ($tab as $item) {
+                $stab = explode(' (', $item);
+                $lot->cepages->add($stab[0], $stab[1]);
+            }
+        }
+        return $lot;
+    }
 
 }

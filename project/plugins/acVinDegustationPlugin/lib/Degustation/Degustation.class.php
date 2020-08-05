@@ -4,7 +4,7 @@
  *
  */
 
-class Degustation extends BaseDegustation implements InterfacePieceDocument {
+class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument {
 
 	protected $piece_document = null;
 
@@ -68,6 +68,30 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 	    $this->add('etape', $etape);
 	
 	    return true;
+	}
+
+	public function validate($date = null) {
+	    if(is_null($date)) {
+	        $date = date('Y-m-d');
+	    }
+	    $this->updateMouvementsLots();
+	    $this->generateMouvementsLots();
+	}
+
+	public function updateMouvementsLots() {
+	    foreach ($this->lots as $lot) {
+	        $doc = acCouchdbManager::getClient()->find($lot->id_document);
+	        if ($doc instanceof InterfaceMouvementLotsDocument) {
+	            if ($doc->exist('identifiant') && $doc->mouvements_lots->exist($doc->identifiant) && $doc->mouvements_lots->get($doc->identifiant)->exist($lot->getKey())) {
+	               $doc->mouvements_lots->get($doc->identifiant)->get($lot->getKey())->set('preleve', 1);
+	               $doc->save();
+	            }
+	        }
+	    }
+	}
+	
+	public function generateMouvementsLots() {
+	    // A implementer lorsque les lots devront etre redegustes
 	}
 
     /**** PIECES ****/
