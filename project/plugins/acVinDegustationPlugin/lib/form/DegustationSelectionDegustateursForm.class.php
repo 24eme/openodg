@@ -6,26 +6,53 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
     
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
-        $doc->add('degustateurs');
+        $doc->getOrAdd('degustateurs');
+        $defaults = array_merge($this->getDefaults(), $this->getDefaultsByDoc($doc));
+        $this->setDefaults($defaults);
     }
 
 	public function configure()
     {
-        $subForm = new BaseForm();
-
+	    $form = new BaseForm();
         foreach($this->getDegustateursByColleges() as $college => $comptes) {
+            $subForm = new BaseForm();
             foreach ($comptes as $compte) {
                 $subForm->embedForm($compte->_id, new DegustationSelectionDegustateurForm($compte));
             }
+            $form->embedForm($college, $subForm);
         }
-
-        $this->embedForm('degustateurs', $subForm);
-
+        $this->embedForm('degustateurs', $form);
         $this->widgetSchema->setNameFormat('degustation[%s]');
+    }
+    
+    protected function getDefaultsByDoc($doc)
+    {
+        $defaults = array();
+        foreach ($doc->degustateurs as $college => $comptes) {
+            foreach ($comptes as $idCompte => $libelleCompte) {
+                if (!isset($defaults[$college])) {
+                    $defaults[$college] = array();
+                }
+                $defaults[$college][$idCompte] = array('selectionne' => 1);
+            }
+        }
+        return array('degustateurs' => $defaults);
     }
 
 	public function save() {
 		$values = $this->getValues();
+		$doc = $this->getDocument();
+		$doc->remove('degustateurs');
+		$doc->add('degustateurs');
+		foreach ($values['degustateurs'] as $college => $items) {
+		    foreach ($items as $compteId => $val) {
+    		    if (isset($val['selectionne']) && !empty($val['selectionne'])) {
+    		        $compte = $this->getCompteByCollegeAndIdentifiant($college, $compteId);
+    		        $doc->degustateurs->getOrAdd($college)->add($compteId, $compte->getLibelleWithAdresse());
+    		    }
+		    }
+		}
+		$doc->save();
 	}
     
     public function getDegustateursByColleges() {
@@ -38,12 +65,17 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
                     foreach ($comptes as $compte) {
                         $result[$compte->id] = CompteClient::getInstance()->find($compte->id);
                     }
-                    $this->degustateurs[$libelle] = $result;
+                    $this->degustateurs[$tag] = $result;
                 }
             }
             ksort($this->degustateurs);
         }
         return $this->degustateurs;
+    }
+    
+    public function getCompteByCollegeAndIdentifiant($college, $identifiant) {
+        $comptes = $this->getDegustateursByColleges();
+        return (isset($comptes[$college]) && isset($comptes[$college][$identifiant]))? $comptes[$college][$identifiant] : null;
     }
 
 }

@@ -1,5 +1,5 @@
 <?php
-class DegustationSelectionDegustateurForm extends acCouchdbForm
+class DegustationSelectionDegustateurForm extends BaseForm
 {
     public function configure() {
         $this->setWidgets(array(
