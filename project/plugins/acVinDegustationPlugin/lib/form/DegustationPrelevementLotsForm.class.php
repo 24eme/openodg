@@ -32,7 +32,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     protected function updateDefaultsFromObject() {
         $defaults = $this->getDefaults();
         foreach ($this->getObject()->lots as $lot) {
-            $key = $lot->id_document.'-'.$lot->getKey();
+            $key = $lot->id_document.'-'.$lot->getGenerateKey();
             $defaults[$key] = array('preleve' => 1);
         }
         $this->setDefaults($defaults);

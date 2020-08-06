@@ -82,8 +82,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    foreach ($this->lots as $lot) {
 	        $doc = acCouchdbManager::getClient()->find($lot->id_document);
 	        if ($doc instanceof InterfaceMouvementLotsDocument) {
-	            if ($doc->exist('identifiant') && $doc->mouvements_lots->exist($doc->identifiant) && $doc->mouvements_lots->get($doc->identifiant)->exist($lot->getKey())) {
-	               $doc->mouvements_lots->get($doc->identifiant)->get($lot->getKey())->set('preleve', 1);
+	            if ($doc->exist('identifiant') && $doc->mouvements_lots->exist($doc->identifiant) && $doc->mouvements_lots->get($doc->identifiant)->exist($lot->getGenerateKey())) {
+	               $doc->mouvements_lots->get($doc->identifiant)->get($lot->getGenerateKey())->set('preleve', 1);
 	               $doc->save();
 	            }
 	        }
