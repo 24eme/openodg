@@ -18,8 +18,8 @@
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-        		<th class="col-xs-1">Lot</th>
                 <th class="col-xs-3">Ressortissant</th>
+        		<th class="col-xs-1">Lot</th>
         		<th class="col-xs-3">Produit (millésime)</th>
         		<th class="col-xs-1">Volume</th>
         		<th class="col-xs-3">Destination (date)</th>
@@ -33,8 +33,8 @@
 			if (isset($form['lots'][$key])):
 		?>
 			<tr class="vertical-center">
-				<td><?php echo $lot->numero; ?></td>
                 <td><?php echo $lot->declarant_nom; ?></td>
+				<td><?php echo $lot->numero; ?></td>
 				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
 				<td><?php echo MouvementLotView::getDestinationLibelle($lot); ?><?php if ($lot->destination_date): ?>&nbsp;(<?php echo ucfirst(format_date($lot->destination_date, "d/MM/y", "fr_FR")); ?>)<?php endif; ?></td>
