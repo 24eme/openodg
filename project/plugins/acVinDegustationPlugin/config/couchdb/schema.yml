@@ -69,6 +69,15 @@ Degustation:
                         details: {}
                         region: {}
                         campagne: {}
+      degustateurs:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
       pieces:
         type: array_collection
         definition:

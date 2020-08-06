@@ -55,7 +55,23 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
         
+        $this->form = new DegustationSelectionDegustateursForm($this->degustation);
         
+        if (!$request->isMethod(sfWebRequest::POST)) {
+        
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
+        
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->save();
+        
+        return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
     
     public function executeValidation(sfWebRequest $request) {
