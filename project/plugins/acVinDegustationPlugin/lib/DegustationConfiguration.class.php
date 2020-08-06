@@ -24,4 +24,9 @@ class DegustationConfiguration {
 
         return (isset($this->configuration['commissions']))? $this->configuration['commissions'] : array();
     }
+
+    public function getColleges() {
+
+        return (isset($this->configuration['colleges']))? $this->configuration['colleges'] : array();
+    }
 }
