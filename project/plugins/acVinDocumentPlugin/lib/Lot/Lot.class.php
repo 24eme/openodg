@@ -6,7 +6,7 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
-    public function getKey() {
+    public function getGenerateKey() {
         return self::generateKey($this);
     }
     
