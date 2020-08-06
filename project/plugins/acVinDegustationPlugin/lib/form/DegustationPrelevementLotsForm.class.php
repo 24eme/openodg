@@ -4,9 +4,11 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
     public function configure() {
         $lotsPrelevables = $this->getLotsPrelevables();
+        $formLots = new BaseForm();
 		foreach ($lotsPrelevables as $key => $item) {
-			$this->embedForm($key, new DegustationPrelevementLotForm());
+			$formLots->embedForm($key, new DegustationPrelevementLotForm());
 		}
+        $this->embedForm('lots', $formLots);
         $this->widgetSchema->setNameFormat('prelevement[%s]');
     }
 
@@ -19,12 +21,12 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
             $this->getObject()->remove('lots');
         }
         $this->getObject()->add('lots');
-        foreach ($values as $id => $val) {
+        foreach ($values['lots'] as $id => $val) {
             if (!in_array($id, $keys)) {
                 continue;
             }
             if (isset($val['preleve']) && !empty($val['preleve'])) {
-                $this->getObject()->lots->add(null, $lots[$id]);
+                $lot = $this->getObject()->lots->add(null, $lots[$id]);
             }
         }
     }
@@ -32,20 +34,19 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     protected function updateDefaultsFromObject() {
         $defaults = $this->getDefaults();
         foreach ($this->getObject()->lots as $lot) {
-            $key = $lot->id_document.'-'.$lot->getGenerateKey();
-            $defaults[$key] = array('preleve' => 1);
+            $key = $lot->getGenerateKey();
+            $defaults['lots'][$key] = array('preleve' => 1);
         }
         $this->setDefaults($defaults);
     }
-    
-    public function getLotsPrelevables() {
-        $lots = array();
-        foreach (MouvementLotView::getInstance()->getByPrelevablePreleve(1,0)->rows as $item) {
-            $lot = MouvementLotView::generateLotByMvt($item->value);
-            $lots[$lot->id_document.'-'.Lot::generateKey($lot)] = $lot;
-        }
-        ksort($lots);
-        return $lots;
-    }
 
+    public function getLotsPrelevables() {
+         $lots = array();
+         foreach (MouvementLotView::getInstance()->getByPrelevablePreleve(1,0)->rows as $item) {
+             $lot = MouvementLotView::generateLotByMvt($item->value);
+             $lots[Lot::generateKey($lot)] = $lot;
+         }
+         ksort($lots);
+         return $lots;
+     }
 }

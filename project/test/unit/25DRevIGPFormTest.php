@@ -141,6 +141,9 @@ $form = new DRevLotsForm($drev);
 $defaults = $form->getDefaults();
 
 $t->is(count($form['lots']), 2, "autant de lots que de colonnes dans le DR");
+foreach($form['lots'] as $k => $v) {
+    print("k: $k\n");
+}
 $t->is($form['lots']['0']['produit_hash']->getValue(), $produit1->getParent()->getHash(), 'lot 1 : un produit est déjà sélectionné');
 $t->is($form['lots']['0']['millesime']->getValue(), $campagne, 'lot 1 : le millesime est prérempli');
 

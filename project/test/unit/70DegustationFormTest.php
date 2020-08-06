@@ -10,14 +10,17 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(5);
+$t = new lime_test(15);
 
 $campagne = (date('Y')-1)."";
+$degust_date = $campagne.'-09-01';
+$degust_date_fr = '01/09/'.$campagne;
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
-$doc = acCouchdbManager::getClient()->find("DEGUSTATION-".date("Ymd")."-SYNDICAT-VIGNERONS-ARLES");
+$docid = "DEGUSTATION-".str_replace('-', '', $degust_date)."-SYNDICAT-VIGNERONS-ARLES";
+$doc = acCouchdbManager::getClient()->find($docid);
 if ($doc) {
     $doc->delete();
 }
@@ -44,21 +47,67 @@ $produit1 = $drev->addProduit($produitconfig_hash1);
 $produit1->superficie_revendique = 200;
 $produit1->recolte->superficie_total = 200;
 $produit1->volume_revendique_issu_recolte = 80;
-$lot = $drev->lots[0];
-$lot->numero = '1';
-$lot->volume = 10;
+$drev->addLot();
+$drev->lots[0]->numero = '1';
+$drev->lots[0]->volume = 1;
+$drev->lots[1] = clone $drev->lots[0];
+$drev->lots[1]->numero = '2';
+$drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->save();
 $t->comment($drev->_id);
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
-$t->is(count($res->rows), 1, 'on a au moins un mouvement de lot prélevable');
+$res_mvt = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$t->is(count($res_mvt->rows), 2, 'on a au moins un mouvement de lot prélevable');
 
 $degustation = new Degustation();
 $form = new DegustationCreationForm($degustation);
-$values = array('date' => date('d/m/Y'), 'lieu' => $commissions[0]);
+$values = array('date' => $degust_date_fr, 'lieu' => $commissions[0]);
 $form->bind($values);
 $t->ok($form->isValid(), "Le formulaire de création est valide");
-$form->save();
+$degustation = $form->save();
 $t->ok($degustation->_id, "la création donne un id à la degustation");
-$t->is($degustation->date, date('Y-m-d'), "La date de la degustation est la bonne");
+$t->is($degustation->_id, $docid, "doc id");
+
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+$t->is($degustation->date, $degust_date, "La date de la degustation est la bonne");
 $t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
+
+$form = new DegustationPrelevementLotsForm($degustation);
+$defaults = $form->getDefaults();
+$valuesRev = array(
+    'lots' => $form['lots']->getValue(),
+    '_revision' => $degustation->_rev,
+);
+$lot_key1 = null;
+$lot_key2 = null;
+
+foreach($res_mvt->rows as $item) {
+    if (!$lot_key1) {
+        $lot_key1 = Lot::generateKey($item->value);
+        continue;
+    }
+    if (!$lot_key2) {
+        $lot_key2 = Lot::generateKey($item->value);
+        $lot_mvt2 = $item->value;
+        break;
+    }
+}
+
+$t->ok(isset($valuesRev['lots'][$lot_key2]), 'On retrouve le lot dans le formulaire sur la base de la vue');
+$valuesRev['lots'][$lot_key2]['preleve'] = 1;
+$form->bind($valuesRev);
+$form->save();
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$t->is(count($degustation->lots), 1, 'un lot est bien mis comme prélevé dans la degustation');
+$t->ok($degustation->lots[0], 'Le lot indiqué comme prelevé est bien celui qui est enregistré');
+$t->is($degustation->lots[0]->volume, $lot_mvt2->volume, 'Le lot a le bon volume');
+$t->is($degustation->lots[0]->numero, $lot_mvt2->numero, 'Le lot a le bon numero de cuve');
+$t->is($degustation->lots[0]->origine_mouvement, $lot_mvt2->origine_mouvement, 'Le lot a la bonne origine de mouvement');
+$t->is($degustation->lots[0]->origine_document_id, $drev->_id, "Le lot a le bon document d'origine");
+$t->is($degustation->lots[0]->declarant_identifiant, $drev->identifiant, 'Le lot a le bon declarant');
+$t->is($degustation->lots[0]->declarant_nom, $drev->declarant->raison_sociale, 'Le lot a le bon nom de declarant');
+
+if (!getenv("NODELETE")) {
+    $degustation->delete();
+}

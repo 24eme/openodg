@@ -10,7 +10,7 @@
 <p>Sélectionnez l'ensemble des lots à prélever pour la dégustation</p>
 <form action="<?php echo url_for("degustation_prelevement_lots", $degustation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
-    
+
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
@@ -29,7 +29,7 @@
 		<tbody>
 		<?php
 			foreach ($form->getLotsPrelevables() as $key => $lot):
-			if (isset($form[$key])):
+			if (isset($form['lots'][$key])):
 		?>
 			<tr class="vertical-center">
 				<td><?php echo $lot->numero; ?></td>
@@ -37,10 +37,10 @@
 				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
 				<td><?php echo MouvementLotView::getDestinationLibelle($lot); ?><?php if ($lot->destination_date): ?>&nbsp;(<?php echo ucfirst(format_date($lot->destination_date, "d/MM/y", "fr_FR")); ?>)<?php endif; ?></td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$key]['preleve']->renderError() ?>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form['lots'][$key]['preleve']->renderError() ?>
                         <div class="col-xs-12">
-			            	<?php echo $form[$key]['preleve']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+			            	<?php echo $form['lots'][$key]['preleve']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                         </div>
                     </div>
             	</td>
@@ -48,7 +48,7 @@
         <?php  endif; endforeach; ?>
         </tbody>
 	</table>
-	
+
 	<div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("degustation") ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">

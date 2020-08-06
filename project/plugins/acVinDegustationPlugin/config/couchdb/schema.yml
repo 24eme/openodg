@@ -9,7 +9,6 @@ Degustation:
       lieu: {  }
       etape: {  }
       lots:
-        required: false
         type: array_collection
         definition:
           fields:
@@ -28,6 +27,9 @@ Degustation:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
+                  origine_mouvement: {}
                   cepages:
                     type: collection
                     definition:

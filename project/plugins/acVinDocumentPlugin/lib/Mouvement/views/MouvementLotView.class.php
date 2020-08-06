@@ -44,6 +44,9 @@ class MouvementLotView extends acCouchdbView
         $lot->destination_date = $mvt->destination_date;
         $lot->produit_hash = $mvt->produit_hash;
         $lot->produit_libelle = $mvt->produit_libelle;
+        $lot->declarant_nom = $mvt->declarant_nom;
+        $lot->declarant_identifiant = $mvt->declarant_identifiant;
+        $lot->origine_mouvement = $mvt->origine_mouvement;
         if ($mvt->details) {
             $tab = explode('%)', $mvt->details);
             foreach ($tab as $item) {

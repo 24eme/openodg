@@ -9,11 +9,14 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getGenerateKey() {
         return self::generateKey($this);
     }
-    
+
     public static function generateKey($lot) {
-        return KeyInflector::slugify($lot->produit_hash.'/'.$lot->millesime.'/'.$lot->numero);
+        if (isset($lot->origine_document_id)) {
+            return KeyInflector::slugify($lot->origine_document_id.'/'.$lot->origine_mouvement);
+        }
+        return KeyInflector::slugify($lot->id_document.'/'.$lot->origine_mouvement);
     }
-    
+
     public function getConfigProduit() {
             return $this->getConfig();
     }
@@ -139,6 +142,14 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function hasBeenEdited(){
       return ($this->getDocument()->hasVersion() && $this->exist('id_document') && $this->id_document);
+    }
+
+    public function setOrigineDocumentId($id) {
+        $this->id_document = $id;
+    }
+
+    public function getOrigineDocumentId() {
+        return $this->id_document;
     }
 
 }
