@@ -14,36 +14,33 @@
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
-	
-	<?php foreach ($form->getDegustateursByColleges() as $college => $comptes): ?>
-	<h3><?php echo $college ?></h3>
+	<?php foreach ($form['degustateurs'] as $college => $collegeForm): ?>
+	<h3><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></h3>
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-        		<th class="col-xs-4">Membre</th>
-        		<th class="col-xs-7">Adresse</th>
+        		<th class="col-xs-11">Membre</th>
                 <th class="col-xs-1">Sélectionner?</th>
 
             </tr>
 		</thead>
 		<tbody>
 		<?php
-			foreach ($comptes as $compte):
-			if (isset($form['degustateurs'][$compte->_id])):
+			foreach ($collegeForm as $idCompte => $compteForm):
+			$compte = $form->getCompteByCollegeAndIdentifiant($college, $idCompte);
 		?>
 			<tr class="vertical-center">
-				<td><?php echo $compte->nom_a_afficher ?></td>
-				<td><?php echo $compte->adresse; ?><?php if ($compte->adresse_complementaire) : ?> <?php echo $compte->adresse_complementaire ?><?php endif ?> <span <?php if($compte->insee): ?>title="<?php echo $compte->insee ?>"<?php endif; ?>><?php echo $compte->code_postal; ?></span> <?php echo $compte->commune; ?> <?php if($compte->pays): ?><small class="text-muted">(<?php echo $compte->pays; ?>)</small><?php endif; ?></td>
+				<td><?php echo $compte->getLibelleWithAdresse() ?></td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form['degustateurs'][$compte->_id]['selectionne']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form['degustateurs'][$compte->_id]['selectionne']->renderError() ?>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $compteForm['selectionne']->renderError() ?>
                         <div class="col-xs-12">
-			            	<?php echo $form['degustateurs'][$compte->_id]['selectionne']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+			            	<?php echo $compteForm['selectionne']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                         </div>
                     </div>
             	</td>
             </tr>
-        <?php  endif; endforeach; ?>
+        <?php  endforeach; ?>
         </tbody>
 	</table>
 	<?php endforeach; ?>

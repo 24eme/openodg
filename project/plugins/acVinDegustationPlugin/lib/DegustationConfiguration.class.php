@@ -29,4 +29,9 @@ class DegustationConfiguration {
 
         return (isset($this->configuration['colleges']))? $this->configuration['colleges'] : array();
     }
+
+    public function getLibelleCollege($key) {
+        $colleges = $this->getColleges();
+        return (isset($colleges[$key]))? $colleges[$key] : '';
+    }
 }
