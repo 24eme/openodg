@@ -6,7 +6,7 @@ class MouvementLotView extends acCouchdbView
     const KEY_PRELEVE = 1;
     const KEY_REGION = 2;
     const KEY_DATE = 3;
-    const KEY_IDENTIFIANT = 4;
+    const KEY_DECLARANT_IDENTIFIANT = 4;
     const KEY_ORIGINE_DOCUMENT_ID = 5;
 
     const VALUE_LOT = 0;
@@ -22,17 +22,17 @@ class MouvementLotView extends acCouchdbView
                             ->getView($this->design, $this->view);
     }
 
-    public function getByPrelevablePreleveRegionDateIdentifiantDocumentId($prelevable, $preleve, $region, $date, $identifiant, $document_id) {
-        return $this->client->startkey(array($prelevable, $preleve, $region, $date, $identifiant, $document_id))
-                            ->endkey(array($prelevable, $preleve, $region, $date, $identifiant, $document_id, array()))
+    public function getByPrelevablePreleveRegionDateIdentifiantDocumentId($prelevable, $preleve, $region, $date, $declarant_identifiant, $document_id) {
+        return $this->client->startkey(array($prelevable, $preleve, $region, $date, $declarant_identifiant, $document_id))
+                            ->endkey(array($prelevable, $preleve, $region, $date, $declarant_identifiant, $document_id, array()))
                             ->getView($this->design, $this->view);
     }
-    
+
     public static function getDestinationLibelle($lot) {
         $libelles = DRevClient::$lotDestinationsType;
         return (isset($libelles[$lot->destination_type]))? $libelles[$lot->destination_type] : '';
     }
-    
+
     public static function generateLotByMvt($mvt) {
         $lot = new stdClass();
         $lot->date = $mvt->date;

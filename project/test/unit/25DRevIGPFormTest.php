@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(101);
+$t = new lime_test(104);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -204,8 +204,8 @@ $t->is($mvt->origine_hash, $drev->lots[0]->getHash(), 'Le mouvement a bien comme
 $t->is($mvt->origine_type, 'drev', 'le mouvement a bien comme origine une drev');
 $t->is($mvt->origine_mouvement, $mvt->getHash(), 'le mouvement a bien comme origine de mouvement lui même');
 $t->is($mvt->origine_document_id, $drev->_id, 'Le mouvement a la bonne origine de document');
-$t->is($mvt->identifiant, $drev->identifiant, 'Le mouvement a le bon identifiant');
-$t->is($mvt->declarant_libelle, $drev->declarant->raison_sociale, 'Le mouvement a la bonne raison sociale');
+$t->is($mvt->declarant_identifiant, $drev->identifiant, 'Le mouvement a le bon identifiant');
+$t->is($mvt->declarant_nom, $drev->declarant->raison_sociale, 'Le mouvement a la bonne raison sociale');
 $t->is($mvt->destination_type, $drev->lots[0]->destination_type, 'Le mouvement a le bon type de destination');
 $t->is($mvt->destination_date, $drev->lots[0]->destination_date, 'Le mouvement a la bonne date de destination');
 $t->is($mvt->details, '', "le mouvement n'a pas de détail car il n'a pas de répartition de cépage");
@@ -327,6 +327,9 @@ foreach($drev_modif->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt) 
 }
 $t->is($mvt->version, 'M01', 'Le mouvement a le bon numéro de version');
 $t->is($mvt->produit_hash, $produitconfig2->getHash(), 'Le mouvement a le bon hash');
+$t->is($mvt->prelevable, 1, 'Le mouvement est prelevable');
+$t->is($mvt->declarant_identifiant, $drev_modif->identifiant, 'Le mouvement a le bon identifiant de déclarant');
+$t->is($mvt->declarant_nom, $drev->declarant->raison_sociale, 'Le mouvement a le bon nom de déclarant');
 $t->is($mvt->prelevable, 1, 'Le mouvement est prelevable');
 
 $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev_modif->lots[0]->date, $drev->identifiant, $drev_modif->_id);

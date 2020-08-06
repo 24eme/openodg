@@ -217,8 +217,8 @@ DRev:
                         origine_type: {  }
                         origine_document_id: {  }
                         origine_mouvement: {  }
-                        identifiant: {  }
-                        declarant_libelle: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
                         destination_type: { }
                         destination_date: { }
                         details: {}

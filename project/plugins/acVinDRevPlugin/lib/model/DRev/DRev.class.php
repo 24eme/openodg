@@ -1239,8 +1239,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->origine_type = 'drev';
         $mvt->origine_document_id = $this->_id;
         $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
-        $mvt->identifiant = $this->identifiant;
-        $mvt->declarant_libelle = $this->declarant->raison_sociale;
+        $mvt->declarant_identifiant = $this->identifiant;
+        $mvt->declarant_nom = $this->declarant->raison_sociale;
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
