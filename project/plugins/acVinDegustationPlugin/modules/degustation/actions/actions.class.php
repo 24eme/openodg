@@ -80,6 +80,38 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
+        
+        $this->form = new DegustationValidationForm($this->degustation);
+        
+        if (!$request->isMethod(sfWebRequest::POST)) {
+        
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
+        
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->save();
+        
+        return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+    }
+
+    public function executeDevalidation(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->degustation->devalidate();
+        $this->degustation->save();
+    
+        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+    
+        return $this->redirect('degustation_validation', $this->degustation);
     }
 
     protected function getEtape($doc, $etape, $class = "DegustationEtapes") {

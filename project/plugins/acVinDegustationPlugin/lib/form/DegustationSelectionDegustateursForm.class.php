@@ -17,7 +17,7 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
         foreach($this->getDegustateursByColleges() as $college => $comptes) {
             $subForm = new BaseForm();
             foreach ($comptes as $compte) {
-                $subForm->embedForm($compte->_id, new DegustationSelectionDegustateurForm($compte));
+                $subForm->embedForm($compte->_id, new DegustationSelectionDegustateurForm());
             }
             $form->embedForm($college, $subForm);
         }

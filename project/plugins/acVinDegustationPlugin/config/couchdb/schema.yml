@@ -8,6 +8,7 @@ Degustation:
       date: {  }
       lieu: {  }
       etape: {  }
+      validation: {  }
       lots:
         type: array_collection
         definition:
