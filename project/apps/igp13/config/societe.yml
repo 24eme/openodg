@@ -1,3 +1,8 @@
 all:
   configuration:
     societe:
+      droits:
+          "degustateur": "Dégustateur"
+          "degustateur:porteur_de_memoire": "Porteur de memoire"
+          "degustateur:technicien": "Technicien"
+          "degustateur:usager_du_produit": "Usager du produit"

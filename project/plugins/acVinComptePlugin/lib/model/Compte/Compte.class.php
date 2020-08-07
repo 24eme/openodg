@@ -265,6 +265,13 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->addTag('automatique', 'en_alerte');
         }
 
+        if ($this->exist('droits')) {
+            foreach ($this->droits as $droit) {
+                $this->addTag('automatique', $droit);
+                $this->addTag('automatique', preg_replace('/:.*/', '', $droit));
+            }
+        }
+
         parent::save();
 
         if ($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $new) {

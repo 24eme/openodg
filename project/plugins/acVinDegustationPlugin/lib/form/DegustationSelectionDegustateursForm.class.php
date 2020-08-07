@@ -24,19 +24,21 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
         $this->embedForm('degustateurs', $form);
         $this->widgetSchema->setNameFormat('degustation[%s]');
     }
-    
+
     protected function getDefaultsByDoc($doc)
     {
         $defaults = array();
-        foreach ($doc->degustateurs as $college => $comptes) {
-            foreach ($comptes as $idCompte => $libelleCompte) {
-                if (!isset($defaults[$college])) {
-                    $defaults[$college] = array();
+        foreach($this->getDegustateursByColleges() as $college => $comptes) {
+            foreach ($comptes as $compte) {
+                $idCompte = $compte->_id;
+                $selectionne = 0;
+                if ($doc->degustateurs->exist($college) && $doc->degustateurs->{$college}->exist($idCompte)) {
+                    $selectionne = 1;
                 }
-                $defaults[$college][$idCompte] = array('selectionne' => 1);
+                $defaults['degustateurs'][$college][$idCompte] = array('selectionne' => $selectionne);
             }
         }
-        return array('degustateurs' => $defaults);
+        return $defaults;
     }
 
 	public function save() {
@@ -54,12 +56,12 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 		}
 		$doc->save();
 	}
-    
+
     public function getDegustateursByColleges() {
         if (!$this->degustateurs) {
             $this->degustateurs = array();
             foreach (DegustationConfiguration::getInstance()->getColleges() as $tag => $libelle) {
-                $comptes = CompteTagsView::getInstance()->listByTags('manuel', $tag);
+                $comptes = CompteTagsView::getInstance()->listByTags('automatique', $tag);
                 if (count($comptes) > 0) {
                     $result = array();
                     foreach ($comptes as $compte) {
