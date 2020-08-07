@@ -18,15 +18,12 @@ class DegustationClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function getDegustationsByEtablissement($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $ids = $this->startkey(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, ""))
-                        ->endkey(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, "zzz"))
-                        ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
-        $degustations = array();
-        foreach ($ids as $id) {
-            $degustations[$id] = DegustationClient::getInstance()->find($id, $hydrate);
+    public function getHistory($limit = 10, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $res = $this->getAllDocsByType(self::TYPE_COUCHDB, $limit);
+        $objects = array();
+        foreach($res->rows as $row) {
+            $objects[] = $this->find($row->id, $hydrate);
         }
-        krsort($degustations);
-        return $degustations;
+        return $objects;
     }
 }
