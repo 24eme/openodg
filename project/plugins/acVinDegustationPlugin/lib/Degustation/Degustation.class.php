@@ -74,16 +74,26 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    if(is_null($date)) {
 	        $date = date('Y-m-d');
 	    }
+	    $this->validation = $date;
 	    $this->updateMouvementsLots();
 	    $this->generateMouvementsLots();
 	}
 
-	public function updateMouvementsLots() {
+
+	public function devalidate($reinit_version_lot = true) {
+	    $this->validation = null;
+	    if($this->exist('etape')) {
+	        $this->etape = null;
+	    }
+	    $this->updateMouvementsLots(0);
+	}
+
+	public function updateMouvementsLots($preleve = 1) {
 	    foreach ($this->lots as $lot) {
 	        $doc = acCouchdbManager::getClient()->find($lot->id_document);
 	        if ($doc instanceof InterfaceMouvementLotsDocument) {
-	            if ($doc->exist('identifiant') && $doc->mouvements_lots->exist($doc->identifiant) && $doc->mouvements_lots->get($doc->identifiant)->exist($lot->getGenerateKey())) {
-	               $doc->mouvements_lots->get($doc->identifiant)->get($lot->getGenerateKey())->set('preleve', 1);
+	            if ($doc->exist($lot->origine_mouvement)) {
+	               $doc->get($lot->origine_mouvement)->set('preleve', $preleve);
 	               $doc->save();
 	            }
 	        }
@@ -92,6 +102,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	
 	public function generateMouvementsLots() {
 	    // A implementer lorsque les lots devront etre redegustes
+	}
+
+	public function isValidee() {
+	
+	    return $this->validation;
 	}
 
     /**** PIECES ****/
