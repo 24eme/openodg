@@ -10,12 +10,13 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(15);
+$t = new lime_test(22);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01';
 $degust_date_fr = '01/09/'.$campagne;
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
+$degust =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_degustateur');
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
@@ -59,6 +60,9 @@ $t->comment($drev->_id);
 $res_mvt = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res_mvt->rows), 2, 'on a au moins un mouvement de lot prélevable');
 
+$t->comment("Test de la dégustation : $docid");
+$t->comment("Création de la dégustation");
+
 $degustation = new Degustation();
 $form = new DegustationCreationForm($degustation);
 $values = array('date' => $degust_date_fr, 'lieu' => $commissions[0]);
@@ -71,7 +75,7 @@ $t->is($degustation->_id, $docid, "doc id");
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->date, $degust_date, "La date de la degustation est la bonne");
 $t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
-
+$t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);
 $defaults = $form->getDefaults();
 $valuesRev = array(
@@ -107,6 +111,28 @@ $t->is($degustation->lots[0]->origine_mouvement, $lot_mvt2->origine_mouvement, '
 $t->is($degustation->lots[0]->origine_document_id, $drev->_id, "Le lot a le bon document d'origine");
 $t->is($degustation->lots[0]->declarant_identifiant, $drev->identifiant, 'Le lot a le bon declarant');
 $t->is($degustation->lots[0]->declarant_nom, $drev->declarant->raison_sociale, 'Le lot a le bon nom de declarant');
+
+$t->comment("Dégustateurs");
+$form = new DegustationSelectionDegustateursForm($degustation);
+$defaults = $form->getDefaults();
+$t->ok(isset($defaults['degustateurs']['degustateur_porteur_de_memoire'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme porteur de mémoire');
+$t->ok(isset($defaults['degustateurs']['degustateur_technicien'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme technicien');
+$t->ok(isset($defaults['degustateurs']['degustateur_usager_du_produit'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme usager du produit');
+$valuesRev = array(
+    'degustateurs' => $form['degustateurs']->getValue(),
+    '_revision' => $degustation->_rev,
+);
+$valuesRev['degustateurs']['degustateur_porteur_de_memoire'][$degust->_id]['selectionne'] = 1;
+$valuesRev['degustateurs']['degustateur_technicien'][$degust->_id]['selectionne'] = 1;
+$valuesRev['degustateurs']['degustateur_usager_du_produit'][$degust->_id]['selectionne'] = 1;
+
+$form->bind($valuesRev);
+$form->save();
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+$t->is(count($degustation->degustateurs), 3, 'On a bien les trois collèges');
+$t->is(count($degustation->degustateurs->degustateur_porteur_de_memoire), 1, 'On a bien notre dégustateur porteur de mémoire');
+$t->is(count($degustation->degustateurs->degustateur_technicien), 1, 'On a bien le dégustateur technicien');
+$t->is(count($degustation->degustateurs->degustateur_usager_du_produit), 1, 'On a bien le dégustateur usager du produit');
 
 if (!getenv("NODELETE")) {
     $degustation->delete();
