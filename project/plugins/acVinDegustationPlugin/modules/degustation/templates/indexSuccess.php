@@ -42,6 +42,7 @@
 <div class="page-header no-border">
     <h2>Les dernières dégustations</h2>
 </div>
+<?php if (count($degustations)): ?>
 <div class="row">
 <table class="table table-condensed table-striped">
 <thead>
@@ -66,4 +67,5 @@
 <?php endforeach; ?>
 <tbody>
 </table>
+<?php endif; ?>
 </div>

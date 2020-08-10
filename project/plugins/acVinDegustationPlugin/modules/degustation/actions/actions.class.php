@@ -4,7 +4,9 @@ class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {        
         $this->form = new DegustationCreationForm(new Degustation());
-        
+
+        $this->degustations = DegustationClient::getInstance()->getHistory();
+
         if (!$request->isMethod(sfWebRequest::POST)) {
         
             return sfView::SUCCESS;
