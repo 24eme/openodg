@@ -31,11 +31,8 @@ Degustation:
                   declarant_identifiant: { }
                   declarant_nom: { }
                   origine_mouvement: {}
-                  cepages:
-                    type: collection
-                    definition:
-                      fields:
-                        '*': { type: float }
+                  details: {}
+                  statut: {}
       mouvements_lots:
         type: collection
         definition:

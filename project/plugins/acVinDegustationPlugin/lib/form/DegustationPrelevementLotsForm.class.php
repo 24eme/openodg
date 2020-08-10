@@ -26,7 +26,9 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
                 continue;
             }
             if (isset($val['preleve']) && !empty($val['preleve'])) {
-                $lot = $this->getObject()->lots->add(null, $lots[$id]);
+                $lot = $lots[$id];
+                $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+                $this->getObject()->lots->add(null, $lot);
             }
         }
     }
