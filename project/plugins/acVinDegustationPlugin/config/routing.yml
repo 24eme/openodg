@@ -54,3 +54,13 @@ degustation_visualisation:
     type:     object
   requirements:
     sf_method: [get]
+
+degustation_redirect:
+  url: /degustation/:id/redirect
+  param: { module: degustation, action: redirect }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]

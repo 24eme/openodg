@@ -49,10 +49,15 @@ class MouvementLotView extends acCouchdbView
         $lot->origine_mouvement = $mvt->origine_mouvement;
         if ($mvt->details) {
             $tab = explode('%)', $mvt->details);
+            $cepages = new stdClass();
             foreach ($tab as $item) {
                 $stab = explode(' (', $item);
-                $lot->cepages->add($stab[0], $stab[1]);
+                if (isset($stab[0]) && isset($stab[1])) {
+                    $cepages->{trim($stab[0])} = floatval(trim($stab[1]));
+                }
+                
             }
+            $lot->cepages = $cepages;
         }
         return $lot;
     }
