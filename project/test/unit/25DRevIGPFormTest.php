@@ -214,7 +214,7 @@ $t->is($mvt->destination_date, $drev->lots[0]->destination_date, 'Le mouvement a
 $t->is($mvt->details, '', "le mouvement n'a pas de détail car il n'a pas de répartition de cépage");
 $t->is($mvt->campagne, $drev->campagne, "le mouvement a la bonne campagne");
 
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res->rows), 1, 'on retrouve le mouvement dans la vue MouvementLot');
 $t->is($res->rows[0]->id, $drev->_id, 'le mouvement correspond bien à notre drev');
 $drevres = DRevClient::getInstance()->find($res->rows[0]->value->origine_document_id);
@@ -232,7 +232,7 @@ $t->comment("Gestion du prélèvement");
 $mvtres->prelever();
 $drevres->save();
 $t->ok($mvtres->preleve, "Le mouvement prelevé est bien indiqué comme tel");
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res->rows), 0, 'on retrouve plus le mouvement prelevé dans la vue MouvementLot');
 
 $t->comment("Modificatrice ".$drev->_id."-M01");
@@ -335,7 +335,7 @@ $t->is($mvt->declarant_identifiant, $drev_modif->identifiant, 'Le mouvement a le
 $t->is($mvt->declarant_nom, $drev->declarant->raison_sociale, 'Le mouvement a le bon nom de déclarant');
 $t->is($mvt->prelevable, 1, 'Le mouvement est prelevable');
 
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev_modif->lots[0]->date, $drev->identifiant, $drev_modif->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev_modif->campagne, 1, 0, '', $drev_modif->lots[0]->date, $drev->identifiant, $drev_modif->_id);
 $t->is(count($res->rows), 2, 'on retrouve plus les 2 mouvements dans la vue MouvementLot');
 
 
@@ -355,12 +355,12 @@ foreach($drev_modif2->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt)
 $t->is($mvt->version, 'M02', 'Le mouvement a le bon numéro de version');
 $t->is($mvt->produit_hash, $produitconfig1->getHash(), 'Le mouvement a le bon hash');
 $t->is($mvt->prelevable, 0, 'Le mouvement est prelevable');
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
 $t->is(count($res->rows), 0, 'on ne retrouve pas le mouvement comme prelevable dans la vue MouvementLot');
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(0, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 0, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
 $t->is(count($res->rows), 0, 'on retrouve le mouvement comme non prelevable dans la vue MouvementLot');
 
-$res = MouvementLotView::getInstance()->getByDeclarantIdentifiant($drev->identifiant);
+$res = MouvementLotView::getInstance()->getByDeclarantIdentifiant($drev->identifiant, $drev->campagne);
 $ok = false;
 foreach($res->rows as $r) {
     if ($r->value->origine_document_id == $drev->_id) {

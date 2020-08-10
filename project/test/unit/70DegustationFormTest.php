@@ -57,7 +57,7 @@ $drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->save();
 $t->comment($drev->_id);
-$res_mvt = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$res_mvt = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res_mvt->rows), 2, 'on a au moins un mouvement de lot prélevable');
 
 $t->comment("Test de la dégustation : $docid");

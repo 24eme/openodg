@@ -3,10 +3,11 @@
 class MouvementLotView extends acCouchdbView
 {
     const KEY_DECLARANT_IDENTIFIANT = 0;
-    const KEY_PRELEVABLE = 1;
-    const KEY_PRELEVE = 2;
-    const KEY_REGION = 3;
-    const KEY_DATE = 4;
+    const KEY_CAMPAGNE = 1;
+    const KEY_PRELEVABLE = 2;
+    const KEY_PRELEVE = 3;
+    const KEY_REGION = 4;
+    const KEY_DATE = 5;
     const KEY_ORIGINE_DOCUMENT_ID = 6;
 
     const VALUE_LOT = 0;
@@ -16,25 +17,28 @@ class MouvementLotView extends acCouchdbView
         return acCouchdbManager::getView('mouvement', 'lot');
     }
 
-    public function getByPrelevablePreleve($prelevable, $preleve) {
-        return $this->client->startkey(array(null, $prelevable, $preleve))
-                            ->endkey(array(null, $prelevable, $preleve, array()))
+    public function getByPrelevablePreleve($campagne, $prelevable, $preleve) {
+        return $this->client->startkey(array(null, $campagne, $prelevable, $preleve))
+                            ->endkey(array(null, $campagne, $prelevable, $preleve, array()))
                             ->getView($this->design, $this->view);
     }
 
-    public function getByPrelevablePreleveRegionDateIdentifiantDocumentId($prelevable, $preleve, $region, $date, $declarant_identifiant, $document_id) {
-        return $this->client->startkey(array($declarant_identifiant, $prelevable, $preleve, $region, $date, $document_id))
-                            ->endkey(array($declarant_identifiant, $prelevable, $preleve, $region, $date, $document_id, array()))
+    public function getByPrelevablePreleveRegionDateIdentifiantDocumentId($campagne, $prelevable, $preleve, $region, $date, $declarant_identifiant, $document_id) {
+        return $this->client->startkey(array($declarant_identifiant, $campagne, $prelevable, $preleve, $region, $date, $document_id))
+                            ->endkey(array($declarant_identifiant, $campagne, $prelevable, $preleve, $region, $date, $document_id, array()))
                             ->getView($this->design, $this->view);
     }
 
-    public function getByDeclarantIdentifiant($declarant_identifiant, $prelevable = null, $preleve = null) {
+    public function getByDeclarantIdentifiant($declarant_identifiant, $campagne = null, $prelevable = null, $preleve = null) {
         $query = array($declarant_identifiant);
-        if (!is_null($prelevable)) {
-            $query[] = $prelevable;
-        }
-        if (!is_null($preleve)) {
-            $query[] = $preleve;
+        if (!is_null($campagne)) {
+            $query[] = $campagne;
+            if (!is_null($prelevable)) {
+                $query[] = $prelevable;
+                if (!is_null($preleve)) {
+                    $query[] = $preleve;
+                }
+            }
         }
         return $this->client->startkey($query)
                             ->endkey(array_merge($query, array(array())))

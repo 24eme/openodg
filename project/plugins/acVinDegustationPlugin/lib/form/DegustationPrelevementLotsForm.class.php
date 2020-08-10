@@ -3,6 +3,8 @@
 class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
     public function configure() {
+        //TODO : supprimer cette goretterie réalisée pour la démo
+        $this->campagne = '2019';
         $lotsPrelevables = $this->getLotsPrelevables();
         $formLots = new BaseForm();
 		foreach ($lotsPrelevables as $key => $item) {
@@ -42,7 +44,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
     public function getLotsPrelevables() {
          $lots = array();
-         foreach (MouvementLotView::getInstance()->getByPrelevablePreleve(1,0)->rows as $item) {
+         foreach (MouvementLotView::getInstance()->getByPrelevablePreleve($this->campagne, 1,0)->rows as $item) {
              $lot = MouvementLotView::generateLotByMvt($item->value);
              $lots[Lot::generateKey($lot)] = $lot;
          }
