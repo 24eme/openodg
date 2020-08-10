@@ -32,7 +32,7 @@
 			foreach ($form->getLotsPrelevables() as $key => $lot):
 			if (isset($form['lots'][$key])):
 		?>
-			<tr class="vertical-center">
+			<tr class="vertical-center cursor-pointer">
                 <td><?php echo $lot->declarant_nom; ?></td>
 				<td><?php echo $lot->numero; ?></td>
 				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
