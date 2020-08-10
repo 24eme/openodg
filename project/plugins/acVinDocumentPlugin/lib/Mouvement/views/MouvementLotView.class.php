@@ -64,18 +64,7 @@ class MouvementLotView extends acCouchdbView
         $lot->declarant_nom = $mvt->declarant_nom;
         $lot->declarant_identifiant = $mvt->declarant_identifiant;
         $lot->origine_mouvement = $mvt->origine_mouvement;
-        if ($mvt->details) {
-            $tab = explode('%)', $mvt->details);
-            $cepages = new stdClass();
-            foreach ($tab as $item) {
-                $stab = explode(' (', $item);
-                if (isset($stab[0]) && isset($stab[1])) {
-                    $cepages->{trim($stab[0])} = floatval(trim($stab[1]));
-                }
-                
-            }
-            $lot->cepages = $cepages;
-        }
+        $lot->details = $mvt->details;
         return $lot;
     }
 

@@ -6,6 +6,17 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
+    const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
+
+    public static $libellesStatuts = array(
+        self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement'
+    );
+
+    public static function getLibelleStatut($statut) {
+        $libelles = self::$libellesStatuts;
+        return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
+    }
+
     public function getGeneratedMvtKey() {
         return self::generateMvtKey($this);
     }
@@ -55,17 +66,6 @@ abstract class Lot extends acCouchdbDocumentTree
 		return $this->_get('produit_libelle');
 	}
 
-    public function getCepagesLibelle() {
-        $libelle = null;
-        foreach($this->cepages as $cepage => $repartition) {
-            if($libelle) {
-                $libelle .= ", ";
-            }
-            $libelle .= $cepage . " (".$repartition."%)";
-        }
-        return $libelle;
-    }
-
     public function isCleanable() {
 
         if(!$this->exist('produit_hash') || !$this->produit_hash){
@@ -99,10 +99,6 @@ abstract class Lot extends acCouchdbDocumentTree
         return Date::francizeDate($this->destination_date);
     }
 
-    public function addCepage($cepage, $repartition) {
-        $this->cepages->add($cepage, $repartition);
-    }
-
     public function hasVolumeAndHashProduit(){
       return $this->volume && $this->produit_hash;
     }
@@ -119,22 +115,6 @@ abstract class Lot extends acCouchdbDocumentTree
         return null;
       }
       return acCouchdbManager::getClient()->find($this->id_document);
-    }
-
-    public function getCepagesToStr(){
-      $cepages = $this->cepages;
-      $str ='';
-      $k=0;
-      $total = 0.0;
-      foreach ($cepages as $c => $volume){ $total+=$volume; }
-
-      foreach ($cepages as $c => $volume){
-        $k++;
-        $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $str.= $c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ', ' : '';
-      }
-      return $str;
     }
 
     public function hasBeenEdited(){

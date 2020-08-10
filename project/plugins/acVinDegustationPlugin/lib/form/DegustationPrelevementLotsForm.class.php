@@ -20,7 +20,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         foreach ($values['lots'] as $id => $val) {
             $mvtkeys[$id] = (isset($val['preleve']) && !empty($val['preleve']));
         }
-        $this->getObject()->setLotsFromMvtKeys($mvtkeys);
+        $this->getObject()->setLotsFromMvtKeys($mvtkeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
     }
 
     protected function updateDefaultsFromObject() {

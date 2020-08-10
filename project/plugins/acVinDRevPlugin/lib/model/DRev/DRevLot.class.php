@@ -72,4 +72,35 @@ class DRevLot extends BaseDRevLot
         return KeyInflector::slugify($this->produit_hash.'/'.$this->millesime.'/'.$this->numero.'/'.$this->volume);
     }
 
+    public function getCepagesToStr(){
+      $cepages = $this->cepages;
+      $str ='';
+      $k=0;
+      $total = 0.0;
+      foreach ($cepages as $c => $volume){ $total+=$volume; }
+
+      foreach ($cepages as $c => $volume){
+        $k++;
+        $p = ($total)? round(($volume/$total)*100) : 0.0;
+        $str.= $c." (".$p.'%)';
+        $str.= ($k < count($cepages))? ', ' : '';
+      }
+      return $str;
+    }
+
+    public function addCepage($cepage, $repartition) {
+        $this->cepages->add($cepage, $repartition);
+    }
+
+    public function getCepagesLibelle() {
+        $libelle = null;
+        foreach($this->cepages as $cepage => $repartition) {
+            if($libelle) {
+                $libelle .= ", ";
+            }
+            $libelle .= $cepage . " (".$repartition."%)";
+        }
+        return $libelle;
+    }
+
 }

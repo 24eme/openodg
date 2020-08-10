@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(26);
+$t = new lime_test(27);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01';
@@ -111,6 +111,7 @@ $t->is($degustation->lots[0]->origine_mouvement, $lot_mvt2->origine_mouvement, '
 $t->is($degustation->lots[0]->origine_document_id, $drev->_id, "Le lot a le bon document d'origine");
 $t->is($degustation->lots[0]->declarant_identifiant, $drev->identifiant, 'Le lot a le bon declarant');
 $t->is($degustation->lots[0]->declarant_nom, $drev->declarant->raison_sociale, 'Le lot a le bon nom de declarant');
+$t->is($degustation->lots[0]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, 'Le lot a le bon statut');
 
 $t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 1, 'le lot est reproduit dans mvt lot');
 foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) { break; }
