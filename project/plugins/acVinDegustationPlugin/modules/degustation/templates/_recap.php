@@ -2,7 +2,7 @@
 <?php use_helper("Date") ?>
 
 <div class="page-header no-border">
-    <h2><?php if(!$degustation->isValidee()): ?>Validation<?php else: ?>Visualisation<?php endif; ?> de la dégustation</h2><span class="text-muted"><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?><br /><?php echo $degustation->lieu ?></span>
+    <h2><?php if(!$degustation->isValidee()): ?>Validation<?php else: ?>Visualisation<?php endif; ?> de la dégustation du <?php echo format_date($degustation->date, "P", "fr_FR") ?></h2><span class="text-muted"><?php echo $degustation->lieu ?></span>
 </div>
 
 <div class="row row-condensed">
