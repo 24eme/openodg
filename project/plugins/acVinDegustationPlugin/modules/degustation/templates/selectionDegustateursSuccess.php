@@ -29,7 +29,7 @@
 			foreach ($collegeForm as $idCompte => $compteForm):
 			$compte = $form->getCompteByCollegeAndIdentifiant($college, $idCompte);
 		?>
-			<tr class="vertical-center">
+			<tr class="vertical-center cursor-pointer">
 				<td><?php echo $compte->getLibelleWithAdresse() ?></td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
