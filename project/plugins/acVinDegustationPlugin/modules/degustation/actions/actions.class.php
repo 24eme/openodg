@@ -147,8 +147,8 @@ class degustationActions extends sfActions {
 
     public function executeList(sfWebRequest $request) {
         $etablissement_id = $request->getParameter('id');
-        $etablissement = EtablissementClient::getInstance()->find($etablissement_id);
-        $this->forward404Unless($etablissement);
+        $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);
+        $this->forward404Unless($this->etablissement);
 
         $this->lots = array();
         foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement_id)->rows as $item) {

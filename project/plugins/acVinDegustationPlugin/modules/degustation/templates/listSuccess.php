@@ -2,7 +2,7 @@
 <?php use_helper('Float') ?>
 
 <div class="page-header no-border">
-    <h2>Les lots de XXXX</h2>
+    <h2>Les lots de <?php echo $etablissement->getNom(); ?></h2>
 </div>
 <?php if (count($lots)): ?>
 <div class="row">
