@@ -21,7 +21,7 @@ class degustationActions extends sfActions {
         
         $degustation = $this->form->save();
         
-        return ($next = $this->getRouteNextEtape())? $this->redirect($next, $degustation) : $this->redirect('degustation');
+        return $this->redirect('degustation_redirect', $degustation);
     }
     
     public function executePrelevementLots(sfWebRequest $request) {
@@ -114,6 +114,16 @@ class degustationActions extends sfActions {
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
     
         return $this->redirect('degustation_validation', $this->degustation);
+    }
+    
+    public function executeRedirect(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+
+        if ($degustation->isValidee()) {
+            return $this->redirect('degustation_visualisation', $degustation);
+        }
+        
+        return ($next = $this->getRouteNextEtape($degustation->etape))? $this->redirect($next, $degustation) : $this->redirect('degustation');
     }
 
     protected function getEtape($doc, $etape, $class = "DegustationEtapes") {

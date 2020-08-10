@@ -61,7 +61,7 @@
             <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
         </td>
         <td class="col-sm-2 text-center">
-            <a href="#" class="btn btn-default">Visualiser</a>
+            <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn <?php if ($d->isValidee()): ?>btn-success<?php else: ?>btn-default<?php endif; ?>"><?php if ($d->isValidee()): ?>Visualiser<?php else: ?>Reprendre la saisie<?php endif; ?></a>
         </td>
     </tr>
 <?php endforeach; ?>
