@@ -74,7 +74,7 @@
                     <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
                     <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
                       <?php if(count($lot->cepages)): ?>
-                        <small>
+                        <small class="text-muted">
                           <?php echo $lot->getCepagesToStr(); ?>
                         </small>
                       <?php endif; ?>
