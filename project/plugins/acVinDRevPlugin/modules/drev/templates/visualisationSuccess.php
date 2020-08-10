@@ -69,7 +69,7 @@
             </a>
     </div>
 
-    <div class="col-xs-2 text-right">
+    <div class="col-xs-offset-2 col-xs-2 text-right">
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION) && !$drev->isFactures()): ?>
                     <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
         <?php elseif ($drev->validation && $sf_user->isAdmin() && !$drev->isLectureSeule() && !$drev->isFactures()): ?>
