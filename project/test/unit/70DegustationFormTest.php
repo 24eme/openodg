@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(22);
+$t = new lime_test(26);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01';
@@ -87,11 +87,11 @@ $lot_key2 = null;
 
 foreach($res_mvt->rows as $item) {
     if (!$lot_key1) {
-        $lot_key1 = Lot::generateKey($item->value);
+        $lot_key1 = Lot::generateMvtKey($item->value);
         continue;
     }
     if (!$lot_key2) {
-        $lot_key2 = Lot::generateKey($item->value);
+        $lot_key2 = Lot::generateMvtKey($item->value);
         $lot_mvt2 = $item->value;
         break;
     }
@@ -111,6 +111,13 @@ $t->is($degustation->lots[0]->origine_mouvement, $lot_mvt2->origine_mouvement, '
 $t->is($degustation->lots[0]->origine_document_id, $drev->_id, "Le lot a le bon document d'origine");
 $t->is($degustation->lots[0]->declarant_identifiant, $drev->identifiant, 'Le lot a le bon declarant');
 $t->is($degustation->lots[0]->declarant_nom, $drev->declarant->raison_sociale, 'Le lot a le bon nom de declarant');
+
+$t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 1, 'le lot est reproduit dans mvt lot');
+foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) { break; }
+$t->is($mvt->id_document, $degustation->_id, 'le mvt lot permet de retrouver la degustation via id_document');
+$t->is($mvt->origine_document_id, $drev->_id, 'le mvt lot reproduit bien l\'id de la drev');
+$t->is($mvt->prelevable, 0, "le mvt lot du lot n'est pas prélevable");
+
 
 $t->comment("Dégustateurs");
 $form = new DegustationSelectionDegustateursForm($degustation);

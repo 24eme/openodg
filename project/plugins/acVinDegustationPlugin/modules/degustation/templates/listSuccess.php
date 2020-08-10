@@ -4,25 +4,34 @@
 <div class="page-header no-border">
     <h2>Les lots de XXXX</h2>
 </div>
-<?php if (count($lots->rows)): ?>
+<?php if (count($lots)): ?>
 <div class="row">
 <table class="table table-condensed table-striped">
 <thead>
     <th class="col-sm-2 text-center">Date</th>
-    <th class="col-sm-2">Appellation</th>
+    <th class="col-sm-4">Appellation</th>
     <th class="col-sm-1">Volume</th>
-    <th class="col-sm-2 text-center"></th>
+    <th class="col-sm-2 text-center">Étape</th>
+    <th class="col-sm-1 text-center"></th>
 </thead>
 <tbody>
-<?php foreach($lots->rows as $l): ?>
-    <tr>
-        <td class="text-center"><?php echo $l->value->date; ?></td>
-        <td><?php echo $l->value->produit_libelle; ?></td>
-        <td class="text-right"><?php echo echoFloat($l->value->volume); ?>&nbsp;hl</td>
-        <td><?php echo $l->value->prelevable; ?></td>
-        <td><?php echo $l->value->preleve; ?></td>
-        <td><?php echo $l->value->origine_document_id; ?></td>
+<?php foreach($lots as $l): ?>
+    <tr">
+        <td class="text-center"><strong><?php echo $l->date; ?></strong></td>
+        <td><strong><?php echo $l->produit_libelle; ?></strong></td>
+        <td class="text-right"><strong><?php echo echoFloat($l->volume); ?>&nbsp;hl</strong></td>
+        <td></td>
+        <td></td>
     </tr>
+    <?php foreach($l->steps as $s): ?>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="text-center"><?php echo preg_replace('/-.*/', '', $s->id_document); ?></td>
+            <td><a href="#" class="btn btn-default">Voir</a></td>
+        </tr>
+    <?php endforeach; ?>
 <?php endforeach; ?>
 <tbody>
 </table>

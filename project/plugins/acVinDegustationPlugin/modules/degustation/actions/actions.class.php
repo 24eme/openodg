@@ -150,8 +150,15 @@ class degustationActions extends sfActions {
         $etablissement = EtablissementClient::getInstance()->find($etablissement_id);
         $this->forward404Unless($etablissement);
 
-        $this->lots = MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement_id);
+        $this->lots = array();
+        foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement_id)->rows as $item) {
+            $key = Lot::generateMvtKey($item->value);
+            if (!isset($this->lots[$key])) {
+                $this->lots[$key] = $item->value;
+                $this->lots[$key]->steps = array();
+            }
+            $this->lots[$key]->steps[] = $item->value;
+        }
     }
-
 
 }

@@ -10,6 +10,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function __construct() {
         parent::__construct();
+		//TODO : supprimer cette goretterie réalisée pour la démo
+		$this->campagne = '2019';
         $this->initDocuments();
     }
 
@@ -139,6 +141,46 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public static function isPieceEditable($admin = false) {
     	return false;
     }
+
+	public function getMvtLotsPrelevables() {
+         $mvt = array();
+         foreach (MouvementLotView::getInstance()->getByPrelevablePreleve($this->campagne, 1,0)->rows as $item) {
+			 $mvt[Lot::generateMvtKey($item->value)] = $item->value;
+		 }
+		 ksort($mvt);
+		 return $mvt;
+	 }
+
+	public function getLotsPrelevables() {
+         $lots = array();
+         foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
+             $lot = MouvementLotView::generateLotByMvt($mvt);
+             $lots[$key] = $lot;
+         }
+         return $lots;
+     }
+
+	 public function setLotsFromMvtKeys($keys){
+		 $this->remove('mouvements_lots');
+		 $this->remove('lots');
+		 $this->add('mouvements_lots');
+		 $this->add('lots');
+		 $mvts = $this->getMvtLotsPrelevables();
+		 foreach($keys as $key => $activated) {
+			 $mvt = $mvts[$key];
+			 if ($activated) {
+				 $lot = MouvementLotView::generateLotByMvt($mvt);
+				 $this->lots->add(null, $lot);
+				 if (!$this->mouvements_lots->exist($mvt->declarant_identifiant)) {
+					 $this->mouvements_lots->add($mvt->declarant_identifiant);
+				 }
+				 $mvt->prelevable = 0;
+				 $mvt->id_document = $this->_id;
+				 $this->mouvements_lots->{$mvt->declarant_identifiant}->add($key, $mvt);
+			 }
+		 }
+	 }
+
 
     /**** FIN DES PIECES ****/
 }

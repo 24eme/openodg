@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(105);
+$t = new lime_test(106);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -207,6 +207,7 @@ $t->is($mvt->origine_hash, $drev->lots[0]->getHash(), 'Le mouvement a bien comme
 $t->is($mvt->origine_type, 'drev', 'le mouvement a bien comme origine une drev');
 $t->is($mvt->origine_mouvement, $mvt->getHash(), 'le mouvement a bien comme origine de mouvement lui même');
 $t->is($mvt->origine_document_id, $drev->_id, 'Le mouvement a la bonne origine de document');
+$t->is($mvt->id_document, $drev->_id, 'Le mouvement a le bon document id');
 $t->is($mvt->declarant_identifiant, $drev->identifiant, 'Le mouvement a le bon identifiant');
 $t->is($mvt->declarant_nom, $drev->declarant->raison_sociale, 'Le mouvement a la bonne raison sociale');
 $t->is($mvt->destination_type, $drev->lots[0]->destination_type, 'Le mouvement a le bon type de destination');

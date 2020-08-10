@@ -224,6 +224,7 @@ DRev:
                         details: {}
                         region: {}
                         campagne: {}
+                        id_document: {  }
       pieces:
         type: array_collection
         definition:

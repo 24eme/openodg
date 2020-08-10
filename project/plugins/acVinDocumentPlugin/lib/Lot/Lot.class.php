@@ -6,15 +6,12 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
-    public function getGenerateKey() {
-        return self::generateKey($this);
+    public function getGeneratedMvtKey() {
+        return self::generateMvtKey($this);
     }
 
-    public static function generateKey($lot) {
-        if (isset($lot->origine_document_id)) {
-            return KeyInflector::slugify($lot->origine_document_id.'/'.$lot->origine_mouvement);
-        }
-        return KeyInflector::slugify($lot->id_document.'/'.$lot->origine_mouvement);
+    public static function generateMvtKey($lot) {
+        return KeyInflector::slugify($lot->origine_document_id.'/'.$lot->origine_mouvement);
     }
 
     public function getConfigProduit() {
