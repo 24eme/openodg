@@ -39,20 +39,28 @@
         <table class="table table-bordered table-condensed table-striped">
         	<thead>
             	<tr>
+                    <?php if ($degustation->isValidee()) : ?>
                     <th class="col-xs-1"></th>
+                    <?php endif; ?>
             		<th class="col-xs-2">Collège</th>
         			<th class="col-xs-6">Membre</th>
+                    <?php if ($degustation->isValidee()) : ?>
                     <th class="col-xs-3">Actions</th>
+                    <?php endif; ?>
                 </tr>
         	</thead>
         	<tbody>
         		<?php foreach ($degustation->degustateurs as $college => $degustateurs): ?>
         		<?php foreach ($degustateurs as $id => $degustateur): ?>
         		<tr>
+                    <?php if ($degustation->isValidee()) : ?>
                     <td class="text-center"><p><span class="glyphicon glyphicon-question-sign"></span></p></td>
+                    <?php endif; ?>
         			<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
         			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur ?></a></td>
+                    <?php if ($degustation->isValidee()) : ?>
                     <td class="text-center"><a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span>&nbsp;Confirmer</a> &nbsp; <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span>&nbsp;Refuser</a></td>
+                    <?php endif; ?>
         		</tr>
         		<?php endforeach;?>
         		<?php endforeach; ?>
