@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(104);
+$t = new lime_test(105);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -359,3 +359,12 @@ $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifi
 $t->is(count($res->rows), 0, 'on ne retrouve pas le mouvement comme prelevable dans la vue MouvementLot');
 $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId(0, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
 $t->is(count($res->rows), 0, 'on retrouve le mouvement comme non prelevable dans la vue MouvementLot');
+
+$res = MouvementLotView::getInstance()->getByDeclarantIdentifiant($drev->identifiant);
+$ok = false;
+foreach($res->rows as $r) {
+    if ($r->value->origine_document_id == $drev->_id) {
+        $ok = true;
+    }
+}
+$t->ok($ok, "La vue de récupération par identifiant fonctionne");
