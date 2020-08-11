@@ -29,21 +29,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->getCampagne());
     }
 
-    public function getCampagne() {
-
-        return substr($this->date, 0, 4);
-    }
-
     public function constructId() {
         $id = sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, str_replace("-", "", $this->date), $this->getLieuNom(true));
 
         $this->set('_id', $id);
     }
-    
+
     public function getLieuNom($slugify = false) {
         return self::getNomByLieu($this->lieu, $slugify);
     }
-    
+
     public static function getNomByLieu($lieu, $slugify = false) {
         if (strpos($lieu, "—") === false) {
             throw new sfException('Le lieu « '.$lieu.' » n\'est pas correctement formaté dans la configuration. Séparateur « — » non trouvé.');
