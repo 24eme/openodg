@@ -103,10 +103,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, 'volume_lots' => 0, 'volume_restant' => 0);
             }
-            if($couleurs[$couleur]['volume_total'] !== false && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
+            if(isset($couleurs[$couleur]['volume_total']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
                 $couleurs[$couleur]['volume_total'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
             } else {
-                $couleurs[$couleur]['volume_total'] = false;
+                unset($couleurs[$couleur]['volume_total']);
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;

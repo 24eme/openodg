@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(106);
+$t = new lime_test(111);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -228,6 +228,15 @@ $t->ok($mvtres, 'le mouvement a bien un origine mouvement existant');
 $t->ok( ($mvtres instanceof MouvementLots) , 'le mouvement correspond bien à un lot de type MouvementLots');
 $t->ok( ($mvtres instanceof InterfaceMouvementLots) , 'le mouvement correspond bien à un lot de type InterfaceMouvementLots');
 $t->is($mvtres->origine_mouvement, $res->rows[0]->value->origine_mouvement, "le mouvement l'origine mouvement correspond bien au mouvement");
+
+$t->comment("Test de la synthèse des lots (visu/validation/_recap)");
+
+$synthese = $drev->summerizeProduitsLotsByCouleur();
+$t->is(count(array_keys($synthese)), 2, "On a bien toutes les couleurs de la DR en synthèse des lots");
+$t->ok(isset($synthese[$drev->lots[0]->getCouleurLibelle()]), "On a bien la couleur du produit 1 en synthèse des lots");
+$t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_lots'], 8.2, "On a le bon volume total en synthèse des lots");
+$t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_max'], 208.2, "On a le bon volume issu de la dr en synthèse des lots");
+$t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_restant'], 200, "On a le bon volume restant en synthèse des lots");
 
 $t->comment("Gestion du prélèvement");
 $mvtres->prelever();
