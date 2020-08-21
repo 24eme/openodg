@@ -7,3 +7,4 @@ all:
       validation_odg: true
       habilitation_inao: true
       cgu: true
+      etape_superficie: false

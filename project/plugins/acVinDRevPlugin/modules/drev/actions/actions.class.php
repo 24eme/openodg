@@ -290,6 +290,10 @@ class drevActions extends sfActions {
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
 
+        if (DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
+            return $this->redirect('drev_vci', $this->drev);
+        }
+
         $this->secure(DRevSecurity::EDITION, $this->drev);
         if ($this->needDrDouane() && !$this->getUser()->isAdmin()) {
         	return $this->redirect('drev_dr_upload', $this->drev);
