@@ -113,15 +113,15 @@ class degustationActions extends sfActions {
         $this->liste_tables = $this->degustation->getTablesWithFreeLots();
         $this->tableLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
         $this->nb_tables = count($this->liste_tables);
-        $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table);
-
+        $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table, 'liste_tables' => $this->liste_tables);
         $this->form = new DegustationOrganisationTableForm($this->degustation, $options);
+
+
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
-
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
