@@ -58,12 +58,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function storeEtape($etape) {
 	    if ($etape == $this->etape) {
-	
+
 	        return false;
 	    }
-	
+
 	    $this->add('etape', $etape);
-	
+
 	    return true;
 	}
 
@@ -96,13 +96,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	        }
 	    }
 	}
-	
+
 	public function generateMouvementsLots() {
 	    // A implementer lorsque les lots devront etre redegustes
 	}
 
 	public function isValidee() {
-	
+
 	    return $this->validation;
 	}
 
@@ -179,4 +179,49 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 
     /**** FIN DES PIECES ****/
+
+
+		/**** Gestion des tables de la degustation ****/
+
+		public function getTablesWithFreeLots($add_default_table = false){
+			$tables = array();
+			$freeLots = array();
+			foreach ($this->lots as $lot) {
+				if($lot->exist('numero_table') && $lot->numero_table){
+					if(!isset($tables[$lot->numero_table])){
+						$tables[$lot->numero_table] = new stdClass();
+						$tables[$lot->numero_table]->lots = array();
+						$tables[$lot->numero_table]->freeLots = array();
+					}
+					$tables[$lot->numero_table]->lots[] = $lot;
+				}else{
+					$freeLots[] = $lot;
+				}
+			}
+
+			foreach ($tables as $numero_table => $tableStruct) {
+				$tableStruct->freeLots = $freeLots;
+			}
+
+			if($add_default_table && !count($tables)){
+				$table = new stdClass();
+				$table->lots = array();
+				$table->freeLots = $freeLots;
+				$tables[] = $table;
+			}
+			return $tables;
+		}
+
+		public function getLotsTableOrFreeLots($numero_table){
+			$lots = array();
+			foreach ($this->lots as $lot) {
+				if(($lot->numero_table == $numero_table) || is_null($lot->numero_table)){
+					$lots[] = $lot;
+				}
+			}
+			return $lots;
+		}
+
+		/**** Fin Gestion des tables de la degustation ****/
+
 }

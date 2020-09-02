@@ -17,7 +17,7 @@
 </thead>
 <tbody>
 <?php foreach($lots as $l): ?>
-    <tr">
+    <tr>
         <td class="text-center"><strong><?php echo $l->date; ?></strong></td>
         <td><strong><?php echo $l->produit_libelle; ?></strong></td>
         <td class="text-right"><strong><?php echo echoFloat($l->volume); ?>&nbsp;hl</strong></td>

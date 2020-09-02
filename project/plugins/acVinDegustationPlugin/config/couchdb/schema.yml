@@ -34,6 +34,7 @@ Degustation:
                   origine_mouvement: {}
                   details: {}
                   statut: {}
+                  numero_table: {}
       mouvements_lots:
         type: collection
         definition:
