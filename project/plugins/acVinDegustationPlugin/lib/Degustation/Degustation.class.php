@@ -222,6 +222,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function getFirstNumeroTable(){
+			$tables = array_keys($this->getTablesWithFreeLots());
+			if(!count($tables)) { return 0; }
+			return min($tables);
+		}
+
 		/**** Fin Gestion des tables de la degustation ****/
 
 }

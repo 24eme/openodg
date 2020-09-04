@@ -50,6 +50,9 @@
       <div class="col-xs-4"><a href="<?php echo url_for("degustation_presence", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
       <div class="col-xs-4 text-center">
       </div>
-      <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
+      <div class="col-xs-4 text-right">
+				<button type="submit" class="btn btn-primary btn-upper">Valider</button>
+				&nbsp;<a href="<?php echo url_for("degustation_resultats", array('id' => $degustation->_id)) ?>" class="btn btn-success btn-upper">Suivant</a>
+			</div>
   </div>
 </form>

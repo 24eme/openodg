@@ -6,6 +6,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_DEGUSTATEURS = 'DEGUSTATEURS';
     const ETAPE_PRESENCE = 'PRESENCE';
     const ETAPE_ORGANISATION_TABLE = 'ORGANISATION_TABLES';
+    const ETAPE_RESULTATS = 'RESULTATS';
 
     private static $_instance = null;
 
@@ -14,6 +15,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 2,
         self::ETAPE_PRESENCE => 3,
         self::ETAPE_ORGANISATION_TABLE => 4,
+        self::ETAPE_RESULTATS => 5,
     );
 
     public static $libelles = array(
@@ -21,6 +23,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_PRESENCE => 'Présence',
         self::ETAPE_ORGANISATION_TABLE => 'Organisation tables',
+        self::ETAPE_RESULTATS => 'Résultats',
     );
 
     public static $links = array(
@@ -28,6 +31,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'degustation_selection_degustateurs',
         self::ETAPE_PRESENCE => 'degustation_presence',
         self::ETAPE_ORGANISATION_TABLE => 'degustation_organisation_table',
+        self::ETAPE_RESULTATS => 'degustation_resultats',
     );
 
     public static function getInstance() {
