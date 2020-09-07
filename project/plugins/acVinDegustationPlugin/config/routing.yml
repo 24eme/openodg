@@ -33,19 +33,9 @@ degustation_selection_degustateurs:
   requirements:
     sf_method: [get, post]
 
-# degustation_validation:
-#   url: /degustation/:id/validation
-#   param: { module: degustation, action: validation }
-#   class: DegustationRoute
-#   options:
-#     model:    Degustation
-#     type:     object
-#   requirements:
-#     sf_method: [get, post]
-
-degustation_presence:
-  url: /degustation/:id/presence
-  param: { module: degustation, action: presence }
+degustation_validation:
+  url: /degustation/:id/validation
+  param: { module: degustation, action: validation }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -53,9 +43,30 @@ degustation_presence:
   requirements:
     sf_method: [get, post]
 
+degustation_visualisation:
+  url: /degustation/:id/visualisation
+  param: { module: degustation, action: visualisation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
 degustation_organisation_table:
   url: /degustation/:id/organisation-table/:numero_table
   param: { module: degustation, action: organisationTable, numero_table: 0 }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_ajout_leurre:
+  url: /degustation/:id/ajout-leurre
+  param: { module: degustation, action: ajoutLeurre, numero_table: 0 }
   class: DegustationRoute
   options:
     model:    Degustation

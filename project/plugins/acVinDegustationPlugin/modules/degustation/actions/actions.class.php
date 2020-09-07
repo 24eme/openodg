@@ -26,6 +26,7 @@ class degustationActions extends sfActions {
 
     public function executePrelevementLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsValidee();
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
             $this->degustation->save();
@@ -52,7 +53,7 @@ class degustationActions extends sfActions {
 
     public function executeSelectionDegustateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-
+        $this->redirectIfIsValidee();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
             $this->degustation->save();
         }
@@ -76,13 +77,14 @@ class degustationActions extends sfActions {
         return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
 
-    public function executePresence(sfWebRequest $request) {
+    public function executeValidation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRESENCE))) {
+        $this->redirectIfIsValidee();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
 
-        $this->form = new DegustationPresenceForm($this->degustation);
+        $this->form = new DegustationValidationForm($this->degustation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -98,7 +100,12 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => '0'));
+        return $this->redirect('degustation_visualisation', array('id' => $this->degustation->_id));
+    }
+
+
+    public function executeVisualisation(sfWebRequest $request) {
+      $this->degustation = $this->getRoute()->getDegustation();
     }
 
 
@@ -106,16 +113,13 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->numero_table = $request->getParameter('numero_table',0);
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ORGANISATION_TABLE))) {
-            $this->degustation->save();
-        }
 
         $this->liste_tables = $this->degustation->getTablesWithFreeLots();
         $this->tableLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
         $this->nb_tables = count($this->liste_tables);
         $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table, 'liste_tables' => $this->liste_tables);
         $this->form = new DegustationOrganisationTableForm($this->degustation, $options);
-
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation);
 
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -131,6 +135,23 @@ class degustationActions extends sfActions {
         $this->form->save();
 
         return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
+    }
+
+    public function executeAjoutLeurre(sfWebRequest $request){
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation);
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        $this->ajoutLeurreForm->bind($request->getParameter($this->ajoutLeurreForm->getName()));
+
+        if (!$this->ajoutLeurreForm->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+        $this->ajoutLeurreForm->save();
+        return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => "0"));
     }
 
     public function executeResultats(sfWebRequest $request) {
@@ -173,17 +194,19 @@ class degustationActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
 
-        return $this->redirect('degustation_presence', $this->degustation);
+        return $this->redirect('degustation_validation', $this->degustation);
     }
 
     public function executeRedirect(sfWebRequest $request) {
-        $degustation = $this->getRoute()->getDegustation();
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsValidee();
+        return ($next = $this->getRouteNextEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+    }
 
-        if ($degustation->isValidee()) {
-            return $this->redirect('degustation_presence', $degustation);
-        }
-
-        return ($next = $this->getRouteNextEtape($degustation->etape))? $this->redirect($next, $degustation) : $this->redirect('degustation');
+    public function redirectIfIsValidee(){
+      if ($this->degustation->isValidee()) {
+          return $this->redirect('degustation_visualisation', $this->degustation);
+      }
     }
 
     protected function getEtape($doc, $etape, $class = "DegustationEtapes") {

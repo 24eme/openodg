@@ -26,7 +26,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->getCampagne());
+        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
     }
 
     public function constructId() {
@@ -34,6 +34,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         $this->set('_id', $id);
     }
+
+
+		public function getConfigProduits() {
+
+				return $this->getConfiguration()->declaration->getProduits();
+		}
 
     public function getLieuNom($slugify = false) {
         return self::getNomByLieu($this->lieu, $slugify);
