@@ -83,7 +83,13 @@ class habilitationActions extends sfActions {
                         array("Statut" => HabilitationClient::STATUT_DEMANDE_HABILITATION)
                         );
 
-      $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+      if(class_exists("EtablissementChoiceForm")) {
+          $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+      }
+
+      if(!isset($this->form)) {
+          return sfView::SUCCESS;
+      }
 
       if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -111,7 +117,7 @@ class habilitationActions extends sfActions {
   }
 
     public function executeDeclarant(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
 
             throw new sfError403Exception();
         }
@@ -135,7 +141,7 @@ class habilitationActions extends sfActions {
             $this->editForm = new HabilitationEditionForm($this->habilitation);
         }
 
-        if($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && class_exists("EtablissementChoiceForm")) {
             $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
         }
 

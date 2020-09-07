@@ -255,7 +255,7 @@ class HabilitationClient extends acCouchdbClient {
             $last = $this->getLastHabilitation($etablissementIdentifiant);
             $habilitation = $this->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
 
-            if($habilitation->_id < $last->_id) {
+            if($last && $habilitation->_id < $last->_id) {
                 foreach($activites as $activiteKey) {
                     if(!$last->exist($hash_produit)) {
                         continue;

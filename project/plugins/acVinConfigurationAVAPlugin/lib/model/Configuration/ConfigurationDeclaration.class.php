@@ -81,4 +81,9 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         
         return false;
     }
+
+    public function getNodeCahierDesCharges() {
+
+    return $this->getLieu();
+}
 }
