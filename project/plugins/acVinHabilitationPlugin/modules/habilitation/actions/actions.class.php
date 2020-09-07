@@ -149,14 +149,14 @@ class habilitationActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
 
             throw new sfError403Exception();
         }
 
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
-        if($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("EtablissementChoiceForm") && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
             $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         }
 
