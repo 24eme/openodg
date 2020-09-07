@@ -4,7 +4,7 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_VALIDATION)); ?>
 
 
-<form action="<?php echo url_for("degustation_presence", $degustation) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_validation", $degustation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>

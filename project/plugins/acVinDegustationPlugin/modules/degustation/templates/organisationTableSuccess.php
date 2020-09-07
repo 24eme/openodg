@@ -1,7 +1,6 @@
 
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_ORGANISATION_TABLE)); ?>
 
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -27,7 +26,7 @@
 	<div class="col-xs-12">
 
 <?php if(!$numero_table): ?>
-	<?php include_partial('degustation/organisationMultiTables', array('degustation' => $degustation,'form' => $form)); ?>
+	<?php include_partial('degustation/organisationMultiTables', array('degustation' => $degustation,'form' => $form, 'ajoutLeurreForm' => $ajoutLeurreForm)); ?>
 <?php else: ?>
 	<?php include_partial('degustation/organisationOneTable', array('degustation' => $degustation,'form' => $form,'numero_table' => $numero_table)); ?>
 <?php endif; ?>

@@ -47,8 +47,9 @@
     </table>
 
 <div class="row row-margin row-button">
-      <div class="col-xs-4"><a href="<?php echo url_for("degustation_presence", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+      <div class="col-xs-4"><a href="<?php echo url_for("degustation_validation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
       <div class="col-xs-4 text-center">
+				<button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupLeurreForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un leurre</button>
       </div>
       <div class="col-xs-4 text-right">
 				<button type="submit" class="btn btn-primary btn-upper">Valider</button>
@@ -56,3 +57,6 @@
 			</div>
   </div>
 </form>
+
+
+<?php include_partial('degustation/popupAjoutLeurreForm', array('url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm)); ?>
