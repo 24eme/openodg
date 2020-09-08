@@ -23,7 +23,7 @@
 				<?php echo $form['libelle']->renderLabel() ?>
 			</div>
 			<div class="col-xs-6">
-				<?php echo $form['libelle']->render(array('class' => 'form-control input', 'placeholder' => "Libellé du document")) ?>
+				<?php echo $form['libelle']->render(array('class' => 'form-control input', 'placeholder' => "Libellé du document", "required" => "required")) ?>
 			</div>
 		</div>
     </div>
@@ -87,7 +87,9 @@
 				<?php echo $form['file']->render() ?>
 			</div>
 			<div class="col-xs-2">
+                <?php if($sf_user->isAdmin()): ?>
 				<button name="keep_page" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
+                <?php endif; ?>
 			</div>
 		</div>
     </div>

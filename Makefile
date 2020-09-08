@@ -1,4 +1,4 @@
-all: .views/etablissements.json .views/societe.json .views/compte.json .views/declaration.json .views/piece.json .views/generation.json .views/habilitation.json .views/archivage.json
+all: .views/etablissements.json .views/societe.json .views/compte.json .views/declaration.json .views/piece.json .views/generation.json .views/habilitation.json .views/archivage.json .views/mouvement.json
 
 .views/societe.json: project/config/databases.yml project/plugins/acVinSocietePlugin/lib/model/views/societe.all.reduce.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.all.map.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.export.map.view.js .views
 	perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinSocietePlugin/lib/model/views/societe.all.reduce.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.all.map.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.export.map.view.js > $@ || rm >@
@@ -24,8 +24,11 @@ all: .views/etablissements.json .views/societe.json .views/compte.json .views/de
 .views/archivage.json: project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Archivage/views/archivage.all.map.view.js project/plugins/acVinDocumentPlugin/lib/Archivage/views/archivage.all.reduce.view.js
 	perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Archivage/views/archivage.all.map.view.js project/plugins/acVinDocumentPlugin/lib/Archivage/views/archivage.all.reduce.view.js > $@ || rm >@
 
+.views/mouvement.json: project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvementfacture.facturation.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvementfacture.facturation.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lot.map.view.js
+	perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvementfacture.facturation.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvementfacture.facturation.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lot.map.view.js > $@ || rm >@
+
 .views:
-	mkdir .views
+	mkdir -p .views
 
 clean:
-	rm -f .views/*
+	rm -f .views/*; mkdir -p .views

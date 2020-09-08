@@ -17,29 +17,39 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
     const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
+    const STATUT_DEMANDE_RESILIATION = "DEMANDE_RESILIATION";
     const STATUT_HABILITE = "HABILITE";
     const STATUT_SUSPENDU = "SUSPENDU";
     const STATUT_REFUS = "REFUS";
     const STATUT_RETRAIT = "RETRAIT";
+    const STATUT_RESILIE = "RESILIE";
     const STATUT_ANNULE = "ANNULÉ";
     const STATUT_ARCHIVE = "ARCHIVE";
 
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
+    const DEMANDE_RESILIATION = "RESILIATION";
 
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
         self::DEMANDE_RETRAIT => "Retrait",
+        self::DEMANDE_RESILIATION => "Résiliation",
+    );
+
+    public static $demande_droits = array(
+        self::DEMANDE_RETRAIT => "INAO",
     );
 
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
                                              self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
+                                             self::STATUT_DEMANDE_RESILIATION => "Demande de résiliation",
                                              self::STATUT_HABILITE => "Habilité",
                                              self::STATUT_SUSPENDU => "Suspendu",
                                              self::STATUT_REFUS => "Refus",
                                              self::STATUT_ANNULE => "Annulé",
                                              self::STATUT_RETRAIT => "Retrait",
+                                             self::STATUT_RESILIE => "Résilié",
                                             self::STATUT_ARCHIVE => "Archivé");
 
     public static function getInstance()
@@ -52,9 +62,28 @@ class HabilitationClient extends acCouchdbClient {
         return HabilitationConfiguration::getInstance()->getActivites();
     }
 
-    public function getDemandeStatuts() {
+    public function getDemandes($filtre = null) {
+        $demandes = self::$demande_libelles;
 
-        return HabilitationConfiguration::getInstance()->getDemandeStatuts();
+        if($filtre) {
+            $demandes = array_filter($demandes, function($key) use ($filtre) {
+                return isset(self::$demande_droits[$key]) && self::$demande_droits[$key] && preg_match("/".$filtre."/i", self::$demande_droits[$key]);
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
+        return $demandes;
+    }
+
+    public function getDemandeStatuts($filtre = null) {
+        $statuts = HabilitationConfiguration::getInstance()->getDemandeStatuts();
+
+        if($filtre) {
+            $statuts = array_filter($statuts, function($key) use ($filtre) {
+                return preg_match("/".$filtre."/i", $key);
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
+        return $statuts;
     }
 
     public function getStatutsFerme() {
@@ -223,10 +252,10 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activites, $statut, $commentaire = "") {
-            $last = HabilitationClient::getInstance()->getLastHabilitation($etablissementIdentifiant);
-            $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
+            $last = $this->getLastHabilitation($etablissementIdentifiant);
+            $habilitation = $this->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
 
-            if($habilitation->_id < $last->_id) {
+            if($last && $habilitation->_id < $last->_id) {
                 foreach($activites as $activiteKey) {
                     if(!$last->exist($hash_produit)) {
                         continue;
@@ -277,18 +306,28 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation->demandes->get($keyDemande);
         }
 
+        public function getLastDemande($identifiant, $keyDemande) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+
+            return $habilitation->demandes->get($keyDemande);
+        }
+
         public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
             ksort($demandesKey);
-            $i = 1;
+            $biggerNum = 0;
             foreach($demandesKey as $demandeKey) {
-                if($demandeKey == sprintf($baseKey."%02d", $i)) {
-                    $i++;
+                if(!preg_match('/^'.$baseKey.'([0-9]+)$/', $demandeKey, $matches)) {
+                    continue;
+                }
+
+                if((int) $matches[1] > $biggerNum) {
+                    $biggerNum = (int) $matches[1];
                 }
             }
-            $key = sprintf($baseKey."%02d", $i);
+            $key = sprintf($baseKey."%02d", $biggerNum + 1);
             $demande = $habilitation->demandes->add($key);
 
             $demande->produit = $produitHash;
@@ -339,14 +378,36 @@ class HabilitationClient extends acCouchdbClient {
             $historique->iddoc .= ":".$demande->getHash();
         }
 
+        public function deleteDemandeAndSave($identifiant, $keyDemande) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+            while($habilitation) {
+                if(!$habilitation->demandes->exist($keyDemande)) {
+                    break;
+                }
+                $newHistorique = array();
+                foreach($habilitation->historique as $h) {
+                    if(preg_match("/".$keyDemande."/", $h->iddoc)) {
+                        continue;
+                    }
+
+                    $newHistorique[] = $h;
+                }
+                $habilitation->remove('historique');
+                $habilitation->add('historique', $newHistorique);
+                $habilitation->demandes->remove($keyDemande);
+                $habilitation->save();
+
+                $date = new DateTime($habilitation->date);
+                $date = $date->modify('-1 day');
+
+                $habilitation = $this->findPreviousByIdentifiantAndDate($habilitation->identifiant, $date->format('Y-m-d'));
+            }
+        }
+
         public function deleteDemandeLastStatutAndSave($identifiant, $keyDemande) {
             $habilitation = $this->getLastHabilitation($identifiant);
 
             $demande = $this->getDemande($identifiant, $keyDemande, $habilitation->demandes->get($keyDemande)->date);
-
-            if($this->getDemandeHabilitationsByTypeDemandeAndStatut($demande->demande, $demande->statut)) {
-                //return;
-            }
 
             $historiquePrec = $demande->getHistoriquePrecedent($demande->statut, $demande->date);
 
@@ -382,6 +443,37 @@ class HabilitationClient extends acCouchdbClient {
             }
 
             $this->replicateDemandeAndSave($demande, true);
+        }
+
+        public function splitDemandeAndSave($identifiant, $keyDemande, $activites) {
+            $demande = $this->getLastDemande($identifiant, $keyDemande);
+            $activitesToKeep = array();
+            foreach($demande->activites as $activite) {
+                if(in_array($activite, $activites)) {
+                    continue;
+                }
+                $activitesToKeep[] = $activite;
+            }
+            if(!count($activitesToKeep)) {
+                return null;
+            }
+
+            $newKeyDemande1 = null;
+            $newKeyDemande2 = null;
+            foreach($demande->getFullHistorique() as $historique) {
+                if(!$newKeyDemande1) {
+                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activitesToKeep, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    continue;
+                }
+
+                $this->updateDemandeAndSave($identifiant, $newKeyDemande1, $historique->date, $historique->statut, $historique->commentaire, $historique->auteur, false);
+                $this->updateDemandeAndSave($identifiant, $newKeyDemande2, $historique->date, $historique->statut, $historique->commentaire, $historique->auteur, false);
+            }
+
+            $this->deleteDemandeAndSave($identifiant, $keyDemande);
+
+            return array($this->getLastDemande($identifiant, $newKeyDemande1), $this->getLastDemande($identifiant, $newKeyDemande2));
         }
 
         protected function postSaveDemande($demande, $commentaire, $auteur, $trigger) {

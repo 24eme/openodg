@@ -5,6 +5,7 @@ abstract class DocumentSecurity implements SecurityInterface {
     const EDITION = 'EDITION';
     const VALIDATION_ADMIN = 'VALIDATION_ADMIN';
     const VISUALISATION = 'VISUALISATION';
+    const PDF = 'PDF';
     const DEVALIDATION = 'DEVALIDATION';
 
     protected $doc;
@@ -25,9 +26,18 @@ abstract class DocumentSecurity implements SecurityInterface {
             $droits = array($droits);
         }
 
-        if(!$this->isAdmin() && $this->user->getCompte()->getSociete() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
+        if(in_array(self::PDF, $droits) && $this->user->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 
-            $lienSymbolique = DeclarationClient::getInstance()->find(str_replace($this->doc->identifiant, $this->user->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant, $this->doc->_id), acCouchdbClient::HYDRATE_JSON, true);
+            return true;
+        }
+
+        if(!$this->isAdmin() && !preg_match("/^".$this->user->getCompte()->identifiant."/", $this->doc->identifiant)) {
+
+            $lienSymbolique = null;
+
+            if($this->user->getCompte()->getSociete() && $this->user->getCompte()->getSociete()->getEtablissementPrincipal()) {
+                $lienSymbolique = DeclarationClient::getInstance()->find(str_replace($this->doc->identifiant, $this->user->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant, $this->doc->_id), acCouchdbClient::HYDRATE_JSON, true);
+            }
 
             if(!$lienSymbolique || $lienSymbolique->type != "LS") {
                 return false;
@@ -74,7 +84,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DEVALIDATION, $droits) && $this->doc instanceof InterfaceMouvementDocument && !$this->doc->isNonFactures()) {
+        if(in_array(self::DEVALIDATION, $droits) && $this->doc instanceof InterfaceMouvementFacturesDocument && !$this->doc->isNonFactures()) {
 
             return false;
         }

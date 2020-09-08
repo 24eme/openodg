@@ -125,7 +125,7 @@ class compte_teledeclarantActions extends sfActions {
                 $this->form->save();
 
                 if ($this->form->hasUpdatedValues()) {
-                    Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
+                    Email::getInstance()->sendNotificationModificationsExploitation($this->etablissementPrincipal ? $this->etablissementPrincipal : $societe, $this->form->getUpdatedValues());
                 }
 
                 $this->getUser()->setFlash('maj', 'Vos identifiants ont bien été mis à jour.');

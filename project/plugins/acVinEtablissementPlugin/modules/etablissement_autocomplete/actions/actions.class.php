@@ -9,6 +9,7 @@ class etablissement_autocompleteActions extends sfActions
 	    $limit = $request->getParameter('limit', 100);
 	    $e = EtablissementAllView::getInstance()->findByInterproAndStatut($interpro, EtablissementClient::STATUT_ACTIF, $q, $limit);
 	    $json = $this->matchEtablissements($e, $q, $limit);
+        $this->getResponse()->setContentType('text/json');
 	    return $this->renderText(json_encode($json));
   	}
 

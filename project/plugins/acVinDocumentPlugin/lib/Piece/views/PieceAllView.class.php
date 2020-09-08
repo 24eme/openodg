@@ -17,12 +17,12 @@ class PieceAllView extends acCouchdbView
     public static function getInstance() {
         return acCouchdbManager::getView('piece', 'all');
     }
-    
+
  	public function getAll() {
         return $this->client->getView($this->design, $this->view)->rows;
  	}
 
-    public function getPiecesByEtablissement($etablissement, $allVisibilite = false, $startdate = null, $enddate = null) {
+    public function getPiecesByEtablissement($etablissement, $allVisibilite = false, $startdate = null, $enddate = null, $categories = null) {
     	$start = array($etablissement);
     	$end = array($etablissement);
 		if($startdate) {
@@ -46,14 +46,26 @@ class PieceAllView extends acCouchdbView
     				->reduce(false)
     				->getView($this->design, $this->view)->rows);
     	}
-        return array_merge($nonVisibles, $visibles);
+        $pieces = array_merge($nonVisibles, $visibles);
+
+		if($categories) {
+			foreach($pieces as $key => $piece){
+				if(in_array($piece->key[PieceAllView::KEYS_CATEGORIE], $categories)) {
+					continue;
+				}
+
+				unset($pieces[$key]);
+			}
+		}
+
+		return $pieces;
     }
-    
+
     public function getStartISODateForView() {
     	return '1900-01-01';
     }
-    
+
     public function getEndISODateForView() {
     	return '9999-99-99';
     }
-}  
+}

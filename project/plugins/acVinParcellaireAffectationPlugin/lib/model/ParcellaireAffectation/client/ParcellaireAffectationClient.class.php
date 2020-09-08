@@ -26,18 +26,25 @@ class ParcellaireAffectationClient extends acCouchdbClient {
       }
 
       public function createDoc($identifiant, $campagne, $papier = false, $type = self::TYPE_COUCHDB) {
-          $parcellaireAffectation = new ParcellaireAffectation();
-          $parcellaireAffectation->initDoc($identifiant, $campagne, $type);
-          if($papier) {
-          	$parcellaireAffectation->add('papier', 1);
+          $previous = $this->findPreviousByIdentifiantAndDate($identifiant, $campagne-1);
+          if ($previous && $previous->isValidee()) {
+              $previous->devalidate();
+              $previous->campagne = $campagne;
+              $parcellaireAffectation = clone $previous;
+              $parcellaireAffectation->constructId();
+              $parcellaireAffectation->updateParcellesAffectation();
+          } else {
+            $parcellaireAffectation = new ParcellaireAffectation();
+            $parcellaireAffectation->initDoc($identifiant, $campagne, $type);
           }
+          $parcellaireAffectation->add('papier', ($papier) * 1);
           return $parcellaireAffectation;
       }
 
       public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           return $this->findPreviousByIdentifiantAndDate($identifiant, $max_annee, $hydrate);
       }
-      
+
       public function findPreviousByIdentifiantAndDate($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
           $h = $this->getHistory($identifiant, $max_annee, $hydrate);
           if (!count($h)) {

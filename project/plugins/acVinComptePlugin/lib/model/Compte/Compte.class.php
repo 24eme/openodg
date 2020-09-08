@@ -21,6 +21,29 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         return $this->societe;
     }
+    
+    public function getLibelleWithAdresse() {
+        $libelle = $this->nom_a_afficher;
+        if ($this->adresse || $this->adresse_complementaire || $this->code_postal || $this->commune || $this->pays) {
+            $libelle .= ' —';
+        }
+        if ($this->adresse) {
+            $libelle .= ' '.$this->adresse;
+        }
+        if ($this->adresse_complementaire) {
+            $libelle .=  ' '.$this->adresse_complementaire;
+        } 
+        if ($this->code_postal) {
+            $libelle .= ' '.$this->code_postal;
+        }
+        if ($this->commune) {
+            $libelle .= ' '.$this->commune; 
+        }
+        if ($this->pays) {
+        	 $libelle .= ' ('.$this->pays.')';
+        }
+        return $libelle;
+    }
 
     public function getMasterCompte() {
         if ($this->isSameAdresseThanSociete()) {
@@ -197,6 +220,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $cvis[] = $etb->etablissement->cvi;
                 $ppms[] = $etb->etablissement->ppm;
                 $regions[] = $etb->etablissement->region;
+                $this->addTag('automatique', $etb->etablissement->famille);
             }
             $this->etablissement_informations->cvi = implode('|', $cvis);
             $this->etablissement_informations->ppm = implode('|', $ppms);
@@ -239,6 +263,13 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         if($this->exist('en_alerte') && $this->en_alerte){
             $this->addTag('automatique', 'en_alerte');
+        }
+
+        if ($this->exist('droits')) {
+            foreach ($this->droits as $droit) {
+                $this->addTag('automatique', $droit);
+                $this->addTag('automatique', preg_replace('/:.*/', '', $droit));
+            }
         }
 
         parent::save();
@@ -629,8 +660,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
         $file = file_get_contents($url);
         $result = json_decode($file);
-
-        if(!count($result)){
+        if(!$result || !count($result->response->docs)){
             return false;
         }
         if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {

@@ -12,6 +12,8 @@ class DouaneImportCsvFile {
         $this->doc = $doc;
         $this->campagne = ($doc)? $doc->campagne : date('Y');
         $this->configuration = ConfigurationClient::getConfiguration();
+        $this->cvi = null;
+        set_time_limit(30000);
     }
 
     public static function clean($array) {
@@ -22,7 +24,7 @@ class DouaneImportCsvFile {
     }
 
     public static function numerizeVal($val, $nbDecimal = 2) {
-    	return (is_numeric($val))? str_replace('.', ',', sprintf('%01.'.$nbDecimal.'f', $val)) : $val;
+    	return (is_numeric($val))? str_replace('.', ',', sprintf('%01.'.$nbDecimal.'f', str_replace(',', '.', $val))) : str_replace('.', ',', $val);
     }
 
     public static function cleanStr($val) {

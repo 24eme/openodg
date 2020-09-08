@@ -7,7 +7,7 @@
                     <h4 class="modal-title" id="myModalLabel">Demande <?php echo elision("de", strtolower($demande->getDemandeLibelle())) ?></h4>
 					<?php echo $demande->libelle ?>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="padding-bottom: 0;">
 					<table class="table table-condensed table-bordered table-striped">
 					    <thead>
 					        <tr>
@@ -26,20 +26,28 @@
 
 					            <td>
 									<?php echo $event->commentaire; ?>
+									<?php if($sf_user->isAdmin()): ?>
 									<form style="display:inline;" id="form_commentaire_<?php echo $key ?>" action="<?php echo url_for('habilitation_demande_commentaire_modification', array('identifiant' => $demande->getDocument()->identifiant, 'demande' => $demande->getKey(), 'date' => $event->date, 'statut' => $event->statut)) ?>" method="post">
 										<input type="hidden" name="commentaire" value="<?php echo sfWidget::escapeOnce($event->commentaire); ?>" />
 										<button type="submit" onclick="var input = form.querySelector('#form_commentaire_<?php echo $key ?> input'); var value = prompt('Modification du commentaire', input.value); if(value) { input.value = value; return true; } return false;" class="btn btn-link btn-xs transparence-md"><span class="glyphicon glyphicon-pencil"></span></button>
 									</form>
 									<?php if(count($historique) > 1 && $demande->date == $event->date && $demande->statut == $event->statut): ?><a onclick="return confirm('Étes-vous sûr de vouloire supprimer ce statut ?')" class="btn btn-link pull-right btn-xs transparence-md" href="<?php echo url_for('habilitation_demande_suppression_derniere', array('identifiant' => $demande->getDocument()->identifiant, 'demande' => $demande->getKey(), 'date' => $demande->date, 'statut' => $demande->statut)) ?>"><span class="glyphicon glyphicon-remove"></span></a><?php endif; ?>
+									<?php endif; ?>
 								</td>
 					        </tr>
 							<?php endforeach; ?>
 					    </tbody>
 					</table>
+
+					<?php if($sf_user->getFlash('info')): ?>
+					<div class="alert alert-info">
+						<?php echo $sf_user->getFlash('info'); ?>
+					</div>
+					<?php endif; ?>
 				</div>
 			<form method="post" action="" role="form" class="form-horizontal">
 				<?php if($form instanceof sfForm): ?>
-				<hr style="margin-top: 0;" />
+				<hr style="margin-top: 0; margin-bottom: 0;" />
 				<div class="modal-body">
 					<?php include_partial('habilitation/demandeForm', array('form' => $form, 'demande' => $demande)); ?>
 				</div>

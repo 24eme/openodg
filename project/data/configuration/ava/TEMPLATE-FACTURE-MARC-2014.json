@@ -1,0 +1,39 @@
+{
+   "_id": "TEMPLATE-FACTURE-MARC-2014",
+   "campagne": 2014,
+   "type": "TemplateFacture",
+   "template": "MARC",
+   "libelle": "2015 - Marc d'Alsace Gewurztraminer",
+   "docs": [
+       "DRevMarc"
+   ],
+   "cotisations": {
+       "marc_alsace_gewurztraminer": {
+           "libelle": "Cotisation ODG - AVA / Droits INAO / Controle externe 2015 AOC Marc d'Alsace Gewurztraminer",
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "code_comptable": "706200",
+           "details": {
+               "marc_fixe": {
+                   "modele": "CotisationFixe",
+                   "prix": 30,
+                   "libelle": "Fixe",
+                   "docs": [
+                       "DRevMarc"
+                   ],
+                   "callback": "getVolumeFacturable"
+               },
+               "marc_variable": {
+                   "modele": "CotisationVariable",
+                   "prix": 6,
+                   "libelle": "hl de marc revendiqué",
+                   "docs": [
+                       "DRevMarc"
+                   ],
+                   "callback": "getVolumeFacturable"
+               }
+           }
+       }
+   }
+}

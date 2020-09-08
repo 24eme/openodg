@@ -86,6 +86,16 @@ habilitation_demande_edition:
   requirements:
     sf_method: [get, post]
 
+habilitation_demande_visualisation:
+  url: /habilitation/declarant/:identifiant/demande/visualisation/:demande
+  param: { module: habilitation, action: demandeVisualisation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 habilitation_export_historique:
   url: /habilitation/export_historique/:dateFrom/:dateTo
   param: { module: habilitation, action: exportHistorique }

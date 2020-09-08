@@ -31,7 +31,7 @@ EOF;
 
         $drev = DRevClient::getInstance()->find($arguments['doc_id']);
         $drev->mouvements = null;
-        $drev->generateMouvements();
+        $drev->generateMouvementsFactures();
         $drev->save();
         echo sprintf("SUCCESS;La DRev a bien des nouveaux mouvements ;%s\n", $drev->_id);
     }

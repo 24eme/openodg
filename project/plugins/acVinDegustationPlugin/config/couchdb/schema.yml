@@ -5,83 +5,75 @@ Degustation:
       _id: {  }
       _rev: {  }
       type: {  }
-      appellation: { }
-      appellation_complement: { }
-      organisme: { }
-      millesime: { }
-      libelle: { }
-      appellation_libelle: { required: false }
-      date_degustation: { }
-      identifiant: { }
-      drev: { }
-      raison_sociale: { }
-      cvi: { }
-      adresse: { }
-      commune: { }
-      code_postal: { }
-      email: { }
-      lat: { }
-      lon: { }
-      lng: { required: false }
-      date: { required: false }
-      date_prelevement: { }
-      heure: { }
-      position: { required: true }
-      agent: { }
-      telephone_bureau: { }
-      telephone_prive: { }
-      telephone_mobile: { }
-      date_demande: { }
-      reporte: { }
-      force: {required: false}
-      motif_non_prelevement: { }
-      signature_base64: { }
-      prelevements:
+      date: {  }
+      campagne: { }
+      lieu: {  }
+      etape: {  }
+      validation: {  }
+      lots:
         type: array_collection
         definition:
           fields:
             '*':
               type: collection
-              class: DegustationPrelevement
+              class: DegustationLot
+              inheritance: Lot
               definition:
                 fields:
-                  hash_produit: { }
-                  libelle: { }
-                  libelle_complet: { required: false }
-                  libelle_produit: { }
-                  denomination_complementaire: { }
-                  vtsgn: { }
-                  volume_revendique: { type: float }
-                  anonymat_prelevement: { type: integer }
-                  anonymat_prelevement_complet: { }
-                  anonymat_degustation: { type: integer }
-                  motif_non_prelevement: { }
-                  cuve: { }
-                  preleve: { }
-                  commission: { type: integer }
-                  appreciations: { }
-                  type_courrier: { }
-                  visite_date: { }
-                  visite_heure: { }
-                  courrier_envoye: { }
-                  notes:
+                  date: { }
+                  id_document: { }
+                  numero: { }
+                  millesime: { }
+                  volume: { type: float }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
+                  origine_mouvement: {}
+                  details: {}
+                  statut: {}
+                  numero_table: {}
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: DegustationMouvementLots
+                    inheritance: MouvementLots
                     type: collection
                     definition:
                       fields:
-                        '*':
-                          type: collection
-                          class: DegustationNote
-                          definition:
-                            fields:
-                              note: { }
-                              defauts:
-                                type: array_collection
-                                definition:
-                                  fields:
-                                    '*': { }
-      reports:
+                        prelevable: { type: integer }
+                        preleve: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        produit_couleur: { }
+                        volume: { type: float }
+                        date: {  }
+                        millesime: {  }
+                        region: {  }
+                        numero: {  }
+                        version: {  }
+                        origine_hash: {  }
+                        origine_type: {  }
+                        origine_document_id: {  }
+                        origine_mouvement: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
+                        destination_type: { }
+                        destination_date: { }
+                        details: {}
+                        region: {}
+                        campagne: {}
+                        id_document: {  }
+      degustateurs:
         type: collection
-        required: false
         definition:
           fields:
             '*':
@@ -89,22 +81,6 @@ Degustation:
               definition:
                 fields:
                   '*': { }
-      lots:
-        type: collection
-        class: DegustationLot
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  hash_produit: { }
-                  libelle: { }
-                  libelle_produit: { }
-                  volume_revendique: { type: float }
-                  vtsgn: { }
-                  nb: { }
-                  prelevement: { type: integer }
       pieces:
         type: array_collection
         definition:

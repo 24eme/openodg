@@ -71,22 +71,14 @@ EOF;
                 $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
 
                 if($drev) {
-                    $drev->delete();
+                    continue;
                 }
 
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
                 if(!$drev->getDocumentDouanier()) {
-                    echo "ERROR;$etablissement->_id ($etablissement->cvi);pas de dr\n";
+                    echo "ERROR;$etablissement->_id ($etablissement->cvi);pas de document douanier\n";
                     continue;
                 }
-                /*$drev->importFromDocumentDouanier();
-
-                foreach($drev->getProduits() as $produit) {
-                    $produit->superficie_revendique = null;
-                    $produit->remove('vci');
-                    $produit->add('vci');
-                    $produit->volume_revendique_issu_recolte = null;
-                }*/
 
                 foreach($lignes as $ligne) {
                     $data = $csv[$ligne];

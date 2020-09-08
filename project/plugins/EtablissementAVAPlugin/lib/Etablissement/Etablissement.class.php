@@ -54,6 +54,10 @@ class Etablissement extends BaseEtablissement {
         return CompteClient::getInstance()->findByIdentifiant($this->compte_id);
     }
 
+    public function getSociete() {
+        return null;
+    }
+
     public function synchroFromCompte($compte) {
         $this->raison_sociale = $compte->raison_sociale;
         $this->cvi = $compte->cvi;
@@ -96,6 +100,11 @@ class Etablissement extends BaseEtablissement {
         }
 
         $compte->save(false, true);
+    }
+
+    public function getPays() {
+
+        return "France";
     }
 
 }

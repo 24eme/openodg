@@ -10,6 +10,7 @@
    "cotisations": {
        "abonnement_revue": {
            "modele": "CotisationsCollection",
+           "required": true,
            "callback": "",
            "libelle": "Abonnement à la revue \"Les Vins d'Alsace\"",
            "code_comptable": "707500",

@@ -864,6 +864,18 @@ class couchClient extends couch {
 	}
 
 	/**
+	* returns all documents of a certain type contained in the database
+	*
+	*
+	* @return object CouchDB filtered _all_docs response
+	*/
+	public function getAllDocsByType ( $type, $limit = 10 ) {
+		$url = '/'.urlencode($this->dbname).'/_all_docs?startkey=%22'.$type.'%22&endkey=%22'.$type.'Z%22&limit='.$limit;
+		list($method, $view_query, $data) = $this->_prepare_view_query();
+		return $this->_queryAndTest ($method, $url, array(200),$view_query,$data);
+	}
+
+	/**
 	* returns all documents contained associated with a sequence number
 	*
 	* Warning : in 0.11 this is deprecated in favor of _changes

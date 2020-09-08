@@ -4,7 +4,7 @@
  *
  */
 
-class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfaceMouvementDocument, InterfacePieceDocument {
+class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
       protected $piece_document = null;
       protected $mouvement_document = null;
@@ -34,7 +34,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       protected function initDocuments() {
           $this->piece_document = new PieceDocument($this);
-          $this->mouvement_document = new MouvementDocument($this);
+          $this->mouvement_document = new MouvementFacturesDocument($this);
       }
 
       public function initDoc($identifiant, $campagne) {
@@ -69,6 +69,18 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       public function getEtablissementObject() {
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+      }
+
+      public function clotureStock() {
+          if(!$this->isStockUtiliseEntierement()) {
+              return;
+          }
+          foreach($this->getProduits() as $produit) {
+                $produit->_set('stock_final', 0);
+                foreach($produit->details as $detail) {
+                    $detail->_set('stock_final', 0);
+                }
+          }
       }
 
       public function addLigne($produit, $mouvement_type, $volume, $lieu) {
@@ -106,6 +118,22 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         $this->piece_document->generatePieces();
       }
 
+
+      public function isStockUtiliseEntierement() {
+          foreach($this->getProduitsWithPseudoAppelations() as $produit) {
+              if(!$produit->isPseudoAppellation()) {
+                  continue;
+              }
+              if(round($produit->stock_final, 4) == 0) {
+                  continue;
+              }
+
+              return false;
+          }
+
+          return true;
+      }
+
       public function generateSuivante() {
           $registreSuivant = clone $this;
 
@@ -122,16 +150,9 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
             $produit->clear();
           }
 
-          foreach($this->getProduitsWithPseudoAppelations() as $produit) {
-              if(!$produit->isPseudoAppellation()) {
-                  continue;
-              }
-              if(round($produit->stock_final, 4) == 0) {
-                  continue;
-              }
-
-              throw new Exception("Génération impossible, tout le stock de l'année précédente n'a pas été utilisé");
-          }
+           if(!$this->isStockUtiliseEntierement()) {
+               throw new Exception("Génération impossible, tout le stock de l'année précédente n'a pas été utilisé");
+            }
 
           foreach($this->getProduitDetails() as $detail) {
             $detailSuivant = $registreSuivant->get($detail->getHash());
@@ -139,6 +160,16 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           }
 
           return $registreSuivant;
+      }
+
+      public function getTotalMouvement($mouvement) {
+          $total = 0;
+
+          foreach($this->getProduits() as $produit) {
+              $total = $total + $produit->get($mouvement);
+          }
+
+          return round($total, 2);
       }
 
       public function getAllPieces() {
@@ -219,12 +250,12 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
       }
 
-      public function getMouvements() {
+      public function getMouvementsFactures() {
 
           return $this->_get('mouvements');
       }
 
-      public function getMouvementsCalcule() {
+      public function getMouvementsFacturesCalcule() {
           $templateFacture = $this->getTemplateFacture();
 
           if(!$templateFacture) {
@@ -244,7 +275,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           $rienAFacturer = true;
 
           foreach($cotisations as $cotisation) {
-              $mouvement = RegistreVCIMouvement::freeInstance($this);
+              $mouvement = RegistreVCIMouvementFactures::freeInstance($this);
               $mouvement->categorie = $cotisation->getCollectionKey();
               $mouvement->type_hash = $cotisation->getDetailKey();
               $mouvement->type_libelle = $cotisation->getLibelle();
@@ -280,22 +311,22 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return array($identifiantCompte => $mouvements);
       }
 
-      public function getMouvementsCalculeByIdentifiant($identifiant) {
+      public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
 
-          return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+          return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
       }
 
-      public function generateMouvements() {
+      public function generateMouvementsFactures() {
           if(!$this->getTemplateFacture()) {
 
               return false;
           }
 
-          return $this->mouvement_document->generateMouvements();
+          return $this->mouvement_document->generateMouvementsFactures();
       }
 
-      public function findMouvement($cle, $id = null){
-        return $this->mouvement_document->findMouvement($cle, $id);
+      public function findMouvementFactures($cle, $id = null){
+        return $this->mouvement_document->findMouvementFactures($cle, $id);
       }
 
       public function facturerMouvements() {
@@ -331,7 +362,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return $stockPrecedent;
       }
 
-      public function clearMouvements(){
+      public function clearMouvementsFactures(){
           $this->remove('mouvements');
           $this->add('mouvements');
       }

@@ -55,5 +55,11 @@ all:
             COMPLET: DEMANDE_RETRAIT
             VALIDE: RETRAIT
             REFUSE: HABILITE
-            ANNULE: ANNULÉ
+            ANNULE: HABILITE
+            SUSPENDU_INAO: SUSPENDU
+          RESILIATION:
+            COMPLET: DEMANDE_RESILIATION
+            VALIDE: RESILIE
+            REFUSE: HABILITE
+            ANNULE: HABILITE
             SUSPENDU_INAO: SUSPENDU

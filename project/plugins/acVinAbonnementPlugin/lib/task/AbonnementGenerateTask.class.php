@@ -75,7 +75,7 @@ EOF;
         $abo = AbonnementClient::getInstance()->findOrCreateDoc($compte->identifiant, $this->getDateDebut($campagne), $this->getDateFin($campagne));
 
         $abo->mouvements = array();
-        $abo->generateMouvements();
+        $abo->generateMouvementsFactures();
 
         if($compte->type_compte == CompteClient::TYPE_COMPTE_ETABLISSEMENT) {
             $abo->tarif = AbonnementClient::TARIF_MEMBRE;

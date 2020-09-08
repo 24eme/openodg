@@ -473,14 +473,14 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function getEmailTeledeclaration() {
+        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
+            return Anonymization::hideIfNeeded($this->teledeclaration_email);
+        }
         if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
 	            return Anonymization::hideIfNeeded($compteSociete->societe_information->email);
 	        }
 	        return Anonymization::hideIfNeeded($compteSociete->email);
-        }
-        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return Anonymization::hideIfNeeded($this->teledeclaration_email);
         }
         if ($this->exist('email') && $this->email) {
             return Anonymization::hideIfNeeded($this->email);
