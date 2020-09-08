@@ -145,7 +145,7 @@ $t->is(count(explode("\n", $export->export())) -1 , 4, "L'export CSV a 4 lignes"
 
 $t->comment("Génération des mouvements de facturation");
 
-$registre->generateMouvements();
+$registre->generateMouvementsFactures();
 $registre->save();
 
 $t->is(count($registre->mouvements->get($compteIdentifiant)), 1, "Le registre à 1 mouvement");

@@ -40,8 +40,8 @@ DRevMarc:
               definition:
                 fields:
                   '*':
-                    class: DRevMarcMouvement
-                    inheritance: Mouvement
+                    class: DRevMarcMouvementFactures
+                    inheritance: MouvementFactures
                     type: collection
                     definition:
                       fields:

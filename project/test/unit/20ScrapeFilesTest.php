@@ -11,7 +11,7 @@ if ($dr) {
 	$t = new lime_test(1);
 	$etab = EtablissementClient::getInstance()->find($dr->identifiant);
 
-	$societeviti = SocieteClient::getInstance()->createSociete("Société viti test", SocieteClient::TYPE_OPERATEUR);
+	$societeviti = SocieteClient::getInstance()->createSociete("SARL ACTUALYS JEAN", SocieteClient::TYPE_OPERATEUR);
 	$societeviti->pays = "FR";
 	$societeviti->code_postal = "92100";
 	$societeviti->commune = "Neuilly sur seine";
@@ -24,6 +24,7 @@ if ($dr) {
 	$etablissementviti->region = EtablissementClient::REGION_CVO;
 	$etablissementviti->nom = "Etablissement viti test";
 	$etablissementviti->cvi = $etab->cvi;
+	$etablissementviti->siege->commune = "NEUILLY";
 	$etablissementviti->save();
 
 	$t->comment('Création établissement '.$etablissementviti->_id);

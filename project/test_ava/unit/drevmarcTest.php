@@ -39,10 +39,10 @@ $t->is($drevMarc->validation, date('Y-m-d'), "La date de validation est renseign
 $t->is($drevMarc->validation_odg, date('Y-m-d'), "La date de validation ODG est renseigné");
 $t->is(count($drevMarc->mouvements), 0, "Les mouvements n'ont pas été générés");
 
-$drevMarc->generateMouvements();
+$drevMarc->generateMouvementsFactures();
 $drevMarc->save();
 
-$t->ok($drevMarc->mouvements->exist($vitiCompte->identifiant), "Les mouvements ont été générés");
+$t->ok($drevMarc->mouvements->exist($vitiCompte->identifiant), "Le noeud mouvements existe");
 $t->is(count($drevMarc->mouvements->get($vitiCompte->identifiant)), 2, "2 mouvements ont été générés");
 
 $mouvement = $drevMarc->mouvements->get($vitiCompte->identifiant)->getFirst();

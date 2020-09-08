@@ -209,18 +209,27 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
         $revendicableSecondairesBlancsVermontinoMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 20/70);
         $revendicableSecondairesBlancsAutresMax = $this->regleRatioMax_GetRevendicable($revendicables['principaux'], 10/70);
         // Affectation revendicables secondaires noirs
-        $revendicableSecondairesBlancsMax = 0;
-        if ($superficies['secondairesNoirs']['TOTAL'] <= $revendicableSecondairesMax) {
-            $revendicables['secondairesNoirs'] = $superficies['secondairesNoirs']['TOTAL'];
-            $revendicableSecondairesBlancsMax = round($revendicableSecondairesMax - $superficies['secondairesNoirs']['TOTAL'], 4);
-        } else {
-            $revendicables['secondairesNoirs'] = $revendicableSecondairesMax;
+        $revendicables['secondairesNoirs'] = 0;
+        if (isset($superficies['secondairesNoirs'])) {
+            $revendicableSecondairesBlancsMax = 0;
+            if ($superficies['secondairesNoirs']['TOTAL'] <= $revendicableSecondairesMax) {
+                $revendicables['secondairesNoirs'] = $superficies['secondairesNoirs']['TOTAL'];
+                $revendicableSecondairesBlancsMax = round($revendicableSecondairesMax - $superficies['secondairesNoirs']['TOTAL'], 4);
+            } else {
+                $revendicables['secondairesNoirs'] = $revendicableSecondairesMax;
+            }
         }
         // Affectation revendicables secondaires blancs vermontino
-        $revendicables['secondairesBlancsVermentino'] = $this->regleRevendicableAvecMax_GetRevendicable($revendicableSecondairesBlancsMax, $revendicableSecondairesBlancsVermontinoMax, $superficies['secondairesBlancsVermentino']['TOTAL']);
+        $revendicables['secondairesBlancsVermentino'] = 0;
+        if (isset($superficies['secondairesBlancsVermentino']['TOTAL'])) {
+            $revendicables['secondairesBlancsVermentino'] = $this->regleRevendicableAvecMax_GetRevendicable($revendicableSecondairesBlancsMax, $revendicableSecondairesBlancsVermontinoMax, $superficies['secondairesBlancsVermentino']['TOTAL']);
+        }
         $revendicableSecondairesBlancsMax = round($revendicableSecondairesBlancsMax - $revendicables['secondairesBlancsVermentino'], 4);
         // Affectation revendicables secondaires blancs autres
-        $revendicables['secondairesBlancsAutres'] = $this->regleRevendicableAvecMax_GetRevendicable($revendicableSecondairesBlancsMax, $revendicableSecondairesBlancsAutresMax, $superficies['secondairesBlancsAutres']['TOTAL']);
+        $revendicables['secondairesBlancsAutres'] = 0;
+        if (isset($superficies['secondairesBlancsAutres']['TOTAL'])) {
+            $revendicables['secondairesBlancsAutres'] = $this->regleRevendicableAvecMax_GetRevendicable($revendicableSecondairesBlancsMax, $revendicableSecondairesBlancsAutresMax, $superficies['secondairesBlancsAutres']['TOTAL']);
+        }
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
 

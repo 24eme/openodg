@@ -5,12 +5,102 @@ degustation:
     sf_method: [get]
   class: DegustationGeneralRoute
 
-degustation_declarant:
-  url: /degustation/declarant/:identifiant
-  param: { module: degustation, action: declarant }
-  class: DegustationDeclarantRoute
+degustation_etablissement_list:
+  url: /degustation/etablissement/:id
+  param: { module: degustation, action: list }
+  class: DegustationRoute
   options:
     model:    Etablissement
     type:     object
+
+degustation_prelevement_lots:
+  url: /degustation/:id/prelevement-lots
+  param: { module: degustation, action: prelevementLots }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
   requirements:
     sf_method: [get, post]
+
+degustation_selection_degustateurs:
+  url: /degustation/:id/selection-degustateurs
+  param: { module: degustation, action: selectionDegustateurs }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_validation:
+  url: /degustation/:id/validation
+  param: { module: degustation, action: validation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_visualisation:
+  url: /degustation/:id/visualisation
+  param: { module: degustation, action: visualisation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
+degustation_organisation_table:
+  url: /degustation/:id/organisation-table/:numero_table
+  param: { module: degustation, action: organisationTable, numero_table: 0 }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_ajout_leurre:
+  url: /degustation/:id/ajout-leurre
+  param: { module: degustation, action: ajoutLeurre, numero_table: 0 }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_resultats:
+  url: /degustation/:id/resultats/:numero_table
+  param: { module: degustation, action: resultats, numero_table: 0 }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_devalidation:
+  url: /degustation/:id/devalidation
+  param: { module: degustation, action: devalidation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
+degustation_redirect:
+  url: /degustation/:id/redirect
+  param: { module: degustation, action: redirect }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]

@@ -4,7 +4,7 @@
  *
  */
 
-class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfaceMouvementDocument, InterfacePieceDocument {
+class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
       protected $piece_document = null;
       protected $mouvement_document = null;
@@ -34,7 +34,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       protected function initDocuments() {
           $this->piece_document = new PieceDocument($this);
-          $this->mouvement_document = new MouvementDocument($this);
+          $this->mouvement_document = new MouvementFacturesDocument($this);
       }
 
       public function initDoc($identifiant, $campagne) {
@@ -250,12 +250,12 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
       }
 
-      public function getMouvements() {
+      public function getMouvementsFactures() {
 
           return $this->_get('mouvements');
       }
 
-      public function getMouvementsCalcule() {
+      public function getMouvementsFacturesCalcule() {
           $templateFacture = $this->getTemplateFacture();
 
           if(!$templateFacture) {
@@ -275,7 +275,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           $rienAFacturer = true;
 
           foreach($cotisations as $cotisation) {
-              $mouvement = RegistreVCIMouvement::freeInstance($this);
+              $mouvement = RegistreVCIMouvementFactures::freeInstance($this);
               $mouvement->categorie = $cotisation->getCollectionKey();
               $mouvement->type_hash = $cotisation->getDetailKey();
               $mouvement->type_libelle = $cotisation->getLibelle();
@@ -311,22 +311,22 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return array($identifiantCompte => $mouvements);
       }
 
-      public function getMouvementsCalculeByIdentifiant($identifiant) {
+      public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
 
-          return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+          return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
       }
 
-      public function generateMouvements() {
+      public function generateMouvementsFactures() {
           if(!$this->getTemplateFacture()) {
 
               return false;
           }
 
-          return $this->mouvement_document->generateMouvements();
+          return $this->mouvement_document->generateMouvementsFactures();
       }
 
-      public function findMouvement($cle, $id = null){
-        return $this->mouvement_document->findMouvement($cle, $id);
+      public function findMouvementFactures($cle, $id = null){
+        return $this->mouvement_document->findMouvementFactures($cle, $id);
       }
 
       public function facturerMouvements() {
@@ -362,7 +362,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return $stockPrecedent;
       }
 
-      public function clearMouvements(){
+      public function clearMouvementsFactures(){
           $this->remove('mouvements');
           $this->add('mouvements');
       }
