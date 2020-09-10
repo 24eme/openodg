@@ -1,5 +1,5 @@
 <?php use_helper("Date"); ?>
-<?php use_javascript("degustation.js?201504020331", "last") ?>
+<?php use_javascript("degustation_ava.js?201504020331", "last") ?>
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href="<?php echo url_for('degustation_visualisation', $tournee); ?>"><?php echo $tournee->getLibelle(); ?>  le <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></a></li>

@@ -2,7 +2,7 @@
 <?php use_helper('Float') ?>
 
 
-<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id)) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id)) ?>" method="post" class="form-horizontal degustation">
 	<?php echo $form->renderHiddenFields(); ?>
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
@@ -52,8 +52,7 @@
 				<button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupLeurreForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un leurre</button>
       </div>
       <div class="col-xs-4 text-right">
-				<button type="submit" class="btn btn-primary btn-upper">Valider</button>
-				&nbsp;<a href="<?php echo url_for("degustation_resultats", array('id' => $degustation->_id)) ?>" class="btn btn-success btn-upper">Suivant</a>
+				<a href="<?php echo url_for("degustation_resultats", array('id' => $degustation->_id)) ?>" class="btn btn-success btn-upper">Suivant</a>
 			</div>
   </div>
 </form>

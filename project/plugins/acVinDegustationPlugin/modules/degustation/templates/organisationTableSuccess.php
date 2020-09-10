@@ -11,10 +11,10 @@
     <h2>Attribution des tables</h2>
 </div>
 
-<ul class="nav nav-pills">
+<ul class="nav nav-pills degustation">
   <li role="presentation" class="<?php if(!$numero_table): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => 0)) ?>">Toutes tables</a></li>
   <?php for ($i= 0; $i < $nb_tables; $i++): ?>
-    <li role="presentation" class="<?php if($numero_table == ($i + 1)): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => ($i + 1))) ?>">Table <?php echo ($i + 1); ?></a></li>
+    <li role="presentation" class="ajax <?php if($numero_table == ($i + 1)): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => ($i + 1))) ?>">Table <?php echo ($i + 1); ?></a></li>
   <?php endfor;?>
   <?php if( $numero_table > $nb_tables): ?>
     <li role="presentation" class="active"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>">Table <?php echo $numero_table; ?></a></li>

@@ -135,6 +135,7 @@ class degustationActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
@@ -142,6 +143,11 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+          $this->degustation = $this->getRoute()->getDegustation();
+          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
 
         return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
     }
@@ -170,10 +176,6 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_RESULTATS))) {
-            $this->degustation->save();
-        }
-
         $this->tableLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
         $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
         $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table);
@@ -192,6 +194,11 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+          $this->degustation = $this->getRoute()->getDegustation();
+          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
 
         return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
     }
