@@ -32,7 +32,7 @@
  
  */
 
-abstract class BaseDRevLot extends acCouchdbDocumentTree {
+abstract class BaseDRevLot extends Lot {
                 
     public function configureTree() {
        $this->_root_class_name = 'DRev';

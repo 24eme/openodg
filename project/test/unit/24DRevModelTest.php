@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(28);
+$t = new lime_test(29);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -15,7 +15,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 $campagne = (date('Y')-1)."";
 
 //Début des tests
-$t->comment("Création d'une DRev");
+$t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$campagne.")");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -104,8 +104,10 @@ $t->is($drev->validation, NULL, "La DRev n'est plus validée");
 $drev->validate();
 $drev->save();
 
+$t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
+
 $mouvements = $drev->mouvements->get($viti->identifiant);
-$t->is(count($mouvements), 3, "La DRev a 3 mouvements");
+$t->is(count($mouvements), 4, "La DRev a 4 mouvements");
 $mouvement = $mouvements->getFirst();
 $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
 $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
@@ -135,4 +137,4 @@ $drevM1->save();
 $drevM1->validate();
 $drevM1->save();
 
-$t->is(count($drevM1->mouvements->get($viti->identifiant)), 3, "La DRev modificatrice a 3 mouvements");
+$t->is(count($drevM1->mouvements->get($viti->identifiant)), 4, "La DRev modificatrice a 4 mouvements");

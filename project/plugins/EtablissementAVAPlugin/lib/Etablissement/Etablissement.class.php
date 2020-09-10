@@ -102,4 +102,9 @@ class Etablissement extends BaseEtablissement {
         $compte->save(false, true);
     }
 
+    public function getPays() {
+
+        return "France";
+    }
+
 }

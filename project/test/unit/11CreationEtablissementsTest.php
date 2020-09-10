@@ -23,7 +23,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(27);
+$t = new lime_test(33);
 $t->comment('création des différentes établissements');
 
 $societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
@@ -43,12 +43,16 @@ $etablissementviti->fax = "77 77 77 77 77";
 
 
 $etablissementviti->adresse = "etb Adresse 1 ";
+$etablissementviti->siege->adresse = "etb Adresse 1 ";
 $etablissementviti->adresse_complementaire = "etb Adresse 2 ";
-$etablissementviti->code_postal = '00000';
-$etablissementviti->commune = "cummune etb";
+$etablissementviti->code_postal = '92000';
+$etablissementviti->siege->code_postal = '92000';
+$etablissementviti->commune = "NEUILLY";
+$etablissementviti->siege->commune = "NEUILLY";
 $etablissementviti->pays = "FR";
 $etablissementviti->insee = "98475";
 $etablissementviti->ppm = "P123456798";
+$etablissementviti->cvi = "7523700100";
 
 
 $etablissementviti->save();
@@ -92,6 +96,7 @@ $etablissementnego->save();
 $id = $etablissementnego->getSociete()->getidentifiant();
 $comptenego = CompteClient::getInstance()->findByIdentifiant($id."01");
 $comptenego->addTag('test', 'test');
+$comptenego->addTag('test', 'test_nego');
 $comptenego->save();
 $t->is($comptenego->tags->automatique->toArray(true, false), array('etablissement','negociant'), "Création d'un etablissement nego met à jour le compte");
 $t->is($etablissementnego->region, EtablissementClient::REGION_CVO, "L'établissement est en région CVO après le save");
@@ -157,5 +162,21 @@ $etablissementcoop->save();
 $id = $etablissementcoop->getSociete()->getidentifiant();
 $comptecoop = CompteClient::getInstance()->findByIdentifiant($id."01");
 $comptecoop->addTag('test', 'test');
+$comptecoop->addTag('test', 'test_coop');
 $comptecoop->save();
 $t->is($comptecoop->tags->automatique->toArray(true, false), array( 'etablissement','cooperative'), "Création d'un etablissement coop met à jour le compte");
+
+$viti_compte = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti');
+$t->ok($viti_compte, 'le tag test_viti retourne un compte');
+$viti = $viti_compte->getEtablissement();
+$t->ok($viti, 'le compte test_viti est un établissement');
+
+$nego_compte =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_nego');
+$t->ok($nego_compte, 'le tag test_nego retourne un compte');
+$nego = $nego_compte->getEtablissement();
+$t->ok($nego, "le compte test_nego est un etablissement");
+
+$coop_compte =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_coop');
+$t->ok($coop_compte, 'le tag test_coop retourne un compte');
+$coop = $coop_compte->getEtablissement();
+$t->ok($coop, "le compte test_coop est un etablissement");

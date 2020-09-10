@@ -269,7 +269,7 @@
                     });
                 });
                 if(!libelle) {
-                    libelle = "Assemblage";
+                    libelle = "Cépage(s) revendiqué(s)";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
                 }else{
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");

@@ -1,7 +1,8 @@
 <?php
 abstract class Etapes
 {
-
+    const ETAPE_VALIDATION = 'VALIDATION';
+    
     abstract public function getEtapesHash() ;
     abstract public function getRouteLinksHash() ;
     abstract public function getLibellesHash() ;
