@@ -131,4 +131,13 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->id_document;
     }
 
+
+    public function getIntitulePartiel(){
+      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero.') de '.$this->produit_libelle;
+      if ($this->millesime){
+        $libelle .= ' ('.$this->millesime.')';
+      }
+      return $libelle;
+    }
+
 }
