@@ -53,6 +53,15 @@ degustation_visualisation:
   requirements:
     sf_method: [get]
 
+degustation_degustateur_confirmation:
+  url: /degustation/:id/degustateur-confirmation/:confirmation
+  param: { module: degustation, action: degustateurConfirmation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 degustation_organisation_table:
   url: /degustation/:id/organisation-table/:numero_table

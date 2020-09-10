@@ -108,6 +108,15 @@ class degustationActions extends sfActions {
       $this->degustation = $this->getRoute()->getDegustation();
     }
 
+    public function executeDegustateurConfirmation(sfWebRequest $request) {
+      $this->degustation = $this->getRoute()->getDegustation();
+      $this->degustateurHash = $request->getParameter('degustateurHash',null);
+      $this->confirmation = $request->getParameter('confirmation',null);
+      $this->degustation->getOrAdd($this->degustateurHash)->add('confirmation',boolval($this->confirmation));
+      $this->degustation->save();
+      return $this->redirect('degustation_visualisation', array('id' => $this->degustation->_id));
+    }
+
 
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();

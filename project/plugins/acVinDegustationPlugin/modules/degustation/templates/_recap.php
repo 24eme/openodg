@@ -19,16 +19,24 @@
         	</thead>
         	<tbody>
         		<?php foreach ($degustation->degustateurs as $college => $degustateurs): ?>
-        		<?php foreach ($degustateurs as $id => $degustateur): ?>
-        		<tr>
-                    <td class="text-center"><p><span class="glyphicon glyphicon-question-sign"></span></p></td>
-
-        			<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
-        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur ?></a></td>
-
-                    <td class="text-center"><a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span>&nbsp;Confirmer</a> &nbsp; <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span>&nbsp;Refuser</a></td>
-
-        		</tr>
+	        		<?php foreach ($degustateurs as $id => $degustateur): ?>
+	        		<tr>
+	            	<td class="text-center">
+								<?php if(!$degustateur->exist('confirmation')): ?>
+									<p><span class="glyphicon glyphicon-question-sign"></span></p>
+								<?php elseif($degustateur->confirmation): ?>
+									<p class="label label-success"><span class="glyphicon glyphicon-ok"></span></p>
+								<?php else: ?>
+									<p class="label label-danger"><span class="glyphicon glyphicon-remove"></span></p>
+								<?php endif; ?>
+								</td>
+								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
+	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+	              <td class="text-center">
+									<a href="<?php echo url_for('degustation_degustateur_confirmation', array('id' => $degustation->_id, 'confirmation' => '1' , 'degustateurHash' => $degustateur->getHash())) ?>" class="btn btn-default <?php if($degustateur->exist('confirmation') && $degustateur->confirmation): ?>btn-success<?php endif; ?>"><span class="glyphicon glyphicon-ok"></span>&nbsp;Confirmer</a>
+									 &nbsp; <a href="<?php echo url_for('degustation_degustateur_confirmation', array('id' => $degustation->_id, 'confirmation' => '0', 'degustateurHash' => $degustateur->getHash())) ?>" class="btn btn-default <?php if($degustateur->exist('confirmation') && !$degustateur->confirmation): ?>btn-danger<?php endif; ?>"><span class="glyphicon glyphicon-remove"></span>&nbsp;Refuser</a>
+	  						</td>
+							</tr>
         		<?php endforeach;?>
         		<?php endforeach; ?>
         	</tbody>
@@ -61,7 +69,7 @@
     				<td><?php echo MouvementLotView::getDestinationLibelle($lot); ?><?php if ($lot->destination_date): ?>&nbsp;(<?php echo ucfirst(format_date($lot->destination_date, "dd/MM/yyyy", "fr_FR")); ?>)<?php endif; ?></td>
 
             		<td><?php echo Lot::getLibelleStatut($lot->statut); ?></td>
-            	
+
             	</tr>
             	<?php endforeach; ?>
         	</tbody>
