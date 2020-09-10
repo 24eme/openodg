@@ -225,7 +225,35 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
+			uasort($lots, "Degustation::sortLotsByAppelationCouleurCepage");
 			return $lots;
+		}
+
+		public function getLotsSorted(){
+			$allLots = array();
+			foreach ($this->getLots() as $lot) {
+				$allLots[] = $lot;
+			}
+			uasort($allLots, "Degustation::sortLotsByAppelationCouleurCepage");
+			return $allLots;
+		}
+
+		public function getSyntheseLotsTable($numero_table){
+			$syntheseLots = array();
+			foreach ($this->lots as $lot) {
+				if($lot->numero_table == $numero_table){
+					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
+						$synthese = new stdClass();
+						$synthese->lots = array();
+						$synthese->libelle = $lot->getProduitLibelle();
+
+						$syntheseLots[$lot->getProduitHash()] = $synthese;
+					}
+					$syntheseLots[$lot->getProduitHash()]->lots[] = $lot;
+				}
+			}
+			ksort($syntheseLots);
+			return $syntheseLots;
 		}
 
 		public function getFirstNumeroTable(){
@@ -233,6 +261,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			if(!count($tables)) { return 0; }
 			return min($tables);
 		}
+
+		public static function sortLotsByAppelationCouleurCepage($a, $b){
+        $a_data = $a->getProduitLibelle();
+        $b_data = $b->getProduitLibelle();
+        return strcmp($a_data,$b_data);
+    }
 
 		/**** Fin Gestion des tables de la degustation ****/
 

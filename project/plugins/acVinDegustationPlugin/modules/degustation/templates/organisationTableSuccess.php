@@ -4,11 +4,11 @@
 
 
 <?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+  <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Attribution des tables</h2>
+  <h2>Attribution des tables</h2>
 </div>
 
 <ul class="nav nav-pills degustation">
@@ -23,13 +23,15 @@
 </ul>
 
 <div class="row row-condensed">
-	<div class="col-xs-12">
-
-<?php if(!$numero_table): ?>
-	<?php include_partial('degustation/organisationMultiTables', array('degustation' => $degustation,'form' => $form, 'ajoutLeurreForm' => $ajoutLeurreForm)); ?>
-<?php else: ?>
-	<?php include_partial('degustation/organisationOneTable', array('degustation' => $degustation,'form' => $form,'numero_table' => $numero_table)); ?>
-<?php endif; ?>
-
+  <div class="col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <?php if(!$numero_table): ?>
+          <?php include_partial('degustation/organisationMultiTables', array('degustation' => $degustation,'form' => $form, 'ajoutLeurreForm' => $ajoutLeurreForm)); ?>
+        <?php else: ?>
+          <?php include_partial('degustation/organisationOneTable', array('degustation' => $degustation,'form' => $form,'numero_table' => $numero_table, 'syntheseLots' => $syntheseLots)); ?>
+        <?php endif; ?>
+      </div>
+    </div>
   </div>
 </div>

@@ -124,9 +124,10 @@ class degustationActions extends sfActions {
 
 
         $this->liste_tables = $this->degustation->getTablesWithFreeLots();
-        $this->tableLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
+        $this->tableLotsOrFreeLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
         $this->nb_tables = count($this->liste_tables);
-        $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table, 'liste_tables' => $this->liste_tables);
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTable($this->numero_table);
+        $options = array('tableLots' => $this->tableLotsOrFreeLots, 'numero_table' => $this->numero_table, 'liste_tables' => $this->liste_tables);
         $this->form = new DegustationOrganisationTableForm($this->degustation, $options);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation);
 
@@ -149,7 +150,13 @@ class degustationActions extends sfActions {
           return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
         }
 
-        return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
+        if(!$this->numero_table && count($this->degustation->getTablesWithFreeLots())){
+          return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => "1"));
+        }
+        if($this->numero_table && count($this->degustation->getTablesWithFreeLots())){
+          return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => "1"));
+        }
+        return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id));
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
