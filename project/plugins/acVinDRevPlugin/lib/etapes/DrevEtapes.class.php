@@ -113,6 +113,10 @@ class DrevEtapes extends Etapes
 			return true;
 		}
 
+        if ($etape === self::ETAPE_REVENDICATION_SUPERFICIE && DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
+            return true;
+        }
+
         return parent::isEtapeDisabled($etape, $doc);
     }
 
