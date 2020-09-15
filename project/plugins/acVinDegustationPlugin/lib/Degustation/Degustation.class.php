@@ -26,7 +26,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->getCampagne());
+        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
     }
 
     public function constructId() {
@@ -34,6 +34,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         $this->set('_id', $id);
     }
+
+
+		public function getConfigProduits() {
+
+				return $this->getConfiguration()->declaration->getProduits();
+		}
 
     public function getLieuNom($slugify = false) {
         return self::getNomByLieu($this->lieu, $slugify);
@@ -58,12 +64,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function storeEtape($etape) {
 	    if ($etape == $this->etape) {
-	
+
 	        return false;
 	    }
-	
+
 	    $this->add('etape', $etape);
-	
+
 	    return true;
 	}
 
@@ -96,13 +102,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	        }
 	    }
 	}
-	
+
 	public function generateMouvementsLots() {
 	    // A implementer lorsque les lots devront etre redegustes
 	}
 
 	public function isValidee() {
-	
+
 	    return $this->validation;
 	}
 
@@ -179,4 +185,89 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 
     /**** FIN DES PIECES ****/
+
+
+		/**** Gestion des tables de la degustation ****/
+
+		public function getTablesWithFreeLots($add_default_table = false){
+			$tables = array();
+			$freeLots = array();
+			foreach ($this->lots as $lot) {
+				if($lot->exist('numero_table') && $lot->numero_table){
+					if(!isset($tables[$lot->numero_table])){
+						$tables[$lot->numero_table] = new stdClass();
+						$tables[$lot->numero_table]->lots = array();
+						$tables[$lot->numero_table]->freeLots = array();
+					}
+					$tables[$lot->numero_table]->lots[] = $lot;
+				}else{
+					$freeLots[] = $lot;
+				}
+			}
+
+			foreach ($tables as $numero_table => $tableStruct) {
+				$tableStruct->freeLots = $freeLots;
+			}
+
+			if($add_default_table && !count($tables)){
+				$table = new stdClass();
+				$table->lots = array();
+				$table->freeLots = $freeLots;
+				$tables[] = $table;
+			}
+			return $tables;
+		}
+
+		public function getLotsTableOrFreeLots($numero_table){
+			$lots = array();
+			foreach ($this->lots as $lot) {
+				if(($lot->numero_table == $numero_table) || is_null($lot->numero_table)){
+					$lots[] = $lot;
+				}
+			}
+			uasort($lots, "Degustation::sortLotsByAppelationCouleurCepage");
+			return $lots;
+		}
+
+		public function getLotsSorted(){
+			$allLots = array();
+			foreach ($this->getLots() as $lot) {
+				$allLots[] = $lot;
+			}
+			uasort($allLots, "Degustation::sortLotsByAppelationCouleurCepage");
+			return $allLots;
+		}
+
+		public function getSyntheseLotsTable($numero_table){
+			$syntheseLots = array();
+			foreach ($this->lots as $lot) {
+				if($lot->numero_table == $numero_table){
+					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
+						$synthese = new stdClass();
+						$synthese->lots = array();
+						$synthese->libelle = $lot->getProduitLibelle();
+
+						$syntheseLots[$lot->getProduitHash()] = $synthese;
+					}
+					$syntheseLots[$lot->getProduitHash()]->lots[] = $lot;
+				}
+			}
+			ksort($syntheseLots);
+			return $syntheseLots;
+		}
+
+		public function getFirstNumeroTable(){
+			$tables = array_keys($this->getTablesWithFreeLots());
+			if(!count($tables)) { return 0; }
+			return min($tables);
+		}
+
+		public static function sortLotsByAppelationCouleurCepage($a, $b){
+        $a_data = $a->getProduitLibelle();
+        $b_data = $b->getProduitLibelle();
+        return strcmp($a_data,$b_data);
+    }
+
+		/**** Fin Gestion des tables de la degustation ****/
+
 }

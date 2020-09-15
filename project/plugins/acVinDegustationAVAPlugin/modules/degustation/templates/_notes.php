@@ -1,4 +1,4 @@
-<?php use_javascript("degustation.js", "last") ?>
+<?php use_javascript("degustation_ava.js", "last") ?>
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 

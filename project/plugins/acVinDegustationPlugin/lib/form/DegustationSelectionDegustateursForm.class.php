@@ -1,9 +1,9 @@
 <?php
 
 class DegustationSelectionDegustateursForm extends acCouchdbForm {
-    
+
     protected $degustateurs;
-    
+
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
         $doc->getOrAdd('degustateurs');
@@ -50,7 +50,8 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 		    foreach ($items as $compteId => $val) {
     		    if (isset($val['selectionne']) && !empty($val['selectionne'])) {
     		        $compte = $this->getCompteByCollegeAndIdentifiant($college, $compteId);
-    		        $doc->degustateurs->getOrAdd($college)->add($compteId, $compte->getLibelleWithAdresse());
+    		        $degustateur = $doc->degustateurs->getOrAdd($college)->add($compteId);
+                $degustateur->add('libelle',$compte->getLibelleWithAdresse());
     		    }
 		    }
 		}
@@ -74,7 +75,7 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
         }
         return $this->degustateurs;
     }
-    
+
     public function getCompteByCollegeAndIdentifiant($college, $identifiant) {
         $comptes = $this->getDegustateursByColleges();
         return (isset($comptes[$college]) && isset($comptes[$college][$identifiant]))? $comptes[$college][$identifiant] : null;

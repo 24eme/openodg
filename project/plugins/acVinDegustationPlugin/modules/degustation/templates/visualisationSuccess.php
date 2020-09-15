@@ -19,5 +19,6 @@
     </div>
     <div class="col-xs-4 text-right">
         <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('degustation_devalidation', $degustation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette dégustation ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+        <a class="btn btn-xs btn-success pull-right" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Organisation des tables</a>
 	</div>
 </div>

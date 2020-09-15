@@ -8,6 +8,7 @@ class DegustationValidationForm extends acCouchdbObjectForm
 
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
+
         $this->getObject()->validate();
     }
 }

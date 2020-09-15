@@ -1,14 +1,4 @@
-<?php use_helper("Date"); ?>
-<?php use_helper('Float') ?>
-
-<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_LOTS)); ?>
-
-<div class="page-header no-border">
-    <h2>Prélèvement des lots <small class="text-muted">Campagne <?php echo $degustation->campagne; ?></small></h2>
-</div>
-<p>Sélectionnez l'ensemble des lots à prélever pour la dégustation</p>
-<form action="<?php echo url_for("degustation_prelevement_lots", $degustation) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_organisation_table", $degustation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
@@ -28,11 +18,10 @@
 		</thead>
 		<tbody>
 		<?php
-			foreach ($form->getLotsPrelevables() as $key => $lot):
-			if (isset($form['lots'][$key])):
+			foreach ($form->getLots() as $lot):
 		?>
 			<tr class="vertical-center cursor-pointer">
-        <td><?php echo $lot->declarant_nom; ?></td>
+                <td><?php echo $lot->declarant_nom; ?></td>
 				<td><?php echo $lot->numero; ?></td>
 				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
@@ -46,7 +35,7 @@
                     </div>
             	</td>
             </tr>
-        <?php  endif; endforeach; ?>
+        <?php endforeach; ?>
         </tbody>
 	</table>
 
@@ -57,4 +46,3 @@
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
 </form>
-</div>

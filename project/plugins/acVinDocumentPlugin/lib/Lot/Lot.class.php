@@ -7,6 +7,8 @@
 abstract class Lot extends acCouchdbDocumentTree
 {
     const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
+    const STATUT_CONFORME = "CONFORME";
+    const STATUT_NON_CONFORME = "NON_CONFORME";
 
     public static $libellesStatuts = array(
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement'
@@ -127,6 +129,15 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getOrigineDocumentId() {
         return $this->id_document;
+    }
+
+
+    public function getIntitulePartiel(){
+      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero.') de '.$this->produit_libelle;
+      if ($this->millesime){
+        $libelle .= ' ('.$this->millesime.')';
+      }
+      return $libelle;
     }
 
 }
