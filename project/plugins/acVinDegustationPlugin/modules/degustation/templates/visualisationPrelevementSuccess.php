@@ -2,6 +2,7 @@
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
+<h2>Visualisation des dégustateurs et prélévements</h2>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -17,8 +18,10 @@
     <div class="col-xs-4 text-center">
 		<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;Etiquettes</a>
     </div>
-    <div class="col-xs-4 text-right">
-        <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('degustation_devalidation', $degustation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette dégustation ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-        <a class="btn btn-xs btn-success pull-right" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Organisation des tables</a>
-	</div>
+    <div class="col-xs-1 text-right">
+        <a class="btn btn-xs btn-default" href="<?php echo url_for('degustation_devalidation', $degustation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette dégustation ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+	  </div>
+    <div class="col-xs-3 text-right">
+      <a class="btn btn-success" <?php if(!$degustation->hasAllDegustateursConfirmation()): ?> disabled="disabled" <?php endif; ?> href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Organisation des tables</a>
+    </div>
 </div>

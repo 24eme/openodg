@@ -5,11 +5,11 @@
 </div>
 <form action="<?php echo url_for('degustation') ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
-    
+
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
-    
+
     <div class="row">
         <div class="col-sm-10 col-xs-12">
             <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?>">
@@ -60,8 +60,21 @@
             <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span> -
             <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
         </td>
-        <td class="col-sm-2 text-center">
-            <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn <?php if ($d->isValidee()): ?>btn-success<?php else: ?>btn-default<?php endif; ?>"><?php if ($d->isValidee()): ?>Visualiser<?php else: ?>Reprendre la saisie<?php endif; ?></a>
+        <td class="col-sm-2 text-right">
+          <?php if ($d->isValidee()): ?>
+            <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" id="visualisation_menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              visualisation
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="visualisation_menu">
+              <li <?php if(!$d->hasFreeLots()): ?>class="disabled"<?php endif; ?>  ><a href="<?php echo url_for('degustation_visualisation_prelevement', $d)?>" >Visualisation prélévements</a></li>
+              <li <?php if($d->hasFreeLots()): ?>class="disabled"<?php endif; ?>   ><a href="<?php echo url_for('degustation_visualisation_degustation', $d)?>" >Visualisation dégustation</a></li>
+            </ul>
+          </div>
+          <?php else: ?>
+            <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la saisie</a>
+          <?php endif; ?>
         </td>
     </tr>
 <?php endforeach; ?>

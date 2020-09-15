@@ -10,6 +10,9 @@
       var form = $(this).parents('form');
       $.formPost(form);
       var hash = $(this).parents('td').attr("data-hash");
+      if (hash === undefined) {
+         return true;
+      }
       var libelleProduit = $(this).parents('td').attr("data-libelle-produit");
       if(!$('tr[data-hash="'+hash+'"] .nblots').length){
         var newContent = '<tr class="vertical-center cursor-pointer" data-hash="'+hash+'"><td>'+libelleProduit+'</td><td class="nblots">1</td></tr>';

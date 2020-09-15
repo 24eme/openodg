@@ -127,7 +127,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return null;
     }
 
-    public static function getUrlVisualisationPiece($id, $admin = false) {
+    public static function getUrlvisualisationPiece($id, $admin = false) {
     	return null;
     }
 
@@ -135,7 +135,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return null;
     }
 
-    public static function isVisualisationMasterUrl($admin = false) {
+    public static function isvisualisationMasterUrl($admin = false) {
     	return false;
     }
 
@@ -229,6 +229,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function hasFreeLots(){
+			foreach ($this->lots as $lot) {
+				if(!$lot->exist("numero_table") || is_null($lot->numero_table)){
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public function getLotsSorted(){
 			$allLots = array();
 			foreach ($this->getLots() as $lot) {
@@ -261,6 +270,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			if(!count($tables)) { return 0; }
 			return min($tables);
 		}
+		public function getLastNumeroTable(){
+			$tables = array_keys($this->getTablesWithFreeLots());
+			if(!count($tables)) { return 0; }
+			return max($tables);
+		}
+
+
 
 		public static function sortLotsByAppelationCouleurCepage($a, $b){
         $a_data = $a->getProduitLibelle();
@@ -269,5 +285,35 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
 		/**** Fin Gestion des tables de la degustation ****/
+
+
+		/**** Gestion dégustateurs ****/
+
+		public function getDegustateursConfirmes(){
+			$degustateurs = array();
+			foreach ($this->degustateurs as $college => $degs) {
+				foreach ($degs as $compte_id => $degustateur) {
+					if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
+						$degustateurs[] = $degustateur;
+					}
+				}
+			}
+			return $degustateurs;
+		}
+
+		public function hasAllDegustateursConfirmation(){
+			$confirmation = true;
+			foreach ($this->getDegustateurs() as $collegeKey => $degustateursCollege) {
+				foreach ($degustateursCollege as $compte_id => $degustateur) {
+					if(!$degustateur->exist('confirmation')){
+						$confirmation = false;
+						break;
+					}
+				}
+			}
+			return $confirmation;
+		}
+
+		/**** Fin Gestion dégustateurs ****/
 
 }

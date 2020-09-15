@@ -1,0 +1,75 @@
+<?php use_helper("Date"); ?>
+<?php use_helper('Float') ?>
+
+<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
+
+
+<?php if ($sf_user->hasFlash('notice')): ?>
+  <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+<?php endif; ?>
+
+<div class="page-header no-border">
+  <h2>Saisie des dégustateurs présents par table</h2>
+</div>
+
+<ul class="nav nav-pills">
+  <?php for ($i= 0; $i < $nb_tables; $i++): ?>
+    <li role="presentation" class="<?php if($numero_table == ($i + 1)): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_presences", array('id' => $degustation->_id, 'numero_table' => ($i + 1))) ?>">Table <?php echo ($i + 1); ?></a></li>
+  <?php endfor;?>
+</ul>
+
+<div class="row row-condensed">
+  <div class="col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+
+        <div class="row row-condensed">
+          <div class="col-xs-12">
+            <form action="<?php echo url_for("degustation_presences", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>" method="post" class="form-horizontal degustation">
+              <?php echo $form->renderHiddenFields(); ?>
+              <div class="bg-danger">
+                <?php echo $form->renderGlobalErrors(); ?>
+              </div>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-xs-3">Collège</th>
+                    <th class="col-xs-6">Membre</th>
+                    <th class="col-xs-3">Actif à cette table</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($degustation->getDegustateursConfirmes() as $degustateur):
+                    $name = $form->getWidgetNameFromDegustateur($degustateur); ?>
+                    <tr>
+                      <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
+                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                      <td class="text-center">
+                        <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
+                          <?php echo $form[$name]->renderError() ?>
+                          <div class="col-xs-12">
+                            <?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  <?php endforeach;?>
+                </tbody>
+              </table>
+              <div class="row row-margin row-button">
+                <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation_degustation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+                <div class="col-xs-4 text-center">
+                </div>
+                <div class="col-xs-4 text-right">
+                  <button type="submit" class="btn btn-success btn-upper">Valider</button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

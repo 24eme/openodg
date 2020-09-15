@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-  <h2>Attribution des tables</h2>
+  <h2>Attribution des lots aux tables</h2>
 </div>
 
 <ul class="nav nav-pills degustation">

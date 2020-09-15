@@ -2,6 +2,7 @@
 <?php use_helper('Float') ?>
 
 <div class="alert alert-info" role="alert">
+	<h3>Synthèse table <?php echo $numero_table; ?></h3>
 	<table class="table table-condensed">
 			<thead>
 				<tr>
@@ -10,16 +11,15 @@
 				</tr>
 			</thead>
 			<tbody id="synthese">
-		<?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
-			<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>">
-				<td><?php echo $lotsProduit->libelle ?></td>
-				<td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
-			</tr>
-
-		<?php endforeach; ?>
-	</tbody>
+			<?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
+				<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
+					<td><?php echo $lotsProduit->libelle ?></td>
+					<td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
 	</table>
-	</div>
+</div>
 
 
 	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>" method="post" class="form-horizontal degustation">
@@ -64,7 +64,7 @@
 		</table>
 
 		<div class="row row-margin row-button">
-			<div class="col-xs-4"><a href="<?php echo url_for("degustation_validation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+			<div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation_prelevement", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
 			<div class="col-xs-4 text-center">
 			</div>
 			<div class="col-xs-4 text-right">

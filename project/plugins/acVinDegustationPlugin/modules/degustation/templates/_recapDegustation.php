@@ -5,44 +5,35 @@
 
 <div class="row row-condensed">
 	<div class="col-xs-12">
-		<h3>Dégustateurs</h3>
+		<h3>Dégustateurs confirmés</h3>
         <table class="table table-bordered table-condensed table-striped">
         	<thead>
             	<tr>
-                    <th class="col-xs-1"></th>
-
-            		<th class="col-xs-2">Collège</th>
-        			<th class="col-xs-6">Membre</th>
-                    <th class="col-xs-3">Confirmation présence</th>
-
-                </tr>
+            	<th class="col-xs-3">Collège</th>
+        			<th class="col-xs-7">Membre</th>
+        			<th class="col-xs-2">Présent sur</th>
+              </tr>
         	</thead>
         	<tbody>
-        		<?php foreach ($degustation->degustateurs as $college => $degustateurs): ?>
-	        		<?php foreach ($degustateurs as $id => $degustateur): ?>
+        		<?php foreach ($degustation->getDegustateursConfirmes() as $degustateur): ?>
 	        		<tr>
-	            	<td class="text-center">
-								<?php if(!$degustateur->exist('confirmation')): ?>
-									<p><span class="glyphicon glyphicon-question-sign"></span></p>
-								<?php elseif($degustateur->confirmation): ?>
-									<p class="label label-success"><span class="glyphicon glyphicon-ok"></span></p>
-								<?php else: ?>
-									<p class="label label-danger"><span class="glyphicon glyphicon-remove"></span></p>
-								<?php endif; ?>
-								</td>
-								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
+								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
 	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
 	              <td class="text-center">
-									<a href="<?php echo url_for('degustation_degustateur_confirmation', array('id' => $degustation->_id, 'confirmation' => '1' , 'degustateurHash' => $degustateur->getHash())) ?>" class="btn btn-default <?php if($degustateur->exist('confirmation') && $degustateur->confirmation): ?>btn-success<?php endif; ?>"><span class="glyphicon glyphicon-ok"></span>&nbsp;Confirmer</a>
-									 &nbsp; <a href="<?php echo url_for('degustation_degustateur_confirmation', array('id' => $degustation->_id, 'confirmation' => '0', 'degustateurHash' => $degustateur->getHash())) ?>" class="btn btn-default <?php if($degustateur->exist('confirmation') && !$degustateur->confirmation): ?>btn-danger<?php endif; ?>"><span class="glyphicon glyphicon-remove"></span>&nbsp;Refuser</a>
-	  						</td>
+									<?php if($degustateur->exist('numero_table') && !is_null($degustateur->numero_table)): ?>Table n° <?php echo $degustateur->numero_table; ?><?php endif; ?>
+								</td>
 							</tr>
         		<?php endforeach;?>
-        		<?php endforeach; ?>
         	</tbody>
         </table>
 	</div>
 </div>
+
+<div class="row row-margin row-button">
+		<div class="col-xs-12 text-right">
+			<a class="btn btn-default" href="<?php echo url_for('degustation_presences', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Présence des dégustateurs</a>
+		</div>
+	</div>
 
 <div class="row row-condensed">
 	<div class="col-xs-12">
@@ -75,4 +66,18 @@
         	</tbody>
         </table>
 	</div>
+</div>
+
+<div class="row row-margin row-button">
+    <div class="col-xs-4">
+        <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("degustation"); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+    </div>
+
+    <div class="col-xs-4 text-center">
+		<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;Etiquettes</a>
+    </div>
+
+    <div class="col-xs-4 text-right">
+      <a class="btn btn-default" href="<?php echo url_for('degustation_resultats', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Résultats lots</a>
+    </div>
 </div>
