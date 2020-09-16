@@ -22,6 +22,6 @@
         <a class="btn btn-xs btn-default" href="<?php echo url_for('degustation_devalidation', $degustation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette dégustation ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
 	  </div>
     <div class="col-xs-3 text-right">
-      <a class="btn btn-success" <?php if(!$degustation->hasAllDegustateursConfirmation()): ?> disabled="disabled" <?php endif; ?> href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Organisation des tables</a>
+      <a class="btn btn-success" <?php if(!$degustation->hasAllDegustateursConfirmation()): ?> disabled="disabled" <?php endif; ?> href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" ><span class="glyphicon glyphicon-tint"></span>&nbsp;&nbsp;Lots par table&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
     </div>
 </div>

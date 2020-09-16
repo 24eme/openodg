@@ -99,6 +99,20 @@
                         useCurrent: false
                     });
         });
+
+        var datePickers = $(this).find('.datetime-picker-week');
+        datePickers.each(function ()
+        {
+            $(this).datetimepicker
+                    ({
+                        locale: 'fr',
+                        calendarWeeks: true,
+                        format: 'DD/MM/YYYY à HH:mm',
+                        allowInputToggle: true,
+                        useCurrent: false
+                    });
+        });
+
         var datePickers = $(this).find('.date-picker-all-days');
         datePickers.each(function ()
         {

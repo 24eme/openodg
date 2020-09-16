@@ -30,7 +30,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function constructId() {
-        $id = sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, str_replace("-", "", $this->date), $this->getLieuNom(true));
+				$dateId = str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$this->date));
+        $id = sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, $dateId, $this->getLieuNom(true));
 
         $this->set('_id', $id);
     }

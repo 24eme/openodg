@@ -35,7 +35,7 @@
                   <tr>
                     <th class="col-xs-3">Collège</th>
                     <th class="col-xs-6">Membre</th>
-                    <th class="col-xs-3">Actif à cette table</th>
+                    <th class="col-xs-3">Présent à cette table</th>
 
                   </tr>
                 </thead>

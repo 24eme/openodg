@@ -31,7 +31,7 @@
 
 <div class="row row-margin row-button">
 		<div class="col-xs-12 text-right">
-			<a class="btn btn-default" href="<?php echo url_for('degustation_presences', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Présence des dégustateurs</a>
+			<a class="btn btn-default" href="<?php echo url_for('degustation_presences', $degustation) ?>" ><span class=" glyphicon glyphicon-user"></span>&nbsp;&nbsp;Présence des dégustateurs&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
 		</div>
 	</div>
 
@@ -78,6 +78,6 @@
     </div>
 
     <div class="col-xs-4 text-right">
-      <a class="btn btn-default" href="<?php echo url_for('degustation_resultats', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Résultats lots</a>
+      <a class="btn btn-default" href="<?php echo url_for('degustation_resultats', $degustation) ?>" ><span class="glyphicon glyphicon-glass"></span>&nbsp;&nbsp;Résultats lots&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
     </div>
 </div>
