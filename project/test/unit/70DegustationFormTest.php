@@ -13,14 +13,14 @@ if ($application != 'igp13') {
 $t = new lime_test(27);
 
 $campagne = (date('Y')-1)."";
-$degust_date = $campagne.'-09-01';
-$degust_date_fr = '01/09/'.$campagne;
+$degust_date = $campagne.'-09-01 12:45';
+$degust_date_fr = '01/09/'.$campagne.' à 12:45';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_degustateur');
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
-$docid = "DEGUSTATION-".str_replace('-', '', $degust_date)."-SYNDICAT-VIGNERONS-ARLES";
+$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date))."-SYNDICAT-VIGNERONS-ARLES";
 $doc = acCouchdbManager::getClient()->find($docid);
 if ($doc) {
     $doc->delete();
