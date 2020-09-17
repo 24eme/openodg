@@ -78,6 +78,13 @@ $t->is($degustation->lieu, $commissions[0], "La commission de la degustation est
 $t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);
 $defaults = $form->getDefaults();
+
+$checked = true;
+foreach ($defaults['lots'] as $lot) {
+    $checked = $checked && (bool) $lot['preleve'];
+}
+$t->is($checked, true, 'Les lots sont bien cochés par défaut');
+
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $degustation->_rev,
