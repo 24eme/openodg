@@ -4,6 +4,6 @@
   <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <?php else: ?>
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
-  <li class="active"><a href=""><?php echo $degustation->getLieuNom(); ?>  le <?php echo ucfirst(format_datetime($degustation->date, "F H:i", "fr_FR")) ?></a></li>
+  <li class="active"><a href=""><?php echo $degustation->getLieuNom(); ?>  le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></a></li>
   <?php endif; ?>
 </ol>
