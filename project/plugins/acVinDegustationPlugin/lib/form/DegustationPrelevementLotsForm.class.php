@@ -2,10 +2,12 @@
 
 class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
+    private $lotsPrelevables = null;
+
     public function configure() {
-        $lotsPrelevables = $this->getObject()->getLotsPrelevables();
+        $this->lotsPrelevables = $this->getObject()->getLotsPrelevables();
         $formLots = new BaseForm();
-		foreach ($lotsPrelevables as $key => $item) {
+		foreach ($this->lotsPrelevables as $key => $item) {
 			$formLots->embedForm($key, new DegustationPrelevementLotForm());
 		}
         $this->embedForm('lots', $formLots);
@@ -25,9 +27,16 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         $defaults = $this->getDefaults();
+
         foreach ($this->getObject()->lots as $lot) {
-            $key = $lot->getGeneratedMvtKey();
-            $defaults['lots'][$key] = array('preleve' => 1);
+          $key = $lot->getGeneratedMvtKey();
+          $defaults['lots'][$key] = array('preleve' => 1);
+        }
+
+        if(!count($this->getObject()->lots)){
+          foreach ($this->lotsPrelevables as $key => $item) {
+              $defaults['lots'][$key] = array('preleve' => 1);
+          }
         }
         $this->setDefaults($defaults);
     }
