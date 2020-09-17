@@ -105,7 +105,13 @@ foreach($res_mvt->rows as $item) {
 }
 
 $t->ok(isset($valuesRev['lots'][$lot_key2]), 'On retrouve le lot dans le formulaire sur la base de la vue');
+
+$t->comment('On décoche les lots et on en sélectionne qu\'un');
+foreach ($valuesRev['lots'] as &$lot) {
+    unset($lot['preleve']);
+}
 $valuesRev['lots'][$lot_key2]['preleve'] = 1;
+
 $form->bind($valuesRev);
 $form->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
