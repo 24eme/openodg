@@ -20,6 +20,11 @@ class FactureConfiguration {
         $this->configuration = sfConfig::get('facture_configuration_facture', array());
     }
 
+    public function isActive() {
+
+        return in_array('facturation', sfConfig::get('sf_enabled_modules'));
+    }
+
     public function isAggregateLignes() {
       return isset($this->configuration['aggregateLignes']) && boolval($this->configuration['aggregateLignes']);
     }
