@@ -148,8 +148,10 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         if(isset($values['droits']) || $compte->exist('droits')){
             $compte->remove("droits");
             $compte->add('droits');
-            foreach ($values['droits'] as $key => $droit) {
-              $compte->getOrAdd("droits")->add(null, $droit);
+            if(isset($values['droits'])) {
+                foreach ($values['droits'] as $key => $droit) {
+                  $compte->getOrAdd("droits")->add(null, $droit);
+                }
             }
         }
 
