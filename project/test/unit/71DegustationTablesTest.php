@@ -25,9 +25,15 @@ $t->is($doc->hasFreeLots(), false, "Il n'y a plus de lot non assigné");
 
 $t->comment('On créé un leurre');
 $produitLeurreHash = $doc->getLots()[0]->getProduitHash();
-$produitLeurre = $doc->lots->add($produitLeurreHash);
+$produitLeurre = $doc->lots->add();
+$produitLeurre->setProduitHash($produitLeurreHash);
 $produitLeurre->leurre = true;
+$produitLeurre->declarant_nom = 'SARL Leurre';
+$produitLeurre->numero = '999';
+
 $t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
+$t->is($produitLeurre->produit_hash, $produitLeurreHash, "Le hash produit est $produitLeurreHash");
+$t->is($produitLeurre->getIntitulePartiel(), 'lot SARL Leurre (999) de Alpilles Rouge', 'Le libellé est correct');
 
 $t->is($doc->hasFreeLots(), true, 'Le leurre n\'est pas assigné');
 
