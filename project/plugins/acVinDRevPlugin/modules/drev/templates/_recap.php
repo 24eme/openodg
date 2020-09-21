@@ -18,7 +18,7 @@
             <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
             <th class="col-xs-2 text-center">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
             <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
-            <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small>&nbsp;<?php endif; ?><small class="text-muted">(hl)</small></th>
 <?php else: ?>
             <th class="col-xs-6"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
             <th class="col-xs-3 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
