@@ -41,3 +41,15 @@ $t->comment('On assigne le lot à la table 1');
 $produitLeurre->numero_table = 1;
 $t->is($doc->hasFreeLots(), false, "Le leurre est assigné");
 $t->is(count($doc->getLotsTableOrFreeLots(1)), 2, "Il est assigné à la table 1");
+
+$t->comment('On ajoute une table');
+$t->is($doc->getLastNumeroTable(), 1, 'La table courante est la 1');
+$doc->lots->add();
+$doc->lots[2] = clone $doc->lots[0];
+$doc->lots[2]->numero = $doc->lots[0]->numero + 1;
+$doc->lots[2]->numero_table = 2;
+$t->is($doc->getLastNumeroTable(), 2, 'La dernière table est la 2');
+
+$t->comment('puis on la retire');
+$doc->lots->remove(2);
+$t->is($doc->getLastNumeroTable(), 1, 'La dernière table est la 1');
