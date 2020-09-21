@@ -156,14 +156,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 return $mvt;
 	 }
 
-	public function getLotsPrelevables() {
-         $lots = array();
-         foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
-             $lot = MouvementLotView::generateLotByMvt($mvt);
-             $lots[$key] = $lot;
-         }
-         return $lots;
-     }
+    public function getLotsPrelevables() {
+        $lots = array();
+        foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
+            $lot = MouvementLotView::generateLotByMvt($mvt);
+            $lots[$key] = $lot;
+        }
+
+        uasort($lots, function ($lot1, $lot2) {
+            $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
+            $date2 = DateTime::createFromFormat('Y-m-d', $lot2->date);
+
+            if ($date1 == $date2) {
+                return 0;
+            }
+            return ($date1 < $date2) ? -1 : 1;
+        });
+        var_dump($lots);exit;
+        return $lots;
+    }
 
 	 public function setLotsFromMvtKeys($keys, $statut){
 		 $this->remove('mouvements_lots');
