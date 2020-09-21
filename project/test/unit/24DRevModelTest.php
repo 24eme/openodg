@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(31);
+$t = new lime_test(32);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -12,7 +12,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-$campagne = (date('Y')-1)."";
+$campagne = (date('Y'))."";
 
 //Début des tests
 $t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$campagne.")");
@@ -78,9 +78,11 @@ $t->is($drev->get($produit_hash3)->denomination_complementaire, "BIO", "La déno
 $t->is($drev->get($produit_hash3)->libelle, $drev->get($produit_hash3)->getConfig()->getLibelleComplet()." BIO", "La dénomination complémentaire est dans le libellé");
 
 if(isset($produit_hash_mutage)) {
-$t->is($drev->get($produit_hash_mutage)->libelle, $drev->get($produit_hash_mutage)->getConfig()->getLibelleComplet(), "Libellé du produit en mutage ".$drev->get($produit_hash_mutage)->libelle);
+    $t->is($drev->get($produit_hash_mutage)->libelle, $drev->get($produit_hash_mutage)->getConfig()->getLibelleComplet(), "Libellé du produit en mutage ".$drev->get($produit_hash_mutage)->libelle);
+    $t->ok($drev->hasProduitWithMutageAlcoolique(), "Détection de produit en mutage alcoolique");
 } else {
     $t->pass("Test non nécessaire car pas de mutage");
+    $t->ok(!$drev->hasProduitWithMutageAlcoolique(), "Aucun produit en mutage alcoolique");
 }
 
 $produit1 = $drev->get($produit_hash1);

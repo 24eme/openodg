@@ -1562,7 +1562,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return boolval($this->getValidationOdg());
     }
 
-
+    /**** FIN DE VERSION ****/
 
     public function getDate() {
       return $this->campagne.'-12-10';
@@ -1580,5 +1580,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    /**** FIN DE VERSION ****/
+    public function hasProduitWithMutageAlcoolique() {
+        foreach($this->getProduits() as $produit) {
+
+            if($produit->getConfig()->hasMutageAlcoolique()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

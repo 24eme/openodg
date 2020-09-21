@@ -55,7 +55,7 @@ $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());
 
-$campagne = (date('Y')-1)."";
+$campagne = (date('Y'))."";
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -349,3 +349,37 @@ $export = new ExportDRevCSV($drev);
 $csvContent = $export->export();
 
 $t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");
+
+$t->comment("Mutage alcool revendique pour VDN");
+
+$produitConfigMutage = null;
+
+foreach($config->getProduits() as $produit) {
+    if($produit->getRendement() <= 0) {
+        continue;
+    }
+    if(!$produit->hasMutageAlcoolique()) {
+        continue;
+    }
+
+    $produitConfigMutage = $produit;
+    break;
+}
+
+$produitMutage = $drev->addProduit($produitConfigMutage->getHash());
+
+$form = new DRevRevendicationForm($drev);
+
+$valuesRev = array(
+    'produits' => $form['produits']->getValue(),
+    '_revision' => $drev->_rev,
+);
+
+$valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'] = 2;
+
+$form->bind($valuesRev);
+
+$t->ok($form->isValid(), "Le formulaire est valide");
+$form->save();
+
+$t->is($produitMutage->volume_revendique_issu_mutage, $valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'], "Le volume revendique issu de mutage a été enregsitré");

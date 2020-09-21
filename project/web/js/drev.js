@@ -182,7 +182,7 @@
         $('#table-revendication .input_sum_value').on('change', function() {
             sommeRevendication();
         });
-
+        sommeRevendication();
     }
 
     $.initSocieteChoixEtablissement = function() {
