@@ -23,13 +23,16 @@
       if (isset($form[$name])):
     ?>
       <tr class="vertical-center cursor-pointer">
-        <td>
-					<div class="row">
-						<div class="col-xs-5 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
-						<div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
-			      <div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
-					</div>
-				</td>
+        <td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
+            <div class="row">
+                    <div class="col-xs-5 text-right">
+                        <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
+                        <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
+                    </div>
+                <div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
+              <div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
+            </div>
+        </td>
               <td class="text-center">
                   <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                       <?php echo $form[$name]->renderError() ?>

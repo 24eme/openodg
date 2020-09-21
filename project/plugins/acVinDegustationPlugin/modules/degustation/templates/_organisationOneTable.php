@@ -42,9 +42,12 @@
 					if (isset($form[$name])):
 						?>
 						<tr class="vertical-center cursor-pointer">
-							<td>
+							<td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
 								<div class="row">
-									<div class="col-xs-5 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
+                                    <div class="col-xs-5 text-right">
+                                        <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
+                                        <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
+                                    </div>
 									<div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
 									<div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
 								</div>

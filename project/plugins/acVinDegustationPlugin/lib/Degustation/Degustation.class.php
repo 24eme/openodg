@@ -285,6 +285,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return strcmp($a_data,$b_data);
     }
 
+        public function addLeurre($hash, $numero_lot)
+        {
+            if (! $this->exist('lots')) {
+                $this->add('lots');
+            }
+
+            $leurre = $this->lots->add();
+            $leurre->leurre = true;
+            $leurre->setProduitHash($hash);
+            if ($numero_lot) {
+                $leurre->numero = $numero_lot;
+            }
+        }
+
 		/**** Fin Gestion des tables de la degustation ****/
 
 

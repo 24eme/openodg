@@ -12,15 +12,17 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
     public function configure()
     {
         $produits = $this->getProduits();
+
         $this->setWidgets(array(
             'hashref' => new sfWidgetFormChoice(array('choices' => $produits))
         ));
+
         $this->widgetSchema->setLabels(array(
             'hashref' => 'Appellation: '
         ));
 
         $this->setValidators(array(
-            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisi."))
+            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie."))
         ));
 
         $this->widgetSchema['numero_lot'] = new sfWidgetFormInput();
@@ -36,7 +38,7 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
             $produits = $this->getObject()->getConfigProduits();
             foreach ($produits as $produit) {
                 if (!$produit->isActif()) {
-                	continue;
+                    continue;
                 }
 
                 $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
@@ -52,9 +54,11 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
 
     protected function doUpdateObject($values)
     {
-        if (isset($values['hashref']) && !empty($values['hashref'])) {
-          $this->lots->add(null, $lot);
-          //addProduit($values['hashref'],$denomination_complementaire);
+        $degust = $this->getObject();
+        $hash = ($values['hashref']) ?: null;
+
+        if (isset($hash) && !empty($hash) && array_key_exists($hash, $this->getProduits())) {
+            $degust->addLeurre($hash, $values['numero_lot']);
         }
     }
 
