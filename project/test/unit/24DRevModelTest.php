@@ -134,9 +134,9 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume 
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
 if(DRevConfiguration::getInstance()->hasValidationOdg()) {
-    $t->is($drev->validation_odg, date('Y-m-d'), "La DRev a la date du jour comme date de validation odg");
+    $t->is($drev->validation_odg, null, "La DRev a la date du jour comme date de validation odg");
 } else {
-    $t->is($drev->validation_odg, null, "La date de validation ODG n'est pas mise automatiquement");
+    $t->is($drev->validation_odg, date('Y-m-d'), "La date de validation ODG n'est pas mise automatiquement");
 }
 
 if(FactureConfiguration::getInstance()->isActive()) {

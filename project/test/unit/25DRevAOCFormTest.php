@@ -10,7 +10,7 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(66);
+$t = new lime_test(80);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
