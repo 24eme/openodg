@@ -22,3 +22,16 @@ $t->comment('On attribue le lot à la première table');
 $doc->getLots()[0]->numero_table = 1;
 $t->is(count($doc->getLotsTableOrFreeLots(1)), 1, 'La table 1 à un lot');
 $t->is($doc->hasFreeLots(), false, "Il n'y a plus de lot non assigné");
+
+$t->comment('On créé un leurre');
+$produitLeurreHash = $doc->getLots()[0]->getProduitHash();
+$produitLeurre = $doc->lots->add($produitLeurreHash);
+$produitLeurre->leurre = true;
+$t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
+
+$t->is($doc->hasFreeLots(), true, 'Le leurre n\'est pas assigné');
+
+$t->comment('On assigne le lot à la table 1');
+$produitLeurre->numero_table = 1;
+$t->is($doc->hasFreeLots(), false, "Le leurre est assigné");
+$t->is(count($doc->getLotsTableOrFreeLots(1)), 2, "Il est assigné à la table 1");
