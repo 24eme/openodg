@@ -110,7 +110,7 @@ $t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
 
 $t->comment("Génération des mouvements");
 
-$drev->generateMouvements();
+$drev->generateMouvementsFactures();
 $drev->save();
 
 $t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
@@ -137,14 +137,14 @@ $t->is($drev->validation_odg, null, "La DRev n'a plus de date de validation par 
 $t->is($drev->etape, null, "L'étape est nul");
 $t->is(count($drev->mouvements), 0, "Les mouvements ont été supprimés");
 
-$drev->generateMouvements();
+$drev->generateMouvementsFactures();
 $drev->save();
 
 $t->is(count($drev->mouvements), 0, "Aucun mouvment n'a été généré car la drev n'est pas validé");
 
 $drev->validate();
 $drev->validateOdg();
-$drev->generateMouvements();
+$drev->generateMouvementsFactures();
 $drev->save();
 
 $t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
@@ -242,7 +242,7 @@ $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_vinifiee'), "
 
 $drevM1->validate();
 $drevM1->validateOdg();
-$drevM1->generateMouvements();
+$drevM1->generateMouvementsFactures();
 $drevM1->save();
 
 $t->is($drevM1->pieces[0]->libelle, "Revendication des appellations viticoles ".$drev->campagne." Version 1 (Télédéclaration)", "Contrôle sur le libellé du document (pièces) de la modificatrice");
@@ -285,7 +285,7 @@ $drevM2 = $drevM1->generateModificative();
 $drevM2->save();
 $drevM2->validate();
 $drevM2->validateOdg();
-$drevM2->generateMouvements();
+$drevM2->generateMouvementsFactures();
 $drevM2->save();
 
 $t->is(count($drevM2->mouvements->get($compteIdentifiant)), 0, "La DRev modificatrice a aucun mouvement");

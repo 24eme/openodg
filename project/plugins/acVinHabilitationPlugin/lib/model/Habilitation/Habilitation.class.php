@@ -152,7 +152,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         $this->cleanDoc();
         $this->validation = $date;
-        $this->generateMouvements();
+        $this->generateMouvementsFactures();
     }
 
 

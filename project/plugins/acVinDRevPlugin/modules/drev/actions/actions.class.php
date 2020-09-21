@@ -290,6 +290,10 @@ class drevActions extends sfActions {
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
 
+        if (DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
+            return $this->redirect('drev_vci', $this->drev);
+        }
+
         $this->secure(DRevSecurity::EDITION, $this->drev);
         if ($this->needDrDouane() && !$this->getUser()->isAdmin()) {
         	return $this->redirect('drev_dr_upload', $this->drev);
@@ -659,7 +663,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
     }
 
-    public function executeGenerateMouvements(sfWebRequest $request) {
+    public function executeGenerateMouvementsFactures(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
@@ -668,7 +672,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        $this->drev->generateMouvements();
+        $this->drev->generateMouvementsFactures();
         $this->drev->save();
 
         $this->getUser()->setFlash('notice', 'Les mouvements ont été générés');

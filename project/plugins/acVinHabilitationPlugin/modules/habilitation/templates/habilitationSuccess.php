@@ -1,7 +1,6 @@
 <?php use_helper('Date'); ?>
 <?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
   $etablissement = $habilitation->getEtablissementObject();
-  $compte = $habilitation->getEtablissementObject()->getMasterCompte();
  ?>
 <div class="page-header no-border">
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
@@ -16,7 +15,7 @@
 <?php endif; ?>
 
 <div class="well">
-    <?php if ($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
 <a style="margin-bottom: 30px;" class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_globale', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification globale</a>
 
 <?php endif; ?>
@@ -74,7 +73,7 @@
         </tbody>
     </table>
 
-    <?php if ($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
         <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
         </div>

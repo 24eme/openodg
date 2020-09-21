@@ -45,6 +45,8 @@ class ParcellaireCsvFile
     /** @var string $date_maj La date de mise à jour */
     private $date_maj = '';
 
+    private $contextInstance = '';
+
     /**
      * Constructeur.
      *
@@ -54,10 +56,11 @@ class ParcellaireCsvFile
      *
      * @throws Exception Si le CVI n'est rattaché à aucun établissement
      */
-    public function __construct(Etablissement $etablissement, Csv $file)
+    public function __construct(Etablissement $etablissement, Csv $file, $contextInstance = null)
     {
         $this->etablissement = $etablissement->identifiant;
         $this->file = $file;
+        $this->contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
 
         list(,$this->cvi) = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
 
@@ -144,14 +147,14 @@ class ParcellaireCsvFile
 
         foreach ($this->file->getLignes() as $parcelle) {
             if ($parcelle[self::CSV_FORMAT_PRODUIT] === null) {
-                sfContext::getInstance()->getLogger()->info("Parcelle sans produit : ".implode(',', $parcelle));
+                $this->contextInstance->getLogger()->info("Parcelle sans produit : ".implode(',', $parcelle));
                 continue;
             }
 
             $produit = $configuration->identifyProductByLibelle($parcelle[self::CSV_FORMAT_PRODUIT]);
 
             if (!$produit) {
-                sfContext::getInstance()->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT] );
+                $this->contextInstance->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT] );
                 continue;
             }
             $hash = $produit->getHash();
@@ -172,10 +175,10 @@ class ParcellaireCsvFile
             $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR]);
 
             if (! $this->check($new_parcelle)) {
-                sfContext::getInstance()->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
+                $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
                 throw new Exception("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
             }
-            sfContext::getInstance()->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
+            $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
         }
     }
 

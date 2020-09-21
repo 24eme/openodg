@@ -23,6 +23,8 @@ class ParcellaireJsonFile
     /** @var string $date_maj La date de mise à jour */
     private $date_maj = '';
 
+    private $contextInstance = '';
+
     /**
      * Constructeur.
      *
@@ -32,10 +34,11 @@ class ParcellaireJsonFile
      *
      * @throws Exception Si le CVI n'est rattaché à aucun établissement
      */
-    public function __construct(Etablissement $etablissement, $file)
+    public function __construct(Etablissement $etablissement, $file, $contextInstance = null)
     {
         $this->etablissement = $etablissement->identifiant;
         $this->file = $file;
+        $this->contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
 
         list(,$this->cvi) = explode('-', pathinfo($file, PATHINFO_FILENAME));
         

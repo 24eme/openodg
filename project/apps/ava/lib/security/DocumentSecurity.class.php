@@ -91,7 +91,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DEVALIDATION, $droits) && $this->doc instanceof InterfaceMouvementDocument && !$this->doc->isNonFactures()) {
+        if(in_array(self::DEVALIDATION, $droits) && $this->doc instanceof InterfaceMouvementFacturesDocument && !$this->doc->isNonFactures()) {
 
             return false;
         }

@@ -22,7 +22,7 @@ $t->comment("Création d'un abonnement");
 
 $abonnement = AbonnementClient::getInstance()->findOrCreateDoc($vitiCompte->identifiant, $dateDebut, $dateFin);
 $abonnement->tarif = AbonnementClient::TARIF_PLEIN;
-$abonnement->generateMouvements();
+$abonnement->generateMouvementsFactures();
 $abonnement->save();
 
 $t->ok($abonnement->_rev, "L'abonnement ".$abonnement->_id." a une révision ");

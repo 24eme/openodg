@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(28);
+$t = new lime_test(31);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -15,7 +15,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 $campagne = (date('Y')-1)."";
 
 //Début des tests
-$t->comment("Création d'une DRev");
+$t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$campagne.")");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -32,28 +32,38 @@ $t->comment("Saisie des volumes");
 
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
-    if(!$produit->getRendement()) {
+    if($produit->getRendement() > 0) {
         continue;
     }
     $produit_hash1 = $produit->getHash();
     break;
 }
 foreach($produits as $produit) {
-    if(!$produit->getRendement()) {
+    if($produit->getRendement() > 0) {
         continue;
     }
     $produit_hash2 = $produit->getHash();
 }
+foreach($produits as $produit) {
+    if($produit->getRendement() <= 0 || !$produit->hasMutageAlcoolique()) {
+        continue;
+    }
+    $produit_hash_mutage = $produit->getHash();
+}
 
 $produit1 = $drev->addProduit($produit_hash1);
-
 $produit2 = $drev->addProduit($produit_hash2);
-
 $produit3 = $drev->addProduit($produit_hash2, "BIO");
 
 $produit_hash1 = $produit1->getHash();
 $produit_hash2 = $produit2->getHash();
 $produit_hash3 = $produit3->getHash();
+
+if(isset($produit_hash_mutage)) {
+    $produit_mutage = $drev->addProduit($produit_hash_mutage);
+    $produit_hash_mutage = $produit_mutage->getHash();
+}
+
 $drev->save();
 
 $t->is($drev->exist($produit_hash1), true, "La produit ajouté existe");
@@ -67,6 +77,12 @@ $t->ok($drev->get($produit_hash3)->getKey() != "DEFAUT", "La clé du produit bio
 $t->is($drev->get($produit_hash3)->denomination_complementaire, "BIO", "La dénomination complémentaire est BIO");
 $t->is($drev->get($produit_hash3)->libelle, $drev->get($produit_hash3)->getConfig()->getLibelleComplet()." BIO", "La dénomination complémentaire est dans le libellé");
 
+if(isset($produit_hash_mutage)) {
+$t->is($drev->get($produit_hash_mutage)->libelle, $drev->get($produit_hash_mutage)->getConfig()->getLibelleComplet(), "Libellé du produit en mutage ".$drev->get($produit_hash_mutage)->libelle);
+} else {
+    $t->pass("Test non nécessaire car pas de mutage");
+}
+
 $produit1 = $drev->get($produit_hash1);
 $produit2 = $drev->get($produit_hash2);
 $produit3 = $drev->get($produit_hash3);
@@ -79,11 +95,31 @@ $produit1->vci->rafraichi = 10;
 $produit2->superficie_revendique = 150;
 $produit2->recolte->superficie_total = 150;
 $produit2->volume_revendique_issu_recolte = 110;
+
+$totalSuperficie = 350;
+$totalVolume = 200;
+$nbProduits = 3;
+
+if(isset($produit_hash_mutage)) {
+    $produit_mutage->superficie_revendique = 100;
+    $produit_mutage->recolte->superficie_total = 100;
+    $produit_mutage->volume_revendique_issu_recolte = 65;
+    $produit_mutage->volume_revendique_issu_mutage = 1;
+    $totalSuperficie += 100;
+    $totalVolume += 66;
+    $nbProduits += 1;
+}
+
 $drev->save();
 
-$t->is(count($drev->getProduits()), 3, "La drev a 3 produits");
-$t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est 350");
-$t->is($drev->declaration->getTotalVolumeRevendique(), 200, "Le volume revendiqué totale est 200");
+if(isset($produit_hash_mutage)) {
+    $t->is($drev->get($produit_hash_mutage)->volume_revendique_total, 66, "Le volume en mutage est pris en compte dans le volume total");
+} else {
+    $t->pass("Test non nécessaire car pas de mutage");
+}
+$t->is(count($drev->getProduits()), $nbProduits, "La drev a ".$nbProduits." produits");
+$t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est ".$totalSuperficie);
+$t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est ".$totalVolume);
 
 $t->comment("Validation");
 
@@ -91,12 +127,21 @@ $drev->validate();
 $drev->validateOdg();
 $drev->save();
 
-$t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est toujours de 350");
-$t->is($drev->declaration->getTotalVolumeRevendique(), 200, "Le volume revendiqué totale est toujours de 200");
+$t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est toujours de 350");
+$t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
-$t->is($drev->validation_odg, date('Y-m-d'), "La DRev a la date du jour comme date de validation odg");
-$t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
+if(DRevConfiguration::getInstance()->hasValidationOdg()) {
+    $t->is($drev->validation_odg, date('Y-m-d'), "La DRev a la date du jour comme date de validation odg");
+} else {
+    $t->is($drev->validation_odg, null, "La date de validation ODG n'est pas mise automatiquement");
+}
+
+if(FactureConfiguration::getInstance()->isActive()) {
+    $t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
+} else {
+    $t->pass("Test non nécessaire car la facturation n'est pas activé");
+}
 
 $drev->devalidate();
 $t->is($drev->validation, NULL, "La DRev n'est plus validée");
@@ -104,11 +149,21 @@ $t->is($drev->validation, NULL, "La DRev n'est plus validée");
 $drev->validate();
 $drev->save();
 
-$mouvements = $drev->mouvements->get($viti->identifiant);
-$t->is(count($mouvements), 3, "La DRev a 3 mouvements");
-$mouvement = $mouvements->getFirst();
-$t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
-$t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
+
+if(FactureConfiguration::getInstance()->isActive()) {
+    $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
+    $mouvements = $drev->mouvements->get($viti->identifiant);
+    $t->is(count($mouvements), 4, "La DRev a 4 mouvements");
+    $mouvement = $mouvements->getFirst();
+    $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
+    $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
+} else {
+    $t->pass("Test non nécessaire car la facturation n'est pas activé");
+    $t->pass("Test non nécessaire car la facturation n'est pas activé");
+    $t->pass("Test non nécessaire car la facturation n'est pas activé");
+    $t->pass("Test non nécessaire car la facturation n'est pas activé");
+}
+
 $t->comment("Génération d'une modificatrice");
 
 $drevM1 = $drev->generateModificative();
@@ -135,4 +190,8 @@ $drevM1->save();
 $drevM1->validate();
 $drevM1->save();
 
-$t->is(count($drevM1->mouvements->get($viti->identifiant)), 3, "La DRev modificatrice a 3 mouvements");
+if(FactureConfiguration::getInstance()->isActive()) {
+    $t->is(count($drevM1->mouvements->get($viti->identifiant)), 4, "La DRev modificatrice a 4 mouvements");
+} else {
+    $t->pass("Test non nécessaire car la facturation n'est pas activé");
+}

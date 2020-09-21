@@ -35,7 +35,7 @@ $line = explode(";", $lines[0]);
 $t->is($line[SV11CsvFile::CSV_TYPE], "SV11", "Le type de la ligne est SV11");
 $t->is($line[SV11CsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
 $t->is($line[SV11CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
-$t->is($line[SV11CsvFile::CSV_RECOLTANT_LIBELLE], "\"ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
+$t->is($line[SV11CsvFile::CSV_RECOLTANT_LIBELLE], "\"SARL ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
 $t->is($line[SV11CsvFile::CSV_RECOLTANT_COMMUNE], "NEUILLY", "Le commune est NEUILLY");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_CERTIFICATION], $produit->getCertification()->getKey(), "Certification OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_GENRE], $produit->getGenre()->getKey(), "Genre OK");

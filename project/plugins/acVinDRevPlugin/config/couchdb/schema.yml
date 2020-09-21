@@ -68,6 +68,7 @@ DRev:
                         superficie_revendique: { type: float }
                         volume_revendique_issu_recolte: { type: float }
                         volume_revendique_issu_vci: { type: float }
+                        volume_revendique_issu_mutage: { type: float }
                         volume_revendique_total: { type: float }
                         validation_odg: { required: false }
                         vci:
@@ -108,6 +109,7 @@ DRev:
             '*':
               type: collection
               class: DRevLot
+              inheritance: Lot
               definition:
                 fields:
                   date: { }
@@ -164,8 +166,8 @@ DRev:
               definition:
                 fields:
                   '*':
-                    class: DRevMouvement
-                    inheritance: Mouvement
+                    class: DRevMouvementFactures
+                    inheritance: MouvementFactures
                     type: collection
                     definition:
                       fields:
@@ -187,6 +189,43 @@ DRev:
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: DRevMouvementLots
+                    inheritance: MouvementLots
+                    type: collection
+                    definition:
+                      fields:
+                        prelevable: { type: integer }
+                        preleve: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        produit_couleur: { }
+                        volume: { type: float }
+                        date: {  }
+                        millesime: {  }
+                        region: {  }
+                        numero: {  }
+                        version: {  }
+                        origine_hash: {  }
+                        origine_type: {  }
+                        origine_document_id: {  }
+                        origine_mouvement: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
+                        destination_type: { }
+                        destination_date: { }
+                        details: {}
+                        region: {}
+                        campagne: {}
+                        id_document: {  }
       pieces:
         type: array_collection
         definition:

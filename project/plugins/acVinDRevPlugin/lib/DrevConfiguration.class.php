@@ -96,4 +96,8 @@ class DRevConfiguration {
       return isset($this->configuration['cgu']) && boolval($this->configuration['cgu']);
     }
 
+    public function hasEtapeSuperficie() {
+        return isset($this->configuration['etape_superficie']) && boolval($this->configuration['etape_superficie']);
+    }
+
 }
