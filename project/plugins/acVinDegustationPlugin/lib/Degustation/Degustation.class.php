@@ -172,7 +172,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
             return ($date1 < $date2) ? -1 : 1;
         });
-        var_dump($lots);exit;
         return $lots;
     }
 
