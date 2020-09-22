@@ -299,7 +299,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return strcmp($a_data,$b_data);
     }
 
-        public function addLeurre($hash, $numero_lot)
+        public function addLeurre($hash, $numero_lot, $numero_table)
         {
             if (! $this->exist('lots')) {
                 $this->add('lots');
@@ -307,6 +307,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $leurre = $this->lots->add();
             $leurre->leurre = true;
+            $leurre->numero_table = $numero_table;
             $leurre->setProduitHash($hash);
             if ($numero_lot) {
                 $leurre->numero = $numero_lot;

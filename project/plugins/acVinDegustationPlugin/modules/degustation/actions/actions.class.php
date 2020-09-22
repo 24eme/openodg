@@ -133,7 +133,7 @@ class degustationActions extends sfActions {
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable($this->numero_table);
         $options = array('tableLots' => $this->tableLotsOrFreeLots, 'numero_table' => $this->numero_table, 'liste_tables' => $this->liste_tables);
         $this->form = new DegustationOrganisationTableForm($this->degustation, $options);
-        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation);
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, ['table' => $this->numero_table]);
 
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -175,10 +175,16 @@ class degustationActions extends sfActions {
 
         if (!$this->ajoutLeurreForm->isValid()) {
 
-            return sfView::SUCCESS;
+            $this->getUser()->setFlash('error', 'Formulaire d\'ajout de leurre invalide');
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 0));
         }
         $this->ajoutLeurreForm->save();
-        return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => "0"));
+
+        $table = $this->ajoutLeurreForm->getValue('table');
+        if ($table == null) {
+            $table = 0;
+        }
+        return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $table));
     }
 
       public function executeResultats(sfWebRequest $request) {
