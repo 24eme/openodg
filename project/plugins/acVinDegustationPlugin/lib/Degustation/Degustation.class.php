@@ -312,6 +312,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             if ($numero_lot) {
                 $leurre->numero = $numero_lot;
             }
+
+            return $leurre;
         }
 
 		/**** Fin Gestion des tables de la degustation ****/
