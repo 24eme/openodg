@@ -326,7 +326,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			foreach ($this->degustateurs as $college => $degs) {
 				foreach ($degs as $compte_id => $degustateur) {
 					if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
-						$degustateurs[] = $degustateur;
+						$degustateurs[$compte_id] = $degustateur;
 					}
 				}
 			}
