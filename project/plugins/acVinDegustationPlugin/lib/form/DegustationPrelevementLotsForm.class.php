@@ -5,7 +5,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     private $lotsPrelevables = null;
 
     public function configure() {
-        $this->lotsPrelevables = $this->getObject()->getLotsPrelevables();
+        $this->lotsPrelevables = $this->getLotsPrelevables();
         $formLots = new BaseForm();
 		foreach ($this->lotsPrelevables as $key => $item) {
 			$formLots->embedForm($key, new DegustationPrelevementLotForm());

@@ -23,13 +23,16 @@
       if (isset($form[$name])):
     ?>
       <tr class="vertical-center cursor-pointer">
-        <td>
-					<div class="row">
-						<div class="col-xs-5 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
-						<div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
-			      <div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
-					</div>
-				</td>
+        <td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
+            <div class="row">
+                    <div class="col-xs-5 text-right">
+                        <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
+                        <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
+                    </div>
+                <div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
+              <div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
+            </div>
+        </td>
               <td class="text-center">
                   <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                       <?php echo $form[$name]->renderError() ?>
@@ -47,13 +50,9 @@
 <div class="row row-margin row-button">
       <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation_prelevement", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
       <div class="col-xs-4 text-center">
-				<button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupLeurreForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un leurre</button>
       </div>
       <div class="col-xs-4 text-right">
 					<button type="submit" class="btn btn-success btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button>
 			</div>
   </div>
 </form>
-
-
-<?php include_partial('degustation/popupAjoutLeurreForm', array('url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm)); ?>

@@ -27,9 +27,9 @@
     <div class="panel panel-default">
       <div class="panel-body">
         <?php if(!$numero_table): ?>
-          <?php include_partial('degustation/organisationMultiTables', array('degustation' => $degustation,'form' => $form, 'ajoutLeurreForm' => $ajoutLeurreForm)); ?>
+          <?php include_partial('degustation/organisationMultiTables', array('degustation' => $degustation, 'form' => $form)); ?>
         <?php else: ?>
-          <?php include_partial('degustation/organisationOneTable', array('degustation' => $degustation,'form' => $form,'numero_table' => $numero_table, 'syntheseLots' => $syntheseLots)); ?>
+          <?php include_partial('degustation/organisationOneTable', array('degustation' => $degustation,'form' => $form, 'ajoutLeurreForm' => $ajoutLeurreForm, 'numero_table' => $numero_table, 'syntheseLots' => $syntheseLots)); ?>
         <?php endif; ?>
       </div>
     </div>
