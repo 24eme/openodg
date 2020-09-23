@@ -10,7 +10,7 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(80);
+$t = new lime_test(82);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -378,6 +378,9 @@ $valuesRev = array(
 $valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'] = 2;
 
 $form->bind($valuesRev);
+
+$t->ok(!isset($form['produits'][$produit_hash1]['volume_revendique_issu_mutage']), "Pas de champs mutage");
+$t->ok(isset($form['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage']), "Champs volume en mutage");
 
 $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
