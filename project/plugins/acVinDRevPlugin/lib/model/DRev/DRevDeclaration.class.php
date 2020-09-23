@@ -98,27 +98,28 @@ class DRevDeclaration extends BaseDRevDeclaration
     }
 
 	public function getProduitsWithoutLots($region = null){
-		$produits = array();
-
-		if(count(DRevConfiguration::getInstance()->getOdgRegions()) == 0) {
-			foreach ($this->getProduits($region) as $produit) {
-				if($produit->getConfig()->isRevendicationParLots()){
-					continue;
-				}
-				$produits[$produit->getHash()] = $produit;
-			}
-			return $produits;
-		}
-
 		if($region){
+
 			return $this->getProduitsWithoutLotsByRegion($region);
 		}
 
-		foreach (DRevConfiguration::getInstance()->getOdgRegions() as $region) {
-				$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region);
-				uasort($produitsByRegion, "DrevDeclaration::sortByLibelle");
-				$produits = array_merge($produits,$produitsByRegion);
+		$produits = array();
+
+		foreach ($this->getProduits() as $produit) {
+			if($produit->getConfig()->isRevendicationParLots()){
+				continue;
 			}
+			$produits[$produit->getHash()] = $produit;
+		}
+
+		foreach (DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region);
+			foreach($produitsByRegion as $hash => $produit) {
+				unset($produits[$hash]);
+			}
+			uasort($produitsByRegion, "DrevDeclaration::sortByLibelle");
+			$produits = array_merge($produits,$produitsByRegion);
+		}
 
 		return $produits;
 	}
