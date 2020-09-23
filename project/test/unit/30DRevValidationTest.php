@@ -6,6 +6,9 @@ $nb_test = 11;
 if ($application == 'loire') {
     $nb_test += 3;
 }
+if ($application == 'igp13') {
+    $nb_test += 1;
+}
 $t = new lime_test($nb_test);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -99,4 +102,10 @@ $t->is($drev_modificative->getValidationOdg(),$date_validation_odg_2,"La date de
 if ($lot) {
     $t->is($drev_modificative->lots[0]->date_version,$date_validation_odg_1,"La date de version du lot de départ est celle de la validation ODG de la M00 ($date_validation_odg_1)");
     $t->is($lot->date_version,$date_validation_odg_2,"La date de version du dernier lot est celle de la validation ODG de la M01 ($date_validation_odg_2)");
+}
+
+if ($application == 'igp13') {
+    $dateDegustVoulue = $campagne.'-09-25';
+    $drev->setDateDegustationVoulue($dateDegustVoulue);
+    $t->is($drev->date_degustation_voulue, $dateDegustVoulue, 'La date de dégustation voulue par l\'opérateur est '.$dateDegustVoulue);
 }
