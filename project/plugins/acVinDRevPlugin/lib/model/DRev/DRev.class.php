@@ -1591,7 +1591,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
-    public function setDateDegustationVoulue($date) {
-        $this->date_degustation_voulue = $date;
+    public function setDateDegustationSouhaitee($date) {
+        $this->_add('date_degustation_voulue', $date);
     }
 }

@@ -106,6 +106,6 @@ if ($lot) {
 
 if ($application == 'igp13') {
     $dateDegustVoulue = $campagne.'-09-25';
-    $drev->setDateDegustationVoulue($dateDegustVoulue);
+    $drev->setDateDegustationSouhaitee($dateDegustVoulue);
     $t->is($drev->date_degustation_voulue, $dateDegustVoulue, 'La date de dégustation voulue par l\'opérateur est '.$dateDegustVoulue);
 }
