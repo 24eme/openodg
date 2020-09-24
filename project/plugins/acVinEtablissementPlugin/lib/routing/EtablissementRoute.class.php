@@ -12,6 +12,19 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
 
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
+
+        if($myUser->hasDrevAdmin() && !$myUser->isAdmin()) {
+            $ids = DRevClient::getInstance()->getHistory($this->getEtablissement()->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+            $region = $this->getEtablissement()->getSociete()->getMasterCompte()->region;
+            $drev = null;
+            if(count($ids)) {
+                $drev = DRevClient::getInstance()->find($ids[0]);
+            }
+            if(!$region || !$drev || !count($drev->getProduitsWithoutLots($region))) {
+                throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+            }
+        }
+
         $module = sfContext::getInstance()->getRequest()->getParameterHolder()->get('module');
         sfContext::getInstance()->getResponse()->setTitle(strtoupper($module).' - '.$this->etablissement->nom);
         return $this->etablissement;
