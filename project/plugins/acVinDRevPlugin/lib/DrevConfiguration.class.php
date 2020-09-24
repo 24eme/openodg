@@ -100,4 +100,7 @@ class DRevConfiguration {
         return isset($this->configuration['etape_superficie']) && boolval($this->configuration['etape_superficie']);
     }
 
+    public function hasDegustation() {
+        return isset($this->configuration['degustation']) && boolval($this->configuration['degustation']);
+    }
 }

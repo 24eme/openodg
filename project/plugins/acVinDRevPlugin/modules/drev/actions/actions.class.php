@@ -636,6 +636,10 @@ class drevActions extends sfActions {
             $this->drev->validate();
         }
 
+        if (DrevConfiguration::getInstance()->hasDegustation()) {
+            $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
+        }
+
         if($this->getUser()->isAdmin() && !DrevConfiguration::getInstance()->hasValidationOdg()) {
             $this->drev->validateOdg();
         }
