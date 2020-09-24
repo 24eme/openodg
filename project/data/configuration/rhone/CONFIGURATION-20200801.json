@@ -3182,9 +3182,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": -1,
-                                   "rendement_vci": 0,
-                                   "rendement_vci_total": 0
+                                   "rendement": 38,
+                                   "rendement_vci": 3,
+                                   "rendement_vci_total": 9
                                }
                            },
                            "CDP": {
@@ -3595,7 +3595,7 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 42,
+                                   "rendement": 41,
                                    "rendement_vci": 0,
                                    "rendement_vci_total": 0
                                }
@@ -3841,7 +3841,7 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 44,
+                                   "rendement": 42,
                                    "rendement_vci": 0,
                                    "rendement_vci_total": 0
                                }
@@ -5511,7 +5511,7 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": -1,
+                                   "rendement": 38,
                                    "rendement_vci": 0,
                                    "rendement_vci_total": 0
                                }
@@ -6099,7 +6099,7 @@
                                                            }
                                                        },
                                                        "attributs": {
-                                                           "rendement": 40,
+                                                           "rendement": 42,
                                                            "rendement_vci": null,
                                                            "rendement_vci_total": null
                                                        }
@@ -6497,7 +6497,7 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 65,
+                                   "rendement": 30,
                                    "rendement_vci": 0,
                                    "rendement_vci_total": 0
                                }
