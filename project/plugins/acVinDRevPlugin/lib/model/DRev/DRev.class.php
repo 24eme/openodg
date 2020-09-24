@@ -865,7 +865,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $date = date('Y-m-d');
         }
 
-        if(DrevConfiguration::getInstance()->hasOdgProduits()){
+        if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdg()) {
+            throw new sfException("La validation nécessite une région");
+        }
+
+        if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
 
