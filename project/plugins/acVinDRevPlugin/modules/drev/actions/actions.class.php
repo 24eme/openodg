@@ -176,8 +176,8 @@ class drevActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
-        $params = $request->getParameter("fichier");
-        if(!isset($params["nodr"])){
+
+        if(!DrevConfiguration::getInstance()->isDrDouaneRequired() && !$this->form->getValue('nodr')){
           	return $this->redirect('drev_lots', $this->drev);
         }
 
@@ -185,9 +185,9 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
 	    }
-        if (!$this->form->getValue('nodr')) {
+        if (!DrevConfiguration::getInstance()->isDrDouaneRequired() && !$this->form->getValue('nodr')) {
 
-          return $this->redirect('drev_revendication_superficie', $this->drev);
+            return $this->redirect('drev_revendication_superficie', $this->drev);
         }
         if (!$this->form->getValue('file')) {
 
