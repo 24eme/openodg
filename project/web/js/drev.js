@@ -278,6 +278,28 @@
             });
         }
 
+        var inputs_hl = document.querySelectorAll('.modal input.input-hl')
+
+        inputs_hl.forEach(function (input, index) {
+            input.addEventListener('change', function (event) {
+                var total = 0.00
+
+                var modal = event.target.parentElement
+                while (! modal.classList.contains('modal')) {
+                    modal = modal.parentElement
+                }
+
+                var lot = modal.dataset.lot
+
+                inputs = modal.querySelectorAll('input.input-hl')
+                inputs.forEach(function (input) {
+                    total += (parseFloat(input.value) === NaN) ? parseFloat(0) : parseFloat(input.value)
+                })
+
+                var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
+                vol_total.value = parseFloat(total)
+            })
+        })
 
         checkBlocsLot();
         checkBlocsLotCepages();
