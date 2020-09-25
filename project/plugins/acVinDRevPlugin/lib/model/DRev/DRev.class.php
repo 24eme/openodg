@@ -44,6 +44,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected $version_document = null;
     protected $piece_document = null;
     protected $csv_douanier = null;
+    protected $document_douanier_type = null;
 
     public function __construct() {
         parent::__construct();
@@ -286,6 +287,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentDouanierType() {
+        if(!is_null($this->document_douanier_type)) {
+            return $this->document_douanier_type;
+        }
 
         if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
 
@@ -301,9 +305,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return SV12CsvFile::CSV_TYPE_SV12;
         }
 
-        $document = $this->getDocumentDouanier(null, acCouchdbClient::HYDRATE_JSON);
+        $document = $this->getDocumentDouanier(null, null, acCouchdbClient::HYDRATE_JSON);
 
-        return ($document) ? $document->type : null;
+        $this->document_douanier_type = ($document) ? $document->type : null;
+        
+        return $this->document_douanier_type;
     }
 
     public function getDocumentDouanierClient()
