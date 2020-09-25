@@ -50,7 +50,7 @@ foreach($config->getProduits() as $produit) {
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
-file_put_contents($csvTmpFile, str_replace(array("%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($viti->cvi, $produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
 $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());

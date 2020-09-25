@@ -37,8 +37,8 @@ $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg.').".csv";
 file_put_contents(
     $csvTmpFile,
     str_replace(
-        array("%code_inao%", "%libelle_produit%"),
-        array($produit->getCodeDouane(), $produit->getLibelleComplet()),
+        array("%cvi", "%code_inao%", "%libelle_produit%"),
+        array($nego->cvi, $produit->getCodeDouane(), $produit->getLibelleComplet()),
         $csvContentTemplate
     )
 );
