@@ -15,7 +15,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
 
         if($myUser->hasDrevAdmin() && !$myUser->isAdmin()) {
             $ids = DRevClient::getInstance()->getHistory($this->getEtablissement()->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
-            $region = $this->getEtablissement()->getSociete()->getMasterCompte()->region;
+            $region = $myUser->getCompte()->region;
             $drev = null;
             if(count($ids)) {
                 $drev = DRevClient::getInstance()->find($ids[0]);

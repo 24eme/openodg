@@ -36,6 +36,10 @@
 }
 
 .panel-body-success {
-  
+
   border-color: rgba(130, 147, 69, 0.4);
+}
+
+#menu_navigation ul.navbar-nav li.disabled {
+    opacity: 0.4;
 }
