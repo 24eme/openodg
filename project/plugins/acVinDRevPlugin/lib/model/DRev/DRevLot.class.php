@@ -19,15 +19,15 @@ class DRevLot extends BaseDRevLot
 
             return $this->getDocument()->addProduit($this->produit_hash);
         }
-
-        if($this->getConfigProduit()->getParent()->exist('DEFAUT') && $this->getDocument()->exist($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash())) {
+        
+        if($this->getConfigProduit() && $this->getConfigProduit()->getParent()->exist('DEFAUT') && $this->getDocument()->exist($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash())) {
 
             return $this->getDocument()->addProduit($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash());
         }
 
         return null;
     }
-    
+
     public function lotPossible(){
       $hashCompatibles = array();
       $hash = $this->_get('produit_hash');
