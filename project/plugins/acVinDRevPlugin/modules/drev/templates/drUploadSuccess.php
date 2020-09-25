@@ -17,17 +17,32 @@
 				<?php echo $form['file']->renderError() ?>
 			</div>
 			<div class="col-xs-1">
-				<?php echo $form['file']->renderLabel() ?>
+				<?php echo $form['file']->renderLabel(); ?>
 			</div>
 			<div class="col-xs-11">
-				<?php echo $form['file']->render() ?>
+				<?php echo $form['file']->render(); ?>
 			</div>
 		</div>
     </div>
+    <?php if(!DrevConfiguration::getInstance()->isDrDouaneRequired()): ?>
+    <div class="row" style="margin: 20px 0;">
+        	<div class="form-group <?php if($form['nodr']->hasError()): ?>has-error<?php endif; ?>">
+    			<div class="col-xs-11 col-xs-offset-1 text-danger">
+    				<?php echo $form['nodr']->renderError() ?>
+    			</div>
+    			<div class="col-xs-10 text-right">
+    				<?php echo $form['nodr']->renderLabel() ?>
+    			</div>
+    			<div class="col-xs-2 text-right">
+    				<?php echo $form['nodr']->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")) ?>
+    			</div>
+    		</div>
+      </div>
+    <?php endif; ?>
     <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
     <div class="col-xs-6 text-right">
-        <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
+          <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
     </div>
     </div>
 </form>

@@ -176,12 +176,19 @@ class drevActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
+        $params = $request->getParameter("fichier");
+        if(!isset($params["nodr"])){
+          	return $this->redirect('drev_lots', $this->drev);
+        }
 
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
 	    }
+        if (!$this->form->getValue('nodr')) {
 
+          return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
         if (!$this->form->getValue('file')) {
 
         	return $this->redirect('drev_revendication_superficie', $this->drev);
@@ -283,7 +290,9 @@ class drevActions extends sfActions {
     }
 
     private function needDrDouane() {
-
+        if(!DrevConfiguration::getInstance()->isDrDouaneRequired()){
+          return false;
+        }
         return (!$this->drev->hasDocumentDouanier() && ($this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) && !$this->drev->isPapier());
     }
 
@@ -359,6 +368,8 @@ class drevActions extends sfActions {
 
     public function executeLots(sfWebRequest $request) {
 
+
+
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
@@ -371,12 +382,13 @@ class drevActions extends sfActions {
         if(count($this->drev->getLots())){
             $has = true;
         }
-        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
+        
+        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec')) {
+        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec') && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
 
             return $this->redirect('drev_vci', array('sf_subject' => $this->drev, 'prec' => 1));
         }
@@ -793,7 +805,7 @@ class drevActions extends sfActions {
     }
 
     public function executeSendoi(sfWebRequest $request) {
-      
+
     	$drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::VISUALISATION, $drev);
       $drevOi = new DRevOI($drev, null);
