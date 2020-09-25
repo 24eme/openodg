@@ -3,22 +3,14 @@ all:
     drev:
       validation_odg: false
       odg:
-        VINSOBRES:
-          nom: "Comité des Vignerons de Vinsobres"
-          adresse: "8 rue Gironde, 26110 Vinsobres"
-          telephone: "%app_drev_VINSOBRES_telephone%"
-          email: "%app_drev_VINSOBRES_email%"
+        BEAUMESVENISES:
+          nom: "Conservatoire AOC Beaumes Venise"
+          adresse: "Place du marché à coté de la poste, 84190 Beaumes-de-Venise"
+          telephone: "%app_drev_BEAUMESVENISES_telephone%"
+          email: "%app_drev_BEAUMESVENISES_email%"
           produits:
-            - "TRANQ/appellations/VBR"
-          inao: "data/drev/VINSOBRES.csv"
-        VACQUEYRAS:
-          nom: "Syndicat de l’AOC Vacqueyras"
-          adresse: "158, route de Carpentras, BP 17, 84190 VACQUEYRAS"
-          telephone: "%app_drev_VACQUEYRAS_telephone%"
-          email: "%app_drev_VACQUEYRAS_email%"
-          produits:
-            - "TRANQ/appellations/VAC"
-          inao: "data/drev/VACQUEYRAS.csv"
+            - "TRANQ/appellations/BEA"
+            - "VDN/appellations/VDB"
         CAIRANNE:
           nom: "Syndicat de l’AOC Cairanne"
           adresse: "6 place des Vignerons, 84290 CAIRANNE"
@@ -26,4 +18,10 @@ all:
           email: "%app_drev_CAIRANNE_email%"
           produits:
             - "TRANQ/appellations/CAR"
-          inao: "data/drev/CAIRANNE.csv"
+        VINSOBRES:
+          nom: "Comité des Vignerons de Vinsobres"
+          adresse: "8 rue Gironde, 26110 Vinsobres"
+          telephone: "%app_drev_VINSOBRES_telephone%"
+          email: "%app_drev_VINSOBRES_email%"
+          produits:
+            - "TRANQ/appellations/VBR"

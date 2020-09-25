@@ -100,8 +100,13 @@ class DRevConfiguration {
         return isset($this->configuration['etape_superficie']) && boolval($this->configuration['etape_superficie']);
     }
 
+
     public function isDrDouaneRequired() {
         return isset($this->configuration['dr_douane_required']) && boolval($this->configuration['dr_douane_required']);
+    }
+
+    public function hasDegustation() {
+        return isset($this->configuration['degustation']) && boolval($this->configuration['degustation']);
     }
 
 }

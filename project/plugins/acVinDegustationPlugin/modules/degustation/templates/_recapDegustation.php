@@ -15,14 +15,14 @@
               </tr>
         	</thead>
         	<tbody>
-        		<?php foreach ($degustation->getDegustateursConfirmes() as $degustateur): ?>
-	        		<tr>
-								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
-	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
-	              <td class="text-center">
-									<?php if($degustateur->exist('numero_table') && !is_null($degustateur->numero_table)): ?>Table n° <?php echo $degustateur->numero_table; ?><?php endif; ?>
-								</td>
-							</tr>
+                <?php foreach ($degustation->getDegustateursConfirmes() as $compte_id => $degustateur): ?>
+                    <tr>
+                        <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
+                        <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $compte_id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                  <td class="text-center">
+                        <?php if($degustateur->exist('numero_table') && !is_null($degustateur->numero_table)): ?>Table n° <?php echo $degustateur->numero_table; ?><?php endif; ?>
+                    </td>
+                </tr>
         		<?php endforeach;?>
         	</tbody>
         </table>

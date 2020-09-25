@@ -36,6 +36,21 @@
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
+    <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
+    <div style="margin-top: 30px">
+        <div class="form-group">
+            <?php echo $form["date_degustation_voulue"]->renderError(); ?>
+            <?php echo $form["date_degustation_voulue"]->renderLabel("Date de dégustation souhaitée", array("class" => "control-label")); ?></br>
+            <div class="input-group date-picker-week col-xs-4">
+                <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control")); ?>
+                <div class="input-group-addon">
+                    <span class="glyphicon-calendar glyphicon"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif ?>
+
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a href="<?php echo ($drev->isModificative())? url_for("drev_lots", $drev) : url_for("drev_revendication", array('sf_subject' => $drev, 'prec' => true)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>

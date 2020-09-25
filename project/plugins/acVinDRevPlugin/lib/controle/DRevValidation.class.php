@@ -72,6 +72,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, 'Je m\'engage à transmettre la déclaration de mutage');
     }
 
     public function controle()
@@ -89,6 +90,7 @@ class DRevValidation extends DocumentValidation
         $this->controleNeant();
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
+        $this->controleEngagementMutage();
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleHabilitationINAO();
         $this->controleLots();
@@ -125,6 +127,17 @@ class DRevValidation extends DocumentValidation
         	return;
         }
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, '');
+    }
+
+    protected function controleEngagementMutage()
+    {
+        if($this->document->isPapier()) {
+            return;
+        }
+        if(!$this->document->declaration->getTotalVolumeRevendiqueMutage()) {
+            return;
+        }
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, '');
     }
 
     protected function controleEngagementSv()

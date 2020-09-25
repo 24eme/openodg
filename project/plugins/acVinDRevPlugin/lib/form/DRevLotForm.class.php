@@ -50,7 +50,7 @@ class DRevLotForm extends acCouchdbObjectForm
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
             $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
-            $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat());
+            $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
 

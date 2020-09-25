@@ -21,7 +21,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(32);
+$t = new lime_test(30);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -197,4 +197,4 @@ $id = $societedegust->getidentifiant();
 $t->comment("compte 7 : ".$id);
 
 $compteDegustateur = $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societedegust);
-$t->is($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un compte séparé");
+$t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un compte séparé");

@@ -94,6 +94,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function updateMouvementsLots($preleve = 1) {
 	    foreach ($this->lots as $lot) {
+            if ($lot->leurre === true) {
+                continue;
+            }
 	        $doc = acCouchdbManager::getClient()->find($lot->id_document);
 	        if ($doc instanceof InterfaceMouvementLotsDocument) {
 	            if ($doc->exist($lot->origine_mouvement)) {
@@ -153,14 +156,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 return $mvt;
 	 }
 
-	public function getLotsPrelevables() {
-         $lots = array();
-         foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
-             $lot = MouvementLotView::generateLotByMvt($mvt);
-             $lots[$key] = $lot;
-         }
-         return $lots;
-     }
+    public function getLotsPrelevables() {
+        $lots = array();
+        foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
+            $lot = MouvementLotView::generateLotByMvt($mvt);
+            $lots[$key] = $lot;
+        }
+
+        uasort($lots, function ($lot1, $lot2) {
+            $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
+            $date2 = DateTime::createFromFormat('Y-m-d', $lot2->date);
+
+            if ($date1 == $date2) {
+                return 0;
+            }
+            return ($date1 < $date2) ? -1 : 1;
+        });
+        return $lots;
+    }
 
 	 public function setLotsFromMvtKeys($keys, $statut){
 		 $this->remove('mouvements_lots');
@@ -285,6 +298,23 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return strcmp($a_data,$b_data);
     }
 
+        public function addLeurre($hash, $numero_lot, $numero_table)
+        {
+            if (! $this->exist('lots')) {
+                $this->add('lots');
+            }
+
+            $leurre = $this->lots->add();
+            $leurre->leurre = true;
+            $leurre->numero_table = $numero_table;
+            $leurre->setProduitHash($hash);
+            if ($numero_lot) {
+                $leurre->numero = $numero_lot;
+            }
+
+            return $leurre;
+        }
+
 		/**** Fin Gestion des tables de la degustation ****/
 
 
@@ -295,7 +325,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			foreach ($this->degustateurs as $college => $degs) {
 				foreach ($degs as $compte_id => $degustateur) {
 					if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
-						$degustateurs[] = $degustateur;
+						$degustateurs[$compte_id] = $degustateur;
 					}
 				}
 			}

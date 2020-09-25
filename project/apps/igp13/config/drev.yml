@@ -9,3 +9,4 @@ all:
       cgu: true
       etape_superficie: false
       dr_douane_required: false
+      degustation: true

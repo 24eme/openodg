@@ -46,7 +46,7 @@
         <th class="th" style="text-align: center; width: 137px;">Superficie revendiquée</th>
         <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI</th>
         <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->campagne ?></th>
-        <th class="th" style="text-align: center; width: 137px;">Volume revendiqué net total</th>
+        <th class="th" style="text-align: center; width: 137px;">Volume revendiqué net total <?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small><?php endif; ?></th>
     </tr>
     <?php foreach($drev->declaration->getProduitsWithoutLots($region) as $produit): ?>
         <tr>
