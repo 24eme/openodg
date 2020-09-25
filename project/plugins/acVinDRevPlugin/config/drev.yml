@@ -9,3 +9,4 @@ all:
       validation_odg: false
       cgu: false
       etape_superficie: true
+      dr_douane_required: true
