@@ -255,9 +255,17 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $total;
 	}
 
-		public static function sortByLibelle($p1,$p2){
-			return strcmp($p1->getLibelle(), $p2->getLibelle());
-		}
+	public function getTotalVolumeRevendiqueMutage() {
+		$total = 0;
+        foreach($this->getProduits() as $key => $item) {
+            $total += $item->volume_revendique_issu_mutage;
+        }
+        return $total;
+	}
+
+	public static function sortByLibelle($p1,$p2){
+		return strcmp($p1->getLibelle(), $p2->getLibelle());
+	}
 
 
 }
