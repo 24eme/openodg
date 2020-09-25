@@ -34,10 +34,10 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
 
     public function getEtablissement() {
 
-	if (!$this->etablissement) {
-           $this->etablissement = $this->getObject();
+	    if (!$this->etablissement) {
+            $this->getObject();
       	}
 
-	return $this->etablissement;
+	    return $this->etablissement;
     }
 }
