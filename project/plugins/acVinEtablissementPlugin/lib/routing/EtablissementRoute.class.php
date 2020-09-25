@@ -7,19 +7,16 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
     protected function getObjectForParameters($parameters = null) {
         $this->etablissement = EtablissementClient::getInstance()->find($parameters['identifiant']);
         $myUser = sfContext::getInstance()->getUser();
+        $compteUser = $myUser->getCompte();
         if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin() &&
-                $myUser->getCompte()->identifiant != $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant) {
+                $compteUser->identifiant != $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant) {
 
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
         if($myUser->hasDrevAdmin() && !$myUser->isAdmin()) {
-            $ids = DRevClient::getInstance()->getHistory($this->getEtablissement()->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
-            $region = $myUser->getCompte()->region;
-            $drev = null;
-            if(count($ids)) {
-                $drev = DRevClient::getInstance()->find($ids[0]);
-            }
+            $region = $compteUser->region;
+            $drev = DRevClient::getInstance()->getLastDrevFromEtablissement($this->etablissement);
             if(!$region || !$drev || !count($drev->getProduitsWithoutLots($region))) {
                 throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
             }
