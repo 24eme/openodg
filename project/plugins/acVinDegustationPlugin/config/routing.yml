@@ -63,10 +63,9 @@ degustation_visualisation:
   requirements:
     sf_method: [get]
 
-
-degustation_degustateurs_confirmation:
-  url: /degustation/:id/degustateurs-confirmation
-  param: { module: degustation, action: degustateursConfirmation }
+degustation_preleve:
+  url: /degustation/:id/preleve
+  param: { module: degustation, action: preleve }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -74,9 +73,9 @@ degustation_degustateurs_confirmation:
   requirements:
     sf_method: [get, post]
 
-degustation_preleve:
-  url: /degustation/:id/preleve
-  param: { module: degustation, action: preleve }
+degustation_degustateurs_confirmation:
+  url: /degustation/:id/degustateurs-confirmation
+  param: { module: degustation, action: degustateursConfirmation }
   class: DegustationRoute
   options:
     model:    Degustation

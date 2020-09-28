@@ -10,7 +10,10 @@
 
 <div class="page-header no-border">
   <h2>Saisie des résultats de conformité</h2>
+  <h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
 </div>
+
+<p>Cocher les lots conformes à chaque tables</p>
 
 <ul class="nav nav-pills">
   <?php for ($i= 0; $i < $nb_tables; $i++): ?>
@@ -71,7 +74,7 @@
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">
-                  <button type="submit" class="btn btn-success btn-upper">Valider</button>
+                  <button type="submit" class="btn btn-primary btn-upper">Valider</button>
                 </div>
               </div>
             </form>
