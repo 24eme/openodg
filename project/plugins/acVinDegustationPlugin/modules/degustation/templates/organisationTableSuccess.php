@@ -1,6 +1,6 @@
 
 
-<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_organisation_table', 'nom' => 'Organisation des tables'))); ?>
 
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -9,7 +9,9 @@
 
 <div class="page-header no-border">
   <h2>Attribution des lots aux tables</h2>
+  <h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
 </div>
+<p>Répartir les lots qui ont été prélevés sur les différentes tables de dégustation</p>
 
 <ul class="nav nav-pills degustation">
   <li role="presentation" class="<?php if(!$numero_table): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => 0)) ?>">Toutes tables</a></li>

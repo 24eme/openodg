@@ -122,7 +122,7 @@ class degustationActions extends sfActions {
 
          $this->form->save();
 
-        return $this->redirect('degustation_confirmation', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation_visualisation', array('id' => $this->degustation->_id));
     }
 
 

@@ -46,7 +46,8 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
             foreach ($this->lotsPrelevables as $key => $item) {
                 if (array_key_exists($item->id_document, $drevs) === false) {
                     $drev = DRevClient::getInstance()->find($item->id_document);
-                    $drevs[$item->id_document] = DateTime::createFromFormat('Y-m-d', $drev->date_degustation_voulue)->format('Ymd');
+                    $drevs[$item->id_document] = ($drev->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $drev->date_degustation_voulue)->format('Ymd') : date('Ymd');
+
                 }
 
                 $preleve = ($drevs[$item->id_document] > $this->getDateDegustation()) ? 0 : 1;

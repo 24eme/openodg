@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-  <h2>Suivie dégustation</h2>
+  <h2>Suivie de dégustation</h2>
   <h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
 </div>
 
@@ -62,7 +62,7 @@
 	</div>
 </div>
   		<div class="col-xs-12 text-right">
-  			<a class="btn btn-default" href="<?php echo url_for('degustation_presences', $degustation) ?>" ><span class=" glyphicon glyphicon-user"></span>&nbsp;&nbsp;Présence des dégustateurs&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+  			<a class="btn btn-default" href="<?php echo url_for('degustation_presences', $degustation) ?>" >&nbsp;Présence des dégustateurs&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
   		</div>
 
 </div>
@@ -77,8 +77,6 @@
     </div>
 	</div>
   <div class="col-xs-12 text-right">
-    <a class="btn btn-default" href="<?php echo url_for('degustation_resultats', $degustation) ?>" ><span class="glyphicon glyphicon-glass"></span>&nbsp;&nbsp;Résultats lots&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+    <a class="btn btn-default" href="<?php echo url_for('degustation_resultats', $degustation) ?>" >&nbsp;Résultats lots&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
   </div>
 </div>
-
-<?php //include_partial('degustation/recapDegustation', array('degustation' => $degustation)); ?>

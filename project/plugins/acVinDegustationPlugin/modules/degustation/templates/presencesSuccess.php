@@ -9,8 +9,11 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-  <h2>Saisie des dégustateurs présents par table</h2>
+  <h2>Présence des dégustateurs</h2>
+  <h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
 </div>
+
+<p>Cocher les dégustateurs présents à chacune des tables</p>
 
 <ul class="nav nav-pills">
   <?php for ($i= 0; $i < $nb_tables; $i++): ?>
@@ -22,7 +25,6 @@
   <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-body">
-
         <div class="row row-condensed">
           <div class="col-xs-12">
             <form action="<?php echo url_for("degustation_presences", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>" method="post" class="form-horizontal degustation">
@@ -62,7 +64,7 @@
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">
-                  <button type="submit" class="btn btn-success btn-upper">Valider</button>
+                  <button type="submit" class="btn btn-primary btn-upper">Valider</button>
                 </div>
               </div>
             </form>

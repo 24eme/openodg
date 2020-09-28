@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 
-<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 
 <div class="page-header no-border">
   <h2>Échantillons prélevés</h2>

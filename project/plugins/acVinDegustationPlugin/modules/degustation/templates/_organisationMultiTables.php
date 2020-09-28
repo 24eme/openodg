@@ -52,7 +52,7 @@
       <div class="col-xs-4 text-center">
       </div>
       <div class="col-xs-4 text-right">
-					<button type="submit" class="btn btn-success btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button>
 			</div>
   </div>
 </form>
