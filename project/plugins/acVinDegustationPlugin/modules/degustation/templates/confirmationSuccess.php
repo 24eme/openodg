@@ -2,11 +2,13 @@
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
-<h2>Visualisation des dégustateurs et prélévements</h2>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
+
+<h2>Confirmation dégustation</h2>
+<h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
 
 <?php include_partial('degustation/recap', array('degustation' => $degustation)); ?>
 
@@ -22,6 +24,6 @@
         <a class="btn btn-xs btn-default" href="<?php echo url_for('degustation_devalidation', $degustation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette dégustation ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
 	  </div>
     <div class="col-xs-3 text-right">
-      <a class="btn btn-success" <?php if(!$degustation->hasAllDegustateursConfirmation()): ?> disabled="disabled" <?php endif; ?> href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" ><span class="glyphicon glyphicon-tint"></span>&nbsp;&nbsp;Lots par table&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+      <a class="btn btn-success" href="<?php echo url_for('degustation_visualisation', $degustation) ?>" >&nbsp;Visualisation et organisation&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
     </div>
 </div>
