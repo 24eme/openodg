@@ -101,6 +101,10 @@ class DRevValidation extends DocumentValidation
     	if(count($this->document->getProduits()) > 0) {
     		return;
     	}
+
+        if(count($this->document->lots->toArray(true, false)) && !$this->document->hasDocumentDouanier()) {
+    		return;
+    	}
     	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
     }
 
@@ -288,7 +292,7 @@ class DRevValidation extends DocumentValidation
           //si lots IGP n'existent pas dans la DR
 
 
-        if(!$lot->lotPossible()){
+        if(!$lot->lotPossible() && $this->document->hasDocumentDouanier()){
             if (preg_match('/(DEFAUT|MULTI)$/', $lot->produit_hash)) {
                 $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }else{
