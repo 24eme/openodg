@@ -19,7 +19,7 @@
           			<tbody id="synthese">
           			<?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
           				<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
-          					<td><?php echo $lotsProduit->libelle ?>&nbsp;<small><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
+          					<td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
           					<td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
           				</tr>
           			<?php endforeach; ?>
@@ -55,11 +55,11 @@
                                                   <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
                                               </div>
           									<div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
-                            <div class="col-xs-3 text-right"><small><?php echo $lot->details; ?></small></div>
+                            <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
           									<div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
           								</div>
           							</td>
-          							<td class="text-center" data-hash="<?php echo $lot->produit_hash; ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
+          							<td class="text-center" data-hash="<?php echo $lot->produit_hash; ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>
           									<div class="col-xs-12">
