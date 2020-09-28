@@ -1,11 +1,13 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 
-<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 
 <div class="page-header no-border">
   <h2>Échantillons prélevés</h2>
+  <h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
 </div>
+
 <p>Sélectionner les lots qui ont été prélevés</p>
 <form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
@@ -30,7 +32,7 @@
 			<tr class="vertical-center cursor-pointer">
                 <td><?php echo $lot->declarant_nom; ?></td>
 				<td><?php echo $lot->numero; ?></td>
-				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
+				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($formLot->hasError()): ?>has-error<?php endif; ?>">

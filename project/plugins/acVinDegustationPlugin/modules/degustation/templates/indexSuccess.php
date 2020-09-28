@@ -61,17 +61,8 @@
             <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
         </td>
         <td class="col-sm-2 text-right">
-          <?php if ($d->isValidee()): ?>
-            <div class="dropdown">
-            <button class="btn btn-success dropdown-toggle" type="button" id="visualisation_menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              visualisation
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="visualisation_menu">
-              <li <?php if(!$d->hasFreeLots()): ?>class="disabled"<?php endif; ?>  ><a href="<?php echo url_for('degustation_visualisation_prelevement', $d)?>" >Visualisation prélévements</a></li>
-              <li <?php if($d->hasFreeLots()): ?>class="disabled"<?php endif; ?>   ><a href="<?php echo url_for('degustation_visualisation_degustation', $d)?>" >Visualisation dégustation</a></li>
-            </ul>
-          </div>
+            <?php if ($d->isValidee()): ?>
+              <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-success" >Visualisation dégustation</a>
           <?php else: ?>
             <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la saisie</a>
           <?php endif; ?>

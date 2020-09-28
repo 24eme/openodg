@@ -299,9 +299,17 @@
                 })
 
                 var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
-                vol_total.value = parseFloat(total)
+                vol_total.value = parseFloat(total).toFixed(precision(total))
             })
         })
+
+        function precision(f) {
+            if (!isFinite(f)) { return 2 }
+            var e = 1, p = 0
+            while (Math.round(f * e) / e !== f) { e *= 10; p++; }
+            if (p > 4) { p = 4 }
+            return p
+        }
 
         checkBlocsLot();
         checkBlocsLotCepages();

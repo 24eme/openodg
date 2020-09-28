@@ -22,25 +22,14 @@
       var regex = /[0-9]+$/g;
 
       if(val.match(regex)){
-        var textAdded = " (-1)";
+        var nbToAdd = -1;
         if(state){
-          textAdded = " (+1)";
+          nbToAdd = 1;
         }
-        $('tr[data-hash="'+hash+'"] .nblots').html(val+textAdded);
-      }else{
-        var regex = /[0-9]+ (\([0-9\-\+]+)\)$/g;
-        if(val.match(regex)){
-          var nb = parseInt(val.replace(/^.+\(/,'').replace(/\)/,''));
-          var newNb = 0;
-          if(state){
-            newNb = nb+1;
-          }else{
-            newNb = nb-1;
-          }
-          var textNb = (newNb >= 0)? "+"+newNb : newNb;
-          textAdded = " ("+textNb+")";
-          $('tr[data-hash="'+hash+'"] .nblots').html(val.replace(/ \(.+$/,'')+textAdded);
-        }
+        var old = parseInt(val);
+        var diff = parseInt(nbToAdd);
+        var newVal = old+diff;
+        $('tr[data-hash="'+hash+'"] .nblots').html(""+newVal);
       }
 
       }

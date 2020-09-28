@@ -10,7 +10,10 @@
 
 <div class="page-header no-border">
   <h2>Saisie des résultats de conformité</h2>
+  <h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
 </div>
+
+<p>Cocher les lots conformes à chaque tables</p>
 
 <ul class="nav nav-pills">
   <?php for ($i= 0; $i < $nb_tables; $i++): ?>
@@ -49,8 +52,9 @@
                         <td>
                           <div class="row">
                             <div class="col-xs-5 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
-                            <div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
-                            <div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
+                            <div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
+                            <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
+                            <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
                           </div>
                         </td>
                         <td class="text-right">
@@ -67,11 +71,11 @@
                 </tbody>
               </table>
               <div class="row row-margin row-button">
-                <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation_degustation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+                <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">
-                  <button type="submit" class="btn btn-success btn-upper">Valider</button>
+                  <button type="submit" class="btn btn-primary btn-upper">Valider</button>
                 </div>
               </div>
             </form>
