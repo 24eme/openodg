@@ -7,7 +7,10 @@
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
-<h2>Dégustation à <?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h2>
+<div class="page-header no-border">
+  <h2>Suivie dégustation</h2>
+  <h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
+</div>
 
 <div class="row row-condensed">
 	<div class="col-xs-12">
@@ -17,6 +20,9 @@
     de <?php echo $infosDegustation["nbAdherentsLotsRestantAPreleve"]; ?> adhérents
     </div>
 	</div>
+  <div class="col-xs-12 text-right">
+    <a class="btn btn-default" href="<?php echo url_for('degustation_preleve', $degustation) ?>" >&nbsp;Prélévement des lots&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+  </div>
 </div>
 
 <div class="row row-condensed">
@@ -28,6 +34,9 @@
       <?php endforeach; ?>
       </div>
 	</div>
+  <div class="col-xs-12 text-right">
+    <a class="btn btn-default" href="<?php echo url_for('degustation_degustateurs_confirmation', $degustation) ?>" >&nbsp;Confirmation dégustateurs&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+  </div>
 </div>
 
 
@@ -39,6 +48,9 @@
     <?php echo $infosDegustation["nbFreeLots"] ?> lots sans table
   </div>
 	</div>
+  <div class="col-xs-12 text-right">
+    <a class="btn btn-default" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Répartition des lots par table&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+  </div>
 </div>
 
 <div class="row row-condensed">

@@ -108,25 +108,25 @@ class degustationActions extends sfActions {
 
         $this->form = new DegustationValidationForm($this->degustation);
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
+         if (!$request->isMethod(sfWebRequest::POST)) {
 
-            return sfView::SUCCESS;
-        }
+             return sfView::SUCCESS;
+         }
 
-        $this->form->bind($request->getParameter($this->form->getName()));
+         $this->form->bind($request->getParameter($this->form->getName()));
 
-        if (!$this->form->isValid()) {
+         if (!$this->form->isValid()) {
 
-            return sfView::SUCCESS;
-        }
+             return sfView::SUCCESS;
+         }
 
-        $this->form->save();
+         $this->form->save();
 
-        return $this->redirect('degustation_visualisation_prelevement', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation_confirmation', array('id' => $this->degustation->_id));
     }
 
 
-    public function executeVisualisationPrelevement(sfWebRequest $request) {
+    public function executeConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
     }
 
@@ -135,13 +135,25 @@ class degustationActions extends sfActions {
       $this->infosDegustation = $this->degustation->getInfosDegustation();
     }
 
-    public function executeDegustateurConfirmation(sfWebRequest $request) {
+    public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->degustateurHash = $request->getParameter('degustateurHash',null);
-      $this->confirmation = $request->getParameter('confirmation',null);
-      $this->degustation->getOrAdd($this->degustateurHash)->add('confirmation',boolval($this->confirmation));
-      $this->degustation->save();
-      return $this->redirect('degustation_visualisation_prelevement', array('id' => $this->degustation->_id));
+
+      $this->form = new DegustationDegustateursConfirmationForm($this->degustation);
+
+      if (!$request->isMethod(sfWebRequest::POST)) {
+
+          return sfView::SUCCESS;
+      }
+
+      $this->form->bind($request->getParameter($this->form->getName()));
+
+      if (!$this->form->isValid()) {
+          return sfView::SUCCESS;
+      }
+      $this->form->save();
+
+      return $this->redirect('degustation_visualisation', $this->degustation);
+
     }
 
 
@@ -182,7 +194,7 @@ class degustationActions extends sfActions {
         }
         $t = array_shift($this->liste_tables);
         if($this->numero_table && !count($t->freeLots)){
-          return $this->redirect('degustation_visualisation_prelevement', array('id' => $this->degustation->_id));
+          return $this->redirect('degustation_confirmation', array('id' => $this->degustation->_id));
         }
         return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
     }
@@ -305,7 +317,7 @@ class degustationActions extends sfActions {
 
     public function redirectIfIsValidee(){
       if ($this->degustation->isValidee()) {
-          return $this->redirect('degustation_visualisation_prelevement', $this->degustation);
+          return $this->redirect('degustation_confirmation', $this->degustation);
       }
     }
 

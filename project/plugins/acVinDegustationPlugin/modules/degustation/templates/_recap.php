@@ -5,15 +5,13 @@
 
 <div class="row row-condensed">
 	<div class="col-xs-12">
-		<h3>Dégustateurs</h3>
+		<h3>Dégustateurs prévus</h3>
         <table class="table table-bordered table-condensed table-striped">
         	<thead>
             	<tr>
-                    <th class="col-xs-1"></th>
-
-            		<th class="col-xs-2">Collège</th>
+            		<th class="col-xs-4">Collège</th>
         			<th class="col-xs-6">Membre</th>
-                    <th class="col-xs-3">Confirmation présence</th>
+                    <th class="col-xs-2 text-center">Statut présence</th>
 
                 </tr>
         	</thead>
@@ -21,7 +19,9 @@
         		<?php foreach ($degustation->degustateurs as $college => $degustateurs): ?>
 	        		<?php foreach ($degustateurs as $id => $degustateur): ?>
 	        		<tr>
-	            	<td class="text-center">
+								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
+	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+								<td class="text-center">
 								<?php if(!$degustateur->exist('confirmation')): ?>
 									<p><span class="glyphicon glyphicon-question-sign"></span></p>
 								<?php elseif($degustateur->confirmation): ?>
@@ -30,12 +30,6 @@
 									<p class="label label-danger"><span class="glyphicon glyphicon-remove"></span></p>
 								<?php endif; ?>
 								</td>
-								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
-	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
-	              <td class="text-center">
-									<a href="<?php echo url_for('degustation_degustateur_confirmation', array('id' => $degustation->_id, 'confirmation' => '1' , 'degustateurHash' => $degustateur->getHash())) ?>" class="btn btn-default <?php if($degustateur->exist('confirmation') && $degustateur->confirmation): ?>btn-success<?php endif; ?>"><span class="glyphicon glyphicon-ok"></span>&nbsp;Confirmer</a>
-									 &nbsp; <a href="<?php echo url_for('degustation_degustateur_confirmation', array('id' => $degustation->_id, 'confirmation' => '0', 'degustateurHash' => $degustateur->getHash())) ?>" class="btn btn-default <?php if($degustateur->exist('confirmation') && !$degustateur->confirmation): ?>btn-danger<?php endif; ?>"><span class="glyphicon glyphicon-remove"></span>&nbsp;Refuser</a>
-	  						</td>
 							</tr>
         		<?php endforeach;?>
         		<?php endforeach; ?>
