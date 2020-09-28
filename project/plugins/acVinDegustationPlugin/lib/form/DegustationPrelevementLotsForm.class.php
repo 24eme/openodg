@@ -4,6 +4,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
     private $lotsPrelevables = null;
     protected $date_degustation = null;
+    protected $dates_degust_drevs = [];
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         $id = $object->_id;
@@ -18,6 +19,11 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         $formLots = new BaseForm();
         foreach ($this->lotsPrelevables as $key => $item) {
             $formLots->embedForm($key, new DegustationPrelevementLotForm());
+
+            if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
+                $drev = DRevClient::getInstance()->find($item->id_document);
+                $this->dates_degust_drevs[$item->id_document] = DateTime::createFromFormat('Y-m-d', $drev->date_degustation_voulue)->format('Ymd');
+            }
         }
         $this->embedForm('lots', $formLots);
         $this->widgetSchema->setNameFormat('prelevement[%s]');
@@ -42,14 +48,13 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         }
 
         if(!count($this->getObject()->lots)){
-            $drevs = [];
             foreach ($this->lotsPrelevables as $key => $item) {
-                if (array_key_exists($item->id_document, $drevs) === false) {
+                if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
                     $drev = DRevClient::getInstance()->find($item->id_document);
-                    $drevs[$item->id_document] = DateTime::createFromFormat('Y-m-d', $drev->date_degustation_voulue)->format('Ymd');
+                    $this->dates_degust_drevs[$item->id_document] = DateTime::createFromFormat('Y-m-d', $drev->date_degustation_voulue)->format('Ymd');
                 }
 
-                $preleve = ($drevs[$item->id_document] > $this->getDateDegustation()) ? 0 : 1;
+                $preleve = ($this->dates_degust_drevs[$item->id_document] > $this->getDateDegustation()) ? 0 : 1;
                 $defaults['lots'][$key] = array('preleve' => $preleve);
             }
         }
@@ -63,5 +68,10 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     public function getDateDegustation()
     {
         return $this->date_degustation;
+    }
+
+    public function getDateDegustParDrev()
+    {
+        return $this->dates_degust_drevs;
     }
 }

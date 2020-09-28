@@ -18,6 +18,7 @@
     <table class="table table-bordered table-condensed table-striped">
         <thead>
             <tr>
+                <th class="col-xs-3">Degustation voulue à partir du</th>
                 <th class="col-xs-3">Ressortissant</th>
                 <th class="col-xs-1">Lot</th>
                 <th class="col-xs-3">Produit (millésime)</th>
@@ -27,10 +28,12 @@
         </thead>
 		<tbody>
 		<?php
+            $dates = $form->getDateDegustParDrev();
 			foreach ($form->getLotsPrelevables() as $key => $lot):
 			if (isset($form['lots'][$key])):
 		?>
 			<tr class="vertical-center cursor-pointer">
+            <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
         <td><?php echo $lot->declarant_nom; ?></td>
 				<td><?php echo $lot->numero; ?></td>
 				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
