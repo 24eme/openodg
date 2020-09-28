@@ -107,9 +107,7 @@ class DrevEtapes extends Etapes
 				return false;
 			}
 			foreach ($doc->getLots() as $lot) {
-				if ($lot->lotPossible()) {
-					return false;
-				}
+				return false;
 			}
 			return true;
 		}

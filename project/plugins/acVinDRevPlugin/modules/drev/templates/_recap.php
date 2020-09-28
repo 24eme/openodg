@@ -41,7 +41,7 @@
     </tbody>
 </table>
 <?php endif; ?>
-<?php if($drev->exist('lots') && count($drev->getProduitsLots())): ?>
+<?php if($drev->exist('lots') && count($drev->lots)): ?>
     <h3>Déclaration des lots IGP</h3>
     <?php
         $lots = $drev->getLotsByCouleur();
