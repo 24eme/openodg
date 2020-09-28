@@ -53,9 +53,9 @@ degustation_visualisation_prelevement:
   requirements:
     sf_method: [get]
 
-degustation_visualisation_degustation:
-  url: /degustation/:id/visualisation-degustation
-  param: { module: degustation, action: visualisationDegustation }
+degustation_visualisation:
+  url: /degustation/:id/visualisation
+  param: { module: degustation, action: visualisation }
   class: DegustationRoute
   options:
     model:    Degustation
