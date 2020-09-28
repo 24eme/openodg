@@ -335,6 +335,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 						$synthese = new stdClass();
 						$synthese->lots = array();
 						$synthese->libelle = $lot->getProduitLibelle();
+						$synthese->details = $lot->getDetails();
+						$synthese->millesime = $lot->getMillesime();
 
 						$syntheseLots[$lot->getProduitHash()] = $synthese;
 					}

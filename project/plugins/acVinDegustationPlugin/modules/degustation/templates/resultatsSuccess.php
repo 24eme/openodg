@@ -52,8 +52,9 @@
                         <td>
                           <div class="row">
                             <div class="col-xs-5 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
-                            <div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
-                            <div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
+                            <div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
+                            <div class="col-xs-3 text-right"><small><?php echo $lot->details; ?></small></div>
+                            <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
                           </div>
                         </td>
                         <td class="text-right">
