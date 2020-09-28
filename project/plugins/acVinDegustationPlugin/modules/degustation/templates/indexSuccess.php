@@ -69,7 +69,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="visualisation_menu">
               <li <?php if(!$d->hasFreeLots()): ?>class="disabled"<?php endif; ?>  ><a href="<?php echo url_for('degustation_visualisation_prelevement', $d)?>" >Visualisation prélévements</a></li>
-              <li <?php if($d->hasFreeLots()): ?>class="disabled"<?php endif; ?>   ><a href="<?php echo url_for('degustation_visualisation_degustation', $d)?>" >Visualisation dégustation</a></li>
+              <li <?php if($d->hasFreeLots()): ?>class="disabled"<?php endif; ?>   ><a href="<?php echo url_for('degustation_visualisation', $d)?>" >Visualisation dégustation</a></li>
             </ul>
           </div>
           <?php else: ?>

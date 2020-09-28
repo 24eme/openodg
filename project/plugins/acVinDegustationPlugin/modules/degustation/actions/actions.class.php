@@ -108,8 +108,9 @@ class degustationActions extends sfActions {
       $this->degustation = $this->getRoute()->getDegustation();
     }
 
-    public function executeVisualisationDegustation(sfWebRequest $request) {
+    public function executeVisualisation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
+      $this->infosDegustation = $this->degustation->getInfosDegustation();
     }
 
     public function executeDegustateurConfirmation(sfWebRequest $request) {
@@ -223,7 +224,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
-        return $this->redirect('degustation_visualisation_degustation', $this->degustation);
+        return $this->redirect('degustation_visualisation', $this->degustation);
     }
 
     public function executePresences(sfWebRequest $request) {
@@ -261,7 +262,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_presences', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
-        return $this->redirect('degustation_visualisation_degustation', $this->degustation);
+        return $this->redirect('degustation_visualisation', $this->degustation);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
