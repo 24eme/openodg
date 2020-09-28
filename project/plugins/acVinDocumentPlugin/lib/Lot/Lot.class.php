@@ -7,11 +7,13 @@
 abstract class Lot extends acCouchdbDocumentTree
 {
     const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
+    const STATUT_PRELEVE = "PRELEVE";
     const STATUT_CONFORME = "CONFORME";
     const STATUT_NON_CONFORME = "NON_CONFORME";
 
     public static $libellesStatuts = array(
-        self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement'
+        self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
+        self::STATUT_PRELEVE => 'Prélevé',
     );
 
     public static function getLibelleStatut($statut) {
