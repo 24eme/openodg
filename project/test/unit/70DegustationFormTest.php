@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(30);
+$t = new lime_test(33);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -132,6 +132,28 @@ foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) { bre
 $t->is($mvt->id_document, $degustation->_id, 'le mvt lot permet de retrouver la degustation via id_document');
 $t->is($mvt->origine_document_id, $drev->_id, 'le mvt lot reproduit bien l\'id de la drev');
 $t->is($mvt->prelevable, 0, "le mvt lot du lot n'est pas prélevable");
+
+$t->comment("Prélévé");
+
+$form = new DegustationPreleveLotsForm($degustation);
+$defaults = $form->getDefaults();
+$t->is($defaults['lots'][0]['preleve'], false, "Le lot est marqué comme non prélevé dans le form");
+$valuesRev = array(
+    '_revision' => $degustation->_rev,
+    'lots' => array()
+);
+
+$valuesRev['lots'][0]['preleve'] = true;
+
+$form->bind($valuesRev);
+$form->save();
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+$t->is($degustation->lots[0]->statut, Lot::STATUT_PRELEVE, 'Le lot est marqué comme prélevé');
+
+$form = new DegustationPreleveLotsForm($degustation);
+$defaults = $form->getDefaults();
+
+$t->is($defaults['lots'][0]['preleve'], true, "Le lot est marqué comme prélevé dans le form");
 
 $t->comment("Dégustateurs");
 $form = new DegustationSelectionDegustateursForm($degustation);
