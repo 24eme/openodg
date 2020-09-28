@@ -54,6 +54,12 @@ class DrevEtapes extends Etapes
 			unset($items[self::ETAPE_LOTS]);
 		}
 
+		if(!ConfigurationClient::getCurrent()->declaration->isRevendicationAOC()) {
+			unset($items[self::ETAPE_REVENDICATION_SUPERFICIE]);
+			unset($items[self::ETAPE_VCI]);
+			unset($items[self::ETAPE_REVENDICATION]);
+		}
+
         return $items;
 	}
 
