@@ -17,8 +17,8 @@
               <table class="table table-bordered table-condensed table-striped">
               <thead>
                     <tr>
-                      <th class="col-xs-9">Lots</th>
-                      <th class="col-xs-3">Tables</th>
+                      <th class="col-xs-10">Lots</th>
+                      <th class="col-xs-2">Tables</th>
                     </tr>
               </thead>
               <tbody>
@@ -34,8 +34,9 @@
                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
                                   <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
                               </div>
-                          <div class="col-xs-5 text-right"><?php echo $lot->produit_libelle;?></div>
-                        <div class="col-xs-2 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
+                          <div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
+                          <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
+                        <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
                       </div>
                   </td>
                         <td class="text-center">

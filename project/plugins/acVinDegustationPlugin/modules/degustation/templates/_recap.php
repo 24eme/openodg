@@ -46,9 +46,9 @@
             	<tr>
                     <th class="col-xs-3">Ressortissant</th>
             		<th class="col-xs-1">Lot</th>
-            		<th class="col-xs-3">Produit (millésime)</th>
+            		<th class="col-xs-4">Produit (millésime)</th>
             		<th class="col-xs-1">Volume</th>
-            		<th class="col-xs-2">Statut</th>
+            		<th class="col-xs-3">Statut</th>
 
                 </tr>
         	</thead>
@@ -57,7 +57,7 @@
             	<tr>
             		<td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $lot->declarant_identifiant)) ?>" target="_blank"><?php echo $lot->declarant_nom; ?></a></td>
     				<td><?php echo $lot->numero; ?></td>
-    				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
+    				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
     				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
             		<td><?php echo Lot::getLibelleStatut($lot->statut); ?></td>
 

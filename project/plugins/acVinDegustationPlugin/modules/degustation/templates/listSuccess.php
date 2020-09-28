@@ -19,7 +19,7 @@
 <?php foreach($lots as $l): ?>
     <tr>
         <td class="text-center"><strong><?php echo $l->date; ?></strong></td>
-        <td><strong><?php echo $l->produit_libelle; ?></strong></td>
+        <td><strong><?php echo $l->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $l->details; ?></small></td>
         <td class="text-right"><strong><?php echo echoFloat($l->volume); ?>&nbsp;hl</strong></td>
         <td></td>
         <td></td>
