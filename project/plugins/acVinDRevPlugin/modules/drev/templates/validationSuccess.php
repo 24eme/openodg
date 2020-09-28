@@ -5,7 +5,7 @@
     <h2>Validation de votre déclaration</h2>
 </div>
 
-<form role="form" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post" id="validation-form">
+<form role="form" class="form-inline" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -37,18 +37,17 @@
     <?php endif; ?>
 
     <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
-    <div style="margin-top: 30px">
-        <div class="form-group">
-            <?php echo $form["date_degustation_voulue"]->renderError(); ?>
-            <?php echo $form["date_degustation_voulue"]->renderLabel("Date de dégustation souhaitée", array("class" => "control-label")); ?></br>
-            <div class="input-group date-picker-week col-xs-4">
-                <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control")); ?>
-                <div class="input-group-addon">
-                    <span class="glyphicon-calendar glyphicon"></span>
-                </div>
+        <h3>Dégustation</h3>
+        <?php echo $form["date_degustation_voulue"]->renderError(); ?>
+        <div class="form-group" style="margin-bottom: 20px;">
+            Vos vins seront prêt à être dégustés à partir du :
+            <div class="input-group date-picker-week">
+            <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "Date souhaitée")); ?>
+            <div class="input-group-addon">
+                <span class="glyphicon-calendar glyphicon"></span>
+            </div>
             </div>
         </div>
-    </div>
     <?php endif ?>
 
     <div style="padding-top: 10px;" class="row row-margin row-button">
