@@ -6,7 +6,7 @@
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li <?php echo (isset($options))? 'class="active"' : ''; ?> ><a href="<?php echo url_for('degustation_visualisation', $degustation); ?>"><?php echo $degustation->getLieuNom(); ?>  le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></a></li>
   <?php if (isset($options)): ?>
-    <li class="active"><a href="<?php echo url_for($options['route'], $degustation); ?>"><?php echo $options['nom']; ?></a></li>
+    <li class="active"><a href=""><?php echo $options['nom']; ?></a></li>
   <?php endif; ?>
   <?php endif; ?>
 </ol>

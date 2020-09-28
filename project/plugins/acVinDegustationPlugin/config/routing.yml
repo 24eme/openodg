@@ -93,6 +93,16 @@ degustation_organisation_table:
   requirements:
     sf_method: [get, post]
 
+degustation_organisation_table_recap:
+  url: /degustation/:id/organisation-table-recap
+  param: { module: degustation, action: organisationTableRecap }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_ajout_leurre:
   url: /degustation/:id/ajout-leurre
   param: { module: degustation, action: ajoutLeurre, numero_table: 0 }
