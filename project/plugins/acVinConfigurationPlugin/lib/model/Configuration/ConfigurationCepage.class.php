@@ -227,6 +227,11 @@ class ConfigurationCepage extends BaseConfigurationCepage {
         return preg_match("/IGP/", $this->getHash());
     }
 
+    public function isRevendicationAOC() {
+
+        return preg_match("/(AOC|AOP)/", $this->getHash());
+    }
+
     public function hasMutageAlcoolique()
     {
         return $this->getGenre()->getKey() == "VDN";

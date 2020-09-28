@@ -101,7 +101,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         <div class="col-xs-4">
 			       <a href="<?php echo url_for('drev_revendication_reset', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-refresh"></span> recalculer les volumes</a>
                    <?php if ($sf_user->hasDrevAdmin()): ?>
-                     <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left" >
+                     <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
                          <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
                      </a>
                    <?php endif; ?>

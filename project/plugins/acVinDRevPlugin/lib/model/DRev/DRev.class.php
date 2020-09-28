@@ -775,13 +775,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function lotsImpactRevendication() {
-
-        if(!DrevConfiguration::getInstance()->isDrDouaneRequired()){
-           foreach($this->lots as $lot) {
-               $this->addProduit($lot->produit_hash);
-           }
-        }
-
         foreach($this->getProduitsLots() as $produit) {
             $produit->volume_revendique_issu_recolte = 0;
         }

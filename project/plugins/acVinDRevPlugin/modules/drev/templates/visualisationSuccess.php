@@ -56,7 +56,8 @@
 <?php //include_partial('drev/documents', array('drev' => $drev, 'form' => isset($form) ? $form : null)); ?>
 
 <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
-    Souhaite se faire déguster le : <?php echo $drev->date_degustation_voulue ?>
+    <h3>Dégustation</h3>
+    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($drev->exist('date_degustation_voulue')) ? $drev->get('date_degustation_voulue') : null; ?></p>
 <?php endif ?>
 
 <div class="row row-margin row-button">
@@ -79,15 +80,17 @@
         <?php elseif ($drev->validation && $sf_user->isAdmin() && !$drev->isLectureSeule() && !$drev->isFactures()): ?>
                   <a class="btn btn-xs btn-default-step pull-right hidden-xs" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
         <?php elseif ($drev->isFactures()): ?>
-                  <span class="text-mutted">DRev facturée.</span>
+                  <span class="text-muted">DRev facturée.</span>
         <?php endif; ?>
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$drev->validation_odg && ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()) && $hasValidationOdg && !$isValidateOdgRegion): ?>
         <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
-                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-
+                    ok-sign"></span>&nbsp;&nbsp;Approuver</a>
         <?php endif; ?>
-
+    </div>
+</div>
 <?php if (isset($form)): ?>
 </form>
 <?php endif; ?>
