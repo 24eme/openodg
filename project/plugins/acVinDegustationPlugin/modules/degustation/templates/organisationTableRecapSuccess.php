@@ -23,7 +23,7 @@
               </thead>
               <tbody>
               <?php
-                foreach ($degustation->getLotsSorted() as $lot):
+                foreach ($degustation->getLotsPreleves() as $lot):
                 $name = $form->getWidgetNameFromLot($lot);
                 if (isset($form[$name])):
               ?>
