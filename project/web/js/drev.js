@@ -300,6 +300,8 @@
 
                 var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
                 vol_total.value = parseFloat(total).toFixed(precision(total))
+
+                vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
             })
         })
 
