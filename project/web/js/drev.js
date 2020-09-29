@@ -325,6 +325,15 @@
         $('#form_drev_lots input').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
         $('#form_drev_lots select').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
 
+        $('#form_drev_lots input.input-float').on('click', function(e) {
+            if (! e.target.readOnly) {
+                return false
+            }
+
+            id = parseInt(e.target.id.replace(/[^0-9]/g, ''))
+            $('#drev_lots_lots_'+id+'_cepages').modal('toggle')
+        })
+
         if(window.location.hash == "#dernier") {
             $('#form_drev_lots .bloc-lot:last input:first').focus();
         } else {
