@@ -386,12 +386,12 @@ class drevActions extends sfActions {
             $has = true;
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
+        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec')) {
+        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec') && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
 
             return $this->redirect('drev_vci', array('sf_subject' => $this->drev, 'prec' => 1));
         }
@@ -425,7 +425,7 @@ class drevActions extends sfActions {
           return $this->redirect('drev_validation', $this->drev);
         }
 
-        return $this->redirect('drev_revendication', $this->drev);
+        return $this->redirect('drev_validation', $this->drev);
     }
 
     public function executeDeleteLots(sfWebRequest $request){
