@@ -386,12 +386,12 @@ class drevActions extends sfActions {
             $has = true;
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
+        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec') && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
+        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec')) {
 
             return $this->redirect('drev_vci', array('sf_subject' => $this->drev, 'prec' => 1));
         }
