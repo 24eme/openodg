@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <h2>Confirmation dégustation</h2>
-<h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
+<h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?></small></h3>
 
 <?php include_partial('degustation/recap', array('degustation' => $degustation)); ?>
 
