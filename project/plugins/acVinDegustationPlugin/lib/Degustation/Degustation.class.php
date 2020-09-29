@@ -258,9 +258,22 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Gestion des tables de la degustation ****/
 
+		public function getLotsPreleves() {
+	   		$lots = array();
+	   		foreach ($this->getLots() as $lot) {
+	   			if($lot->statut == Lot::STATUT_ATTENTE_PRELEVEMENT){
+	   				continue;
+	   			}
+
+	   			$lots[] = $lot;
+	   		}
+	   		uasort($lots, "Degustation::sortLotsByAppelationCouleurCepage");
+	   		return $lots;
+   	 	}
+
 		public function getFreeLots(){
 			$freeLots = array();
-			foreach ($this->lots as $lot) {
+			foreach ($this->getLotsPreleves() as $lot) {
 				if(! $lot->exist('numero_table') || !$lot->numero_table){
 					$freeLots[] = $lot;
 				}
@@ -294,7 +307,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsTableOrFreeLots($numero_table, $free = true){
 			$lots = array();
-			foreach ($this->lots as $lot) {
+			foreach ($this->getLotsPreleves() as $lot) {
 				if(($lot->numero_table == $numero_table)){
 					$lots[] = $lot;
 					continue;
@@ -310,7 +323,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function hasFreeLots(){
-			foreach ($this->lots as $lot) {
+			foreach ($this->getLotsPreleves() as $lot) {
 				if(!$lot->exist("numero_table") || is_null($lot->numero_table)){
 					return true;
 				}
@@ -318,18 +331,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return false;
 		}
 
-		public function getLotsSorted(){
-			$allLots = array();
-			foreach ($this->getLots() as $lot) {
-				$allLots[] = $lot;
-			}
-			uasort($allLots, "Degustation::sortLotsByAppelationCouleurCepage");
-			return $allLots;
-		}
-
 		public function getSyntheseLotsTable($numero_table){
 			$syntheseLots = array();
-			foreach ($this->lots as $lot) {
+			foreach ($this->getLotsPreleves() as $lot) {
 				if($lot->numero_table == $numero_table){
 					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
 						$synthese = new stdClass();
