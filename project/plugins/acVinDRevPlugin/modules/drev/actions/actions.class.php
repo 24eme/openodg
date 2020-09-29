@@ -385,7 +385,7 @@ class drevActions extends sfActions {
         if(count($this->drev->getLots())){
             $has = true;
         }
-        
+
         if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
 
             return $this->redirect('drev_revendication', $this->drev);
@@ -421,7 +421,7 @@ class drevActions extends sfActions {
             return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
-        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->drev->isModificative()){
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && ($this->drev->isModificative() || DrevConfiguration::getInstance()->isDrDouaneRequired())){
           return $this->redirect('drev_validation', $this->drev);
         }
 
