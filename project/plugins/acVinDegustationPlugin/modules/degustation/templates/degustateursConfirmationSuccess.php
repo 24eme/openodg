@@ -10,7 +10,7 @@
 
 <div class="page-header no-border">
   <h2>Convocation des dégustateurs</h2>
-	<h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H:m", "fr_FR") ?></small></h3>
+	<h3><?php echo $degustation->getLieuNom(); ?> <small><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?></small></h3>
 </div>
 <p>Sélectionner les degustateurs qui ont confirmer leur présence à la dégustation</p>
 <form action="<?php echo url_for("degustation_degustateurs_confirmation", $degustation) ?>" method="post" class="form-horizontal">
