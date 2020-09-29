@@ -177,18 +177,11 @@ class drevActions extends sfActions {
 
         $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
 
-        if(!DrevConfiguration::getInstance()->isDrDouaneRequired() && !$this->form->getValue('nodr')){
-          	return $this->redirect('drev_lots', $this->drev);
-        }
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
 	    }
-        if (!DrevConfiguration::getInstance()->isDrDouaneRequired() && !$this->form->getValue('nodr')) {
 
-            return $this->redirect('drev_revendication_superficie', $this->drev);
-        }
         if (!$this->form->getValue('file')) {
 
         	return $this->redirect('drev_revendication_superficie', $this->drev);
@@ -269,6 +262,11 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
+
+        if(!DrevConfiguration::getInstance()->isDrDouaneRequired() && !$request->getParameter('import_dr_prodouane')){
+          	return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
+
         return $this->redirect('drev_dr', $this->drev);
     }
 
@@ -298,6 +296,11 @@ class drevActions extends sfActions {
 
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, $this->drev)) {
+
+            return $this->redirect('drev_vci', $this->drev);
+        }
 
         if (DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
             return $this->redirect('drev_vci', $this->drev);
@@ -449,6 +452,12 @@ class drevActions extends sfActions {
         if($this->drev->isModificative() && !$this->getUser()->hasDrevAdmin()){
             throw new sfException("Il est impossible d'acceder à une Drev modificatrice pour les volumes revendiquées si vous n'êtes pas administrateur.");
         }
+
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $this->drev)) {
+
+            return $this->redirect('drev_lots', $this->drev);
+        }
+
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
@@ -532,6 +541,11 @@ class drevActions extends sfActions {
     public function executeVci(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_VCI, $this->drev)) {
+
+            return $this->redirect('drev_revendication', $this->drev);
+        }
 
         if ($this->needDrDouane()) {
 
