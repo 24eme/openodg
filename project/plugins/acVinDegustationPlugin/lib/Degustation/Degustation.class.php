@@ -111,6 +111,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
 		$infos['nbLotsRestantAPreleve'] = $this->getNbLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT);
+		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
   	$infos["nbAdherentsLotsRestantAPreleve"] = count($this->getAdherentsByLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT));
 		$infos["degustateursConfirmes"] = $this->getDegustateursConfirmes();
 		$infos["nbDegustateursConfirmes"] = count($infos["degustateursConfirmes"]);
@@ -234,6 +235,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
  	 	return $lotsByAdherents;
 	}
+
+	public function getAdherentsPreleves(){
+		$adherents = array();
+		foreach ($this->getLots() as $lot) {
+				 $adherents[$lot->getDeclarantIdentifiant()] = $lot->getDeclarantIdentifiant();
+		}
+	 return $adherents;
+ }
 
 	 public function getNbLotsWithStatut($statut = null){
 			return count($this->getLotsWithStatut($statut));
@@ -417,7 +426,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$degustateursByCollege[$college] = array();
 				}
 				foreach ($degs as $compte_id => $degustateur) {
-						$degustateursByCollege[$college][$compte_id] = ($degustateur->exist('confirmation') && !is_null($degustateur->confirmation));
+						$degustateursByCollege[$college][$compte_id] = ($degustateur->exist('confirmation') && !is_null($degustateur->confirmation) && $degustateur->confirmation);
 					}
 			}
 			return $degustateursByCollege;

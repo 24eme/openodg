@@ -4,12 +4,12 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
 
 
   public function configure() {
-      foreach ($this->getObject()->getDegustateurs() as $degustateurs) {
-        foreach ($degustateurs as $id => $degustateur){
-          $name = $this->getWidgetNameFromDegustateur($degustateur);
-          $this->setWidget($name , new WidgetFormInputCheckbox());
-          $this->setValidator($name, new ValidatorBoolean());
-        }
+    foreach ($this->getObject()->getDegustateurs() as $degustateurs) {
+      foreach ($degustateurs as $id => $degustateur){
+        $name = $this->getWidgetNameFromDegustateur($degustateur);
+        $this->setWidget($name , new WidgetFormInputCheckbox());
+        $this->setValidator($name, new ValidatorBoolean());
+      }
     }
     $this->widgetSchema->setNameFormat('degustateurs_table[%s]');
   }
@@ -28,11 +28,13 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
     parent::doUpdateObject($values);
     foreach ($this->getObject()->getDegustateurs() as $degustateurs) {
       foreach ($degustateurs as $id => $degustateur){
-      $name = $this->getWidgetNameFromDegustateur($degustateur);
-      if($values[$name]){
-        $degustateur->add('confirmation',boolval($values[$name]));
+        $name = $this->getWidgetNameFromDegustateur($degustateur);    
+        if($values[$name]){
+          $degustateur->add('confirmation',boolval($values[$name]));
+        }elseif(!is_null($values[$name]) && !$values[$name]){
+          $degustateur->add('confirmation',false);
+        }
       }
-    }
     }
   }
 
