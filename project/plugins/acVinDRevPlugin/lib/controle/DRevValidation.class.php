@@ -66,6 +66,8 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
+        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume revendique issu du mutage n'est pas en adéquation avec le volume revendiqué issu de la récolte (entre 5% et 10% de celui-ci)");
+
         /*
          * Engagement
          */
@@ -234,6 +236,13 @@ class DRevValidation extends DocumentValidation
         }
         if (($produit->getConfig()->getRendement() > $produit->volume_revendique_issu_recolte) && ($produit->vci->stock_precedent > 0) && ($produit->vci->stock_precedent > $produit->vci->complement) && ($produit->getPlafondStockVci() > $produit->vci->complement)) {
         	$this->addPoint(self::TYPE_WARNING, 'vci_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
+        }
+
+        if($produit->getConfig()->hasMutageAlcoolique()) {
+            $ratioMutageRecolte = ($produit->volume_revendique_issu_recolte) ? round($produit->volume_revendique_issu_mutage * 100 / $produit->volume_revendique_issu_recolte, 2) : 0;
+            if ($ratioMutageRecolte < 5 || $ratioMutageRecolte > 10) {
+            	$this->addPoint(self::TYPE_ERROR, 'mutage_ratio', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
         }
 
     }
