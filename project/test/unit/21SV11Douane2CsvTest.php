@@ -11,7 +11,7 @@ foreach($config->getProduits() as $produit) {
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv11_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg');
-file_put_contents($csvTmpFile, str_replace(array("%code_inao%", "%libelle_produit%"), array($produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao%", "%libelle_produit%"), array("7523700100", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
 
 $csv = new SV11DouaneCsvFile($csvTmpFile);
 $csvConvert = $csv->convert();
@@ -20,7 +20,7 @@ unlink($csvTmpFile);
 $lines = explode("\n", $csvConvert);
 
 
-$t = new lime_test(27);
+$t = new lime_test(25);
 $nb = 0;
 foreach($lines as $line) {
     if(!$line) {
@@ -35,8 +35,6 @@ $line = explode(";", $lines[0]);
 $t->is($line[SV11CsvFile::CSV_TYPE], "SV11", "Le type de la ligne est SV11");
 $t->is($line[SV11CsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
 $t->is($line[SV11CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
-$t->is($line[SV11CsvFile::CSV_RECOLTANT_LIBELLE], "\"SARL ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
-$t->is($line[SV11CsvFile::CSV_RECOLTANT_COMMUNE], "NEUILLY", "Le commune est NEUILLY");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_CERTIFICATION], $produit->getCertification()->getKey(), "Certification OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_GENRE], $produit->getGenre()->getKey(), "Genre OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_APPELLATION], $produit->getAppellation()->getKey(), "Appellation OK");

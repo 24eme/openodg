@@ -1054,4 +1054,15 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return false;
     }
 
+    public function isRevendicationAOC() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->isRevendicationAOC()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

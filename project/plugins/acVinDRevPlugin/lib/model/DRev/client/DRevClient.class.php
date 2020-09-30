@@ -139,7 +139,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()."";
+        $campagne_to = "9999";
 
         return $this->startkey(sprintf("DREV-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("DREV-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))

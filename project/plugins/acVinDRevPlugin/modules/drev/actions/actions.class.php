@@ -262,6 +262,11 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
+
+        if(!DrevConfiguration::getInstance()->isDrDouaneRequired() && !$request->getParameter('import_dr_prodouane')){
+          	return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
+
         return $this->redirect('drev_dr', $this->drev);
     }
 
@@ -283,12 +288,23 @@ class drevActions extends sfActions {
     }
 
     private function needDrDouane() {
-
+        if(!DrevConfiguration::getInstance()->isDrDouaneRequired()){
+          return false;
+        }
         return (!$this->drev->hasDocumentDouanier() && ($this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) && !$this->drev->isPapier());
     }
 
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, $this->drev)) {
+
+            return $this->redirect('drev_vci', $this->drev);
+        }
+
+        if (DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
+            return $this->redirect('drev_vci', $this->drev);
+        }
 
         $this->secure(DRevSecurity::EDITION, $this->drev);
         if ($this->needDrDouane() && !$this->getUser()->isAdmin()) {
@@ -355,6 +371,8 @@ class drevActions extends sfActions {
 
     public function executeLots(sfWebRequest $request) {
 
+
+
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
@@ -367,12 +385,13 @@ class drevActions extends sfActions {
         if(count($this->drev->getLots())){
             $has = true;
         }
-        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative()) {
+
+        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec')) {
+        if(!$has && !count($this->drev->getProduitsLots()) && $request->getParameter('prec') && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
 
             return $this->redirect('drev_vci', array('sf_subject' => $this->drev, 'prec' => 1));
         }
@@ -402,11 +421,11 @@ class drevActions extends sfActions {
             return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
-        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->drev->isModificative()){
+        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && ($this->drev->isModificative() || DrevConfiguration::getInstance()->isDrDouaneRequired())){
           return $this->redirect('drev_validation', $this->drev);
         }
 
-        return $this->redirect('drev_revendication', $this->drev);
+        return $this->redirect('drev_validation', $this->drev);
     }
 
     public function executeDeleteLots(sfWebRequest $request){
@@ -433,6 +452,12 @@ class drevActions extends sfActions {
         if($this->drev->isModificative() && !$this->getUser()->hasDrevAdmin()){
             throw new sfException("Il est impossible d'acceder à une Drev modificatrice pour les volumes revendiquées si vous n'êtes pas administrateur.");
         }
+
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $this->drev)) {
+
+            return $this->redirect('drev_lots', $this->drev);
+        }
+
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
@@ -516,6 +541,11 @@ class drevActions extends sfActions {
     public function executeVci(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_VCI, $this->drev)) {
+
+            return $this->redirect('drev_revendication', $this->drev);
+        }
 
         if ($this->needDrDouane()) {
 
@@ -630,6 +660,10 @@ class drevActions extends sfActions {
             $this->drev->validate($this->form->getValue("date"));
         } else {
             $this->drev->validate();
+        }
+
+        if (DrevConfiguration::getInstance()->hasDegustation()) {
+            $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
         if($this->getUser()->isAdmin() && !DrevConfiguration::getInstance()->hasValidationOdg()) {
@@ -789,7 +823,7 @@ class drevActions extends sfActions {
     }
 
     public function executeSendoi(sfWebRequest $request) {
-      
+
     	$drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::VISUALISATION, $drev);
       $drevOi = new DRevOI($drev, null);

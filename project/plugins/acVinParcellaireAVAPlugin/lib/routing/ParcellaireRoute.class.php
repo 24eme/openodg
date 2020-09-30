@@ -9,6 +9,7 @@ class ParcellaireRoute extends EtablissementRoute implements InterfaceDeclaratio
 
             throw new sfError404Exception(sprintf('No Parcellaire found with the id "%s".', $parameters['id']));
         }
+        parent::getObjectForParameters(array('identifiant' => $this->parcellaire->identifiant));
         return $this->parcellaire;
     }
 
@@ -24,8 +25,4 @@ class ParcellaireRoute extends EtablissementRoute implements InterfaceDeclaratio
         return $this->parcellaire;
     }
 
-    public function getEtablissement() {
-
-        return $this->getParcellaire()->getEtablissementObject();
-    }
 }

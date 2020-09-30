@@ -1,5 +1,5 @@
 "Identification de la déclaration";;;;;;;;;;;;;;;;;;
-"DNR";7523700100;"ACTUALYS JEAN                (NEUILLY)";;;;;;;;;;;;;;;;
+"DNR";%cvi%;"ACTUALYS JEAN                (NEUILLY)";;;;;;;;;;;;;;;;
 1;"Code produit";;"%code_inao_1%";;"%code_inao_1%";;"%code_inao_1%";;"%code_inao_2%";;"%code_inao_2%";;"%code_inao_2%";;"%code_inao_2%";;"%code_inao_2%";
 ;"Libelle produit";;"%libelle_produit_1%";;"%libelle_produit_1%";;"%libelle_produit_1%";;"%libelle_produit_2%";;"%libelle_produit_2%";;"%libelle_produit_2%";;"%libelle_produit_2%";;"%libelle_produit_2%";
 2;"Mention valorisante";;;;"Vieille Vigne";;;;;;"Melon";;;;;;;

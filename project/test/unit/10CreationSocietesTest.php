@@ -21,7 +21,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(32);
+$t = new lime_test(30);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -195,27 +195,6 @@ $societedegust->insee = "94512";
 $societedegust->save();
 $id = $societedegust->getidentifiant();
 $t->comment("compte 7 : ".$id);
-$compteSociete = CompteClient::getInstance()->findByIdentifiant($id);
-$t->is($compteSociete->identifiant, $societedegust->identifiant, "La societe a un compte séparé");
-$compteSociete->addTag('test', 'test');
-$compteSociete->addTag('test', 'test_degustateur');
-$tagsauto_attendus = array('societe', 'autre');
-$droits_attentdus = null;
-if ($application == 'igp13') {
-    $compteSociete->add('droits');
-    $compteSociete->droits->add(null, 'degustateur:porteur_de_memoire');
-    $compteSociete->droits->add(null, 'degustateur:technicien');
-    $compteSociete->droits->add(null, 'degustateur:usager_du_produit');
-    $tagsauto_attendus = array('societe', 'autre', 'degustateur_porteur_de_memoire', 'degustateur_technicien', 'degustateur_usager_du_produit', 'degustateur');
-    $droits_attentdus = array('degustateur:porteur_de_memoire', 'degustateur:technicien', 'degustateur:usager_du_produit');
-}
-$compteSociete->save();
-if ($compteSociete->exist('droits')) {
-    $t->is($compteSociete->droits->toArray(), $droits_attentdus, "A les bons droits");
-}else{
-    $t->ok(true, "test sur les droits dégustateurs HS");
-}
-sort($tagsauto_attendus);
-$tagsauto = $compteSociete->tags->automatique->toArray(true, false);
-sort($tagsauto);
-$t->is($tagsauto, $tagsauto_attendus, "Le dégusstateur a les tags automatiques attendus");
+
+$compteDegustateur = $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societedegust);
+$t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un compte séparé");

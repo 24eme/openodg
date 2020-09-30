@@ -23,7 +23,7 @@ $t->comment("Création et modification d'un établissement ");
 
 $b->get('/etablissement/'.$societeIdentifiant.'/nouveau');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de création d'un établisement");
-$b->click('#btn_valider')->followRedirect();
+$b->click('#btn_valider', array('etablissement_modification' => array('cvi' => '7523700100')))->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire de création d'un établissement");
 
 preg_match("|/etablissement/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
