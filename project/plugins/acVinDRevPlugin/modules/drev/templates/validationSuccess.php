@@ -5,7 +5,7 @@
     <h2>Validation de votre déclaration</h2>
 </div>
 
-<form role="form" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post" id="validation-form">
+<form role="form" class="form-inline" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -15,8 +15,8 @@
             <?php if ($form["date"]->hasError()): ?>
                 <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
             <?php endif; ?>
-            <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-            <div class="col-xs-4">
+            <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
+            <div class="col-xs-6">
                 <div class="input-group date-picker">
                     <?php echo $form["date"]->render(array("class" => "form-control")); ?>
                     <div class="input-group-addon">
@@ -36,12 +36,26 @@
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
+    <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
+        <h3>Dégustation</h3>
+        <?php echo $form["date_degustation_voulue"]->renderError(); ?>
+        <div class="form-group" style="margin-bottom: 20px;">
+            Les vins seront prêt à être dégustés à partir du :
+            <div class="input-group date-picker-week">
+            <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "Date souhaitée")); ?>
+            <div class="input-group-addon">
+                <span class="glyphicon-calendar glyphicon"></span>
+            </div>
+            </div>
+        </div>
+    <?php endif ?>
+
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a href="<?php echo ($drev->isModificative())? url_for("drev_lots", $drev) : url_for("drev_revendication", array('sf_subject' => $drev, 'prec' => true)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-            <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left" >
+            <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
             </a>
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">

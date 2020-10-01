@@ -16,27 +16,28 @@
     </div>
 
     <table class="table table-bordered table-condensed table-striped">
-		<thead>
-        	<tr>
-            <th class="col-xs-3">Ressortissant</th>
-        		<th class="col-xs-1">Lot</th>
-        		<th class="col-xs-3">Produit (millésime)</th>
-        		<th class="col-xs-1">Volume</th>
-        		<th class="col-xs-3">Destination (date)</th>
-            <th class="col-xs-1">Prélever?</th>
-          </tr>
-		</thead>
+        <thead>
+            <tr>
+                <th class="col-xs-1">Degustation voulue à partir du</th>
+                <th class="col-xs-3">Ressortissant</th>
+                <th class="col-xs-1">Lot</th>
+                <th class="col-xs-5">Produit (millésime)</th>
+                <th class="col-xs-1">Volume</th>
+                <th class="col-xs-1">Prélever?</th>
+            </tr>
+        </thead>
 		<tbody>
 		<?php
+            $dates = $form->getDateDegustParDrev();
 			foreach ($form->getLotsPrelevables() as $key => $lot):
 			if (isset($form['lots'][$key])):
 		?>
 			<tr class="vertical-center cursor-pointer">
+            <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
         <td><?php echo $lot->declarant_nom; ?></td>
 				<td><?php echo $lot->numero; ?></td>
-				<td><?php echo $lot->produit_libelle; ?><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
+				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-				<td><?php echo MouvementLotView::getDestinationLibelle($lot); ?><?php if ($lot->destination_date): ?>&nbsp;(<?php echo ucfirst(format_date($lot->destination_date, "dd/MM/yyyy", "fr_FR")); ?>)<?php endif; ?></td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form['lots'][$key]['preleve']->renderError() ?>

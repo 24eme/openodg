@@ -10,7 +10,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(111);
+$t = new lime_test(114);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -54,7 +54,7 @@ foreach($config->getProduits() as $produitconfig) {
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
-file_put_contents($csvTmpFile, str_replace(array("%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($produitconfig1->getCodeDouane(), $produitconfig1->getLibelleComplet(), $produitconfig2->getCodeDouane(), $produitconfig2->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($viti->cvi, $produitconfig1->getCodeDouane(), $produitconfig1->getLibelleComplet(), $produitconfig2->getCodeDouane(), $produitconfig2->getLibelleComplet()), $csvContentTemplate));
 $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produitconfig1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produitconfig2->getLibelleComplet());
@@ -152,7 +152,7 @@ $valuesRev = array(
     '_revision' => $drev->_rev,
 );
 $valuesRev['lots']['0']['numero'] = "Cuve A";
-$valuesRev['lots']['0']['volume'] = 8.2;
+$valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$campagne;
 
@@ -175,6 +175,17 @@ if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
 
 $t->comment("Étape validation");
 
+$validation = new DRevValidation($drev);
+$erreurs = $validation->getPointsByCodes('erreur');
+$vigilances = $validation->getPointsByCodes('vigilance');
+
+$t->is(array_key_first($erreurs), 'lot_volume_total_depasse', "Le volume total du lot est dépassé");
+$t->is(count($erreurs), 1, 'Il y a un point bloquant');
+$t->is($vigilances, null, "un point de vigilance à la validation");
+
+$drev->lots[0]->volume = 8.2;
+$drev->lotsImpactRevendication();
+$drev->save();
 
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');

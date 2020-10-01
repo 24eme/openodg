@@ -4,21 +4,126 @@
 
 
 <?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+  <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
-<?php include_partial('degustation/recap', array('degustation' => $degustation)); ?>
+<div class="page-header no-border">
+  <h2>Suivie de dégustation</h2>
+  <h3> <small></small></h3>
+</div>
+
+<div class="alert alert-info" role="alert">
+  <h2>Synthèse de la dégustation</h2>
+  <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?></h3>
+  <h4>Lieu : <?php echo $degustation->getLieuNom(); ?></h4>
+  <table class="table table-condensed">
+    <tbody>
+      <tr class="vertical-center">
+        <td class="col-xs-3" >Nombre total de <strong>lots prévus&nbsp;:</strong></td>
+        <td class="col-xs-9"><strong><?php echo $infosDegustation["nbLots"]; ?></strong></td>
+      </tr>
+      <tr class="vertical-center">
+        <td class="col-xs-3" >Nombre total <strong>d'adhérents prélevés&nbsp;:</strong></td>
+        <td class="col-xs-9"><strong><?php echo $infosDegustation["nbAdherents"]; ?></strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 
-<div class="row row-margin row-button">
-    <div class="col-xs-4">
-        <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("degustation"); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+<div class="row">
+  <div class="col-xs-6">
+    <div class="panel panel-default" style="min-height: 160px">
+      <div class="panel-heading">
+        <h2 class="panel-title">Prélèvements</h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-8">
+            <strong class="lead"><?php echo $infosDegustation["nbLotsRestantAPreleve"]; ?></strong> <strong>lots</strong> restant à prélever <br/><strong><span class="lead"><?php echo $infosDegustation["nbAdherentsLotsRestantAPreleve"]; ?></span> adhérents</strong> restant à prélever
+            <br/>&nbsp;
+          </div>
+          <div class="col-xs-4 text-right">
+            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_preleve', $degustation) ?>" >&nbsp;Prélévement des lots&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-xs-4 text-center">
-		<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;Etiquettes</a>
+  </div>
+  <div class="col-xs-6">
+    <div class="panel panel-default" style="min-height: 160px">
+      <div class="panel-heading">
+        <h2 class="panel-title">Convocations</h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-7">
+            <?php foreach ($infosDegustation["degustateurs"] as $college => $indicateurs): ?>
+              <strong class="lead"><?php echo $indicateurs["confirmes"]; ?></strong> / <?php echo $indicateurs["total"]; ?> <strong><?php echo $college; ?></strong> confirmés<br/>
+            <?php endforeach; ?>
+          </div>
+          <div class="col-xs-5 text-right">
+            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_degustateurs_confirmation', $degustation) ?>" >&nbsp;Confirmation dégustateurs&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-xs-4 text-right">
-        <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('degustation_devalidation', $degustation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette dégustation ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-        <a class="btn btn-xs btn-success pull-right" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" ><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Organisation des tables</a>
-	</div>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">Tables des lots</h2>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-7">
+        <strong class="lead"><?php echo $infosDegustation["nbTables"]; ?></strong> Tables</br>
+        <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Auncun' ?></strong> <strong>lot<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
+      </div>
+      <div class="col-xs-5 text-right">
+        <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Répartition des lots par table&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Présence des dégustateurs</h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-7">
+            <strong class="lead"><?php echo $infosDegustation["nbDegustateursATable"]; ?></strong> / <?php echo $infosDegustation["nbDegustateursConfirmes"]; ?> <strong>présent<?php echo ($infosDegustation["nbDegustateursATable"]>1)? 's' : '' ?></strong> à une table<br/>
+            <strong class="lead"><?php echo $infosDegustation["nbDegustateursSansTable"]; ?></strong> / <?php echo $infosDegustation["nbDegustateursConfirmes"]; ?> <strong>non attablé<?php echo ($infosDegustation["nbDegustateursSansTable"]>1)? 's' : '' ?></strong>
+          </div>
+          <div class="col-xs-5 text-right">
+            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_presences', $degustation) ?>" >&nbsp;Présence des dégustateurs&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Conformité des lots</h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-7">
+            <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsConformes"]>1)? 'lots <strong>conformes</strong>' : 'lot <strong>conforme</strong>' ?><br/>
+            <strong class="lead"><?php echo $infosDegustation["nbLotsNonConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsNonConformes"]>1)? 'lots <strong>non conformes</strong>' : 'lot <strong>non conforme</strong>' ?>
+          </div>
+          <div class="col-xs-5 text-right">
+            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_resultats', $degustation) ?>" >&nbsp;Résultats lots&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

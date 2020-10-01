@@ -43,6 +43,16 @@ degustation_validation:
   requirements:
     sf_method: [get, post]
 
+degustation_confirmation:
+  url: /degustation/:id/confirmation
+  param: { module: degustation, action: confirmation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_visualisation:
   url: /degustation/:id/visualisation
   param: { module: degustation, action: visualisation }
@@ -53,10 +63,39 @@ degustation_visualisation:
   requirements:
     sf_method: [get]
 
+degustation_preleve:
+  url: /degustation/:id/preleve
+  param: { module: degustation, action: preleve }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustateurs_confirmation:
+  url: /degustation/:id/degustateurs-confirmation
+  param: { module: degustation, action: degustateursConfirmation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 degustation_organisation_table:
   url: /degustation/:id/organisation-table/:numero_table
   param: { module: degustation, action: organisationTable, numero_table: 0 }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_organisation_table_recap:
+  url: /degustation/:id/organisation-table-recap
+  param: { module: degustation, action: organisationTableRecap }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -74,9 +113,29 @@ degustation_ajout_leurre:
   requirements:
     sf_method: [get, post]
 
+degustation_presences:
+  url: /degustation/:id/presences/:numero_table
+  param: { module: degustation, action: presences, numero_table: 0 }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_resultats:
   url: /degustation/:id/resultats/:numero_table
   param: { module: degustation, action: resultats, numero_table: 0 }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustateurs_presences:
+  url: /degustation/:id/degustateurs-presence/:numero_table
+  param: { module: degustation, action: resultats }
   class: DegustationRoute
   options:
     model:    Degustation

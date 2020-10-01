@@ -28,6 +28,7 @@ DRev:
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
       denomination_auto: { required: false }
+      date_degustation_voulue: { required: false }
       version: {  }
       declarant:
         type: collection
@@ -68,6 +69,7 @@ DRev:
                         superficie_revendique: { type: float }
                         volume_revendique_issu_recolte: { type: float }
                         volume_revendique_issu_vci: { type: float }
+                        volume_revendique_issu_mutage: { type: float }
                         volume_revendique_total: { type: float }
                         validation_odg: { required: false }
                         vci:

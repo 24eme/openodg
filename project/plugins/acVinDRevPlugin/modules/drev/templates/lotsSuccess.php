@@ -125,7 +125,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade modal_lot_cepages" id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
+        <div class="modal fade modal_lot_cepages" data-lot=<?php echo $key ?> id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -165,7 +165,7 @@
         </div>
         <div class="col-xs-4 text-center">
             <?php if ($sf_user->hasDrevAdmin()): ?>
-              <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left" >
+              <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
                   <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
               </a>
             <?php endif; ?>

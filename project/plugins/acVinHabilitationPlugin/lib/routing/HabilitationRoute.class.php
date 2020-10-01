@@ -10,6 +10,7 @@ class HabilitationRoute extends EtablissementRoute implements InterfaceHabilitat
 
             throw new sfError404Exception(sprintf('No Habilitation found with the id "%s".', $parameters['id']));
         }
+        parent::getObjectForParameters(array('identifiant' => $this->habilitation->identifiant));
         return $this->habilitation;
     }
 
@@ -23,11 +24,6 @@ class HabilitationRoute extends EtablissementRoute implements InterfaceHabilitat
             $this->getObject();
         }
         return $this->habilitation;
-    }
-
-    public function getEtablissement() {
-
-        return $this->getHabilitation()->getEtablissementObject();
     }
 
 }
