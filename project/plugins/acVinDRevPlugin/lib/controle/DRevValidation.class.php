@@ -104,7 +104,7 @@ class DRevValidation extends DocumentValidation
     		return;
     	}
 
-        if($this->document->exist('lots') && count($this->document->lots->toArray(true, false)) && !$this->document->hasDocumentDouanier()) {
+        if($this->document->exist('lots') && count($this->document->lots) && !$this->document->hasDocumentDouanier()) {
     		return;
     	}
     	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
