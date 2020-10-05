@@ -42,8 +42,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($degustation->getDegustateursConfirmes() as $degustateur):
-                    $name = $form->getWidgetNameFromDegustateur($degustateur); ?>
+                  <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numero_table) as $degustateur):
+                    $name = $form->getWidgetNameFromDegustateur($degustateur);
+                     ?>
                     <tr>
                       <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
                       <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>

@@ -290,7 +290,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $freeLots;
 		}
 
-
 		public function getTablesWithFreeLots($add_default_table = false){
 			$tables = array();
 			$freeLots = $this->getFreeLots();
@@ -440,6 +439,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
 						$degustateurs[$compte_id] = $degustateur;
 					}
+				}
+			}
+			return $degustateurs;
+		}
+
+		public function getDegustateursConfirmesTableOrFreeTable($numero_table = null){
+			$degustateurs = array();
+			foreach ($this->getDegustateursConfirmes() as $id => $degustateur) {
+				if(($degustateur->exist('numero_table') && $degustateur->numero_table == $numero_table)
+					|| (!$degustateur->exist('numero_table') || is_null($degustateur->numero_table))){
+					$degustateurs[$id] = $degustateur;
 				}
 			}
 			return $degustateurs;
