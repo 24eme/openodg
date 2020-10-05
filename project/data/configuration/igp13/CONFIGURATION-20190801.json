@@ -2131,7 +2131,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3R007",
+                                "code_douane": "3R007M",
                                 "cepages_autorises": [
                                   "ABOURIOU N",
                                   "ALEATICO N",
@@ -2288,7 +2288,7 @@
                                 "code": "",
                                 "code_produit": "",
                                 "code_comptable": "",
-                                "code_douane": "3S007",
+                                "code_douane": "3S007M",
                                 "cepages_autorises": [
                                   "ABOURIOU N",
                                   "ALEATICO N",
@@ -2452,7 +2452,7 @@
                                 "code": "",
                                 "code_produit": "",
                                 "code_comptable": "",
-                                "code_douane": "3B007",
+                                "code_douane": "3B007M",
                                 "cepages_autorises": [
                                   "ABONDANT B",
                                   "ABOURIOU N",
