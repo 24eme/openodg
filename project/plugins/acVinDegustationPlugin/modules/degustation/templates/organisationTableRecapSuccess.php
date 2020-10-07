@@ -7,6 +7,25 @@
   <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-body">
+        <div class="alert alert-info" role="alert">
+          <h3>Synthèse toutes tables</h3>
+          <table class="table table-condensed">
+              <thead>
+                <tr>
+                  <th class="col-xs-9">Appellation couleur cepage</th>
+                  <th class="col-xs-3">nblots</th>
+                </tr>
+              </thead>
+              <tbody id="synthese">
+              <?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
+                <tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
+                  <td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
+                  <td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
           <form action="<?php echo url_for("degustation_organisation_table_recap", array('id' => $degustation->_id)) ?>" method="post" class="form-horizontal degustation">
           	<?php echo $form->renderHiddenFields(); ?>
               <div class="bg-danger">

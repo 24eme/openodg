@@ -339,10 +339,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return false;
 		}
 
-		public function getSyntheseLotsTable($numero_table){
+		public function getSyntheseLotsTable($numero_table = null){
 			$syntheseLots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table == $numero_table){
+				if($lot->numero_table == $numero_table || is_null($numero_table)){
 					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
 						$synthese = new stdClass();
 						$synthese->lots = array();

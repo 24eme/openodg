@@ -53,6 +53,7 @@ class degustationActions extends sfActions {
 
     public function executePreleve(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
 
         $this->form = new DegustationPreleveLotsForm($this->degustation);
 
@@ -202,6 +203,7 @@ class degustationActions extends sfActions {
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
