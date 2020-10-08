@@ -107,6 +107,7 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
 
+        $this->validation = new DegustationValidation($this->degustation);
         $this->form = new DegustationValidationForm($this->degustation);
 
          if (!$request->isMethod(sfWebRequest::POST)) {
