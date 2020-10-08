@@ -3,7 +3,10 @@
 class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $this->form = new DegustationCreationForm(new Degustation());
+        $newDegutation = new Degustation();
+        $this->form = new DegustationCreationForm($newDegutation);
+        $newDegutation->getMvtLotsPrelevables();
+        $this->lotsPrelevables = $newDegutation->getLotsPrelevables();
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
