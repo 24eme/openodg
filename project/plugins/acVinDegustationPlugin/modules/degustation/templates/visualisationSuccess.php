@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-  <h2>Suivie de dégustation</h2>
+  <h2>Suivi de dégustation</h2>
   <h3> <small></small></h3>
 </div>
 
