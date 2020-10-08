@@ -48,6 +48,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         }
 
         if(!count($this->getObject()->lots)){
+            $nbLots = 0;
             foreach ($this->lotsPrelevables as $key => $item) {
                 if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
                     $drev = DRevClient::getInstance()->find($item->id_document);
@@ -55,7 +56,11 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
                 }
 
                 $preleve = ($this->dates_degust_drevs[$item->id_document] > $this->getDateDegustation()) ? 0 : 1;
+                if(!is_null($this->getObject()->max_lots) && ($this->getObject()->max_lots <= $nbLots)){
+                  $preleve = 0;
+                }
                 $defaults['lots'][$key] = array('preleve' => $preleve);
+                $nbLots++;
             }
         }
         $this->setDefaults($defaults);

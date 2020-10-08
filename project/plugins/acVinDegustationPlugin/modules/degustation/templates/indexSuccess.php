@@ -33,11 +33,15 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group <?php if($form["lieu"]->getError()): ?>has-error<?php endif; ?>">
+            <div class="form-group <?php if($form["lieu"]->getError()): ?>has-error<?php endif; ?> <?php if($form["max_lots"]->getError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["lieu"]->renderError(); ?>
+                <?php echo $form["max_lots"]->renderError(); ?>
                 <?php echo $form["lieu"]->renderLabel("Lieu de dégustation", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-sm-6 col-xs-8">
-                	<?php echo $form["lieu"]->render(array("class" => "form-control")); ?>
+                <div class="col-sm-5 col-xs-5">
+                  	<?php echo $form["lieu"]->render(array("class" => "form-control")); ?>
+                </div>
+                <div class="col-sm-3 col-xs-3">
+                  	<?php echo $form["max_lots"]->render(array("class" => "form-control", "placeholder" => 'Nombre max de lots')); ?>
                 </div>
             </div>
             <div class="form-group text-right">
