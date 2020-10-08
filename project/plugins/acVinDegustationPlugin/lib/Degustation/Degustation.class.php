@@ -313,6 +313,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $tables;
 		}
 
+		public function getLotsWithoutLeurre(){
+			$lots = array();
+			foreach ($this->lots as $lot) {
+					if ($lot->leurre === true) {
+							continue;
+					}
+					$lots[] = $lot;
+			}
+			return $lots;
+		}
+
 		public function getLotsTableOrFreeLots($numero_table, $free = true){
 			$lots = array();
 			foreach ($this->getLotsPreleves() as $lot) {

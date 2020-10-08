@@ -63,7 +63,7 @@
     <div class="row">
       <div class="col-xs-7">
         <strong class="lead"><?php echo $infosDegustation["nbTables"]; ?></strong> Tables</br>
-        <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Auncun' ?></strong> <strong>lot<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
+        <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Auncun' ?></strong> <strong>Lot<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
       </div>
       <div class="col-xs-5 text-right">
         <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Répartition des lots par table&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>

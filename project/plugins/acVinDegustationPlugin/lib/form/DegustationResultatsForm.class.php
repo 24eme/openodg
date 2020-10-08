@@ -15,7 +15,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
 
     public function configure() {
 
-      foreach ($this->getObject()->lots as $lot) {
+      foreach ($this->getObject()->getLotsWithoutLeurre() as $lot) {
         $name = $this->getWidgetNameFromLot($lot);
         $this->setWidget($name , new WidgetFormInputCheckbox());
         $this->setValidator($name, new ValidatorBoolean());
@@ -44,7 +44,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
             $lot->setStatut(Lot::STATUT_CONFORME);
           }else {
             $lot->setStatut(Lot::STATUT_NON_CONFORME);
-          
+
         }
       }
     }

@@ -21,8 +21,8 @@
     <table class="table table-bordered table-condensed table-striped">
         <thead>
             <tr>
-                <th class="col-xs-3">Ressortissant</th>
-                <th class="col-xs-1">Lot</th>
+                <th class="col-xs-3">Opérateur</th>
+                <th class="col-xs-1">Logement</th>
                 <th class="col-xs-3">Produit (millésime)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">Prélevé</th>
