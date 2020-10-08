@@ -8,6 +8,7 @@ Degustation:
       date: {  }
       campagne: { }
       lieu: {  }
+      max_lots: {  }
       etape: {  }
       validation: {  }
       lots:
