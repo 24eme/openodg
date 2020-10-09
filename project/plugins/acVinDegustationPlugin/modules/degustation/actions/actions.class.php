@@ -81,6 +81,7 @@ class degustationActions extends sfActions {
     public function executeSelectionDegustateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
             $this->degustation->save();
         }
@@ -100,6 +101,11 @@ class degustationActions extends sfActions {
         }
 
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
 
         return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }

@@ -30,6 +30,10 @@
         updateSynthesePrelevementLots($(this),state,hash);
       }
 
+      if(form.hasClass('degustateurs')){
+        updateSyntheseDegustateurs($(this),state,hash);
+      }
+
     });
 
     var updateSyntheseTable = function(elt,state,hash){
@@ -79,6 +83,24 @@
       });
 
       $('tr strong.nbAdherents').html(""+Object.size(adherents));
+
+    }
+
+    var updateSyntheseDegustateurs = function(elt,state,hash){
+      var collegeKey =elt.parents('td').attr('data-hash');
+      var valDegustateurSelectionne = $('tr td strong.'+collegeKey).html();
+      var regex = /[0-9]+$/g;
+
+      if(valDegustateurSelectionne.match(regex)){
+        var nbLotToAdd = -1;
+        if(state){
+          nbLotToAdd = 1;
+        }
+        var old = parseInt(valDegustateurSelectionne);
+        var diff = parseInt(nbLotToAdd);
+        var newvalDegustateurSelectionne = old+diff;
+        $('tr td strong.'+collegeKey).html(""+newvalDegustateurSelectionne);
+      }
 
     }
 

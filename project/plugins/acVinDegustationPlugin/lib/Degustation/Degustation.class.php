@@ -120,9 +120,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos["nbDegustateursSansTable"] = $infos["nbDegustateursConfirmes"] -	$infos["nbDegustateursATable"];
 		$infos["degustateurs"] = array();
 		foreach (DegustationConfiguration::getInstance()->getColleges() as $college_key => $libelle) {
+			$collegeVar = ucfirst(str_replace('_','',$college_key));
 			$infos["degustateurs"][$libelle] = array();
 			$infos["degustateurs"][$libelle]['confirmes'] = $this->getNbDegustateursStatutWithCollege(true,$college_key);
 			$infos["degustateurs"][$libelle]['total'] = count($this->degustateurs->getOrAdd($college_key));
+			$infos["degustateurs"][$libelle]['key'] = "nb".$collegeVar;
 		}
 		$tables = $this->getTablesWithFreeLots();
 		$infos["nbTables"] = count($tables);
