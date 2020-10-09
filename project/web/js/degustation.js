@@ -5,12 +5,18 @@
       form.post();
     });
 
+    $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
+      var state = $(this).bootstrapSwitch('state');
+      var form = $(this).parents('form');
+      if($(this).hasClass('ajax')){
+        $.formPost(form);
+      }
+    });
+
     $('.degustation .bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
       var state = $(this).bootstrapSwitch('state');
       var form = $(this).parents('form');
-      if(form.hasClass('ajax')){
-        $.formPost(form);
-      }
+
       var hash = $(this).parents('td').attr("data-hash");
       if (hash === undefined) {
          return true;

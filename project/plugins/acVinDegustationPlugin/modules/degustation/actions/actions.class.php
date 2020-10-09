@@ -158,7 +158,26 @@ class degustationActions extends sfActions {
       }
       $this->form->save();
 
+      if ($request->isXmlHttpRequest()) {
+
+        return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+      }
+
       return $this->redirect('degustation_visualisation', $this->degustation);
+
+    }
+
+    public function executeDegustateurAbsence(sfWebRequest $request) {
+      $this->degustation = $this->getRoute()->getDegustation();
+      $college = $request->getParameter('college',null);
+      $degustateurId = $request->getParameter('degustateurId',null);
+      if(!$college || !$degustateurId){
+        return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
+      }
+      $this->degustation->degustateurs->getOrAdd($college)->getOrAdd($degustateurId)->add('confirmation',false);
+      $this->degustation->save();
+
+      return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
 
     }
 
