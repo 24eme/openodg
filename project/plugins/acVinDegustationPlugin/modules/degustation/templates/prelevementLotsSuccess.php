@@ -18,11 +18,11 @@
         <td class="col-xs-8"><strong><?php echo $infosDegustation["nbLotsPrelevable"]; ?></strong></td>
       </tr>
       <tr class="vertical-center">
-        <td class="col-xs-4" >Nombre total de <strong>lots à prélever (sélectionnés)&nbsp;:</strong></td>
+        <td class="col-xs-4" >Nombre de <strong>lots à prélever (sélectionnés)&nbsp;:</strong></td>
         <td class="col-xs-8"><strong class="nbLotsSelectionnes"><?php echo $infosDegustation["nbAdherents"]; ?></strong></td>
       </tr>
       <tr class="vertical-center">
-        <td class="col-xs-4" >Nombre total <strong>d'adhérents prélevés&nbsp;:</strong></td>
+        <td class="col-xs-4" >Nombre <strong>d'adhérents prélevés&nbsp;:</strong></td>
         <td class="col-xs-8"><strong class="nbAdherents"><?php echo $infosDegustation["nbAdherents"]; ?></strong></td>
       </tr>
     </tbody>
