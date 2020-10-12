@@ -35,35 +35,43 @@
               </div>
 
               <h3>Conformité des lots</h3>
-              <table class="table table-bordered table-condensed table-striped">
+              <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
-                    <th class="col-xs-11">Lots</th>
-                    <th class="col-xs-1">Conforme</th>
+                    <th class="col-xs-10">Lots</th>
+                    <th class="col-xs-1"></th>
+                    <th class="col-xs-1">Conformité</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
                   foreach ($form->getTableLots() as $lot):
                     $name = $form->getWidgetNameFromLot($lot);
-                    if (isset($form[$name])):
-                      ?>
-                      <tr class="vertical-center cursor-pointer" <?php if($lot): ?>disabled="disabled"<?php endif; ?>>
+                    if (isset($form["conformite_".$name])): ?>
+                      <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                         <td>
                           <div class="row">
-                            <div class="col-xs-5 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
-                            <div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
+                            <div class="col-xs-4 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
+                            <div class="col-xs-4 text-right"><?php echo $lot->produit_libelle;?></div>
                             <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
                             <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
                           </div>
                         </td>
-                        <td class="text-right">
-                          <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
-                            <?php echo $form[$name]->renderError() ?>
+                        <td class="text-center">
+                          <div style="margin-bottom: 0;">
                             <div class="col-xs-12">
-                              <?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                              <a
+                                class="label <?php if($lot->isNonConforme()): ?>label-danger<?php elseif($lot->isConformeObs()): ?>label-warning<?php else: ?>label-success<?php endif; ?>">
+                                  <span class="glyphicon <?php if($lot->isNonConforme()): ?>glyphicon-remove<?php else: ?>glyphicon-ok<?php endif ?>"></span></a>
                             </div>
                           </div>
+                        </td>
+                        <td class="text-center">
+                          <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
+                            <span class="text-muted glyphicon glyphicon-pencil"></span>
+                          <?php else: ?>
+                            <?php echo $lot->getShortLibelleConformite(); ?>
+                          <?php endif; ?>
                         </td>
                       </tr>
                     <?php  endif; ?>
@@ -78,6 +86,12 @@
                   <button type="submit" class="btn btn-primary btn-upper">Valider</button>
                 </div>
               </div>
+              <?php
+              foreach ($form->getTableLots() as $lot):
+                $name = $form->getWidgetNameFromLot($lot);
+                include_partial('degustation/popupResultats', array('form' => $form, 'name' => $name));
+              endforeach;
+              ?>
             </form>
           </div>
         </div>

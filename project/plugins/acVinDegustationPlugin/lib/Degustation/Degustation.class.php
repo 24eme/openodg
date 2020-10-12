@@ -130,8 +130,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos["nbTables"] = count($tables);
 		$infos["nbFreeLots"] = count($this->getFreeLots());
 		$infos["nbLotsDegustes"] = $infos["nbLots"] - $infos["nbFreeLots"];
-		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_CONFORME);
-		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_NON_CONFORME);
+		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
+		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
 		return $infos;
 	}
 
