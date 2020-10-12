@@ -213,6 +213,7 @@ DRev:
                         volume: { type: float }
                         date: {  }
                         millesime: {  }
+                        elevage: {  }
                         region: {  }
                         numero: {  }
                         version: {  }

@@ -179,7 +179,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getMvtLotsPrelevables() {
          $mvt = array();
          foreach (MouvementLotView::getInstance()->getByPrelevablePreleve($this->campagne, 1,0)->rows as $item) {
-			 $mvt[Lot::generateMvtKey($item->value)] = $item->value;
+             if ($item->value->elevage) {
+                 continue;
+             }
+             $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
 		 return $mvt;
