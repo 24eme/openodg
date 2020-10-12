@@ -37,6 +37,9 @@ Degustation:
                   statut: {}
                   numero_table: {}
                   leurre: {}
+                  conformite: {}
+                  motif: {}
+                  observation: {}
       mouvements_lots:
         type: collection
         definition:

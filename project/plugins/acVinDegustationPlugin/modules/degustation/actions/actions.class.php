@@ -277,7 +277,7 @@ class degustationActions extends sfActions {
       public function executeResultats(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->numero_table = $request->getParameter('numero_table',0);
-
+        $this->popup_validation = $request->getParameter('popup',0);
         if(!$this->numero_table && $this->degustation->getFirstNumeroTable()){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
@@ -298,15 +298,14 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        if ($request->isXmlHttpRequest()) {
-          $this->degustation = $this->getRoute()->getDegustation();
-          $this->form->save();
-          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
-        }
-
         $this->form->save();
 
-        if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable())){
+
+        if($this->popup_validation){
+          return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
+        }
+
+        if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable()-1)){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
