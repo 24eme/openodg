@@ -29,17 +29,16 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         foreach($this->getParcelles() as $hash => $parcelle) {
             //print_r($parcelle->getDgcLibelle());exit();
             $key = str_replace(" ", "-", $parcelle->getDgcLibelle());
-            
+
             if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
-            
+
             if(!isset($parcelles[$key])) {
                 $parcelles[$key] = array();
             }
-            $parcelles[$key][$parcelle->getHash()] = $parcelle;
+            $parcelles[$key][$parcelle->commune.$parcelle->section.$parcelle->numero_parcelle.$parcelle->getHash()] = $parcelle;
         }
-
         ksort($parcelles);
         return $parcelles;
     }
@@ -57,12 +56,12 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
 
     public function setHash($commune_dgc){
         foreach($this as $hash => $produit) {
-            
+
             foreach ($produit->detail as $parcelle) {
                 if(in_array($parcelle->get("code_commune"), $commune_dgc)){
                     var_dump($parcelle->commune);
                 }
-                
+
             }
         }
     }
