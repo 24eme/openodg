@@ -322,10 +322,7 @@ class DRevValidation extends DocumentValidation
           }
 
           if ($lot->elevage) {
-              $this->addPoint(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat',
-                  "$lot->produit_libelle ( $lot->volume hl )",
-                  $this->generateUrl('drev_lots', ['id' => $this->document->_id])
-              );
+              $this->addPoint(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "$lot->produit_libelle ( $lot->volume hl )");
           }
       }
 
