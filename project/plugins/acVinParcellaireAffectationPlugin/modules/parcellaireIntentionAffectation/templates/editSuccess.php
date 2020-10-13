@@ -39,6 +39,8 @@
 		</thead>
 		<tbody>
 		<?php
+      $parcelles = $parcelles->getRawValue();
+      ksort($parcelles);
 			foreach ($parcelles as $parcelle):
                 $produitKey = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
 			if (isset($form[$produitKey][$parcelle->getKey()])):
