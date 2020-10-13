@@ -880,6 +880,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+
+        if ($mother = $this->getMother()) {
+            $mother->validateOdg($date, $region);
+            $mother->save();
+        }
     }
 
     protected function validateOdgByRegion($date = null, $region = null) {
