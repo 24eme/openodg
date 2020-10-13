@@ -75,6 +75,8 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, 'Je m\'engage à transmettre la déclaration de mutage');
+
+        $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Je m'engage à contacter le syndicat quand le vin sera prêt");
     }
 
     public function controle()
@@ -317,6 +319,13 @@ class DRevValidation extends DocumentValidation
             if($somme != $lot->volume){
               $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }
+          }
+
+          if ($lot->elevage) {
+              $this->addPoint(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat',
+                  "$lot->produit_libelle ( $lot->volume hl )",
+                  $this->generateUrl('drev_lots', ['id' => $this->document->_id])
+              );
           }
       }
 
