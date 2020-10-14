@@ -25,6 +25,7 @@ Degustation:
                   id_document: { }
                   numero: { }
                   millesime: { }
+                  elevage: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -61,6 +62,7 @@ Degustation:
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
+                        elevage: { }
                         millesime: {  }
                         region: {  }
                         numero: {  }
