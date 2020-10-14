@@ -10,6 +10,7 @@ class Configuration extends BaseConfiguration {
     const DEFAULT_DENSITE = "1.3";
 
     protected $identifyLibelleProduct = array();
+    protected $effervescent_vindebase_active = false;
 
     public function constructId() {
         $this->set('_id', "CONFIGURATION");
@@ -204,7 +205,7 @@ class Configuration extends BaseConfiguration {
             	}
             }
         }
-        
+
         krsort($produitsByCodeDouane);
 
         foreach($produitsByCodeDouane as $code => $produit) {
@@ -330,6 +331,14 @@ class Configuration extends BaseConfiguration {
             }
         }
         return false;
+    }
+
+    public function setEffervescentVindebaseActivate(){
+      $this->effervescent_vindebase_active = true;
+    }
+
+    public function isEffervescentVindebaseActivate(){
+      return $this->effervescent_vindebase_active;
     }
 
 }
