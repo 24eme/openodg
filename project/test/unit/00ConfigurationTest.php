@@ -2,8 +2,8 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-
-if ($application != 'igp13') {
+$hasEffVb = ConfigurationConfiguration::getInstance()->hasEffervescentVinbase();
+if (!$hasEffVb) {
     $t = new lime_test(1);
 }else{
   $t = new lime_test(2);
@@ -31,7 +31,7 @@ foreach ($produitsEff as $p) {
   break;
 }
 
-if ($application == 'igp13') {
+if ($hasEffVb) {
   $t->comment("On active les vins de base pour les EFF");
   $config->setEffervescentVindebaseActivate();
   $produitsEff = array();
