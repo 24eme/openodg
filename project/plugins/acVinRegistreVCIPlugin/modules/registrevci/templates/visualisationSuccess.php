@@ -12,8 +12,9 @@
         <table class="table table-striped">
         <thead><tr>
             <th class="col-md-4">Produit</th>
+            <th class="text-center col-md-1">Issu N-1</th>
             <th class="text-center col-md-1">Constitué</th>
-        	  <th class="text-center col-md-1">Rafraichissement</th>
+        	<th class="text-center col-md-1">Rafraich.</th>
             <th class="text-center col-md-1">Complément</th>
             <th class="text-center col-md-1">Substitution</th>
             <th class="text-center col-md-1">Destruction</th>
@@ -27,9 +28,11 @@
     $superficiebegin = '<small class="text-mutted">';
     $superficieend = ' ('.$p->getSuperficieFromDrev().' ares)</small>';
   }
+  print_r($p->getHash());
   ?>
       <tr>
           <td><?php echo $strongbegin.$p->libelle.$strongend.$superficiebegin.$superficieend; ?></td>
+          <td class="text-right"><?php echo $strongbegin.formatFloat($p->stock_precedent).$strongend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->constitue).$strongend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->rafraichi).$strongend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->complement).$strongend; ?></td>
