@@ -5,7 +5,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-  <h2>Attribution des lots aux tables</h2>
+  <h2>Attribution des échantillons aux tables</h2>
 </div>
 
 <?php $liste_tables = $degustation->getTablesWithFreeLots(); ?>

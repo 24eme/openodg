@@ -13,7 +13,7 @@
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
 
-<p>Cocher les lots conformes à chaque tables</p>
+<p>Cocher les échantillons conformes à chaque tables</p>
 
 <ul class="nav nav-pills">
   <?php for ($i= 0; $i < $nb_tables; $i++): ?>
@@ -34,11 +34,11 @@
                 <?php echo $form->renderGlobalErrors(); ?>
               </div>
 
-              <h3>Conformité des lots</h3>
+              <h3>Conformité des échantillons</h3>
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
-                    <th class="col-xs-10">Lots</th>
+                    <th class="col-xs-10">Échantillons</th>
                     <th class="col-xs-1"></th>
                     <th class="col-xs-1">Conformité</th>
                   </tr>
