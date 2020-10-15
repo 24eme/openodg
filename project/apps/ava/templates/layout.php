@@ -1,4 +1,4 @@
-<!doctype html>
+<?php $gitcommit = str_replace("\n", "", file_get_contents('../../.git/ORIG_HEAD'));?><!doctype html>
 <!-- ####### PLEASE KEEP ####### -->
 <!--[if lte IE 6 ]><html class="no-js ie6 ielt7 ielt8 ielt9" lang="fr"><![endif]-->
 <!--[if IE 7 ]><html class="no-js ie7 ielt8 ielt9" lang="fr"><![endif]-->
@@ -15,8 +15,10 @@
         <link rel="icon" type="image/x-icon" href="/favico_ava.ico" />
         <link rel="icon" type="image/png" href="/favico_ava.png" />
 
+        <link href="<?php echo public_path("/css/compile_ava.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/print.css").'?'.$gitcommit; ?>" media="print" rel="stylesheet">
+        <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <?php include_stylesheets() ?>
-
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>

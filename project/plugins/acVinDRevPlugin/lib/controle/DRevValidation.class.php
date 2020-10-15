@@ -66,6 +66,8 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
+        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume revendique issu du mutage n'est pas en adéquation avec le volume revendiqué issu de la récolte (entre 5% et 10% de celui-ci)");
+
         /*
          * Engagement
          */
@@ -73,6 +75,8 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, 'Je m\'engage à transmettre la déclaration de mutage');
+
+        $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Je m'engage à contacter le syndicat quand le vin sera prêt");
     }
 
     public function controle()
@@ -102,7 +106,7 @@ class DRevValidation extends DocumentValidation
     		return;
     	}
 
-        if(count($this->document->lots->toArray(true, false)) && !$this->document->hasDocumentDouanier()) {
+        if($this->document->exist('lots') && count($this->document->lots) && !$this->document->hasDocumentDouanier()) {
     		return;
     	}
     	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
@@ -236,6 +240,13 @@ class DRevValidation extends DocumentValidation
         	$this->addPoint(self::TYPE_WARNING, 'vci_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 
+        if($produit->getConfig()->hasMutageAlcoolique()) {
+            $ratioMutageRecolte = ($produit->volume_revendique_issu_recolte) ? round($produit->volume_revendique_issu_mutage * 100 / $produit->volume_revendique_issu_recolte, 2) : 0;
+            if ($ratioMutageRecolte < 5 || $ratioMutageRecolte > 10) {
+            	$this->addPoint(self::TYPE_ERROR, 'mutage_ratio', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
+        }
+
     }
 
     protected function controleVci($produit)
@@ -308,6 +319,10 @@ class DRevValidation extends DocumentValidation
             if($somme != $lot->volume){
               $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }
+          }
+
+          if ($lot->elevage) {
+              $this->addPoint(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "$lot->produit_libelle ( $lot->volume hl )");
           }
       }
 

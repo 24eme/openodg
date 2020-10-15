@@ -8,22 +8,54 @@ abstract class Lot extends acCouchdbDocumentTree
 {
     const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
     const STATUT_PRELEVE = "PRELEVE";
-    const STATUT_CONFORME = "CONFORME";
-    const STATUT_NON_CONFORME = "NON_CONFORME";
+    const STATUT_DEGUSTE = "DEGUSTE";
+
+    const CONFORMITE_CONFORME = "CONFORME";
+    const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
+    const CONFORMITE_NONCONFORME_MAJEUR = "NONCONFORME_MAJEUR";
+    const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
+    const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
+
+
 
     public static $libellesStatuts = array(
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
-        self::STATUT_CONFORME => 'Conforme',
-        self::STATUT_NON_CONFORME => 'Non conforme',
-
+        self::STATUT_DEGUSTE => 'Dégusté'
     );
 
-    public static $statuts_resultats = array(self::STATUT_CONFORME, self::STATUT_NON_CONFORME);
+
+    public static $libellesConformites = array(
+      self::CONFORMITE_CONFORME => "Conforme",
+      self::CONFORMITE_NONCONFORME_MINEUR => "Non conformité mineure",
+      self::CONFORMITE_NONCONFORME_MAJEUR => "Non conformité majeure",
+      self::CONFORMITE_NONCONFORME_GRAVE => "Non conformité grave",
+      self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage"
+    );
+
+    public static $shortLibellesConformites = array(
+      self::CONFORMITE_CONFORME => "",
+      self::CONFORMITE_NONCONFORME_MINEUR => "Mineure",
+      self::CONFORMITE_NONCONFORME_MAJEUR => "Majeure",
+      self::CONFORMITE_NONCONFORME_GRAVE => "Grave",
+      self::CONFORMITE_NONTYPICITE_CEPAGE => "Typ. cép."
+    );
+
+    public static $nonConformites = array(
+        self::CONFORMITE_NONCONFORME_MINEUR,
+        self::CONFORMITE_NONCONFORME_MAJEUR,
+        self::CONFORMITE_NONCONFORME_GRAVE,
+        self::CONFORMITE_NONTYPICITE_CEPAGE
+    );
 
     public static function getLibelleStatut($statut) {
         $libelles = self::$libellesStatuts;
         return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
+    }
+
+    public static function getLibelleConformite($conformite) {
+        $libelles = self::$libellesConformites;
+        return (isset($libelles[$conformite]))? $libelles[$conformite] : $conformite;
     }
 
     public function getGeneratedMvtKey() {
@@ -145,6 +177,10 @@ abstract class Lot extends acCouchdbDocumentTree
         $libelle .= ' ('.$this->millesime.')';
       }
       return $libelle;
+    }
+
+    public function isPreleve(){
+      return ($this->statut == Lot::STATUT_PRELEVE || $this->statut == Lot::STATUT_CONFORME || $this->statut == Lot::STATUT_NON_CONFORME);
     }
 
 }

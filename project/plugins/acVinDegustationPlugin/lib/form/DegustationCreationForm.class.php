@@ -11,6 +11,11 @@ class DegustationCreationForm extends acCouchdbObjectForm
 
         $this->setWidget('lieu', new sfWidgetFormChoice(array('choices' => $this->getLieuxChoices())));
         $this->setValidator('lieu', new sfValidatorChoice(array('choices' => array_keys($this->getLieuxChoices()), 'required' => true)));
+
+        $this->setWidget('max_lots', new sfWidgetFormInput());
+        $this->setValidator('max_lots', new sfValidatorNumber(array('required' => false)));
+
+
         $this->widgetSchema->setNameFormat('degustation_creation[%s]');
     }
 

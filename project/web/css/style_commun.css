@@ -8,7 +8,7 @@
 }
 
 .versionner {
-    outline: 1px dotted #ff0000 !important;
+    outline: 1px dotted #000 !important;
 }
 
 .table > tbody > tr > td.vertical-center, table > tbody > tr.vertical-center > td {

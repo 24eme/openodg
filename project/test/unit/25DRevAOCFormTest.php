@@ -10,7 +10,7 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(82);
+$t = new lime_test(86);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -375,7 +375,8 @@ $valuesRev = array(
     '_revision' => $drev->_rev,
 );
 
-$valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'] = 2;
+$valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_recolte'] = 100;
+$valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'] = 5;
 
 $form->bind($valuesRev);
 
@@ -386,3 +387,19 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
 $t->is($produitMutage->volume_revendique_issu_mutage, $valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'], "Le volume revendique issu de mutage a été enregsitré");
+
+$produitMutage->volume_revendique_issu_mutage = 0;
+$validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
+$t->is(count($erreurs['mutage_ratio']), 1, "Point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
+
+$produitMutage->volume_revendique_issu_mutage = 4.99;
+$validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
+$t->is(count($erreurs['mutage_ratio']), 1, "Point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
+
+$produitMutage->volume_revendique_issu_mutage = 5;
+$validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
+$t->ok(!isset($erreurs['mutage_ratio']), "Pas de point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
+
+$produitMutage->volume_revendique_issu_mutage = 10.01;
+$validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
+$t->is(count($erreurs['mutage_ratio']), 1, "Point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");

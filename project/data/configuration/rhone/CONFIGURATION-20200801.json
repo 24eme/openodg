@@ -6498,6 +6498,7 @@
                                },
                                "attributs": {
                                    "rendement": 30,
+                                   "rendement_conseille": 25,
                                    "rendement_vci": 0,
                                    "rendement_vci_total": 0
                                }

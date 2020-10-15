@@ -950,5 +950,15 @@
         $.initHabilitation();
         $.initDuplicateChoicesTable();
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
+
+        Object.size = function(arr)
+        {
+        var size = 0;
+        for (var key in arr)
+        {
+            if (arr.hasOwnProperty(key)) size++;
+        }
+        return size;
+      };
     });
 })(jQuery);
