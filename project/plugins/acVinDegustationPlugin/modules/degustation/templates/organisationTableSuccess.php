@@ -8,7 +8,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
           <div class="alert alert-info" role="alert">
-          	<h3>Synthèse table <?php echo $numero_table; ?></h3>
+          	<h3>Synthèse table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></h3>
           	<table class="table table-condensed">
           			<thead>
           				<tr>
@@ -38,7 +38,7 @@
           			<thead>
           				<tr>
           					<th class="col-xs-10">Échantillons</th>
-          					<th class="col-xs-2">Table <?php echo $numero_table; ?></th>
+          					<th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
           			<tbody>
