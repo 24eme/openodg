@@ -28,7 +28,6 @@
     $superficiebegin = '<small class="text-mutted">';
     $superficieend = ' ('.$p->getSuperficieFromDrev().' ares)</small>';
   }
-  print_r($p->getHash());
   ?>
       <tr>
           <td><?php echo $strongbegin.$p->libelle.$strongend.$superficiebegin.$superficieend; ?></td>
