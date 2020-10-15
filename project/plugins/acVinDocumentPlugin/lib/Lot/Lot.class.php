@@ -180,7 +180,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isPreleve(){
-      return ($this->statut == Lot::STATUT_PRELEVE || $this->statut == Lot::STATUT_CONFORME || $this->statut == Lot::STATUT_NON_CONFORME);
+      return ($this->statut == Lot::STATUT_PRELEVE || array_key_exists($this->statut, self::$libellesConformites));
     }
 
 }
