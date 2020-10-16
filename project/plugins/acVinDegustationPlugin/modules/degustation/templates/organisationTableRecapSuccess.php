@@ -25,6 +25,23 @@
               <?php endforeach; ?>
             </tbody>
           </table>
+
+          <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Table</th>
+                    <th>nb échantillons</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($degustation->getTablesWithFreeLots() as $numero_table => $table): ?>
+                <tr>
+                    <td class="col-xs-9">Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></td>
+                    <td class="col-xs-3"><?php echo count($table->lots) ?></td>
+                </tr>
+            <?php endforeach ?>
+            </tbody>
+          </table>
         </div>
           <form action="<?php echo url_for("degustation_organisation_table_recap", array('id' => $degustation->_id)) ?>" method="post" class="form-horizontal degustation">
           	<?php echo $form->renderHiddenFields(); ?>
