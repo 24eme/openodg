@@ -3,7 +3,10 @@
 class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $this->form = new DegustationCreationForm(new Degustation());
+        $newDegutation = new Degustation();
+        $this->form = new DegustationCreationForm($newDegutation);
+        $newDegutation->getMvtLotsPrelevables();
+        $this->lotsPrelevables = $newDegutation->getLotsPrelevables();
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -26,6 +29,7 @@ class degustationActions extends sfActions {
 
     public function executePrelevementLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->redirectIfIsValidee();
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
@@ -77,6 +81,7 @@ class degustationActions extends sfActions {
     public function executeSelectionDegustateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
             $this->degustation->save();
         }
@@ -96,6 +101,11 @@ class degustationActions extends sfActions {
         }
 
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
 
         return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
@@ -154,7 +164,26 @@ class degustationActions extends sfActions {
       }
       $this->form->save();
 
+      if ($request->isXmlHttpRequest()) {
+
+        return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+      }
+
       return $this->redirect('degustation_visualisation', $this->degustation);
+
+    }
+
+    public function executeDegustateurAbsence(sfWebRequest $request) {
+      $this->degustation = $this->getRoute()->getDegustation();
+      $college = $request->getParameter('college',null);
+      $degustateurId = $request->getParameter('degustateurId',null);
+      if(!$college || !$degustateurId){
+        return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
+      }
+      $this->degustation->degustateurs->getOrAdd($college)->getOrAdd($degustateurId)->add('confirmation',false);
+      $this->degustation->save();
+
+      return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
 
     }
 
@@ -248,7 +277,7 @@ class degustationActions extends sfActions {
       public function executeResultats(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->numero_table = $request->getParameter('numero_table',0);
-
+        $this->popup_validation = $request->getParameter('popup',0);
         if(!$this->numero_table && $this->degustation->getFirstNumeroTable()){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
@@ -269,15 +298,14 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        if ($request->isXmlHttpRequest()) {
-          $this->degustation = $this->getRoute()->getDegustation();
-          $this->form->save();
-          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
-        }
-
         $this->form->save();
 
-        if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable())){
+
+        if($this->popup_validation){
+          return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
+        }
+
+        if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable()-1)){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 

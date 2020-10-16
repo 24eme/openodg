@@ -110,6 +110,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getInfosDegustation(){
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
+		$infos['nbLotsPrelevable'] = count($this->getLotsPrelevables());
 		$infos['nbLotsRestantAPreleve'] = $this->getNbLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT);
 		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
   	$infos["nbAdherentsLotsRestantAPreleve"] = count($this->getAdherentsByLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT));
@@ -119,16 +120,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos["nbDegustateursSansTable"] = $infos["nbDegustateursConfirmes"] -	$infos["nbDegustateursATable"];
 		$infos["degustateurs"] = array();
 		foreach (DegustationConfiguration::getInstance()->getColleges() as $college_key => $libelle) {
+			$collegeVar = ucfirst(str_replace('_','',$college_key));
 			$infos["degustateurs"][$libelle] = array();
 			$infos["degustateurs"][$libelle]['confirmes'] = $this->getNbDegustateursStatutWithCollege(true,$college_key);
 			$infos["degustateurs"][$libelle]['total'] = count($this->degustateurs->getOrAdd($college_key));
+			$infos["degustateurs"][$libelle]['key'] = "nb".$collegeVar;
 		}
 		$tables = $this->getTablesWithFreeLots();
 		$infos["nbTables"] = count($tables);
 		$infos["nbFreeLots"] = count($this->getFreeLots());
 		$infos["nbLotsDegustes"] = $infos["nbLots"] - $infos["nbFreeLots"];
-		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_CONFORME);
-		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_NON_CONFORME);
+		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
+		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
 		return $infos;
 	}
 
@@ -176,7 +179,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getMvtLotsPrelevables() {
          $mvt = array();
          foreach (MouvementLotView::getInstance()->getByPrelevablePreleve($this->campagne, 1,0)->rows as $item) {
-			 $mvt[Lot::generateMvtKey($item->value)] = $item->value;
+             if ($item->value->elevage) {
+                 continue;
+             }
+             $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
 		 return $mvt;

@@ -756,6 +756,13 @@ class drevActions extends sfActions {
         $this->drev->validateOdg(null,$this->regionParam);
         $this->drev->save();
 
+        $mother = $this->drev->getMother();
+        while ($mother) {
+            $mother->validateOdg(null, $this->regionParam);
+            $mother->save();
+            $mother = $mother->getMother();
+        }
+
         if (!$this->drev->isPapier() && $this->drev->getValidationOdg()) {
             $this->sendDRevConfirmee($this->drev);
         }

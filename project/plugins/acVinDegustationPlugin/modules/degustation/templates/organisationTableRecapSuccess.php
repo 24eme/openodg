@@ -13,7 +13,7 @@
               <thead>
                 <tr>
                   <th class="col-xs-9">Appellation couleur cepage</th>
-                  <th class="col-xs-3">nblots</th>
+                  <th class="col-xs-3">nb échantillons</th>
                 </tr>
               </thead>
               <tbody id="synthese">
@@ -36,7 +36,7 @@
               <table class="table table-bordered table-condensed table-striped">
               <thead>
                     <tr>
-                      <th class="col-xs-10">Lots</th>
+                      <th class="col-xs-10">Échantillons</th>
                       <th class="col-xs-2">Tables</th>
                     </tr>
               </thead>

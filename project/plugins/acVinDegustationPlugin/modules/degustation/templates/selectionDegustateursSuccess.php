@@ -7,15 +7,30 @@
 <div class="page-header no-border">
     <h2>Sélection des dégustateurs</h2>
 </div>
+<div class="alert alert-info" role="alert">
+  <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?></h3>
+  <h4>Lieu : <strong><?php echo $degustation->getLieuNom(); ?></strong></h4>
+  <table class="table table-condensed">
+    <tbody>
+      <?php foreach (DegustationConfiguration::getInstance()->getColleges() as $tag => $libelle): ?>
+      <tr class="vertical-center" data-hash="<?php echo $infosDegustation["degustateurs"][$libelle]['key']; ?>" >
+        <td class="col-xs-4" >Nombre de <strong><?php echo $libelle; ?>&nbsp;:</strong></td>
+        <td class="col-xs-8"><strong class="<?php echo $infosDegustation["degustateurs"][$libelle]['key']; ?>" ><?php echo $infosDegustation["degustateurs"][$libelle]['total']; ?></strong></td>
+      </tr>
+    <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
 <p>Sélectionnez l'ensemble des dégustateurs en vue de leurs participations à la dégustation</p>
-<form action="<?php echo url_for("degustation_selection_degustateurs", $degustation) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_selection_degustateurs", $degustation) ?>" method="post" class="form-horizontal degustation degustateurs">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
 	<?php foreach ($form['degustateurs'] as $college => $collegeForm): ?>
-	<h3><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></h3>
+    <?php $collegeName = DegustationConfiguration::getInstance()->getLibelleCollege($college); ?>
+	<h3><?php echo $collegeName; ?></h3>
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
@@ -31,7 +46,7 @@
 		?>
 			<tr class="vertical-center cursor-pointer">
 				<td><?php echo $compte->getLibelleWithAdresse() ?></td>
-            	<td class="text-center">
+            	<td class="text-center" data-hash="<?php echo $infosDegustation["degustateurs"][$collegeName]['key']; ?>">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $compteForm['selectionne']->renderError() ?>
                         <div class="col-xs-12">

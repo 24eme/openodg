@@ -219,6 +219,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
             $appellationproduit = RegistreVCIProduit::freeInstance($this);
             $appellationproduit->setIsPseudoAppellation($this, $p->getAppellation());
           }
+          $appellationproduit->freeIncr('stock_precedent', $p->stock_precedent);
           $appellationproduit->freeIncr('constitue', $p->constitue);
           $appellationproduit->freeIncr('rafraichi', $p->rafraichi);
           $appellationproduit->freeIncr('complement', $p->complement);

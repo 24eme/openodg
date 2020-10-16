@@ -12,14 +12,18 @@
             <th class="col-xs-1">Section /<br />N° parcelle</th>
             <th class="col-xs-2">Cépage</th>
             <th class="col-xs-1">Année plantat°</th>
-            <th class="col-xs-1" style="text-align: right;">Surf. affectable&nbsp;<span class="text-muted small">(ha)</span></th>            
+            <th class="col-xs-1" style="text-align: right;">Surf. affectable&nbsp;<span class="text-muted small">(ha)</span></th>
             <th class="col-xs-1">Affectation</th>
         </tr>
     </thead>
     <tbody>
     <?php
+        $parcelles = $parcelles->getRawValue();
+        ksort($parcelles);
+        $nbParcelles = 0;
+        $totalSurface = 0;
         foreach ($parcelles as $parcelle):
-    ?><?php if($parcelle->affectee): ?>
+    ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie_affectation,4) ?>
         <tr class="vertical-center">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
@@ -37,6 +41,11 @@
             </td>
         </tr>
     <?php endif; endforeach; ?>
+        <tr class="vertical-center">
+            <td colspan="5" style="text-align: right; font-weight: bold;">Surface affectable totale des <?php echo ($nbParcelles > 1 )? "$nbParcelles parcelles sélectionnées" : "$nbParcelle parcelle sélectionnée"; ?></td>
+            <td style="text-align: right; font-weight: bold;"><?php echo number_format($totalSurface,4); ?></td>
+            <td></td>
+        </tr>
     </tbody>
 </table>
 <?php  endforeach; ?>
