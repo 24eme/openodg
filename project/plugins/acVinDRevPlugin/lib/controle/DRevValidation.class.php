@@ -74,7 +74,10 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, 'Je m\'engage à transmettre la déclaration de mutage');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, 'Je m\'engage à transmettre la déclaration de mutage');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, "Je n'ai aucune parcelle de VDN avec un % de manquants > à 20%");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, "Je m'engage à transmettre la liste de mes manquants de mes VDN car j'ai un % > à 20 %");
+
 
         $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Je m'engage à contacter le syndicat quand le vin sera prêt");
     }
@@ -145,7 +148,9 @@ class DRevValidation extends DocumentValidation
         if(!$this->document->declaration->getTotalVolumeRevendiqueMutage()) {
             return;
         }
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, '');
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, '');
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, '');
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, '');
     }
 
     protected function controleEngagementSv()
