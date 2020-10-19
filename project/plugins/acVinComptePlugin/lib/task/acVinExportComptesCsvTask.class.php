@@ -162,7 +162,7 @@ EOF;
             } else {
                 $this->logSection($t->cvi, "COMPTE INEXISTANT", null, 'ERROR');
             }
-            if (++$cpt % 1000) {
+            if (!(++$cpt % 1000)) {
                 sleep(10);
             }
         }
