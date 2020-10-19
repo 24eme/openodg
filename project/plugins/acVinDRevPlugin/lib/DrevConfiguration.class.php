@@ -109,4 +109,8 @@ class DRevConfiguration {
         return isset($this->configuration['degustation']) && boolval($this->configuration['degustation']);
     }
 
+    public function hasPDFUniqueRegion() {
+        return isset($this->configuration['pdf_unique_region']) && boolval($this->configuration['pdf_unique_region']);
+    }
+
 }

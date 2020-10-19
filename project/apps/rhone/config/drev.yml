@@ -2,6 +2,7 @@ all:
   configuration:
     drev:
       validation_odg: false
+      pdf_unique_region: true
       odg:
         BEAUMESVENISES:
           nom: "Conservatoire AOC Beaumes Venise"
