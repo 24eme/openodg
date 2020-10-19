@@ -919,6 +919,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function isValidateOdgByRegion($region){
+      if (!$region) {
+          return false;
+      }
       foreach ($this->getProduits($region) as $hash => $produit) {
         if(!$produit->isValidateOdg()){
           return false;
