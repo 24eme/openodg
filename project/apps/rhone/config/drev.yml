@@ -1,7 +1,7 @@
 all:
   configuration:
     drev:
-      validation_odg: false
+      validation_odg: 'admin'
       pdf_unique_region: true
       odg:
         BEAUMESVENISES:

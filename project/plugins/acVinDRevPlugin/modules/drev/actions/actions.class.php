@@ -666,7 +666,7 @@ class drevActions extends sfActions {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
-        if($this->getUser()->isAdmin() && !DrevConfiguration::getInstance()->hasValidationOdg()) {
+        if($this->getUser()->isAdmin() && DrevConfiguration::getInstance()->hasValidationOdgAdminOrRegion()) {
             $this->drev->validateOdg();
         }
 
@@ -745,7 +745,7 @@ class drevActions extends sfActions {
     }
 
     public function executeValidationAdmin(sfWebRequest $request) {
-        if(!DrevConfiguration::getInstance()->hasValidationOdg()){
+        if(!DrevConfiguration::getInstance()->hasValidationOdgAdminOrRegion()){
           throw new sfException("Il n'est pas permis de valider par ODG");
         }
 
