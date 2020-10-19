@@ -21,7 +21,7 @@
 					<?php echo $form['motif_'.$name]->renderLabel() ?>
 					</div>
 						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['motif_'.$name]->render(array("placeholder" => "Motif de conformité/non conformité du lot", "class" => "form-control", "required" => false)) ?>
+						<?php echo $form['motif_'.$name]->render(array("placeholder" => "Motif de conformité/non conformité de l'échantillon", "class" => "form-control", "required" => false)) ?>
 						</div>
 					</div>
 					<span class="error"><?php echo $form['observation_'.$name]->renderError() ?></span>

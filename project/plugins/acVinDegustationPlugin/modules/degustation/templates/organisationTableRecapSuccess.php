@@ -13,7 +13,7 @@
               <thead>
                 <tr>
                   <th class="col-xs-9">Appellation couleur cepage</th>
-                  <th class="col-xs-3">nblots</th>
+                  <th class="col-xs-3">nb échantillons</th>
                 </tr>
               </thead>
               <tbody id="synthese">
@@ -23,6 +23,23 @@
                   <td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
                 </tr>
               <?php endforeach; ?>
+            </tbody>
+          </table>
+
+          <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Table</th>
+                    <th>nb échantillons</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($degustation->getTablesWithFreeLots() as $numero_table => $table): ?>
+                <tr>
+                    <td class="col-xs-9">Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></td>
+                    <td class="col-xs-3"><?php echo count($table->lots) ?></td>
+                </tr>
+            <?php endforeach ?>
             </tbody>
           </table>
         </div>
@@ -36,7 +53,7 @@
               <table class="table table-bordered table-condensed table-striped">
               <thead>
                     <tr>
-                      <th class="col-xs-10">Lots</th>
+                      <th class="col-xs-10">Échantillons</th>
                       <th class="col-xs-2">Tables</th>
                     </tr>
               </thead>

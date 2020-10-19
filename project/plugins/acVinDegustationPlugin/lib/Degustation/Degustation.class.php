@@ -282,7 +282,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	   			$lots[] = $lot;
 	   		}
-	   		uasort($lots, "Degustation::sortLotsByAppelationCouleurCepage");
+	   		uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
 	   		return $lots;
    	 	}
 
@@ -343,7 +343,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 			}
-			uasort($lots, "Degustation::sortLotsByAppelationCouleurCepage");
+			uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
 			return $lots;
 		}
 
@@ -388,11 +388,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return max($tables);
 		}
 
-		public static function sortLotsByAppelationCouleurCepage($a, $b){
-        $a_data = $a->getProduitLibelle();
-        $b_data = $b->getProduitLibelle();
-        return strcmp($a_data,$b_data);
-    }
+        public static function sortLotsByCouleurAppelationCepage($a, $b){
+            $a_data = $a->getCouleurLibelle().$a->getProduitLibelle();
+            $b_data = $b->getCouleurLibelle().$b->getProduitLibelle();
+            return strcmp($a_data, $b_data);
+        }
 
     public function addLeurre($hash, $numero_lot, $numero_table)
         {

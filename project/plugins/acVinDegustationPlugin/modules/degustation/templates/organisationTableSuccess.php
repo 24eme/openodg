@@ -8,12 +8,12 @@
     <div class="panel panel-default">
       <div class="panel-body">
           <div class="alert alert-info" role="alert">
-          	<h3>Synthèse table <?php echo $numero_table; ?></h3>
+          	<h3>Synthèse table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></h3>
           	<table class="table table-condensed">
           			<thead>
           				<tr>
           					<th class="col-xs-9">Appellation couleur cepage</th>
-          					<th class="col-xs-3">nblots</th>
+          					<th class="col-xs-3">nb échantillons</th>
           				</tr>
           			</thead>
           			<tbody id="synthese">
@@ -37,8 +37,8 @@
           		<table class="table table-bordered table-condensed table-striped">
           			<thead>
           				<tr>
-          					<th class="col-xs-10">Lots</th>
-          					<th class="col-xs-2">Table <?php echo $numero_table; ?></th>
+          					<th class="col-xs-10">Échantillons</th>
+          					<th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
           			<tbody>
