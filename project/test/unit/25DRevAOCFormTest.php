@@ -246,7 +246,7 @@ $t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->
 
 $drev->cleanDoc();
 
-$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, $drev->getDate());
+$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, date('Ymd',strtotime("-1 days")));
 $habilitation->addProduit($produit1->getConfig()->getHash())->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::STATUT_HABILITE);
 $habilitation->save();
 
