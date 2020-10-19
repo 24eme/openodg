@@ -108,7 +108,7 @@ EOF;
             "exploitant_sexe" => array("required" => false, "type" => "string"),
             "exploitant_nom" => array("required" => false, "type" => "string")
         );
-
+        $cpt = 0;
         foreach ($comptes as $id_compte => $tiers_c) {
             $compte = acCouchdbManager::getClient()->retrieveDocumentById($id_compte, acCouchdbClient::HYDRATE_JSON);
             if (!$compte) {
@@ -160,6 +160,9 @@ EOF;
                 } catch (Exception $exc) {
                     $this->logSection($t->cvi, $exc->getMessage(), null, 'ERROR');
                 }
+            }
+            if (++$cpt % 1000) {
+                sleep(10);
             }
         }
 
