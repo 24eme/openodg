@@ -1,13 +1,14 @@
 <div class="page-header">
     <h2>Récupération des parcelles de l'établissement <?= $etablissement->identifiant?></h2>
-    <p class="text-center"><span class="img-responsive center-block">
+    <p class="text-center">
+    <span class="img-responsive center-block">
     <?php
         $img_path = dirname(__FILE__).'/../../../../web/images/';
         $douane2app = 'douane2'.sfConfig::get('sf_app');
         if (file_exists($img_path.$douane2app.'.gif')): ?>
-        <img src="/images/<?= $douane2app ?>.gif" alt="Chargement en cours..." />
     <?php else: ?>
-        <img src="/images/douane2.gif" alt="Chargement en cours..." /><img src="/images/<?= $douane2app ?>.png"/>
+        <img src="/images/douane2.gif" alt="Chargement en cours..." />
+        <img src="/images/<?= $douane2app ?>.png"/>
     <?php endif; ?>
     </span></p>
 </div>
