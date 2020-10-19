@@ -1,0 +1,9 @@
+chgtdenom_create:
+  url: /changement-denomination/creation/:identifiant
+  param: { module: chgtDenom, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
