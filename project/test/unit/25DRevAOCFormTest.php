@@ -222,7 +222,6 @@ $valuesRev = array(
 );
 
 $valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 104.1;
-$valuesRev['produits'][$produit_hash2]['volume_revendique_issu_recolte'] = 104.1;
 
 $form->bind($valuesRev);
 
@@ -276,11 +275,8 @@ $t->ok(!isset($vigilances['vci_rendement_total']), "Pas de point de vigilance su
 $t->ok(!isset($erreurs['declaration_volume_l15_complement']), "Pas de point bloquant sur le respect de la ligne l15");
 $t->ok(!isset($erreurs['vci_substitue_rafraichi']), "Pas de point blocant sur la subsitution ni le rafraichissement du volume de VCI");
 $t->ok(!isset($erreurs['revendication_superficie']), "Pas de point blocant sur la superficie declarée sur la DR et la DRev");
-if($application == "rhone") {
-    $t->is(count($vigilances['declaration_habilitation']), 1, "Pas de point de vigilance sur l'habilitation du premier produit");
-} else {
-    $t->ok(!isset($vigilances['declaration_habilitation']), "Pas de point de vigilance sur l'habilitation du premier produit");
-}
+$t->ok(!isset($vigilances['declaration_habilitation']), "Pas de point de vigilance sur l'habilitation du premier produit");
+
 $t->ok(isset($vigilances['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
 $t->ok(!isset($vigilances['declaration_neant']), "Pas de point vigilance sur la declaration neant");
 $t->ok(!isset($vigilances['declaration_produits_incoherence']), "Point vigilance sur les produits declarés sur la DR et pas dans la DRev");
