@@ -21,5 +21,5 @@
 </form>
 
 <script>
-    //setTimeout(function(){document.getElementById("form").submit();}, 500);
+    setTimeout(function(){document.getElementById("form").submit();}, 500);
 </script>
