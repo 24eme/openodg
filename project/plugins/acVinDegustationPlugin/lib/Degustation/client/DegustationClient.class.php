@@ -26,4 +26,9 @@ class DegustationClient extends acCouchdbClient {
         }
         return $objects;
     }
+
+    public static function getNumeroTableStr($numero_table){
+      $alphas = range('A', 'Z');
+      return $alphas[$numero_table-1];
+    }
 }

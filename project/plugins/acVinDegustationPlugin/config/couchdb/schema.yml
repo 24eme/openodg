@@ -8,6 +8,7 @@ Degustation:
       date: {  }
       campagne: { }
       lieu: {  }
+      max_lots: {  }
       etape: {  }
       validation: {  }
       lots:
@@ -24,6 +25,7 @@ Degustation:
                   id_document: { }
                   numero: { }
                   millesime: { }
+                  elevage: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -36,6 +38,9 @@ Degustation:
                   statut: {}
                   numero_table: {}
                   leurre: {}
+                  conformite: {}
+                  motif: {}
+                  observation: {}
       mouvements_lots:
         type: collection
         definition:
@@ -57,6 +62,7 @@ Degustation:
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
+                        elevage: { }
                         millesime: {  }
                         region: {  }
                         numero: {  }

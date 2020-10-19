@@ -46,7 +46,7 @@ class DegustationOrganisationTableRecapForm extends acCouchdbObjectForm {
 
         $liste_tables_choices = array("" => "");
         for ($i=1; $i <= $max_liste; $i++) {
-            $liste_tables_choices["".$i] = "Table ".$i;
+            $liste_tables_choices["".$i] = "Table ".DegustationClient::getNumeroTableStr($i);
         }
         return $liste_tables_choices;
     }
