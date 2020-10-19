@@ -28,11 +28,11 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
     parent::doUpdateObject($values);
     foreach ($this->getObject()->getDegustateurs() as $degustateurs) {
       foreach ($degustateurs as $id => $degustateur){
-        $name = $this->getWidgetNameFromDegustateur($degustateur);    
+        $name = $this->getWidgetNameFromDegustateur($degustateur);
         if($values[$name]){
           $degustateur->add('confirmation',boolval($values[$name]));
-        }elseif(!is_null($values[$name]) && !$values[$name]){
-          $degustateur->add('confirmation',false);
+        }elseif($degustateur->exist('confirmation') && $degustateur->confirmation && !$values[$name]){
+          $degustateur->remove('confirmation');
         }
       }
     }

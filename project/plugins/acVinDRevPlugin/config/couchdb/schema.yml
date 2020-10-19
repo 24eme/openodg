@@ -122,6 +122,7 @@ DRev:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
+                  elevage: {}
                   cepages:
                     type: collection
                     definition:
@@ -212,6 +213,7 @@ DRev:
                         volume: { type: float }
                         date: {  }
                         millesime: {  }
+                        elevage: {  }
                         region: {  }
                         numero: {  }
                         version: {  }

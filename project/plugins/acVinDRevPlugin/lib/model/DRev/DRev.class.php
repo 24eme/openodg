@@ -73,8 +73,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfiguration() {
-
-        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+        if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
+          $configuration->setEffervescentVindebaseActivate();
+        }
+        return $configuration;
     }
 
     public function getProduits($region = null) {
@@ -187,7 +190,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfigProduits() {
-
+      
         return $this->getConfiguration()->declaration->getProduits();
     }
 
@@ -308,7 +311,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $document = $this->getDocumentDouanier(null, null, acCouchdbClient::HYDRATE_JSON);
 
         $this->document_douanier_type = ($document) ? $document->type : null;
-        
+
         return $this->document_douanier_type;
     }
 
@@ -1240,6 +1243,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->numero = $lot->numero;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
+        $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = $lot->getCouleurLibelle();

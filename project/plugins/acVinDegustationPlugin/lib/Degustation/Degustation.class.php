@@ -110,6 +110,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getInfosDegustation(){
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
+		$infos['nbLotsPrelevable'] = count($this->getLotsPrelevables());
 		$infos['nbLotsRestantAPreleve'] = $this->getNbLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT);
 		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
   	$infos["nbAdherentsLotsRestantAPreleve"] = count($this->getAdherentsByLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT));
@@ -119,16 +120,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos["nbDegustateursSansTable"] = $infos["nbDegustateursConfirmes"] -	$infos["nbDegustateursATable"];
 		$infos["degustateurs"] = array();
 		foreach (DegustationConfiguration::getInstance()->getColleges() as $college_key => $libelle) {
+			$collegeVar = ucfirst(str_replace('_','',$college_key));
 			$infos["degustateurs"][$libelle] = array();
 			$infos["degustateurs"][$libelle]['confirmes'] = $this->getNbDegustateursStatutWithCollege(true,$college_key);
 			$infos["degustateurs"][$libelle]['total'] = count($this->degustateurs->getOrAdd($college_key));
+			$infos["degustateurs"][$libelle]['key'] = "nb".$collegeVar;
 		}
 		$tables = $this->getTablesWithFreeLots();
 		$infos["nbTables"] = count($tables);
 		$infos["nbFreeLots"] = count($this->getFreeLots());
 		$infos["nbLotsDegustes"] = $infos["nbLots"] - $infos["nbFreeLots"];
-		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_CONFORME);
-		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_NON_CONFORME);
+		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
+		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
 		return $infos;
 	}
 
@@ -176,7 +179,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getMvtLotsPrelevables() {
          $mvt = array();
          foreach (MouvementLotView::getInstance()->getByPrelevablePreleve($this->campagne, 1,0)->rows as $item) {
-			 $mvt[Lot::generateMvtKey($item->value)] = $item->value;
+             if ($item->value->elevage) {
+                 continue;
+             }
+             $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
 		 return $mvt;
@@ -276,7 +282,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	   			$lots[] = $lot;
 	   		}
-	   		uasort($lots, "Degustation::sortLotsByAppelationCouleurCepage");
+	   		uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
 	   		return $lots;
    	 	}
 
@@ -289,7 +295,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 			return $freeLots;
 		}
-
 
 		public function getTablesWithFreeLots($add_default_table = false){
 			$tables = array();
@@ -314,6 +319,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $tables;
 		}
 
+		public function getLotsWithoutLeurre(){
+			$lots = array();
+			foreach ($this->lots as $lot) {
+					if ($lot->leurre === true) {
+							continue;
+					}
+					$lots[] = $lot;
+			}
+			return $lots;
+		}
+
 		public function getLotsTableOrFreeLots($numero_table, $free = true){
 			$lots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
@@ -327,7 +343,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 			}
-			uasort($lots, "Degustation::sortLotsByAppelationCouleurCepage");
+			uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
 			return $lots;
 		}
 
@@ -340,10 +356,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return false;
 		}
 
-		public function getSyntheseLotsTable($numero_table){
+		public function getSyntheseLotsTable($numero_table = null){
 			$syntheseLots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table == $numero_table){
+				if($lot->numero_table == $numero_table || is_null($numero_table)){
 					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
 						$synthese = new stdClass();
 						$synthese->lots = array();
@@ -372,11 +388,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return max($tables);
 		}
 
-		public static function sortLotsByAppelationCouleurCepage($a, $b){
-        $a_data = $a->getProduitLibelle();
-        $b_data = $b->getProduitLibelle();
-        return strcmp($a_data,$b_data);
-    }
+        public static function sortLotsByCouleurAppelationCepage($a, $b){
+            $a_data = $a->getCouleurLibelle().$a->getProduitLibelle();
+            $b_data = $b->getCouleurLibelle().$b->getProduitLibelle();
+            return strcmp($a_data, $b_data);
+        }
 
     public function addLeurre($hash, $numero_lot, $numero_table)
         {
@@ -440,6 +456,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
 						$degustateurs[$compte_id] = $degustateur;
 					}
+				}
+			}
+			return $degustateurs;
+		}
+
+		public function getDegustateursConfirmesTableOrFreeTable($numero_table = null){
+			$degustateurs = array();
+			foreach ($this->getDegustateursConfirmes() as $id => $degustateur) {
+				if(($degustateur->exist('numero_table') && $degustateur->numero_table == $numero_table)
+					|| (!$degustateur->exist('numero_table') || is_null($degustateur->numero_table))){
+					$degustateurs[$id] = $degustateur;
 				}
 			}
 			return $degustateurs;

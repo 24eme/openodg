@@ -7,6 +7,42 @@
   <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-body">
+        <div class="alert alert-info" role="alert">
+          <h3>Synthèse toutes tables</h3>
+          <table class="table table-condensed">
+              <thead>
+                <tr>
+                  <th class="col-xs-9">Appellation couleur cepage</th>
+                  <th class="col-xs-3">nb échantillons</th>
+                </tr>
+              </thead>
+              <tbody id="synthese">
+              <?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
+                <tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
+                  <td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
+                  <td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+
+          <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Table</th>
+                    <th>nb échantillons</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($degustation->getTablesWithFreeLots() as $numero_table => $table): ?>
+                <tr>
+                    <td class="col-xs-9">Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></td>
+                    <td class="col-xs-3"><?php echo count($table->lots) ?></td>
+                </tr>
+            <?php endforeach ?>
+            </tbody>
+          </table>
+        </div>
           <form action="<?php echo url_for("degustation_organisation_table_recap", array('id' => $degustation->_id)) ?>" method="post" class="form-horizontal degustation">
           	<?php echo $form->renderHiddenFields(); ?>
               <div class="bg-danger">
@@ -17,7 +53,7 @@
               <table class="table table-bordered table-condensed table-striped">
               <thead>
                     <tr>
-                      <th class="col-xs-10">Lots</th>
+                      <th class="col-xs-10">Échantillons</th>
                       <th class="col-xs-2">Tables</th>
                     </tr>
               </thead>

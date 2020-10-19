@@ -217,11 +217,18 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                 if(!$ratio_bailleur && isset($ratios_bailleur["05"][$k]) && $ratios_bailleur["05"][$k]) {
                     $ratio_bailleur = $ratios_bailleur["05"][$k];
                 }
-                if($e[0] == 4 && isset($ratio_bailleur)){
+                if(($e[0] == 4) && isset($baillage[$k])) {
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));
-                    $e[2] = self::numerizeVal($superficieInitiale*(1 - $ratio_bailleur), 4);
+                    $superficiemetayer = $superficieInitiale;
+                    if (isset($ratio_bailleur)) {
+                        $superficiemetayer = $superficieInitiale*(1 - $ratio_bailleur);
+                    }
+                    $e[2] = self::numerizeVal($superficiemetayer, 4);
+                    if (!isset($bailleur[$k])) {
+                        $bailleur[$k] = array();
+                    }
                     array_unshift($bailleur[$k], $e);
-                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale*$ratio_bailleur, 4);
+                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale - $superficiemetayer, 4);
                 }
 	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k]."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
