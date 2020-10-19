@@ -161,7 +161,7 @@ EOF;
                     $this->logSection($t->cvi, $exc->getMessage(), null, 'ERROR');
                 }
             }
-            if (++$cpt % 1000) {
+            if (!(++$cpt % 1000)) {
                 sleep(10);
             }
         }

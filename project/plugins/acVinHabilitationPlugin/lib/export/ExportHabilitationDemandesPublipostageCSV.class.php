@@ -130,7 +130,7 @@ class ExportHabilitationDemandesPublipostageCSV {
             } else {
                 $csv .= $csvLigne;
             }
-            if (++$cpt % 1000) {
+            if (!(++$cpt % 1000)) {
                 sleep(10);
             }
         }
