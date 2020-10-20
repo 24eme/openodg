@@ -15,7 +15,7 @@
     <?php $compte = $route->getSociete()->getMasterCompte(); ?>
 <?php endif; ?>
 
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) &&  !$sf_user->hasCredential(myUser::CREDENTIAL_DREV_ADMIN) && !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && (!$compte || !$etablissement)): ?>
+<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) &&  !$sf_user->hasCredential(myUser::CREDENTIAL_DREV_ADMIN) && !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && !$sf_user->hasCredential(myUser::CREDENTIAL_STALKER) && (!$compte || !$etablissement)): ?>
     <?php $compte = $sf_user->getCompte(); ?>
     <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
 <?php endif; ?>

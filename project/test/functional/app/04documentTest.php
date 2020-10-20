@@ -54,6 +54,26 @@ $b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$fichierId
 $b->isForwardedTo('fichier', 'upload');
 $t->is($b->getResponse()->getStatusCode(), 200, "Page de modification accessible");
 
+$t->comment('En mode stalker');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+$b->restart();
+
+$b->get("/documents");
+$t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil");
+
+$b->get('/documents/'.$etablissement->identifiant);
+$b->isForwardedTo('fichier', 'piecesHistorique');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page Historique");
+
+$c = new sfDomCssSelector($b->getResponseDom());
+$t->is($c->matchSingle('.page-header a[href*="/fichier/upload/"]')->getNode(), null, "Bouton \"Ajouter un document\"");
+$t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), null, "Boutons \"Modifier un document\" absent");
+
+$b->get('/fichier/upload/'.$etablissement->identifiant);
+$t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
+
 $t->comment('En mode habilitation');
 
 $b->get('/logout');
