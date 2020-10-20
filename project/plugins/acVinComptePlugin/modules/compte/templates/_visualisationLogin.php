@@ -18,4 +18,8 @@
 <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Droits&nbsp;:</div>
 <div style="margin-bottom: 5px;" class="col-xs-9"><?php echo implode(", ", $compte->getRawValue()->droits->toArray(true, false)); ?></div>
 <?php endif; ?>
+<?php if($compte->exist('region') && $compte->region): ?>
+<div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Region&nbsp;:</div>
+<div style="margin-bottom: 5px;" class="col-xs-9"><?php echo $compte->region; ?></div>
+<?php endif; ?>
 </div>

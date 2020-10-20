@@ -241,6 +241,23 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation;
         }
 
+        public function isRegionInHabilitation($identifiant, $region) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+            if(!$habilitation) {
+
+                return false;
+            }
+
+            $produits = DRevConfiguration::getInstance()->getOdgProduits($region);
+            foreach($produits as $hash) {
+                if($habilitation->containHashProduit($hash)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-")
                       ->endkey(self::TYPE_COUCHDB."-ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")->execute($hydrate);

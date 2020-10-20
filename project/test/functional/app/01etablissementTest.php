@@ -53,6 +53,18 @@ $b->get('/etablissement/'.$etablissementIdentifiant.'/chai-ajout');
 $b->click('#btn_valider')->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'ajout d'un chai");
 
+$t->comment('En mode stalker');
+
+$b->get('/logout');
+
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+$b->restart();
+
+$b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Visualisation établissement accessible");
+$b->isForwardedTo('etablissement', 'visualisation');
+testVisualisationLimite($b, $societeIdentifiant, $etablissement);
+
 $t->comment('En mode habilitation');
 
 $b->get('/logout');

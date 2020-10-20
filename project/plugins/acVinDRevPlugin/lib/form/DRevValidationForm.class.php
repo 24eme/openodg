@@ -14,7 +14,9 @@ class DRevValidationForm extends acCouchdbForm
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
             }
-
+            if (preg_match('/_OUEX_/', $engagement->getCode())) {
+                $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
+            }
             if (DrevConfiguration::getInstance()->hasDegustation()) {
                 $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
                 $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));

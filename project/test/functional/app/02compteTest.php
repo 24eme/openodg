@@ -20,6 +20,9 @@ $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' 
 
 $societeIdentifiant = $societe->getIdentifiant();
 
+$b->get('/compte/search');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de recherche de contact accessible");
+
 $t->comment("Création et modification d'un interlocuteur");
 
 $b->get('/compte/'.$societeIdentifiant.'/nouveau');
@@ -54,12 +57,33 @@ $compteAutre->addTag('test', 'test_functionnal');
 $compteAutre->addTag('test', 'test_functionnal_interlocuteur_autre');
 $compteAutre->save();
 
+$t->comment('En mode stalker');
+
+$b->get('/logout');
+
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+$b->restart();
+
+$b->get('/compte/search');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de recherche de contact accessible");
+
+$b->get('/compte/'.$compteIdentifiant.'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Visualisation d'un interlocuteur accessible");
+$b->isForwardedTo('compte', 'visualisation');
+testVisualisationLimite($b, $societeIdentifiant, $compte);
+
+$b->get('/compte/'.$compteAutre->getIdentifiant().'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
+
 $t->comment('En mode habilitation');
 
 $b->get('/logout');
 
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('habilitation')));
 $b->restart();
+
+$b->get('/compte/search');
+$t->is($b->getResponse()->getStatuscode(), 403, "Page de recherche de contact protégé");
 
 if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
@@ -83,6 +107,8 @@ $b->restart();
 $b->post('/login_no_cas', array('admin' => array('login' => $societeIdentifiant)));
 $t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
 
+$b->get('/compte/search');
+$t->is($b->getResponse()->getStatuscode(), 403, "Page de recherche de contact protégé");
 
 if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
