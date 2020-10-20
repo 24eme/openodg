@@ -133,7 +133,7 @@ $t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supe
 $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
-if(DRevConfiguration::getInstance()->hasValidationOdg()) {
+if(DRevConfiguration::getInstance()->hasValidationOdgAuto()) {
     $t->is($drev->validation_odg, null, "La DRev a la date du jour comme date de validation odg");
 } else {
     $t->is($drev->validation_odg, date('Y-m-d'), "La date de validation ODG n'est pas mise automatiquement");
