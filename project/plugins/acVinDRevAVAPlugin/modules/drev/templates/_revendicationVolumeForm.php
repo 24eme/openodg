@@ -38,15 +38,15 @@
         <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
             <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn" : '_recolte')]->renderError() ?>
             <div class="col-xs-10 col-xs-offset-1">
-                <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn"  : '_recolte')]->render(array('class' => 'disabled form-control text-right input-rounded num_float' . $global_error_class, 'placeholder' => "hl")) ?>
+                <?php echo $form['volume_revendique'.(($vtsgn) ? "_vtsgn"  : '_recolte')]->render(array('class' => 'disabled form-control text-right input-rounded num_float input-recolte-hl' . $global_error_class, 'data' =>str_replace('/', '_',$produit->getHash()), 'placeholder' => "hl")) ?>
             </div>
         </div>
         <?php else: ?>
             <?php echoFloat($produit->get("volume_revendique".(($vtsgn) ? "_vtsgn"  : '_recolte'))); ?> <small class="text-muted">hl</small>
         <?php endif; ?>
     </td>
-    <td class="text-center"><?php if ($produit->exist('volume_revendique_vci') && !$vtsgn) { echoFloat($produit->volume_revendique_vci); } ?></td>
-    <td class="text-center">
+    <td class="text-center revendication-vci-hl" id="<?php echo 'vci_'.str_replace('/', '_',$produit->getHash()); ?>"><?php if ($produit->exist('volume_revendique_vci') && !$vtsgn) { echoFloat($produit->volume_revendique_vci); } ?></td>
+    <td class="text-center revendication_total" id="<?php echo 'total_'.str_replace('/', '_',$produit->getHash()); ?>">
         <?php echoFloat($produit->get('volume_revendique'.(($vtsgn) ? "_vtsgn"  : null))); ?>
     </td>
 </tr>
