@@ -1,5 +1,5 @@
 all:
-  credentials: [[ADMIN,teledeclaration_drev_admin, stalker]]
+  credentials: [[ADMIN,teledeclaration_drev_admin,stalker]]
 
 etablissement:
   credentials: []
