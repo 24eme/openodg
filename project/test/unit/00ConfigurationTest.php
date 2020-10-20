@@ -9,10 +9,10 @@ if (!$hasEffVb) {
   $t = new lime_test(2);
 }
 
-$this->campagne = date("Y");
-$t->comment("test de la configuration d'année $this->campagne");
+$campagne = date("Y");
+$t->comment("test de la configuration d'année $campagne");
 
-$config = ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+$config = ConfigurationClient::getInstance()->getConfiguration($campagne.'-10-01');
 
 $produitsEff = array();
 foreach($config->getProduits() as $keyProd => $produit) {
