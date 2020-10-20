@@ -9,6 +9,7 @@ class AppUser extends sfBasicSecurityUser {
     const NAMESPACE_COMPTE_ORIGIN = "COMPTE_ORIGIN";
     const CREDENTIAL_ADMIN = "ADMIN";
     const CREDENTIAL_DREV_ADMIN = 'teledeclaration_drev_admin';
+    const CREDENTIAL_STALKER = 'stalker';
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
     const CREDENTIAL_HABILITATION = "habilitation";
@@ -146,11 +147,15 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function hasTeledeclaration() {
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin();
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin() && !$this->isStalker();
     }
 
     public function hasDrevAdmin() {
         return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdmin();
+    }
+
+    public function isStalker() {
+        return $this->hasCredential(self::CREDENTIAL_STALKER);
     }
 
     public function getTeledeclarationDrevRegion() {

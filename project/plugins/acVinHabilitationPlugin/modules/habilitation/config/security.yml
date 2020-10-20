@@ -1,6 +1,18 @@
 all:
   credentials: [[ADMIN, habilitation]]
 
+indexDemande:
+  credentials: [[ADMIN, habilitation, stalker]]
+
+indexHabilitation:
+  credentials: [[ADMIN, habilitation, stalker]]
+
+etablissementSelection:
+  credentials: [[ADMIN, habilitation, stalker]]
+
+exportHistorique:
+  credentials: [[ADMIN, habilitation, stalker]]
+
 declarant:
   credentials: []
 

@@ -15,7 +15,7 @@
     <?php $compte = $route->getSociete()->getMasterCompte(); ?>
 <?php endif; ?>
 
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) &&  !$sf_user->hasCredential(myUser::CREDENTIAL_DREV_ADMIN) && !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && (!$compte || !$etablissement)): ?>
+<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) &&  !$sf_user->hasCredential(myUser::CREDENTIAL_DREV_ADMIN) && !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && !$sf_user->hasCredential(myUser::CREDENTIAL_STALKER) && (!$compte || !$etablissement)): ?>
     <?php $compte = $sf_user->getCompte(); ?>
     <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
 <?php endif; ?>
@@ -33,7 +33,7 @@
           <a class="navbar-brand" href="<?php echo url_for('accueil') ?>"></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
-            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_user->hasCredential(myUser::CREDENTIAL_STALKER)): ?>
             <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
                 <li id="nav_item_operateur" class="<?php if(!$compte): ?>disabled<?php endif; ?>"><a <?php if($compte): ?>onclick="document.location = $(this).parents('ul.mode-operateur').find('li.active a').attr('href');"<?php endif; ?> href="#"><span class="glyphicon glyphicon-user"></span></a></li>
                 <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDeclarationRoute): ?><?php echo url_for('declaration_etablissement', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Déclarations</a></li>

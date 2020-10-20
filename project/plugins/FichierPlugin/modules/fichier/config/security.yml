@@ -1,7 +1,9 @@
 all:
   credentials: [[ADMIN, teledeclaration_drev_admin]]
 index:
-  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation]]
+  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation, stalker]]
+etablissementSelection:
+  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation, stalker]]
 upload:
   credentials: [[ADMIN, teledeclaration_drev_admin, habilitation]]
 get:
