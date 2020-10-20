@@ -180,6 +180,9 @@ class DRevProduit extends BaseDRevProduit
 
 			return null;
 		}
+		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
+			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage) / $this->superficie_revendique;
+		}
 
 		return $this->volume_revendique_total / $this->superficie_revendique;
 	}
