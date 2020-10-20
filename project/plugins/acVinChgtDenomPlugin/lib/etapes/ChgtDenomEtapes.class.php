@@ -1,24 +1,24 @@
 <?php
 class ChgtDenomEtapes extends Etapes
 {
-	const ETAPE_CREATION = 'creation';
+	const ETAPE_LOTS = 'lots';
 	const ETAPE_EDITION = 'edition';
 	const ETAPE_VALIDATION = 'validation';
 
 	public static $etapes = array(
-            self::ETAPE_CREATION => 1,
+            self::ETAPE_LOTS => 1,
             self::ETAPE_EDITION => 2,
             self::ETAPE_VALIDATION => 3
     );
 
 	public static $links = array(
-            self::ETAPE_CREATION => 'chgtdenom_create',
-            self::ETAPE_EDITION => 'chgtdenom_edit',
+            self::ETAPE_LOTS => 'chgtdenom_lots',
+            self::ETAPE_EDITION => 'chgtdenom_edition',
             self::ETAPE_VALIDATION => 'chgtdenom_validation'
     );
 
 	public static $libelles = array(
-            self::ETAPE_CREATION => "Création",
+            self::ETAPE_LOTS => "Choix du lot",
             self::ETAPE_EDITION => "Changement / Déclassement",
             self::ETAPE_VALIDATION => "Validation"
     );
