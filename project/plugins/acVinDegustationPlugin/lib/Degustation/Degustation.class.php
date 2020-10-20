@@ -107,6 +107,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    }
 	}
 
+    public function updateLotLogement($lot, $logement)
+    {
+        $lots = $this->getLots();
+        $lots[$lot]->numero = $logement;
+        // TODO: voir pour les mouvements
+    }
+
 	public function getInfosDegustation(){
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
