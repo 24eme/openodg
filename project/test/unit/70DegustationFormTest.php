@@ -155,6 +155,10 @@ $defaults = $form->getDefaults();
 
 $t->is($defaults['lots'][0]['preleve'], true, "Le lot est marqué comme prélevé dans le form");
 
+$t->comment('Changement de logement');
+$degustation->updateLotLogement($degustation->lots[0], $degustation->lots[0]->numero + 1);
+$t->is($degustation->lots[0]->numero, $lot_mvt2->numero + 1);
+
 $t->comment("Dégustateurs");
 $form = new DegustationSelectionDegustateursForm($degustation);
 $defaults = $form->getDefaults();

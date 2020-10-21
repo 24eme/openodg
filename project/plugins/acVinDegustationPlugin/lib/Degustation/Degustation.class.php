@@ -107,6 +107,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    }
 	}
 
+    public function updateLotLogement($lot, $logement)
+    {
+        $lots = $this->getLots();
+        $lots[$lot]->numero = $logement;
+        // TODO: voir pour les mouvements
+    }
+
 	public function getInfosDegustation(){
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
@@ -179,7 +186,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getMvtLotsPrelevables() {
          $mvt = array();
          foreach (MouvementLotView::getInstance()->getByPrelevablePreleve($this->campagne, 1,0)->rows as $item) {
-             if (isset($item->value->elevage) && $item->value->elevage) {
+             if (property_exists($item->value, 'elevage') && $item->value->elevage) {
                  continue;
              }
              $mvt[Lot::generateMvtKey($item->value)] = $item->value;

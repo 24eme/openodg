@@ -10,7 +10,7 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(87);
+$t = new lime_test(89);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -365,6 +365,10 @@ foreach($config->getProduits() as $produit) {
 
 $produitMutage = $drev->addProduit($produitConfigMutage->getHash());
 
+$produitMutage->recolte->superficie_total = 100 / $produitConfigMutage->getRendement();
+$produitMutage->superficie_revendique = 100 / $produitConfigMutage->getRendement();
+
+
 $form = new DRevRevendicationForm($drev);
 
 $valuesRev = array(
@@ -384,9 +388,10 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
 $t->is($produitMutage->volume_revendique_issu_mutage, $valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'], "Le volume revendique issu de mutage a été enregsitré");
-
 $produitMutage->volume_revendique_issu_mutage = 0;
-$validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
+$validation = new DRevValidation($drev);
+$erreurs = $validation->getPointsByCodes('erreur');
+
 $t->is(count($erreurs['mutage_ratio']), 1, "Point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
 
 $produitMutage->volume_revendique_issu_mutage = 4.99;
@@ -396,6 +401,10 @@ $t->is(count($erreurs['mutage_ratio']), 1, "Point bloquant concernant le volume 
 $produitMutage->volume_revendique_issu_mutage = 5;
 $validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
 $t->ok(!isset($erreurs['mutage_ratio']), "Pas de point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
+
+$vigilances = $validation->getPointsByCodes('vigilance');
+$t->is($produitMutage->getVolumeRevendiqueRendement(), 100, "Le volume rendement ne tient pas en compte le volume issu du mutage");
+$t->is($produitMutage->getRendementEffectif(), 30, "Le rendement ne tient pas en compte le volume issu du mutage");
 
 $produitMutage->volume_revendique_issu_mutage = 10.01;
 $validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');

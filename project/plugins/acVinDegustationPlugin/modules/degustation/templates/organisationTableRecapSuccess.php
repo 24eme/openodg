@@ -34,12 +34,17 @@
                 </tr>
             </thead>
             <tbody>
+            <?php $total = 0; ?>
             <?php foreach($degustation->getTablesWithFreeLots() as $numero_table => $table): ?>
                 <tr>
                     <td class="col-xs-9">Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></td>
-                    <td class="col-xs-3"><?php echo count($table->lots) ?></td>
+                    <td class="col-xs-3"><?php echo count($table->lots); $total += count($table->lots); ?></td>
                 </tr>
             <?php endforeach ?>
+              <tr>
+                <td class="text-right"><strong>Total</strong></td>
+                <td class="nblots"><?= $total ?></td>
+              </tr>
             </tbody>
           </table>
         </div>

@@ -116,7 +116,6 @@ function testVisualisationLimite($b, $societeIdentifiant, $etablissement) {
     $t->is($c->matchSingle('a[href*="/chai-modification/"]')->getNode(), null, "Bouton \"Modifier un chai\" absent");
     $t->is($c->matchSingle('a[href*="/relation-ajout"]')->getNode(), null, "Bouton \"Ajouter une relation\" absent");
     $t->is($c->matchSingle('a[href*="/relation-suppression"]')->getNode(), null, "Bouton \"Suppression d'une relation\" absent");
-    $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
     $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
     $t->is($c->matchSingle('form.form_ajout_tag')->getNode(), null, "Form d'ajout d'un tag absent");

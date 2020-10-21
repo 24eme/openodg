@@ -22,6 +22,11 @@
   </table>
 </div>
 <p>Sélectionnez l'ensemble des dégustateurs en vue de leurs participations à la dégustation</p>
+
+<div class="form-group">
+  <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" class="hamzastyle form-control">
+</div>
+
 <form action="<?php echo url_for("degustation_selection_degustateurs", $degustation) ?>" method="post" class="form-horizontal degustation degustateurs">
 	<?php echo $form->renderHiddenFields(); ?>
 
@@ -30,8 +35,9 @@
     </div>
 	<?php foreach ($form['degustateurs'] as $college => $collegeForm): ?>
     <?php $collegeName = DegustationConfiguration::getInstance()->getLibelleCollege($college); ?>
+
 	<h3><?php echo $collegeName; ?></h3>
-    <table class="table table-bordered table-condensed table-striped">
+    <table id="table_college_<?=$college?>" class="table table-bordered table-condensed table-striped table_college">
 		<thead>
         	<tr>
         		<th class="col-xs-11">Membre</th>
@@ -43,10 +49,14 @@
 		<?php
 			foreach ($collegeForm as $idCompte => $compteForm):
 			$compte = $form->getCompteByCollegeAndIdentifiant($college, $idCompte);
+      $words = json_encode(array_merge([
+        strtolower($compte->getNomAAfficher()), $compte->getAdresse(), $compte->getAdresseComplementaire(),
+        $compte->getCommune(), $compte->getCodePostal(), $compte->identifiant
+      ]), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
 		?>
-			<tr class="vertical-center cursor-pointer">
-				<td><?php echo $compte->getLibelleWithAdresse() ?></td>
-            	<td class="text-center" data-hash="<?php echo $infosDegustation["degustateurs"][$collegeName]['key']; ?>">
+            <tr class="vertical-center cursor-pointer hamzastyle-item" data-words='<?= $words ?>'>
+                <td><?php echo $compte->getLibelleWithAdresse() ?></td>
+                <td class="text-center" data-hash="<?php echo $infosDegustation["degustateurs"][$collegeName]['key']; ?>">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $compteForm['selectionne']->renderError() ?>
                         <div class="col-xs-12">
@@ -68,3 +78,4 @@
     </div>
 </form>
 </div>
+<?php use_javascript('hamza_style.js'); ?>
