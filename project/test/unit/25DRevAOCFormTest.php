@@ -10,7 +10,7 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(90);
+$t = new lime_test(89);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -403,8 +403,7 @@ $validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCode
 $t->ok(!isset($erreurs['mutage_ratio']), "Pas de point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
 
 $vigilances = $validation->getPointsByCodes('vigilance');
-$t->is(count($erreurs), 1, "La validation retourne bien 1 erreur");
-$t->is(count($vigilances), 3, "La validation retourne bien 3 points de vigilance");
+$t->is($produitMutage->getVolumeRevendiqueRendement(), 100, "Le volume rendement ne tient pas en compte le volume issu du mutage");
 $t->is($produitMutage->getRendementEffectif(), 30, "Le rendement ne tient pas en compte le volume issu du mutage");
 
 $produitMutage->volume_revendique_issu_mutage = 10.01;
