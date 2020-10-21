@@ -44,10 +44,12 @@ class authActions extends sfActions {
 
     public function executeUsurpation(sfWebRequest $request) {
         $compte = CompteClient::getInstance()->find("COMPTE-".$request->getParameter('identifiant'));
-        $societe = $compte->getSociete();
-        $this->getUser()->usurpationOn($societe->identifiant, $request->getReferer());
+        $identifiant = $compte->getSociete()->identifiant;
+        if($compte->isInterlocuteur()) {
+            $identifiant = $compte->identifiant;
+        }
 
-        $etablissement = $societe->getEtablissementPrincipal();
+        $this->getUser()->usurpationOn($identifiant, $request->getReferer());
 
         return $this->redirect('common_accueil');
     }
