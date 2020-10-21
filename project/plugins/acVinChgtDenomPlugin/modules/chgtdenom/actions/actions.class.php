@@ -31,16 +31,24 @@ class chgtdenomActions extends sfActions {
     public function executeEdition(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->key = $request->getParameter("key", null);
-        if (!$this->key && count($this->chgtDenom->lots) > 0) {
-            $this->key = $this->chgtDenom->lots->get(0)->getGeneratedMvtKey();
+        $firstEdition = true;
+
+        if (!$this->key) {
+          $this->key = $this->chgtDenom->getLotKey();
+          $firstEdition = false;
         }
-        $this->forward404Unless($this->key);
+
+        if (!$this->key) {
+          return $this->redirect('chgtdenom_lots', $this->chgtDenom);
+        }
 
         if (!$this->chgtDenom->setLotFromMvtKey($this->key)) {
             throw new sfException("Lot inexistant pour la key : $this->key");
         }
 
-        $this->form = new ChgtDenomForm($this->chgtDenom->lots->get(0));
+        $this->lot = $this->chgtDenom->lots->get(0);
+
+        $this->form = new ChgtDenomForm($this->lot, $firstEdition);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -61,6 +69,36 @@ class chgtdenomActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->lot = $this->chgtDenom->lots->get(0);
+
+        $this->form = new ChgtDenomValidationForm($this->chgtDenom);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->chgtDenom = $this->getRoute()->getChgtDenom();
+    }
+
+    public function executeSuppression(sfWebRequest $request) {
+        $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $identifiant = $this->chgtDenom->identifiant;
+        $this->chgtDenom->delete();
+        return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant));
     }
 
     protected function secureEtablissement($droits, $etablissement) {

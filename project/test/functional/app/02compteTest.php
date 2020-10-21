@@ -26,9 +26,9 @@ $t->is($b->getResponse()->getStatuscode(), 200, "Page de recherche de contact ac
 $t->comment("Création et modification d'un interlocuteur");
 
 $b->get('/compte/'.$societeIdentifiant.'/nouveau');
-$t->is($b->getResponse()->getStatuscode(), 200, "Page de création d'un interlocuteur");
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de création d'un interlocuteur stalker");
 $b->click('#btn_valider', array('compte_modification' => array('nom' => 'Vincent')))->followRedirect();
-$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire de création d'un interlocuteur");
+$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire de création d'un interlocuteur stalker");
 $b->isForwardedTo('compte', 'visualisation');
 
 preg_match("|/compte/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
@@ -131,7 +131,6 @@ function testVisualisationLimite($b, $societeIdentifiant, $compte) {
     $t->is($c->matchSingle('a[href*="/switchStatus"]')->getNode(), null, "Bouton \"Archiver\" absent");
     $t->is($c->matchSingle('a[href*="/switchEnAlerte"]')->getNode(), null, "Bouton \"Mettre en alerte\" absent");
     $t->is($c->matchSingle('a[href*="/suppression/"]')->getNode(), null, "Bouton \"Supprimer\" absent");
-    $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
     $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
     $t->is($c->matchSingle('form.form_ajout_tag')->getNode(), null, "Form d'ajout d'un tag absent");
@@ -141,12 +140,12 @@ function testVisualisationLimite($b, $societeIdentifiant, $compte) {
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter un interlocuteur protégée");
 
     $b->get('/compte/'.$compte->getIdentifiant().'/modification');
-    $t->is($b->getResponse()->getStatuscode(), 403, "Page de modification d'un établissement protégée");
+    $t->is($b->getResponse()->getStatuscode(), 403, "Page de modification d'un interlocuteur protégée");
 
     $b->get('/compte/'.$compte->getIdentifiant().'/switchStatus');
-    $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un établissement protégé");
+    $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un interlocuteur protégé");
 
     $b->get('/compte/'.$compte->getIdentifiant().'/suppression');
-    $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un établissement protégé");
+    $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un interlocuteur protégé");
 
 }
