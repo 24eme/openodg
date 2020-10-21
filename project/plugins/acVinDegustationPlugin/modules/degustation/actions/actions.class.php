@@ -78,6 +78,22 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_visualisation', $this->degustation);
     }
 
+    public function executeUpdateLotLogement(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->lot = $request->getParameter('lot');
+
+        $this->form = new DegustationPreleveUpdateLogementForm($this->degustation, $this->lot);
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if ($this->form->isValid()) {
+                $this->form->save();
+                return $this->redirect('degustation_preleve', $this->degustation);
+            }
+        }
+    }
+
     public function executeSelectionDegustateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();

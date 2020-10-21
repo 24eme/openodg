@@ -24,6 +24,7 @@ class DRevValidation extends DocumentValidation {
 
         //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
         $this->addControle(self::TYPE_WARNING, 'declaration_lots', 'Vous devez déclarer vos lots.');
+        $this->addControle(self::TYPE_ERROR, 'declaration_lots_inferieur', 'Vous avez revendiqué des lots qui n\'ont pas de cepages.');
 
         $this->addControle(self::TYPE_WARNING, 'revendication_cepage_sans_lot', 'Vous ne déclarez aucun lot pour un cépage que vous avez revendiqué. Si c\'est un lot qui a été replié en assemblage, ne tenez pas compte de ce point de vigilance.');
 
@@ -262,20 +263,37 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleWarningRevendicationLot() {
+      $nb_lot_app = [];
         foreach ($this->document->declaration->getProduitsCepage() as $hash => $produitCepage) {
+
             if ($produitCepage->volume_revendique) {
                 $correspondance = $this->document->getConfiguration()->get($produitCepage->getCepage()->getHash())->getHashRelation('lots');
+                 if(!isset($nb_lot_app[$correspondance])){
+                   $nb_lot_app[$correspondance] = ["nb"=>0, "lot" => ""];
+                 }
                 $correspondanceLot = str_replace('/', '_', $correspondance);
                 $cuve = Drev::CUVE . $this->document->getPrelevementsKeyByHash($correspondance);
                 if ($this->document->prelevements->exist($cuve)) {
+
                     if ($this->document->prelevements->get($cuve)->lots->exist($correspondanceLot)) {
-                        if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
-                            $this->addPoint(self::TYPE_WARNING, 'declaration_lots', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
-                        }
+                      $nb_lot_app[$correspondance]["nb"] +=$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn;
+                      $nb_lot_app[$correspondance]["lot"] = $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->getLibelle();
+                      if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
+                          $this->addPoint(self::TYPE_WARNING, 'declaration_lots', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
+                      }
                     }
                 }
             }
         }
+        $nb = null;
+        foreach ($nb_lot_app as $key => $value) {
+          if($value['nb'] == 0){
+            $nb ++;
+          }
+        }
+        if($nb)
+          $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "$nb lots");
+
     }
 
     protected function controleErrorRevendicationIncomplete($produit, $suffix = null, $suffixLibelle = null) {
