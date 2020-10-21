@@ -1,6 +1,6 @@
 <?php
 
-class ChgtDenom extends ChgtDenomDRev implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument {
+class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument {
 
     const DEFAULT_KEY = 'DEFAUT';
 
@@ -28,11 +28,12 @@ class ChgtDenom extends ChgtDenomDRev implements InterfaceDeclarantDocument, Int
     }
 
     public function getConfiguration() {
-        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
-        if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
-          $configuration->setEffervescentVindebaseActivate();
-        }
-        return $configuration;
+        return ConfigurationClient::getInstance()->getConfiguration();
+    }
+
+    public function getConfigProduits() {
+
+        return $this->getConfiguration()->declaration->getProduits();
     }
 
     public function initDoc($identifiant, $date) {
@@ -64,6 +65,11 @@ class ChgtDenom extends ChgtDenomDRev implements InterfaceDeclarantDocument, Int
         $this->validation = $date;
     }
 
+    public function isPapier() {
+
+        return $this->exist('papier') && $this->get('papier');
+    }
+
     public function validateOdg($date = null, $region = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
@@ -85,6 +91,40 @@ class ChgtDenom extends ChgtDenomDRev implements InterfaceDeclarantDocument, Int
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
+
+    public function getMvtLots() {
+      $lots = array();
+      foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($this->identifiant)->rows as $item) {
+          $key = Lot::generateMvtKey($item->value);
+          if (preg_replace('/-.*/', '', $item->value->id_document) == ChgtDenomClient::ORIGINE_LOT) {
+            $lots[$key] = $item->value;
+          }
+      }
+      return $lots;
+    }
+
+    public function hasLots() {
+      return (count($this->lots) > 0);
+    }
+
+    public function getLotKey() {
+      return ($this->hasLots())? $this->lots->get(0)->getGeneratedMvtKey() : null;
+    }
+
+	 public function setLotFromMvtKey($key){
+		 $mvts = $this->getMvtLots();
+     if (isset($mvts[$key])) {
+        if ($this->getLotKey() == $key) {
+          return $this->lots->get(0);
+        }
+        $this->remove('mouvements_lots');
+        $this->remove('lots');
+        $this->add('mouvements_lots');
+        $this->add('lots');
+				return $this->lots->add(null, MouvementLotView::generateLotByMvt($mvts[$key]));
+     }
+     return null;
+	 }
 
 
 
@@ -175,10 +215,9 @@ class ChgtDenom extends ChgtDenomDRev implements InterfaceDeclarantDocument, Int
 
     public function getAllPieces() {
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
-    	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->getValidation(),
+    		'date_depot' => $this->date(),
     		'libelle' => 'Changement de dénomination '.$this->date.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,

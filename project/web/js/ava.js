@@ -23,12 +23,11 @@
         /*
         * Volume des recoltes des appellation revendiquées
         */
-        var inputs_volumes_recolte = document.querySelectorAll('table#table-revendication input.input-recolte-hl');
-        inputs_volumes_recolte.forEach(function (input, index) {
-            input.addEventListener('change', function (event) {
-                var hash = input.getAttribute("data");
-                var vci_recolte = $('#vci_'+hash);
-                var total_recolte = $('#total_'+hash);
+        var inputs_volumes_recolte = $('table#table-revendication input.input-recolte-hl');
+        inputs_volumes_recolte.each(function (index, input) {
+            $(this).change(function () {
+                var vci_recolte = $(this).parents("td").next();
+                var total_recolte = $(this).parents("td").next().next();
                 var vci = 0;
                 if(vci_recolte.text()){
                   vci = parseFloat(vci_recolte.text());

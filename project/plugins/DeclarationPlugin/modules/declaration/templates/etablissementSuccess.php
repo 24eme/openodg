@@ -61,6 +61,9 @@
     <?php if(class_exists("DRevMarc")): ?>
     <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
+    <?php if(class_exists("ChgtDenom") && in_array('chgtdenom', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('chgtdenom', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
     <?php if(class_exists("TravauxMarc")): ?>
     <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
