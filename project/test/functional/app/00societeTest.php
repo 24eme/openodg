@@ -63,6 +63,10 @@ $b->get('/logout');
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
 $b->restart();
 
+$b->get('/');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil accessible");
+$b->isForwardedTo('compte', 'search');
+
 $b->get('/societe/'.$societeIdentifiant.'/visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"OPERATEUR\" accessible");
 $b->isForwardedTo('societe', 'visualisation');
@@ -123,7 +127,6 @@ function testVisualisationLimite($b, $societeIdentifiant) {
     $t->is($c->matchSingle('a[href*="/modification"]')->getNode(), null, "Bouton \"Editer\" absent");
     $t->is($c->matchSingle('a[href*="/switchStatus"]')->getNode(), null, "Bouton \"Archiver\" absent");
     $t->is($c->matchSingle('a[href*="/switchEnAlerte"]')->getNode(), null, "Bouton \"Mettre en alerte\" absent");
-    $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
     $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
 
