@@ -66,7 +66,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
-        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume revendique issu du mutage n'est pas en adéquation avec le volume revendiqué issu de la récolte (entre 5% et 10% de celui-ci)");
+        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
 
         /*
          * Engagement
