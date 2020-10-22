@@ -4,12 +4,12 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
     protected $drev = null;
 
     protected function getObjectForParameters($parameters = null) {
-
         $this->drev = DRevClient::getInstance()->find($parameters['id']);
         if (!$this->drev) {
 
             throw new sfError404Exception(sprintf('No DRev found with the id "%s".', $parameters['id']));
         }
+        parent::getObjectForParameters(array('identifiant' => $this->drev->identifiant));
         return $this->drev;
     }
 
@@ -23,11 +23,6 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
             $this->getObject();
         }
         return $this->drev;
-    }
-
-    public function getEtablissement() {
-
-        return $this->getDRev()->getEtablissementObject();
     }
 
 }

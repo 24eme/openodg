@@ -50,6 +50,14 @@ class DRevProduit extends BaseDRevProduit
 		return $this->vci->complement + $this->vci->substitution + $this->vci->rafraichi + $this->vci->destruction;
 	}
 
+	public function getVolumeRevendiqueRendement() {
+		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
+			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
+		}
+		return $this->volume_revendique_total;
+	}
+
+
 	public function getPlafondStockVci() {
 
 		return $this->recolte->superficie_total * $this->getConfig()->rendement_vci_total;
@@ -98,7 +106,7 @@ class DRevProduit extends BaseDRevProduit
 			$this->volume_revendique_issu_vci = ((float) $this->vci->complement) + ((float) $this->vci->substitution) + ((float) $this->vci->rafraichi);
 			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement);
 		}
-		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci);
+		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci + (float) $this->volume_revendique_issu_mutage);
 	}
 
 	public function isHabilite() {
@@ -181,7 +189,7 @@ class DRevProduit extends BaseDRevProduit
 			return null;
 		}
 
-		return $this->volume_revendique_total / $this->superficie_revendique;
+		return $this->getVolumeRevendiqueRendement() / $this->superficie_revendique;
 	}
 
 	public function getRendementEffectifHorsVCI(){

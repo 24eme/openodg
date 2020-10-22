@@ -22,6 +22,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acExceptionNotifierPlugin');
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
+        $this->enablePlugins('acVinHabilitationPlugin');
 
         if(getenv("APPLICATION") == "ava") {
             $this->enablePlugins('CompteAVAPlugin');
@@ -32,7 +33,7 @@ class ProjectConfiguration extends sfProjectConfiguration
             $this->enablePlugins('acVinTiragePlugin');
             $this->enablePlugins('acVinDRevMarcPlugin');
             $this->enablePlugins('acVinTravauxMarcPlugin');
-            $this->enablePlugins('acVinDegustationPlugin');
+            $this->enablePlugins('acVinDegustationAVAPlugin');
             $this->enablePlugins('acVinTourneePlugin');
             $this->enablePlugins('acVinConstatsVTSGNPlugin');
             $this->enablePlugins('acVinRegistreVCIPlugin');
@@ -47,7 +48,6 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinParcellaireAffectationPlugin');
         $this->enablePlugins('acVinDRevPlugin');
         $this->enablePlugins('acVinConfigurationPlugin');
-        $this->enablePlugins('acVinHabilitationPlugin');
         $this->enablePlugins('acVinComptePlugin');
         $this->enablePlugins('acVinSocietePlugin');
         $this->enablePlugins('acVinEtablissementPlugin');
@@ -55,6 +55,8 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('SV11Plugin');
         $this->enablePlugins('SV12Plugin');
         $this->enablePlugins('acVinPotentielProductionPlugin');
+        $this->enablePlugins('acVinDegustationPlugin');
+        $this->enablePlugins('acVinChgtDenomPlugin');
     }
 
     public function setRootDir($rootDir)

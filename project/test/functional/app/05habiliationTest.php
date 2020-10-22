@@ -111,6 +111,31 @@ $c = new sfDomCssSelector($b->getResponseDom());
 
 $t->is($c->matchSingle('.modal-demande .modal-footer button[type="submit"]')->getNode(), null, "Pas de bouton de soumission car la demande est cloturée");
 
+$t->comment('En mode stalker');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+$b->restart();
+
+$b->get('/habilitation_demande');
+$t->is($b->getResponse()->getStatusCode(), 200, "Page de listing des habilitations protégées");
+
+$b->get('/habilitation/declarant/'.$etablissement->getIdentifiant());
+$t->is($b->getResponse()->getStatusCode(), 200, "Page d'habilitation");
+
+$b->click('#tableaux_des_demandes a[href*="declarant/'.$etablissement->getIdentifiant().'/demande/visualisation/"]');
+$b->isForwardedTo('habilitation', 'demandeVisualisation');
+$t->is($b->getResponse()->getStatusCode(), 200, "Page de visualisation d'une demande");
+
+$b->get(str_replace('visualisation', 'edition', $b->getRequest()->getUri()));
+$t->is($b->getResponse()->getStatusCode(), 403, "Page d'édition d'une demande protégée");
+
+$b->get('/habilitation/declarant/'.$etablissement->getIdentifiant().'/demande/creation');
+$t->is($b->getResponse()->getStatusCode(), 403, "Page de création d'une demande protégée");
+
+$b->get('/habilitation/visualisation/HABILITATION-'.$etablissement->getIdentifiant().'-'.date('Ymd'));
+$t->is($b->getResponse()->getStatusCode(), 200, "Page de visualisation d'une habilitation");
+
 $t->comment('En mode télédéclarant');
 
 $b->get('/logout');

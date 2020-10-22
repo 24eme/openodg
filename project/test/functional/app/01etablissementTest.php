@@ -23,7 +23,7 @@ $t->comment("Création et modification d'un établissement ");
 
 $b->get('/etablissement/'.$societeIdentifiant.'/nouveau');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de création d'un établisement");
-$b->click('#btn_valider')->followRedirect();
+$b->click('#btn_valider', array('etablissement_modification' => array('cvi' => '7523700100')))->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire de création d'un établissement");
 
 preg_match("|/etablissement/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
@@ -52,6 +52,18 @@ $etablissement->save();
 $b->get('/etablissement/'.$etablissementIdentifiant.'/chai-ajout');
 $b->click('#btn_valider')->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'ajout d'un chai");
+
+$t->comment('En mode stalker');
+
+$b->get('/logout');
+
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+$b->restart();
+
+$b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Visualisation établissement accessible");
+$b->isForwardedTo('etablissement', 'visualisation');
+testVisualisationLimite($b, $societeIdentifiant, $etablissement);
 
 $t->comment('En mode habilitation');
 
@@ -104,7 +116,6 @@ function testVisualisationLimite($b, $societeIdentifiant, $etablissement) {
     $t->is($c->matchSingle('a[href*="/chai-modification/"]')->getNode(), null, "Bouton \"Modifier un chai\" absent");
     $t->is($c->matchSingle('a[href*="/relation-ajout"]')->getNode(), null, "Bouton \"Ajouter une relation\" absent");
     $t->is($c->matchSingle('a[href*="/relation-suppression"]')->getNode(), null, "Bouton \"Suppression d'une relation\" absent");
-    $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
     $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
     $t->is($c->matchSingle('form.form_ajout_tag')->getNode(), null, "Form d'ajout d'un tag absent");

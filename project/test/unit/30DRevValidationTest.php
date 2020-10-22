@@ -2,7 +2,14 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(14);
+$nb_test = 11;
+if ($application == 'loire') {
+    $nb_test += 3;
+}
+if ($application == 'igp13') {
+    $nb_test += 1;
+}
+$t = new lime_test($nb_test);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -22,7 +29,7 @@ for ($i=1; $i < 99; $i++) {
 $produits = $drev->getConfigProduits();
 $produit1 = null;
 foreach($produits as $produit) {
-    if(!$produit->isRevendicationParLots()) {
+    if($application == 'loire' && !$produit->isRevendicationParLots()) {
         continue;
     }
     $produit1 = $produit;
@@ -48,7 +55,9 @@ $t->is($drev->isValidee(),true,"La Drev est validée");
 $t->is($drev->isValideeOdg(),true,"La Drev est validée par l'odg");
 $t->is($drev->getValidationOdg(),$date_validation_odg_1,"La date de validation de l'odg est ".$date_validation_odg_1);
 
-$t->is($drev->lots[0]->date_version,$date_validation_odg_1,"La date de version du lot est celle de la validation ODG");
+if ($application == 'loire') {
+    $t->is($drev->lots[0]->date_version,$date_validation_odg_1,"La date de version du lot est celle de la validation ODG");
+}
 
 $t->comment("Création d'une modificatrice  Drev");
 
@@ -62,6 +71,8 @@ $drev_modificative->save();
 
 // Ajout d'un lot
 
+$lot = null;
+if ($application == 'loire') {
 $lot = $drev_modificative->addLot();
 
 $lot->millesime = $campagne;
@@ -73,12 +84,14 @@ $lot->produit_hash = $produit1->getHash();
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
 $lot->addCepage("Chenin", 30);
 $lot->addCepage("Sauvignon", 70);
-
+}
 $drev_modificative->validate($date_validation_2);
 $drev_modificative->validateOdg($date_validation_odg_2);
 $drev_modificative->save();
 
+if ($lot) {
 $lot = $drev_modificative->lots->getLast();
+}
 
 $t->is($drev_modificative->getVersion(),"M01","La Drev modificatrice est de rang 01");
 $t->is($drev_modificative->isValidee(),true,"La Drev modificatrice est validée");
@@ -86,5 +99,13 @@ $t->is($drev_modificative->isValideeOdg(),true,"La Drev modificatrice est valid�
 $t->is($drev_modificative->getValidation(),$date_validation_2,"La date de validation est ".$date_validation_2);
 $t->is($drev_modificative->getValidationOdg(),$date_validation_odg_2,"La date de validation de l'odg est ".$date_validation_odg_2);
 
-$t->is($drev_modificative->lots[0]->date_version,$date_validation_odg_1,"La date de version du lot de départ est celle de la validation ODG de la M00 ($date_validation_odg_1)");
-$t->is($lot->date_version,$date_validation_odg_2,"La date de version du dernier lot est celle de la validation ODG de la M01 ($date_validation_odg_2)");
+if ($lot) {
+    $t->is($drev_modificative->lots[0]->date_version,$date_validation_odg_1,"La date de version du lot de départ est celle de la validation ODG de la M00 ($date_validation_odg_1)");
+    $t->is($lot->date_version,$date_validation_odg_2,"La date de version du dernier lot est celle de la validation ODG de la M01 ($date_validation_odg_2)");
+}
+
+if ($application == 'igp13') {
+    $dateDegustVoulue = $campagne.'-09-25';
+    $drev->setDateDegustationSouhaitee($dateDegustVoulue);
+    $t->is($drev->date_degustation_voulue, $dateDegustVoulue, 'La date de dégustation voulue par l\'opérateur est '.$dateDegustVoulue);
+}

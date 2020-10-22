@@ -1,0 +1,69 @@
+chgtdenom_create:
+  url: /changement-denomination/creation/:identifiant
+  param: { module: chgtdenom, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+chgtdenom_create_papier:
+  url: /changement-denomination/creation-papier/:identifiant
+  param: { module: chgtdenom, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+chgtdenom_lots:
+  url: /changement-denomination/lots/:id
+  param: { module: chgtdenom, action: lots }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+chgtdenom_edition:
+  url: /changement-denomination/edition/:id/:key
+  param: { module: chgtdenom, action: edition, key: null }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+chgtdenom_validation:
+  url: /changement-denomination/validation/:id
+  param: { module: chgtdenom, action: validation }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+chgtdenom_visualisation:
+  url: /changement-denomination/visualisation/:id
+  param: { module: chgtdenom, action: visualisation }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]
+
+chgtdenom_delete:
+  url: /changement-denomination/suppression/:id
+  param: { module: chgtdenom, action: suppression }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]

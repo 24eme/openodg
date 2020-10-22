@@ -25,11 +25,11 @@ class TemplateFacture extends BaseTemplateFacture
 		return $cotisations;
 	}
 
-	public function getMouvements($compteIdentifiant, $force = false) {
+	public function getMouvementsFactures($compteIdentifiant, $force = false) {
 		$mouvements = array();
 		foreach ($this->docs as $docModele) {
 			$documents = $this->getDocumentFacturable($docModele, $compteIdentifiant, $this->getCampagne());
-			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsByDocs($compteIdentifiant, $documents));
+			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsFacturesByDocs($compteIdentifiant, $documents));
 		}
 
 		return $mouvements;

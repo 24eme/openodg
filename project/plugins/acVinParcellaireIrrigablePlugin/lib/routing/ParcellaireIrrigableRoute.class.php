@@ -9,6 +9,7 @@ class ParcellaireIrrigableRoute extends EtablissementRoute implements InterfaceD
 
             throw new sfError404Exception(sprintf('No ParcellaireIrrigable found with the id "%s".', $parameters['id']));
         }
+        parent::getObjectForParameters(array('identifiant' => $this->parcellaireIrrigable->identifiant));
         return $this->parcellaireIrrigable;
     }
 
@@ -22,10 +23,5 @@ class ParcellaireIrrigableRoute extends EtablissementRoute implements InterfaceD
             $this->getObject();
         }
         return $this->parcellaireIrrigable;
-    }
-
-    public function getEtablissement() {
-
-        return $this->getParcellaireIrrigable()->getEtablissementObject();
     }
 }

@@ -21,6 +21,12 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
 
         $this->getWidget('volume_revendique_issu_recolte')->setAttribute('class', $this->getWidget('volume_revendique_issu_recolte')->getAttribute('class').' input_sum_value');
 
+        if($this->getObject()->getConfig()->hasMutageAlcoolique()) {
+            $this->setWidget('volume_revendique_issu_mutage', new bsWidgetFormInputFloat());
+            $this->setValidator('volume_revendique_issu_mutage', new sfValidatorNumber(array('required' => false)));
+            $this->getWidget('volume_revendique_issu_mutage')->setAttribute('class', $this->getWidget('volume_revendique_issu_mutage')->getAttribute('class').' input_sum_value');
+        }
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 

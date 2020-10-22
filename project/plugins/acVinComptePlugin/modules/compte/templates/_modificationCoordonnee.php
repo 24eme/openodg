@@ -113,7 +113,6 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
         </div>
     </div>
 
-    <?php if ($isCompteSociete) : ?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">Droits</h4><span class="pull-right" style="margin-top: -20px; font-size: 15px;" >
@@ -131,5 +130,4 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
                 </div>
             </div>
         </div>
-    <?php endif; ?>
-</div>
+    </div>
