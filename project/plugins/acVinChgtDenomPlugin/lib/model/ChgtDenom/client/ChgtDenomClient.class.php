@@ -26,14 +26,13 @@ class ChgtDenomClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $drevs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
-        foreach ($drevs as $id => $drev) {
+    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $campagne_from = "0000-00-00T000000";
+        $campagne_to = "9999-99-99T999999";
 
-            return $this->find($id, $hydrate);
-        }
-
-        return null;
+        return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
+                    ->endkey(sprintf("CHGTDENOM-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
+                    ->execute($hydrate);
     }
 
     public function createDoc($identifiant, $date = null, $papier = false)

@@ -70,6 +70,14 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->exist('papier') && $this->get('papier');
     }
 
+    public function isValide() {
+      return ($this->validation);
+    }
+
+    public function isApprouve() {
+      return ($this->validation_odg);
+    }
+
     public function validateOdg($date = null, $region = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
@@ -111,6 +119,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->hasLots())? $this->lots->get(0)->getGeneratedMvtKey() : null;
     }
 
+    public function getMvtLot() {
+      $mvts = $this->getMvtLots();
+      $key = $this->getLotKey();
+      return ($mvts && $key && isset($mvts[$key]))? $mvts[$key] : null;
+    }
+
 	 public function setLotFromMvtKey($key){
 		 $mvts = $this->getMvtLots();
      if (isset($mvts[$key])) {
@@ -142,10 +156,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
-    private function generateMouvementLotsFromLot($lot, $key, $prelevable = 1) {
+    private function generateMouvementLotsFromLot($lot, $key) {
         $mvt = new stdClass();
-        $mvt->prelevable = $prelevable;
-        $mvt->preleve = 0;
         $mvt->date = $lot->date;
         $mvt->numero = $lot->numero;
         $mvt->millesime = $lot->millesime;
@@ -217,8 +229,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->date(),
-    		'libelle' => 'Changement de dénomination '.$this->date.' '.$complement,
+    		'date_depot' => $this->validation,
+    		'libelle' => 'Changement de dénomination '.$this->lots->get(0)->libelle_produit.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null

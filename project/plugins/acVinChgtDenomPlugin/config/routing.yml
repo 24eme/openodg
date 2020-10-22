@@ -47,3 +47,23 @@ chgtdenom_validation:
     type:     object
   requirements:
     sf_method: [get, post]
+
+chgtdenom_visualisation:
+  url: /changement-denomination/visualisation/:id
+  param: { module: chgtdenom, action: visualisation }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]
+
+chgtdenom_delete:
+  url: /changement-denomination/suppression/:id
+  param: { module: chgtdenom, action: suppression }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]

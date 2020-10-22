@@ -263,36 +263,29 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleWarningRevendicationLot() {
-      $nb_lot_app = [];
+      $nb_total_lots_cepages = [];
         foreach ($this->document->declaration->getProduitsCepage() as $hash => $produitCepage) {
 
             if ($produitCepage->volume_revendique) {
                 $correspondance = $this->document->getConfiguration()->get($produitCepage->getCepage()->getHash())->getHashRelation('lots');
-                 if(!isset($nb_lot_app[$correspondance])){
-                   $nb_lot_app[$correspondance] = ["nb"=>0, "lot" => ""];
-                 }
                 $correspondanceLot = str_replace('/', '_', $correspondance);
                 $cuve = Drev::CUVE . $this->document->getPrelevementsKeyByHash($correspondance);
                 if ($this->document->prelevements->exist($cuve)) {
-
-                    if ($this->document->prelevements->get($cuve)->lots->exist($correspondanceLot)) {
-                      $nb_lot_app[$correspondance]["nb"] +=$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn;
-                      $nb_lot_app[$correspondance]["lot"] = $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->getLibelle();
-                      if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
-                          $this->addPoint(self::TYPE_WARNING, 'declaration_lots', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
-                      }
+                  if ($this->document->prelevements->get($cuve)->lots->exist($correspondanceLot)) {
+                    $nb_total_lots_cepages[$cuve] =$this->document->prelevements->get($cuve)->total_lots;
+                    if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
+                      $this->addPoint(self::TYPE_WARNING, 'declaration_lots', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
                     }
+                  }
                 }
             }
         }
-        $nb = null;
-        foreach ($nb_lot_app as $key => $value) {
-          if($value['nb'] == 0){
-            $nb ++;
+        foreach ($nb_total_lots_cepages as $key => $value) {
+          if($this->document->declaration->getNbLotsMinimum() >= $value){
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "");
+            break;
           }
         }
-        if($nb)
-          $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "$nb lots");
 
     }
 
