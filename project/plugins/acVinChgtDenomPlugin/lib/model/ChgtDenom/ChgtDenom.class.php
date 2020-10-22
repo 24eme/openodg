@@ -230,7 +230,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->validation,
-    		'libelle' => 'Changement de dénomination '.$this->lots->get(0)->libelle_produit.' '.$complement,
+    		'libelle' => 'Changement de dénomination du lot n°'.$this->lots->get(0)->numero.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null

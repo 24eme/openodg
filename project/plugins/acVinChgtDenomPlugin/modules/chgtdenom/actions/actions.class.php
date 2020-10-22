@@ -92,6 +92,27 @@ class chgtdenomActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->lot = $this->chgtDenom->lots->get(0);
+
+        if ($this->getUser()->isAdmin() && !$this->chgtDenom->isApprouve()) {
+          $this->form = new ChgtDenomApprobationForm($this->chgtDenom);
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
     }
 
     public function executeSuppression(sfWebRequest $request) {

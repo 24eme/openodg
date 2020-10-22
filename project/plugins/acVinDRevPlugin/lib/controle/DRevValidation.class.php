@@ -66,7 +66,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
-        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume revendique issu du mutage n'est pas en adéquation avec le volume revendiqué issu de la récolte (entre 5% et 10% de celui-ci)");
+        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
 
         /*
          * Engagement
@@ -76,7 +76,8 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, 'Je m\'engage à transmettre la déclaration de mutage');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, "Je n'ai aucune parcelle de VDN avec un % de manquants > à 20%");
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, "Je m'engage à transmettre la liste de mes manquants de mes VDN car j'ai un % > à 20 %");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, "Je m'engage à transmettre la liste de mes parcelles de VDN avec un % de manquant > à 20 %");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil");
 
 
         $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Je m'engage à contacter le syndicat quand le vin sera prêt");
@@ -211,6 +212,7 @@ class DRevValidation extends DocumentValidation
                 $this->produit_revendication_rendement[$produit->getHash()] = $produit->getHash();
             } elseif($produit->getConfig()->getRendementConseille() > 0 && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendementConseille(), 2)) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_conseille', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, $produit->getLibelleComplet());
             }
         }
         if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
