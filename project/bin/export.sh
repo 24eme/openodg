@@ -76,10 +76,6 @@ bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaireaffectati
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireaffectation.csv.part > $EXPORTDIR/parcellaireaffectation.csv
 rm $EXPORTDIR/parcellaireaffectation.csv.part
 
-php symfony export:habilitation-demandes-publipostage $SYMFONYTASKOPTIONS > web/exports/habilitation_demandes_publipostage.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_publipostage.csv.part > $EXPORTDIR/habilitation_demandes_publipostage.csv
-rm $EXPORTDIR/habilitation_demandes_publipostage.csv.part
-
 php symfony pieces:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/pieces.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pieces.csv.part > $EXPORTDIR/pieces.csv
 rm $EXPORTDIR/pieces.csv.part
