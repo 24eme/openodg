@@ -9,4 +9,6 @@ all:
         "habilitation:odg": "Habilitation ODG"
         "api": "API"
         "timbre": "Timbre"
+        "stalker": "Stalker"
+        "teledeclaration_drev_admin": "ODG Région"
       visualisation_teledeclaration: true

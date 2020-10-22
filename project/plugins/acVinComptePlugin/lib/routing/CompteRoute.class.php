@@ -20,14 +20,13 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
       return $this->compte;
     }
 
-    protected function doConvertObjectToArray($object = null) {
-      $this->compte = $object;
+    protected function doConvertObjectToArray($object) {
       return array("identifiant" => $object->getIdentifiant());
     }
 
     public function getSociete() {
       if (!$this->societe) {
-           $this->societe = $this->getObject();
+           $this->societe = $this->getCompte()->getSociete();
       }
       return $this->societe;
     }

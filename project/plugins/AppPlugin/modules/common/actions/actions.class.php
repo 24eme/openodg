@@ -15,7 +15,7 @@ class commonActions extends sfActions {
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_STALKER)) {
 
-                return $this->redirect('declaration');
+            return $this->redirect('compte_search');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_TOURNEE)) {
@@ -25,7 +25,7 @@ class commonActions extends sfActions {
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
 
-            return $this->redirect('compte_recherche');
+            return $this->redirect('compte_search');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
