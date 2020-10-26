@@ -31,16 +31,19 @@ class chgtdenomActions extends sfActions {
     public function executeEdition(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->key = $request->getParameter("key", null);
-        if (!$this->key && count($this->chgtDenom->lots) > 0) {
-            $this->key = $this->chgtDenom->lots->get(0)->getGeneratedMvtKey();
-        }
-        $this->forward404Unless($this->key);
+        $firstEdition = true;
 
-        if (!$this->chgtDenom->setLotFromMvtKey($this->key)) {
-            throw new sfException("Lot inexistant pour la key : $this->key");
+        if (!$this->key) {
+          $this->key = $this->chgtDenom->getLotKey();
+          $firstEdition = false;
         }
 
-        $this->form = new ChgtDenomForm($this->chgtDenom->lots->get(0));
+        if (!$this->key) {
+          return $this->redirect('chgtdenom_lots', $this->chgtDenom);
+        }
+        $this->chgtDenom->changement_origine_mvtkey = $this->key;
+
+        $this->form = new ChgtDenomForm($this->chgtDenom, $firstEdition);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -61,6 +64,55 @@ class chgtdenomActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+
+        $this->form = new ChgtDenomValidationForm($this->chgtDenom);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->chgtDenom = $this->getRoute()->getChgtDenom();
+
+        if ($this->getUser()->isAdmin() && !$this->chgtDenom->isApprouve()) {
+          $this->form = new ChgtDenomApprobationForm($this->chgtDenom);
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+    }
+
+    public function executeSuppression(sfWebRequest $request) {
+        $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $identifiant = $this->chgtDenom->identifiant;
+        $this->chgtDenom->delete();
+        return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant));
     }
 
     protected function secureEtablissement($droits, $etablissement) {

@@ -117,6 +117,7 @@ Etablissement:
                commune: {  }
                pays: { }
                insee: { }
+               code_insee: { required: false }
        comptabilite:
            type: collection
            definition:

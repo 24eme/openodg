@@ -12,6 +12,11 @@ ChgtDenom:
       validation_odg: {  }
       identifiant: {  }
       papier: { required: false, type: integer }
+      changement_origine_mvtkey: {}
+      changement_produit: {}
+      changement_produit_libelle: { }
+      changement_volume: { type: float }
+      changement_numero: { }
       declarant:
         type: collection
         class: ChgtDenomDeclarant
@@ -55,8 +60,6 @@ ChgtDenom:
                   declarant_nom: { }
                   origine_mouvement: {}
                   details: {}
-                  changement_produit: {}
-                  changement_volume: { type: float }
       mouvements_lots:
         type: collection
         definition:
@@ -78,8 +81,8 @@ ChgtDenom:
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
-                        elevage: { }
                         millesime: {  }
+                        elevage: {  }
                         region: {  }
                         numero: {  }
                         version: {  }

@@ -183,4 +183,8 @@ abstract class Lot extends acCouchdbDocumentTree
       return ($this->statut == Lot::STATUT_PRELEVE || array_key_exists($this->statut, self::$libellesConformites));
     }
 
+    public function isLeurre()
+    {
+        return $this->exist('leurre') && $this->leurre;
+    }
 }
