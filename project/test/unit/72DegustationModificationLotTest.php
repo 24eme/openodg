@@ -19,47 +19,37 @@ if ($degustation == null) {
     exit('Doc null');
 }
 
-$config = ConfigurationClient::getCurrent();
-$produitconfig1 = null;
-foreach(array_reverse($config->getProduits()) as $produitconfig) {
-    if(!$produitconfig->getRendement()) {
-        continue;
-    }
-    if(!$produitconfig1) {
-        $produitconfig1 = $produitconfig->getCepage();
-        continue;
-    }
-    break;
-}
-
-$t->comment('On modifie un lot');
 $lot = $degustation->lots->get(0);
-$drev = DRevClient::getInstance()->find($lot->id_document);
-$hash = $lot->produit_hash;
-$produit = $lot->getProduitLibelle();
 $volume = $lot->volume;
+$drev = DRevClient::getInstance()->find($lot->id_document);
 
-$t->comment('hash originale : '.$hash);
-$t->comment('produit original : '.$produit);
-$t->comment('volume original : '.$volume);
+$t->comment('On créé une modificatrice, supprime le lot');
+$modificatrice = $drev->generateModificative();
+$t->is($modificatrice->isModificative(), true, 'La drev créée est une modificatrice');
+$t->is(count($modificatrice->lots), count($drev->lots), 'Il y a le même nombre de lot que l\'originale');
+$modificatrice->lots->remove(0);
+$t->is(count($modificatrice->lots), count($drev->lots) - 1, 'Il y a un lot en moins');
 
+$t->comment('On modifie un lot et on l\'ajoute à la modificatrice');
+$t->comment('Volume original : '.$volume.'hl');
 $lot->volume += 1.12;
-$lot->setProduitHash($produitconfig1->getHash());
+$lot_modificatrice = $modificatrice->addLotFromDegustation(0, $lot);
+$t->is($lot_modificatrice->volume, $volume + 1.12, 'Le volume est mis à jour dans la modificatrice');
 
+$t->comment('On génère les mouvements de lot de la modificatrice');
+$modificatrice->generateMouvementsLots();
+$mvmt_lot_modificatrice = $modificatrice->get($lot->getGeneratedMvtKey());
+$t->is($mvmt_lot_modificatrice->volume, $volume + 1.12, 'Le volume est à jour dans les mvmts de la M');
+$t->is($mvmt_lot_modificatrice->origine_hash, '/lots/0', "L'origine du mvmt est le bon");
+$t->is($mvmt_lot_modificatrice->preleve, 0, "Le mouvement n'est pas prélevé");
+$t->is($mvmt_lot_modificatrice->prelevable, 1, "Le mouvement est prélevable");
+
+$t->comment('On rend prélevable à 0 le lot dans la DREV originale');
+$mvmt = $drev->get($lot->origine_mouvement);
+$mvmt->prelevable = 0;
+
+$t->comment('On met à jour la dégustation');
 $degustation->updateLot(0, $lot);
-$lot = $degustation->lots->get(0);
-
-$lot_drev = $drev->lots->get(0);
-$lot_drev = $lot;
-$drev->generateMouvementsLots();
-
-//$lot = $degustation->lots->get(0);
-//$lot_drev = $drev->lots->get(0);
 
 $t->comment('Changement dans la dégustation');
 $t->is($lot->volume, $volume + 1.12, 'Le volume est changé');
-$t->is($lot->produit_hash, $produitconfig1->getHash(), 'La hash a changé');
-$t->is($lot->getProduitLibelle(), $produitconfig1->getLibelleComplet(), 'Le nom du produit a changé');
-
-$t->comment('Changement dans la drev');
-$t->is($lot_drev->volume, $volume + 1.12, 'Le volume est changé : '.$lot_drev->volume);

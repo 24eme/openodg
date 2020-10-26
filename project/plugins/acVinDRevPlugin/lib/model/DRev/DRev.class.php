@@ -712,6 +712,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
+    public function addLotFromDegustation($key, $lot_degustation) {
+        $lot_degustation->remove('details');
+        $lot_degustation->remove('statut');
+        $lot_degustation->remove('numero_table');
+        $lot_degustation->remove('leurre');
+        $lot_degustation->remove('conformite');
+        $lot_degustation->remove('motif');
+        $lot_degustation->remove('observation');
+        $lot_degustation->remove('declarant_nom');
+        $lot_degustation->remove('declarant_identifiant');
+        $lot_degustation->remove('origine_mouvement');
+
+        $this->lots->add($key, $lot_degustation);
+        return $this->lots->get($key);
+    }
+
     public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
