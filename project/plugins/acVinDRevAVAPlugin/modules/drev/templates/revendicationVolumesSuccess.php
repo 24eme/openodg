@@ -46,13 +46,13 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         <thead>
             <?php if ($drev->hasDR()): ?>
             <tr>
-                <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>"></th>
+                <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>3<?php else: ?>5<?php endif; ?>"></th>
                 <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte <?php echo $drev->campagne;?></th>
                 <th colspan="3" class="text-center">Revendication des volumes</th>
             </tr>
             <?php endif; ?>
             <tr>
-                <th class="col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>">Appellation revendiquée</th>
+                <th class="col-xs-<?php if ($drev->hasDR()): ?>3<?php else: ?>5<?php endif; ?>">Appellation revendiquée</th>
                 <?php if ($drev->hasDR()): ?>
                 <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
