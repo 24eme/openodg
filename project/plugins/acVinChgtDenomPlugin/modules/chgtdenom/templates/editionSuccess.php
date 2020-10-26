@@ -10,17 +10,17 @@
     </div>
 
     <div class="alert alert-info" role="alert">
-      <h4>Modification du lot n° <strong><?php echo $lot->numero; ?></strong></h4>
+      <h4>Modification du logement n° <strong><?php echo $chgtDenom->getMvtLot()->numero; ?></strong></h4>
       <table class="table table-condensed" style="margin: 0;">
         <tbody>
           <tr>
-            <td style="border: none;">Date : <strong><?php echo format_date($lot->date, 'dd/MM/yyyy'); ?></strong></td>
+            <td style="border: none;">Date : <strong><?php echo format_date($chgtDenom->getMvtLot()->date, 'dd/MM/yyyy'); ?></strong></td>
           </tr>
           <tr>
-            <td style="border: none;">Produit : <strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
+            <td style="border: none;">Produit : <strong><?php echo $chgtDenom->getMvtLot()->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $chgtDenom->getMvtLot()->details; ?></small></td>
           </tr>
           <tr>
-            <td style="border: none;">Volume : <strong><?php echo echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
+            <td style="border: none;">Volume : <strong><?php echo echoFloat($chgtDenom->getMvtLot()->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
           </tr>
         </tbody>
       </table>
@@ -59,9 +59,21 @@
               <div class="col-md-8">
                   <div class="form-group">
                       <?php echo $form['changement_quantite']->renderLabel("Quantité modifiée", array('class' => "col-sm-4 control-label")); ?>
-                      <div class="col-sm-8 bloc_condition" data-condition-cible="#bloc_changement_volume">
+                      <div class="col-sm-8 bloc_condition" data-condition-cible="#bloc_changement_volume|#bloc_changement_numero">
                             <span class="error text-danger"><?php echo $form['changement_quantite']->renderError() ?></span>
                             <?php echo $form['changement_quantite']->render(); ?>
+                      </div>
+                  </div>
+              </div>
+        </div>
+
+        <div class="row" id="bloc_changement_numero" data-condition-value="PART">
+              <div class="col-md-8">
+                  <div class="form-group">
+                      <?php echo $form['changement_numero']->renderLabel("N° du logement", array('class' => "col-sm-4 control-label")); ?>
+                      <div class="col-sm-5">
+                            <span class="error text-danger"><?php echo $form['changement_numero']->renderError() ?></span>
+                            <?php echo $form['changement_numero']->render(); ?>
                       </div>
                   </div>
               </div>
@@ -70,7 +82,7 @@
         <div class="row" id="bloc_changement_volume" data-condition-value="PART">
               <div class="col-md-8">
                   <div class="form-group">
-                      <?php echo $form['changement_produit']->renderLabel("Nouveau volume", array('class' => "col-sm-4 control-label")); ?>
+                      <?php echo $form['changement_volume']->renderLabel("Nouveau volume", array('class' => "col-sm-4 control-label")); ?>
                       <div class="col-sm-5">
                           <span class="error text-danger"><?php echo $form['changement_volume']->renderError() ?></span>
                           <div class="input-group">
