@@ -54,7 +54,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <tr>
                 <th class="col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>">Appellation revendiquée</th>
                 <?php if ($drev->hasDR()): ?>
-                <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
+                <th class="col-xs-1 text-center striped-success small">VCI constitué</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                     <?php if($drev->declaration->hasVciRecolteConstitue()): ?>
