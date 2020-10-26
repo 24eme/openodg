@@ -9,7 +9,7 @@
 <form method="post" action="<?php echo url_for("drev_controle_externe", $drev) ?>" role="form" class="form-horizontal ajaxForm">
     <div class="row">
         <div class="col-xs-7">
-            <p>Les prélèvements se font uniquement sur des vins mis en bouteilles, <strong>au plus proche de la commercialisation</strong></p>
+            <p>Les prélèvements se font uniquement sur des <strong>vins mis en bouteilles</strong>, au plus proche de la commercialisation</p>
 
             <?php if($drev->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CONDITIONNEUR)): ?>
             <div class="checkbox">
