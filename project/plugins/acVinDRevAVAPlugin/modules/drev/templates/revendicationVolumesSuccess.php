@@ -47,7 +47,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->hasDR()): ?>
             <tr>
                 <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>"></th>
-                <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte</th>
+                <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte <?php echo $drev->campagne;?></th>
                 <th colspan="3" class="text-center">Revendication des volumes</th>
             </tr>
             <?php endif; ?>
