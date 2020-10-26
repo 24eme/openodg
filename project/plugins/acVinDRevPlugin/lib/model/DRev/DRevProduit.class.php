@@ -255,4 +255,8 @@ class DRevProduit extends BaseDRevProduit
 		return $diff;
     }
 
+	public function getVolumeRevendiqueCommecialisable() {
+		return $this->volume_revendique_total - $this->getVolumeReserveInterpro();
+	}
+
 }

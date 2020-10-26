@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(40);
+$t = new lime_test(41);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -218,7 +218,8 @@ $drevM2->save();
 
 $t->is($produit2M2->getConfig()->getRendementReserveInterpro(), 50, "le rendement interpro est bien celui attendu en configuration 2");
 $t->ok($drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro est bien présent");
-$t->is($drevM2->get($produit2->getHash())->get('dont_volume_revendique_reserve_interpro'), 5, "Le volume dédié à la réserve interpro est le bon");
+$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), 5, "Le volume dédié à la réserve interpro est le bon");
+$t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(), $produit2M2->superficie_revendique * 50, "Le volume commercialisable est le bon");
 $t->ok(!$drevM2->get($produit1->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro n'est pas présent pour le 1er produit");
 $t->ok($drevM2->hasProduitsReserveInterpro(), "La Drev indique bien qu'il existe des produits en reserve interpro");
 $t->ok(!$drevM1->hasProduitsReserveInterpro(), "La Drev précédente n'a pas de produit en réserve interpro");
