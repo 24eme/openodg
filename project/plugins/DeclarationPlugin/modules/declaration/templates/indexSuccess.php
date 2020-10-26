@@ -14,6 +14,7 @@
     </div>
 </div>
 
+<p>Dans le cadre de la DRev, vous devez indiquer ici l'utilisation de votre VCI stocké en 2019.</p><p>Les informations présentée ici ont été initialisées depuis votre registre VCI. </p>
 <h3>Liste des déclarations</h3>
 <div class="row">
     <div class="col-sm-9 col-xs-12">
@@ -48,6 +49,8 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <p>Pour le VCI constitué cette année pour la récolte 2020, pas d'inquiétude, il est automatiquement repris dans votre registre VCI 2020.</p>
+
         <div class="text-center">
             <ul class="pagination" style="margin-top: 0;">
                 <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
