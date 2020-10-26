@@ -58,7 +58,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                     <?php if($drev->declaration->hasVciRecolteConstitue()): ?>
-                    <th class="col-xs-1 text-center striped-success small">VCI constit.</th>
+                    <th class="col-xs-1 text-center striped-success small">VCI<br/>constit.</th>
                     <?php endif ?>
                 <?php endif; ?>
                 <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Issus de la récolte<br/><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels, le VCI constitué et le VCI de l'année passée (le cas échéant) appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
