@@ -72,12 +72,12 @@ class DRevValidation extends DocumentValidation {
         }
         foreach ($revendicationProduits as $hash => $revendicationProduit) {
             $this->controleWarningDrSurface($revendicationProduit);
+            $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleWarningDrVolume($revendicationProduit);
             $this->controleErrorRevendicationIncomplete($revendicationProduit);
             if($revendicationProduit->exist('superficie_revendique_vtsgn')) {
                 $this->controleErrorRevendicationIncomplete($revendicationProduit, '_vtsgn', " VTSGN");
             }
-            $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleEngagementPressoir($revendicationProduit);
 
             $stockVCIFinal = 0;
@@ -236,8 +236,13 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleWarningDrVolume($produit) {
+        $alreadyWarned = false;
 
-        if (!$this->document->hasDR()) {
+        if (count($this->getVigilances())>0) {
+          if ($this->getVigilances()[0]->getCode() == 'volume_revendique_superieur_sur_place'){ $alreadyWarned = true; }
+        }
+
+        if (!$this->document->hasDR() || $alreadyWarned == true) {
 
             return;
         }
@@ -335,6 +340,8 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleErrorVolumeRevendiqueIncorrect($produit) {
+
+
         if (
                 $produit->volume_revendique !== null &&
                 $produit->detail->volume_sur_place !== null &&
@@ -353,6 +360,21 @@ class DRevValidation extends DocumentValidation {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
+        // print_r($this->getVigilances()[0]);
+        // var_dump(in_array('Le volume revendiqué est différent de celui déclaré dans votre DR.',$this->getVigilances()));
+        // var_dump(array_key_exists('dr_volume',$this->getVigilances()['dr_volume']));
+
+         // var_dump(($this->getVigilances()[0])->getCode());
+         // var_dump('jen');
+        // foreach ($this->getVigilances() as &$value) {
+        //   // var_dump(array_search('dr_volume',$this->getVigilances()));
+        //             var_dump(array_keys($this->getVigilances()));
+        //   print("\n");
+        //   if ($value == 'Le volume revendiqué est différent de celui déclaré dans votre DR.') {
+        //     print('lol');
+        //   }
+        // }
+
     }
 
     protected function controleErrorPeriodes() {
