@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(32);
+$t = new lime_test(36);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -197,3 +197,30 @@ if(FactureConfiguration::getInstance()->isActive()) {
 } else {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
 }
+
+$t->comment("Test de la réserve interpro");
+
+$rdm_orig = $produit2->getConfig()->getRendementCepage();
+$rdm_ri = $produit2->getConfig()->getRendementReserveInterpro();
+$produit2->getConfig()->add('attributs')->add('rendement', 60);
+$produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro', 50);
+$produit2->getConfig()->clearStorage();
+
+$drevM2 = $drevM1->generateModificative();
+$drevM2->save();
+$produit2M2 = $drevM2->get($produit2->getHash());
+$produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 50 + 5;
+$produit2M2->volume_revendique_issu_recolte = $produit2M2->volume_revendique_total;
+
+$drevM2->save();
+$drevM2->validate();
+$drevM2->save();
+
+$t->is($produit2M2->getConfig()->getRendementReserveInterpro(), 50, "le rendement interpro est bien celui attendu en configuration 2");
+$t->ok($drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro est bien présent");
+$t->is($drevM2->get($produit2->getHash())->get('dont_volume_revendique_reserve_interpro'), 5, "Le volume dédié à la réserve interpro est le bon");
+$t->ok(!$drevM2->get($produit1->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro n'est pas présent pour le 1er produit");
+
+$produit2->getConfig()->add('attributs')->add('rendement', $rdm_orig);
+$produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro', $rdm_ri);
+$produit2->getConfig()->clearStorage();

@@ -107,6 +107,11 @@ class DRevProduit extends BaseDRevProduit
 			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement);
 		}
 		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci + (float) $this->volume_revendique_issu_mutage);
+
+		if ($this->hasReserveInterpro()) {
+			$this->add('dont_volume_revendique_reserve_interpro', $this->getVolumeReserveInterpro());
+		}
+
 	}
 
 	public function isHabilite() {
@@ -234,5 +239,20 @@ class DRevProduit extends BaseDRevProduit
 	public function isValidateOdg(){
 		return ($this->exist('validation_odg') && $this->validation_odg);
 	}
+
+    public function hasReserveInterpro() {
+        return ($this->getVolumeReserveInterpro());
+    }
+
+    public function getVolumeReserveInterpro() {
+        if (!$this->getConfig()->hasRendementReserveInterpro()) {
+            return 0;
+        }
+        $diff = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendementReserveInterpro());
+		if ($diff < 0) {
+			return 0;
+		}
+		return $diff;
+    }
 
 }
