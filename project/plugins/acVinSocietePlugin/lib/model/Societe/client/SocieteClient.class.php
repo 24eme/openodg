@@ -75,13 +75,16 @@ class SocieteClient extends acCouchdbClient {
         return preg_replace('/(.*)%0([0-9]{1})d/', '(\1)([0-9]{\2})', $this->getSocieteFormatIdentifiant());
     }
 
-    public function createSociete($raison_sociale, $type = SocieteClient::TYPE_AUTRE) {
+    public function createSociete($raison_sociale, $type = SocieteClient::TYPE_AUTRE, $identifiant = null) {
+        if(is_null($identifiant)) {
+            $identifiant = $this->getNumeroSuivant();
+        }
 
         $societe = new Societe();
         $societe->raison_sociale = $raison_sociale;
         $societe->type_societe = $type;
         $societe->interpro = 'INTERPRO-declaration';
-        $societe->identifiant = sprintf($this->getSocieteFormatIdentifiant(), $this->getNumeroSuivant());
+        $societe->identifiant = sprintf($this->getSocieteFormatIdentifiant(), $identifiant);
         $societe->statut = SocieteClient::STATUT_ACTIF;
         $societe->cooperative = 0;
         $societe->setPays('FR');

@@ -4,7 +4,9 @@
 
 mkdir $TMPDIR 2> /dev/null
 
-DATA_DIR=$TMPDIR"/import_"$(date +%Y%m%d%H%M%S)
+ODG=igp13
+
+DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
 if ! test "$1"; then
@@ -12,35 +14,35 @@ if ! test "$1"; then
     exit 1;
 fi
 
+if test "$2" = "--delete"; then
+
+    echo -n "Delete database http://$COUCHHOST:$COUCHPORT/$COUCHBASE, type database name to confirm ($COUCHBASE) : "
+    read databasename
+
+    if test "$databasename" = "$COUCHBASE"; then
+        curl -X DELETE http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+    else
+        echo "Delete database cancel"
+    fi
+fi
+
+curl -sX PUT http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+
 cd ..
 make clean
 make
 cd -
 
-ls $WORKINGDIR/data/configuration/igp13 | while read jsonFile
+ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
 do
-    php symfony document:delete $(echo $jsonFile | sed 's/\.json//')
-    curl -s -X POST -d @data/configuration/igp13/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+    curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
-
 echo "Récupération des données"
-cp -r $1"/" $DATA_DIR"/"
+rsync -av $1 $DATA_DIR/
 
-IGP13_IMPORT_TMP=$DATA_DIR"/Igp13"
+echo "Opérateurs"
 
-echo "CSV Opérateur :"
-sleep 2
-cat $IGP13_IMPORT_TMP/operateurs.csv
-echo ""
-echo ""
-sleep 2
-echo "Traitement de l'import"
-sleep 2
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
 
-php symfony import:entite-from-csv $IGP13_IMPORT_TMP/operateurs.csv --application="igp13" --trace
-
-
+php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace

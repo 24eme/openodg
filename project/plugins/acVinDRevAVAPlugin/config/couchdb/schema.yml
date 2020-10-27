@@ -26,6 +26,7 @@ DRev:
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
       version: {  }
+      commentaire: { }
       declarant:
         type: collection
         definition:
