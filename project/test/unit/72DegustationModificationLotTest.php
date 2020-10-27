@@ -47,9 +47,11 @@ $t->is($mvmt_lot_modificatrice->prelevable, 1, "Le mouvement est prélevable");
 $t->comment('On rend prélevable à 0 le lot dans la DREV originale');
 $mvmt = $drev->get($lot->origine_mouvement);
 $mvmt->prelevable = 0;
+$t->is($mvmt->prelevable, 0, 'Le mouvement originel n\'est plus prélevable');
 
 $t->comment('On met à jour la dégustation');
 $degustation->updateLot(0, $lot);
 
 $t->comment('Changement dans la dégustation');
+$lot = $degustation->lots->get(0);
 $t->is($lot->volume, $volume + 1.12, 'Le volume est changé');

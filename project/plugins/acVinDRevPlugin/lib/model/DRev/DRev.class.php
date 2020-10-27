@@ -712,7 +712,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function addLotFromDegustation($lot_degustation) {
+    public function addLotFromDegustation($lot) {
+        $lot_degustation = clone $lot;
+
         $lot_degustation->remove('details');
         $lot_degustation->remove('statut');
         $lot_degustation->remove('numero_table');
