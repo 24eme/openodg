@@ -712,7 +712,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function addLotFromDegustation($key, $lot_degustation) {
+    public function addLotFromDegustation($lot_degustation) {
         $lot_degustation->remove('details');
         $lot_degustation->remove('statut');
         $lot_degustation->remove('numero_table');
@@ -724,8 +724,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot_degustation->remove('declarant_identifiant');
         $lot_degustation->remove('origine_mouvement');
 
-        $this->lots->add($key, $lot_degustation);
-        return $this->lots->get($key);
+        $this->add('lots');
+
+        $lots = [];
+        foreach ($this->lots as $lot) {
+            $lots[] = $lot;
+        }
+
+        $this->remove('lots');
+        $this->add('lots', $lots);
+
+        return $lot_degustation;
     }
 
     public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {

@@ -33,7 +33,7 @@ $t->is(count($modificatrice->lots), count($drev->lots) - 1, 'Il y a un lot en mo
 $t->comment('On modifie un lot et on l\'ajoute à la modificatrice');
 $t->comment('Volume original : '.$volume.'hl');
 $lot->volume += 1.12;
-$lot_modificatrice = $modificatrice->addLotFromDegustation(0, $lot);
+$lot_modificatrice = $modificatrice->addLotFromDegustation($lot);
 $t->is($lot_modificatrice->volume, $volume + 1.12, 'Le volume est mis à jour dans la modificatrice');
 
 $t->comment('On génère les mouvements de lot de la modificatrice');
