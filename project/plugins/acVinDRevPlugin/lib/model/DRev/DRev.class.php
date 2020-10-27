@@ -712,6 +712,32 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
+    public function addLotFromDegustation($lot) {
+        $lot_degustation = clone $lot;
+
+        $lot_degustation->remove('details');
+        $lot_degustation->remove('statut');
+        $lot_degustation->remove('numero_table');
+        $lot_degustation->remove('leurre');
+        $lot_degustation->remove('conformite');
+        $lot_degustation->remove('motif');
+        $lot_degustation->remove('observation');
+        $lot_degustation->remove('declarant_nom');
+        $lot_degustation->remove('declarant_identifiant');
+        $lot_degustation->remove('origine_mouvement');
+
+        $lots = [];
+        foreach ($this->lots as $lot) {
+            $lots[] = $lot;
+        }
+        $lots[] = $lot_degustation;
+
+        $this->remove('lots');
+        $this->add('lots', $lots);
+
+        return $lot_degustation;
+    }
+
     public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
@@ -1610,5 +1636,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function setDateDegustationSouhaitee($date) {
         $this->_add('date_degustation_voulue', $date);
+    }
+
+    public function getProduitsWithReserveInterpro() {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if ($p->hasReserveInterpro()) {
+                $produits[] = $p;
+            }
+        }
+        return $produits;
+    }
+
+    public function hasProduitsReserveInterpro() {
+        return (count($this->getProduitsWithReserveInterpro()));
     }
 }
