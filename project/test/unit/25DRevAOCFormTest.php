@@ -10,8 +10,6 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(89);
-
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
@@ -45,6 +43,26 @@ foreach($config->getProduits() as $produit) {
     }
 
     break;
+}
+
+$produitConfigMutage = null;
+
+foreach($config->getProduits() as $produit) {
+    if($produit->getRendement() <= 0) {
+        continue;
+    }
+    if(!$produit->hasMutageAlcoolique()) {
+        continue;
+    }
+
+    $produitConfigMutage = $produit;
+    break;
+}
+
+if ($produitConfigMutage) {
+    $t = new lime_test(89);
+}else {
+    $t = new lime_test(79);
 }
 
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
@@ -347,21 +365,10 @@ $csvContent = $export->export();
 
 $t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");
 
-$t->comment("Mutage alcool revendique pour VDN");
-
-$produitConfigMutage = null;
-
-foreach($config->getProduits() as $produit) {
-    if($produit->getRendement() <= 0) {
-        continue;
-    }
-    if(!$produit->hasMutageAlcoolique()) {
-        continue;
-    }
-
-    $produitConfigMutage = $produit;
-    break;
+if (!$produitConfigMutage) {
+    return;
 }
+$t->comment("Mutage alcool revendique pour VDN");
 
 $produitMutage = $drev->addProduit($produitConfigMutage->getHash());
 

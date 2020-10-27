@@ -122,3 +122,22 @@ Les produits déclarés sont du millésime du VCI
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
+
+<?php if($drev->hasProduitsReserveInterpro()): ?>
+<br />
+<div><span class="h3">&nbsp;Réserve interprofessionnelle&nbsp;</span></div>
+<table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <tr>
+        <th class="th" style="text-align: left;width: 400px;">&nbsp;Produit</th>
+        <th class="th" style="text-align: center;width: 200px;">&nbsp;Volume mis en réserve</th>
+        <th class="th" style="text-align: center;width: 200px;">&nbsp;Volume revendiqué commercialisable</th>
+    </tr>
+<?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
+    <tr>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $p->getLibelle() ?></td>
+        <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($p->getVolumeReserveInterpro()) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+        <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($p->getVolumeRevendiqueCommecialisable()) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+<?php endforeach; ?>
+</table>
+<?php endif; ?>

@@ -123,6 +123,11 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return 0;
     }
 
+    public function getRendementReserveInterpro()  {
+
+        return 0;
+    }
+
     public function hasMout() {
 
         return false;

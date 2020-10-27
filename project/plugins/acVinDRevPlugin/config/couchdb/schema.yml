@@ -71,6 +71,7 @@ DRev:
                         volume_revendique_issu_vci: { type: float }
                         volume_revendique_issu_mutage: { type: float }
                         volume_revendique_total: { type: float }
+                        dont_volume_revendique_reserve_interpro: { type: float, required: false }
                         validation_odg: { required: false }
                         vci:
                           type: collection
