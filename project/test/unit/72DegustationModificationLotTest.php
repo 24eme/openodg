@@ -38,9 +38,9 @@ $t->is($lot_modificatrice->volume, $volume + 1.12, 'Le volume est mis à jour da
 
 $t->comment('On génère les mouvements de lot de la modificatrice');
 $modificatrice->generateMouvementsLots();
-$mvmt_lot_modificatrice = $modificatrice->get($lot->getGeneratedMvtKey());
-$t->is($mvmt_lot_modificatrice->volume, $volume + 1.12, 'Le volume est à jour dans les mvmts de la M');
-$t->is($mvmt_lot_modificatrice->origine_hash, '/lots/0', "L'origine du mvmt est le bon");
+$mvmt_lot_modificatrice = $modificatrice->get('/mouvements_lots/00008801/DECLARATION-CERTIFICATIONS-IGP-GENRES-TRANQ-APPELLATIONS-APL-MENTIONS-DEFAUT-LIEUX-DEFAUT-COULEURS-ROUGE-CEPAGES-DEFAUT-2019-2-3-12');
+$t->is($mvmt_lot_modificatrice->volume, $volume + 1.12, 'Le volume est à jour dans les mvmts de la modificatrice');
+$t->is($mvmt_lot_modificatrice->origine_hash, '/lots/'.(count($modificatrice->lots) - 1), "L'origine du mvmt est le bon");
 $t->is($mvmt_lot_modificatrice->preleve, 0, "Le mouvement n'est pas prélevé");
 $t->is($mvmt_lot_modificatrice->prelevable, 1, "Le mouvement est prélevable");
 

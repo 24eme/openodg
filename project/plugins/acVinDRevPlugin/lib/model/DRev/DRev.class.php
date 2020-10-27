@@ -724,12 +724,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot_degustation->remove('declarant_identifiant');
         $lot_degustation->remove('origine_mouvement');
 
-        $this->add('lots');
-
         $lots = [];
         foreach ($this->lots as $lot) {
             $lots[] = $lot;
         }
+        $lots[] = $lot_degustation;
 
         $this->remove('lots');
         $this->add('lots', $lots);
