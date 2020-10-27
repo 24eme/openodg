@@ -14,28 +14,35 @@ if ! test "$1"; then
     exit 1;
 fi
 
+if test "$2" = "--delete"; then
+
+    echo -n "Delete database http://$COUCHHOST:$COUCHPORT/$COUCHBASE, type database name to confirm ($COUCHBASE) : "
+    read databasename
+
+    if test "$databasename" = "$COUCHBASE"; then
+        curl -X DELETE http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+    else
+        echo "Delete database cancel"
+    fi
+fi
+
+curl -sX PUT http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+
 cd ..
 make clean
 make
 cd -
-
-curl -s -X DELETE $COUCHTEST
-curl -s -X PUT $COUCHTEST
 
 ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
 do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
-# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
-# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
-
 echo "Récupération des données"
 rsync -av $1 $DATA_DIR/
 
 echo "Opérateurs"
 
-xlsx2csv -d ";" $DATA_DIR/operateurs.xlsx > $DATA_DIR/operateurs.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
 
 php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
