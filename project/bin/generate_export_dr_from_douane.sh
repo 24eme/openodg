@@ -23,4 +23,4 @@ find ~/prodouane_scrapy/documents/ -name '[ds][rv]*-'$ANNEE'*.xls' | while read 
   php symfony $SYMFONYTASKOPTIONS douaneRecolte:convert2csv  $xls
 done >> $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
 
-+mv $EXPORTDIR"/dr_"$ANNEE".csv.tmp" $EXPORTDIR"/dr_igploire_"$ANNEE".csv"
+mv $EXPORTDIR"/dr_"$ANNEE".csv.tmp" $EXPORTDIR"/dr_igploire_"$ANNEE".csv"
