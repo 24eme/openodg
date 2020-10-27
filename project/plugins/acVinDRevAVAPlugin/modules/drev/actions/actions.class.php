@@ -318,7 +318,7 @@ class drevActions extends sfActions {
     			if ($request->isXmlHttpRequest()) {
     				return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
     			}
-    	
+
     			if ($request->getParameter('redirect', null)) {
     				return $this->redirect('drev_validation', $this->drev);
     			}
@@ -648,7 +648,6 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION))) {
@@ -666,8 +665,14 @@ class drevActions extends sfActions {
         }
 
         if (!$this->validation->isValide()) {
-
-            return sfView::SUCCESS;
+          $this->form->bind($request->getParameter($this->form->getName()));
+          // var_dump($this->form["commentaire"]->getValue()["Commentaire"]);
+          // exit;
+          if($this->form["commentaire"]){
+            $this->drev->commentaire = htmlspecialchars(nl2br($this->form["commentaire"]->getValue()));
+            $this->drev->save();
+          }
+          return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
@@ -676,6 +681,7 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+
 
         $documents = $this->drev->getOrAdd('documents');
 

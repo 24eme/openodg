@@ -3,6 +3,7 @@
 class DRevValidationForm extends acCouchdbForm
 {
     public function configure() {
+        $this->setWidget('commentaire', new sfWidgetFormTextarea());      
         if(!$this->getDocument()->isPapier()) {
         	  $engagements = $this->getOption('engagements');
       		  foreach ($engagements as $engagement) {
@@ -12,11 +13,11 @@ class DRevValidationForm extends acCouchdbForm
           				  $this->setDefault('engagement_'.$engagement->getCode(), 1);
           				  $this->getWidget('engagement_'.$engagement->getCode())->setAttribute('disabled', 'disabled');
           				  $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
-          				
+
           			}
       		  }
         }
-        
+
         if($this->getDocument()->isPapier()) {
             $this->setWidget('date', new sfWidgetFormInput());
             $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
