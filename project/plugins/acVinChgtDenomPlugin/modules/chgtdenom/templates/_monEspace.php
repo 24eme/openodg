@@ -16,7 +16,7 @@
                 <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('chgtdenom_delete', $enCours) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
             </div>
             <?php else: ?>
-            <p>Espace permettant le changement de dénomination ou le déclassement de vos lots.</p>
+            <p>Espace permettant le changement de dénomination ou déclassement de vos logements.</p>
             <div style="margin-top: 50px;">
                 <a class="btn btn-block btn-default" href="<?php echo url_for('chgtdenom_create', array('sf_subject' => $etablissement)) ?>">Démarrer la télédéclaration</a>
                 <?php if ($sf_user->isAdmin()): ?>

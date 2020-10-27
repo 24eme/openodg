@@ -2,10 +2,7 @@
 
 class ChgtDenomLot extends BaseChgtDenomLot
 {
-    public function isDeclassement() {
-      return (!$this->changement_produit);
-    }
-    public function isChgtTotal() {
-      return (!$this->changement_volume);
-    }
+  public function getUnicityKey(){
+      return KeyInflector::slugify($this->produit_hash.'/'.$this->millesime.'/'.$this->numero.'/'.$this->volume);
+  }
 }

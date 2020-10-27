@@ -1627,4 +1627,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function setDateDegustationSouhaitee($date) {
         $this->_add('date_degustation_voulue', $date);
     }
+
+    public function getProduitsWithReserveInterpro() {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if ($p->hasReserveInterpro()) {
+                $produits[] = $p;
+            }
+        }
+        return $produits;
+    }
+
+    public function hasProduitsReserveInterpro() {
+        return (count($this->getProduitsWithReserveInterpro()));
+    }
 }

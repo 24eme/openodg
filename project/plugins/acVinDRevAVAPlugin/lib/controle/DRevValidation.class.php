@@ -24,7 +24,7 @@ class DRevValidation extends DocumentValidation {
 
         //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
         $this->addControle(self::TYPE_WARNING, 'declaration_lots', 'Vous devez déclarer vos lots.');
-        $this->addControle(self::TYPE_ERROR, 'declaration_lots_inferieur', 'Vous avez revendiqué des lots qui n\'ont pas de cepages.');
+        $this->addControle(self::TYPE_ERROR, 'declaration_lots_inferieur', 'Vous avez revendiqué des cepages  qui n\'ont pas de lots.');
 
         $this->addControle(self::TYPE_WARNING, 'revendication_cepage_sans_lot', 'Vous ne déclarez aucun lot pour un cépage que vous avez revendiqué. Si c\'est un lot qui a été replié en assemblage, ne tenez pas compte de ce point de vigilance.');
 
@@ -282,7 +282,7 @@ class DRevValidation extends DocumentValidation {
         }
         foreach ($nb_total_lots_cepages as $key => $value) {
           if($this->document->declaration->getNbLotsMinimum() >= $value){
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "");
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "",$this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
             break;
           }
         }

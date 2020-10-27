@@ -5,7 +5,7 @@
 
 
     <div class="page-header no-border">
-      <h2>Changement de dénomination / Déclassement</h2>
+      <h2><?php if ($chgtDenom->isDeclassement()): ?>Déclassement<?php else: ?>Changement de dénomination<?php endif; ?> <?php if (!$chgtDenom->isChgtTotal()): ?>partiel<?php endif; ?></h2>
       <h3><small></small></h3>
     </div>
 
@@ -13,7 +13,7 @@
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
-        <?php include_partial('chgtdenom/recap', array('lot' => $lot)); ?>
+        <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
 
           <div style="margin-top: 20px;" class="row row-margin row-button">
               <div class="col-xs-6">
