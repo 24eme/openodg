@@ -23,6 +23,9 @@ class ChgtDenomForm extends acCouchdbObjectForm
         $this->setWidget('changement_volume', new bsWidgetFormInputFloat());
         $this->setValidator('changement_volume', new sfValidatorNumber(array('required' => false)));
 
+        $this->setWidget('changement_numero', new bsWidgetFormInput());
+        $this->setValidator('changement_numero', new sfValidatorString(array('required' => false)));
+
         $this->setWidget('changement_produit', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('changement_produit', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
@@ -37,11 +40,13 @@ class ChgtDenomForm extends acCouchdbObjectForm
         }
         if ($values['changement_quantite'] == 'TOT') {
           	$this->getObject()->changement_volume = null;
+            $this->getObject()->changement_numero = null;
         }
         if ($values['changement_produit']) {
             $produits = $this->getProduits();
           	$this->getObject()->changement_produit_libelle = (isset($produits[$values['changement_produit']]))? $produits[$values['changement_produit']] : null;
         }
+        $this->getObject()->generateLots();
     }
 
     protected function updateDefaultsFromObject() {

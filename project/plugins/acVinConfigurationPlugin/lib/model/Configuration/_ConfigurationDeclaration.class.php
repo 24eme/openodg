@@ -814,6 +814,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement_vci_total');
     }
 
+    public function hasRendementReserveInterpro() {
+        return $this->hasRendementByKey('rendement_reserve_interpro');
+    }
+
+    public function getRendementReserveInterpro() {
+        return $this->getRendementByKey('rendement_reserve_interpro');
+    }
+
     public function isActif()
     {
     	return ($this->getRendement() <= 0 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;

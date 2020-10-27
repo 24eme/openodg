@@ -4,7 +4,9 @@
 
 mkdir $TMPDIR 2> /dev/null
 
-DATA_DIR=$TMPDIR"/import_"$(date +%Y%m%d%H%M%S)
+ODG=igp13
+
+DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
 if ! test "$1"; then
@@ -17,30 +19,23 @@ make clean
 make
 cd -
 
-ls $WORKINGDIR/data/configuration/igp13 | while read jsonFile
+curl -s -X DELETE $COUCHTEST
+curl -s -X PUT $COUCHTEST
+
+ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
 do
-    php symfony document:delete $(echo $jsonFile | sed 's/\.json//')
-    curl -s -X POST -d @data/configuration/igp13/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+    curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
+# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
+# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
+# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
 
 echo "Récupération des données"
-cp -r $1"/" $DATA_DIR"/"
+rsync -av $1 $DATA_DIR/
 
-IGP13_IMPORT_TMP=$DATA_DIR"/Igp13"
+echo "Opérateurs"
 
-echo "CSV Opérateur :"
-sleep 2
-cat $IGP13_IMPORT_TMP/operateurs.csv
-echo ""
-echo ""
-sleep 2
-echo "Traitement de l'import"
-sleep 2
+xlsx2csv -d ";" $DATA_DIR/operateurs.xlsx > $DATA_DIR/operateurs.csv
 
-php symfony import:entite-from-csv $IGP13_IMPORT_TMP/operateurs.csv --application="igp13" --trace
-
-
+php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
