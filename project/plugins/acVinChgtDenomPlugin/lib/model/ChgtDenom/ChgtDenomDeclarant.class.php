@@ -6,7 +6,6 @@ class ChgtDenomDeclarant extends BaseChgtDenomDeclarant {
         if(!$this->_get('ppm')) {
             $this->ppm = $this->getDocument()->getEtablissementObject()->ppm;
         }
-
         return $this->_get('ppm');
     }
 
@@ -14,16 +13,13 @@ class ChgtDenomDeclarant extends BaseChgtDenomDeclarant {
         if(!$this->_get('siret')) {
             $this->siret = $this->getDocument()->getEtablissementObject()->siret;
         }
-
         return Anonymization::hideIfNeeded($this->_get('siret'));
     }
 
     public function getTelephone() {
         if($this->exist('telephone') && $this->_get('telephone')) {
-
             return  Anonymization::hideIfNeeded($this->_get('telephone'));
         }
-
         return ($this->_get('telephone_bureau')) ?  Anonymization::hideIfNeeded($this->_get('telephone_bureau')) :  Anonymization::hideIfNeeded($this->_get('telephone_mobile'));
     }
 
@@ -48,5 +44,4 @@ class ChgtDenomDeclarant extends BaseChgtDenomDeclarant {
     public function getRaisonSociale() {
         return Anonymization::hideIfNeeded($this->_get('raison_sociale'));
     }
-
 }
