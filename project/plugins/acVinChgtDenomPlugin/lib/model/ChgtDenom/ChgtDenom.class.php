@@ -9,6 +9,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function __construct() {
         parent::__construct();
+		    //TODO : supprimer cette goretterie réalisée pour la démo
+		    $this->campagne = '2019';
         $this->initDocuments();
     }
 
