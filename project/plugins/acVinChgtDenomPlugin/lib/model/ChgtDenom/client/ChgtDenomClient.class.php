@@ -4,7 +4,7 @@ class ChgtDenomClient extends acCouchdbClient {
 
     const TYPE_MODEL = "ChgtDenom";
     const TYPE_COUCHDB = "CHGTDENOM";
-    public static $ORIGINE_LOT = array("drev");
+    const ORIGINE_LOT = "DREV";
 
     const FORMAT_DATE = 'Y-m-d\THis';
 

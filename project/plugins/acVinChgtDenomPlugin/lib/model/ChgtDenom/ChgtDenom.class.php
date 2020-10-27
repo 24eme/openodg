@@ -90,7 +90,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lots = array();
       foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($this->identifiant)->rows as $item) {
           $key = Lot::generateMvtKey($item->value);
-          if (in_array(strtolower($item->value->origine_type), ChgtDenomClient::$ORIGINE_LOT)) {
+          if (preg_replace('/-.*/', '', $item->value->id_document) == ChgtDenomClient::ORIGINE_LOT) {
             $lots[$key] = $item->value;
           }
       }
