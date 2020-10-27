@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-    <li class="active"><a href="<?php echo url_for('export'); ?>">Export</a></li>
+    <li class="active"><a href="<?php echo url_for('export'); ?>">Génération</a></li>
 </ol>
 
 <form method="post" action="" role="form" class="form-horizontal">

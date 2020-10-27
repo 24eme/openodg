@@ -64,6 +64,11 @@ class habilitationActions extends sfActions {
 
   public function executeIndexHabilitation(sfWebRequest $request)
   {
+      if(HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
+
+          return $this->redirect('habilitation_demande');
+      }
+
       $this->buildSearch($request,
                         'habilitation',
                         'activites',
@@ -78,7 +83,13 @@ class habilitationActions extends sfActions {
                         array("Statut" => HabilitationClient::STATUT_DEMANDE_HABILITATION)
                         );
 
-      $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+      if(class_exists("EtablissementChoiceForm")) {
+          $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+      }
+
+      if(!isset($this->form)) {
+          return sfView::SUCCESS;
+      }
 
       if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -106,7 +117,7 @@ class habilitationActions extends sfActions {
   }
 
     public function executeDeclarant(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
 
             throw new sfError403Exception();
         }
@@ -130,7 +141,7 @@ class habilitationActions extends sfActions {
             $this->editForm = new HabilitationEditionForm($this->habilitation);
         }
 
-        if($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && class_exists("EtablissementChoiceForm")) {
             $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
         }
 
@@ -138,14 +149,14 @@ class habilitationActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
 
             throw new sfError403Exception();
         }
 
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
-        if($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("EtablissementChoiceForm") && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
             $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         }
 
@@ -281,7 +292,7 @@ class habilitationActions extends sfActions {
             throw new sfError403Exception();
         }
 
-        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation, array(), array('filtre' => $this->filtre));
+        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation, array(), array('filtre' => $this->filtre, 'controle_habilitation' => true));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -295,7 +306,13 @@ class habilitationActions extends sfActions {
             return $this->executeDeclarant($request);
         }
 
-        $this->formDemandeCreation->save();
+        try {
+            $this->formDemandeCreation->save();
+        } catch (Exception $e) {
+            $this->getUser()->setFlash('erreur', $e->getMessage());
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
 
         return $this->redirect('habilitation_declarant', $this->etablissement);
     }
@@ -394,6 +411,11 @@ class habilitationActions extends sfActions {
         }
 
         HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->etablissement->identifiant, $request->getParameter('demande'));
+
+        if(HabilitationClient::getInstance()->getDemandeHabilitationsByTypeDemandeAndStatut($this->demande->demande, $this->demande->statut)) {
+            $this->getUser()->setFlash('info', "Cette suppression n'a pas fait évoluer le statut de l'habilitation, il faudra le faire manuellement si besoin.");
+        }
+
 
         return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->etablissement->identifiant, 'demande' => $request->getParameter('demande')));
     }

@@ -1,0 +1,121 @@
+#ChgtDenom
+ChgtDenom:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      date: {  }
+      campagne: { }
+      etape: {  }
+      validation: {  }
+      validation_odg: {  }
+      identifiant: {  }
+      papier: { required: false, type: integer }
+      changement_origine_mvtkey: {}
+      changement_produit: {}
+      changement_produit_libelle: { }
+      changement_volume: { type: float }
+      changement_numero: { }
+      declarant:
+        type: collection
+        class: ChgtDenomDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+            famille: { }
+      lots:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ChgtDenomLot
+              inheritance: Lot
+              definition:
+                fields:
+                  date: { }
+                  id_document: { }
+                  numero: { }
+                  millesime: { }
+                  elevage: { }
+                  volume: { type: float }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
+                  origine_mouvement: {}
+                  details: {}
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: ChgtDenomMouvementLots
+                    inheritance: MouvementLots
+                    type: collection
+                    definition:
+                      fields:
+                        prelevable: { type: integer }
+                        preleve: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        produit_couleur: { }
+                        volume: { type: float }
+                        date: {  }
+                        millesime: {  }
+                        elevage: {  }
+                        region: {  }
+                        numero: {  }
+                        version: {  }
+                        origine_hash: {  }
+                        origine_type: {  }
+                        origine_document_id: {  }
+                        origine_mouvement: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
+                        destination_type: { }
+                        destination_date: { }
+                        details: {}
+                        region: {}
+                        campagne: {}
+                        id_document: {  }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ChgtDenomPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

@@ -18,11 +18,12 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_PAIEMENT_CHEQUE = "CHEQUE";
     const FACTURE_PAIEMENT_VIREMENT = "VIREMENT";
     const FACTURE_PAIEMENT_PRELEVEMENT_AUTO = "PRELEVEMENT_AUTO";
+    const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
 
 
     public static $origines = array(self::FACTURE_LIGNE_ORIGINE_TYPE_DRM, self::FACTURE_LIGNE_ORIGINE_TYPE_SV12);
 
-    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique");
+    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
 
     private $documents_origine = array();
 
@@ -57,8 +58,8 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null) {
-        $mouvements = $template->getMouvements($compte->identifiant);
-        $mouvements = $this->aggregateMouvements($mouvements);
+        $mouvements = $template->getMouvementsFactures($compte->identifiant);
+        $mouvements = $this->aggregateMouvementsFactures($mouvements);
 
         if(!count($mouvements)) {
 
@@ -68,7 +69,7 @@ class FactureClient extends acCouchdbClient {
         return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
     }
 
-    public function getMouvementsByDocs($compteIdentifiant, $docs, $regenerate = false) {
+    public function getMouvementsFacturesByDocs($compteIdentifiant, $docs, $regenerate = false) {
         if (!$docs) {
 
             return array();
@@ -85,7 +86,7 @@ class FactureClient extends acCouchdbClient {
 
             $generated = false;
             if(!count($doc->mouvements)) {
-                $doc->generateMouvements();
+                $doc->generateMouvementsFactures();
                 $doc->save();
                 $generated = true;
             }
@@ -118,7 +119,7 @@ class FactureClient extends acCouchdbClient {
         return $mouvements;
     }
 
-    public function aggregateMouvements($mouvements) {
+    public function aggregateMouvementsFactures($mouvements) {
         $mouvementsAggreges = array();
 
         foreach($mouvements as $mouv) {
@@ -204,8 +205,8 @@ class FactureClient extends acCouchdbClient {
             $docs[$id] = $this->getDocumentOrigine($id);
         }
 
-        $mouvements = $this->getMouvementsByDocs($facture->identifiant, $docs, true);
-        $mouvements = $this->aggregateMouvements($mouvements);
+        $mouvements = $this->getMouvementsFacturesByDocs($facture->identifiant, $docs, true);
+        $mouvements = $this->aggregateMouvementsFactures($mouvements);
 
         $template = $facture->getTemplate();
         $message_communication = null;
@@ -246,12 +247,12 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function getFacturationForSociete($societe) {
-      return MouvementfactureFacturationView::getInstance()->getMouvementsBySocieteWithReduce($societe, 0, 1, $this->getReduceLevelForFacturation());
+      return MouvementfactureFacturationView::getInstance()->getMouvementsFacturesBySocieteWithReduce($societe, 0, 1, $this->getReduceLevelForFacturation());
     }
 
     public function getMouvementsForMasse($regions) {
         if(!$regions){
-            return MouvementfactureFacturationView::getInstance()->getMouvements(0, 1, $this->getReduceLevelForFacturation());
+            return MouvementfactureFacturationView::getInstance()->getMouvementsFactures(0, 1, $this->getReduceLevelForFacturation());
         }
         $mouvementsByRegions = array();
         foreach ($regions as $region) {
@@ -260,7 +261,7 @@ class FactureClient extends acCouchdbClient {
        return $mouvementsByRegions;
     }
 
-    public function getMouvementsNonFacturesBySoc($mouvements) {
+    public function getMouvementsFacturesNonFacturesBySoc($mouvements) {
         $generationFactures = array();
         foreach ($mouvements as $mouvement) {
 	  $societe_id = substr($mouvement->key[MouvementfactureFacturationView::KEYS_ETB_ID], 0, -2);
@@ -338,7 +339,7 @@ class FactureClient extends acCouchdbClient {
         }else{
           $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
           foreach($comptes as $compte) {
-            $ids[] = $compte->_id;
+            $ids[] = $compte->doc['_id'];
           }
         }
 

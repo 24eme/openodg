@@ -19,8 +19,8 @@ Abonnement:
               definition:
                 fields:
                   '*':
-                    class: AbonnementMouvement
-                    inheritance: Mouvement
+                    class: AbonnementMouvementFactures
+                    inheritance: MouvementFactures
                     type: collection
                     definition:
                       fields:

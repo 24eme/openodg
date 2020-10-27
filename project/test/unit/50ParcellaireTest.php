@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(16);
+$t = new lime_test(17);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = (date('Y') - 1).date('-m-d');
 
@@ -26,6 +26,7 @@ foreach($parcellaire->getConfigProduits() as $produit) {
 }
 
 $communes = CommunesConfiguration::getInstance()->getByCodeCommune();
+$t->ok($communes, "config/communes.yml contient des communes");
 $commune = current($communes);
 $code_commune = key($communes);
 $numero_ordre_key = "00";
@@ -33,11 +34,11 @@ $numero_ordre_key = "00";
 $parcelle = $parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT");
 $parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", "PEYNIER", "AK", "47", null);
 $parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT",25);
-$parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT",25);
+$parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT",26);
 $parcellaire->save();
 
 $t->is(count($parcellaire->declaration), 1, "Le parcellaire a un produit");
-$t->is(count($parcellaire->getParcelles()), 4, "Le parcellaire  4 parcelles");
+$t->is(count($parcellaire->getParcelles()), 4, "Le parcellaire 4 parcelles");
 $t->is($parcelle->getProduit()->getLibelle(), $configProduit->getLibelleComplet(), "Le libellé du produit est ". $configProduit->getLibelleComplet());
 $t->is($parcelle->getKey(), "SIRAH-N-2005-".$commune."-AB-52-".$numero_ordre_key."-LA-HAUT", "La clé de la parcelle est bien construite");
 $t->is($parcelle->code_commune, $code_commune, "Le code commune est : $code_commune");

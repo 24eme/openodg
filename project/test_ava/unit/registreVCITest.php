@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(89);
+$t = new lime_test(90);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -52,6 +52,8 @@ $t->is($registre->lignes[0]->produit_libelle, $produit->getLibelleComplet(), 'li
 $t->is($registre->lignes[0]->detail_hash, RegistreVCIClient::LIEU_CAVEPARTICULIERE, 'libelle détail');
 $t->is($registre->lignes[0]->detail_libelle, 'Cave particulière', 'libelle détail');
 $t->is($registre->lignes[0]->mouvement_type, RegistreVCIClient::MOUVEMENT_CONSTITUE, 'mvt type');
+$t->is($registre->getTotalMouvement(RegistreVCIClient::MOUVEMENT_CONSTITUE), 30, "Le total constitue est de 30");
+
 
 $t->comment("VCI rafraichi");
 $registre->addLigne($produit, RegistreVCIClient::MOUVEMENT_RAFRAICHI, 10, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
@@ -143,7 +145,7 @@ $t->is(count(explode("\n", $export->export())) -1 , 4, "L'export CSV a 4 lignes"
 
 $t->comment("Génération des mouvements de facturation");
 
-$registre->generateMouvements();
+$registre->generateMouvementsFactures();
 $registre->save();
 
 $t->is(count($registre->mouvements->get($compteIdentifiant)), 1, "Le registre à 1 mouvement");

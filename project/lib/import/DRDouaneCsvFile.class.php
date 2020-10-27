@@ -23,7 +23,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $libelleLigne = null;
         $achat_fin = 0;
         $achats = array();
-        $ratios_metayer = array();
+        $ratios_bailleur = array();
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
                 //Cas de fin de tableur avec les achats tolérés
@@ -96,12 +96,13 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     }
                     for ($i = 2; $i < count($csv[$keyLigneBailleur]); $i++) {
                         if ($i%2) {
+                            $volume = 0;
         					if ($csv[$keyLigneBailleur][$i]) {
                                 $volume = (float) str_replace(",", ".", $csv[$keyLigneBailleur][$i]);
         					}
         					if (isset($csv[$keyLigneBailleur][$i+1]) && $csv[$keyLigneBailleur][$i+1]) {
                                 $volumeBailleur = (float) str_replace(",", ".", $csv[$keyLigneBailleur][$i+1]);
-                                $ratios_metayer[sprintf('%02d', $values[0])][$i] = $volume / ($volume + $volumeBailleur);
+                                $ratios_bailleur[sprintf('%02d', $values[0])][$i] = $volumeBailleur / ($volume + $volumeBailleur);
         					}
         				}
         			}
@@ -209,18 +210,25 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     $eOrigin[0] = "04b";
                     $eOrigin[1] = "Superificie de récolte originale";
                 }
-                $ratio_metayer = null;
-                if(!$ratio_metayer && isset($ratios_metayer["15"][$k]) && $ratios_metayer["15"][$k]) {
-                    $ratio_metayer = $ratios_metayer["15"][$k];
+                $ratio_bailleur = null;
+                if(!$ratio_bailleur && isset($ratios_bailleur["15"][$k]) && $ratios_bailleur["15"][$k]) {
+                    $ratio_bailleur = $ratios_bailleur["15"][$k];
                 }
-                if(!$ratio_metayer && isset($ratios_metayer["05"][$k]) && $ratios_metayer["05"][$k]) {
-                    $ratio_metayer = $ratios_metayer["05"][$k];
+                if(!$ratio_bailleur && isset($ratios_bailleur["05"][$k]) && $ratios_bailleur["05"][$k]) {
+                    $ratio_bailleur = $ratios_bailleur["05"][$k];
                 }
-                if($e[0] == 4 && isset($ratio_metayer)){
+                if(($e[0] == 4) && isset($baillage[$k])) {
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));
-                    $e[2] = self::numerizeVal($superficieInitiale*$ratio_metayer, 4);
+                    $superficiemetayer = $superficieInitiale;
+                    if (isset($ratio_bailleur)) {
+                        $superficiemetayer = $superficieInitiale*(1 - $ratio_bailleur);
+                    }
+                    $e[2] = self::numerizeVal($superficiemetayer, 4);
+                    if (!isset($bailleur[$k])) {
+                        $bailleur[$k] = array();
+                    }
                     array_unshift($bailleur[$k], $e);
-                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale*(1 - $ratio_metayer), 4);
+                    $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale - $superficiemetayer, 4);
                 }
 	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k]."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {

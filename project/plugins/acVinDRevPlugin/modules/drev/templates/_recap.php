@@ -18,7 +18,7 @@
             <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
             <th class="col-xs-2 text-center">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
             <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
-            <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small>&nbsp;<?php endif; ?><small class="text-muted">(hl)</small></th>
 <?php else: ?>
             <th class="col-xs-6"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
             <th class="col-xs-3 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
@@ -41,7 +41,7 @@
     </tbody>
 </table>
 <?php endif; ?>
-<?php if($drev->exist('lots') && count($drev->getProduitsLots())): ?>
+<?php if($drev->exist('lots')): ?>
     <h3>Déclaration des lots IGP</h3>
     <?php
         $lots = $drev->getLotsByCouleur();
@@ -64,27 +64,27 @@
                 if(count($lots)):
                 foreach ($lots as  $lot) :
                   ?>
-                <tr>
+                <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>">
                     <td>
                       <?php $drevDocOrigine = $lot->getDrevDocOrigine(); ?>
                       <?php if($drevDocOrigine): ?><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $drevDocOrigine); ?>"><?php endif; ?>
                         <?php echo $lot->getDateVersionfr(); ?>
                       <?php if($drevDocOrigine): ?></a><?php endif; ?>
                     </td>
-                    <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
-                    <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
+                    <td><?php echo $lot->numero; ?></td>
+                    <td><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
                       <?php if(count($lot->cepages)): ?>
-                        <small>
+                        <small class="text-muted">
                           <?php echo $lot->getCepagesToStr(); ?>
                         </small>
                       <?php endif; ?>
                       <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                     </td>
                     <td>&nbsp;</td>
-                    <td class="text-right <?php echo isVersionnerCssClass($lot, 'volume') ?>"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-center <?php echo isVersionnerCssClass($lot, 'destination_type') ?>"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
+                    <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
                 </tr>
-                <?php $volume += $lot->volume ;
+                <?php
                 endforeach;
                 else: ?>
                     <tr>
@@ -99,17 +99,17 @@
                 <tr>
                     <td></td>
                     <td><strong>Total</strong></td>
-                    <td><strong><?php echo $couleur ?></strong><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur])): ?><?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
-                    <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur])): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong><?php endif; ?></td>
-                    <td class="text-right"><strong><?php echoFloat($volume); ?><small class="text-muted">&nbsp;hl</small></strong></td>
-                    <td class="text-center"><?php if(isset($synthese_revendication[$couleur])): ?><?php if($synthese_revendication[$couleur]['volume_total'] > 0): ?><span class="text-muted"><small>il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_total'] - $volume); ?>&nbsp;hl max à revendiquer</span></small><?php endif; ?><?php endif; ?></td>
+                    <td><strong><?php echo $couleur ?></strong><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
+                    <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong><?php endif; ?></td>
+                    <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?><?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small></strong><?php endif; ?></td>
+                    <td class="text-center"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_restant']): ?><small class="text-muted">il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?>&nbsp;hl max à revendiquer</small><?php endif; ?></td>
                 </tr>
 
             <?php endforeach; ?>
         </tbody>
     </table>
 
-<?php if(($sf_user->hasDrevAdmin() || $drev->validation) && count($drev->getProduitsLots()) && $drev->isValidee() && $drev->isModifiable()): ?>
+<?php if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
 <div class="col-xs-12" style="margin-bottom: 20px;">
   <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
 </div>
@@ -155,5 +155,25 @@
                 </tr>
             <?php endforeach; ?>
         </tbody>
+    </table>
+<?php endif; ?>
+<?php if($drev->hasProduitsReserveInterpro()): ?>
+    <h3>Réserve interprofessionnelle</h3>
+    <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-6">Produit</td>
+            <th class="col-xs-3 text-center">Volume mis en réserve</td>
+            <th class="col-xs-3 text-center">Volume revendiqué commercialisable</td>
+    </thead>
+    <tbody>
+    <?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
+        <tr>
+            <td><?php echo $p->getLibelle(); ?></td>
+            <td class="text-right"><?php echoFloat($p->getVolumeReserveInterpro()); ?> <small class="text-muted">hl</small></td>
+            <td class="text-right"><?php echoFloat($p->getVolumeRevendiqueCommecialisable()); ?> <small class="text-muted">hl</small></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
     </table>
 <?php endif; ?>

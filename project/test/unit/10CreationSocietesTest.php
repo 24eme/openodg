@@ -14,13 +14,14 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
         //     $drm = DRMClient::getInstance()->find($id);
         //     $drm->delete(false);
         //   }
+        $etabl->etablissement->delete();
       }
       $soc->delete();
     }
 }
 
 
-$t = new lime_test(28);
+$t = new lime_test(30);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -29,7 +30,7 @@ if($application == "ivbd") {
     $codePostalRegion = "24100";
 }
 
-$societeviti = SocieteClient::getInstance()->createSociete("SARL société viti test", SocieteClient::TYPE_OPERATEUR);
+$societeviti = SocieteClient::getInstance()->createSociete("SARL ACTUALYS JEAN", SocieteClient::TYPE_OPERATEUR);
 
 
 $societeviti->email = "email@societe.com";
@@ -50,14 +51,15 @@ $societeviti->insee = "94512";
 
 
 $societeviti->save();
+$t->comment($societeviti->_id);
 $t->ok(preg_match('/^'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'$/', $societeviti->identifiant), "L'identifiant ".$societeviti->identifiant." respecte le format ".SocieteClient::getInstance()->getSocieteFormatIdentifiant());
 $t->is($societeviti->date_modification, date('Y-m-d'), "La date de modification de la société à la date du jour");
 $id = $societeviti->getidentifiant();
 $t->is($societeviti->code_comptable_client, $societeviti->identifiant, "Le code comptable a bien été créé");
-$t->is($societeviti->raison_sociale, "SARL société viti test", "La raison sociale est correcte");
+$t->is($societeviti->raison_sociale, "SARL ACTUALYS JEAN", "La raison sociale est correcte");
 $t->is($societeviti->getIntitule(), "SARL", "L'intitulé est SARL");
-$t->is($societeviti->getRaisonSocialeWithoutIntitule(), "société viti test", "La raison sociale sans l'intitule");
-
+$t->is($societeviti->getRaisonSocialeWithoutIntitule(), "ACTUALYS JEAN", "La raison sociale sans l'intitule");
+$t->comment("compte 1 : ".$id);
 $compteSociete = CompteClient::getInstance()->findByIdentifiant($id);
 
 $t->is($compteSociete->identifiant, $societeviti->identifiant, "La societe a un compte séparé");
@@ -89,6 +91,7 @@ $societenegocvo->code_postal = $codePostalRegion;
 $societenegocvo->commune = "Neuilly sur seine";
 $societenegocvo->save();
 $id = $societenegocvo->getidentifiant();
+$t->comment("compte 2 : ".$id);
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test');
 $compte->addTag('test', 'test_nego_region_societe');
@@ -101,6 +104,7 @@ $societenegocvo->code_postal = $codePostalRegion;
 $societenegocvo->commune = "Neuilly sur seine";
 $societenegocvo->save();
 $id = $societenegocvo->getidentifiant();
+$t->comment("compte 3 : ".$id);
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test');
 $compte->addTag('test', 'test_nego_region_2_societe');
@@ -113,6 +117,7 @@ $societenegohors->code_postal = "1000";
 $societenegohors->commune = "Bruxelles";
 $societenegohors->save();
 $id = $societenegohors->getidentifiant();
+$t->comment("compte 4 : ".$id);
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test');
 $compte->addTag('test', 'test_nego_horsregion_societe');
@@ -125,6 +130,7 @@ $societecourtier->code_postal = $codePostalRegion;
 $societecourtier->commune = "Neuilly sur seine";
 $societecourtier->save();
 $id = $societecourtier->getidentifiant();
+$t->comment("compte 5 : ".$id);
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test_courtier_societe');
 $compte->addTag('test', 'test');
@@ -137,6 +143,7 @@ $societeintermediaire->code_postal = $codePostalRegion;
 $societeintermediaire->commune = "Neuilly sur seine";
 $societeintermediaire->save();
 $id = $societeintermediaire->getidentifiant();
+$t->comment("compte 5 : ".$id);
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test_intermediaire_societe');
 $compte->addTag('test', 'test');
@@ -149,10 +156,12 @@ $societeintermediaire->code_postal = $codePostalRegion;
 $societeintermediaire->commune = "Neuilly sur seine";
 $societeintermediaire->save();
 $id = $societeintermediaire->getidentifiant();
+$t->comment("compte 6 : ".$id);
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test_cooperative_societe');
 $compte->addTag('test', 'test');
 $compte->save();
+
 $t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société intermédiaire crée un compte du même type");
 
 $societeviti->date_modification = '2017-01-01';
@@ -167,3 +176,25 @@ try {
 }catch(sfException $e) {
   $t->fail("Changement de statut de la societe viti");
 }
+
+$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société pour un degustateur");
+
+$societedegust = SocieteClient::getInstance()->createSociete("SARL JEAN DEGUSTE", SocieteClient::TYPE_AUTRE);
+$societedegust->email = "email@societe.com";
+$societedegust->site_internet = "www.societe.fr";
+$societedegust->telephone_perso = "00 00 00 00 00";
+$societedegust->telephone_bureau = "11 11 11 11 11";
+$societedegust->telephone_mobile = "22 22 22 22 22";
+$societedegust->fax = "33 33 33 33 33";
+$societedegust->adresse = "Adresse 1 ";
+$societedegust->adresse_complementaire = "Adresse 2 ";
+$societedegust->code_postal = $codePostalRegion;
+$societedegust->commune = "Neuilly sur seine";
+$societedegust->pays = "FR";
+$societedegust->insee = "94512";
+$societedegust->save();
+$id = $societedegust->getidentifiant();
+$t->comment("compte 7 : ".$id);
+
+$compteDegustateur = $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societedegust);
+$t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un compte séparé");

@@ -223,7 +223,7 @@ class facturationActions extends sfActions
 
         $this->form->save();
 
-        $this->getUser()->setFlash("notice", "Les paiement ont bien été enregistrés");
+        $this->getUser()->setFlash("notice", "Les paiements ont bien été enregistrés");
 
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
@@ -284,7 +284,7 @@ class facturationActions extends sfActions
 
         try {
           foreach ($this->templatesFactures as $key => $templateFacture) {
-            $this->mouvements = array_merge($templateFacture->getMouvements($this->compte->identifiant),$this->mouvements);
+            $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant),$this->mouvements);
           }
         } catch (FacturationPassException $e) { }
 

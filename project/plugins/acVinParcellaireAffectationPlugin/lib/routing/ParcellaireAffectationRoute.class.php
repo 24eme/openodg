@@ -9,6 +9,7 @@ class parcellaireAffectationRoute extends EtablissementRoute implements Interfac
 
             throw new sfError404Exception(sprintf('No parcellaireAffectation found with the id "%s".', $parameters['id']));
         }
+        parent::getObjectForParameters(array('identifiant' => $this->parcellaireAffectation->identifiant));
         return $this->parcellaireAffectation;
     }
 
@@ -22,10 +23,5 @@ class parcellaireAffectationRoute extends EtablissementRoute implements Interfac
             $this->getObject();
         }
         return $this->parcellaireAffectation;
-    }
-
-    public function getEtablissement() {
-
-        return $this->getParcellaireAffectation()->getEtablissementObject();
     }
 }

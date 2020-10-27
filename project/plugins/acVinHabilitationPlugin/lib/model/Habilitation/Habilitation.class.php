@@ -152,7 +152,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         $this->cleanDoc();
         $this->validation = $date;
-        $this->generateMouvements();
+        $this->generateMouvementsFactures();
     }
 
 
@@ -270,6 +270,22 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
       return false;
     }
     return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
+  }
+
+  public function containHashProduit($hash) {
+      foreach($this->getProduits() as $produit) {
+          if(preg_match("|".$hash."|", $produit->getHash())) {
+
+              return true;
+          }
+
+          if(preg_match("|".$produit->getHash()."|", $hash)) {
+
+              return true;
+          }
+      }
+
+      return false;
   }
 
   public function updateHabilitation($hash_produit, $activites, $statut, $commentaire = "", $date = ''){

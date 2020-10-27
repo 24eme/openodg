@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -55,7 +55,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
-        $this->mouvement_document = new MouvementDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
     }
@@ -186,7 +186,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $etablissement = $this->getEtablissementObject();
         $this->declaration->add('certification')->add('genre');
     }
-	
+
     public function populateVCIFromRegistre()
     {
     	if ($registre = $this->getLastRegistreVCI()) {
@@ -218,7 +218,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	}
     	return false;
     }
-    
+
     public function initAppellations() {
         foreach ($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
             $this->addAppellation($appellation->getHash());
@@ -929,12 +929,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
     }
 
-    public function getMouvements() {
+    public function getMouvementsFactures() {
 
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsCalcule() {
+    public function getMouvementsFacturesCalcule() {
         $templateFacture = $this->getTemplateFacture();
 
         if(!$templateFacture) {
@@ -954,7 +954,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $rienAFacturer = true;
 
         foreach($cotisations as $cotisation) {
-            $mouvement = DRevMouvement::freeInstance($this);
+            $mouvement = DRevMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
             $mouvement->type_libelle = $cotisation->getLibelle();
@@ -990,12 +990,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return array($identifiantCompte => $mouvements);
     }
 
-    public function getMouvementsCalculeByIdentifiant($identifiant) {
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
 
-        return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
     }
 
-    public function generateMouvements() {
+    public function generateMouvementsFactures() {
         if(!$this->validation_odg) {
 
             return false;
@@ -1006,11 +1006,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return false;
         }
 
-        return $this->mouvement_document->generateMouvements();
+        return $this->mouvement_document->generateMouvementsFactures();
     }
 
-    public function findMouvement($cle, $id = null){
-      return $this->mouvement_document->findMouvement($cle, $id);
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
     }
 
     public function facturerMouvements() {
@@ -1028,7 +1028,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->mouvement_document->isNonFactures();
     }
 
-    public function clearMouvements(){
+    public function clearMouvementsFactures(){
         $this->remove('mouvements');
         $this->add('mouvements');
     }

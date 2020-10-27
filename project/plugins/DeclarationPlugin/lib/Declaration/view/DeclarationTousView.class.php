@@ -25,8 +25,7 @@ class DeclarationTousView extends acCouchdbView
     const STATUT_EN_ATTENTE = "En attente";
 
     public static function getInstance() {
-
-        return acCouchdbManager::getView('declaration', 'tous', 'Declaration');
+        return acCouchdbManager::getView('declaration', 'tous');
     }
 
     public static function constructIdentifiantDocument($result,$facetName =""){

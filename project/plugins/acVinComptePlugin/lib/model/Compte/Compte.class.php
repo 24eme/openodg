@@ -21,6 +21,29 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         return $this->societe;
     }
+    
+    public function getLibelleWithAdresse() {
+        $libelle = $this->nom_a_afficher;
+        if ($this->adresse || $this->adresse_complementaire || $this->code_postal || $this->commune || $this->pays) {
+            $libelle .= ' —';
+        }
+        if ($this->adresse) {
+            $libelle .= ' '.$this->adresse;
+        }
+        if ($this->adresse_complementaire) {
+            $libelle .=  ' '.$this->adresse_complementaire;
+        } 
+        if ($this->code_postal) {
+            $libelle .= ' '.$this->code_postal;
+        }
+        if ($this->commune) {
+            $libelle .= ' '.$this->commune; 
+        }
+        if ($this->pays) {
+        	 $libelle .= ' ('.$this->pays.')';
+        }
+        return $libelle;
+    }
 
     public function getMasterCompte() {
         if ($this->isSameAdresseThanSociete()) {
@@ -240,6 +263,13 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         if($this->exist('en_alerte') && $this->en_alerte){
             $this->addTag('automatique', 'en_alerte');
+        }
+
+        if ($this->exist('droits')) {
+            foreach ($this->droits as $droit) {
+                $this->addTag('automatique', $droit);
+                $this->addTag('automatique', preg_replace('/:.*/', '', $droit));
+            }
         }
 
         parent::save();

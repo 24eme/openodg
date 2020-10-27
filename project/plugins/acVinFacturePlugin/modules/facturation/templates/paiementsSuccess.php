@@ -35,7 +35,7 @@
                     <?php echo $paiementForm["montant"]->renderLabel("Montant du paiement", array("class" => "col-xs-4 control-label")); ?>
                     <div class="col-xs-5">
                         <div class="input-group">
-                            <?php echo $paiementForm["montant"]->render(array("class" => "form-control num_float")); ?>
+                            <?php echo $paiementForm["montant"]->render(array("data-allow-negative" => "1")); ?>
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-euro"></span>
                             </div>

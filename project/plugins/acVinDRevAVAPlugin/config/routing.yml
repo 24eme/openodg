@@ -76,7 +76,7 @@ drev_devalidation:
 
 drev_generatemouvements:
   url: /drev/generatemouvements/:id
-  param: { module: drev, action: generateMouvements }
+  param: { module: drev, action: generateMouvementsFactures }
   class: DRevRoute
   options:
     model:    DRev

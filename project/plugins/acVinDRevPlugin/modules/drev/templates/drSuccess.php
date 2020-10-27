@@ -5,7 +5,16 @@
     <h2>Récupération des données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?></h2>
     <?php if (!$drev->hasDocumentDouanier()): ?>
     <p class="text-center" style="margin-top: 20px;">Traitement des données Prodouane en cours</p>
-    <p class="text-center"><img src="<?php echo public_path("/images/douane2".sfConfig::get("sf_app").".gif"); ?>" alt="chargement en cours..." /></p>
+    <p class="text-center"><span class="img-responsive center-block">
+    <?php
+        $img_path = dirname(__FILE__).'/../../../../web/images/';
+        $douane2app = 'douane2'.sfConfig::get('sf_app');
+        if (file_exists($img_path.$douane2app.'.gif')): ?>
+        <img src="/images/<?= $douane2app ?>.gif" alt="Chargement en cours..." />
+    <?php else: ?>
+        <img src="/images/douane2.gif" alt="Chargement en cours..." /><img src="/images/<?= $douane2app ?>.png"/>
+    <?php endif; ?>
+    </span></p>
 
     <form action="<?php echo url_for('drev_scrape_dr', $drev); ?>" method="get" id="form">
     	<div style="margin-top: 20px;" class="row row-margin row-button">

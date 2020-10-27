@@ -37,6 +37,11 @@ class ConfigurationMention extends BaseConfigurationMention {
         return $this->getAppellation()->getCertification();
     }
 
+		public function getGenre() {
+
+        return $this->getAppellation()->getGenre();
+    }
+
     public function getLabels($interpro) {
 
         return $this->getCertification()->getLabels($interpro);

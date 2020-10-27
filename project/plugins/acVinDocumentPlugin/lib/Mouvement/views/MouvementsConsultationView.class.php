@@ -36,7 +36,7 @@ class MouvementsConsultationView extends acCouchdbView
         $identifiant = EtablissementClient::getInstance()->getIdentifiant($id_or_identifiant);
         $mouvements = array();
         foreach(self::$types_document as $type) {
-            $mouvements = array_merge($mouvements, $this->buildMouvements($this->findByTypeEtablissementAndCampagne($type, $identifiant, $campagne)->rows));
+            $mouvements = array_merge($mouvements, $this->buildMouvementsFactures($this->findByTypeEtablissementAndCampagne($type, $identifiant, $campagne)->rows));
         }
 
         ksort($mouvements);
@@ -67,10 +67,10 @@ class MouvementsConsultationView extends acCouchdbView
                             ->getView($this->design, $this->view);
     }
 
-    protected function buildMouvements($rows) {
+    protected function buildMouvementsFactures($rows) {
         $mouvements = array();
         foreach($rows as $row) {
-            $mouvement = $this->buildMouvement($row);
+            $mouvement = $this->buildMouvementFactures($row);
             $mouvement_sort = sprintf('%02d', str_replace('M', '', $mouvement->version)*1);
             $mouvements[$mouvement->date_version.$mouvement->type.$mouvement_sort.$mouvement->doc_id.$mouvement->id] = $mouvement;
         }
@@ -78,7 +78,7 @@ class MouvementsConsultationView extends acCouchdbView
         return $mouvements;
     }
 
-    protected function buildMouvement($row) {
+    protected function buildMouvementFactures($row) {
         $mouvement = new stdClass();
         $mouvement->type = $row->key[self::KEY_TYPE];
         $mouvement->doc_id = $row->key[self::KEY_ID];
@@ -89,7 +89,7 @@ class MouvementsConsultationView extends acCouchdbView
         $mouvement->type_libelle = $row->value[self::VALUE_TYPE_LIBELLE];
         $mouvement->volume = $row->value[self::VALUE_VOLUME];
         $mouvement->detail_identifiant = $row->key[self::KEY_DETAIL_IDENTIFIANT];
-        $mouvement->detail_libelle = $row->value[self::VALUE_DETAIL_LIBELLE];        
+        $mouvement->detail_libelle = $row->value[self::VALUE_DETAIL_LIBELLE];
         $mouvement->date_version =  $row->value[self::VALUE_DATE_VERSION];
         $mouvement->version = $row->value[self::VALUE_VERSION];
         $mouvement->vrac_numero =  $row->key[self::KEY_VRAC_NUMERO];
@@ -109,7 +109,7 @@ class MouvementsConsultationView extends acCouchdbView
 
     public function getWords($mouvements) {
         $words = array();
-        
+
         foreach($mouvements as $mouvement) {
             $words[] = $this->getWord($mouvement);
         }
@@ -121,4 +121,4 @@ class MouvementsConsultationView extends acCouchdbView
 
     }
 
-}  
+}

@@ -108,59 +108,61 @@ EOF;
             "exploitant_sexe" => array("required" => false, "type" => "string"),
             "exploitant_nom" => array("required" => false, "type" => "string")
         );
-
+        $cpt = 0;
         foreach ($comptes as $id_compte => $tiers_c) {
             $compte = acCouchdbManager::getClient()->retrieveDocumentById($id_compte, acCouchdbClient::HYDRATE_JSON);
-            if ($compte) {
-                foreach ($tiers_c as $t) {
-
-                    $intitule = $t->intitule;
-                    $nom = $t->nom;
-                    $adresse = $t->siege;
-                    if (!$adresse->adresse && isset($t->exploitant)) {
-                        if ($t->exploitant->nom) {
-                            $intitule = $t->exploitant->sexe;
-                            $nom = $t->exploitant->nom;
-                        }
-                        $adresse = $t->exploitant;
-                    }
-                    
-                    $email = $compte->email;
-                    if (!$email) {
-                        $email = $t->email;
-                    }
-
-                    if (substr($compte->mot_de_passe, 0, 6) == "{TEXT}") {
-                        $mot_de_passe = preg_replace('/^\{TEXT\}/', "", $compte->mot_de_passe);
-                    } else {
-                        $mot_de_passe = "Compte déjà créé";
-                    }
-
-                    try {
-                        $csv->add(array(
-                            "type" => $t->type,
-                            "login" => $compte->login,
-                            "statut" => $compte->statut,
-                            "mot_de_passe" => $mot_de_passe,
-                            "email" => $email,
-                            "cvi" => $this->getTiersField($t, 'cvi', true),
-                            "civaba" => $this->getTiersField($t, 'civaba'),
-                            "siret" => $this->getTiersField($t, 'siret'),
-                            "qualite" => $this->getTiersField($t, 'qualite'),
-                            "civilite" => $intitule,
-                            "nom" => $nom,
-                            "adresse" => $adresse->adresse,
-                            "code postal" => $adresse->code_postal,
-                            "commune" => $adresse->commune,
-                            "sexe de l'exploitant" => $t->exploitant->sexe,
-                            "nom de l'exploitant" => $t->exploitant->nom,
-                                ), $validation);
-                    } catch (Exception $exc) {
-                        $this->logSection($t->cvi, $exc->getMessage(), null, 'ERROR');
-                    }
-                }
-            } else {
+            if (!$compte) {
                 $this->logSection($t->cvi, "COMPTE INEXISTANT", null, 'ERROR');
+                continue;
+            }
+            foreach ($tiers_c as $t) {
+                $intitule = $t->intitule;
+                $nom = $t->nom;
+                $adresse = $t->siege;
+                if (!$adresse->adresse && isset($t->exploitant)) {
+                    if ($t->exploitant->nom) {
+                        $intitule = $t->exploitant->sexe;
+                        $nom = $t->exploitant->nom;
+                    }
+                    $adresse = $t->exploitant;
+                }
+
+                $email = $compte->email;
+                if (!$email) {
+                    $email = $t->email;
+                }
+
+                if (substr($compte->mot_de_passe, 0, 6) == "{TEXT}") {
+                    $mot_de_passe = preg_replace('/^\{TEXT\}/', "", $compte->mot_de_passe);
+                } else {
+                    $mot_de_passe = "Compte déjà créé";
+                }
+
+                try {
+                    $csv->add(array(
+                        "type" => $t->type,
+                        "login" => $compte->login,
+                        "statut" => $compte->statut,
+                        "mot_de_passe" => $mot_de_passe,
+                        "email" => $email,
+                        "cvi" => $this->getTiersField($t, 'cvi', true),
+                        "civaba" => $this->getTiersField($t, 'civaba'),
+                        "siret" => $this->getTiersField($t, 'siret'),
+                        "qualite" => $this->getTiersField($t, 'qualite'),
+                        "civilite" => $intitule,
+                        "nom" => $nom,
+                        "adresse" => $adresse->adresse,
+                        "code postal" => $adresse->code_postal,
+                        "commune" => $adresse->commune,
+                        "sexe de l'exploitant" => $t->exploitant->sexe,
+                        "nom de l'exploitant" => $t->exploitant->nom,
+                            ), $validation);
+                } catch (Exception $exc) {
+                    $this->logSection($t->cvi, $exc->getMessage(), null, 'ERROR');
+                }
+            }
+            if (!(++$cpt % 6000)) {
+                sleep(60);
             }
         }
 

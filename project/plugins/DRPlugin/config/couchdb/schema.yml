@@ -30,8 +30,8 @@ DR:
               definition:
                 fields:
                   '*':
-                    class: DRMouvement
-                    inheritance: Mouvement
+                    class: DRMouvementFactures
+                    inheritance: MouvementFactures
                     type: collection
                     definition:
                       fields:

@@ -60,6 +60,7 @@ class ExportHabilitationDemandesPublipostageCSV {
         } else {
             $rows = HabilitationHistoriqueView::getInstance()->getAll();
         }
+        $cpt = 0;
         foreach ($rows as $row) {
             if (strpos($row->key[HabilitationHistoriqueView::KEY_IDDOC], 'demandes') === false) {
                 continue;
@@ -128,6 +129,9 @@ class ExportHabilitationDemandesPublipostageCSV {
                 echo $csvLigne;
             } else {
                 $csv .= $csvLigne;
+            }
+            if (!(++$cpt % 3000)) {
+                sleep(30);
             }
         }
 
