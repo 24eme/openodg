@@ -2,16 +2,25 @@
 
 class importOperateurIACsvTask extends sfBaseTask
 {
-
-  const CSV_RS = 0;
-  const CSV_CVI = 1;
-  const CSV_PRODUIT = 2;
-  const CSV_ACTIVITES = 3;
-  const CSV_STATUT = 4;
-  const CSV_ADRESSE = 5;
-  const CSV_COMPLEMENT = 6;
-  const CSV_CP = 7;
+  const CSV_IDENTIFIANT = 0;
+  const CSV_RAISON_SOCIALE = 1;
+  const CSV_NOM = 2;
+  const CSV_ACTIVITE = 3;
+  const CSV_ADRESSE_1 = 5;
+  const CSV_ADRESSE_2 = 6;
+  const CSV_CODE_POSTAL = 7;
   const CSV_VILLE = 8;
+  const CSV_TELEPHONE = 9;
+  const CSV_FAX = 10;
+  const CSV_PORTABLE = 11;
+  const CSV_EMAIL = 12;
+  const CSV_CVI = 13;
+  const CSV_SIRET = 14;
+  const CSV_TVA_INTRA = 15;
+  const CSV_CODE_COMPTABLE = 17;
+  const CSV_NEGOCIANT = 19;
+  const CSV_CAVE_COOPERATIVE = 20;
+  const CSV_PRODUCTEUR = 21;
 
   protected $date;
   protected $convert_statut;
@@ -46,7 +55,43 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
 
-            
+            $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_IDENTIFIANT]));
+
+            $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
+            $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2];
+            $societe->siege->code_postal = $data[self::CSV_CODE_POSTAL];
+            $societe->siege->commune = $data[self::CSV_VILLE];
+            $societe->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
+            $societe->telephone_mobile = Phone::format($data[self::CSV_PORTABLE]);
+            $societe->fax = Phone::format($data[self::CSV_FAX]);
+            $societe->email = $data[self::CSV_EMAIL];
+            $societe->code_comptable_client = $data[self::CSV_CODE_COMPTABLE];
+            $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET]);
+            $societe->no_tva_intracommunautaire = $data[self::CSV_TVA_INTRA];
+            $societe->save();
+
+            if(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+            } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE])) {
+                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+            } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE])) {
+                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+            } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+                $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            } else {
+                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+            }
+
+            $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
+            $etablissement->nom = ($data[self::CSV_NOM]) ? $data[self::CSV_NOM] : $data[self::CSV_RAISON_SOCIALE];
+            $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
+            $etablissement->cvi = ($cvi) ? str_pad($cvi, 10, "0", STR_PAD_LEFT) : null;
+            $etablissement->save();
+
+            //$societe->save();
+
         }
     }
 }
