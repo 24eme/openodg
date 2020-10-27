@@ -3,7 +3,7 @@
 class DRevValidationForm extends acCouchdbForm
 {
     public function configure() {
-        $this->setWidget('commentaire', new sfWidgetFormTextarea());
+        $this->setWidget('commentaire', new sfWidgetFormTextarea(array('default' => $this->getDocument()->commentaire)));        
         $this->validatorSchema['commentaire'] = new sfValidatorPass();
         if(!$this->getDocument()->isPapier()) {
         	  $engagements = $this->getOption('engagements');

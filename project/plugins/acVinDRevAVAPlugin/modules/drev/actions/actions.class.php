@@ -658,7 +658,6 @@ class drevActions extends sfActions {
         $this->validation = new DRevValidation($this->drev);
 
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -666,11 +665,12 @@ class drevActions extends sfActions {
 
         if (!$this->validation->isValide()) {
           $this->form->bind($request->getParameter($this->form->getName()));
-          // var_dump($this->form["commentaire"]->getValue()["Commentaire"]);
-          // exit;
-          if($this->form["commentaire"]){
-            $this->drev->commentaire = htmlspecialchars(nl2br($this->form["commentaire"]->getValue()));
+          if($this->form["commentaire"]->getValue() &&
+              $this->drev->commentaire != ($commentaire = htmlspecialchars($this->form["commentaire"]->getValue()))){
+            $this->drev->commentaire = $commentaire;
+            $this->drev->update();
             $this->drev->save();
+            return $this->redirect('drev_validation', $this->drev);
           }
           return sfView::SUCCESS;
         }
