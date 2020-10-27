@@ -35,7 +35,9 @@
 	<?php  if (!$drev->isPapier() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
-
+    <div class="row">
+      <?php include_partial('drev/commentaireForm', array('drev' => $drev, 'commentaireForm' => $form)); ?>
+    </div>
     <div class="row row-margin row-button">
         <div class="col-xs-4">
             <?php if(!$drev->isNonConditionneur()): ?>

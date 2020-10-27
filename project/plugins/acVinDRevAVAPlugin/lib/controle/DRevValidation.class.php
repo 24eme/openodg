@@ -48,7 +48,7 @@ class DRevValidation extends DocumentValidation {
 
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
-        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', '15 jours doivent séparer au minimum la semaine de prélèvement du contrôle externe de celle de la dégustation conseil');
+        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', '13 jours doivent séparer au minimum la semaine de prélèvement du contrôle externe de celle de la dégustation conseil');
 
         $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
@@ -62,7 +62,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie du Carnet de Pressoir');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Une <strong>copie</strong> du Carnet de Pressoir');
     }
 
     public function controle() {
@@ -72,12 +72,12 @@ class DRevValidation extends DocumentValidation {
         }
         foreach ($revendicationProduits as $hash => $revendicationProduit) {
             $this->controleWarningDrSurface($revendicationProduit);
+            $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleWarningDrVolume($revendicationProduit);
             $this->controleErrorRevendicationIncomplete($revendicationProduit);
             if($revendicationProduit->exist('superficie_revendique_vtsgn')) {
                 $this->controleErrorRevendicationIncomplete($revendicationProduit, '_vtsgn', " VTSGN");
             }
-            $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleEngagementPressoir($revendicationProduit);
 
             $stockVCIFinal = 0;
@@ -236,8 +236,13 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleWarningDrVolume($produit) {
+        $alreadyWarned = false;
 
-        if (!$this->document->hasDR()) {
+        if (count($this->getVigilances())>0) {
+          if ($this->getVigilances()[0]->getCode() == 'volume_revendique_superieur_sur_place'){ $alreadyWarned = true; }
+        }
+
+        if (!$this->document->hasDR() || $alreadyWarned == true) {
 
             return;
         }
@@ -335,6 +340,8 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleErrorVolumeRevendiqueIncorrect($produit) {
+
+
         if (
                 $produit->volume_revendique !== null &&
                 $produit->detail->volume_sur_place !== null &&
@@ -353,6 +360,21 @@ class DRevValidation extends DocumentValidation {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
+        // print_r($this->getVigilances()[0]);
+        // var_dump(in_array('Le volume revendiqué est différent de celui déclaré dans votre DR.',$this->getVigilances()));
+        // var_dump(array_key_exists('dr_volume',$this->getVigilances()['dr_volume']));
+
+         // var_dump(($this->getVigilances()[0])->getCode());
+         // var_dump('jen');
+        // foreach ($this->getVigilances() as &$value) {
+        //   // var_dump(array_search('dr_volume',$this->getVigilances()));
+        //             var_dump(array_keys($this->getVigilances()));
+        //   print("\n");
+        //   if ($value == 'Le volume revendiqué est différent de celui déclaré dans votre DR.') {
+        //     print('lol');
+        //   }
+        // }
+
     }
 
     protected function controleErrorPeriodes() {
