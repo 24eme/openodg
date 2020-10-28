@@ -2,10 +2,12 @@
 var Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 var fs = require('fs');
-
-const nightmare = Nightmare({ show: false})
+var mkdirp = require("mkdirp");
+const nightmare = Nightmare({ show: true})
 var config = require('./config.json');
+var destination_file='imports/'+config.file_name+'/';
 
+mkdirp('imports/'+config.file_name);
 
 nightmare
 
@@ -18,7 +20,7 @@ nightmare
   //fin authentification
 
 
-  //scraping contacts
+  //contacts
   .evaluate(()=>{
     var elements = Array.from(document.querySelectorAll('a'))
     elements[4].className += "ordre_alphabetiques";
@@ -26,9 +28,54 @@ nightmare
   .click('.ordre_alphabetiques')
   .wait(2000)
   .click('#Button2')
-  .download('imports/contacts.xlsx')
+  .download(destination_file+'contacts.xlsx')
   .wait(2000)
   //fin contacts
+
+
+
+  //apporteurs de raisins
+  .evaluate(()=>{
+    var elements = Array.from(document.querySelectorAll('a'))
+    elements[6].className += "apporteurs_de_raisins";
+  })
+  .click('.apporteurs_de_raisins')
+  .wait(2000)
+  .click('#Button2')
+  .download(destination_file+'apporteurs_de_raisins.xlsx')
+  .wait(2000)
+
+  //fin apporteurs de raisins
+
+
+
+  //addresses courrier
+  .evaluate(()=>{
+    var elements = Array.from(document.querySelectorAll('a'))
+    elements[7].className += "addresses_courrier_operateurs";
+  })
+  .click('.addresses_courrier_operateurs')
+  .wait(2000)
+  .click('#Button2')
+  .download(destination_file+'addresses_courrier_operateurs.xlsx')
+  .wait(2000)
+
+  //fin apporteurs de raisins
+
+
+
+  //operateurs innactifs
+  .evaluate(()=>{
+    var elements = Array.from(document.querySelectorAll('a'))
+    elements[9].className += "operateurs_innactifs";
+  })
+  .click('.operateurs_innactifs')
+  .wait(2000)
+  .click('#btnExportExcel')
+  .download(destination_file+'operateurs_innactifs.xlsx')
+  .wait(2000)
+  //fin operateurs innactifs
+
 
   //habilitation
   .evaluate(()=>{
@@ -38,10 +85,10 @@ nightmare
   .click('.habilitation')
   .wait(2000)
   .click('#btExportExcel')
-  .download('imports/habilitations.xlsx')
+  .download(destination_file+'habilitations.xlsx')
   .wait(2000)
-
   //fin habilitation
+
 
   //scraping lots
   .evaluate(()=>{
@@ -51,27 +98,27 @@ nightmare
    .click('.lots_declarations')
    .wait(2000)
    .click('#btnEE')
-   .download('imports/lots_2020-2021.xlsx')
+   .download(destination_file+'lots_2020-2021.xlsx')
 
    .select('#ddlCamp','')
    .click('#btnEE')
-   .download('imports/lots.xlsx')
+   .download(destination_file+'lots.xlsx')
 
    .select('#ddlCamp','2019/2020')
    .click('#btnEE')
-   .download('imports/lots_2019-2020.xlsx')
+   .download(destination_file+'lots_2019-2020.xlsx')
 
    .select('#ddlCamp','2018/2019')
    .click('#btnEE')
-   .download('imports/lots_2018-2019.xlsx')
+   .download(destination_file+'lots_2018-2019.xlsx')
 
    .select('#ddlCamp','2017/2018')
    .click('#btnEE')
-   .download('imports/lots_2017-2018.xlsx')
+   .download(destination_file+'lots_2017-2018.xlsx')
 
    .select('#ddlCamp','2016/2017')
    .click('#btnEE')
-   .download('imports/lots_2016-2017.xlsx')
+   .download(destination_file+'lots_2016-2017.xlsx')
 
    .wait(2000)
   //fin lots
@@ -83,27 +130,27 @@ nightmare
     })
   .click('.changement_denom')
   .click('#Button1')
-  .download('imports/changement_denom_2020-2021.xlsx')
+  .download(destination_file+'changement_denom_2020-2021.xlsx')
 
   .select('#ddlCampagne','')
   .click('#Button1')
-  .download('imports/changement_denom.xlsx')
+  .download(destination_file+'changement_denom.xlsx')
 
    .select('#ddlCampagne','2019')
    .click('#Button1')
-   .download('imports/changement_denom_2019-2020.xlsx')
+   .download(destination_file+'changement_denom_2019-2020.xlsx')
 
    .select('#ddlCampagne','2018')
    .click('#Button1')
-   .download('imports/changement_denom_2018-2019.xlsx')
+   .download(destination_file+'changement_denom_2018-2019.xlsx')
 
    .select('#ddlCampagne','2017')
    .click('#Button1')
-   .download('imports/changement_denom_2017-2018.xlsx')
+   .download(destination_file+'changement_denom_2017-2018.xlsx')
 
    .select('#ddlCampagne','2016')
    .click('#Button1')
-   .download('imports/changement_denom_2016-2017.xlsx')
+   .download(destination_file+'changement_denom_2016-2017.xlsx')
    //fin changement de dénomination
 
    //changement denom autre igp
@@ -113,32 +160,32 @@ nightmare
      })
     .click('.changement_denom_autre_igp')
     .click('#btnExcel')
-    .download('imports/changement_denom_autre_igp_2020-2021.xlsx')
+    .download(destination_file+'changement_denom_autre_igp_2020-2021.xlsx')
 
     .select('#ddlCampagne','')
     .wait(2000)
     .click('#btnExcel')
-    .download('imports/changement_denom_autre_igp.xlsx')
+    .download(destination_file+'changement_denom_autre_igp.xlsx')
 
      .select('#ddlCampagne','2019')
      .wait(2000)
      .click('#btnExcel')
-     .download('imports/changement_denom_autre_igp_2019-2020.xlsx')
+     .download(destination_file+'changement_denom_autre_igp_2019-2020.xlsx')
 
      .select('#ddlCampagne','2018')
      .wait(2000)
      .click('#btnExcel')
-     .download('imports/changement_denom_autre_igp_2018-2019.xlsx')
+     .download(destination_file+'changement_denom_autre_igp_2018-2019.xlsx')
 
      .select('#ddlCampagne','2017')
      .wait(2000)
      .click('#btnExcel')
-     .download('imports/changement_denom_autre_igp_2017-2018.xlsx')
+     .download(destination_file+'changement_denom_autre_igp_2017-2018.xlsx')
 
      .select('#ddlCampagne','2016')
      .wait(2000)
      .click('#btnExcel')
-     .download('imports/changement_denom_autre_igp_2016-2017.xlsx')
+     .download(destination_file+'changement_denom_autre_igp_2016-2017.xlsx')
      //fin changement denom autre igp
 
 
@@ -157,7 +204,7 @@ nightmare
         })
       .end()
       .then((text) => {
-        fs.writeFileSync('imports/produits.txt',text);
+        fs.writeFileSync(destination_file+'produits.txt',text);
       })
      //fin produits
 
