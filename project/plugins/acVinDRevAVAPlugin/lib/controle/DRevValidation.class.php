@@ -360,20 +360,6 @@ class DRevValidation extends DocumentValidation {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
-        // print_r($this->getVigilances()[0]);
-        // var_dump(in_array('Le volume revendiqué est différent de celui déclaré dans votre DR.',$this->getVigilances()));
-        // var_dump(array_key_exists('dr_volume',$this->getVigilances()['dr_volume']));
-
-         // var_dump(($this->getVigilances()[0])->getCode());
-         // var_dump('jen');
-        // foreach ($this->getVigilances() as &$value) {
-        //   // var_dump(array_search('dr_volume',$this->getVigilances()));
-        //             var_dump(array_keys($this->getVigilances()));
-        //   print("\n");
-        //   if ($value == 'Le volume revendiqué est différent de celui déclaré dans votre DR.') {
-        //     print('lol');
-        //   }
-        // }
 
     }
 
