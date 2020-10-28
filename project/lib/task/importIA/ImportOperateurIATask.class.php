@@ -68,8 +68,12 @@ EOF;
             $societe->code_comptable_client = $data[self::CSV_CODE_COMPTABLE];
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET]);
             $societe->no_tva_intracommunautaire = $data[self::CSV_TVA_INTRA];
-            $societe->save();
-
+            try {
+                $societe->save();
+            } catch (Exception $e) {
+                echo "$societe->_id save error\n";
+                continue;
+            }
             if(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
                 $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
             } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE])) {
