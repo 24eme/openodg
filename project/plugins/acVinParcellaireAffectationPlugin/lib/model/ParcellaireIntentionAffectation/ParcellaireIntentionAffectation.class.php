@@ -122,7 +122,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       $subitem->add('vtsgn', (int)$parcelle->vtsgn);
                   }
                   $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
-                  if (isset($affectees[$parcelle->getKey()])) {
+                  if (isset($affectees[$parcelle->getKey()]) && $affectees[$parcelle->getKey()]) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = $affectees[$parcelle->getKey()]['date'];
                       $subitem->superficie_affectation  = $affectees[$parcelle->getKey()]['superficie'];
