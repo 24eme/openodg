@@ -14,28 +14,43 @@ if ! test "$1"; then
     exit 1;
 fi
 
-cd ..
-make clean
-make
-cd -
+if test "$2" = "--delete"; then
 
-curl -s -X DELETE $COUCHTEST
-curl -s -X PUT $COUCHTEST
+    echo -n "Delete database http://$COUCHHOST:$COUCHPORT/$COUCHBASE, type database name to confirm ($COUCHBASE) : "
+    read databasename
+
+    if test "$databasename" = "$COUCHBASE"; then
+        curl -sX DELETE http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+        echo "Suppression de la base couchdb"
+    fi
+fi
+
+echo "Création de la base couchdb"
+
+curl -sX PUT http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+
+cd .. > /dev/null
+make clean > /dev/null
+make > /dev/null
+cd - > /dev/null
+
+echo "Création des documents de configuration"
 
 ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
 do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
-# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
-# bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
+rsync -a $1 $DATA_DIR/
 
-echo "Récupération des données"
-rsync -av $1 $DATA_DIR/
+echo "Import des Opérateurs"
 
-echo "Opérateurs"
-
-xlsx2csv -d ";" $DATA_DIR/operateurs.xlsx > $DATA_DIR/operateurs.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
 
 php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
+
+echo "Habilitations"
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+
+php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
