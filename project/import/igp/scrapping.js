@@ -3,9 +3,14 @@ var Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
-const nightmare = Nightmare({ show: true})
+const nightmare = Nightmare({ show: true ,   waitTimeout: 100000000, // in ms
+  openDevTools: {
+   mode: 'detach'
+ }
+})
 var config = require('./config.json');
 var destination_file='imports/'+config.file_name+'/';
+
 
 mkdirp('imports/'+config.file_name);
 
@@ -238,7 +243,7 @@ nightmare
       .download(destination_file+'details_recoltes_2018.xlsx')
       .refresh()
 
-    .select('#ddlAnnee','2017')
+      .select('#ddlAnnee','2017')
        .click('#Button1')
        .click('#btnExport')
        .download(destination_file+'details_recoltes_2017.xlsx')
@@ -250,8 +255,111 @@ nightmare
       .download(destination_file+'details_recoltes_2016.xlsx')
       .refresh()
 
-     //fin détail récoltes
+      //fin détail récoltes
 
+     //changement dénomination déclaration éléctronique
+     .evaluate(()=>{
+       var elements = Array.from(document.querySelectorAll('a'))
+       elements[48].className += "changement_denomination_declaration_electronique";
+     })
+       .click('.changement_denomination_declaration_electronique')
+       .wait('#btnRech')
+       .click('#btnRech')
+       .wait('#Button1')
+       .click('#Button1')
+       .download(destination_file+'changement_denomination_declaration_electronique_2020_2021.xlsx')
+       .refresh()
+
+
+       .select('#ddlAnnee','2019/2020')
+       .click('#btnRech')
+       .wait('#Button1')
+       .click('#Button1')
+       .download(destination_file+'changement_denomination_declaration_electronique_2019_2020.xlsx')
+       .refresh()
+
+       .select('#ddlAnnee','2018/2019')
+       .click('#btnRech')
+       .wait('#Button1')
+       .click('#Button1')
+       .download(destination_file+'changement_denomination_declaration_electronique_2018_2019.xlsx')
+       .refresh()
+
+
+       .select('#ddlAnnee','2017/2018')
+       .click('#btnRech')
+       .wait('#Button1')
+       .click('#Button1')
+       .download(destination_file+'changement_denomination_declaration_electronique_2017_2018.xlsx')
+       .refresh()
+
+
+       .select('#ddlAnnee','2016/2017')
+       .click('#btnRech')
+       .wait('#Button1')
+       .click('#Button1')
+       .download(destination_file+'changement_denomination_declaration_electronique_2016_2017.xlsx')
+       .refresh()
+
+
+     //fin changement dénomination déclaration éléctronique
+
+
+
+    //gestion NC
+    .evaluate(()=>{
+      var elements = Array.from(document.querySelectorAll('a'))
+      elements[103].className += "gestion_nc";
+    })
+    .click('.gestion_nc')
+    .wait('#btnE')
+    .click('#btnE')
+
+    .download(destination_file+'gestion_nc.xlsx')
+    .refresh()
+    // fin gestion NC
+
+    //jurés convoqué
+    .evaluate(()=>{
+      var elements = Array.from(document.querySelectorAll('a'))
+      elements[97].className += "jures_convoque";
+    })
+    .click('.jures_convoque')
+    .click('#btnExportExcel')
+    .download(destination_file+'jures_convoque_2020_2021.xlsx')
+    .refresh()
+    .select('#ddlCampagne','2019')
+    .click('#btnExportExcel')
+    .download(destination_file+'jures_convoque_2019_2020.xlsx')
+    .refresh()
+    .select('#ddlCampagne','2018')
+    .click('#btnExportExcel')
+    .download(destination_file+'jures_convoque_2018_2019.xlsx')
+    .refresh()
+    .select('#ddlCampagne','2017')
+    .click('#btnExportExcel')
+    .download(destination_file+'jures_convoque_2017_2018.xlsx')
+    .refresh()
+    .select('#ddlCampagne','2016')
+    .click('#btnExportExcel')
+    .download(destination_file+'jures_convoque_2016_2017.xlsx')
+    .refresh()
+    //fin jurés convoqué
+
+
+    //gestion facture
+    .evaluate(()=>{
+      var elements = Array.from(document.querySelectorAll('a'))
+      elements[108].className += "gestion_factures";
+    })
+    .click('.gestion_factures')
+    .select('#ddlCampagne','')
+    .wait('#BtnRech')
+    .click('#BtnRech')
+    .click('#btnExport')
+    .download(destination_file+'gestion_factures.xlsx')
+    .refresh()
+    //fin gestion facture
 
 
      //produits
@@ -270,7 +378,7 @@ nightmare
       .then((text) => {
         fs.writeFileSync(destination_file+'produits.txt',text);
       })
-     //fin produits
+     // //fin produits
 
   .catch(error => {
     console.error('Search failed:', error)
