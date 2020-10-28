@@ -62,7 +62,7 @@ class TirageVinForm extends acCouchdbObjectForm {
 
     public function getMillesimes() {
 
-        return array(($this->annee - 1)."" => ($this->annee - 1)."", $this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblage");
+        return array(($this->annee - 3)."" => ($this->annee - 3)."",($this->annee - 2)."" => ($this->annee - 2)."",($this->annee - 1)."" => ($this->annee - 1)."", $this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblage");
     }
 
     public function doUpdateObject($values) {

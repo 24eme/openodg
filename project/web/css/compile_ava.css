@@ -6,7 +6,7 @@
   font-weight: normal;
   font-style: normal;
 }
-/* =================================================================================== 
+/* ===================================================================================
  * File : site_vars.less
  * Description : LESS vars
  * Authors : Hamza Iqbal - hiqbal[at]actualys.com
@@ -5263,7 +5263,7 @@ td.visible-print {
     display: none !important;
   }
 }
-/* =================================================================================== 
+/* ===================================================================================
  * File : toolbox.less
  * Description : LESS functions / helpers
  * Authors : Hamza Iqbal - hiqbal[at]actualys.com
@@ -5282,13 +5282,13 @@ td.visible-print {
 /*.opacity(@opacite: 0.5)
 {
 	@opaciteIE: @opacite * 100;
-	
+
 	-webkit-opacity: @opacite;
 	 -khtml-opacity: @opacite;
 	   -moz-opacity: @opacite;
 	        opacity: @opacite;
-	
-	.ie8 & { -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=@{opaciteIE})"; }		
+
+	.ie8 & { -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=@{opaciteIE})"; }
 	.ielt8 & { filter: ~"alpha(opacity=@{opaciteIE})"; }
 }*/
 /* ============================================================= */
@@ -7841,9 +7841,9 @@ h4,
 .table thead > tr > th,
 .table tbody > tr > td {
   background-clip: padding-box;
-  border: 0;
   position: relative;
   vertical-align: middle;
+  width: auto;
 }
 .table thead > tr > th.table-split,
 .table tbody > tr > td.table-split {
