@@ -29,10 +29,15 @@
                 var vci_recolte = $(this).parents("td").next();
                 var total_recolte = $(this).parents("td").next().next();
                 var vci = 0;
+                var total;
                 if(vci_recolte.text()){
                   vci = parseFloat(vci_recolte.text());
                 }
-                total_recolte.html((parseFloat(input.value.replace(',', '.')) + vci).toFixed(2))
+                total = (parseFloat(input.value.replace(',', '.')) + vci);
+                if(isNaN(total)){
+                  total = 0;
+                }
+                total_recolte.html(total.toFixed(2))
             })
         })
     });
