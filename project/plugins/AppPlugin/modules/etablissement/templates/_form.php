@@ -37,9 +37,7 @@
                 </div>
             </div>
           <?php endif; ?>
-        </div>
-        <div class="col-xs-7">
-        	<?php if(isset($form['raison_sociale'])): ?>
+          <?php if(isset($form['raison_sociale'])): ?>
             <div class="form-group<?php if($form["raison_sociale"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["raison_sociale"]->renderError(); ?>
                 <?php echo $form["raison_sociale"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -76,6 +74,8 @@
                     <?php echo $form["code_postal"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+        </div>
+        <div class="col-xs-7">
             <?php if(isset($form['telephone_bureau'])): ?>
             <div class="form-group<?php if($form["telephone_bureau"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["telephone_bureau"]->renderError(); ?>
@@ -128,43 +128,43 @@
                    <?php echo ($form->getObject()->ppm)? $form->getObject()->ppm : " (non communiqué)"; ?>
                 </span>
             </div>
-        <?php endif; ?>
-<?php if(isset($extra)): ?>
-<?php foreach($extra as $label => $value): ?>
-            <div class="form-group">
-                <strong class="col-xs-3 text-right"><?php echo $label; ?></strong>
-                <span class="col-xs-9">
-                   <?php echo $value; ?>
-                </span>
-            </div>
-<?php endforeach; ?>
-<?php endif; ?>
+          <?php endif; ?>
+          <?php if(isset($extra)): ?>
+          <?php foreach($extra as $label => $value): ?>
+                      <div class="form-group">
+                          <strong class="col-xs-3 text-right"><?php echo $label; ?></strong>
+                          <span class="col-xs-9">
+                             <?php echo $value; ?>
+                          </span>
+                      </div>
+          <?php endforeach; ?>
+          <?php endif; ?>
+          <div class="form-group">
+              <strong class="col-xs-4 text-right">Raison Sociale</strong>
+              <span class="col-xs-8">
+                 <?php echo $form->getObject()->raison_sociale; ?>
+              </span>
+          </div>
+          <div class="form-group">
+              <strong class="col-xs-4 text-right">Adresse</strong>
+              <span class="col-xs-8">
+                 <?php echo $form->getObject()->adresse; ?>
+              </span>
+          </div>
+          <div class="form-group">
+              <strong class="col-xs-4 text-right">Commune</strong>
+              <span class="col-xs-8">
+                 <?php echo $form->getObject()->commune; ?>
+              </span>
+          </div>
+          <div class="form-group">
+              <strong class="col-xs-4 text-right">Code Postal</strong>
+              <span class="col-xs-8">
+                 <?php echo $form->getObject()->code_postal; ?>
+              </span>
+          </div>
         </div>
         <div class="col-xs-7">
-            <div class="form-group">
-                <strong class="col-xs-4 text-right">Raison Sociale</strong>
-                <span class="col-xs-8">
-                   <?php echo $form->getObject()->raison_sociale; ?>
-                </span>
-            </div>
-            <div class="form-group">
-                <strong class="col-xs-4 text-right">Adresse</strong>
-                <span class="col-xs-8">
-                   <?php echo $form->getObject()->adresse; ?>
-                </span>
-            </div>
-            <div class="form-group">
-                <strong class="col-xs-4 text-right">Commune</strong>
-                <span class="col-xs-8">
-                   <?php echo $form->getObject()->commune; ?>
-                </span>
-            </div>
-            <div class="form-group">
-                <strong class="col-xs-4 text-right">Code Postal</strong>
-                <span class="col-xs-8">
-                   <?php echo $form->getObject()->code_postal; ?>
-                </span>
-            </div>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Téléphone Bureau</strong>
                 <span class="col-xs-8">
