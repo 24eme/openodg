@@ -2,5 +2,6 @@
   "web_site" : "https://www.site.fr",
   "user_name" : "identifiant",
   "user_password" : "mdp",
+  "file_name" : "file",
   "web_site_produits": "https://www.produits.fr"
 }
