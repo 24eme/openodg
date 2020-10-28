@@ -7,7 +7,7 @@
 
 ## Configuration
 
-    enlever l'extension .exemple du fichier config.json.example
+    enlever l'extension .example du fichier config.json.example
     remplacer les paramètres
 
 ## Lancer le téléchargement
