@@ -13,7 +13,6 @@
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'))); ?>
     </div>
 </div>
-
 <h3>Liste des déclarations</h3>
 <div class="row">
     <div class="col-sm-9 col-xs-12">

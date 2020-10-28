@@ -10,8 +10,6 @@ if ($application == 'igp13') {
     return;
 }
 
-$t = new lime_test(86);
-
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
@@ -45,6 +43,26 @@ foreach($config->getProduits() as $produit) {
     }
 
     break;
+}
+
+$produitConfigMutage = null;
+
+foreach($config->getProduits() as $produit) {
+    if($produit->getRendement() <= 0) {
+        continue;
+    }
+    if(!$produit->hasMutageAlcoolique()) {
+        continue;
+    }
+
+    $produitConfigMutage = $produit;
+    break;
+}
+
+if ($produitConfigMutage) {
+    $t = new lime_test(89);
+}else {
+    $t = new lime_test(79);
 }
 
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
@@ -222,7 +240,6 @@ $valuesRev = array(
 );
 
 $valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 104.1;
-$valuesRev['produits'][$produit_hash2]['volume_revendique_issu_recolte'] = 104.1;
 
 $form->bind($valuesRev);
 
@@ -246,10 +263,11 @@ $t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->
 
 $drev->cleanDoc();
 
-$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, $drev->getDate());
+$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, date('Ymd',strtotime("-1 days")));
 $habilitation->addProduit($produit1->getConfig()->getHash())->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::STATUT_HABILITE);
 $habilitation->save();
 
+$t->ok($habilitation->isHabiliteFor($produit1->getConfig()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR), "L'habilitation a bien enregistré la demande d'habilitation pour le produit1 (".$produit1->getLibelle().") et l'activité vinificateur (".$habilitation->_id.")");
 $produit1->getConfig()->add('attributs')->add('rendement', 55);
 $produit1->getConfig()->add('attributs')->add('rendement_conseille', 45);
 $produit1->getConfig()->add('attributs')->add('rendement_vci', 5);
@@ -275,11 +293,8 @@ $t->ok(!isset($vigilances['vci_rendement_total']), "Pas de point de vigilance su
 $t->ok(!isset($erreurs['declaration_volume_l15_complement']), "Pas de point bloquant sur le respect de la ligne l15");
 $t->ok(!isset($erreurs['vci_substitue_rafraichi']), "Pas de point blocant sur la subsitution ni le rafraichissement du volume de VCI");
 $t->ok(!isset($erreurs['revendication_superficie']), "Pas de point blocant sur la superficie declarée sur la DR et la DRev");
-if($application == "rhone") {
-    $t->is(count($vigilances['declaration_habilitation']), 1, "Pas de point de vigilance sur l'habilitation du premier produit");
-} else {
-    $t->ok(!isset($vigilances['declaration_habilitation']), "Pas de point de vigilance sur l'habilitation du premier produit");
-}
+$t->ok(!isset($vigilances['declaration_habilitation']), "Pas de point de vigilance sur l'habilitation du premier produit");
+
 $t->ok(isset($vigilances['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
 $t->ok(!isset($vigilances['declaration_neant']), "Pas de point vigilance sur la declaration neant");
 $t->ok(!isset($vigilances['declaration_produits_incoherence']), "Point vigilance sur les produits declarés sur la DR et pas dans la DRev");
@@ -350,23 +365,16 @@ $csvContent = $export->export();
 
 $t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");
 
+if (!$produitConfigMutage) {
+    return;
+}
 $t->comment("Mutage alcool revendique pour VDN");
 
-$produitConfigMutage = null;
-
-foreach($config->getProduits() as $produit) {
-    if($produit->getRendement() <= 0) {
-        continue;
-    }
-    if(!$produit->hasMutageAlcoolique()) {
-        continue;
-    }
-
-    $produitConfigMutage = $produit;
-    break;
-}
-
 $produitMutage = $drev->addProduit($produitConfigMutage->getHash());
+
+$produitMutage->recolte->superficie_total = 100 / $produitConfigMutage->getRendement();
+$produitMutage->superficie_revendique = 100 / $produitConfigMutage->getRendement();
+
 
 $form = new DRevRevendicationForm($drev);
 
@@ -387,9 +395,10 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
 $t->is($produitMutage->volume_revendique_issu_mutage, $valuesRev['produits'][$produitMutage->getHash()]['volume_revendique_issu_mutage'], "Le volume revendique issu de mutage a été enregsitré");
-
 $produitMutage->volume_revendique_issu_mutage = 0;
-$validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
+$validation = new DRevValidation($drev);
+$erreurs = $validation->getPointsByCodes('erreur');
+
 $t->is(count($erreurs['mutage_ratio']), 1, "Point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
 
 $produitMutage->volume_revendique_issu_mutage = 4.99;
@@ -399,6 +408,10 @@ $t->is(count($erreurs['mutage_ratio']), 1, "Point bloquant concernant le volume 
 $produitMutage->volume_revendique_issu_mutage = 5;
 $validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');
 $t->ok(!isset($erreurs['mutage_ratio']), "Pas de point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte");
+
+$vigilances = $validation->getPointsByCodes('vigilance');
+$t->is($produitMutage->getVolumeRevendiqueRendement(), 100, "Le volume rendement ne tient pas en compte le volume issu du mutage");
+$t->is($produitMutage->getRendementEffectif(), 30, "Le rendement ne tient pas en compte le volume issu du mutage");
 
 $produitMutage->volume_revendique_issu_mutage = 10.01;
 $validation = new DRevValidation($drev); $erreurs = $validation->getPointsByCodes('erreur');

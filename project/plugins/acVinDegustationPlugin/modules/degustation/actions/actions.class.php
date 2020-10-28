@@ -78,6 +78,55 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_visualisation', $this->degustation);
     }
 
+    public function executeUpdateLot(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->lotkey = $request->getParameter('lot');
+        $this->lot = $this->degustation->lots->get($request->getParameter('lot'));
+
+        $this->form = new DegustationLotForm($this->lot);
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if ($this->form->isValid()) {
+                $drev = DRevClient::getInstance()->find($this->lot->id_document);
+
+                $mvmt_degust = $this->degustation->get($this->lot->getGeneratedMvtKey());
+
+                $modificatrice = $drev->generateModificative();
+                $modificatrice->lots->remove($mvmt_degust->origine_hash);
+                $modificatrice->addLotFromDegustation($this->object);
+                $modificatrice->generateMouvementsLots();
+
+                $mvmt = $this->drev->get($this->lot->origine_mouvement);
+                $mvmt->prelevable = 0;
+
+                $this->drev->save();
+                $modificatrice->save();
+                $this->form->save();
+
+                return $this->redirect('degustation_preleve', $this->degustation);
+            }
+        }
+    }
+
+    public function executeUpdateLotLogement(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->lot = $request->getParameter('lot');
+
+        $this->form = new DegustationPreleveUpdateLogementForm($this->degustation, $this->lot);
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if ($this->form->isValid()) {
+                $this->form->save();
+                return $this->redirect('degustation_preleve', $this->degustation);
+            }
+        }
+    }
+
     public function executeSelectionDegustateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();

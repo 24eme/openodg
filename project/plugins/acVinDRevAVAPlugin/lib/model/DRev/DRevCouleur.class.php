@@ -223,7 +223,7 @@ class DRevCouleur extends BaseDRevCouleur
 		}
 
         if(!is_null($this->detail->volume_sur_place_revendique)) {
-            $this->volume_revendique = $this->detail->volume_sur_place_revendique;
+            $this->add('volume_revendique_recolte', $this->detail->volume_sur_place_revendique);
         }
 
 		if($this->canHaveVtsgn()) {

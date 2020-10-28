@@ -104,7 +104,7 @@ $t->is($line[DRCsvFile::CSV_LIGNE_CODE], '4', "le code de la ligne superficie pr
 $t->is($line[DRCsvFile::CSV_LIGNE_LIBELLE], 'Superficie de récolte', "le libellé de la ligne superficie producteur est OK (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_NOM], '', "la ligne superficie producteur n'a pas de nom de bailleur (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_PPM], '', "la ligne superficie producteur n'a pas de ppm de bailleur (dernière colonne)");
-$t->is($line[DRCsvFile::CSV_VALEUR], '0,0000', "la superficie est bonne pour le producteur (dernière colonne)");
+$t->is($line[DRCsvFile::CSV_VALEUR], '0,0003', "la superficie est bonne pour le producteur (dernière colonne)");
 $superficie_producteur = floatval(preg_replace('/,/', '.', $line[DRCsvFile::CSV_VALEUR]));
 $line = explode(";", $lines[77]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '8', "le numéro de colonne est ok pour la ligne superficie bailleur (dernière colonne)");
@@ -112,7 +112,7 @@ $t->is($line[DRCsvFile::CSV_LIGNE_CODE], '4', "le code de la ligne superficie ba
 $t->is($line[DRCsvFile::CSV_LIGNE_LIBELLE], 'Superficie de récolte', "le libellé de la ligne superficie bailleur est OK (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_NOM], 'XXXXXX Simon', "la ligne superficie bailleur a un nom de bailleur (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_PPM], 'Z00000999', "la ligne superficie bailleur a un ppm de bailleur (dernière colonne)");
-$t->is($line[DRCsvFile::CSV_VALEUR], '0,0749', "la superficie est bonne pour le bailleur (dernière colonne)");
+$t->is($line[DRCsvFile::CSV_VALEUR], '0,0746', "la superficie est bonne pour le bailleur (dernière colonne)");
 $superficie_bailleur = floatval(preg_replace('/,/', '.', $line[DRCsvFile::CSV_VALEUR]));
 $line = explode(";", $lines[78]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '8', "le numéro de colonne est ok pour la ligne superficie originale (dernière colonne)");

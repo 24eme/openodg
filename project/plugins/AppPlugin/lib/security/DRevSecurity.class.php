@@ -20,6 +20,10 @@ class DRevSecurity extends DocumentSecurity implements SecurityInterface {
             $droits = array($droits);
         }
 
+        if(($this->user->isAdmin() || ($this->user->hasDrevAdmin()))){
+            return true;
+        }
+
         $authorized = parent::isAuthorized($droits);
 
         if(!$authorized) {

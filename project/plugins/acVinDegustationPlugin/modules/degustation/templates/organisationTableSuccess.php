@@ -17,12 +17,17 @@
           				</tr>
           			</thead>
           			<tbody id="synthese">
+                <?php $total = 0; ?>
           			<?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
           				<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
           					<td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
-          					<td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
+						<td class="nblots"><?php echo count($lotsProduit->lots); $total += count($lotsProduit->lots); ?></td>
           				</tr>
           			<?php endforeach; ?>
+                  <tr>
+                    <td class="text-right"><strong>Total</strong></td>
+                    <td class="nblots"><?= $total ?></td>
+                  </tr>
           		</tbody>
           	</table>
           </div>
