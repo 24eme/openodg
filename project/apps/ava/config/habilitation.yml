@@ -8,6 +8,6 @@ all:
         VINIFICATEUR: "Vinificateur"
         ELABORATEUR: "Élaborateur"
         VRAC: "Détenteur de vin en vrac"
-        MARC: "Producteur de MARC"
+        MARC: "Producteur de Marc"
         DISTILLATEUR: "Distillateur"
         METTEUR_EN_MARCHE: "Metteur en Marché"
