@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(16);
+$t = new lime_test(25);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -89,7 +89,12 @@ $chgtDenom->changement_volume = null;
 $chgtDenom->changement_numero = null;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 1, "lot prelevable depuis la Drev");
 $chgtDenom->generateMouvementsLots(0);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotNonPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
@@ -101,6 +106,9 @@ if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
 $t->is($nbLotNonPrelevable, 1, "1 mouvement de lot non prelevable généré");
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->generateMouvementsLots(1);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
@@ -123,6 +131,9 @@ $chgtDenom->changement_numero = 4;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
 $chgtDenom->generateMouvementsLots(0);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotNonPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
@@ -134,6 +145,9 @@ if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
 $t->is($nbLotNonPrelevable, 2, "2 mouvements de lot non prelevables générés");
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->generateMouvementsLots(1);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
@@ -156,6 +170,9 @@ $chgtDenom->changement_numero = null;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
 $chgtDenom->generateMouvementsLots(0);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotNonPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
@@ -167,6 +184,9 @@ if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
 $t->is($nbLotNonPrelevable, 1, "1 mouvement de lot non prelevable généré");
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->generateMouvementsLots(1);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
@@ -189,6 +209,9 @@ $chgtDenom->changement_numero = 4;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
 $chgtDenom->generateMouvementsLots(0);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotNonPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
@@ -200,6 +223,9 @@ if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
 $t->is($nbLotNonPrelevable, 2, "2 mouvements de lot non prelevables générés");
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->generateMouvementsLots(1);
+$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
+$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
+$drevMvtLot->prelevable = 1;
 $nbLotPrelevable=0;
 if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
   foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
