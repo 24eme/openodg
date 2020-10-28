@@ -23,7 +23,6 @@
             <thead>
                 <tr>
                     <th class="col-xs-1">Date</th>
-                    <th class="col-xs-1 text-center">Camp.</th>
                     <th class="col-xs-1 text-center">Type</th>
                     <th class="col-xs-4">Opérateur</th>
                     <th class="col-xs-2 text-center">Mode</th>
@@ -38,7 +37,6 @@
 
                       <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($doc->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
-                        <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
                         <td><a href="<?php echo url_for("declaration_etablissement", array("identifiant" => $doc->key[DeclarationTousView::KEY_IDENTIFIANT], 'region' => $regionParam)); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
                         <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
