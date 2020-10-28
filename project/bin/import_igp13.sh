@@ -46,11 +46,13 @@ rsync -a $1 $DATA_DIR/
 echo "Import des Opérateurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
-
 php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/apporteurs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $4=""; $3=";Producteur de raisin"; print $0 }' | sort | uniq > $DATA_DIR/apporteurs.csv
+php symfony import:operateur-ia $DATA_DIR/apporteurs.csv --application="$ODG" --trace
 
 echo "Habilitations"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 
-php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
+//php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
