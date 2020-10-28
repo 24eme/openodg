@@ -56,7 +56,7 @@ chgtdenom_visualisation:
     model:    ChgtDenom
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 chgtdenom_delete:
   url: /changement-denomination/suppression/:id

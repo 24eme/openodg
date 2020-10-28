@@ -9,6 +9,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function __construct() {
         parent::__construct();
+		    //TODO : supprimer cette goretterie réalisée pour la démo
+		    $this->campagne = '2019';
         $this->initDocuments();
     }
 
@@ -32,7 +34,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getConfigProduits() {
-
         return $this->getConfiguration()->declaration->getProduits();
     }
 
@@ -44,7 +45,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
-
         if($this->getEtablissementObject()->famille) {
             $this->declarant->famille = $this->getEtablissementObject()->famille;
         }
@@ -52,9 +52,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function storeEtape($etape) {
         $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;
-
         $this->add('etape', $etape);
-
         return $etapeOriginal != $this->etape;
     }
 
@@ -66,7 +64,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function isPapier() {
-
         return $this->exist('papier') && $this->get('papier');
     }
 
@@ -78,25 +75,14 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->validation_odg);
     }
 
-    public function validateOdg($date = null, $region = null) {
+    public function validateOdg($date = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
-
-        if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdg()) {
-            throw new sfException("La validation nécessite une région");
-        }
-
-        if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
-            return $this->validateOdgByRegion($date, $region);
-        }
-
         $this->validation_odg = $date;
-        $this->generateMouvementsLots();
     }
 
     public function getEtablissementObject() {
-
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
@@ -112,11 +98,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function hasLots() {
-      return (count($this->lots) > 0);
+      return !empty($this->__get('changement_origine_mvtkey'));
     }
 
     public function getLotKey() {
-      return ($this->hasLots())? $this->lots->get(0)->getGeneratedMvtKey() : null;
+      return ($this->hasLots())? $this->changement_origine_mvtkey : null;
     }
 
     public function getMvtLot() {
@@ -125,39 +111,58 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($mvts && $key && isset($mvts[$key]))? $mvts[$key] : null;
     }
 
-	 public function setLotFromMvtKey($key){
-		 $mvts = $this->getMvtLots();
-     if (isset($mvts[$key])) {
-        if ($this->getLotKey() == $key) {
-          return $this->lots->get(0);
-        }
-        $this->remove('mouvements_lots');
-        $this->remove('lots');
-        $this->add('mouvements_lots');
-        $this->add('lots');
-				return $this->lots->add(null, MouvementLotView::generateLotByMvt($mvts[$key]));
-     }
-     return null;
-	 }
+	  protected function doSave() {
+      $this->piece_document->generatePieces();
+	  }
 
-
-
-	protected function doSave() {
-        $this->piece_document->generatePieces();
-	}
-
-
-    public function hasLotUnicityKey($key) {
-        foreach($this->lots as $k => $lot) {
-            if ($lot->getUnicityKey() == $key) {
-                return true;
-            }
-        }
-        return false;
+    public function clearMouvementsLots(){
+      $this->remove('mouvements_lots');
+      $this->add('mouvements_lots');
     }
 
-    private function generateMouvementLotsFromLot($lot, $key) {
+    public function clearLots(){
+      $this->remove('lots');
+      $this->add('lots');
+    }
+
+    public function isDeclassement() {
+      return (!$this->changement_produit);
+    }
+    public function isChgtTotal() {
+      return (!$this->changement_volume);
+    }
+
+    public function generateLots() {
+      $mvtLot = $this->getMvtLot();
+      $this->clearMouvementsLots();
+      $this->clearLots();
+
+      $lots = array();
+      $lot = MouvementLotView::generateLotByMvt($mvtLot);
+
+      if (!$this->isChgtTotal()) {
+        $lot->volume -= $this->changement_volume;
+        $lotBis = MouvementLotView::generateLotByMvt($mvtLot);
+        $lotBis->numero = $this->changement_numero;
+        $lotBis->volume = $this->changement_volume;
+        $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
+        $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        $lots[] = $lot;
+        $lots[] = $lotBis;
+      } else {
+        $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
+        $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        $lots[] = $lot;
+      }
+      foreach($lots as $l) {
+        $this->lots->add(null, $l);
+      }
+    }
+
+    private function generateMouvementLotsFromLot($lot, $key, $prelevable = 1) {
         $mvt = new stdClass();
+        $mvt->prelevable = ($lot->produit_hash)? $prelevable : 0;
+        $mvt->preleve = 0;
         $mvt->date = $lot->date;
         $mvt->numero = $lot->numero;
         $mvt->millesime = $lot->millesime;
@@ -165,11 +170,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
-        $mvt->produit_couleur = $lot->getCouleurLibelle();
-        $mvt->region = '';
-        $mvt->version = $this->getVersion();
+        $mvt->produit_couleur = ($lot->produit_hash)? $lot->getCouleurLibelle() : null;
+        $mvt->region = null;
+        $mvt->version = null;
         $mvt->origine_hash = $lot->getHash();
-        $mvt->origine_type = 'drev';
+        $mvt->origine_type = 'chgtdenom';
         $mvt->origine_document_id = $this->_id;
         $mvt->id_document = $this->_id;
         $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
@@ -177,11 +182,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $mvt->declarant_nom = $this->declarant->raison_sociale;
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
-        $mvt->details = '';
-        foreach($lot->cepages as $cep => $pc) {
-            $mvt->details .= $cep.' ('.$pc.'%) ';
-        }
-        $mvt->region = '';
+        $mvt->details = $lot->details;
         $mvt->campagne = $this->campagne;
         return $mvt;
     }
@@ -194,43 +195,37 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
     }
 
-    public function generateMouvementsLots() {
-        $prev = $this->getMother();
+    public function generateMouvementsLots($prelevable = 1) {
         foreach($this->lots as $k => $lot) {
-            $key = $lot->getUnicityKey();
-            if ($prev && $prev->hasLotUnicityKey($key)) {
-                continue;
-            }
-            $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
+          $key = $lot->getUnicityKey();
+          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key, $prelevable);
         }
-        if ($prev) {
-            foreach($prev->lots as $k => $lot) {
-                $key = $lot->getUnicityKey();
-                if ($this->hasLotUnicityKey($key)) {
-                    continue;
-                }
-                $this->generateAndAddMouvementLotsFromLot($lot, $key, 0);
-            }
-        }
+        $this->updateMouvementOrigineDocument();
     }
 
-
-
-    public function clearMouvementsLots(){
-        $this->remove('mouvements_lots');
-        $this->add('mouvements_lots');
+    private function updateMouvementOrigineDocument() {
+      $mvtLot = $this->getMvtLot();
+      if ($doc = acCouchdbManager::getClient()->find($mvtLot->origine_document_id)) {
+        if ($doc->exist($mvtLot->origine_mouvement)) {
+          $doc->get($mvtLot->origine_mouvement)->prelevable = 0;
+          $doc->save();
+        }
+      }
     }
 
     /**** FIN DES MOUVEMENTS ****/
 
     /**** PIECES ****/
-
     public function getAllPieces() {
-    	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+      $mvtLot = $this->getMvtLot();
+      $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
+      $libelle .= ($this->isChgtTotal())? '' : ' partiel';
+      $libelle .= ' du logement n°'.$mvtLot->numero;
+      $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->validation,
-    		'libelle' => 'Changement de dénomination '.$this->lots->get(0)->libelle_produit.' '.$complement,
+    		'libelle' => $libelle,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
@@ -242,11 +237,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function generateUrlPiece($source = null) {
-    	return sfContext::getInstance()->getRouting()->generate('drev_export_pdf', $this);
+    	return null;
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return sfContext::getInstance()->getRouting()->generate('drev_visualisation', array('id' => $id));
+    	return sfContext::getInstance()->getRouting()->generate('chgtdenom_visualisation', array('id' => $id));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
@@ -260,6 +255,5 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public static function isPieceEditable($admin = false) {
     	return false;
     }
-
     /**** FIN DES PIECES ****/
 }

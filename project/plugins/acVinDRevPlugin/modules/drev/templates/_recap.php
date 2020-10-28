@@ -157,3 +157,23 @@
         </tbody>
     </table>
 <?php endif; ?>
+<?php if($drev->hasProduitsReserveInterpro()): ?>
+    <h3>Réserve interprofessionnelle</h3>
+    <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-6">Produit</td>
+            <th class="col-xs-3 text-center">Volume mis en réserve</td>
+            <th class="col-xs-3 text-center">Volume revendiqué commercialisable</td>
+    </thead>
+    <tbody>
+    <?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
+        <tr>
+            <td><?php echo $p->getLibelle(); ?></td>
+            <td class="text-right"><?php echoFloat($p->getVolumeReserveInterpro()); ?> <small class="text-muted">hl</small></td>
+            <td class="text-right"><?php echoFloat($p->getVolumeRevendiqueCommecialisable()); ?> <small class="text-muted">hl</small></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+    </table>
+<?php endif; ?>

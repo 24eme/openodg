@@ -22,6 +22,11 @@ foreach ($results as $res) {
 
   $mdp = (preg_match("/\{TEXT\}/", $mot_de_passe)) ? str_replace("{TEXT}", "", $mot_de_passe) : '';
 
+  $compteclient = CompteClient::getInstance()->find("COMPTE-".$id_societe,acCouchdbClient::HYDRATE_JSON);
+  $mot_de_passe = ($compteclient) ? $compteclient->mot_de_passe : $data['doc']['mot_de_passe'];
+
+  $mdp = (preg_match("/\{TEXT\}/", $mot_de_passe)) ? str_replace("{TEXT}", "", $mot_de_passe) : '';
+
 
   $telephone_societe = isset($societe_informations['telephone'])? $societe_informations['telephone'] : '';
   $adresses = Compte::transformAdressesToPostal($data['doc']['adresse'], $data['doc']['adresse_complementaire']);

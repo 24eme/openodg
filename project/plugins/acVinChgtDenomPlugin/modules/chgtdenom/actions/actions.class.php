@@ -41,14 +41,9 @@ class chgtdenomActions extends sfActions {
         if (!$this->key) {
           return $this->redirect('chgtdenom_lots', $this->chgtDenom);
         }
+        $this->chgtDenom->changement_origine_mvtkey = $this->key;
 
-        if (!$this->chgtDenom->setLotFromMvtKey($this->key)) {
-            throw new sfException("Lot inexistant pour la key : $this->key");
-        }
-
-        $this->lot = $this->chgtDenom->lots->get(0);
-
-        $this->form = new ChgtDenomForm($this->lot, $firstEdition);
+        $this->form = new ChgtDenomForm($this->chgtDenom, $firstEdition);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -69,7 +64,6 @@ class chgtdenomActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
-        $this->lot = $this->chgtDenom->lots->get(0);
 
         $this->form = new ChgtDenomValidationForm($this->chgtDenom);
 
@@ -92,6 +86,26 @@ class chgtdenomActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+
+        if ($this->getUser()->isAdmin() && !$this->chgtDenom->isApprouve()) {
+          $this->form = new ChgtDenomApprobationForm($this->chgtDenom);
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
     }
 
     public function executeSuppression(sfWebRequest $request) {
