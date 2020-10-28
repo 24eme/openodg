@@ -20,7 +20,7 @@ nightmare
   //fin authentification
 
 
-  //contacts
+  //operateurs
   .evaluate(()=>{
     var elements = Array.from(document.querySelectorAll('a'))
     elements[4].className += "ordre_alphabetiques";
@@ -28,9 +28,9 @@ nightmare
   .click('.ordre_alphabetiques')
   .wait(2000)
   .click('#Button2')
-  .download(destination_file+'contacts.xlsx')
+  .download(destination_file+'operateurs.xlsx')
   .wait(2000)
-  //fin contacts
+  // fin operateurs
 
 
 
@@ -76,6 +76,17 @@ nightmare
   .wait(2000)
   //fin operateurs innactifs
 
+  //contacts
+  .evaluate(()=>{
+    var elements = Array.from(document.querySelectorAll('a'))
+    elements[12].className += "list_contacts";
+  })
+  .click('.list_contacts')
+  .wait(2000)
+  .click('#ContentPlaceHolder1_btnExcel')
+  .download(destination_file+'contacts.xlsx')
+  .wait(2000)
+  // fin contacts
 
   //habilitation
   .evaluate(()=>{
