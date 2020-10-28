@@ -4,6 +4,7 @@
     npm install --save nightmare
     npm i nightmare-inline-download
     npm i fs
+    npm install mkdirp
 
 ## Configuration
 

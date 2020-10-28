@@ -88,9 +88,9 @@ EOF;
             $etablissement->nom = ($data[self::CSV_NOM]) ? $data[self::CSV_NOM] : $data[self::CSV_RAISON_SOCIALE];
             $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
             $etablissement->cvi = ($cvi) ? str_pad($cvi, 10, "0", STR_PAD_LEFT) : null;
+            $societe->pushAdresseTo($etablissement);
+            $societe->pushContactTo($etablissement);
             $etablissement->save();
-
-            //$societe->save();
 
         }
     }
