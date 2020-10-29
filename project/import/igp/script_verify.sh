@@ -4,6 +4,5 @@ if [ -f "config.json" ];then
    if [ "$(ls -1 | wc -l)" -ne "28" ];then
      echo 'Il manque des fichiers'
    fi
-   cd ..
   fi
 fi
