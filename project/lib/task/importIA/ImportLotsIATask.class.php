@@ -162,11 +162,9 @@ EOF;
                 $nbOc++;
               }
             }
-
             if ($nbOc > 1) {
               $lot->delete();
             }
-
             $drev->save();
         }
     }
