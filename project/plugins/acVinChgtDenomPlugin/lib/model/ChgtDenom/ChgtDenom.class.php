@@ -204,13 +204,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     private function updateMouvementOrigineDocument() {
+      if ($doc = $this->getOrigineDocumentMvtLot()) {
+          $doc->prelevable = 0;
+          $doc->getDocument()->save();
+      }
+    }
+
+    public function getOrigineDocumentMvtLot() {
       $mvtLot = $this->getMvtLot();
       if ($doc = acCouchdbManager::getClient()->find($mvtLot->origine_document_id)) {
         if ($doc->exist($mvtLot->origine_mouvement)) {
-          $doc->get($mvtLot->origine_mouvement)->prelevable = 0;
-          $doc->save();
+          return $doc->get($mvtLot->origine_mouvement);
         }
       }
+      return null;
     }
 
     /**** FIN DES MOUVEMENTS ****/
