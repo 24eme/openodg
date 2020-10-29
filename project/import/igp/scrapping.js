@@ -3,10 +3,11 @@ var Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
-const nightmare = Nightmare({ show: true ,   waitTimeout: 100000000, // in ms
-  openDevTools: {
-   mode: 'detach'
- }
+const nightmare = Nightmare({ show: true ,
+ //  waitTimeout: 100000000, // in ms
+ //  openDevTools: {
+ //   mode: 'detach'
+ // }
 })
 var config = require('./config.json');
 var destination_file='imports/'+config.file_name+'/';
@@ -72,7 +73,8 @@ nightmare
     elements[9].className += "operateurs_innactifs";
   })
   .click('.operateurs_innactifs')
-  .wait('#btnExportExcel')
+  // .wait('#btnExportExcel')
+  .wait(3000)
   .click('#btnExportExcel')
   .download(destination_file+'operateurs_innactifs.xlsx')
   .refresh()
@@ -122,34 +124,9 @@ nightmare
     elements[63].className += "lots_declarations";
     })
    .click('.lots_declarations')
-   .wait('#btnEE')
-   .click('#btnEE')
-   .download(destination_file+'lots_2020-2021.xlsx')
-   .refresh()
-
    .select('#ddlCamp','')
    .click('#btnEE')
    .download(destination_file+'lots.xlsx')
-   .refresh()
-
-   .select('#ddlCamp','2019/2020')
-   .click('#btnEE')
-   .download(destination_file+'lots_2019-2020.xlsx')
-   .refresh()
-
-   .select('#ddlCamp','2018/2019')
-   .click('#btnEE')
-   .download(destination_file+'lots_2018-2019.xlsx')
-   .refresh()
-
-   .select('#ddlCamp','2017/2018')
-   .click('#btnEE')
-   .download(destination_file+'lots_2017-2018.xlsx')
-   .refresh()
-
-   .select('#ddlCamp','2016/2017')
-   .click('#btnEE')
-   .download(destination_file+'lots_2016-2017.xlsx')
    .refresh()
   //fin lots
 
@@ -159,28 +136,10 @@ nightmare
     elements[56].className += "changement_denom";
     })
   .click('.changement_denom')
-  .click('#Button1')
-  .download(destination_file+'changement_denom_2020-2021.xlsx')
-
   .select('#ddlCampagne','')
   .click('#Button1')
   .download(destination_file+'changement_denom.xlsx')
 
-   .select('#ddlCampagne','2019')
-   .click('#Button1')
-   .download(destination_file+'changement_denom_2019-2020.xlsx')
-
-   .select('#ddlCampagne','2018')
-   .click('#Button1')
-   .download(destination_file+'changement_denom_2018-2019.xlsx')
-
-   .select('#ddlCampagne','2017')
-   .click('#Button1')
-   .download(destination_file+'changement_denom_2017-2018.xlsx')
-
-   .select('#ddlCampagne','2016')
-   .click('#Button1')
-   .download(destination_file+'changement_denom_2016-2017.xlsx')
    //fin changement de dénomination
 
    //changement denom autre igp
@@ -189,28 +148,10 @@ nightmare
      elements[57].className += "changement_denom_autre_igp";
      })
     .click('.changement_denom_autre_igp')
-    .click('#btnExcel')
-    .download(destination_file+'changement_denom_autre_igp_2020-2021.xlsx')
-
     .select('#ddlCampagne','')
     .click('#btnExcel')
     .download(destination_file+'changement_denom_autre_igp.xlsx')
 
-     .select('#ddlCampagne','2019')
-     .click('#btnExcel')
-     .download(destination_file+'changement_denom_autre_igp_2019-2020.xlsx')
-
-     .select('#ddlCampagne','2018')
-     .click('#btnExcel')
-     .download(destination_file+'changement_denom_autre_igp_2018-2019.xlsx')
-
-     .select('#ddlCampagne','2017')
-     .click('#btnExcel')
-     .download(destination_file+'changement_denom_autre_igp_2017-2018.xlsx')
-
-     .select('#ddlCampagne','2016')
-     .click('#btnExcel')
-     .download(destination_file+'changement_denom_autre_igp_2016-2017.xlsx')
      //fin changement denom autre igp
 
 
@@ -235,7 +176,6 @@ nightmare
       .click("#btnExport")
       .download(destination_file+'details_recoltes_2019.xlsx')
       .refresh()
-
 
       .select('#ddlAnnee','2018')
       .click('#Button1')
