@@ -90,7 +90,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lots = array();
       foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($this->identifiant)->rows as $item) {
           $key = Lot::generateMvtKey($item->value);
-          if (in_array(strtolower($item->value->origine_type), ChgtDenomClient::$ORIGINE_LOT)) {
+          if (preg_replace('/-.*/', '', $item->value->id_document) == ChgtDenomClient::ORIGINE_LOT) {
             $lots[$key] = $item->value;
           }
       }
@@ -204,13 +204,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     private function updateMouvementOrigineDocument() {
+      if ($doc = $this->getOrigineDocumentMvtLot()) {
+          $doc->prelevable = 0;
+          $doc->getDocument()->save();
+      }
+    }
+
+    public function getOrigineDocumentMvtLot() {
       $mvtLot = $this->getMvtLot();
       if ($doc = acCouchdbManager::getClient()->find($mvtLot->origine_document_id)) {
         if ($doc->exist($mvtLot->origine_mouvement)) {
-          $doc->get($mvtLot->origine_mouvement)->prelevable = 0;
-          $doc->save();
+          return $doc->get($mvtLot->origine_mouvement);
         }
       }
+      return null;
     }
 
     /**** FIN DES MOUVEMENTS ****/
