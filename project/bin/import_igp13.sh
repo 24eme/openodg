@@ -7,14 +7,14 @@ mkdir $TMPDIR 2> /dev/null
 ODG=igp13
 
 cd $WORKINGDIR/import/igp/
-bash scrapping.sh $1
+bash scrapping.sh
 cd $WORKINGDIR
 
 DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
 if ! test "$1"; then
-    echo "Chemin du stockage des données";
+    echo "Nom du dossier";
     exit 1;
 fi
 
