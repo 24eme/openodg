@@ -51,6 +51,13 @@
     </div>
 </div>
 
+<?php if($drev->exist('commentaire') && $drev->commentaire): ?>
+<h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+<pre>
+<?php echo $drev->commentaire; ?>
+</pre>
+<?php endif; ?>
+
 <div class="row row-margin row-button">
     <div class="col-xs-5">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", $drev->getEtablissementObject()) ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
