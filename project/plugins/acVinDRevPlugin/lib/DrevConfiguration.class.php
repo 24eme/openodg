@@ -88,8 +88,24 @@ class DRevConfiguration {
         return $odgInfos;
     }
 
-    public function hasValidationOdg(){
-      return isset($this->configuration['validation_odg']) && boolval($this->configuration['validation_odg']);
+    public function hasValidationOdgAuto(){
+      return isset($this->configuration['validation_odg']) && $this->configuration['validation_odg'] == 'auto';
+    }
+
+    public function hasValidationOdgAdmin(){
+      return isset($this->configuration['validation_odg']) && $this->configuration['validation_odg'] == 'admin';
+    }
+
+    public function hasValidationOdgRegion(){
+      return isset($this->configuration['validation_odg']) && $this->configuration['validation_odg'] == 'region';
+    }
+
+    public function hasValidationOdgAutoOrRegion(){
+      return $this->hasValidationOdgAuto() || $this->hasValidationOdgRegion();
+    }
+
+    public function hasValidationOdgAdminOrRegion(){
+      return $this->hasValidationOdgAdmin() || $this->hasValidationOdgRegion();
     }
 
     public function hasCgu(){
@@ -107,6 +123,10 @@ class DRevConfiguration {
 
     public function hasDegustation() {
         return isset($this->configuration['degustation']) && boolval($this->configuration['degustation']);
+    }
+
+    public function hasPDFUniqueRegion() {
+        return isset($this->configuration['pdf_unique_region']) && boolval($this->configuration['pdf_unique_region']);
     }
 
 }

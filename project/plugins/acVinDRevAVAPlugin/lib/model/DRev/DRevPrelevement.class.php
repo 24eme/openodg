@@ -208,4 +208,24 @@ class DRevPrelevement extends BaseDRevPrelevement {
         $this->updateLotsVolumeRevendique();
     }
 
+    public function getNbLotsMinimum(){
+        $nb = 0;
+        foreach($this->getDocument()->getDeclaration()->getProduitsCepage() as $produit) {
+            if(!$produit->volume_revendique){
+                continue;
+            }
+            $cepage = $produit->getCepage();
+            $hash = $this->getDocument()->getConfiguration()->get($cepage->getHash())->getHashRelation('lots');
+            if(DRev::CUVE . $this->getDocument()->getPrelevementsKeyByHash($hash) != $this->getKey()) {
+                echo $this->getKey()."\n";
+                echo DRev::CUVE . $this->getDocument()->getPrelevementsKeyByHash($hash)."\n";
+                echo $cepage->getHash()."\n";
+                continue;
+            }
+
+            $nb++;
+        }
+        return $nb;
+    }
+
 }

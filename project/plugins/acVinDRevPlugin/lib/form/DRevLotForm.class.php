@@ -54,6 +54,9 @@ class DRevLotForm extends acCouchdbObjectForm
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
 
+        $this->setWidget('elevage', new sfWidgetFormInputCheckbox());
+        $this->setValidator('elevage', new sfValidatorBoolean(['required' => false]));
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 

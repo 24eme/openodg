@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(32);
+$t = new lime_test(37);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -122,3 +122,27 @@ HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant,
 } catch (Exception $e) {
     $t->pass("L'habitation n'a pas pu être créer car il y a une perte de logique");
 }
+
+$t->comment("Contrôle d'habilitation");
+
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$produitConfigComplet = null;
+foreach($habilitation->getConfiguration()->getProduits() as $p) {
+    $produitConfigComplet = $p;
+    break;
+}
+
+$t->ok($habilitation->containHashProduit($produitConfig->getHash()), "La hash produit de l'habilitation strict est reconnu");
+$t->ok($habilitation->containHashProduit($produitConfigComplet->getHash()), "La hash de produit complète est reconnu");
+$t->ok($habilitation->containHashProduit("/appellations/".$produitConfigComplet->getAppellation()->getKey()), "Une partie de la hash produit est reconnu");
+$t->ok(!$habilitation->containHashProduit("/hashquinexistepas/".$produitConfigComplet->getAppellation()->getKey()), "La hash n'est pas reconnu");
+
+$drevConfig = sfConfig::get('drev_configuration_drev');
+$drevConfigOrigin = $drevConfig;
+$drevConfig['odg']['TEST'] = array('produits' => array("/appellations/".$produitConfigComplet->getAppellation()->getKey()));
+$drevConfig = sfConfig::set('drev_configuration_drev', $drevConfig);
+
+$t->ok(HabilitationClient::getInstance()->isRegionInHabilitation($viti->identifiant, "TEST"), "L'habilitation fait partie de la région");
+
+sfConfig::set('drev_configuration_drev', $drevConfigOrigin);

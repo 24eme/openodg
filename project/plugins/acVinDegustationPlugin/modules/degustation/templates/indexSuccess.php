@@ -12,6 +12,14 @@
 
     <div class="row">
         <div class="col-sm-10 col-xs-12">
+            <div class="form-group">
+              <div class="col-sm-9 col-xs-9 text-right">
+                  Nombre de lots ne faisant l'objet d'aucune dégustation :
+              </div>
+              <div class="col-sm-3 col-xs-3">
+                  <span class=""><strong><?php echo count($lotsPrelevables); ?></strong></span>
+              </div>
+            </div>
             <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?> <?php if($form["time"]->getError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date"]->renderError(); ?>
                 <?php echo $form["time"]->renderError(); ?>
@@ -33,15 +41,19 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group <?php if($form["lieu"]->getError()): ?>has-error<?php endif; ?>">
+            <div class="form-group <?php if($form["lieu"]->getError()): ?>has-error<?php endif; ?> <?php if($form["max_lots"]->getError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["lieu"]->renderError(); ?>
+                <?php echo $form["max_lots"]->renderError(); ?>
                 <?php echo $form["lieu"]->renderLabel("Lieu de dégustation", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-sm-6 col-xs-8">
-                	<?php echo $form["lieu"]->render(array("class" => "form-control")); ?>
+                <div class="col-sm-5 col-xs-5">
+                  	<?php echo $form["lieu"]->render(array("class" => "form-control")); ?>
+                </div>
+                <div class="col-sm-3 col-xs-3">
+                  	<?php echo $form["max_lots"]->render(array("class" => "form-control", "placeholder" => 'Nombre max de lots')); ?>
                 </div>
             </div>
             <div class="form-group text-right">
-                <div class="col-sm-4 col-sm-offset-6 col-xs-12">
+                <div class="col-sm-4 col-sm-offset-8 col-xs-12">
                     <button type="submit" class="btn btn-default btn-block btn-upper">Créer</button>
                 </div>
             </div>

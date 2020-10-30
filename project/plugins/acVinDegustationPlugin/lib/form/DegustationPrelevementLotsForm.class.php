@@ -21,8 +21,8 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
             $formLots->embedForm($key, new DegustationPrelevementLotForm());
 
             if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
-                $drev = DRevClient::getInstance()->find($item->id_document);
-                $this->dates_degust_drevs[$item->id_document] = ($drev->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $drev->date_degustation_voulue)->format('Ymd') : date('Ymd');
+                $obj = acCouchdbManager::getClient()->find($item->id_document);
+                $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
             }
         }
         $this->embedForm('lots', $formLots);
@@ -48,13 +48,19 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         }
 
         if(!count($this->getObject()->lots)){
+            $nbLots = 0;
             foreach ($this->lotsPrelevables as $key => $item) {
                 if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
-                    $drev = DRevClient::getInstance()->find($item->id_document);
-                    $this->dates_degust_drevs[$item->id_document] = ($drev->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $drev->date_degustation_voulue)->format('Ymd') : date('Ymd');
+                    $obj = acCouchdbManager::getClient()->find($item->id_document);
+                    $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
                 }
 
                 $preleve = ($this->dates_degust_drevs[$item->id_document] > $this->getDateDegustation()) ? 0 : 1;
+
+                if(!is_null($this->getObject()->max_lots) && ($this->getObject()->max_lots <= $nbLots)){
+                  $preleve = 0;
+                }
+                $nbLots+=$preleve;
                 $defaults['lots'][$key] = array('preleve' => $preleve);
             }
         }

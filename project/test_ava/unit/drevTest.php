@@ -6,7 +6,7 @@ $routing = clone ProjectConfiguration::getAppRouting();
 $context = sfContext::createInstance($configuration);
 $context->set('routing', $routing);
 
-$t = new lime_test(62);
+$t = new lime_test(71);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -54,6 +54,14 @@ $t->comment("Saisie des volumes");
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
     $produit_hash1 = $produit->getHash();
+    foreach($produit->getProduits() as $cepage) {
+        if(!isset($produit_hash1_cepageA)) {
+        $produit_hash1_cepageA = $cepage->getHash();
+          continue;
+        }
+        $produit_hash1_cepageB = $cepage->getHash();
+        break;
+    }
     break;
 }
 foreach($produits as $produit) {
@@ -62,6 +70,9 @@ foreach($produits as $produit) {
 
 $produit1 = $drev->addProduit($produit_hash1);
 $produit2 = $drev->addProduit($produit_hash2);
+
+$produit1CepageA = $drev->addProduitCepage($produit_hash1_cepageA);
+$produit1CepageB = $drev->addProduitCepage($produit_hash1_cepageB);
 
 $drev->save();
 
@@ -73,10 +84,18 @@ $t->is($drev->exist($produit_hash1), true, "La produit ajouté existe");
 $t->is($drev->get($produit_hash1)->getHash(), $produit_hash1, "La produit ajouté est récupérable");
 $produit1 = $drev->get($produit_hash1);
 $produit2 = $drev->get($produit_hash2);
+$produit1CepageA = $drev->get($produit1CepageA->getHash());
+$produit1CepageB = $drev->get($produit1CepageB->getHash());
 
 $produit1->superficie_vinifiee = 100;
 $produit1->superficie_revendique = 200;
-$produit1->volume_revendique = 0;
+$produit1->volume_revendique = 190;
+$produit1CepageA->volume_revendique = 100;
+$produit1CepageA->superficie_revendique = 100;
+$produit1CepageA->updateTotal();
+$produit1CepageB->volume_revendique = 90;
+$produit1CepageB->superficie_revendique = 100;
+$produit1CepageB->updateTotal();
 
 $produit2->superficie_vinifiee = 150;
 $produit2->superficie_revendique = 150;
@@ -87,7 +106,41 @@ $drev->save();
 $t->is(count($drev->getProduits()), 2, "La drev a 2 produits");
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est 350");
 $t->is($drev->declaration->getTotalSuperficieVinifiee(), 2.5, "La superficie vinifié totale est 250");
-$t->is($drev->declaration->getTotalVolumeRevendique(), 0, "Le volume revendiqué totale est 190");
+$t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est 190");
+$t->is($produit1CepageA->volume_revendique_total, 100, "Le volume revendiqué cépage est 100");
+$t->is($produit1CepageB->volume_revendique_total, 90, "Le volume revendiqué cépage est 90");
+
+$t->comment("Lots");
+
+$drev->updatePrelevementsFromRevendication();
+$drev->updateLotsFromCepage();
+$drev->prelevements->cuve_ALSACE->updateTotal();
+
+$drev->save();
+
+$t->is(count($drev->prelevements->cuve_ALSACE->lots), 2, "2 cépages intialisés dans le les lots");
+$t->is($drev->prelevements->cuve_ALSACE->total_lots, 0, "Aucun lot déclaré dans les cépages");
+$t->is($drev->prelevements->cuve_ALSACE->getNbLotsMinimum(), 2, "Au moins un lot est requis");
+
+$drev->prelevements->cuve_ALSACE->lots->getFirst()->nb_hors_vtsgn = 3;
+$drev->prelevements->cuve_ALSACE->updateTotal();
+
+$t->is($drev->prelevements->cuve_ALSACE->total_lots, 3, "3 lots déclarés dans les cépages");
+
+$drev->save();
+$produit1CepageA->volume_revendique = 0;
+$produit1CepageA->updateTotal();
+$drev->prelevements->cuve_ALSACE->lots->getFirst()->nb_hors_vtsgn = 1;
+$drev->prelevements->cuve_ALSACE->updateTotal();
+$drev->save();
+$t->is($produit1CepageA->volume_revendique_total, 0, "Le volume revendiqué cépage est de 0 hl");
+$t->is($drev->prelevements->cuve_ALSACE->getNbLotsMinimum(), 1, "Au moins un lot est requis");
+
+$validation = new DRevValidation($drev);
+$erreurs = $validation->getPointsByCodes('erreur');
+$vigilances = $validation->getPointsByCodes('vigilance');
+$t->ok(isset($erreurs['declaration_lots_inferieur']), "Point blocant : Le nb de lots est inferieur au nb des cepages");
+
 
 $t->comment("Validation");
 

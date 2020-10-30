@@ -8,28 +8,11 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-  <h2>Suivie de dégustation</h2>
+  <h2>Suivi de dégustation</h2>
   <h3> <small></small></h3>
 </div>
 
-<div class="alert alert-info" role="alert">
-  <h2>Synthèse de la dégustation</h2>
-  <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?></h3>
-  <h4>Lieu : <?php echo $degustation->getLieuNom(); ?></h4>
-  <table class="table table-condensed">
-    <tbody>
-      <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total de <strong>lots prévus&nbsp;:</strong></td>
-        <td class="col-xs-9"><strong><?php echo $infosDegustation["nbLots"]; ?></strong></td>
-      </tr>
-      <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total <strong>d'adhérents prélevés&nbsp;:</strong></td>
-        <td class="col-xs-9"><strong><?php echo $infosDegustation["nbAdherents"]; ?></strong></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
 <div class="row">
   <div class="col-xs-6">
@@ -74,16 +57,16 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h2 class="panel-title">Tables des lots</h2>
+    <h2 class="panel-title">Tables des échantillons</h2>
   </div>
   <div class="panel-body">
     <div class="row">
       <div class="col-xs-7">
         <strong class="lead"><?php echo $infosDegustation["nbTables"]; ?></strong> Tables</br>
-        <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Auncun' ?></strong> <strong>lot<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
+        <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Aucun' ?></strong> <strong>Échantillon<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
       </div>
       <div class="col-xs-5 text-right">
-        <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Répartition des lots par table&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+        <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Répartition des échantillons par table&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
       </div>
     </div>
   </div>
@@ -111,16 +94,16 @@
   <div class="col-xs-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2 class="panel-title">Conformité des lots</h2>
+        <h2 class="panel-title">Conformité des échantillons</h2>
       </div>
       <div class="panel-body">
         <div class="row">
           <div class="col-xs-7">
-            <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsConformes"]>1)? 'lots <strong>conformes</strong>' : 'lot <strong>conforme</strong>' ?><br/>
-            <strong class="lead"><?php echo $infosDegustation["nbLotsNonConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsNonConformes"]>1)? 'lots <strong>non conformes</strong>' : 'lot <strong>non conforme</strong>' ?>
+            <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsConformes"]>1)? 'échantillons <strong>conformes</strong>' : 'échantillon <strong>conforme</strong>' ?><br/>
+            <strong class="lead"><?php echo $infosDegustation["nbLotsNonConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsNonConformes"]>1)? 'échantillons <strong>non conformes</strong>' : 'échantillon <strong>non conforme</strong>' ?>
           </div>
           <div class="col-xs-5 text-right">
-            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_resultats', $degustation) ?>" >&nbsp;Résultats lots&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_resultats', $degustation) ?>" >&nbsp;Résultats échantillons&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
         </div>
       </div>

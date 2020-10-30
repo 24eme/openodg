@@ -66,7 +66,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
-        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume revendique issu du mutage n'est pas en adéquation avec le volume revendiqué issu de la récolte (entre 5% et 10% de celui-ci)");
+        $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
 
         /*
          * Engagement
@@ -74,7 +74,13 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, 'Je m\'engage à transmettre la déclaration de mutage');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, 'Je m\'engage à transmettre la déclaration de mutage');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, "Je n'ai aucune parcelle de VDN avec un % de manquants > à 20%");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, "Je m'engage à transmettre la liste de mes parcelles de VDN avec un % de manquant > à 20 %");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil");
+
+
+        $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Je m'engage à contacter le syndicat quand le vin sera prêt");
     }
 
     public function controle()
@@ -104,7 +110,7 @@ class DRevValidation extends DocumentValidation
     		return;
     	}
 
-        if($this->document->exist('lots') && count($this->document->lots->toArray(true, false)) && !$this->document->hasDocumentDouanier()) {
+        if($this->document->exist('lots') && count($this->document->lots) && !$this->document->hasDocumentDouanier()) {
     		return;
     	}
     	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
@@ -143,7 +149,9 @@ class DRevValidation extends DocumentValidation
         if(!$this->document->declaration->getTotalVolumeRevendiqueMutage()) {
             return;
         }
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE, '');
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, '');
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, '');
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, '');
     }
 
     protected function controleEngagementSv()
@@ -204,6 +212,7 @@ class DRevValidation extends DocumentValidation
                 $this->produit_revendication_rendement[$produit->getHash()] = $produit->getHash();
             } elseif($produit->getConfig()->getRendementConseille() > 0 && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendementConseille(), 2)) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_conseille', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, $produit->getLibelleComplet());
             }
         }
         if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
@@ -213,13 +222,13 @@ class DRevValidation extends DocumentValidation
         if ($this->document->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR && !$produit->recolte->volume_sur_place) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->recolte->recolte_nette) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_volumes', array('sf_subject' => $this->document)));
         } else {
 
 	        if ((round($produit->volume_revendique_issu_recolte + $produit->vci->rafraichi, 4)) != round($produit->recolte->recolte_nette, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4)) {
 	          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
-	        if (round($produit->volume_revendique_total, 4) > round($produit->recolte->recolte_nette + $produit->vci->complement, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4) && (!$this->document->exist('achat_tolerance') || !$this->document->achat_tolerance)) {
+	        if (round($produit->getVolumeRevendiqueRendement(), 4) > round($produit->recolte->recolte_nette + $produit->vci->complement , 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4) && (!$this->document->exist('achat_tolerance') || !$this->document->achat_tolerance)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
 	        if ($produit->recolte->recolte_nette && ($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
@@ -317,6 +326,10 @@ class DRevValidation extends DocumentValidation
             if($somme != $lot->volume){
               $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }
+          }
+
+          if ($lot->elevage) {
+              $this->addPoint(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "$lot->produit_libelle ( $lot->volume hl )");
           }
       }
 

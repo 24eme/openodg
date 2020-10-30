@@ -369,10 +369,8 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication', $this->drev);
     }
 
-    public function executeLots(sfWebRequest $request) {
-
-
-
+    public function executeLots(sfWebRequest $request)
+    {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
@@ -400,7 +398,9 @@ class drevActions extends sfActions {
             $this->drev->save();
         }
 
-        $this->drev->addLot();
+        if (count($this->drev->getLots()) == 0 || current(array_reverse($this->drev->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+            $this->drev->addLot();
+        }
         $this->form = new DRevLotsForm($this->drev);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -666,10 +666,10 @@ class drevActions extends sfActions {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
-        if($this->getUser()->isAdmin() && !DrevConfiguration::getInstance()->hasValidationOdg()) {
+        if (DrevConfiguration::getInstance()->hasValidationOdgAuto()) {
             $this->drev->validateOdg();
         }
-
+        
         $this->drev->save();
 
         if($this->getUser()->isAdmin() && $this->drev->isPapier()) {
@@ -745,7 +745,7 @@ class drevActions extends sfActions {
     }
 
     public function executeValidationAdmin(sfWebRequest $request) {
-        if(!DrevConfiguration::getInstance()->hasValidationOdg()){
+        if(!DrevConfiguration::getInstance()->hasValidationOdgAdminOrRegion()){
           throw new sfException("Il n'est pas permis de valider par ODG");
         }
 
@@ -755,6 +755,13 @@ class drevActions extends sfActions {
 
         $this->drev->validateOdg(null,$this->regionParam);
         $this->drev->save();
+
+        $mother = $this->drev->getMother();
+        while ($mother) {
+            $mother->validateOdg(null, $this->regionParam);
+            $mother->save();
+            $mother = $mother->getMother();
+        }
 
         if (!$this->drev->isPapier() && $this->drev->getValidationOdg()) {
             $this->sendDRevConfirmee($this->drev);

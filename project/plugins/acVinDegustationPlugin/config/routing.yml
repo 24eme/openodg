@@ -73,9 +73,39 @@ degustation_preleve:
   requirements:
     sf_method: [get, post]
 
+degustation_preleve_update_logement:
+  url: /degustation/:id/update-lot-logement/:lot
+  param: { module: degustation, action: updateLotLogement }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_update_lot:
+  url: /degustation/:id/update-lot/:lot
+  param: { module: degustation, action: updateLot }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_degustateurs_confirmation:
   url: /degustation/:id/degustateurs-confirmation
   param: { module: degustation, action: degustateursConfirmation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustateur_absence:
+  url: /degustation/:id/degustateur-absence/:college/:degustateurId
+  param: { module: degustation, action: degustateurAbsence }
   class: DegustationRoute
   options:
     model:    Degustation

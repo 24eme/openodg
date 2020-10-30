@@ -6,6 +6,12 @@
 <div class="page-header no-border">
     <h2>Validation de la dégustation <small class="text-muted">Campagne <?php echo $degustation->campagne; ?></small></h2>
 </div>
+
+<?php if($validation->hasPoints()): ?>
+    <?php include_partial('degustation/pointsAttentions', array('degustation' => $degustation, 'validation' => $validation)); ?>
+<?php endif; ?>
+
+
 <p>Sélectionnez l'ensemble des lots à prélever pour la dégustation</p>
 <form action="<?php echo url_for("degustation_validation", $degustation) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>

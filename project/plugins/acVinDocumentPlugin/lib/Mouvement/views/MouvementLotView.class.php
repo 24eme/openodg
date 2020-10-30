@@ -65,6 +65,7 @@ class MouvementLotView extends acCouchdbView
         $lot->declarant_identifiant = $mvt->declarant_identifiant;
         $lot->origine_mouvement = $mvt->origine_mouvement;
         $lot->details = $mvt->details;
+        $lot->elevage = (isset($mvt->elevage))? $mvt->elevage : null;
         return $lot;
     }
 

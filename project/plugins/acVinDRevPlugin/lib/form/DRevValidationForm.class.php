@@ -13,6 +13,9 @@ class DRevValidationForm extends acCouchdbForm
                     $this->getWidget('engagement_'.$engagement->getCode())->setAttribute('disabled', 'disabled');
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
+                if (preg_match('/_OUEX_/', $engagement->getCode())) {
+                    $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
+                }
             }
 
             if (DrevConfiguration::getInstance()->hasDegustation()) {
@@ -22,7 +25,7 @@ class DRevValidationForm extends acCouchdbForm
                 if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue !== null) {
                     $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
                 } else {
-                    $this->setDefault('date_degustation_voulue', (new DateTime())->modify('+1 month')->format('d/m/Y'));
+                    $this->setDefault('date_degustation_voulue', (new DateTime())->format('d/m/Y'));
                 }
             }
         }

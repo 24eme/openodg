@@ -272,6 +272,22 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
   }
 
+  public function containHashProduit($hash) {
+      foreach($this->getProduits() as $produit) {
+          if(preg_match("|".$hash."|", $produit->getHash())) {
+
+              return true;
+          }
+
+          if(preg_match("|".$produit->getHash()."|", $hash)) {
+
+              return true;
+          }
+      }
+
+      return false;
+  }
+
   public function updateHabilitation($hash_produit, $activites, $statut, $commentaire = "", $date = ''){
         foreach($activites as $activite) {
             $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $statut, $commentaire, $date);

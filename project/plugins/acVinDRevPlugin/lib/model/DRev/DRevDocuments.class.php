@@ -12,7 +12,10 @@ class DRevDocuments extends BaseDRevDocuments
 	const DOC_SV = 'SV';
 	const DOC_PRESSOIR = 'PRESSOIR';
 	const DOC_VCI = 'VCI';
-	const DOC_MUTAGE = 'MUTAGE';
+	const DOC_MUTAGE_DECLARATION = 'DOC_MUTAGE_DECLARATION';
+	const DOC_MUTAGE_MANQUANTS_OUEX_INF = 'MUTAGE_MANQUANTS_OUEX_INF';
+	const DOC_MUTAGE_MANQUANTS_OUEX_SUP = 'MUTAGE_MANQUANTS_OUEX_SUP';
+	const DOC_DEPASSEMENT_CONSEIL = 'DOC_DEPASSEMENT_CONSEIL';
 
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
@@ -24,7 +27,11 @@ class DRevDocuments extends BaseDRevDocuments
 		self::DOC_SV => 'SV11 / SV12',
 		self::DOC_PRESSOIR => 'Carnet de Pressoir',
 		self::DOC_VCI => 'Justificatif de destruction de VCI',
-		self::DOC_MUTAGE => 'Déclaration de mutage'
+		self::DOC_MUTAGE_MANQUANTS_OUEX_INF => 'Déclaration de manquants VDN < 20%',
+		self::DOC_MUTAGE_MANQUANTS_OUEX_SUP => 'Déclaration de manquants VDN > 20%',
+		self::DOC_MUTAGE_DECLARATION => 'Déclaration de mutage',
+		self::DOC_DEPASSEMENT_CONSEIL => 'Authorisation de dépassement de rendement conseil'
+
 	);
 
 	private static $_statut_libelles = array(

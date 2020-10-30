@@ -64,15 +64,15 @@
                 if(count($lots)):
                 foreach ($lots as  $lot) :
                   ?>
-                <tr>
+                <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>">
                     <td>
                       <?php $drevDocOrigine = $lot->getDrevDocOrigine(); ?>
                       <?php if($drevDocOrigine): ?><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $drevDocOrigine); ?>"><?php endif; ?>
                         <?php echo $lot->getDateVersionfr(); ?>
                       <?php if($drevDocOrigine): ?></a><?php endif; ?>
                     </td>
-                    <td class="<?php echo isVersionnerCssClass($lot, 'numero') ?>" ><?php echo $lot->numero; ?></td>
-                    <td class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>" ><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
+                    <td><?php echo $lot->numero; ?></td>
+                    <td><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
                       <?php if(count($lot->cepages)): ?>
                         <small class="text-muted">
                           <?php echo $lot->getCepagesToStr(); ?>
@@ -81,8 +81,8 @@
                       <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                     </td>
                     <td>&nbsp;</td>
-                    <td class="text-right <?php echo isVersionnerCssClass($lot, 'volume') ?>"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-center <?php echo isVersionnerCssClass($lot, 'destination_type') ?>"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
+                    <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
                 </tr>
                 <?php
                 endforeach;
@@ -109,7 +109,7 @@
         </tbody>
     </table>
 
-<?php if(($sf_user->hasDrevAdmin() || $drev->validation) && count($drev->getProduitsLots()) && $drev->isValidee() && $drev->isModifiable()): ?>
+<?php if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
 <div class="col-xs-12" style="margin-bottom: 20px;">
   <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
 </div>
@@ -155,5 +155,25 @@
                 </tr>
             <?php endforeach; ?>
         </tbody>
+    </table>
+<?php endif; ?>
+<?php if($drev->hasProduitsReserveInterpro()): ?>
+    <h3>Réserve interprofessionnelle</h3>
+    <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-6">Produit</td>
+            <th class="col-xs-3 text-center">Volume mis en réserve</td>
+            <th class="col-xs-3 text-center">Volume revendiqué commercialisable</td>
+    </thead>
+    <tbody>
+    <?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
+        <tr>
+            <td><?php echo $p->getLibelle(); ?></td>
+            <td class="text-right"><?php echoFloat($p->getVolumeReserveInterpro()); ?> <small class="text-muted">hl</small></td>
+            <td class="text-right"><?php echoFloat($p->getVolumeRevendiqueCommecialisable()); ?> <small class="text-muted">hl</small></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
     </table>
 <?php endif; ?>

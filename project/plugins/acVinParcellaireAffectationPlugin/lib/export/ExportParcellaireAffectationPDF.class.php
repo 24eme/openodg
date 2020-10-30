@@ -27,7 +27,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
     }
 
     public function create() {
-        
+
       $dgcs = $this->parcellaireAffectation->getDgc(true);
 
       $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
@@ -60,6 +60,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         }
         $currentPage[$libelleTableau] = array();
         $unite += $uniteTableau;
+        ksort($parcelles);
         foreach($parcelles as $parcelle) {
            if(($unite + $uniteLigne) > $uniteParPage) {
                $parcellesByPage[] = $currentPage;

@@ -4,43 +4,62 @@
 
 mkdir $TMPDIR 2> /dev/null
 
-DATA_DIR=$TMPDIR"/import_"$(date +%Y%m%d%H%M%S)
+ODG=igp13
+
+cd $WORKINGDIR/import/igp/
+bash scrapping.sh
+cd $WORKINGDIR
+
+DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
 if ! test "$1"; then
-    echo "Chemin du stockage des données";
+    echo "Nom du dossier";
     exit 1;
 fi
 
-cd ..
-make clean
-make
-cd -
+if test "$2" = "--delete"; then
 
-ls $WORKINGDIR/data/configuration/igp13 | while read jsonFile
+    echo -n "Delete database http://$COUCHHOST:$COUCHPORT/$COUCHBASE, type database name to confirm ($COUCHBASE) : "
+    read databasename
+
+    if test "$databasename" = "$COUCHBASE"; then
+        curl -sX DELETE http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+        echo "Suppression de la base couchdb"
+    fi
+fi
+
+echo "Création de la base couchdb"
+
+curl -sX PUT http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+
+cd .. > /dev/null
+make clean > /dev/null
+make > /dev/null
+cd - > /dev/null
+
+echo "Création des documents de configuration"
+
+ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
 do
-    php symfony document:delete $(echo $jsonFile | sed 's/\.json//')
-    curl -s -X POST -d @data/configuration/igp13/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+    curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/etablissement/_view/all\?reduce\=false
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
-bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
+rsync -a $DOCUMENTSDIR$1 $DATA_DIR/
 
-echo "Récupération des données"
-cp -r $1"/" $DATA_DIR"/"
+echo "Import des Opérateurs"
 
-IGP13_IMPORT_TMP=$DATA_DIR"/Igp13"
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
+php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
 
-echo "CSV Opérateur :"
-sleep 2
-cat $IGP13_IMPORT_TMP/operateurs.csv
-echo ""
-echo ""
-sleep 2
-echo "Traitement de l'import"
-sleep 2
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/apporteurs_de_raisins.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $4=""; $3=";Producteur de raisin"; print $0 }' | sort | uniq > $DATA_DIR/apporteurs_de_raisins.csv
+php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --application="$ODG" --trace
 
-php symfony import:entite-from-csv $IGP13_IMPORT_TMP/operateurs.csv --application="igp13" --trace
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
+php symfony import:operateur-ia $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
+echo "Habilitations"
 
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+
+php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace

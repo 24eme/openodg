@@ -77,31 +77,31 @@ EOF;
                  echo "WARNING: établissement non trouvé ".$line." : pas d'import\n";
                  continue;
              }
-             
+
              $produitKey = (isset($this->convert_products[trim($data[self::CSV_PRODUIT])]))? trim($this->convert_products[trim($data[self::CSV_PRODUIT])]) : null;
-             
+
              if (!$produitKey) {
                  echo "WARNING: produit non trouvé ".$line." : pas d'import\n";
                  continue;
              }
-             
+
             $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $this->date);
             $hab_activites = $habilitation->addProduit($produitKey)->add('activites');
 
             $statut = $this->convert_statut[trim($data[self::CSV_STATUT])];
-            
+
             if (!$produitKey) {
                 echo "WARNING: statut non trouvé ".$line." : pas d'import\n";
                 continue;
             }
-            
+
             $this->updateHabilitationStatut($hab_activites, $data, $statut, $this->date);
 
             $habilitation->save(true);
-            echo "SUCCESS: ".$habilitation->_id."\n";
+            //echo "SUCCESS: ".$habilitation->_id."\n";
         }
     }
-    
+
     protected function identifyEtablissement($data) {
         foreach ($this->etablissements as $etab) {
             if (isset($data[self::CSV_CVI]) && trim($data[self::CSV_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_CVI])) {

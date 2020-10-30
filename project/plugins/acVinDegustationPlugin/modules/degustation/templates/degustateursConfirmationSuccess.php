@@ -35,14 +35,15 @@
 	        		<?php foreach ($degustateurs as $id => $degustateur):
 								$name = $form->getWidgetNameFromDegustateur($degustateur);
 								?>
-	        		<tr>
+	        		<tr <?php if($degustateur->exist('confirmation') && ($degustateur->confirmation === false)): ?>class="disabled text-muted" disabled="disabled" style="text-decoration:line-through;"<?php endif; ?> >
 								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
 	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
-	              <td class="text-center">
+	              <td class="text-center edit">
 									<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
 										<?php echo $form[$name]->renderError() ?>
 										<div class="col-xs-12">
 											<?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                      <a onclick='return confirm("Êtes vous sûr de marquer absent ce dégustateur ?");' class="pull-right" href="<?php echo url_for('degustation_degustateur_absence', array('id' => $degustation->_id, 'college' => $college, 'degustateurId' => $id)); ?>"><span class="glyphicon glyphicon-remove-sign text-danger"></span></a>
 										</div>
 									</div>
 	  						</td>
@@ -52,7 +53,6 @@
         	</tbody>
         </table>
 	</div>
-
 </div>
 	<div class="row row-button">
 				<div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>

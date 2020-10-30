@@ -12,7 +12,7 @@ class DegustationDegustateursTableForm extends acCouchdbObjectForm {
   }
 
   public function configure() {
-      foreach ($this->getObject()->getDegustateursConfirmes() as $degustateur) {
+      foreach ($this->getDegustateursForTable() as $degustateur) {
         $name = $this->getWidgetNameFromDegustateur($degustateur);
         $this->setWidget($name , new WidgetFormInputCheckbox());
         $this->setValidator($name, new ValidatorBoolean());
@@ -27,13 +27,12 @@ class DegustationDegustateursTableForm extends acCouchdbObjectForm {
   }
 
   public function getDegustateurNodeFromName($name){
-    var_dump($name); exit;
     return $this->getObject()->get("/degustateurs/".preg_replace("|numero_table_|", '', $name));
   }
 
   protected function doUpdateObject($values) {
     parent::doUpdateObject($values);
-    foreach ($this->getObject()->getDegustateursConfirmes() as $degustateur) {
+    foreach ($this->getDegustateursForTable() as $degustateur) {
       $name = $this->getWidgetNameFromDegustateur($degustateur);
       if($values[$name]){
         $degustateur->add('numero_table',$this->numero_table);
@@ -45,13 +44,17 @@ class DegustationDegustateursTableForm extends acCouchdbObjectForm {
 
   protected function updateDefaultsFromObject() {
     $defaults = $this->getDefaults();
-    foreach ($this->getObject()->getDegustateursConfirmes() as $degustateur) {
+    foreach ($this->getDegustateursForTable() as $degustateur) {
         if($degustateur->exist('numero_table') && ($this->numero_table == $degustateur->get("numero_table"))){
           $defaults[$this->getWidgetNameFromDegustateur($degustateur)] = 1;
         }
       }
 
     $this->setDefaults($defaults);
+  }
+
+  protected function getDegustateursForTable(){
+    return $this->getObject()->getDegustateursConfirmesTableOrFreeTable($this->numero_table);
   }
 
 

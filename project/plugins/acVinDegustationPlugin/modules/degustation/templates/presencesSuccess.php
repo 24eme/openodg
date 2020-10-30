@@ -17,7 +17,7 @@
 
 <ul class="nav nav-pills">
   <?php for ($i= 0; $i < $nb_tables; $i++): ?>
-    <li role="presentation" class="<?php if($numero_table == ($i + 1)): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_presences", array('id' => $degustation->_id, 'numero_table' => ($i + 1))) ?>">Table <?php echo ($i + 1); ?></a></li>
+    <li role="presentation" class="<?php if($numero_table == ($i + 1)): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_presences", array('id' => $degustation->_id, 'numero_table' => ($i + 1))) ?>">Table <?php echo DegustationClient::getNumeroTableStr($i + 1); ?></a></li>
   <?php endfor;?>
 </ul>
 
@@ -42,8 +42,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($degustation->getDegustateursConfirmes() as $degustateur):
-                    $name = $form->getWidgetNameFromDegustateur($degustateur); ?>
+                  <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numero_table) as $degustateur):
+                    $name = $form->getWidgetNameFromDegustateur($degustateur);
+                     ?>
                     <tr>
                       <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
                       <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>

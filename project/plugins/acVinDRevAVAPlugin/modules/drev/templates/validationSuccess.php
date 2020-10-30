@@ -35,7 +35,10 @@
 	<?php  if (!$drev->isPapier() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
-
+    <?php if(isset($form['commentaire'])): ?>
+        <h3>Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+        <?php echo $form['commentaire']->render(array('class' => 'form-control text-left', "")) ?>
+    <?php endif; ?>
     <div class="row row-margin row-button">
         <div class="col-xs-4">
             <?php if(!$drev->isNonConditionneur()): ?>
