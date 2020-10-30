@@ -286,7 +286,7 @@ class DRevValidation extends DocumentValidation {
             }
         }
         foreach ($nb_total_lots_cepages as $key => $value) {
-          if($this->document->declaration->getNbLotsMinimum() >= $value){
+          if($value < $this->document->prelevements->get($key)->getNbLotsMinimum()) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "",$this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
             break;
           }
