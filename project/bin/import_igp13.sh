@@ -7,7 +7,7 @@ mkdir $TMPDIR 2> /dev/null
 ODG=igp13
 
 cd $WORKINGDIR/import/igp/
-bash scrapping.sh
+bash scrapping.sh $1
 cd $WORKINGDIR
 
 DATA_DIR=$TMPDIR/import_$ODG
