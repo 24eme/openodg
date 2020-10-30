@@ -14,7 +14,6 @@ var config = require('./config.json');
 var destination_file='imports/'+config.file_name+'/';
 
 
-mkdirp('imports/'+config.file_name);
 
 nightmare
 

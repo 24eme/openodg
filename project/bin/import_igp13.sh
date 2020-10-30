@@ -14,7 +14,7 @@ DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
 if ! test "$1"; then
-    echo "Chemin du stockage des données";
+    echo "Nom du dossier";
     exit 1;
 fi
 
