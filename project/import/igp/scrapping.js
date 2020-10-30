@@ -3,7 +3,8 @@ var Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
-const nightmare = Nightmare({ show: true ,
+const nightmare = Nightmare({ show: true
+  // ,
  //  waitTimeout: 100000000, // in ms
  //  openDevTools: {
  //   mode: 'detach'
@@ -314,11 +315,11 @@ nightmare
         var elements = document.querySelector('#ContentPlaceHolder1_GridView1').innerText
         return elements;
         })
-     .end()
-      .then((text) => {
-        fs.writeFileSync(destination_file+'produits.txt',text);
-      })
-     // //fin produits
+      .end()
+      .then((produits) => {
+       fs.writeFileSync(destination_file+'produits.txt',produits);
+       })
+     // fin produits
 
   .catch(error => {
     console.error('Search failed:', error)
