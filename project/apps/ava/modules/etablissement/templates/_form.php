@@ -54,12 +54,6 @@
                 </span>
             </div>
 
-            <div class="row">
-              <p class="text-muted">
-                Pour modifier ses informations contacter l'AVA.
-              </p>
-            </div>
-
         </div>
         <div class="col-xs-5">
 
