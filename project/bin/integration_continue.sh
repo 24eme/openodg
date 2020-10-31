@@ -62,6 +62,7 @@ do
     curl -s -X POST -d @data/configuration/$APPLICATION/$jsonFile -H "content-type: application/json" $COUCHTEST
 done
 
+rm -rf cache/*
 php symfony cc
 
 XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"_"$BRANCH".xml
