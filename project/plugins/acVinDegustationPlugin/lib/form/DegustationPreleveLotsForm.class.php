@@ -5,6 +5,9 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
     public function configure() {
         $formLots = new BaseForm();
 		foreach ($this->getDocument()->lots as $key => $lot) {
+			if ($lot->isLeurre()) {
+				continue;
+			}
 			$formLots->embedForm($key, new DegustationPreleveLotForm($lot));
 		}
         $this->embedForm('lots', $formLots);
