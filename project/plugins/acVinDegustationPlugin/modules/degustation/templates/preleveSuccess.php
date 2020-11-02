@@ -34,7 +34,9 @@
 			<tr class="vertical-center cursor-pointer">
                 <td><?php echo $lot->declarant_nom; ?></td>
                 <td class="edit"><?= $lot->numero ?>
-                  <span class="pull-right"><a href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a></span>
+                  <?php if (! $lot->isLeurre()): ?>
+                    <span class="pull-right"><a href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a></span>
+                  <?php endif; ?>
                 </td>
 				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
