@@ -92,7 +92,7 @@ class degustationActions extends sfActions {
             if ($this->form->isValid()) {
                 $drev = DRevClient::getInstance()->find($this->lot->id_document);
 
-                $mvmt_degust = $this->degustation->get($this->lot->getGeneratedMvtKey());
+                $mvmt_degust = $this->degustation->mouvements_lots->get($this->lot->declarant_identifiant)->get($this->lot->getGeneratedMvtKey());
 
                 $modificatrice = $drev->generateModificative();
                 $modificatrice->lots->remove($mvmt_degust->origine_hash);
