@@ -54,9 +54,9 @@
                 </span>
             </div>
 
-            <div class="row">
+            <div class="">
               <p class="text-muted">
-                Pour modifier ses informations contacter l'AVA.
+                Pour modifier les informations ci-dessus contacter l'AVA.
               </p>
             </div>
 
