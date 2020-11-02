@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
+class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
@@ -22,7 +22,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
-        $this->mouvement_document = new MouvementDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->piece_document = new PieceDocument($this);
     }
 
@@ -113,12 +113,12 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
 
     /**** MOUVEMENTS ****/
 
-    public function getMouvements() {
+    public function getMouvementsFactures() {
 
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsCalcule() {
+    public function getMouvementsFacturesCalcule() {
         $templateFacture = $this->getTemplateFacture();
 
         if(!$templateFacture) {
@@ -134,7 +134,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
         $rienAFacturer = true;
 
         foreach($cotisations as $cotisation) {
-            $mouvement = DRevMarcMouvement::freeInstance($this);
+            $mouvement = DRevMarcMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
             $mouvement->type_libelle = $cotisation->getLibelle();
@@ -167,12 +167,12 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
         return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-MARC-".$this->getCampagne());
     }
 
-    public function getMouvementsCalculeByIdentifiant($identifiant) {
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
 
-        return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
     }
 
-    public function generateMouvements() {
+    public function generateMouvementsFactures() {
         if(!$this->validation_odg) {
 
             return false;
@@ -183,11 +183,11 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
             return false;
         }
 
-        return $this->mouvement_document->generateMouvements();
+        return $this->mouvement_document->generateMouvementsFactures();
     }
 
-    public function findMouvement($cle, $id = null){
-      return $this->mouvement_document->findMouvement($cle, $id);
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
     }
 
     public function facturerMouvements() {
@@ -205,7 +205,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
         return $this->mouvement_document->isNonFactures();
     }
 
-    public function clearMouvements(){
+    public function clearMouvementsFactures(){
         $this->remove('mouvements');
         $this->add('mouvements');
     }

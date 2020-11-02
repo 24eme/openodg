@@ -8,10 +8,15 @@ foreach($config->getProduits() as $produit) {
     break;
 }
 
+$t = new lime_test(27);
+
+$t->ok($produit->getLibelleComplet(), "configuration de base est OK : on a un libellé de produit");
+$t->ok($produit->getCodeDouane(), "configuration de base est OK : le produit a un code douane");
+
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv12_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg');
-file_put_contents($csvTmpFile, str_replace(array("%code_inao%", "%libelle_produit%"), array($produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao%", "%libelle_produit%"), array("7523700100", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
 
 $csv = new SV12DouaneCsvFile($csvTmpFile);
 $csvConvert = $csv->convert();
@@ -19,7 +24,6 @@ unlink($csvTmpFile);
 
 $lines = explode("\n", $csvConvert);
 
-$t = new lime_test(27);
 
 $nb = 0;
 foreach($lines as $line) {
@@ -36,8 +40,6 @@ $line = explode(";", $lines[0]);
 $t->is($line[SV12CsvFile::CSV_TYPE], "SV12", "Le type de la ligne est SV12");
 $t->is($line[SV12CsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
 $t->is($line[SV12CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
-$t->is($line[SV12CsvFile::CSV_RECOLTANT_LIBELLE], "\"ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
-$t->is($line[SV12CsvFile::CSV_RECOLTANT_COMMUNE], "NEUILLY", "Le commune est NEUILLY");
 $t->is($line[SV12CsvFile::CSV_PRODUIT_CERTIFICATION], $produit->getCertification()->getKey(), "Certification OK");
 $t->is($line[SV12CsvFile::CSV_PRODUIT_GENRE], $produit->getGenre()->getKey(), "Genre OK");
 $t->is($line[SV12CsvFile::CSV_PRODUIT_APPELLATION], $produit->getAppellation()->getKey(), "Appellation OK");

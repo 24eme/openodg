@@ -8,10 +8,10 @@
     $.initExploitation = function()
     {
         $('#btn_exploitation_modifier').click(function(e) {
-            $('#btn_exploitation_modifier').addClass("hidden")
-            $('#btn_exploitation_annuler').removeClass("hidden")
-            $('.row_form_exploitation').removeClass("hidden");
-            $('.row_info_exploitation').addClass("hidden");
+            $('#btn_exploitation_modifier').addClass("hidden");
+            $('#btn_exploitation_annuler').removeClass("hidden");
+            $('#row_form_exploitation').removeClass("hidden");
+            $('#row_info_exploitation').addClass("hidden");
         });
         if($('#drevDenominationAuto').length){
             if($('#drevDenominationAuto').data("auto")){
@@ -182,7 +182,7 @@
         $('#table-revendication .input_sum_value').on('change', function() {
             sommeRevendication();
         });
-
+        sommeRevendication();
     }
 
     $.initSocieteChoixEtablissement = function() {
@@ -269,7 +269,7 @@
                     });
                 });
                 if(!libelle) {
-                    libelle = "Assemblage";
+                    libelle = "Cépage(s) revendiqué(s)";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
                 }else{
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");
@@ -278,6 +278,42 @@
             });
         }
 
+        var inputs_hl = document.querySelectorAll('.modal input.input-hl')
+
+        inputs_hl.forEach(function (input, index) {
+            input.addEventListener('change', function (event) {
+                var total = 0.0
+
+                var modal = event.target.parentElement
+                while (! modal.classList.contains('modal')) {
+                    modal = modal.parentElement
+                }
+
+                var lot = modal.dataset.lot
+
+                inputs = modal.querySelectorAll('input.input-hl')
+                inputs.forEach(function (input) {
+                    if (! isNaN(parseFloat(input.value))) {
+                        total += parseFloat(input.value)
+                    }
+                })
+
+                var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
+                vol_total.value = parseFloat(total)
+
+                $('#drev_lots_lots_'+lot+'_volume').blur()
+
+                vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+            })
+        })
+
+        function precision(f) {
+            if (!isFinite(f)) { return 2 }
+            var e = 1, p = 0
+            while (Math.round(f * e) / e !== f) { e *= 10; p++; }
+            if (p > 4) { p = 4 }
+            return p
+        }
 
         checkBlocsLot();
         checkBlocsLotCepages();
@@ -288,6 +324,15 @@
         $('#form_drev_lots select').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
         $('#form_drev_lots input').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
         $('#form_drev_lots select').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+
+        $('#form_drev_lots input.input-float').on('click', function(e) {
+            if (! e.target.readOnly) {
+                return false
+            }
+
+            id = parseInt(e.target.id.replace(/[^0-9]/g, ''))
+            $('#drev_lots_lots_'+id+'_cepages').modal('toggle')
+        })
 
         if(window.location.hash == "#dernier") {
             $('#form_drev_lots .bloc-lot:last input:first').focus();

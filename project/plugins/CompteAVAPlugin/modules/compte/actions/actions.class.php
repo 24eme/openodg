@@ -173,7 +173,7 @@ class compteActions extends sfActions {
         $results = $resset->getResults();
 
         $list = array();
-        foreach ($results as $resbrut) {
+        foreach ($results as $res) {
             $data = $res->getData()['doc'];
             $item = new stdClass();
             $item->nom_a_afficher = $data['nom_a_afficher'];

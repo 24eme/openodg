@@ -8,7 +8,7 @@
     var ajax_post_url = null;
     var in_post = false;
 
-    $.initAjaxPost = function() 
+    $.initAjaxPost = function()
     {
 
         var notificationError = $('#ajax_form_error_notification');
@@ -48,7 +48,7 @@
         );
     };
 
-    $.initAjaxCouchdbForm = function() 
+    $.initAjaxCouchdbForm = function()
     {
         $(document).ajaxComplete(
             function(event, xhr, settings) {
@@ -63,19 +63,18 @@
                     }
 
                     if (!(data && data.document && data.document.id && data.document.revision)) {
-                        
+
                         return ;
                     }
 
-                    $("input[data-id="+ data.document.id + "]").val(data.document.revision);                    
+                    $("input[data-id="+ data.document.id + "]").val(data.document.revision);
                     if ($.fn.RevisionajaxSuccessCallBack) {
                     $.fn.RevisionajaxSuccessCallBack();
                     $.fn.RevisionajaxSuccessCallBack = null;
                     }
                 }
             }
-        );  
-
+        );
     };
 
     $.fn.ajaxPostForm = function() {
@@ -87,14 +86,14 @@
                     return false;
                 }
                 ajax_post_url = $(this).attr('href');
-                formPost(form);
+                $.formPost(form);
                 e.preventDefault()
             });
         });
 
     };
-    
-    var formPost = function(form)
+
+    $.formPost = function(form)
     {
         in_post = true;
         $.ajax({
@@ -115,17 +114,17 @@
             }
         });
     };
-    
+
     $.initCollectionDeleteTemplate = function()
     {
-    	
+
     	$('#compositions').on('click', 'a.btn_rm_ligne_template', function()
         {
         	var element = $(this).attr('data-container');
             $(this).parents(element).remove();
             return false;
         });
-    	
+
     	$('#drLignes').on('click', 'a.btn_rm_ligne_template', function()
         {
         	var element = $(this).attr('data-container');
@@ -149,17 +148,17 @@
     		}
     		var result = $(bloc_html);
             var bloc = $($(this).attr('data-container')).append(result);
-            
+
             if(callback && $(this).attr('data-callback')) {
             	callback(result);
             }
-            
+
             result.initAdvancedElements();
-            
+
             return false;
         });
     };
-    
+
     var drAddTemplateCb = function(bloc)
     {
     	var produit = bloc.prev().find('select.liste-produits').val();
@@ -167,14 +166,14 @@
     	var bailleur = bloc.prev().find('input.bailleur-produit').val();
     	var bailleurNom = bloc.prev().find('input.bailleur-produit').prev().find('span.select2-chosen').text();
     	var categorie = bloc.prev().find('select.categorie-produit').val();
-    	
+
     	bloc.find('select.liste-produits').val(produit);
     	bloc.find('input.complement-produit').val(complement);
     	if (bailleur) {
     		bloc.find('input.bailleur-produit').val(bailleur+','+bailleurNom);
     	}
     	bloc.find('select.categorie-produit').find('option[value="'+categorie+'"]').next().prop('selected', true);
-    	
+
     }
 
     /* =================================================================================== */

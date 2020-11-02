@@ -11,6 +11,11 @@ class ConfigurationClient extends acCouchdbClient {
     }
 
     public static function getConfiguration($campagne = '') {
+
+        if(preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $campagne)) {
+            $campagne = self::getCampagneManager()->getCampagneByDate($campagne);
+        }
+
         if (!$campagne) {
             if (!self::$current)
                 self::$current = CurrentClient::getCurrent();
@@ -36,6 +41,11 @@ class ConfigurationClient extends acCouchdbClient {
     public function retrieveConfiguration($campagne = '') {
 
         return self::getConfiguration($campagne);
+    }
+
+    public function getCampagneVinicole() {
+
+        return new CampagneManager('08-01');
     }
 
     public function getCampagneManager() {

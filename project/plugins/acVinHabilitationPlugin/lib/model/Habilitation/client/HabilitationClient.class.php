@@ -13,6 +13,7 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
     const ACTIVITE_PRODUCTEUR_MOUTS = "PRODUCTEUR_MOUTS";
     const ACTIVITE_ELEVEUR_DGC = "ELEVEUR_DGC";
+    const ACTIVITE_NEGOCIANT = "NEGOCIANT";
 
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
@@ -240,6 +241,23 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation;
         }
 
+        public function isRegionInHabilitation($identifiant, $region) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+            if(!$habilitation) {
+
+                return false;
+            }
+
+            $produits = DRevConfiguration::getInstance()->getOdgProduits($region);
+            foreach($produits as $hash) {
+                if($habilitation->containHashProduit($hash)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-")
                       ->endkey(self::TYPE_COUCHDB."-ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")->execute($hydrate);
@@ -255,7 +273,7 @@ class HabilitationClient extends acCouchdbClient {
             $last = $this->getLastHabilitation($etablissementIdentifiant);
             $habilitation = $this->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
 
-            if($habilitation->_id < $last->_id) {
+            if($last && $habilitation->_id < $last->_id) {
                 foreach($activites as $activiteKey) {
                     if(!$last->exist($hash_produit)) {
                         continue;

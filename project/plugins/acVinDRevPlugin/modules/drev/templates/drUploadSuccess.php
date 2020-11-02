@@ -17,17 +17,18 @@
 				<?php echo $form['file']->renderError() ?>
 			</div>
 			<div class="col-xs-1">
-				<?php echo $form['file']->renderLabel() ?>
+				<?php echo $form['file']->renderLabel(); ?>
 			</div>
 			<div class="col-xs-11">
-				<?php echo $form['file']->render() ?>
+				<?php echo $form['file']->render(); ?>
 			</div>
 		</div>
     </div>
+    
     <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
     <div class="col-xs-6 text-right">
-        <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
+          <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
     </div>
     </div>
 </form>

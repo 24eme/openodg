@@ -1,6 +1,6 @@
 all:
   routing_context_production_host: declaration.ava-aoc.fr
-  auth
+  auth:
     mode: NO_CAS #NO_CAS, CAS, NO_AUTH
 #    rights: [] 
   cas:

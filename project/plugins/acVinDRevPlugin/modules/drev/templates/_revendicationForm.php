@@ -14,11 +14,14 @@
 <?php endif; ?>
     <?php include_partial('drev/revendicationFormInput', array('form' => $form, 'produit' => $produit, 'name' => 'volume_revendique_issu_recolte', 'vtsgn' => $vtsgn, "placeholder" => "hl", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
 <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): ?>
+    <?php if($drev->hasProduitWithMutageAlcoolique()): ?>
+        <?php include_partial('drev/revendicationFormInput', array('form' => $form, 'produit' => $produit, 'name' => 'volume_revendique_issu_mutage', 'vtsgn' => $vtsgn, "placeholder" => "hl", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
+    <?php endif; ?>
     <td class="text-right">
         <span class="input_sum_value"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?></span> <small class="text-muted">hl</small><?php endif; ?>
     </td>
     <td class="text-right">
-        <span class="input_sum_total"><?php if($produit->volume_revendique_issu_vci){echoFloat($produit->volume_revendique_issu_vci + $form['volume_revendique_issu_recolte']->getValue());}else{echo null;} ?></span> <small class="text-muted">hl</small>
+        <span class="input_sum_total"></span> <small class="text-muted">hl</small>
     </td>
 <?php endif; ?>
 </tr>

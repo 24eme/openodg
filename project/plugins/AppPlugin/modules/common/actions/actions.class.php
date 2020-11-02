@@ -7,10 +7,15 @@ class commonActions extends sfActions {
 
             return $this->redirect('declaration');
         }
-	
-	if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
+
+	    if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
 
             return $this->redirect('declaration');
+        }
+
+        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_STALKER)) {
+
+            return $this->redirect('compte_search');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_TOURNEE)) {
@@ -20,7 +25,7 @@ class commonActions extends sfActions {
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
 
-            return $this->redirect('compte_recherche');
+            return $this->redirect('compte_search');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && HabilitationConfiguration::getInstance()->isSuiviParDemande()) {

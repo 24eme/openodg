@@ -5,7 +5,11 @@
 <div class="row">
     <div class="col-xs-12">
         <p>
-        Vous n'êtes pas autorisé à accéder à cette page.
+        Vous n'êtes pas autorisé à accéder à cette page<?php
+        if ($sf_user->getCompte() && $sf_user->getCompte()->getRegion()) {
+            echo " : l'opérateur ne semble pas habilité pour vos appellations";
+        }
+        ?>.
         </p>
     </div>
 </div>

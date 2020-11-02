@@ -56,6 +56,27 @@ $compteSocieteAutre->addTag('test', 'test_functionnal');
 $compteSocieteAutre->addTag('test', 'test_functionnal_societe_autre');
 $compteSocieteAutre->save();
 
+$t->comment('En mode stalker');
+
+$b->get('/logout');
+
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+$b->restart();
+
+$b->get('/');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil accessible");
+$b->isForwardedTo('compte', 'search');
+
+$b->get('/societe/'.$societeIdentifiant.'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"OPERATEUR\" accessible");
+$b->isForwardedTo('societe', 'visualisation');
+
+$b->isForwardedTo('societe', 'visualisation');
+testVisualisationLimite($b, $societeIdentifiant);
+
+$b->get('/societe/'.$societeAutre->getIdentifiant().'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"AUTRE\" accessible");
+
 $t->comment('En mode habilitation');
 
 $b->get('/logout');
@@ -68,7 +89,7 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/societe/'.$societeIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"OPERATEUR\" accessible");
     $b->isForwardedTo('societe', 'visualisation');
-    testVisualisationLimite($b, $societeIdentifian);
+    testVisualisationLimite($b, $societeIdentifiant);
 
     $b->get('/societe/'.$societeAutre->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une société de type \"AUTRE\" protégée");
@@ -106,7 +127,6 @@ function testVisualisationLimite($b, $societeIdentifiant) {
     $t->is($c->matchSingle('a[href*="/modification"]')->getNode(), null, "Bouton \"Editer\" absent");
     $t->is($c->matchSingle('a[href*="/switchStatus"]')->getNode(), null, "Bouton \"Archiver\" absent");
     $t->is($c->matchSingle('a[href*="/switchEnAlerte"]')->getNode(), null, "Bouton \"Mettre en alerte\" absent");
-    $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
     $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
 

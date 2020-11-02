@@ -137,10 +137,16 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->form->bind($request->getParameter($this->form->getName()));
+        $this->form->bind(array_merge($request->getParameter($this->form->getName())), [
+          "adresse" => $this->etablissement->adresse,
+          "commune" => $this->etablissement->commune,
+          "siret" => $this->etablissement->siret,
+          "adresse" => $this->etablissement->adresse,
+          "raison_sociale" => $this->etablissement->raison_sociale,
+          "code_postal" => $this->etablissement->code_postal
+        ]);
 
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
 
@@ -318,7 +324,7 @@ class drevActions extends sfActions {
     			if ($request->isXmlHttpRequest()) {
     				return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
     			}
-    	
+
     			if ($request->getParameter('redirect', null)) {
     				return $this->redirect('drev_validation', $this->drev);
     			}
@@ -648,7 +654,6 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION))) {
@@ -659,7 +664,6 @@ class drevActions extends sfActions {
         $this->validation = new DRevValidation($this->drev);
 
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -677,11 +681,16 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+
         $documents = $this->drev->getOrAdd('documents');
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
             $document = $documents->add($engagement->getCode());
             $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+        }
+
+        if($this->form->getValue("commentaire")) {
+            $this->drev->commentaire = $this->form->getValue("commentaire");
         }
 
         if($this->drev->isPapier()) {
@@ -760,7 +769,7 @@ class drevActions extends sfActions {
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
-    public function executeGenerateMouvements(sfWebRequest $request) {
+    public function executeGenerateMouvementsFactures(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
@@ -769,7 +778,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        $this->drev->generateMouvements();
+        $this->drev->generateMouvementsFactures();
         $this->drev->save();
 
         $this->getUser()->setFlash('notice', 'Les mouvements ont été générés');

@@ -1,4 +1,5 @@
 WORKINGDIR=/data/work/rhone/project
+DOCUMENTSDIR=$WORKINGDIR/path/to/file_name/with/xlsx
 PROJET=generique
 PROJETURL=https://declaration.generique.com/
 SYMFONYTASKOPTIONS="--application=generique --env=dev"

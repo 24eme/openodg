@@ -13,7 +13,6 @@
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'))); ?>
     </div>
 </div>
-
 <h3>Liste des déclarations</h3>
 <div class="row">
     <div class="col-sm-9 col-xs-12">
@@ -57,6 +56,7 @@
                 <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
         </div>
+    <?php endif; ?>
     </div>
 
     <div class="col-sm-3 col-xs-12">
@@ -87,6 +87,5 @@
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
-    <?php endif; ?>
     </div>
 </div>

@@ -26,6 +26,7 @@ DRev:
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
       version: {  }
+      commentaire: { }
       declarant:
         type: collection
         definition:
@@ -280,8 +281,8 @@ DRev:
               definition:
                 fields:
                   '*':
-                    class: DRevMouvement
-                    inheritance: Mouvement
+                    class: DRevMouvementFactures
+                    inheritance: MouvementFactures
                     type: collection
                     definition:
                       fields:

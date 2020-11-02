@@ -11,6 +11,9 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
     const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
     const LOT_DESTINATION_CONDITIONNEMENT = 'CONDITIONNEMENT';
+    const LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT = "VRAC_FRANCE_ET_VRAC_EXPORT";
+    const LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT = "VRAC_EXPORT_ET_CONDITIONNEMENT";
+    const LOT_DESTINATION_VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT = "VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT";
 
     public static $denominationsAuto = array(
         self::DENOMINATION_BIO_PARTIEL => "Une partie de mes volumes sont certifiés en Bio",
@@ -20,8 +23,11 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
-        DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
+        DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",
+        DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT => "Vrac France et Vrac Export",
+        DRevClient::LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT => "Vrac Export et Conditionnement",
+        DRevClient::LOT_DESTINATION_VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement"
     );
 
     public static function getInstance()
@@ -139,7 +145,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()."";
+        $campagne_to = "9999";
 
         return $this->startkey(sprintf("DREV-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("DREV-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
