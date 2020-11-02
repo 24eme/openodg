@@ -158,6 +158,7 @@ EOF;
               $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
               $drev->constructId();
               $drev->storeDeclarant();
+              $drev->validation = $date;
             }
 
             $lot = $drev->getOrAdd('lots')->add();
@@ -183,9 +184,9 @@ EOF;
             foreach($deleted as $d) {
               $d->delete();
             }
-            
+
             $mvtLot = $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
-            $mvtLot->preleve = 1;
+            $mvtLot->preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
             $drev->save();
             echo "SUCCESS;Lot importé;".$drev->_id.";\n";
         }
