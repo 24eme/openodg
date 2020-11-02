@@ -666,6 +666,10 @@ class drevActions extends sfActions {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
+        if (DrevConfiguration::getInstance()->hasValidationOdgAuto()) {
+            $this->drev->validateOdg();
+        }
+        
         $this->drev->save();
 
         if($this->getUser()->isAdmin() && $this->drev->isPapier()) {
@@ -809,11 +813,12 @@ class drevActions extends sfActions {
 
     public function executeXML(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+        $region = $request->getParameter('region');
         $this->secure(DRevSecurity::VISUALISATION, $drev);
         if (!$drev->validation) {
             $drev->cleanDoc();
         }
-		$xml = $this->getPartial('drev/xml', array('drev' => $drev));
+		$xml = $this->getPartial('drev/xml', array('drev' => $drev, 'region' => $region));
         $this->getResponse()->setHttpHeader('md5', md5($xml));
         $this->getResponse()->setHttpHeader('LastDocDate', date('r'));
         $this->getResponse()->setHttpHeader('Last-Modified', date('r'));
@@ -821,7 +826,10 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');
         $this->getResponse()->setHttpHeader('Expires', '0');
         $this->getResponse()->setContentType('text/xml');
-        $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev.".xml");
+        if (!$region) {
+            $region = 'TOUT';
+        }
+        $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev."-".$region.".xml");
         return $this->renderText($xml);
     }
 

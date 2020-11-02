@@ -85,6 +85,8 @@ class habilitationActions extends sfActions {
 
       if(class_exists("EtablissementChoiceForm")) {
           $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+      }elseif(class_exists("LoginForm")) {
+        $this->form = new LoginForm();
       }
 
       if(!isset($this->form)) {
