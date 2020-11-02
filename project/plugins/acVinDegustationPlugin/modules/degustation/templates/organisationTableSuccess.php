@@ -24,9 +24,9 @@
 						<td class="nblots"><?php echo count($lotsProduit->lots); $total += count($lotsProduit->lots); ?></td>
           				</tr>
           			<?php endforeach; ?>
-                  <tr>
+                  <tr data-total="1">
                     <td class="text-right"><strong>Total</strong></td>
-                    <td class="nblots"><?= $total ?></td>
+                    <td class="nblots" ><?= $total ?></td>
                   </tr>
           		</tbody>
           	</table>
