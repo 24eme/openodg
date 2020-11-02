@@ -193,3 +193,9 @@ degustation_redirect:
     type:     object
   requirements:
     sf_method: [get]
+
+degustation_manquements:
+  url: /degustation/manquements
+  param: { module: degustation, action: manquements }
+  requirements:
+    sf_method: [get]

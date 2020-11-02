@@ -24,15 +24,7 @@ class EtablissementForm extends acCouchdbObjectForm
 			"chais_commune" =>  new sfWidgetFormInput(array("label" => "Commune")),
 			"chais_code_postal" =>  new sfWidgetFormInput(array("label" => "Code postal")),
         ));
-					$this->setDefault('adresse', $this->getObject()->getDocument()->adresse);
-					$this->setDefault('commune', $this->getObject()->getDocument()->commune);
-					$this->setDefault('code_postal', $this->getObject()->getDocument()->code_postal);
-					$this->setDefault('telephone_bureau', $this->getObject()->getDocument()->telephone_bureau);
-					$this->setDefault('telephone_mobile', $this->getObject()->getDocument()->telephone_mobile);
-					$this->setDefault('email', $this->getObject()->getDocument()->email);
-					$this->setDefault('siret', $this->getObject()->getDocument()->siret);
-
-				$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
+	$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
         $this->setValidators(array(
             //'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
 			'ppm' =>  new sfValidatorRegex(array('required' => false,
