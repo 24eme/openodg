@@ -90,21 +90,22 @@ class degustationActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if ($this->form->isValid()) {
+                $this->form->save();
+
                 $drev = DRevClient::getInstance()->find($this->lot->id_document);
 
                 $mvmt_degust = $this->degustation->mouvements_lots->get($this->lot->declarant_identifiant)->get($this->lot->getGeneratedMvtKey());
 
                 $modificatrice = $drev->generateModificative();
                 $modificatrice->lots->remove($mvmt_degust->origine_hash);
-                $modificatrice->addLotFromDegustation($this->object);
+                $modificatrice->addLotFromDegustation($this->form->getObject());
                 $modificatrice->generateMouvementsLots();
 
-                $mvmt = $this->drev->get($this->lot->origine_mouvement);
+                $mvmt = $drev->get($this->lot->origine_mouvement);
                 $mvmt->prelevable = 0;
 
-                $this->drev->save();
+                $drev->save();
                 $modificatrice->save();
-                $this->form->save();
 
                 return $this->redirect('degustation_preleve', $this->degustation);
             }
