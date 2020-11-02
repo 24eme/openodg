@@ -342,6 +342,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function getLotsByTable($numero_table){
+			$lots = array();
+			foreach ($this->getLots() as $lot) {
+				if(intval($lot->numero_table) == $numero_table){
+					$lots[] = $lot;
+				}
+			}
+			uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
+			return $lots;
+		}
+
 		public function getLotsTableOrFreeLots($numero_table, $free = true){
 			$lots = array();
 			foreach ($this->getLotsPreleves() as $lot) {

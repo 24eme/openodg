@@ -90,21 +90,22 @@ class degustationActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if ($this->form->isValid()) {
+                $this->form->save();
+
                 $drev = DRevClient::getInstance()->find($this->lot->id_document);
 
-                $mvmt_degust = $this->degustation->get($this->lot->getGeneratedMvtKey());
+                $mvmt_degust = $this->degustation->mouvements_lots->get($this->lot->declarant_identifiant)->get($this->lot->getGeneratedMvtKey());
 
                 $modificatrice = $drev->generateModificative();
                 $modificatrice->lots->remove($mvmt_degust->origine_hash);
-                $modificatrice->addLotFromDegustation($this->object);
+                $modificatrice->addLotFromDegustation($this->form->getObject());
                 $modificatrice->generateMouvementsLots();
 
-                $mvmt = $this->drev->get($this->lot->origine_mouvement);
+                $mvmt = $drev->get($this->lot->origine_mouvement);
                 $mvmt->prelevable = 0;
 
-                $this->drev->save();
+                $drev->save();
                 $modificatrice->save();
-                $this->form->save();
 
                 return $this->redirect('degustation_preleve', $this->degustation);
             }
@@ -331,7 +332,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
 
-        $this->tableLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
+        $this->tableLots = $this->degustation->getLotsByTable($this->numero_table);
         $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
         $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table);
         $this->form = new DegustationResultatsForm($this->degustation, $options);
@@ -454,6 +455,10 @@ class degustationActions extends sfActions {
             }
             $this->lots[$key]->steps[] = $item->value;
         }
+    }
+
+    public function executeManquements(sfWebRequest $request) {
+        $this->manquements = DegustationClient::getInstance()->getManquements();
     }
 
 }
