@@ -159,6 +159,7 @@ EOF;
               $drev->constructId();
               $drev->storeDeclarant();
               $drev->validation = $date;
+              $drev->validation_odg = $date;
             }
 
             $lot = $drev->getOrAdd('lots')->add();
