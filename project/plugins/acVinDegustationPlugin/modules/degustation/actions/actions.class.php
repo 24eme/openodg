@@ -456,4 +456,8 @@ class degustationActions extends sfActions {
         }
     }
 
+    public function executeManquements(sfWebRequest $request) {
+        $this->manquements = DegustationClient::getInstance()->getManquements();
+    }
+
 }
