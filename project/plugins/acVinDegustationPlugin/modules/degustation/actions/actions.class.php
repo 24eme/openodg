@@ -331,7 +331,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
 
-        $this->tableLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
+        $this->tableLots = $this->degustation->getLotsByTable($this->numero_table);
         $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
         $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table);
         $this->form = new DegustationResultatsForm($this->degustation, $options);
