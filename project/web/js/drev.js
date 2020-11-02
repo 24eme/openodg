@@ -10,7 +10,7 @@
         $('#btn_exploitation_modifier').click(function(e) {
             $('#btn_exploitation_modifier').addClass("hidden");
             $('#btn_exploitation_annuler').removeClass("hidden");
-            $('#row_form_exploitation').first().removeClass("hidden");
+            $('#row_form_exploitation').removeClass("hidden");
             $('#row_info_exploitation').addClass("hidden");
         });
         if($('#drevDenominationAuto').length){
