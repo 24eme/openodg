@@ -80,7 +80,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil");
 
 
-        $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Je m'engage à contacter le syndicat quand le vin sera prêt");
+        $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Élevage : je m'engage à contacter le syndicat quand le vin sera prêt");
     }
 
     public function controle()
