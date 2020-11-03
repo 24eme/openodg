@@ -1,3 +1,10 @@
+<style>
+  .table thead > tr > th,
+  .table tbody > tr > td {
+    width: auto;
+  }
+</style>
+
 <?php use_helper('Date'); ?>
 <?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
   $etablissement = $habilitation->getEtablissementObject();
