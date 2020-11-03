@@ -15,6 +15,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
 
     public function configure() {
 
+
       foreach ($this->getTableLots() as $lot) {
 
         $name = $this->getWidgetNameFromLot($lot);
@@ -34,7 +35,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
     }
 
     public function getTableLots(){
-      return $this->getObject()->getLotsWithoutLeurre();
+      return $this->getObject()->getLotsByTable($this->numero_table);
     }
 
     public function getWidgetNameFromLot($lot){
@@ -67,7 +68,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
             $name = $this->getWidgetNameFromLot($lot);
             $defaults['conformite_'.$name] = $lot->getConformite();
             $defaults['motif_'.$name] = $lot->getMotif();
-            $defaults['observation_'.$name] = $lot->getObservation();            
+            $defaults['observation_'.$name] = $lot->getObservation();
         }
         $this->setDefaults($defaults);
     }

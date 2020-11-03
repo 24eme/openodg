@@ -41,9 +41,10 @@
                   <?php endif; ?>
                 </td>
 				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
-        <td class="text-right edit">
+        <!-- <td class="text-right edit"> -->
+        <td class="text-right">
           <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
-          <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-transfer"></i></a>
+          <!-- <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-transfer"></i></a> -->
         </td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
