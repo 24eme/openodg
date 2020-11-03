@@ -144,6 +144,16 @@ drev_document_douanier_pdf:
   requirements:
     sf_method: [get]
 
+drev_document_douanier_xls:
+  url: /drev/document_douanier_xls/:id
+  param: { module: drev, action: documentDouanierXls }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_exploitation:
   url: /drev/exploitation/:id
   param: { module: drev, action: exploitation }
