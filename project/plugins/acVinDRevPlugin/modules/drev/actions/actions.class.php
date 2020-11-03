@@ -645,9 +645,13 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
+            if(!$this->form->getValue("engagement_".$engagement->getCode())) {
+                continue;
+            }
             $document = $documents->add($engagement->getCode());
             if ($engagement->getCode() == DRevDocuments::DOC_VCI) {
             	$document->statut = DRevDocuments::STATUT_RECU;

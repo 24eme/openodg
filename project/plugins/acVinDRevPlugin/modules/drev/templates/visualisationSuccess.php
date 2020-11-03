@@ -50,8 +50,6 @@
 
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form)); ?>
 
-<?php //include_partial('drev/documents', array('drev' => $drev, 'form' => isset($form) ? $form : null)); ?>
-
 <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>
     <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($drev->exist('date_degustation_voulue')) ? $drev->get('date_degustation_voulue') : null; ?></p>
