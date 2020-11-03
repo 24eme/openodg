@@ -114,14 +114,14 @@
 
     $.initRecapEventsAccordion = function() {
         $('#revendication_accordion tr.trAccordion').click(function() {
-            var id = $(this).attr('data-target');
-            var eventId = "#"+id;
+            var eventId = $(this).attr('data-target');
             var span = $(this).find('small span');
-            var ouverts = $("."+id);
-            if (ouverts.length && (eventId == '#' + ouverts.first().attr('class'))) {
+
+            var ouverts = $('tr td.hiddenRow div.in');
+            if (ouverts.length && (eventId == '#' + ouverts.attr('id'))) {
                 span.removeClass('glyphicon-chevron-right');
                 span.addClass('glyphicon-chevron-down');
-                ouverts.each(function(){$(this).addClass('hide'); })
+                $(eventId).collapse('hide');
             } else {
                 $('tr td.hiddenRow div').each(function() {
                     $('#revendication_accordion tr.trAccordion').each(function() {
@@ -133,7 +133,8 @@
                 });
                 span.removeClass('glyphicon-chevron-down');
                 span.addClass('glyphicon-chevron-right');
-                $("."+id).each(function(){$(this).removeClass('hide'); })
+                $(eventId).collapse('show');
+
             }
         });
     }
