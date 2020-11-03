@@ -76,7 +76,7 @@ nightmare
   // .wait('#btnExportExcel')
   .wait(3000)
   .click('#btnExportExcel')
-  .download(destination_file+'operateurs_innactifs.xlsx')
+  .download(destination_file+'operateurs_inactifs.xlsx')
   .refresh()
   //fin operateurs innactifs
 
