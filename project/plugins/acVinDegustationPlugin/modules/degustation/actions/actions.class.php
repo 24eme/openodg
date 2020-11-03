@@ -105,6 +105,7 @@ class degustationActions extends sfActions {
                 $mvmt->prelevable = 0;
 
                 $drev->save();
+                $modificatrice->validate();
                 $modificatrice->save();
 
                 $l = $this->form->getObject();
