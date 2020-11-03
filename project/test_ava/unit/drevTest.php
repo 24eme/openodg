@@ -120,7 +120,7 @@ $drev->save();
 
 $t->is(count($drev->prelevements->cuve_ALSACE->lots), 2, "2 cépages intialisés dans le les lots");
 $t->is($drev->prelevements->cuve_ALSACE->total_lots, 0, "Aucun lot déclaré dans les cépages");
-$t->is($drev->declaration->getNbLotsMinimum(), 2, "Au moins un lot est requis");
+$t->is($drev->prelevements->cuve_ALSACE->getNbLotsMinimum(), 2, "Au moins un lot est requis");
 
 $drev->prelevements->cuve_ALSACE->lots->getFirst()->nb_hors_vtsgn = 3;
 $drev->prelevements->cuve_ALSACE->updateTotal();
@@ -134,7 +134,7 @@ $drev->prelevements->cuve_ALSACE->lots->getFirst()->nb_hors_vtsgn = 1;
 $drev->prelevements->cuve_ALSACE->updateTotal();
 $drev->save();
 $t->is($produit1CepageA->volume_revendique_total, 0, "Le volume revendiqué cépage est de 0 hl");
-$t->is($drev->declaration->getNbLotsMinimum(), 1, "Au moins un lot est requis");
+$t->is($drev->prelevements->cuve_ALSACE->getNbLotsMinimum(), 1, "Au moins un lot est requis");
 
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');

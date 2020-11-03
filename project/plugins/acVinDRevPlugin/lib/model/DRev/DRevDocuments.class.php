@@ -30,9 +30,19 @@ class DRevDocuments extends BaseDRevDocuments
 		self::DOC_MUTAGE_MANQUANTS_OUEX_INF => 'Déclaration de manquants VDN < 20%',
 		self::DOC_MUTAGE_MANQUANTS_OUEX_SUP => 'Déclaration de manquants VDN > 20%',
 		self::DOC_MUTAGE_DECLARATION => 'Déclaration de mutage',
-		self::DOC_DEPASSEMENT_CONSEIL => 'Authorisation de dépassement de rendement conseil'
-
+		self::DOC_DEPASSEMENT_CONSEIL => 'Autorisation de dépassement de rendement conseil'
 	);
+
+	private static $_engagement_libelles = array(
+		'revendication_superficie_dae' => 'Je m\'engage à transmettre le DAE justifiant le transfert de récolte vers ce chais',
+		DRevDocuments::DOC_SV11 => 'Joindre une copie de votre SV11',
+		DRevDocuments::DOC_SV12 => 'Joindre une copie de votre SV12',
+		DRevDocuments::DOC_VCI => 'Je m\'engage à transmettre le justificatif de destruction de VCI',
+		DRevDocuments::DOC_MUTAGE_DECLARATION => 'Je m\'engage à transmettre la déclaration de mutage',
+		DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF => "Je n'ai aucune parcelle de VDN avec un % de manquants > à 20%",
+		DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP => "Je m'engage à transmettre la liste de mes parcelles de VDN avec un % de manquants > à 20%",
+		DRevDocuments::DOC_DEPASSEMENT_CONSEIL => "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil",
+		'elevage_contact_syndicat' => "Je m'engage à contacter le syndicat quand le vin sera prêt");
 
 	private static $_statut_libelles = array(
 		self::STATUT_EN_ATTENTE => 'En attente de réception',
@@ -42,6 +52,12 @@ class DRevDocuments extends BaseDRevDocuments
 	public static function getDocumentLibelle($doc)
 	{
 		$libelles = self::$_document_libelles;
+		return (isset($libelles[$doc])) ? $libelles[$doc] : '';
+	}
+
+	public static function getEngagementLibelle($doc)
+	{
+		$libelles = self::$_engagement_libelles;
 		return (isset($libelles[$doc])) ? $libelles[$doc] : '';
 	}
 

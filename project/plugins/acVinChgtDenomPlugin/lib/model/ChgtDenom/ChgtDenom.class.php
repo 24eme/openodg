@@ -196,21 +196,34 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function generateMouvementsLots($prelevable = 1) {
+        $origine = $this->getOrigineDocumentMvtLot();
         foreach($this->lots as $k => $lot) {
           $key = $lot->getUnicityKey();
-          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key, $prelevable);
+          if ($key == $origine->getKey()) {
+            $p = $origine->prelevable;
+          } else {
+            $p = $prelevable;
+          }
+          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key, $p);
         }
         $this->updateMouvementOrigineDocument();
     }
 
     private function updateMouvementOrigineDocument() {
+      if ($doc = $this->getOrigineDocumentMvtLot()) {
+          $doc->prelevable = 0;
+          $doc->getDocument()->save();
+      }
+    }
+
+    public function getOrigineDocumentMvtLot() {
       $mvtLot = $this->getMvtLot();
       if ($doc = acCouchdbManager::getClient()->find($mvtLot->origine_document_id)) {
         if ($doc->exist($mvtLot->origine_mouvement)) {
-          $doc->get($mvtLot->origine_mouvement)->prelevable = 0;
-          $doc->save();
+          return $doc->get($mvtLot->origine_mouvement);
         }
       }
+      return null;
     }
 
     /**** FIN DES MOUVEMENTS ****/

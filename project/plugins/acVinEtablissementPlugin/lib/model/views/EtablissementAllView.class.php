@@ -138,8 +138,13 @@ class EtablissementAllView extends acCouchdbView
 		if(sfConfig::get('app_elasticversion','2.4.6') >= "2.0.0"){
 			$r = $r['doc'];
 		}
+		$no_accises_siret = $r['no_accises'];
+		if($no_accises_siret && $r['siret']) {
+			$no_accises_siret .= " / ";
+		}
+		$no_accises_siret .= $r['siret'];
 		$e->key = array($r['interpro'], $r['statut'], $r['famille'], $r['id_societe'], $er->getId(), $r['nom'], $r['identifiant'], $r['cvi'], $r['region']);
-		$e->value = array($r['nom'],$r['siege']['adresse'], $r['siege']['commune'], $r['siege']['code_postal'], $r['no_accises']);
+		$e->value = array($r['nom'],$r['siege']['adresse'], $r['siege']['commune'], $r['siege']['code_postal'], $no_accises_siret);
 
 	$res[] = $e;
       }

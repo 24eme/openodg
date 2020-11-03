@@ -50,6 +50,12 @@
 	</td>
 	<td class="text-right">
 		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
+			<?php echo sprintFloat($produit->getRendementReserveInterpro()) ?>&nbsp;
+			<?php if ($produit->hasRendementReserveInterproMin()) echo " (>".sprintFloat($produit->getRendementReserveInterproMin()).")"; ?>&nbsp;
+		</a>
+	</td>
+	<td class="text-right">
+		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
 			<?php echo sprintFloat($produit->getRendementConseille()) ?>&nbsp;
 		</a>
 	</td>
