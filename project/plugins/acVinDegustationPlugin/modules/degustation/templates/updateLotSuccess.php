@@ -32,6 +32,9 @@
             </div>
         </div>
     <div style="margin-top: 20px;" class="row row-margin row-button">
+        <div class="col-xs-4">
+          <a href="<?php echo url_for("degustation_preleve", ['id' => $degustation->_id]) ?>" class="btn btn-default">Retour</a>
+        </div>
         <div class="col-xs-offset-8 col-xs-4 text-right">
             <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>
