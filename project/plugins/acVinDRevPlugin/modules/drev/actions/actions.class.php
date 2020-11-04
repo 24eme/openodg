@@ -653,11 +653,7 @@ class drevActions extends sfActions {
                 continue;
             }
             $document = $documents->add($engagement->getCode());
-            if ($engagement->getCode() == DRevDocuments::DOC_VCI) {
-            	$document->statut = DRevDocuments::STATUT_RECU;
-            } else {
-            	$document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
-            }
+            $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
         }
 
         if($this->drev->isPapier()) {
