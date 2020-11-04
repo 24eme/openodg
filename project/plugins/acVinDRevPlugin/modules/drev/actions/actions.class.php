@@ -645,15 +645,15 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
-            $document = $documents->add($engagement->getCode());
-            if ($engagement->getCode() == DRevDocuments::DOC_VCI) {
-            	$document->statut = DRevDocuments::STATUT_RECU;
-            } else {
-            	$document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            if(!$this->form->getValue("engagement_".$engagement->getCode())) {
+                continue;
             }
+            $document = $documents->add($engagement->getCode());
+            $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
         }
 
         if($this->drev->isPapier()) {
