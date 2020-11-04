@@ -106,6 +106,7 @@ class degustationActions extends sfActions {
 
                 $drev->save();
                 $modificatrice->validate();
+                $modificatrice->validateOdg();
                 $modificatrice->save();
 
                 $l = $this->form->getObject();
