@@ -71,8 +71,8 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function getProduitsConfig() {
       $produits = array();
       foreach ($this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE) as $produit) {
-          if($produit->getLieu()){
-            $produithab = $produit->getLieu();
+          if($produit->getAppellation()){
+            $produithab = $produit->getAppellation();
             $produits[$produithab->getHash()] = $produithab;
           }
       }

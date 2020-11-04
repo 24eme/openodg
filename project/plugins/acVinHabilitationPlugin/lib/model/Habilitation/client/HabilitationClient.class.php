@@ -549,4 +549,5 @@ class HabilitationClient extends acCouchdbClient {
 
             $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), $statutHabilitation, $commentaire);
         }
+
     }
