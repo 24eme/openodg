@@ -22,7 +22,7 @@ $hasError = ($global_error_msg != "");
     <?php endif; ?>
     <p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace (<strong>AOC Alsace Communale et Lieu-dit inclus</strong>).</p>
 
-    <p>Un lot correspond à une cuvée commerciale. Ainsi si vous commercialisez un même cépage en AOC Alsace, en communale et en lieu-dit, vous devez déclarer au minimum 3 lots.</p>
+    <p>Un lot correspond à une cuvée définie par son appellation, sa dénomination géographique communale ou lieu-dit et son cépage. Ainsi, si vous commercialisez un même cépage en AOC Alsace, en communale et en lieu-dit, vous devez déclarer au minimum 3 lots.</p>
 
     <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm, 'error_produit' => $error_produit, 'title' => 'Cépages')); ?>
 
