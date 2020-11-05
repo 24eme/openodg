@@ -697,7 +697,6 @@
             var blocs = blocCondition.attr('data-condition-cible').split('|');
             var traitement = function(input, blocs) {
                    for (bloc in blocs) {
-                       console.log($(blocs[bloc]));
                        if ($(blocs[bloc]).size() > 0) {
                            var values = $(blocs[bloc]).attr('data-condition-value').split('|');
                            for(key in values) {

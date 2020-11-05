@@ -196,9 +196,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function generateMouvementsLots($prelevable = 1) {
+        $origine = $this->getOrigineDocumentMvtLot();
         foreach($this->lots as $k => $lot) {
           $key = $lot->getUnicityKey();
-          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key, $prelevable);
+          if ($key == $origine->getKey()) {
+            $p = $origine->prelevable;
+          } else {
+            $p = $prelevable;
+          }
+          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key, $p);
         }
         $this->updateMouvementOrigineDocument();
     }

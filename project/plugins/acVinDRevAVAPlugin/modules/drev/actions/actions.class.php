@@ -670,15 +670,8 @@ class drevActions extends sfActions {
         }
 
         if (!$this->validation->isValide()) {
-          $this->form->bind($request->getParameter($this->form->getName()));
-          if($this->form["commentaire"]->getValue() &&
-              $this->drev->commentaire != ($commentaire = htmlspecialchars($this->form["commentaire"]->getValue()))){
-            $this->drev->commentaire = $commentaire;
-            $this->drev->update();
-            $this->drev->save();
-            return $this->redirect('drev_validation', $this->drev);
-          }
-          return sfView::SUCCESS;
+
+            return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
@@ -694,6 +687,10 @@ class drevActions extends sfActions {
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
             $document = $documents->add($engagement->getCode());
             $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+        }
+
+        if($this->form->getValue("commentaire")) {
+            $this->drev->commentaire = $this->form->getValue("commentaire");
         }
 
         if($this->drev->isPapier()) {

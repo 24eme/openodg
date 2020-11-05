@@ -1,3 +1,10 @@
+<style>
+  .table thead > tr > th,
+  .table tbody > tr > td {
+    width: auto;
+  }
+</style>
+
 <?php use_helper('Date'); ?>
 <?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
   $etablissement = $habilitation->getEtablissementObject();
@@ -132,17 +139,20 @@
           <th class="col-xs-1">&nbsp;</th>
         </tr>
       </thead>
+      </div>
       <tbody>
-        <?php
+        <?php $cpt = 0;
         foreach ($habilitation->getFullHistoriqueReverse() as $historiqueDoc): ?>
-          <tr>
+          <tr class="<?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>">
             <td><?php echo Date::francizeDate($historiqueDoc->date); ?></td>
             <td><?php if(preg_match('/demande/', $historiqueDoc->iddoc)): ?>Demande<?php else: ?>Habilitation<?php endif; ?></td>
             <td><?php echo $historiqueDoc->auteur; ?></td>
             <td><?php echo preg_replace('/"([^"]+)"/', '<code>\1</code>', $historiqueDoc->getRawValue()->description); ?><?php if($historiqueDoc->commentaire): ?> <small class="text-muted">(<?php echo $historiqueDoc->commentaire; ?>)</small><?php endif ?>
             </td>
             <td><?php if(isset($historiqueDoc->statut) && $historiqueDoc->statut): ?><?php echo HabilitationClient::getInstance()->getLibelleStatut($historiqueDoc->statut); ?> <?php endif ?></td>
-            <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => preg_replace("/:.+/", "", $historiqueDoc->iddoc))); ?>">Voir</a></tr>
+            <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => preg_replace("/:.+/", "", $historiqueDoc->iddoc))); ?>">Voir</a></td>
+          </tr>
+          <?php $cpt++;?>
         <?php endforeach; ?>
       </tbody>
     </table>

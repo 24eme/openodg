@@ -37,9 +37,9 @@ class DRevValidation extends DocumentValidation
         /*
          * Error
          */
-        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', "Le volume revendique n'a pas été saisie");
-        $this->addControle(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', "Le volume revendique n'a pas été saisie");
-        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', "La superficie revendiqué n'a pas été saisie");
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', "Le volume revendiqué n'a pas été saisi");
+        $this->addControle(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', "Le volume revendiqué n'a pas été saisi");
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', "La superficie revendiquée n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_warn', "Le rendement sur le volume revendiqué n'est pas respecté (peut être lié à un achat de vendange ou l'intégration de VCI stocké chez un négociant)");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_conseille', "Le rendement sur le volume revendiqué dépasse le rendement légal il vous faut disposer d'une dérogation pour être autorisé à revendiquer ce rendement");
@@ -53,8 +53,6 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_WARNING, 'revendication_superficie_warn', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
-        $this->addControle(self::TYPE_ENGAGEMENT, 'revendication_superficie_dae', 'Je m\'engage à transmettre le DAE justifiant le transfert de récolte vers ce chais');
-
 
         $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L5)");
         $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
@@ -71,15 +69,14 @@ class DRevValidation extends DocumentValidation
         /*
          * Engagement
          */
+        $this->addControle(self::TYPE_ENGAGEMENT, 'revendication_superficie_dae', 'Je m\'engage à transmettre le DAE justifiant le transfert de récolte vers ce chais');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, 'Je m\'engage à transmettre la déclaration de mutage');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, "Je n'ai aucune parcelle de VDN avec un % de manquants > à 20%");
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, "Je m'engage à transmettre la liste de mes parcelles de VDN avec un % de manquant > à 20 %");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, "Je m'engage à transmettre la liste de mes parcelles de VDN avec un % de manquants > à 20%");
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil");
-
-
         $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Je m'engage à contacter le syndicat quand le vin sera prêt");
     }
 

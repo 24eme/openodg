@@ -54,6 +54,11 @@
         var diff = parseInt(nbToAdd);
         var newVal = old+diff;
         $('tr[data-hash="'+hash+'"] .nblots').html(""+newVal);
+
+        var valTotal = $('tr[data-total="1"] .nblots').html();
+        var oldTotal = parseInt(valTotal);
+        var newTotal = oldTotal+diff;
+        $('tr[data-total="1"] .nblots').html(""+newTotal);
       }
 
       }

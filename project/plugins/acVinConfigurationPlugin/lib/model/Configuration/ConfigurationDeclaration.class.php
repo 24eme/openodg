@@ -128,6 +128,12 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return 0;
     }
 
+    public function getRendementReserveInterproMin() {
+
+        return 0;
+    }
+
+
     public function hasMout() {
 
         return false;

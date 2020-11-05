@@ -244,19 +244,31 @@ class DRevProduit extends BaseDRevProduit
         return ($this->getVolumeReserveInterpro());
     }
 
+	protected function getVolumeReserveInterproAndButoir() {
+		if (!$this->getConfig()->hasRendementReserveInterpro()) {
+			return 0;
+		}
+		$diff = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendementReserveInterpro());
+		if ($diff <= $this->getConfig()->getRendementReserveInterproMin()) {
+			return 0;
+		}
+		return $diff;
+	}
+
     public function getVolumeReserveInterpro() {
         if (!$this->getConfig()->hasRendementReserveInterpro()) {
             return 0;
         }
-        $diff = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendementReserveInterpro());
-		if ($diff < 0) {
-			return 0;
+        $diff = $this->getVolumeReserveInterproAndButoir();
+		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
+		if ($diff_butoir > 0) {
+			return $diff - $diff_butoir;
 		}
 		return $diff;
     }
 
 	public function getVolumeRevendiqueCommecialisable() {
-		return $this->volume_revendique_total - $this->getVolumeReserveInterpro();
+		return $this->volume_revendique_total - $this->getVolumeReserveInterproAndButoir();
 	}
 
 }

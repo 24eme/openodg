@@ -4,35 +4,52 @@
  * Model for DRevDocuments
  *
  */
-class DRevDocuments extends BaseDRevDocuments 
+class DRevDocuments extends BaseDRevDocuments
 {
-	const DOC_DR = 'DR';
 	const DOC_SV11 = 'SV11';
 	const DOC_SV12 = 'SV12';
-	const DOC_SV = 'SV';
-	const DOC_PRESSOIR = 'PRESSOIR';
 	const DOC_VCI = 'VCI';
-	const DOC_MUTAGE_DECLARATION = 'DOC_MUTAGE_DECLARATION';
+	const DOC_MUTAGE_DECLARATION = 'MUTAGE_DECLARATION';
 	const DOC_MUTAGE_MANQUANTS_OUEX_INF = 'MUTAGE_MANQUANTS_OUEX_INF';
 	const DOC_MUTAGE_MANQUANTS_OUEX_SUP = 'MUTAGE_MANQUANTS_OUEX_SUP';
-	const DOC_DEPASSEMENT_CONSEIL = 'DOC_DEPASSEMENT_CONSEIL';
+	const DOC_DEPASSEMENT_CONSEIL = 'DEPASSEMENT_CONSEIL';
+	const DOC_ELEVAGE_CONTACT_SYNDICAT = 'ELEVAGE_CONTACT_SYNDICAT';
+	const DOC_REVENDICATION_SUPERFICIE_DAE = 'REVENDICATION_SUPERFICIE_DAE';
 
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
 
 	private static $_document_libelles = array(
-		self::DOC_DR => 'Déclaration de Récolte',
 		self::DOC_SV11 => 'SV11',
 		self::DOC_SV12 => 'SV12',
-		self::DOC_SV => 'SV11 / SV12',
-		self::DOC_PRESSOIR => 'Carnet de Pressoir',
 		self::DOC_VCI => 'Justificatif de destruction de VCI',
-		self::DOC_MUTAGE_MANQUANTS_OUEX_INF => 'Déclaration de manquants VDN < 20%',
-		self::DOC_MUTAGE_MANQUANTS_OUEX_SUP => 'Déclaration de manquants VDN > 20%',
+		self::DOC_MUTAGE_MANQUANTS_OUEX_SUP => 'Liste des parcelles manquantes de VDN > 20%',
 		self::DOC_MUTAGE_DECLARATION => 'Déclaration de mutage',
-		self::DOC_DEPASSEMENT_CONSEIL => 'Authorisation de dépassement de rendement conseil'
-
+		self::DOC_REVENDICATION_SUPERFICIE_DAE => 'DAE justificatif du transfert de récolte',
 	);
+
+	private static $_document_statuts_initiaux = array(
+		self::DOC_SV11 => self::STATUT_EN_ATTENTE,
+		self::DOC_SV12 => self::STATUT_EN_ATTENTE,
+		self::DOC_VCI => self::STATUT_EN_ATTENTE,
+		self::DOC_MUTAGE_MANQUANTS_OUEX_INF => self::STATUT_RECU,
+		self::DOC_MUTAGE_MANQUANTS_OUEX_SUP => self::STATUT_EN_ATTENTE,
+		self::DOC_MUTAGE_DECLARATION => self::STATUT_EN_ATTENTE,
+		self::DOC_DEPASSEMENT_CONSEIL => self::STATUT_RECU,
+		self::DOC_REVENDICATION_SUPERFICIE_DAE => self::STATUT_RECU
+	);
+
+	private static $_engagement_libelles = array(
+		DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE => 'Je m\'engage à transmettre le DAE justifiant le transfert de récolte vers ce chais',
+		DRevDocuments::DOC_SV11 => 'Je m\'engage à joindre une copie de la SV11',
+		DRevDocuments::DOC_SV11 => 'Je m\'engage à joindre une copie de la SV11',
+		DRevDocuments::DOC_SV12 => 'Je m\'engage à joidre une copie de la SV12',
+		DRevDocuments::DOC_VCI => 'Je m\'engage à transmettre le justificatif de destruction de VCI',
+		DRevDocuments::DOC_MUTAGE_DECLARATION => 'Je m\'engage à transmettre la déclaration de mutage',
+		DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF => "Je n'ai aucune parcelle de VDN avec un % de manquants > à 20%",
+		DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP => "Je m'engage à transmettre la liste de mes parcelles de VDN avec un % de manquants > à 20%",
+		DRevDocuments::DOC_DEPASSEMENT_CONSEIL => "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil",
+		DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT => "Je m'engage à contacter le syndicat quand le vin sera prêt");
 
 	private static $_statut_libelles = array(
 		self::STATUT_EN_ATTENTE => 'En attente de réception',
@@ -45,10 +62,22 @@ class DRevDocuments extends BaseDRevDocuments
 		return (isset($libelles[$doc])) ? $libelles[$doc] : '';
 	}
 
+	public static function getEngagementLibelle($doc)
+	{
+		$libelles = self::$_engagement_libelles;
+		return (isset($libelles[$doc])) ? $libelles[$doc] : '';
+	}
+
 	public static function getStatutLibelle($statut)
 	{
 		$libelles = self::$_statut_libelles;
 		return (isset($libelles[$statut])) ? $libelles[$statut] : '';
+	}
+
+	public static function getStatutInital($doc)
+	{
+		$statuts = self::$_document_statuts_initiaux;
+		return (isset($statuts[$doc])) ? $statuts[$doc] : self::STATUT_RECU;
 	}
 
 }

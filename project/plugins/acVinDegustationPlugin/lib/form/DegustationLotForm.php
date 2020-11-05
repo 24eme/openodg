@@ -9,9 +9,6 @@ class DegustationLotForm extends acCouchdbObjectForm
         $this->setWidget('volume', new bsWidgetFormInputFloat());
         $this->setValidator('volume', new sfValidatorNumber(array('required' => true)));
 
-        $this->setWidget('numero', new bsWidgetFormInput());
-        $this->setValidator('numero', new sfValidatorString(array('required' => false)));
-
         $this->widgetSchema->setNameFormat('lot_form[%s]');
     }
 }
