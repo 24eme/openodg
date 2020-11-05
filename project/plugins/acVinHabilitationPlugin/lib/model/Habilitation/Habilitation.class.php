@@ -68,9 +68,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return acCouchdbManager::getClient('Configuration')->getConfiguration($this->date);
     }
 
-    public function getProduitsConfig() {
-
-        return $this->getConfiguration()->getProduitsCahierDesCharges();
+    public function getAppellation() {
+      $produits = array();
+      foreach ($this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE) as $produit) {
+          if($produit->getLieu()){
+            $produitLieu = $produit->getLieu();
+            $produits[$produitLieu->getHash()] = $produitLieu;
+          }
+      }
+      return $produits;
     }
 
     public function getProduitsHabilites() {

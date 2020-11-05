@@ -17,15 +17,7 @@
         <div class="panel panel-default bloc-lot">
             <div class="panel-body" style="padding-bottom: 0;">
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $form['numero']->renderLabel("Logement", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-6">
-                                  <?php echo $form['numero']->render(); ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 col-md-offset-3">
                         <div class="form-group">
                             <?php echo $form['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
@@ -40,6 +32,9 @@
             </div>
         </div>
     <div style="margin-top: 20px;" class="row row-margin row-button">
+        <div class="col-xs-4">
+          <a href="<?php echo url_for("degustation_preleve", ['id' => $degustation->_id]) ?>" class="btn btn-default">Retour</a>
+        </div>
         <div class="col-xs-offset-8 col-xs-4 text-right">
             <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>

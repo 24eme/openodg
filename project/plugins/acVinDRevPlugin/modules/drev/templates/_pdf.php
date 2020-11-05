@@ -87,15 +87,10 @@
 </table>
 <br /><br />
 Les produits déclarés sont du millésime du VCI
-<?php if($drev->hasVciDetruit()): ?>
-<br /><br />
-<span style="font-family: Dejavusans">☑</span> Je m'engage à transmettre le justificatif de destruction de VCI
-<?php endif; ?>
 <?php else: ?>
 <br />
 <em>Aucun stock VCI déclaré</em>
 <?php endif; ?>
-<br />
 <?php endif; ?>
 
 <?php if($drev->exist('lots') && count($drev->lots)): ?>
@@ -140,4 +135,16 @@ Les produits déclarés sont du millésime du VCI
     </tr>
 <?php endforeach; ?>
 </table>
+<?php endif; ?>
+
+<?php if($drev->exist('documents') && count($drev->documents->toArray(true, false))): ?>
+    <br />
+    <div><span class="h3">&nbsp;Engagement(s)&nbsp;</span></div>
+    <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <?php foreach($drev->documents as $docKey => $doc): ?>
+        <tr>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo $drev->documents->getEngagementLibelle($docKey); ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </table>
 <?php endif; ?>

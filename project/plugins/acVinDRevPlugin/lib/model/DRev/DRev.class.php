@@ -190,7 +190,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfigProduits() {
-      
+
         return $this->getConfiguration()->declaration->getProduits();
     }
 
@@ -1296,7 +1296,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $mvt;
     }
 
-    private function generateAndAddMouvementLotsFromLot($lot, $key, $prelevable = 1) {
+    public function generateAndAddMouvementLotsFromLot($lot, $key, $prelevable = 1) {
         $mvt = $this->generateMouvementLotsFromLot($lot, $key, $prelevable);
         if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
             $this->add('mouvements_lots')->add($this->identifiant);

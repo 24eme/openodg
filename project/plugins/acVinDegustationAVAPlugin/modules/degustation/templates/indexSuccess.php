@@ -63,38 +63,47 @@
 <div class="row">
     <div class="col-xs-12">
         <legend><small><small>Demandes de prélevements dans le temps</small></small></legend>
-        <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
+        <?php if(array_keys($demandes_alsace->getRawValue())): ?>
+          <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
+        <?php else: ?>
+          <div>
+            <p class="text-muted">Pas encore de demande de prélèvement pour la campagne <?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?>.</p>
+          </div>
+        <?php endif; ?>
     </div>
 </div>
 <script type="text/javascript">
-window.onload = function () {
-        var ctx = document.getElementById("graphique").getContext("2d");
-        var myNewChart = new Chart(ctx).Bar({
-            labels: <?php echo json_encode(array_keys($demandes_alsace->getRawValue())) ?>,
-            datasets: [
-                {
-                    label: "AOC Alsace",
-                    fillColor: "rgba(120,120,220,0.2)",
-                    strokeColor: "rgba(120,120,220,1)",
-                    pointColor: "rgba(120,120,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(120,120,220,1)",
-                    data: <?php echo json_encode(array_values($demandes_alsace->getRawValue())) ?>
-                },
-                {
-                    label: "VT / SGN",
-                    fillColor: "rgba(0,220,220,0.2)",
-                    strokeColor: "rgba(0,220,220,1)",
-                    pointColor: "rgba(0,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(0,220,220,1)",
-                    data: <?php echo json_encode(array_values($demandes_vtsgn->getRawValue())) ?>
-                },
-            ]
-        }, {multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"} );
-};
+<?php if(array_keys($demandes_alsace->getRawValue())): ?>
+  window.onload = function () {
+          var ctx = document.getElementById("graphique").getContext("2d");
+          myNewChart = new Chart(ctx).Bar({
+              labels: <?php echo json_encode(array_keys($demandes_alsace->getRawValue())) ?>,
+              datasets: [
+                  {
+                      label: "AOC Alsace",
+                      fillColor: "rgba(120,120,220,0.2)",
+                      strokeColor: "rgba(120,120,220,1)",
+                      pointColor: "rgba(120,120,220,1)",
+                      pointStrokeColor: "#fff",
+                      pointHighlightFill: "#fff",
+                      pointHighlightStroke: "rgba(120,120,220,1)",
+                      data: <?php echo json_encode(array_values($demandes_alsace->getRawValue())) ?>
+                  },
+                  {
+                      label: "VT / SGN",
+                      fillColor: "rgba(0,220,220,0.2)",
+                      strokeColor: "rgba(0,220,220,1)",
+                      pointColor: "rgba(0,220,220,1)",
+                      pointStrokeColor: "#fff",
+                      pointHighlightFill: "#fff",
+                      pointHighlightStroke: "rgba(0,220,220,1)",
+                      data: <?php echo json_encode(array_values($demandes_vtsgn->getRawValue())) ?>
+                  },
+              ]
+          }, {multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"} );
+  };
+<?php endif;?>
+
 </script>
 
 <h3>Liste des tournées de dégustation</h3>

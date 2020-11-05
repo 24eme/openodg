@@ -51,7 +51,8 @@
                       <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                         <td>
                           <div class="row">
-                            <div class="col-xs-4 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
+                            <div class="col-xs-4 text-right"><?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
+                              <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
                             <div class="col-xs-4 text-right"><?php echo $lot->produit_libelle;?></div>
                             <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
                             <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
@@ -67,10 +68,12 @@
                           </div>
                         </td>
                         <td class="text-center">
-                          <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
-                            <span class="text-muted glyphicon glyphicon-pencil"></span>
-                          <?php else: ?>
-                            <?php echo $lot->getShortLibelleConformite(); ?>
+                          <?php if (!$lot->leurre): ?>
+                            <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
+                              <span class="text-muted glyphicon glyphicon-pencil"></span>
+                            <?php else: ?>
+                              <?php echo $lot->getShortLibelleConformite(); ?>
+                            <?php endif; ?>
                           <?php endif; ?>
                         </td>
                       </tr>
