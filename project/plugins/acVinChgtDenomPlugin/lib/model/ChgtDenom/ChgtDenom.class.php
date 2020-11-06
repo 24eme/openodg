@@ -129,7 +129,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return (!$this->changement_produit);
     }
     public function isChgtTotal() {
-      return (!$this->changement_volume);
+      return ($this->changement_volume == $this->getMvtLot()->volume);
     }
 
     public function generateLots() {
@@ -139,11 +139,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       $lots = array();
       $lot = MouvementLotView::generateLotByMvt($mvtLot);
+      $lot->numero .= 'a';
 
       if (!$this->isChgtTotal()) {
         $lot->volume -= $this->changement_volume;
         $lotBis = MouvementLotView::generateLotByMvt($mvtLot);
-        $lotBis->numero = $this->changement_numero;
+        $lotBis->numero .= 'b';
         $lotBis->volume = $this->changement_volume;
         $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
@@ -224,6 +225,36 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
       }
       return null;
+    }
+
+    public function getCepagesToStr(){
+      $cepages = $this->changement_cepages;
+      $str ='';
+      $k=0;
+      $total = 0.0;
+      foreach ($cepages as $c => $volume){ $total+=$volume; }
+      foreach ($cepages as $c => $volume){
+        $k++;
+        $p = ($total)? round(($volume/$total)*100) : 0.0;
+        $str.= $c." (".$p.'%)';
+        $str.= ($k < count($cepages))? ', ' : '';
+      }
+      return $str;
+    }
+
+    public function addCepage($cepage, $repartition) {
+        $this->changement_cepages->add($cepage, $repartition);
+    }
+
+    public function getCepagesLibelle() {
+        $libelle = null;
+        foreach($this->changement_cepages as $cepage => $repartition) {
+            if($libelle) {
+                $libelle .= ", ";
+            }
+            $libelle .= $cepage . " (".$repartition."%)";
+        }
+        return $libelle;
     }
 
     /**** FIN DES MOUVEMENTS ****/
