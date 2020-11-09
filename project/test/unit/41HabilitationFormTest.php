@@ -29,7 +29,7 @@ $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-
 
 $produitConfig_0 = null;
 $produitConfig_1 = null;
-foreach($habilitation->getProduitsConfig() as $p) {
+foreach($habilitation->getProduitsConfig($configuration) as $p) {
     if(!$produitConfig_0){
       $produitConfig_0 = $p;
       continue;
