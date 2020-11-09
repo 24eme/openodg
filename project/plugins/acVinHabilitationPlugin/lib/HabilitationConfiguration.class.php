@@ -66,4 +66,24 @@ class HabilitationConfiguration {
         return array('VALIDE', 'REFUSE', 'ANNULE');
     }
 
+    public function getProduitConverted($produit){
+
+      if(!isset($this->configuration['produits'])){
+        return $produit;
+      }
+      if(!isset($this->configuration['produits']['convert'])){
+        return $produit;
+      }
+
+      $key = $produit->getKey();
+
+      if(isset($this->configuration['produits']['convert'][$key])) {
+        $converted_key = $this->configuration['produits']['convert'][$key];
+        return $produit->getParent()->get($converted_key);
+      }
+
+      return $produit;
+
+    }
+
 }

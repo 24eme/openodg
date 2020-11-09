@@ -24,7 +24,7 @@ $config = ConfigurationClient::getCurrent();
 
 $produitConfig = null;
 $produitConfig2 = null;
-foreach($config->getProduitsCahierDesCharges() as $p) {
+foreach(HabilitationClient::getInstance()->getProduitsConfig($config) as $p) {
     if(!$produitConfig) {
         $produitConfig = $p;
     } else {
@@ -35,8 +35,8 @@ foreach($config->getProduitsCahierDesCharges() as $p) {
 
 $demandeStatut = "HABILITATION";
 
-$t->comment("Création d'une demande");
 $date = (new DateTime("-6 month"))->format('Y-m-d');
+$t->comment("Création d'une demande");
 $statut = "DEPOT";
 $commentaire = "Envoyé par courrier";
 $premierCommentaire = $commentaire;
