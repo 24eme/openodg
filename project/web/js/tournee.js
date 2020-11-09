@@ -20,6 +20,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     var localSave = function() {
         localStorageService.set(local_storage_name, angular.toJson($scope.operateurs));
+        localStorageService.set(local_storage_name + ".expiration", new Date());
     }
 
     var localDelete = function() {
