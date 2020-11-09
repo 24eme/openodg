@@ -45,7 +45,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
         var localSave = function () {
             localStorageService.set(local_storage_name, angular.toJson($scope.planification));
-            localStorageService.set(local_storage_name + ".expiration", new Date());
+            localStorageService.set(local_storage_name + ".date", new Date());
         }
 
         $scope.updateRdv = function (rdv) {
