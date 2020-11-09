@@ -26,7 +26,7 @@ $t->is($habilitation->isLectureSeule(), false, "l'habilitation n'est pas en lect
 
 
 $produitConfig = null;
-foreach($habilitation->getConfiguration()->getProduitsCahierDesCharges() as $p) {
+foreach($habilitation->getProduitsConfig() as $p) {
     $produitConfig = $p;
     break;
 }
