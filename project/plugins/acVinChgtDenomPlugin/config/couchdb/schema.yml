@@ -15,8 +15,12 @@ ChgtDenom:
       changement_origine_mvtkey: {}
       changement_produit: {}
       changement_produit_libelle: { }
+      changement_cepages:
+        type: collection
+        definition:
+          fields:
+            '*': { type: float }
       changement_volume: { type: float }
-      changement_numero: { }
       declarant:
         type: collection
         class: ChgtDenomDeclarant

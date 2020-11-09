@@ -14,8 +14,9 @@
             <div class="checkbox">
                 <label>
                 	<?php echo $form['engagement_' . $engagement->getCode()]->render(); ?>
-                    <?php echo ($engagement->getRawValue()->getInfo()) ? $engagement->getRawValue()->getInfo()." : " : ''; ?>
+
                     <?php echo $engagement->getRawValue()->getMessage() ?>
+                    <?php echo ($engagement->getRawValue()->getInfo()) ? " : <strong>".$engagement->getRawValue()->getInfo() : '</strong>'; ?>
                 </label>
             </div>
             </div>
