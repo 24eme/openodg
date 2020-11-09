@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument {
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -45,6 +45,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected $piece_document = null;
     protected $csv_douanier = null;
     protected $document_douanier_type = null;
+    protected $archivage_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -61,6 +62,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
+        $this->archivage_document = new ArchivageDocument($this);
         $this->csv_douanier = null;
     }
 
@@ -1140,6 +1142,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 	}
 
+  protected function preSave() {
+      $this->archivage_document->preSave();
+  }
+
+  /*** ARCHIVAGE ***/
+
+  public function getNumeroArchive() {
+
+      return $this->_get('numero_archive');
+  }
+
+  public function isArchivageCanBeSet() {
+
+      return $this->isValideeOdg();
+  }
+
+  /*** FIN ARCHIVAGE ***/
+
 	public function hasVciDetruit()
 	{
 		return $this->declaration->hasVciDetruit();
@@ -1264,6 +1284,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
+    public function getPourcentagesCepages($cepages) {
+      $total = 0;
+      $result = array();
+      foreach($cepages as $pc) {
+        $total += $pc;
+      }
+      foreach($cepages as $cep => $pc) {
+        $result[$cep] += round(($pc/$total) * 100);
+      }
+      return $result;
+    }
+
     private function generateMouvementLotsFromLot($lot, $key, $prelevable = 1) {
         $mvt = new stdClass();
         $mvt->prelevable = $prelevable;
@@ -1288,7 +1320,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
-        foreach($lot->cepages as $cep => $pc) {
+        foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc) {
             $mvt->details .= $cep.' ('.$pc.'%) ';
         }
         $mvt->region = '';
