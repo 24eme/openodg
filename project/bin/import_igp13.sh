@@ -6,6 +6,8 @@ mkdir $TMPDIR 2> /dev/null
 
 ODG=igp13
 
+
+echo "Export données"
 cd $WORKINGDIR/import/igp/
 bash scrapping.sh
 cd $WORKINGDIR
@@ -45,7 +47,7 @@ do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-rsync -a $DOCUMENTSDIR$1 $DATA_DIR/
+rsync -a $DOCUMENTSDIR$1/ $DATA_DIR/
 
 echo "Import des Opérateurs"
 
@@ -68,3 +70,8 @@ echo "Habilitations"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 
 php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
+
+
+echo "Contacts"
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
