@@ -140,6 +140,7 @@ DRev:
               definition:
                 fields:
                   statut: { }
+                  libelle: { }
       documents_rappel: { required: false }
       documents_rappels:
         required: false

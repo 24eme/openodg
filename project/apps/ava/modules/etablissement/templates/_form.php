@@ -1,7 +1,7 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 <div class="row">
-    <div id="row_form_exploitation" class="row_form_exploitation" class="row col-xs-12 <?php if(!$form->isBound()): ?>hidden<?php endif; ?>">
+    <div id="row_form_exploitation" class="row col-xs-12 hidden row_form_exploitation ">
         <div class="col-xs-7">
             <?php if($etablissement->cvi): ?>
             <div class="form-group">
@@ -102,7 +102,7 @@
             <?php endif; ?>
         </div>
     </div>
-    <div id="row_info_exploitation" class="row_info_exploitation" class="row col-xs-12 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
+    <div id="row_info_exploitation" class="row col-xs-12 <?php if($form->isBound()): ?>hidden<?php endif; ?> row_info_exploitation">
         <div class="col-xs-7">
             <?php if($etablissement->cvi): ?>
             <div class="form-group">
