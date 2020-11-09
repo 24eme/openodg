@@ -68,10 +68,10 @@ php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" -
 echo "Habilitations"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
-
 php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
 
 
 echo "Contacts"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
+php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
