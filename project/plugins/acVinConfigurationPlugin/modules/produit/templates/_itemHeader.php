@@ -13,6 +13,7 @@
 	<th style="width:15px;" class="center"><strong>Code analytics</strong></th>
 	<?php endif; ?>
 	<th style="width:15px;" class="center"><strong>Code douane</strong></th>
+	<th style="width:15px;" class="center"><strong>Reserve Interpro.</strong></th>
 	<th style="width:15px;" class="center"><strong>Rend conseil.</strong></th>
 	<th style="width:15px;" class="center"><strong>Rend.</strong></th>
 	<th style="width:15px;" class="center"><strong>Rend DR.</strong></th>

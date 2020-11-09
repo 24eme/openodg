@@ -3,7 +3,8 @@ var Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
-const nightmare = Nightmare({ show: true ,
+const nightmare = Nightmare({ show: true
+  // ,
  //  waitTimeout: 100000000, // in ms
  //  openDevTools: {
  //   mode: 'detach'
@@ -13,7 +14,6 @@ var config = require('./config.json');
 var destination_file='imports/'+config.file_name+'/';
 
 
-mkdirp('imports/'+config.file_name);
 
 nightmare
 
@@ -76,7 +76,7 @@ nightmare
   // .wait('#btnExportExcel')
   .wait(3000)
   .click('#btnExportExcel')
-  .download(destination_file+'operateurs_innactifs.xlsx')
+  .download(destination_file+'operateurs_inactifs.xlsx')
   .refresh()
   //fin operateurs innactifs
 
@@ -314,11 +314,11 @@ nightmare
         var elements = document.querySelector('#ContentPlaceHolder1_GridView1').innerText
         return elements;
         })
-     .end()
-      .then((text) => {
-        fs.writeFileSync(destination_file+'produits.txt',text);
-      })
-     // //fin produits
+      .end()
+      .then((produits) => {
+       fs.writeFileSync(destination_file+'produits.txt',produits);
+       })
+     // fin produits
 
   .catch(error => {
     console.error('Search failed:', error)

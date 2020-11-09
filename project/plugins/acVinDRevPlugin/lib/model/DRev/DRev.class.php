@@ -190,7 +190,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfigProduits() {
-      
+
         return $this->getConfiguration()->declaration->getProduits();
     }
 
@@ -1264,6 +1264,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
+    public function getPourcentagesCepages($cepages) {
+      $total = 0;
+      $result = array();
+      foreach($cepages as $pc) {
+        $total += $pc;
+      }
+      foreach($cepages as $cep => $pc) {
+        $result[$cep] += round(($pc/$total) * 100);
+      }
+      return $result;
+    }
+
     private function generateMouvementLotsFromLot($lot, $key, $prelevable = 1) {
         $mvt = new stdClass();
         $mvt->prelevable = $prelevable;
@@ -1288,7 +1300,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
-        foreach($lot->cepages as $cep => $pc) {
+        foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc) {
             $mvt->details .= $cep.' ('.$pc.'%) ';
         }
         $mvt->region = '';
@@ -1296,7 +1308,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $mvt;
     }
 
-    private function generateAndAddMouvementLotsFromLot($lot, $key, $prelevable = 1) {
+    public function generateAndAddMouvementLotsFromLot($lot, $key, $prelevable = 1) {
         $mvt = $this->generateMouvementLotsFromLot($lot, $key, $prelevable);
         if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
             $this->add('mouvements_lots')->add($this->identifiant);

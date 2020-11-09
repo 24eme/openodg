@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(41);
+$t = new lime_test(48);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -204,6 +204,7 @@ $rdm_orig = $produit2->getConfig()->getRendementCepage();
 $rdm_ri = $produit2->getConfig()->getRendementReserveInterpro();
 $produit2->getConfig()->add('attributs')->add('rendement', 60);
 $produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro', 50);
+$produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro_min', 10);
 $produit2->getConfig()->clearStorage();
 
 $drevM2 = $drevM1->generateModificative();
@@ -217,9 +218,35 @@ $drevM2->validate();
 $drevM2->save();
 
 $t->is($produit2M2->getConfig()->getRendementReserveInterpro(), 50, "le rendement interpro est bien celui attendu en configuration 2");
+$t->is($produit2M2->getConfig()->getRendementReserveInterproMin(), 10, "le rendement interpro minimal est bien celui attendu en configuration 2");
+$t->ok(!$drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Pas de champ reserve interpro car le volume minimal n'est pas atteint");
+$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), 0, "Le volume dédié à la réserve interpro est à 0 car inférieur au minimal");
+$t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(), $produit2M2->superficie_revendique * 50 + 5, "Le volume commercialisable est le bon");
+
+$drevM2->devalidate();
+$produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 50 + $produit2M2->getConfig()->getRendementReserveInterproMin() + 1;
+$produit2M2->volume_revendique_issu_recolte = $produit2M2->volume_revendique_total;
+$drevM2->save();
+$drevM2->validate();
+$drevM2->save();
+
 $t->ok($drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro est bien présent");
-$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), 5, "Le volume dédié à la réserve interpro est le bon");
+$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), $produit2M2->getConfig()->getRendementReserveInterproMin() + 1, "Le volume dédié à la réserve interpro est le bon");
 $t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(), $produit2M2->superficie_revendique * 50, "Le volume commercialisable est le bon");
+
+
+$drevM2->devalidate();
+$produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 60 + 1;
+$produit2M2->volume_revendique_issu_recolte = $produit2M2->volume_revendique_total;
+$drevM2->save();
+$drevM2->validate();
+$drevM2->save();
+
+$t->ok($drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro est bien présent quand le rendement butoir est dépassé");
+$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), $produit2M2->superficie_revendique * 10, "Le volume dédié à la réserve interpro est le bon quand le rendement butoir est dépassé");
+$t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(), $produit2M2->superficie_revendique * 50, "Le volume commercialisable est le bon quand le rendement butoir est dépassé");
+
+
 $t->ok(!$drevM2->get($produit1->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro n'est pas présent pour le 1er produit");
 $t->ok($drevM2->hasProduitsReserveInterpro(), "La Drev indique bien qu'il existe des produits en reserve interpro");
 $t->ok(!$drevM1->hasProduitsReserveInterpro(), "La Drev précédente n'a pas de produit en réserve interpro");

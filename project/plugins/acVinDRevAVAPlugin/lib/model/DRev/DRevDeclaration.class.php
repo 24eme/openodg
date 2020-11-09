@@ -50,16 +50,4 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return false;
 	}
 
-	public function getNbLotsMinimum(){
-		$nb = 0;
-		foreach($this->getProduits() as $produit) {
-			foreach ($produit->getCepages() as $key => $cepage) {
-				if($cepage->detail->getFirst()->volume_revendique){
-					$nb++;
-				}
-			}
-		}
-		return $nb;
-	}
-
 }

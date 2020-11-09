@@ -292,19 +292,8 @@ class societeActions extends sfCredentialActions {
     }
 
     protected function matchSociete($view_res, $term, $limit) {
-        $json = array();
-        foreach ($view_res as $key => $one_row) {
-            $text = SocieteAllView::getInstance()->makeLibelle($one_row->key);
 
-            if (Search::matchTerm($term, $text)) {
-                $json[$one_row->id] = $text;
-            }
-
-            if (count($json) >= $limit) {
-                break;
-            }
-        }
-        return $json;
+        return SocieteClient::matchSociete($view_res, $term, $limit);
     }
 
 }

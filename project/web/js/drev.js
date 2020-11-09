@@ -8,10 +8,10 @@
     $.initExploitation = function()
     {
         $('#btn_exploitation_modifier').click(function(e) {
-            $('#btn_exploitation_modifier').addClass("hidden");
-            $('#btn_exploitation_annuler').removeClass("hidden");
-            $('#row_form_exploitation').removeClass("hidden");
-            $('#row_info_exploitation').addClass("hidden");
+            $('#btn_exploitation_modifier').addClass("hidden")
+            $('#btn_exploitation_annuler').removeClass("hidden")
+            $('.row_form_exploitation').removeClass("hidden");
+            $('.row_info_exploitation').addClass("hidden");
         });
         if($('#drevDenominationAuto').length){
             if($('#drevDenominationAuto').data("auto")){
@@ -255,7 +255,7 @@
                         if(libelle) {
                             libelle = libelle + ", ";
                         }
-                        var p = (total)? parseInt((volume/total) * 100) : 0;
+                        var p = (total)? Math.round((volume/total) * 100) : 0;
                         libelle = libelle + cepage + "&nbsp;("+p+"%)";
                         $(this).removeClass('transparence-sm');
                     } else {

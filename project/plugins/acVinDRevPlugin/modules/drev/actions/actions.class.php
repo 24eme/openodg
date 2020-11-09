@@ -645,15 +645,19 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
-            $document = $documents->add($engagement->getCode());
-            if ($engagement->getCode() == DRevDocuments::DOC_VCI) {
-            	$document->statut = DRevDocuments::STATUT_RECU;
-            } else {
-            	$document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            if(!$this->form->getValue("engagement_".$engagement->getCode())) {
+                continue;
             }
+            $document = $documents->add($engagement->getCode());
+            $document->libelle = $engagement->getMessage();
+            if($engagement->getInfo()) {
+                $document->libelle .= " : ".$engagement->getInfo();
+            }
+            $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
         }
 
         if($this->drev->isPapier()) {
@@ -666,6 +670,10 @@ class drevActions extends sfActions {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
+        if (DrevConfiguration::getInstance()->hasValidationOdgAuto()) {
+            $this->drev->validateOdg();
+        }
+        
         $this->drev->save();
 
         if($this->getUser()->isAdmin() && $this->drev->isPapier()) {
@@ -809,11 +817,12 @@ class drevActions extends sfActions {
 
     public function executeXML(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+        $region = $request->getParameter('region');
         $this->secure(DRevSecurity::VISUALISATION, $drev);
         if (!$drev->validation) {
             $drev->cleanDoc();
         }
-		$xml = $this->getPartial('drev/xml', array('drev' => $drev));
+		$xml = $this->getPartial('drev/xml', array('drev' => $drev, 'region' => $region));
         $this->getResponse()->setHttpHeader('md5', md5($xml));
         $this->getResponse()->setHttpHeader('LastDocDate', date('r'));
         $this->getResponse()->setHttpHeader('Last-Modified', date('r'));
@@ -821,7 +830,10 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');
         $this->getResponse()->setHttpHeader('Expires', '0');
         $this->getResponse()->setContentType('text/xml');
-        $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev.".xml");
+        if (!$region) {
+            $region = 'TOUT';
+        }
+        $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev."-".$region.".xml");
         return $this->renderText($xml);
     }
 
@@ -835,29 +847,15 @@ class drevActions extends sfActions {
     	return $this->redirect('drev_visualisation', $drev);
     }
 
-    public function executeDrPdf(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::VISUALISATION, $drev);
-
-        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
-
-        if(!$file) {
-
-            $this->forward404();
-        }
-
-        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="DR-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
-        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
-        $this->getResponse()->setHttpHeader('Pragma', '');
-        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
-        $this->getResponse()->setHttpHeader('Expires', '0');
-
-        return $this->renderText($file);
-    }
-
     public function executeDocumentDouanierPdf(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+
+        $fileContent = file_get_contents($drev->getDocumentDouanier('pdf'));
+
+        if(!$fileContent) {
+
+            return $this->redirect('drev_document_douanier_xls', $drev);
+        }
 
         $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
         $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
@@ -866,7 +864,27 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');
         $this->getResponse()->setHttpHeader('Expires', '0');
 
-        return $this->renderText(file_get_contents($drev->getDocumentDouanier('pdf')));
+        return $this->renderText($fileContent);
+    }
+
+    public function executeDocumentDouanierXls(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $fileContent = file_get_contents($drev->getDocumentDouanier('xls'));
+
+        if(!$fileContent) {
+
+            $this->forward404();
+        }
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/xls');
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.xls"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText($fileContent);
     }
 
     public function executeMain()
