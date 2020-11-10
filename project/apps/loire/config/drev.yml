@@ -35,7 +35,6 @@ all:
             - "appellations/SAV/"
             - "appellations/SAVRAM/"
             - "appellations/SAVCDS/"
-          inao: "data/drev/FEDE.csv"
         TOURAINE:
           nom: "Touraine"
           adresse: "ZI 4 rue Gutenberg, 41140 NOYERS SUR CHER"
