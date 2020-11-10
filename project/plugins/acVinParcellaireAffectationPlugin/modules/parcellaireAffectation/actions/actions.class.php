@@ -77,14 +77,7 @@ class parcellaireAffectationActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
-      $this->form->bind(array_merge($request->getParameter($this->form->getName())), [
-        "adresse" => $this->etablissement->adresse,
-        "commune" => $this->etablissement->commune,
-        "siret" => $this->etablissement->siret,
-        "adresse" => $this->etablissement->adresse,
-        "raison_sociale" => $this->etablissement->raison_sociale,
-        "code_postal" => $this->etablissement->code_postal
-      ]);
+    	$this->form->bind($request->getParameter($this->form->getName()));
 
     	if (!$this->form->isValid()) {
 
