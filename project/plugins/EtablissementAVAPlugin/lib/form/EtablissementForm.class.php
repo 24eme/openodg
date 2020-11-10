@@ -23,18 +23,19 @@ class EtablissementForm extends acCouchdbObjectForm
             "email" => new sfWidgetFormInput(array("label" => "Email")),
         ));
 
-        $this->setValidators(array(
+				$this->setValidators(array(
             'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
-            'raison_sociale' => new sfValidatorString(array("required" => true)),
-            'adresse' => new sfValidatorString(array("required" => true)),
-            'commune' => new sfValidatorString(array("required" => true)),
-            'code_postal' => new sfValidatorString(array("required" => true)),
+            'raison_sociale' => new sfValidatorString(array("required" => false)),
+            'adresse' => new sfValidatorString(array("required" => false)),
+            'commune' => new sfValidatorString(array("required" => false)),
+            'code_postal' => new sfValidatorString(array("required" => false)),
             'telephone_bureau' => new sfValidatorString(array("required" => false)),
             'telephone_mobile' => new sfValidatorString(array("required" => false)),
             'telephone_prive' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
        	    'email' => new sfValidatorEmailStrict(array("required" => true)),
-        )); 
+        ));
+
 
         if(!$this->getOption("use_email")) {
             $this->getValidator('email')->setOption('required', false);
