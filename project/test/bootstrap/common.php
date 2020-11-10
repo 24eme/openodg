@@ -5,6 +5,9 @@ require_once dirname(__FILE__).'/../../lib/vendor/symfony/test/bootstrap/unit.ph
 
 $application = (getenv("APPLICATION")) ? getenv("APPLICATION") : 'rhone';
 
-$configuration = ProjectConfiguration::getApplicationConfiguration($application, 'dev', true);
-
-$db = new sfDatabaseManager($configuration);
+$configuration = ProjectConfiguration::getApplicationConfiguration($application, 'test', true);
+$context = sfContext::createInstance($configuration);
+if(getenv("COUCHURL")) {
+    $db = new sfDatabaseManager($configuration);
+    $db->setDatabase('default', new acCouchdbDatabase(array('dsn' => preg_replace('|[^/]+$|', '', getenv("COUCHURL")), 'dbname' => preg_replace('|^.+/([^/]+$)|', '\1', getenv("COUCHURL")))));
+}
