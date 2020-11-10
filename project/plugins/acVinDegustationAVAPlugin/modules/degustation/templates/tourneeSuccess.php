@@ -4,7 +4,7 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
-<?php use_javascript('tournee.js?202011091617'); ?>
+<?php use_javascript('tournee.js?202011091623'); ?>
 
 <ol class="breadcrumb hidden-xs hidden-sm">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
