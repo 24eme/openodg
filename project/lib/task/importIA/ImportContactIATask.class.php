@@ -51,12 +51,13 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
             $societe = null;
-            $resultat = SocieteClient::matchSociete($societes, $data[self::CSV_RAISON_SOCIALE], 1);
-            if($resultat && count($resultat) >= 1 && $data[self::CSV_RAISON_SOCIALE]) {
+            $idSociete=sprintf("%06d",preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]))
+            $resultat = SocieteClient::matchSociete($societes,$idSociete, 1);
+            if($resultat && count($resultat) >= 1 && $idSociete) {
                 $societe = SocieteClient::getInstance()->find(key($resultat));
             }
             if(!$societe) {
-                $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR);  //ajouter l'identifiant de la société
+                $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR,preg_replace("/^ENT/","", $data[self::CSV_NUM_SOCIETE]));
                 if (isset($data[self::CSV_ADRESSE_1])){
                   $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
                 }
