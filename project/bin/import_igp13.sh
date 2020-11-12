@@ -4,12 +4,12 @@
 
 mkdir $TMPDIR 2> /dev/null
 
-# ODG=igp13
-
 if ! test "$1"; then
     echo "Nom du dossier/de l'ODG";
     exit 1;
 fi
+
+# ODG=igp13
 ODG=$1
 
 
@@ -39,12 +39,14 @@ if test "$2" = "--delete"; then
         echo "Suppression de la base couchdb"
     fi
 
-    # si on supprime la base export se fait par défaut
-    echo "Export données"
-    cd $WORKINGDIR/import/igp/
-    bash scrapping.sh
-    cd $WORKINGDIR
-
+    if [ $3 ]; then
+      if [ $3 = "-exp" ]; then
+        echo "Export données"
+        cd $WORKINGDIR/import/igp/
+        bash scrapping.sh
+        cd $WORKINGDIR
+      fi
+    fi
 fi
 
 echo "Création de la base couchdb"
@@ -63,7 +65,7 @@ do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-rsync -a $DOCUMENTSDIR$1/ $DATA_DIR/
+rsync -a $DOCUMENTSDIR$ODG/ $DATA_DIR/
 
 echo "Import des Opérateurs"
 
