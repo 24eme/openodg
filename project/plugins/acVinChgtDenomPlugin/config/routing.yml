@@ -48,6 +48,16 @@ chgtdenom_validation:
   requirements:
     sf_method: [get, post]
 
+chgtdenom_logement:
+  url: /changement-denomination/logement/:id/:key
+  param: { module: chgtdenom, action: logement, key: null }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [post]
+
 chgtdenom_visualisation:
   url: /changement-denomination/visualisation/:id
   param: { module: chgtdenom, action: visualisation }

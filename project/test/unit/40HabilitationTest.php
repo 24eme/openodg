@@ -2,8 +2,6 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-sfContext::createInstance($configuration);
-
 $t = new lime_test(37);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -26,7 +24,7 @@ $t->is($habilitation->isLectureSeule(), false, "l'habilitation n'est pas en lect
 
 
 $produitConfig = null;
-foreach($habilitation->getConfiguration()->getProduitsCahierDesCharges() as $p) {
+foreach($habilitation->getProduitsConfig($configuration) as $p) {
     $produitConfig = $p;
     break;
 }

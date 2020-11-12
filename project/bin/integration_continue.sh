@@ -34,9 +34,6 @@ fi
 
 mkdir -p $XMLTESTDIR 2> /dev/null
 
-#git fetch > /dev/null 2>&1
-#git reset --hard origin/master
-
 BRANCH=$(cat ../.git/HEAD | sed -r 's|^ref: refs/heads/||')
 LASTCOMMIT=$(cat $WORKINGDIR"/../.git/refs/heads/"$BRANCH)
 DATE=$(date +%Y%m%d%H%M%S)
@@ -54,7 +51,7 @@ curl -s -X PUT $COUCHTEST  || ( echo "connexion à $COUCHTEST impossible"  ;  ex
 
 cd ..
 make clean
-make
+make couchurl=$COUCHTEST
 cd -
 
 ls $WORKINGDIR"/data/configuration/"$APPLICATION | while read jsonFile
@@ -67,7 +64,7 @@ php symfony cc
 
 XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"_"$BRANCH".xml
 
-APPLICATION=$APPLICATION NODELETE=1 php symfony test:all --xml=$XMLFILE
+APPLICATION=$APPLICATION COUCHURL=$COUCHTEST NODELETE=1 php symfony test:all --xml=$XMLFILE
 sed -i "s|$WORKINGDIR/||" $XMLFILE
 
 rm $PID_PATH
