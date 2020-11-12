@@ -52,7 +52,7 @@ EOF;
             $data = str_getcsv($line, ";");
             $societe = null;
             $idSociete=sprintf("%06d",preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]));
-            $societe = SocieteClient::getInstance()->find('SOCIETE-'.$idSociete));
+            $societe = SocieteClient::getInstance()->find('SOCIETE-'.$idSociete);
             if(!$societe) {
                 $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR,preg_replace("/^ENT/","", $data[self::CSV_NUM_SOCIETE]));
                 if (isset($data[self::CSV_ADRESSE_1])){
