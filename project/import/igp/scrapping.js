@@ -302,6 +302,22 @@ nightmare
     //fin gestion facture
 
 
+
+    //list membres
+    .evaluate(()=>{
+      var elements = Array.from(document.querySelectorAll('a'))
+      elements[121].className += "list_membres";
+    })
+    .click('.list_membres')
+    .wait('#Button1')
+    .click('#Button1')
+    .click('#Button2')
+    .download(destination_file+'membres.xlsx')
+    .refresh()
+
+
+    //fin list membres
+
      //produits
      .evaluate(()=>{
        var elements = Array.from(document.querySelectorAll('a'))
