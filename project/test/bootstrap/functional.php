@@ -23,8 +23,14 @@ if(!$app || $app == "app") {
 }
 
 require_once dirname(__FILE__).'/../../config/ProjectConfiguration.class.php';
+require_once dirname(__FILE__).'/Browser.class.php';
+
 $configuration = ProjectConfiguration::getApplicationConfiguration($app, 'test', isset($debug) ? $debug : true);
 sfContext::createInstance($configuration);
+if(getenv("COUCHURL")) {
+    $db = sfContext::getInstance()->getDatabaseManager();
+    $db->setDatabase('default', new acCouchdbDatabase(array('dsn' => preg_replace('|[^/]+$|', '', getenv("COUCHURL")), 'dbname' => preg_replace('|^.+/([^/]+$)|', '\1', getenv("COUCHURL")))));
+}
 
 // remove all cache
 sfToolkit::clearDirectory(sfConfig::get('sf_app_cache_dir'));
