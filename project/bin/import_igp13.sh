@@ -4,19 +4,24 @@
 
 mkdir $TMPDIR 2> /dev/null
 
-ODG=igp13
+# ODG=igp13
+ODG=$1
+EXPORT=$2
 
-
-echo "Export données"
-cd $WORKINGDIR/import/igp/
-bash scrapping.sh
-cd $WORKINGDIR
+if [ $EXPORT ]; then
+  if [ $EXPORT = "-exp" ]; then
+    echo "Export données";
+    cd $WORKINGDIR/import/igp/;
+    bash scrapping.sh;
+    cd $WORKINGDIR;
+  fi
+fi
 
 DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
 if ! test "$1"; then
-    echo "Nom du dossier";
+    echo "Nom du dossier/de l'ODG";
     exit 1;
 fi
 
@@ -29,6 +34,13 @@ if test "$2" = "--delete"; then
         curl -sX DELETE http://$COUCHHOST:$COUCHPORT/$COUCHBASE
         echo "Suppression de la base couchdb"
     fi
+
+    # si on supprime la base export se fait par défaut
+    echo "Export données"
+    cd $WORKINGDIR/import/igp/
+    bash scrapping.sh
+    cd $WORKINGDIR
+
 fi
 
 echo "Création de la base couchdb"
