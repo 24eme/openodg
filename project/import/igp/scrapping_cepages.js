@@ -24,6 +24,7 @@ nightmare
   })
    .click('.cepages')   //pour donner accès au lien sinon site en maintenance
    .goto(config.web_site_produits)
+   .refresh()
    .wait('#btnCepage')
    .click('#btnCepage')
    .wait('#ContentPlaceHolder1_gvCepage')
