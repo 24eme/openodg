@@ -60,6 +60,15 @@ php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --applicatio
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
+
+
+echo "Contacts"
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
+php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
+
+
+
 echo "Import des interlocuteurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv
@@ -69,9 +78,3 @@ echo "Habilitations"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
-
-
-echo "Contacts"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
-php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
