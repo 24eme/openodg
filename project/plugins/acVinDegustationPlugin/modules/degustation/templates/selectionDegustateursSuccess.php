@@ -24,7 +24,7 @@
 <p>Sélectionnez l'ensemble des dégustateurs en vue de leurs participations à la dégustation</p>
 
 <div class="form-group">
-  <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" class="hamzastyle form-control">
+  <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
 </div>
 
 <form action="<?php echo url_for("degustation_selection_degustateurs", $degustation) ?>" method="post" class="form-horizontal degustation degustateurs">
