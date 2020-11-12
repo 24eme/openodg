@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument {
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -45,6 +45,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected $piece_document = null;
     protected $csv_douanier = null;
     protected $document_douanier_type = null;
+    protected $archivage_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -61,6 +62,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
+        $this->archivage_document = new ArchivageDocument($this);
         $this->csv_douanier = null;
     }
 
@@ -1139,6 +1141,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit->update();
         }
 	}
+
+  protected function preSave() {
+      $this->archivage_document->preSave();
+  }
+
+  /*** ARCHIVAGE ***/
+
+  public function getNumeroArchive() {
+
+      return $this->_get('numero_archive');
+  }
+
+  public function isArchivageCanBeSet() {
+
+      return $this->isValideeOdg();
+  }
+
+  /*** FIN ARCHIVAGE ***/
 
 	public function hasVciDetruit()
 	{

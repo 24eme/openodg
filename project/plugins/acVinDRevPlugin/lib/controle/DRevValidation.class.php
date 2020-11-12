@@ -160,7 +160,7 @@ class DRevValidation extends DocumentValidation
             if(!$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')) {
                 continue;
             }
-            $produits_manquants[] = $produit->getLibelle();
+            $produits_manquants[$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
         }
 
         if(!count($produits_manquants)) {
