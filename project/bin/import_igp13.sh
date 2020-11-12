@@ -5,7 +5,14 @@
 mkdir $TMPDIR 2> /dev/null
 
 # ODG=igp13
+
+if ! test "$1"; then
+    echo "Nom du dossier/de l'ODG";
+    exit 1;
+fi
 ODG=$1
+
+
 EXPORT=$2
 
 if [ $EXPORT ]; then
@@ -20,10 +27,7 @@ fi
 DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
-if ! test "$1"; then
-    echo "Nom du dossier/de l'ODG";
-    exit 1;
-fi
+
 
 if test "$2" = "--delete"; then
 
