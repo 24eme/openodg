@@ -8,6 +8,6 @@ $application = (getenv("APPLICATION")) ? getenv("APPLICATION") : 'rhone';
 $configuration = ProjectConfiguration::getApplicationConfiguration($application, 'test', true);
 $context = sfContext::createInstance($configuration);
 if(getenv("COUCHURL")) {
-    $db = new sfDatabaseManager($configuration);
+    $db = sfContext::getInstance()->getDatabaseManager();
     $db->setDatabase('default', new acCouchdbDatabase(array('dsn' => preg_replace('|[^/]+$|', '', getenv("COUCHURL")), 'dbname' => preg_replace('|^.+/([^/]+$)|', '\1', getenv("COUCHURL")))));
 }
