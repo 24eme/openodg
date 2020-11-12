@@ -7,4 +7,5 @@ fi
 mkdir -p imports/$(cat config.json | jq '.file_name' | sed s/\"//g)
 node scrapping.js
 node scrapping_cepages.js
+node scrapping_membres_innactifs.js
 bash script_verify.sh
