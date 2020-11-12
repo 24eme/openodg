@@ -542,7 +542,17 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_VCI, $this->drev)) {
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_VCI, $this->drev) || !count($this->drev->getProduitsVci()) ) {
+
+            if($request->getParameter('prec')) {
+
+                return $this->redirect('drev_revendication_superficie', $this->drev);
+            }
+
+            if(count($this->drev->declaration->getProduitsLots()) > 0) {
+
+                return $this->redirect('drev_lots', $this->drev);
+            }
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -550,21 +560,6 @@ class drevActions extends sfActions {
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
-        }
-
-        if(!count($this->drev->getProduitsVci()) && count($this->drev->declaration->getProduitsLots()) > 0) {
-
-            return $this->redirect('drev_lots', $this->drev);
-        }
-
-        if(!count($this->drev->getProduitsVci()) && !$request->getParameter('prec')) {
-
-            return $this->redirect('drev_revendication', $this->drev);
-        }
-
-        if(!count($this->drev->getProduitsVci()) && $request->getParameter('prec')) {
-
-            return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VCI))) {
