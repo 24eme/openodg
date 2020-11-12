@@ -24,9 +24,10 @@ nightmare
   })
    .click('.cepages')   //pour donner accès au lien sinon site en maintenance
    .goto(config.web_site_produits)
-  .click('#btnCepage')
-  .wait('#ContentPlaceHolder1_gvCepage')
-    .evaluate(()=>{
+   .wait('#btnCepage')
+   .click('#btnCepage')
+   .wait('#ContentPlaceHolder1_gvCepage')
+   .evaluate(()=>{
      var elements = document.querySelector('#ContentPlaceHolder1_gvCepage').innerText
      return elements;
      })
