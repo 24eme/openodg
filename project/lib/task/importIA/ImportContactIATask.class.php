@@ -91,7 +91,7 @@ EOF;
               $compte->adresse = $data[self::CSV_ADRESSE_1];
             }
 
-            if ($data[self::CSV_ADRESSE_2]){
+            if (isset($data[self::CSV_ADRESSE_2])){
               $compte->adresse_complementaire = $data[self::CSV_ADRESSE_2];
             }
             if (isset($data[self::CSV_CODE_POSTAL])){
