@@ -421,11 +421,11 @@ class drevActions extends sfActions {
             return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
-        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && ($this->drev->isModificative() || DrevConfiguration::getInstance()->isDrDouaneRequired())){
+        if($this->drev->isModificative()) {
           return $this->redirect('drev_validation', $this->drev);
         }
 
-        return $this->redirect('drev_validation', $this->drev);
+        return $this->redirect('drev_revendication', $this->drev);
     }
 
     public function executeDeleteLots(sfWebRequest $request){
@@ -454,8 +454,10 @@ class drevActions extends sfActions {
         }
 
         if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $this->drev)) {
-
-            return $this->redirect('drev_lots', $this->drev);
+            if ($request->getParameter('prec')) {
+                return $this->redirect('drev_lots', $this->drev);
+            }
+            return $this->redirect('drev_validation', $this->drev);
         }
 
         if ($this->needDrDouane()) {
