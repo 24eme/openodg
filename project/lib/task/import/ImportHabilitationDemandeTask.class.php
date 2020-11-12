@@ -150,7 +150,8 @@ EOF;
         if($produitLibelle == "SAINT PERAY") {
             $produitLibelle = "Saint Peray Tranquilles";
         }
-        foreach(ConfigurationClient::getCurrent()->getProduitsCahierDesCharges() as $produit) {
+
+        foreach(HabilitationClient::getInstance()->getProduitsConfig(ConfigurationClient::getCurrent()) as $produit) {
             if(KeyInflector::slugify($produitLibelle) == KeyInflector::slugify($produit->getLibelleComplet())) {
 
                 return $produit->getHash();

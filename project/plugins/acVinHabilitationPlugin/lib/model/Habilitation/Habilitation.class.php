@@ -69,8 +69,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getProduitsConfig() {
-
-        return $this->getConfiguration()->getProduitsCahierDesCharges();
+      return HabilitationClient::getProduitsConfig($this->getConfiguration());
     }
 
     public function getProduitsHabilites() {

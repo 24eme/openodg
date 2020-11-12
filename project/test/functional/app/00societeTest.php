@@ -9,7 +9,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') a
     }
 }
 
-$b = new sfTestFunctional(new sfBrowser());
+$b = new sfTestFunctional(new Browser());
 $t = $b->test();
 
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));
