@@ -49,10 +49,10 @@
 		<?php
 			foreach ($collegeForm as $idCompte => $compteForm):
 			$compte = $form->getCompteByCollegeAndIdentifiant($college, $idCompte);
-      $words = json_encode(array_merge([
-        strtolower($compte->getNomAAfficher()), $compte->getAdresse(), $compte->getAdresseComplementaire(),
-        $compte->getCommune(), $compte->getCodePostal(), $compte->identifiant
-      ]), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+      $words = json_encode(array_merge(
+        explode(' ', strtolower($compte->getNomAAfficher())), explode(' ', $compte->getAdresse()), explode(' ', $compte->getAdresseComplementaire()),
+        [$compte->getCommune(), $compte->getCodePostal(), $compte->identifiant]
+      ), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
 		?>
             <tr class="vertical-center cursor-pointer hamzastyle-item" data-words='<?= $words ?>'>
                 <td><?php echo $compte->getLibelleWithAdresse() ?></td>
