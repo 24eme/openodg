@@ -6,9 +6,17 @@ fi
 FILE_NAME=$(cat config.json | jq '.file_name' | sed s/\"//g)
 
 mkdir -p imports/$(cat config.json | jq '.file_name' | sed s/\"//g)
-node scrapping.js
-node scrapping_cepages.js
-node scrapping_membres_innactifs.js
+if test "$DISPLAY"; then
+  node scrapping.js
+  node scrapping_cepages.js
+  node scrapping_membres_innactifs.js
+
+else
+  +xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js
+  +xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_cepages.js
+  +xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_membres_innactifs.js
+fi
+
 bash script_verify.sh
 sed "s/\t/;/" imports/$FILE_NAME/produits.txt >> imports/$FILE_NAME/produits.csv
 sed "s/\t/;/" imports/$FILE_NAME/cépages.txt | cut -d ";" -f 1 >> imports/$FILE_NAME/cépages.csv
