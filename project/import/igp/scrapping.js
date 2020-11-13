@@ -296,6 +296,7 @@ nightmare
     .select('#ddlCampagne','')
     .wait('#BtnRech')
     .click('#BtnRech')
+    .wait(3000)
     .click('#btnExport')
     .download(destination_file+'gestion_factures.xlsx')
     .refresh()
