@@ -1,6 +1,6 @@
 var Nightmare = require('nightmare');
 var fs = require('fs');
-const nightmare = Nightmare({ show: false
+const nightmare = Nightmare({ show: true
 })
 var config = require('./config.json');
 var destination_file='imports/'+config.file_name+'/';

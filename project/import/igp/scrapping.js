@@ -3,7 +3,7 @@ var Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
-const nightmare = Nightmare({ show: false
+const nightmare = Nightmare({ show: true
   // ,
  //  waitTimeout: 100000000, // in ms
  //  openDevTools: {
