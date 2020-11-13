@@ -79,28 +79,33 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	        $date = date('Y-m-d');
 	    }
 	    $this->validation = $date;
-	    $this->updateMouvementsLots();
+	    $this->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
 	    $this->generateMouvementsLots();
 	}
 
+
+	public function getVersion() {
+			return null;
+	}
 
 	public function devalidate($reinit_version_lot = true) {
 	    $this->validation = null;
 	    if($this->exist('etape')) {
 	        $this->etape = null;
 	    }
-	    $this->updateMouvementsLots(0);
+	    $this->updateOrigineLots(Lot::STATUT_PRELEVABLE);
 	}
 
-	public function updateMouvementsLots($preleve = 1) {
+	public function updateOrigineLots($statut) {
 	    foreach ($this->lots as $lot) {
-            if ($lot->leurre === true) {
-                continue;
-            }
+          if ($lot->leurre === true) {
+          	continue;
+          }
 	        $doc = acCouchdbManager::getClient()->find($lot->id_document);
 	        if ($doc instanceof InterfaceMouvementLotsDocument) {
 	            if ($doc->exist($lot->origine_mouvement)) {
-	               $doc->get($lot->origine_mouvement)->set('preleve', $preleve);
+	               $doc->get($lot->origine_mouvement)->set('statut', $statut);
+								 $doc->get($doc->get($lot->origine_mouvement)->origine_hash)->set('statut', $statut);
 	               $doc->save();
 	            }
 	        }
@@ -110,7 +115,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function updateLotLogement($lot, $logement)
     {
         $lots = $this->getLots();
-        $lots[$lot]->numero = $logement;
+        $lots[$lot]->numero_cuve = $logement;
         // TODO: voir pour les mouvements
     }
 
@@ -147,9 +152,48 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		return $infos;
 	}
 
+	private function generateMouvementLotsFromLot($lot, $key) {
+			$mvt = new stdClass();
+			$mvt->date = $lot->date;
+			$mvt->statut = $lot->statut;
+			$mvt->numero_dossier = $lot->numero_dossier;
+			$mvt->numero_archive = $lot->numero_archive;
+			$mvt->numero_cuve = $lot->numero_cuve;
+			$mvt->millesime = $lot->millesime;
+			$mvt->volume = $lot->volume;
+			$mvt->elevage = $lot->elevage;
+			$mvt->produit_hash = $lot->produit_hash;
+			$mvt->produit_libelle = $lot->produit_libelle;
+			$mvt->produit_couleur = $lot->getCouleurLibelle();
+			$mvt->region = '';
+			$mvt->version = $this->getVersion();
+			$mvt->origine_hash = $lot->getHash();
+			$mvt->origine_type = 'degustation';
+			$mvt->origine_document_id = $this->_id;
+			$mvt->id_document = $this->_id;
+			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
+			$mvt->declarant_identifiant = $lot->declarant_identifiant;
+			$mvt->declarant_nom = $lot->declarant_nom;
+			$mvt->destination_type = $lot->destination_type;
+			$mvt->destination_date = $lot->destination_date;
+			$mvt->details = $lot->details;
+			$mvt->campagne = $this->campagne;
+			return $mvt;
+	}
+
+	public function generateAndAddMouvementLotsFromLot($lot, $key) {
+			$mvt = $this->generateMouvementLotsFromLot($lot, $key);
+			if(!$this->add('mouvements_lots')->exist($lot->declarant_identifiant)) {
+					$this->add('mouvements_lots')->add($lot->declarant_identifiant);
+			}
+			return $this->add('mouvements_lots')->get($lot->declarant_identifiant)->add($key, $mvt);
+	}
 
 	public function generateMouvementsLots() {
-	    // A implementer lorsque les lots devront etre redegustes
+			foreach($this->lots as $k => $lot) {
+					$key = $lot->getUnicityKey();
+					$mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
+			}
 	}
 
 	public function isValidee() {
@@ -190,7 +234,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function getMvtLotsPrelevables() {
          $mvt = array();
-         foreach (MouvementLotView::getInstance()->getByPrelevablePreleve($this->campagne, 1,0)->rows as $item) {
+         foreach (MouvementLotView::getInstance()->getByStatut($this->campagne, Lot::STATUT_PRELEVABLE)->rows as $item) {
              if (property_exists($item->value, 'elevage') && $item->value->elevage) {
                  continue;
              }
@@ -220,9 +264,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
 	 public function setLotsFromMvtKeys($keys, $statut){
-		 $this->remove('mouvements_lots');
 		 $this->remove('lots');
-		 $this->add('mouvements_lots');
 		 $this->add('lots');
 		 $mvts = $this->getMvtLotsPrelevables();
 		 foreach($keys as $key => $activated) {
@@ -231,12 +273,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				 $lot = MouvementLotView::generateLotByMvt($mvt);
 				 $lot->statut = $statut;
 				 $this->lots->add(null, $lot);
-				 if (!$this->mouvements_lots->exist($mvt->declarant_identifiant)) {
-					 $this->mouvements_lots->add($mvt->declarant_identifiant);
-				 }
-				 $mvt->prelevable = 0;
-				 $mvt->id_document = $this->_id;
-				 $this->mouvements_lots->{$mvt->declarant_identifiant}->add($key, $mvt);
 			 }
 		 }
 	 }
@@ -288,10 +324,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsPreleves() {
 	   		$lots = array();
 	   		foreach ($this->getLots() as $lot) {
-	   			if($lot->statut == Lot::STATUT_ATTENTE_PRELEVEMENT){
+	   			if(!$lot->leurre && in_array($lot->statut, array(Lot::STATUT_PRELEVABLE, Lot::STATUT_NONPRELEVABLE, Lot::STATUT_ATTENTE_PRELEVEMENT))) {
 	   				continue;
 	   			}
-
 	   			$lots[] = $lot;
 	   		}
 	   		uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
@@ -428,8 +463,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $leurre->numero_table = $numero_table;
             $leurre->setProduitHash($hash);
             if ($numero_lot) {
-                $leurre->numero = $numero_lot;
+                $leurre->numero_cuve = $numero_lot;
             }
+						$leurre->statut = Lot::STATUT_NONPRELEVABLE;
 
             return $leurre;
         }

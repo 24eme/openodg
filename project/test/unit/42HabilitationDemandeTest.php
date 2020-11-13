@@ -2,8 +2,6 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-sfContext::createInstance($configuration);
-
 if ($application != 'rhone') {
     $t = new lime_test(1);
     $t->ok(true, "test disabled if no rhone");

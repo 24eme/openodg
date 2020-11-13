@@ -160,7 +160,7 @@ class declarationActions extends sfActions {
         }
 
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        if(!$this->getUser()->isAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
+        if(!$this->getUser()->hasDrevAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
 
             return $this->forwardSecure();
         }

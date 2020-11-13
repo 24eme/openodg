@@ -862,11 +862,17 @@ class drevActions extends sfActions {
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();
-        Email::getInstance()->sendDRevValidation($drev);
+        $messages = $this->getMessageDRevValidationDeclarant($drev);
+        foreach($messages as $message) {
+            $this->getMailer()->send($message);
+        }
     }
 
     protected function sendDrevConfirmee($drev) {
-        Email::getInstance()->sendDrevConfirmee($drev);
+        $messages = $this->getMessageDRevConfirmee($drev);
+        foreach($messages as $message) {
+            $this->getMailer()->send($message);
+        }
     }
 
 

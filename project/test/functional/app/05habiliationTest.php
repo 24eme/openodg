@@ -18,7 +18,7 @@ foreach(HabilitationClient::getInstance()->getProduitsConfig($config) as $p) {
     break;
 }
 
-$b = new sfTestFunctional(new sfBrowser());
+$b = new sfTestFunctional(new Browser());
 $t = $b->test();
 
 $t->comment('En mode admin');
