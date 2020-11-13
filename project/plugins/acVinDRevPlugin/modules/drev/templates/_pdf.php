@@ -93,7 +93,7 @@ Les produits déclarés sont du millésime du VCI
 <?php endif; ?>
 <?php endif; ?>
 
-<?php if($drev->exist('lots') && count($drev->lots)): ?>
+<?php if(count($drev->declaration->getProduitsLots($region))): ?>
 <br />
 <div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
