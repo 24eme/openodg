@@ -116,7 +116,7 @@ abstract class DocumentValidation
 
     public function hasPoints()
     {
-        return $this->hasEngagements() || $this->hasVigilances() || $this->hasErreurs();
+        return $this->hasVigilances() || $this->hasErreurs();
     }
 
     public function isValide() {

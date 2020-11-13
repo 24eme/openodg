@@ -105,13 +105,15 @@ class degustationActions extends sfActions {
                 $mvmt->prelevable = 0;
 
                 $drev->save();
+                $modificatrice->validate();
+                $modificatrice->validateOdg();
                 $modificatrice->save();
 
                 $l = $this->form->getObject();
                 $l->id_document = $modificatrice->_id;
                 $this->form->save();
 
-                $this->degustation->updateMouvementsLots();
+                $this->degustation->validate($this->degustation->validation);
 
                 return $this->redirect('degustation_preleve', $this->degustation);
             }
