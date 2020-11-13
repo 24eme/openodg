@@ -9,22 +9,7 @@
       <h3><small></small></h3>
     </div>
 
-    <div class="alert alert-info" role="alert">
-      <h4>Modification du logement n° <strong><?php echo $chgtDenom->getMvtLot()->numero; ?></strong></h4>
-      <table class="table table-condensed" style="margin: 0;">
-        <tbody>
-          <tr>
-            <td style="border: none;">Date : <strong><?php echo format_date($chgtDenom->getMvtLot()->date, 'dd/MM/yyyy'); ?></strong></td>
-          </tr>
-          <tr>
-            <td style="border: none;">Produit : <strong><?php echo $chgtDenom->getMvtLot()->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $chgtDenom->getMvtLot()->details; ?></small></td>
-          </tr>
-          <tr>
-            <td style="border: none;">Volume : <strong><?php echo echoFloat($chgtDenom->getMvtLot()->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getMvtLot())); ?>
 
     <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom, 'key' => $key)) ?>" method="post" class="form-horizontal" id="form_drev_lots">
 

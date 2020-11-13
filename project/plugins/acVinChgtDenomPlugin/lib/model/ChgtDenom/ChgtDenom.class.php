@@ -88,11 +88,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getMvtLots() {
       $lots = array();
-      foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($this->identifiant)->rows as $item) {
+      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME), $this->campagne) as $item) {
           $key = Lot::generateMvtKey($item->value);
-          if (preg_replace('/-.*/', '', $item->value->id_document) == ChgtDenomClient::ORIGINE_LOT) {
-            $lots[$key] = $item->value;
-          }
+          $lots[$key] = $item->value;
       }
       return $lots;
     }
@@ -151,15 +149,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       $lots = array();
       $lot = MouvementLotView::generateLotByMvt($mvtLot);
-      $lot->numero .= 'a';
+      $lot->numero_archive .= 'a';
 
       if (!$this->isChgtTotal()) {
         $lot->volume -= $this->changement_volume;
+        $lot->statut = Lot::STATUT_CONFORME;
         $lotBis = MouvementLotView::generateLotByMvt($mvtLot);
-        $lotBis->numero .= 'b';
+        $lotBis->numero_archive .= 'b';
         $lotBis->volume = $this->changement_volume;
         $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        $lotBis->statut = Lot::STATUT_CONFORME;
         $lotBis->details = '';
         foreach($this->getPourcentagesCepages() as $cep => $pc) {
             $lotBis->details .= $cep.' ('.$pc.'%) ';
@@ -169,6 +169,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       } else {
         $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        $lot->statut = Lot::STATUT_CONFORME;
         if (count($this->changement_cepages->toArray(true, false))) {
           $lot->details = '';
           foreach($this->getPourcentagesCepages() as $cep => $pc) {
@@ -182,27 +183,28 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
     }
 
-    private function generateMouvementLotsFromLot($lot, $key, $prelevable = 1) {
+    private function generateMouvementLotsFromLot($lot, $key) {
         $mvt = new stdClass();
-        $mvt->prelevable = ($lot->produit_hash)? $prelevable : 0;
-        $mvt->preleve = 0;
         $mvt->date = $lot->date;
-        $mvt->numero = $lot->numero;
+  			$mvt->statut = $lot->statut;
+  			$mvt->numero_dossier = $lot->numero_dossier;
+  			$mvt->numero_archive = $lot->numero_archive;
+  			$mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
         $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = ($lot->produit_hash)? $lot->getCouleurLibelle() : null;
-        $mvt->region = null;
-        $mvt->version = null;
+        $mvt->region = '';
+        $mvt->version = $this->getVersion();
         $mvt->origine_hash = $lot->getHash();
         $mvt->origine_type = 'chgtdenom';
         $mvt->origine_document_id = $this->_id;
         $mvt->id_document = $this->_id;
-        $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
-        $mvt->declarant_identifiant = $this->identifiant;
-        $mvt->declarant_nom = $this->declarant->raison_sociale;
+        $mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
+  			$mvt->declarant_identifiant = $lot->declarant_identifiant;
+  			$mvt->declarant_nom = $lot->declarant_nom;
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = $lot->details;
@@ -210,8 +212,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $mvt;
     }
 
-    private function generateAndAddMouvementLotsFromLot($lot, $key, $prelevable = 1) {
-        $mvt = $this->generateMouvementLotsFromLot($lot, $key, $prelevable);
+    private function generateAndAddMouvementLotsFromLot($lot, $key) {
+        $mvt = $this->generateMouvementLotsFromLot($lot, $key);
         if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
             $this->add('mouvements_lots')->add($this->identifiant);
         }
@@ -221,12 +223,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function generateMouvementsLots($prelevable = 1) {
         $origine = $this->getOrigineDocumentMvtLot();
         foreach($this->lots as $k => $lot) {
-          $key = $lot->getUnicityKey();
-          if ($key == $origine->getKey()) {
-            $p = $origine->prelevable;
-          } else {
-            $p = $prelevable;
+          if ($prelevable && $lot->produit_hash) {
+            $lot->statut = Lot::STATUT_PRELEVABLE;
           }
+          $key = $lot->getUnicityKey();
           $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key, $p);
         }
         $this->updateMouvementOrigineDocument();
@@ -234,7 +234,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     private function updateMouvementOrigineDocument() {
       if ($doc = $this->getOrigineDocumentMvtLot()) {
-          $doc->prelevable = 0;
+          $doc->statut = ($this->isChgtTotal() && $this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CHANGE;
+          $doc->getDocument()->get($doc->origine_hash)->statut = $doc->statut;
           $doc->getDocument()->save();
       }
     }
@@ -263,6 +264,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
       return $str;
     }
+
+  	public function getVersion() {
+  			return null;
+  	}
 
     public function addCepage($cepage, $repartition) {
         $this->changement_cepages->add($cepage, $repartition);

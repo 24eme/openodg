@@ -19,7 +19,7 @@ class DRevLot extends BaseDRevLot
 
             return $this->getDocument()->addProduit($this->produit_hash);
         }
-        
+
         if($this->getConfigProduit() && $this->getConfigProduit()->getParent()->exist('DEFAUT') && $this->getDocument()->exist($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash())) {
 
             return $this->getDocument()->addProduit($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash());
@@ -66,10 +66,6 @@ class DRevLot extends BaseDRevLot
 
     public function getDrevDocOrigine(){
       return parent::getDocOrigine();
-    }
-
-    public function getUnicityKey(){
-        return KeyInflector::slugify($this->produit_hash.'/'.$this->millesime.'/'.$this->numero.'/'.$this->volume);
     }
 
     public function getCepagesToStr(){

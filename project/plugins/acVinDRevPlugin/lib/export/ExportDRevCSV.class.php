@@ -110,7 +110,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
             $libelle_complet = $lot->getProduitLibelle();
 
-            $numLot = $lot->getNumero();
+            $numLot = $lot->numero_cuve();
             $dateRev = $lot->date;
             $destination = $lot->getDestinationType()." ".$lot->getDestinationDate();
 

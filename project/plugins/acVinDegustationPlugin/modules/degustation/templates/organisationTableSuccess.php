@@ -57,7 +57,7 @@
           								<div class="row">
                                               <div class="col-xs-5 text-right">
                                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
-                                                  <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
+                                                  <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?>
                                               </div>
           									<div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
                             <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
