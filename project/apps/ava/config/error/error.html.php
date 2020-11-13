@@ -16,14 +16,14 @@
     <meta name="content-language" content="fr-FR" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Plateforme de télédéclaration de l&#039;AVA</title>
-
+    
     <link rel="shortcut icon" type="image/x-icon" href="favico.ico" />
     <link rel="icon" type="image/x-icon" href="favico.ico" />
     <link rel="icon" type="image/png" href="favico.png" />
 
     <link rel="stylesheet" type="text/css" media="all" href="/css/compile.css?201412041035" />
     <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
-
+    
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 
     <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
@@ -55,16 +55,16 @@
             <header id="header" class="container" role="banner">
 
                 <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
-
+                    
                 <div id="logo">
                     <a href="/" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
-
+                                                               
             </header>
             <!-- end #header -->
-
+            
             <!-- #content -->
             <section id="content" class="container">
                 <div class="page-header no-border">
@@ -78,7 +78,7 @@
                     Nous sommes désolés et vous prions de nous contacter afin de nous signaler et détailler le probleme.
                     </p>
                     <p>
-                    Nous tâcherons alors de le résoudre dans les plus brefs délais.
+                    Nous tâcherons alors de le résoudre dans les plus brefs délais. 
                     </p>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                     <a style="margin-top: 10px;" href="javascript:history.back()" class="btn btn-default btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner à la page précédente</a>
                 </div>
                 <div class="col-xs-4">
-
+                    
                 </div>
             </div>
             </section>
@@ -104,7 +104,7 @@
                 </nav>
             </footer>
             <!-- end #footer -->
-
+        
         </div>
         <!-- end #page -->
 
