@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(114);
+$t = new lime_test(113);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -149,7 +149,7 @@ $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $drev->_rev,
 );
-$valuesRev['lots']['0']['numero'] = "Cuve A";
+$valuesRev['lots']['0']['numero_cuve'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$campagne;
@@ -159,13 +159,14 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
 $t->is(count($drev->lots), 2, "Les deux lots sont conservés dans la DRev");
-$t->is($drev->lots[0]->numero, $valuesRev['lots']['0']['numero'], "Le numéro de cuve du lot 1 est bien enregistré");
+$t->is($drev->lots[0]->numero_cuve, $valuesRev['lots']['0']['numero_cuve'], "Le numéro de cuve du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->volume, $valuesRev['lots']['0']['volume'], "Le volume du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->destination_type, $valuesRev['lots']['0']['destination_type'], "Le type de destination lot 1 est bien enregistré");
 $t->is($drev->lots[0]->destination_date, join('-', array_reverse(explode('/', $valuesRev['lots']['0']['destination_date']))), "La date de destination du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->produit_hash, $valuesRev['lots']['0']['produit_hash'], "La hash du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->produit_libelle, $produit1->getLibelle(), "Le libellé du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->millesime, $valuesRev['lots']['0']['millesime'], "Le millesime du lot 1 est bien enregistré");
+$t->is($drev->lots[0]->statut, Lot::STATUT_PRELEVABLE, "Le statut du lot 1 est bien enregistré");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
     $drev->save();
@@ -201,8 +202,7 @@ $t->is(count($drev->mouvements_lots->{$drev->identifiant}), 1, "La DRev validée
 foreach ($drev->mouvements_lots->{$drev->identifiant} as $k => $mvt) {
     break;
 }
-$t->is($mvt->prelevable, 1, "Le mouvement est prelevable");
-$t->is($mvt->preleve, 0, "Le mouvement n'a pas été prelevé");
+
 $t->is($mvt->produit_hash, $drev->lots[0]->produit_hash, 'Le mouvement a la bonne hash');
 $t->is($mvt->produit_libelle, $drev->lots[0]->produit_libelle, 'Le mouvement a le bon libellé');
 $t->is($mvt->produit_couleur, $drev->lots[0]->getCouleurLibelle(), 'Le mouvement a le bon libellé de couleur');
@@ -210,7 +210,7 @@ $t->is($mvt->volume, $drev->lots[0]->volume, 'Le mouvement a le bon volume');
 $t->is($mvt->date, $drev->lots[0]->date, 'Le mouvement a la bonne date');
 $t->is($mvt->millesime, $drev->lots[0]->millesime, 'Le mouvement a le bon millesime');
 $t->is($mvt->region, '', "Le mouvement a la bonne région");
-$t->is($mvt->numero, $drev->lots[0]->numero, 'Le mouvement a le bon numero');
+$t->is($mvt->numero_cuve, $drev->lots[0]->numero_cuve, 'Le mouvement a le bon numero');
 $t->is($mvt->version, 0, "Le mouvement a la version 0");
 $t->is($mvt->origine_hash, $drev->lots[0]->getHash(), 'Le mouvement a bien comme origine le premier lot');
 $t->is($mvt->origine_type, 'drev', 'le mouvement a bien comme origine une drev');
@@ -222,9 +222,9 @@ $t->is($mvt->declarant_nom, $drev->declarant->raison_sociale, 'Le mouvement a la
 $t->is($mvt->destination_type, $drev->lots[0]->destination_type, 'Le mouvement a le bon type de destination');
 $t->is($mvt->destination_date, $drev->lots[0]->destination_date, 'Le mouvement a la bonne date de destination');
 $t->is($mvt->details, '', "le mouvement n'a pas de détail car il n'a pas de répartition de cépage");
-$t->is($mvt->campagne, $drev->campagne, "le mouvement a la bonne campagne");
+$t->is($mvt->statut, Lot::STATUT_PRELEVABLE, "le statut a la bonne valeur");
 
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res->rows), 1, 'on retrouve le mouvement dans la vue MouvementLot');
 $t->is($res->rows[0]->id, $drev->_id, 'le mouvement correspond bien à notre drev');
 $drevres = DRevClient::getInstance()->find($res->rows[0]->value->origine_document_id);
@@ -250,8 +250,8 @@ $t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_restant'], 200, "O
 $t->comment("Gestion du prélèvement");
 $mvtres->prelever();
 $drevres->save();
-$t->ok($mvtres->preleve, "Le mouvement prelevé est bien indiqué comme tel");
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$t->is($mvtres->statut, Lot::STATUT_PRELEVE,"Le mouvement prelevé est bien indiqué comme tel");
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res->rows), 0, 'on retrouve plus le mouvement prelevé dans la vue MouvementLot');
 
 $t->comment("Modificatrice ".$drev->_id."-M01");
@@ -274,7 +274,7 @@ $valuesRev = array(
     '_revision' => $drev_modif->_rev,
 );
 
-$valuesRev['lots']['1']['numero'] = "Cuve B";
+$valuesRev['lots']['1']['numero_cuve'] = "Cuve B";
 $valuesRev['lots']['1']['volume'] = 1;
 $valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['1']['destination_date'] = '30/11/'.$campagne;
@@ -282,7 +282,7 @@ $valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
 $valuesRev['lots']['1']['millesime'] = '2010';
 
 $valuesRev['lots']['2'] = $valuesRev['lots']['1'];
-$valuesRev['lots']['2']['numero'] = "Cuve C";
+$valuesRev['lots']['2']['numero_cuve'] = "Cuve C";
 $valuesRev['lots']['2']['produit_hash'] = $produitconfig_horsDR->getHash();
 
 $form->bind($valuesRev);
@@ -296,11 +296,11 @@ foreach ($form->getErrorSchema() as $key => $err) {
 }
 $t->is($errors, null, "Pas d'erreur dans le formulaire validé");
 $form->save();
-$t->is($drev_modif->lots[1]->numero, $valuesRev['lots']['1']['numero'], "Le numéro de cuve du lot 2 est bien enregistré");
+$t->is($drev_modif->lots[1]->numero_cuve, $valuesRev['lots']['1']['numero_cuve'], "Le numéro de cuve du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->volume, $valuesRev['lots']['1']['volume'], "Le volume du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Le libellé du produit du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->millesime, $valuesRev['lots']['1']['millesime'], "Le millesime du lot 2 est bien enregistré");
-$t->is($drev_modif->lots[2]->numero, $valuesRev['lots']['2']['numero'], "Le numéro de cuve du lot 3 est bien enregistré");
+$t->is($drev_modif->lots[2]->numero_cuve, $valuesRev['lots']['2']['numero_cuve'], "Le numéro de cuve du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->volume, $valuesRev['lots']['2']['volume'], "Le volume du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->produit_libelle, $produitconfig_horsDR->getLibelleComplet(), "Le libellé du produit du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->millesime, $valuesRev['lots']['2']['millesime'], "Le millesime du lot 3 est bien enregistré");
@@ -349,12 +349,12 @@ foreach($drev_modif->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt) 
 }
 $t->is($mvt->version, 'M01', 'Le mouvement a le bon numéro de version');
 $t->is($mvt->produit_hash, $produitconfig2->getHash(), 'Le mouvement a le bon hash');
-$t->is($mvt->prelevable, 1, 'Le mouvement est prelevable');
+$t->is($mvt->statut, Lot::STATUT_PRELEVABLE, 'Le mouvement est prelevable');
 $t->is($mvt->declarant_identifiant, $drev_modif->identifiant, 'Le mouvement a le bon identifiant de déclarant');
 $t->is($mvt->declarant_nom, $drev->declarant->raison_sociale, 'Le mouvement a le bon nom de déclarant');
-$t->is($mvt->prelevable, 1, 'Le mouvement est prelevable');
+$t->is($mvt->statut, Lot::STATUT_PRELEVABLE, 'Le mouvement est prelevable');
 
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev_modif->campagne, 1, 0, '', $drev_modif->lots[0]->date, $drev->identifiant, $drev_modif->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev_modif->campagne, Lot::STATUT_PRELEVABLE, '', $drev_modif->lots[0]->date, $drev->identifiant, $drev_modif->_id);
 $t->is(count($res->rows), 2, 'on retrouve plus les 2 mouvements dans la vue MouvementLot');
 
 
@@ -373,10 +373,10 @@ foreach($drev_modif2->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt)
 }
 $t->is($mvt->version, 'M02', 'Le mouvement a le bon numéro de version');
 $t->is($mvt->produit_hash, $produitconfig1->getHash(), 'Le mouvement a le bon hash');
-$t->is($mvt->prelevable, 0, 'Le mouvement est prelevable');
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 1, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
+$t->is($mvt->statut, Lot::STATUT_PRELEVABLE, 'Le mouvement est prelevable');
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
 $t->is(count($res->rows), 0, 'on ne retrouve pas le mouvement comme prelevable dans la vue MouvementLot');
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, 0, 0, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
+$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_NONPRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
 $t->is(count($res->rows), 0, 'on retrouve le mouvement comme non prelevable dans la vue MouvementLot');
 
 $res = MouvementLotView::getInstance()->getByDeclarantIdentifiant($drev->identifiant, $drev->campagne);
