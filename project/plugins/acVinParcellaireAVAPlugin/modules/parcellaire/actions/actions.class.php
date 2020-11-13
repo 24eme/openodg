@@ -86,7 +86,6 @@ class parcellaireActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
         $this->form->save();
@@ -164,7 +163,7 @@ class parcellaireActions extends sfActions {
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
 
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
-        
+
         $this->recapParcellaire = null;
         if ($this->parcellaire->isIntentionCremant()) {
         	$this->recapParcellaire = ParcellaireClient::getInstance()->find(ParcellaireClient::getInstance()->buildId($this->parcellaire->identifiant, $this->parcellaire->campagne, ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT));
