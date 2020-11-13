@@ -17,7 +17,7 @@
 <?php endif; ?>
 <div class="page-header">
     <div class="pull-right">
-        <?php if ($sf_user->isAdmin()): ?>
+        <?php if ($sf_user->hasDrevAdmin()): ?>
         <form method="GET" class="form-inline" action="">
             Campagne :
             <select class="select2SubmitOnChange form-control" name="campagne">

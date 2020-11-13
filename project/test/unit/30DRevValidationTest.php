@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 11;
+$nb_test = 21;
 if ($application == 'loire') {
     $nb_test += 3;
 }
@@ -109,3 +109,21 @@ if ($application == 'igp13') {
     $drev->setDateDegustationSouhaitee($dateDegustVoulue);
     $t->is($drev->date_degustation_voulue, $dateDegustVoulue, 'La date de dégustation voulue par l\'opérateur est '.$dateDegustVoulue);
 }
+
+$t->comment("Envoi de mail Drev");
+
+$t->ok(Email::getInstance()->getMessageDRevValidation($drev), "Mail de validation à envoyer au déclarant");
+$t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 0, "Mails de notification de validation à envoyer aux syndicats");
+$t->ok(Email::getInstance()->getMessageDRevConfirmee($drev), "Mail de confirmation à envoyer au déclarant");
+$t->ok(Email::getInstance()->getMessageDrevPapierConfirmee($drev), "Mail de confirmation papier à envoyer au déclarant");
+$drev->validation = null;
+$drev->validation_odg = null;
+$t->is(count(Email::getInstance()->getMessagesDRev($drev, false)), 0, "Aucun mail envoyé");
+$drev->validation = date('Y-m-d');
+$t->is(count(Email::getInstance()->getMessagesDRev($drev, false)), 1, "Mail de validation envoyé si télédéclarant");
+$t->is(count(Email::getInstance()->getMessagesDRev($drev, true)), 0, "Aucun mail de validation envoyé si admin");
+$drev->validation_odg = date('Y-m-d');
+$t->is(count(Email::getInstance()->getMessagesDRev($drev, true)), 1, "Mail de validation definitive envoyé");
+$t->is(count(Email::getInstance()->getMessagesDRev($drev, false)), 1, "Mail de validation definitive envoyé");
+$drev->add('papier', 1);
+$t->is(count(Email::getInstance()->getMessagesDRev($drev, true)), 1, "Mail de validation papier envoyé");
