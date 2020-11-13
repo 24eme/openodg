@@ -19,7 +19,7 @@ function autocomplete(inp, arr) {
           link = document.createElement("a");
           b.appendChild(link);
           link.href = "generation/FACTURE/"+ arr[i];
-          link.innerHTML = "<strong>N° " + arr[i].substr(0, val.length) + "</strong>";
+          link.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
           link.innerHTML += arr[i].substr(val.length);
           link.innerHTML += "<input type='hidden' value='" + arr[i] + "'></a>";
           link.addEventListener("click", function(e) {
@@ -72,7 +72,7 @@ function autocomplete(inp, arr) {
   });
 
 }
-
+ 
 var btnRechercheFacture= document.getElementById('btnRechercheFacture');
 btnRechercheFacture.onclick = function(){ btnRechercheFacture.style.display = "none";document.getElementById('inpNumeroFacture').style.display = "block"; };
 autocomplete(document.getElementById("inpNumeroFacture"), factures);
