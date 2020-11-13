@@ -42,7 +42,7 @@
                 </td>
 				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
         <td class="text-right edit">
-          <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
+          <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>&nbsp;&nbsp;
           <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
         </td>
             	<td class="text-center">
