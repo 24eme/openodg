@@ -17,29 +17,19 @@ class Email {
         return self::$_instance;
     }
 
-    public function sendMessagesDRev($drev, $isAdmin) {
-        $messages = $this->getMessagesDRev($drev, $isAdmin);
+    public function sendDRevValidation($drev) {
+        $messages = $this->getMessagesDRevValidation($drev);
         foreach($messages as $message) {
             $this->getMailer()->send($message);
         }
     }
 
-    public function getMessagesDRev($drev, $isAdmin) {
+    public function getMessagesDRevValidation($drev) {
         if(!$drev->validation) {
             return array();
         }
 
-        if(!$isAdmin && !$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgAdmin()) {
-
-            return Email::getInstance()->getMessageDRevValidation($drev);
-        }
-
-        if(!$isAdmin && !$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
-
-            return Email::getInstance()->getMessageDRevValidationNotificationSyndicats($drev);
-        }
-
-        if(!$drev->validation_odg) {
+        if($drev->isPapier() && !$drev->validation_odg) {
 
             return array();
         }
@@ -49,13 +39,25 @@ class Email {
             return Email::getInstance()->getMessageDrevPapierConfirmee($drev);
         }
 
+        if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+
+            return Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev);
+        }
+
+        if(!$drev->validation_odg) {
+
+            return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
+        }
+
+
+
         return Email::getInstance()->getMessageDrevConfirmee($drev);
     }
 
-    public function getMessageDRevValidation($drev) {
+    public function getMessageDRevValidationDeclarant($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
@@ -105,7 +107,7 @@ class Email {
     public function getMessageDRevConfirmee($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
 
         $pdf = new ExportDRevPdf($drev);
@@ -131,7 +133,7 @@ class Email {
     public function getMessageDrevPapierConfirmee($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
