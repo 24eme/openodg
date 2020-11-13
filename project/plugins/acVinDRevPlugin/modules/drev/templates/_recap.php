@@ -72,7 +72,7 @@
                         <?php echo $lot->getDateVersionfr(); ?>
                       <?php if($drevDocOrigine): ?></a><?php endif; ?>
                     </td>
-                    <td><?php echo $lot->numero; ?></td>
+                    <td><?php echo $lot->numero_cuve; ?></td>
                     <td><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
                       <?php if(count($lot->cepages)): ?>
                         <small class="text-muted">

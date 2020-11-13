@@ -718,7 +718,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot_degustation = clone $lot;
 
         $lot_degustation->remove('details');
-        $lot_degustation->remove('statut');
         $lot_degustation->remove('numero_table');
         $lot_degustation->remove('leurre');
         $lot_degustation->remove('conformite');
@@ -727,6 +726,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot_degustation->remove('declarant_nom');
         $lot_degustation->remove('declarant_identifiant');
         $lot_degustation->remove('origine_mouvement');
+        $lot_degustation->statut = Lot::STATUT_PRELEVABLE;
 
         $lots = [];
         foreach ($this->lots as $lot) {
@@ -801,7 +801,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function addLot() {
         $lot = $this->add('lots')->add();
         $lot->millesime = $this->campagne;
-
+        $lot->statut = Lot::STATUT_PRELEVABLE;
         return $lot;
     }
 
@@ -868,6 +868,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->storeLotsDateVersion($date);
         $this->cleanDoc();
         $this->validation = $date;
+        $this->archiver();
         $this->generateMouvementsFactures();
         $this->generateMouvementsLots();
 
@@ -1142,8 +1143,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 	}
 
-  protected function preSave() {
+  public function archiver() {
       $this->archivage_document->preSave();
+      if ($this->isArchivageCanBeSet()) {
+          $this->archiverLot($this->numero_archive);
+      }
   }
 
   /*** ARCHIVAGE ***/
@@ -1155,7 +1159,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
   public function isArchivageCanBeSet() {
 
-      return $this->isValideeOdg();
+      return $this->isValidee();
+  }
+
+  public function archiverLot($numeroDossier) {
+      $lastNum = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne(Lot::TYPE_ARCHIVE, $this->archivage_document->getCampagne());
+      $num = 0;
+      if (preg_match("/[0-9]+/", $lastNum, $m)) {
+        $num = $m[1];
+      }
+      foreach($this->lots as $lot) {
+        $num++;
+        $lot->numero_archive = sprintf("%05d", $num);
+        $lot->numero_dossier = $numeroDossier;
+      }
   }
 
   /*** FIN ARCHIVAGE ***/
@@ -1291,17 +1308,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $total += $pc;
       }
       foreach($cepages as $cep => $pc) {
+        if (!isset($result[$cep])) {
+          $result[$cep] = 0;
+        }
         $result[$cep] += round(($pc/$total) * 100);
       }
       return $result;
     }
 
-    private function generateMouvementLotsFromLot($lot, $key, $prelevable = 1) {
+    private function generateMouvementLotsFromLot($lot, $key) {
         $mvt = new stdClass();
-        $mvt->prelevable = $prelevable;
-        $mvt->preleve = 0;
         $mvt->date = $lot->date;
-        $mvt->numero = $lot->numero;
+        $mvt->statut = $lot->statut;
+        $mvt->numero_dossier = $lot->numero_dossier;
+        $mvt->numero_archive = $lot->numero_archive;
+        $mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
         $mvt->elevage = $lot->elevage;
@@ -1328,8 +1349,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $mvt;
     }
 
-    public function generateAndAddMouvementLotsFromLot($lot, $key, $prelevable = 1) {
-        $mvt = $this->generateMouvementLotsFromLot($lot, $key, $prelevable);
+    public function generateAndAddMouvementLotsFromLot($lot, $key) {
+        $mvt = $this->generateMouvementLotsFromLot($lot, $key);
         if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
             $this->add('mouvements_lots')->add($this->identifiant);
         }
@@ -1337,22 +1358,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateMouvementsLots() {
-        $prev = $this->getMother();
         foreach($this->lots as $k => $lot) {
             $key = $lot->getUnicityKey();
-            if ($prev && $prev->hasLotUnicityKey($key)) {
-                continue;
-            }
             $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
-        }
-        if ($prev) {
-            foreach($prev->lots as $k => $lot) {
-                $key = $lot->getUnicityKey();
-                if ($this->hasLotUnicityKey($key)) {
-                    continue;
-                }
-                $this->generateAndAddMouvementLotsFromLot($lot, $key, 0);
-            }
         }
     }
 
@@ -1616,6 +1624,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit->validation_odg = null;
           }
         }
+        foreach ($document->lots as $lot) {
+          $lot->statut = Lot::STATUT_NONPRELEVABLE;
+        }
     }
 
     public function listenerGenerateNextVersion($document) {
@@ -1645,6 +1656,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasDenominationAuto($const) {
       return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
+    }
+
+    public function getDocumentsAEnvoyer() {
+        $documents = array();
+
+        foreach($this->getOrAdd('documents') as $document) {
+            if($document->statut != DRevDocuments::STATUT_EN_ATTENTE) {
+                continue;
+            }
+
+            $documents[$document->getKey()] = $document;
+        }
+
+        return $documents;
     }
 
     public function getNonHabilitationINAO() {

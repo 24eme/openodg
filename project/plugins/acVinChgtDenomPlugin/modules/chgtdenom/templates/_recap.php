@@ -1,16 +1,4 @@
-<div class="alert alert-info col-sm-12" role="alert">
-  <h4>Logement n° <strong><?php echo $chgtDenom->getMvtLot()->numero; ?></strong></h4>
-  <table class="table table-condensed" style="margin: 0;">
-    <tbody>
-      <tr>
-        <td style="border: none;">Produit : <strong><?php echo $chgtDenom->getMvtLot()->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $chgtDenom->getMvtLot()->details; ?></small></td>
-      </tr>
-      <tr>
-        <td style="border: none;">Volume : <strong><?php echo echoFloat($chgtDenom->getMvtLot()->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getMvtLot())); ?>
 
 <div class="col-sm-12" style="margin-bottom: 20px;">
   <div class="text-center">
@@ -23,9 +11,12 @@
   foreach($chgtDenom->lots as $k => $lot):
 ?>
   <div class="alert col-sm-<?php if (count($chgtDenom->lots) == 1): ?>12<?php else: ?>6<?php endif; ?>" style="background-color: #f8f8f8; border: 1px solid #e7e7e7;">
-    <h4>Logement n° <?php if(!$chgtDenom->isValide()): ?><a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>"><strong><?php echo $lot->numero; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span></a><?php else: ?><strong><?php echo $lot->numero; ?></strong><?php endif; ?></h4>
+    <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong></h4>
     <table class="table table-condensed" style="margin: 0;">
       <tbody>
+        <tr>
+          <td style="border: none;">Logement : <?php if(!$chgtDenom->isValide()): ?><a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>"><strong><?php echo $lot->numero_cuve; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span></a><?php else: ?><strong><?php echo $lot->numero_cuve; ?></strong><?php endif; ?></td>
+        </tr>
         <tr>
           <td style="border: none;">Produit : <strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
         </tr>
@@ -46,15 +37,15 @@
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $lot->numero ?></strong></h4>
+              <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $lot->numero_cuve ?></strong></h4>
             </div>
             <div class="modal-body">
               <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <?php echo $form['numero']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $form['numero_cuve']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-8">
-                                  <?php echo $form['numero']->render(); ?>
+                                  <?php echo $form['numero_cuve']->render(); ?>
                             </div>
                         </div>
                     </div>

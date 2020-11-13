@@ -57,7 +57,7 @@
 			<tr class="vertical-center cursor-pointer" >
         <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
         <td><?php echo $lot->declarant_nom; ?></td>
-				<td><?php echo $lot->numero; ?></td>
+				<td><?php echo $lot->numero_cuve; ?></td>
 				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
             	<td class="text-center" data-hash="<?php echo $lot->declarant_nom; ?>">

@@ -15,8 +15,8 @@ ODG=$1
 
 EXPORT=$2
 
-if [ $EXPORT ]; then
-  if [ $EXPORT = "-exp" ]; then
+if test "$EXPORT"; then
+  if test "$EXPORT" = "-exp"; then
     echo "Export données";
     cd $WORKINGDIR/import/igp/;
     bash scrapping.sh;
@@ -39,8 +39,8 @@ if test "$2" = "--delete"; then
         echo "Suppression de la base couchdb"
     fi
 
-    if [ $3 ]; then
-      if [ $3 = "-exp" ]; then
+    if test "$3"; then
+      if test "$3" = "-exp"; then
         echo "Export données"
         cd $WORKINGDIR/import/igp/
         bash scrapping.sh
