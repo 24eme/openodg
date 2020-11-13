@@ -4,8 +4,6 @@
 <div class="row row-margin">
     <div class="col-xs-12">
         <div class="list-group">
-          <form class="" action="action.class.php" method="GET"><input class="form-control" id="inpNumeroFacture" type="text" name="numeroFacture" placeholder="Recherche par numéro de facture" ></form>
-          <button id="btnRechercheFacture" class="col-xs-12 btn btn-default btn-lg" type="button" name="button">Recherche par numéro de facture</button>
             <?php foreach ($generations as $generation) : ?>
             <?php $documents = $generation->value[GenerationClient::HISTORY_VALUES_DOCUMENTS]; ?>
                 <a href="<?php echo url_for('generation_view', array('type_document' => $generation->key[GenerationClient::HISTORY_KEYS_TYPE_DOCUMENT], 'date_emission' => $generation->key[GenerationClient::HISTORY_KEYS_TYPE_DATE_EMISSION])) ?>" class="list-group-item col-xs-12">
@@ -21,13 +19,3 @@
         </div>
     </div>
 </div>
-
-
-<script type="text/javascript">
-var factures = [];
-<?php foreach ($generations as $generation) :?>
-var url = "<?php echo url_for('generation_view', array('type_document' => $generation->key[GenerationClient::HISTORY_KEYS_TYPE_DOCUMENT], 'date_emission' => $generation->key[GenerationClient::HISTORY_KEYS_TYPE_DATE_EMISSION])) ?>";
-url = url.substring(url.lastIndexOf("/") + 1, url.length) ;
-factures.push(url);
-<?php endforeach; ?>
-</script>
