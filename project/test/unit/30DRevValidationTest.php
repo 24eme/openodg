@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 21;
+$nb_test = 24;
 if ($application == 'loire') {
     $nb_test += 3;
 }
@@ -35,7 +35,6 @@ foreach($produits as $produit) {
     $produit1 = $produit;
     break;
 }
-
 
 $t->comment("Validation des Drev");
 $date_validation_1 = "2019-06-30";
@@ -110,20 +109,29 @@ if ($application == 'igp13') {
     $t->is($drev->date_degustation_voulue, $dateDegustVoulue, 'La date de dégustation voulue par l\'opérateur est '.$dateDegustVoulue);
 }
 
-$t->comment("Envoi de mail Drev");
+$t->comment("DRev envoi de mail de la validation");
 
-$t->ok(Email::getInstance()->getMessageDRevValidation($drev), "Mail de validation à envoyer au déclarant");
+$t->is(count($drev->getDocumentsAEnvoyer()), 0, "Aucun document à envoyer");
+$drev->documents->add('test_en_attente')->statut = DRevDocuments::STATUT_EN_ATTENTE;
+$drev->documents->add('test_recu')->statut = DRevDocuments::STATUT_RECU;
+$t->is(count($drev->getDocumentsAEnvoyer()), 1, "1 document à envoyer");
+
+$t->ok(Email::getInstance()->getMessageDRevValidationDeclarant($drev), "Mail de validation à envoyer au déclarant");
 $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 0, "Mails de notification de validation à envoyer aux syndicats");
 $t->ok(Email::getInstance()->getMessageDRevConfirmee($drev), "Mail de confirmation à envoyer au déclarant");
 $t->ok(Email::getInstance()->getMessageDrevPapierConfirmee($drev), "Mail de confirmation papier à envoyer au déclarant");
 $drev->validation = null;
 $drev->validation_odg = null;
-$t->is(count(Email::getInstance()->getMessagesDRev($drev, false)), 0, "Aucun mail envoyé");
+$t->is(count(Email::getInstance()->getMessagesDRevValidation($drev)), 0, "Aucun mail envoyé");
 $drev->validation = date('Y-m-d');
-$t->is(count(Email::getInstance()->getMessagesDRev($drev, false)), 1, "Mail de validation envoyé si télédéclarant");
-$t->is(count(Email::getInstance()->getMessagesDRev($drev, true)), 0, "Aucun mail de validation envoyé si admin");
+$messages = Email::getInstance()->getMessagesDRevValidation($drev);
+$t->is(count($messages), 1, "Mail de validation envoyé pour de faux au déclarant");
+$t->is($messages[0]->getSubject(), "Validation de votre Déclaration de Revendication", "Sujet du mail de validation");
 $drev->validation_odg = date('Y-m-d');
-$t->is(count(Email::getInstance()->getMessagesDRev($drev, true)), 1, "Mail de validation definitive envoyé");
-$t->is(count(Email::getInstance()->getMessagesDRev($drev, false)), 1, "Mail de validation definitive envoyé");
+$messages = Email::getInstance()->getMessagesDRevValidation($drev);
+$t->is(count($messages), 1, "Mail de validation definitive envoyé pour de faux au déclarant");
+$t->is($messages[0]->getSubject(), "Validation définitive de votre Déclaration de Revendication", "Sujet du mail de validation définitive");
 $drev->add('papier', 1);
-$t->is(count(Email::getInstance()->getMessagesDRev($drev, true)), 1, "Mail de validation papier envoyé");
+$messages = Email::getInstance()->getMessagesDRevValidation($drev);
+$t->is(count($messages), 1, "Mail de validation définitive papier envoyé pour de faux au déclarant");
+$t->is($messages[0]->getSubject(), "Réception de votre Déclaration de Revendication", "Sujet du mail de confirmation papier");

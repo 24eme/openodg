@@ -17,31 +17,26 @@ class Email {
         return self::$_instance;
     }
 
-    public function sendMessagesDRev($drev, $isAdmin) {
-        $messages = $this->getMessagesDRev($drev, $isAdmin);
+    public function sendDRevValidation($drev) {
+        $messages = $this->getMessagesDRevValidation($drev);
         foreach($messages as $message) {
             $this->getMailer()->send($message);
         }
     }
 
-    public function getMessagesDRev($drev, $isAdmin) {
+    public function getMessagesDRevValidation($drev) {
         if(!$drev->validation) {
             return array();
         }
 
-        if(!$isAdmin && !$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgAdmin()) {
-
-            return Email::getInstance()->getMessageDRevValidation($drev);
-        }
-
-        if(!$isAdmin && !$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
 
             return Email::getInstance()->getMessageDRevValidationNotificationSyndicats($drev);
         }
 
         if(!$drev->validation_odg) {
 
-            return array();
+            return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
         }
 
         if($drev->isPapier()) {
@@ -52,7 +47,7 @@ class Email {
         return Email::getInstance()->getMessageDrevConfirmee($drev);
     }
 
-    public function getMessageDRevValidation($drev) {
+    public function getMessageDRevValidationDeclarant($drev) {
         if (!$drev->declarant->email) {
 
             return;

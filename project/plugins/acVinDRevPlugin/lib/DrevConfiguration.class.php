@@ -108,6 +108,10 @@ class DRevConfiguration {
       return $this->hasValidationOdgAdmin() || $this->hasValidationOdgRegion();
     }
 
+    public function hasValidationOdgAdminOrAuto(){
+      return $this->hasValidationOdgAdmin() || $this->hasValidationOdgAuto();
+    }
+
     public function hasCgu(){
       return isset($this->configuration['cgu']) && boolval($this->configuration['cgu']);
     }
