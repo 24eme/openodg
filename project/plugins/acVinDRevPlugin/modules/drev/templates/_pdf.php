@@ -93,7 +93,7 @@ Les produits déclarés sont du millésime du VCI
 <?php endif; ?>
 <?php endif; ?>
 
-<?php if($drev->exist('lots') && count($drev->lots)): ?>
+<?php if(count($drev->declaration->getProduitsLots($region))): ?>
 <br />
 <div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
@@ -143,7 +143,7 @@ Les produits déclarés sont du millésime du VCI
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php foreach($drev->documents as $docKey => $doc): ?>
         <tr>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo $drev->documents->getEngagementLibelle($docKey); ?></td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></td>
         </tr>
     <?php endforeach; ?>
     </table>

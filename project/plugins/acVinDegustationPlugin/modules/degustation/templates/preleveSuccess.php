@@ -46,7 +46,7 @@
           <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
         </td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
+                    <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $formLot['preleve']->renderError() ?>
                         <div class="col-xs-12">
 			            	<?php echo $formLot['preleve']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>

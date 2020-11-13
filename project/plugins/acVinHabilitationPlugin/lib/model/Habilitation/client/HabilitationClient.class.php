@@ -549,4 +549,18 @@ class HabilitationClient extends acCouchdbClient {
 
             $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), $statutHabilitation, $commentaire);
         }
+
+        public function getProduitsConfig($config) {
+          $produits = array();
+          foreach ($config->declaration->getProduits() as $produit) {
+              if($produit->getAppellation()){
+                $produithab = $produit->getAppellation();
+                $produits[$produithab->getHash()] = HabilitationConfiguration::getInstance()->getProduitConverted($produithab);;
+              }
+          }
+          return $produits;
+        }
+
+
+
     }
