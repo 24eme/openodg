@@ -29,14 +29,9 @@ class Email {
             return array();
         }
 
-        if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if($drev->isPapier() && !$drev->validation_odg) {
 
-            return Email::getInstance()->getMessageDRevValidationNotificationSyndicats($drev);
-        }
-
-        if(!$drev->validation_odg) {
-
-            return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
+            return array();
         }
 
         if($drev->isPapier()) {
@@ -44,13 +39,25 @@ class Email {
             return Email::getInstance()->getMessageDrevPapierConfirmee($drev);
         }
 
+        if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+
+            return Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev);
+        }
+
+        if(!$drev->validation_odg) {
+
+            return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
+        }
+
+
+
         return Email::getInstance()->getMessageDrevConfirmee($drev);
     }
 
     public function getMessageDRevValidationDeclarant($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
@@ -100,7 +107,7 @@ class Email {
     public function getMessageDRevConfirmee($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
 
         $pdf = new ExportDRevPdf($drev);
@@ -126,7 +133,7 @@ class Email {
     public function getMessageDrevPapierConfirmee($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));

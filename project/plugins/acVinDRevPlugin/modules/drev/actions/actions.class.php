@@ -676,6 +676,14 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
+        if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
+            $this->drev->validateOdg();
+            $this->drev->save();
+            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
+
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
         if($this->getUser()->hasDrevAdmin()) {
             $this->drev->validateOdg();
             $this->drev->save();

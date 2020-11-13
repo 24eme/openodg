@@ -45,9 +45,13 @@ $drev->save();
 $t->is($drev->isValidee(),true,"La Drev est validée");
 $t->is($drev->getValidation(),$date_validation_1,"La date de validation est ".$date_validation_1);
 $t->is($drev->isValideeOdg(),false,"La Drev n'est pas encore validée par l'odg");
-
-
-$drev->validateOdg($date_validation_odg_1);
+if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+        $drev->validateOdg($date_validation_odg_1, $region);
+    }
+} else {
+    $drev->validateOdg($date_validation_odg_1);
+}
 $drev->save();
 
 $t->is($drev->isValidee(),true,"La Drev est validée");
@@ -55,7 +59,7 @@ $t->is($drev->isValideeOdg(),true,"La Drev est validée par l'odg");
 $t->is($drev->getValidationOdg(),$date_validation_odg_1,"La date de validation de l'odg est ".$date_validation_odg_1);
 
 if ($application == 'loire') {
-    $t->is($drev->lots[0]->date_version,$date_validation_odg_1,"La date de version du lot est celle de la validation ODG");
+    $t->is($drev->lots[0]->date,$date_validation_1,"La date de version du lot est celle de la validation ODG");
 }
 
 $t->comment("Création d'une modificatrice  Drev");
@@ -85,7 +89,14 @@ $lot->addCepage("Chenin", 30);
 $lot->addCepage("Sauvignon", 70);
 }
 $drev_modificative->validate($date_validation_2);
-$drev_modificative->validateOdg($date_validation_odg_2);
+if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+        $drev_modificative->validateOdg($date_validation_odg_2, $region);
+    }
+} else {
+    $drev_modificative->validateOdg($date_validation_odg_2);
+}
+
 $drev_modificative->save();
 
 if ($lot) {
@@ -99,8 +110,8 @@ $t->is($drev_modificative->getValidation(),$date_validation_2,"La date de valida
 $t->is($drev_modificative->getValidationOdg(),$date_validation_odg_2,"La date de validation de l'odg est ".$date_validation_odg_2);
 
 if ($lot) {
-    $t->is($drev_modificative->lots[0]->date_version,$date_validation_odg_1,"La date de version du lot de départ est celle de la validation ODG de la M00 ($date_validation_odg_1)");
-    $t->is($lot->date_version,$date_validation_odg_2,"La date de version du dernier lot est celle de la validation ODG de la M01 ($date_validation_odg_2)");
+    $t->is($drev_modificative->lots[0]->date,$date_validation_1,"La date de version du lot de départ est celle de la validation ODG de la M00 ($date_validation_1)");
+    $t->is($lot->date,$date_validation_2,"La date de version du dernier lot est celle de la validation ODG de la M01 ($date_validation_2)");
 }
 
 if ($application == 'igp13') {
@@ -111,23 +122,46 @@ if ($application == 'igp13') {
 
 $t->comment("DRev envoi de mail de la validation");
 
+$drev = $drev_modificative->generateModificative();
+$drev->save();
+
 $t->is(count($drev->getDocumentsAEnvoyer()), 0, "Aucun document à envoyer");
 $drev->documents->add('test_en_attente')->statut = DRevDocuments::STATUT_EN_ATTENTE;
 $drev->documents->add('test_recu')->statut = DRevDocuments::STATUT_RECU;
 $t->is(count($drev->getDocumentsAEnvoyer()), 1, "1 document à envoyer");
 
+foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+    $configDRev = sfConfig::get('drev_configuration_drev');
+    $configDRev['odg'][$region]['email_notification'] = 'email@email.email';
+    sfConfig::set('drev_configuration_drev', $configDRev);
+}
+DrevConfiguration::getInstance()->load();
+
 $t->ok(Email::getInstance()->getMessageDRevValidationDeclarant($drev), "Mail de validation à envoyer au déclarant");
-$t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 0, "Mails de notification de validation à envoyer aux syndicats");
+if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 1, "Mails de notification de validation à envoyer aux syndicats");
+} else {
+    $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 0, "Aucun mail de notification de validation à envoyer aux syndicats");
+}
 $t->ok(Email::getInstance()->getMessageDRevConfirmee($drev), "Mail de confirmation à envoyer au déclarant");
 $t->ok(Email::getInstance()->getMessageDrevPapierConfirmee($drev), "Mail de confirmation papier à envoyer au déclarant");
-$drev->validation = null;
-$drev->validation_odg = null;
 $t->is(count(Email::getInstance()->getMessagesDRevValidation($drev)), 0, "Aucun mail envoyé");
-$drev->validation = date('Y-m-d');
+
+$drev->validate();
 $messages = Email::getInstance()->getMessagesDRevValidation($drev);
-$t->is(count($messages), 1, "Mail de validation envoyé pour de faux au déclarant");
-$t->is($messages[0]->getSubject(), "Validation de votre Déclaration de Revendication", "Sujet du mail de validation");
-$drev->validation_odg = date('Y-m-d');
+$t->is(count($messages), 1, "Mail de validation à envoyer au déclarant");
+if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    $t->like($messages[0]->getSubject(), "/Validation de la Déclaration de Revendication/", "Sujet du mail de validation");
+} else {
+    $t->is($messages[0]->getSubject(), "Validation de votre Déclaration de Revendication", "Sujet du mail de validation");
+}
+if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+        $drev->validateOdg(null, $region);
+    }
+} else {
+    $drev->validateOdg();
+}
 $messages = Email::getInstance()->getMessagesDRevValidation($drev);
 $t->is(count($messages), 1, "Mail de validation definitive envoyé pour de faux au déclarant");
 $t->is($messages[0]->getSubject(), "Validation définitive de votre Déclaration de Revendication", "Sujet du mail de validation définitive");
