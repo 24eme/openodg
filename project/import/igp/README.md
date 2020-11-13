@@ -6,6 +6,11 @@
     npm i fs
     npm install mkdirp
 
+
+## Si vous utiliser ces scripts dans un serveur
+
+    apt-get install xvfb
+
 ## Configuration
 
     enlever l'extension .example du fichier config.json.example

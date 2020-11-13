@@ -6,6 +6,28 @@
   font-weight: normal;
   font-style: normal;
 }
+#inpNumeroFacture{
+  position: relative;
+  display: none;
+}
+.autocomplete-list-items{
+  padding: 3px 7px 4px;
+  list-style-type: none;
+  display: block;
+}
+.autocomplete-items{
+  position: absolute;
+  padding: 3px 7px 4px;
+  max-height: 200px;
+  overflow: scroll;
+  overflow-x: none;
+  display: block;
+  background-color: white;
+  width: 100%;
+  z-index: 100;
+  border: 1px solid black;
+  border-top:none;
+}
 /* ===================================================================================
  * File : site_vars.less
  * Description : LESS vars
