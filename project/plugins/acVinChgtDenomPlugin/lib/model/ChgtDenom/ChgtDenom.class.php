@@ -132,6 +132,18 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->changement_volume == $this->getMvtLot()->volume);
     }
 
+    public function getPourcentagesCepages() {
+      $total = 0;
+      $cepages = array();
+      foreach($this->changement_cepages as $pc) {
+        $total += $pc;
+      }
+      foreach($this->changement_cepages as $cep => $pc) {
+        $cepages[$cep] += round(($pc/$total) * 100);
+      }
+      return $cepages;
+    }
+
     public function generateLots() {
       $mvtLot = $this->getMvtLot();
       $this->clearMouvementsLots();
@@ -148,11 +160,21 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lotBis->volume = $this->changement_volume;
         $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        $lotBis->details = '';
+        foreach($this->getPourcentagesCepages() as $cep => $pc) {
+            $lotBis->details .= $cep.' ('.$pc.'%) ';
+        }
         $lots[] = $lot;
         $lots[] = $lotBis;
       } else {
         $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        if (count($this->changement_cepages->toArray(true, false))) {
+          $lot->details = '';
+          foreach($this->getPourcentagesCepages() as $cep => $pc) {
+              $lotBis->details .= $cep.' ('.$pc.'%) ';
+          }
+        }
         $lots[] = $lot;
       }
       foreach($lots as $l) {

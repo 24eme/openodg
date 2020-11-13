@@ -25,7 +25,7 @@ class ChgtDenomClient extends acCouchdbClient {
         $campagne_from = "0000-00-00T000000";
         $campagne_to = "9999-99-99T999999";
         return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
-                    ->endkey(sprintf("CHGTDENOM-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
+                    ->endkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 

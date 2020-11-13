@@ -14,7 +14,7 @@ foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->id
     $fichier->delete();
 }
 
-$b = new sfTestFunctional(new sfBrowser());
+$b = new sfTestFunctional(new Browser());
 $t = $b->test();
 
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));

@@ -30,6 +30,7 @@ DRev:
       denomination_auto: { required: false }
       date_degustation_voulue: { required: false }
       version: {  }
+      numero_archive: {  }
       declarant:
         type: collection
         class: DRevDeclarant
@@ -140,6 +141,7 @@ DRev:
               definition:
                 fields:
                   statut: { }
+                  libelle: { }
       documents_rappel: { required: false }
       documents_rappels:
         required: false

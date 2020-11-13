@@ -255,7 +255,7 @@
                         if(libelle) {
                             libelle = libelle + ", ";
                         }
-                        var p = (total)? parseInt((volume/total) * 100) : 0;
+                        var p = (total)? Math.round((volume/total) * 100) : 0;
                         libelle = libelle + cepage + "&nbsp;("+p+"%)";
                         $(this).removeClass('transparence-sm');
                     } else {
