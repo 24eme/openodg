@@ -657,37 +657,61 @@ class drevActions extends sfActions {
             $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
         }
 
-        if($this->drev->isPapier()) {
-            $this->drev->validate($this->form->getValue("date"));
-        } else {
-            $this->drev->validate();
-        }
-
         if (DrevConfiguration::getInstance()->hasDegustation()) {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
-        if (DrevConfiguration::getInstance()->hasValidationOdgAuto()) {
+        if($this->drev->isPapier()) {
+            $this->drev->validate($this->form->getValue("date"));
             $this->drev->validateOdg();
+        } elseif(DrevConfiguration::getInstance()->hasValidationOdgAuto() && !$this->validation->hasPoints()) {
+            $this->drev->validate();
+            $this->drev->validateOdg();
+        } else {
+            $this->drev->validate();
         }
-        
+
         $this->drev->save();
 
-        if($this->getUser()->isAdmin() && $this->drev->isPapier()) {
-            Email::getInstance()->sendDrevPapierConfirmee($this->drev);
-            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+        Email::getInstance()->sendMessagesDRev($this->drev, $this->getUser()->hasDrevAdmin());
 
-            return $this->redirect('drev_visualisation', $this->drev);
-        }
+        $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée");
 
-        if(!$this->getUser()->hasDrevAdmin() && !$this->getUser()->isAdmin()) {
-          $this->sendDRevValidation($this->drev);
-          $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
-          return $this->redirect('drev_visualisation', $this->drev);
-        }
-
-        return $this->redirect('drev_confirmation', $this->drev);
+        return $this->redirect('drev_visualisation', $this->drev);
     }
+
+    public function executeValidationAdmin(sfWebRequest $request) {
+        if(!DrevConfiguration::getInstance()->hasValidationOdgAdminOrRegion()){
+          throw new sfException("Il n'est pas permis de valider par ODG");
+        }
+
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
+        $this->regionParam = $request->getParameter('region',null);
+
+        $this->drev->validateOdg(null,$this->regionParam);
+        $this->drev->save();
+
+        $mother = $this->drev->getMother();
+        while ($mother) {
+            $mother->validateOdg(null, $this->regionParam);
+            $mother->save();
+            $mother = $mother->getMother();
+        }
+
+        Email::getInstance()->sendMessagesDRev($this->drev, $this->getUser()->hasDrevAdmin());
+
+        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
+
+        $service = $request->getParameter("service");
+        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
+        if($this->regionParam){
+          $params = array_merge($params,array('region' => $this->regionParam));
+        }
+        return $this->redirect('drev_visualisation', $params);
+    }
+
+
 
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
@@ -745,38 +769,7 @@ class drevActions extends sfActions {
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
-    public function executeValidationAdmin(sfWebRequest $request) {
-        if(!DrevConfiguration::getInstance()->hasValidationOdgAdminOrRegion()){
-          throw new sfException("Il n'est pas permis de valider par ODG");
-        }
 
-        $this->drev = $this->getRoute()->getDRev();
-        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
-        $this->regionParam = $request->getParameter('region',null);
-
-        $this->drev->validateOdg(null,$this->regionParam);
-        $this->drev->save();
-
-        $mother = $this->drev->getMother();
-        while ($mother) {
-            $mother->validateOdg(null, $this->regionParam);
-            $mother->save();
-            $mother = $mother->getMother();
-        }
-
-        if (!$this->drev->isPapier() && $this->drev->getValidationOdg()) {
-            $this->sendDRevConfirmee($this->drev);
-        }
-
-        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
-
-        $service = $request->getParameter("service");
-        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
-        if($this->regionParam){
-          $params = array_merge($params,array('region' => $this->regionParam));
-        }
-        return $this->redirect('drev_visualisation', $params);
-    }
 
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
