@@ -111,7 +111,7 @@ class degustationActions extends sfActions {
                 $l->id_document = $modificatrice->_id;
                 $this->form->save();
 
-                $this->degustation->updateMouvementsLots();
+                $this->degustation->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
 
                 return $this->redirect('degustation_preleve', $this->degustation);
             }

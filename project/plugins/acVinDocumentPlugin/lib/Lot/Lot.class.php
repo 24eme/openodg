@@ -6,9 +6,15 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
+    const STATUT_PRELEVABLE = "PRELEVABLE";
+    const STATUT_NONPRELEVABLE = "NON_PRELEVABLE";
     const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
     const STATUT_PRELEVE = "PRELEVE";
     const STATUT_DEGUSTE = "DEGUSTE";
+    const STATUT_CONFORME = "CONFORME";
+    const STATUT_NONCONFORME = "NON_CONFORME";
+    const STATUT_CHANGE = "CHANGE";
+    const STATUT_DECLASSE = "DECLASSE";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -16,12 +22,18 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
-
+    const TYPE_ARCHIVE = 'Lot';
 
     public static $libellesStatuts = array(
+        self::STATUT_PRELEVABLE => 'Prélevable',
+        self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
-        self::STATUT_DEGUSTE => 'Dégusté'
+        self::STATUT_DEGUSTE => 'Dégusté',
+        self::STATUT_CONFORME => 'Conforme',
+        self::STATUT_NONCONFORME => 'Non conforme',
+        self::STATUT_CHANGE => 'Changé',
+        self::STATUT_DECLASSE => 'Déclassé'
     );
 
 
@@ -74,9 +86,6 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($this->produit_hash) {
             return $this->getDocument()->getConfiguration()->get($this->produit_hash);
         }
-    }
-    public function getNumero(){
-        return $this->_get('numero');
     }
 
     public function setProduitHash($hash) {
@@ -186,5 +195,9 @@ abstract class Lot extends acCouchdbDocumentTree
     public function isLeurre()
     {
         return $this->exist('leurre') && $this->leurre;
+    }
+
+    public function getUnicityKey(){
+        return KeyInflector::slugify($this->produit_hash.'/'.$this->volume.'/'.$this->millesime.'/'.$this->numero_dossier.'/'.$this->numero_archive);
     }
 }

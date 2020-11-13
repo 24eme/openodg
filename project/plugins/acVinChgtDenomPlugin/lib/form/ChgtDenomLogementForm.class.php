@@ -3,8 +3,8 @@
 class ChgtDenomLogementForm extends acCouchdbObjectForm
 {
     public function configure() {
-      $this->setWidget('numero', new bsWidgetFormInput());
-      $this->setValidator('numero', new sfValidatorString(array('required' => false)));
+      $this->setWidget('numero_cuve', new bsWidgetFormInput());
+      $this->setValidator('numero_cuve', new sfValidatorString(array('required' => false)));
       $this->widgetSchema->setNameFormat('chgt_denom_logement[%s]');
     }
 }

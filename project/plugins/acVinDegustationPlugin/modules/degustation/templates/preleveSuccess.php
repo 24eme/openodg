@@ -33,7 +33,7 @@
             <?php $lot = $degustation->lots->get($key); ?>
 			<tr class="vertical-center cursor-pointer">
                 <td><?php echo $lot->declarant_nom; ?></td>
-                <td class="edit"><?= $lot->numero ?>
+                <td class="edit"><?= $lot->numero_cuve ?>
                   <?php if (! $lot->isLeurre()): ?>
                     <span class="pull-right">
                       <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>

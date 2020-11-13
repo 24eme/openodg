@@ -52,7 +52,9 @@ ChgtDenom:
                 fields:
                   date: { }
                   id_document: { }
-                  numero: { }
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  numero_cuve: { }
                   millesime: { }
                   elevage: { }
                   volume: { type: float }
@@ -64,6 +66,7 @@ ChgtDenom:
                   declarant_nom: { }
                   origine_mouvement: {}
                   details: {}
+                  statut: {}
       mouvements_lots:
         type: collection
         definition:
@@ -88,7 +91,9 @@ ChgtDenom:
                         millesime: {  }
                         elevage: {  }
                         region: {  }
-                        numero: {  }
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        numero_cuve: { }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -102,6 +107,7 @@ ChgtDenom:
                         region: {}
                         campagne: {}
                         id_document: {  }
+                        statut: {}
       pieces:
         type: array_collection
         definition:
