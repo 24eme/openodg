@@ -28,6 +28,11 @@
   border: 1px solid black;
   border-top:none;
 }
+.autocomplete-list-items:hover,.autocomplete-list-items:hover > *{ 
+  color:#FFF;
+  background-color: #2c4a48;
+
+}
 /* ===================================================================================
  * File : site_vars.less
  * Description : LESS vars
