@@ -61,43 +61,72 @@ EOF;
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $societe->statut = SocieteClient::STATUT_SUSPENDU;
             }
-            $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
-            $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2];
-            $societe->siege->code_postal = $data[self::CSV_CODE_POSTAL];
-            $societe->siege->commune = $data[self::CSV_VILLE];
-            $societe->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
-            $societe->telephone_mobile = Phone::format($data[self::CSV_PORTABLE]);
-            $societe->fax = Phone::format($data[self::CSV_FAX]);
-            $societe->email = $data[self::CSV_EMAIL];
-            $societe->code_comptable_client = $data[self::CSV_CODE_COMPTABLE];
-            $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET]);
-            $societe->no_tva_intracommunautaire = $data[self::CSV_TVA_INTRA];
+            if (isset($data[self::CSV_ADRESSE_1])){
+              $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
+            }
+            if (isset($data[self::CSV_ADRESSE_2])){
+              $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2];
+            }
+            if (isset($data[self::CSV_CODE_POSTAL])){
+              $societe->siege->code_postal = $data[self::CSV_CODE_POSTAL];
+            }
+            if (isset($data[self::CSV_VILLE])){
+              $societe->siege->commune = $data[self::CSV_VILLE];
+            }
+            if (isset($data[self::CSV_TELEPHONE])){
+              $societe->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
+            }
+            if (isset($data[self::CSV_PORTABLE])){
+              $societe->telephone_mobile = Phone::format($data[self::CSV_PORTABLE]);
+            }
+            if (isset($data[self::CSV_FAX])){
+              $societe->fax = Phone::format($data[self::CSV_FAX]);
+            }
+            if (isset($data[self::CSV_EMAIL])){
+              $societe->email = $data[self::CSV_EMAIL];
+            }
+            if (isset($data[self::CSV_CODE_COMPTABLE])){
+              $societe->code_comptable_client = $data[self::CSV_CODE_COMPTABLE];
+            }
+            if (isset($data[self::CSV_SIRET])){
+              $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET]);
+            }
+            if (isset($data[self::CSV_TVA_INTRA])){
+              $societe->no_tva_intracommunautaire = $data[self::CSV_TVA_INTRA];
+            }
             try {
                 $societe->save();
             } catch (Exception $e) {
                 echo "$societe->_id save error\n";
                 continue;
             }
-            if(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-            } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE])) {
-                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-            } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE])) {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
-            } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-                $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
-            } else {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
-            }
 
+
+            if (isset($data[self::CSV_ACTIVITE])){
+              if(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+                  $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+              } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE])) {
+                  $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+              } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+                  $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+              } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE])) {
+                  $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+              } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+                  $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+              } else {
+                  $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+              }
+            }
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $etablissement->statut = EtablissementClient::STATUT_SUSPENDU;
             }
-            $etablissement->nom = ($data[self::CSV_NOM]) ? $data[self::CSV_NOM] : $data[self::CSV_RAISON_SOCIALE];
-            $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
+            if (isset($data[self::CSV_NOM]) && isset($data[self::CSV_RAISON_SOCIALE])){
+              $etablissement->nom = ($data[self::CSV_NOM]) ? $data[self::CSV_NOM] : $data[self::CSV_RAISON_SOCIALE];
+            }
+            if (isset($data[self::CSV_CVI])){
+              $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
+            }
             $etablissement->cvi = ($cvi) ? str_pad($cvi, 10, "0", STR_PAD_LEFT) : null;
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);
