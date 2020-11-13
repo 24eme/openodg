@@ -49,12 +49,16 @@ EOF;
         $this->convert_activites['Conditionneur'] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
         $this->convert_activites['Négociant'] = HabilitationClient::ACTIVITE_NEGOCIANT;
         $this->convert_activites['Vrac export'] = HabilitationClient::ACTIVITE_VRAC;
-        
+
 
         $this->convert_products = array();
         $this->convert_products['Alpilles'] = 'certifications/IGP/genres/TRANQ/appellations/APL';
         $this->convert_products['Mediterranee'] = 'certifications/IGP/genres/TRANQ/appellations/MED';
         $this->convert_products['Pays des Bouches du Rhône'] = 'certifications/IGP/genres/TRANQ/appellations/D13';
+        $this->convert_products['Var'] = 'certifications/IGP/genres/TRANQ/appellations/VAR';
+        $this->convert_products['Mont Caume'] = 'certifications/IGP/genres/TRANQ/appellations/MCA';
+        $this->convert_products['Maures'] = 'certifications/IGP/genres/TRANQ/appellations/MAU';
+        $this->convert_products['Alpes Maritimes'] = 'certifications/IGP/genres/TRANQ/appellations/AMA';
     }
 
     protected function execute($arguments = array(), $options = array())
