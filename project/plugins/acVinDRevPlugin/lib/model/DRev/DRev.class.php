@@ -1658,6 +1658,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
     }
 
+    public function getDocumentsAEnvoyer() {
+        $documents = array();
+
+        foreach($this->getOrAdd('documents') as $document) {
+            if($document->statut != DRevDocuments::STATUT_EN_ATTENTE) {
+                continue;
+            }
+
+            $documents[$document->getKey()] = $document;
+        }
+
+        return $documents;
+    }
+
     public function getNonHabilitationINAO() {
         try {
             return DRevClient::getInstance()->getNonHabilitationINAO($this);

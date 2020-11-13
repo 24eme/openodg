@@ -105,6 +105,8 @@ class degustationActions extends sfActions {
                 $mvmt->prelevable = 0;
 
                 $drev->save();
+                $modificatrice->validate();
+                $modificatrice->validateOdg();
                 $modificatrice->save();
 
                 $l = $this->form->getObject();
@@ -112,6 +114,8 @@ class degustationActions extends sfActions {
                 $this->form->save();
 
                 $this->degustation->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
+
+                $this->degustation->validate($this->degustation->validation);
 
                 return $this->redirect('degustation_preleve', $this->degustation);
             }
