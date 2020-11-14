@@ -1,3 +1,5 @@
+#!/bin/bash
+
 . $(echo $0 | sed 's/[^\/]*$//')config.inc
 
 if [ "$(echo $COUCHTEST | grep -E _test$)" == "" ]
