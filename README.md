@@ -44,7 +44,6 @@ Pour lancer les tests :
 ```
 cd project
 bash bin run_test.sh
-
 ```
 
 Aperçu de l'application pour l'Association des Viticulteurs d'Alsace
