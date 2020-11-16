@@ -114,6 +114,9 @@ Les produits déclarés sont du millésime du VCI
     </tr>
 <?php endforeach; ?>
 </table>
+<?php else: ?>
+<br />
+<em>Aucun lot déclaré</em>
 <?php endif; ?>
 
 <?php if($drev->hasProduitsReserveInterpro($region)): ?>
