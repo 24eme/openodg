@@ -43,6 +43,7 @@
           			<thead>
           				<tr>
           					<th class="col-xs-10">Échantillons</th>
+                    <th class="col-xs-5">Millésime</th>
           					<th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
@@ -61,9 +62,10 @@
                                               </div>
           									<div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
                             <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
-          									<div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
           								</div>
           							</td>
+                        <td><div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div></td>
+
           							<td class="text-center" data-hash="<?php echo $lot->produit_hash; ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>
