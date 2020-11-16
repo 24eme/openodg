@@ -124,7 +124,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return $produits;
 	}
 
-	public function getProduitsWithoutLotsByRegion($region = null){
+	protected function getProduitsWithoutLotsByRegion($region) {
 		$produits = array();
 		foreach ($this->getProduits($region) as $produit) {
 			if($produit->getConfig()->isRevendicationParLots()){

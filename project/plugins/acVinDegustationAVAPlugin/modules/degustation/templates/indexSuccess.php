@@ -63,46 +63,50 @@
 <div class="row">
     <div class="col-xs-12">
         <legend><small><small>Demandes de prélevements dans le temps</small></small></legend>
-        <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
+        <?php if(array_keys($demandes_alsace->getRawValue())): ?>
+          <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
+        <?php else: ?>
+          <div>
+            <p class="text-muted">Pas encore de demande de prélèvement pour la campagne <?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?>.</p>
+          </div>
+        <?php endif; ?>
     </div>
 </div>
 <script type="text/javascript">
-window.onload = function () {
-        var ctx = document.getElementById("graphique").getContext("2d");
-        var myNewChart = new Chart(ctx).Bar({
-            labels: <?php echo json_encode(array_keys($demandes_alsace->getRawValue())) ?>,
-            datasets: [
-                {
-                    label: "AOC Alsace",
-                    fillColor: "rgba(120,120,220,0.2)",
-                    strokeColor: "rgba(120,120,220,1)",
-                    pointColor: "rgba(120,120,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(120,120,220,1)",
-                    data: <?php echo json_encode(array_values($demandes_alsace->getRawValue())) ?>
-                },
-                {
-                    label: "VT / SGN",
-                    fillColor: "rgba(0,220,220,0.2)",
-                    strokeColor: "rgba(0,220,220,1)",
-                    pointColor: "rgba(0,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(0,220,220,1)",
-                    data: <?php echo json_encode(array_values($demandes_vtsgn->getRawValue())) ?>
-                },
-            ]
-        }, {multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"} );
-};
+<?php if(array_keys($demandes_alsace->getRawValue())): ?>
+  window.onload = function () {
+          var ctx = document.getElementById("graphique").getContext("2d");
+          myNewChart = new Chart(ctx).Bar({
+              labels: <?php echo json_encode(array_keys($demandes_alsace->getRawValue())) ?>,
+              datasets: [
+                  {
+                      label: "AOC Alsace",
+                      fillColor: "rgba(120,120,220,0.2)",
+                      strokeColor: "rgba(120,120,220,1)",
+                      pointColor: "rgba(120,120,220,1)",
+                      pointStrokeColor: "#fff",
+                      pointHighlightFill: "#fff",
+                      pointHighlightStroke: "rgba(120,120,220,1)",
+                      data: <?php echo json_encode(array_values($demandes_alsace->getRawValue())) ?>
+                  },
+                  {
+                      label: "VT / SGN",
+                      fillColor: "rgba(0,220,220,0.2)",
+                      strokeColor: "rgba(0,220,220,1)",
+                      pointColor: "rgba(0,220,220,1)",
+                      pointStrokeColor: "#fff",
+                      pointHighlightFill: "#fff",
+                      pointHighlightStroke: "rgba(0,220,220,1)",
+                      data: <?php echo json_encode(array_values($demandes_vtsgn->getRawValue())) ?>
+                  },
+              ]
+          }, {multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"} );
+  };
+<?php endif;?>
+
 </script>
 
 <h3>Liste des tournées de dégustation</h3>
-<?php if (isset($nonterminee)):?>
-<a href="<?php echo url_for('degustation'); ?>" class="btn btn-block btn-primary">Voir toutes les dégustations</a>
-<?php else: ?>
-<a href="<?php echo url_for('degustation'); ?>?nonterminee=1" class="btn btn-block btn-primary">Voir les dégustations non-terminées</a>
-<?php endif?>
 <table class="table table-bordered table-striped table-condensed">
     <thead>
         <tr>
@@ -112,41 +116,19 @@ window.onload = function () {
             <th class="col-xs-2">Statut</th>
         </tr>
     </thead>
-    <?php if (isset($nonterminee)):?>
-
-      <?php foreach($tournees as $tournee): ?>
-        <?php if(TourneeClient::$statutsLibelle[$tournee->statut] !== 'Terminée'):?>
-          <?php $t = $tournee->getRawValue(); ?>
-          <?php $nb_operateurs = count((array) $t->degustations); ?>
-          <?php $nb_degustateurs = 0; foreach($t->degustateurs as $degustateursType): $nb_degustateurs += count((array) $degustateursType); endforeach; ?>
-          <?php $nb_tournees = 0; foreach($t->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
-          <?php $nb_prelevements = 0; ?>
-      <tr>
-          <td><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></td>
-          <td><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation; ?></td>
-          <td><?php echo $tournee->nombre_prelevements ?> prélèvements<br />
-              <span class="text-muted"><?php echo $nb_operateurs ?> opérateurs <small>(<?php echo $nb_tournees; ?> tournées)</small></span>
-          </td>
-          <td class="text-center"><a href="<?php if (in_array($tournee->statut, array(TourneeClient::STATUT_SAISIE, TourneeClient::STATUT_ORGANISATION))): ?><?php echo url_for('degustation_edit', $tournee) ?><?php else: ?><?php echo url_for('degustation_visualisation', $tournee) ?><?php endif; ?>" class="btn btn-block btn-sm btn-<?php echo TourneeClient::$couleursStatut[$tournee->statut] ?>"><?php echo TourneeClient::$statutsLibelle[$tournee->statut] ?></a></td>
-      </tr>
-
-        <?php endif ?>
-      <?php endforeach; ?>
-    <?php else:?>
-      <?php foreach($tournees as $tournee): ?>
-          <?php $t = $tournee->getRawValue(); ?>
-          <?php $nb_operateurs = count((array) $t->degustations); ?>
-          <?php $nb_degustateurs = 0; foreach($t->degustateurs as $degustateursType): $nb_degustateurs += count((array) $degustateursType); endforeach; ?>
-          <?php $nb_tournees = 0; foreach($t->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
-          <?php $nb_prelevements = 0; ?>
-      <tr>
-          <td><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></td>
-          <td><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation; ?></td>
-          <td><?php echo $tournee->nombre_prelevements ?> prélèvements<br />
-              <span class="text-muted"><?php echo $nb_operateurs ?> opérateurs <small>(<?php echo $nb_tournees; ?> tournées)</small></span>
-          </td>
-          <td class="text-center"><a href="<?php if (in_array($tournee->statut, array(TourneeClient::STATUT_SAISIE, TourneeClient::STATUT_ORGANISATION))): ?><?php echo url_for('degustation_edit', $tournee) ?><?php else: ?><?php echo url_for('degustation_visualisation', $tournee) ?><?php endif; ?>" class="btn btn-block btn-sm btn-<?php echo TourneeClient::$couleursStatut[$tournee->statut] ?>"><?php echo TourneeClient::$statutsLibelle[$tournee->statut] ?></a></td>
-      </tr>
-      <?php endforeach; ?>
-    <?php endif?>
+    <?php foreach($tournees as $tournee): ?>
+        <?php $t = $tournee->getRawValue(); ?>
+        <?php $nb_operateurs = count((array) $t->degustations); ?>
+        <?php $nb_degustateurs = 0; foreach($t->degustateurs as $degustateursType): $nb_degustateurs += count((array) $degustateursType); endforeach; ?>
+        <?php $nb_tournees = 0; foreach($t->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
+        <?php $nb_prelevements = 0; ?>
+    <tr>
+        <td><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></td>
+        <td><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation; ?></td>
+        <td><?php echo $tournee->nombre_prelevements ?> prélèvements<br />
+            <span class="text-muted"><?php echo $nb_operateurs ?> opérateurs <small>(<?php echo $nb_tournees; ?> tournées)</small></span>
+        </td>
+        <td class="text-center"><a href="<?php if (in_array($tournee->statut, array(TourneeClient::STATUT_SAISIE, TourneeClient::STATUT_ORGANISATION))): ?><?php echo url_for('degustation_edit', $tournee) ?><?php else: ?><?php echo url_for('degustation_visualisation', $tournee) ?><?php endif; ?>" class="btn btn-block btn-sm btn-<?php echo TourneeClient::$couleursStatut[$tournee->statut] ?>"><?php echo TourneeClient::$statutsLibelle[$tournee->statut] ?></a></td>
+    </tr>
+    <?php endforeach; ?>
 </table>

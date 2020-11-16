@@ -388,19 +388,19 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     	return trim(trim($libelle).' '.$this->libelle);
     }
-    
+
     public function existRendementVci() {
-    
+
     	return $this->existRendementByKey('rendement_vci');
     }
-    
+
     public function hasRendementVci() {
-    
+
     	return $this->hasRendementByKey('rendement_vci');
     }
-    
+
     public function hasRendementVciTotal() {
-    
+
     	return $this->hasRendementByKey('rendement_vci_total');
     }
 

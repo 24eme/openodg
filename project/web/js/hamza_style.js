@@ -214,8 +214,14 @@
 
         $(this).find('.hamzastyle').each(function () {
             var select2 = $(this);
+            var minInput = 0;
+            if (select2.attr('data-hamzastyle-mininput') !== undefined) {
+              minInput = select2.attr('data-hamzastyle-mininput')
+            }
+
             select2.select2({
                 multiple: true,
+                minimumInputLength: minInput,
                 data: function () {
                     var data = [];
                     element.find('.hamzastyle-item').each(function () {

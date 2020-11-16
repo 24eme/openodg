@@ -15,7 +15,7 @@ class ImportLotsIATask extends sfBaseTask
   const CSV_TELEPHONE = 10;
   const CSV_FAMILLE = 11;
   const CSV_NUM_LOT_OPERATEUR = 12;
-  const CSV_DESTINATION_TYPE = 13;
+  const CSV_TYPE = 13;
   const CSV_APPELLATION = 14;
   const CSV_COULEUR = 15;
   const CSV_CEPAGE_1 = 16;
@@ -42,6 +42,8 @@ class ImportLotsIATask extends sfBaseTask
   const CSV_VILLE_SITE = 37;
   const CSV_EMAIL = 38;
 
+  const TYPE_REVENDIQUE = 'R';
+
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
@@ -50,6 +52,31 @@ class ImportLotsIATask extends sfBaseTask
   protected $cepages;
 
   public static $types = array('B' => DRevClient::LOT_DESTINATION_CONDITIONNEMENT, 'VF' => DRevClient::LOT_DESTINATION_VRAC_FRANCE, 'VHF' => DRevClient::LOT_DESTINATION_VRAC_EXPORT);
+  public static $correspondancesCepages = array(
+    "Cabernet sauvignon N" => "CAB-SAUV-N",
+    "Chardonnay B" => "CHARDONN.B",
+    "Cinsault N" => "CINSAUT N",
+    "Clairette B" => "CLAIRET.B",
+    "Mourvèdre N" => "MOURVED.N",
+    "Muscat à petits grains B" => "MUS.PT.G.B",
+    "Muscat à petits grains Rs" => "MUS.P.G.RS",
+    "Muscat d'Hambourg N" => "MUS.HAMB.N",
+    "Muscat PG B" => "MUS.PT.G.B",
+    "Nielluccio N" => "NIELLUC.N",
+    "Sauvignon B" => "SAUVIGN.B",
+    "Savagnin Blanc B" => "SAVAGN.B",
+    "Vermentino B" => "VERMENT.B"
+  );
+    public static $correspondancesStatuts = array(
+      "Conforme" => Lot::STATUT_CONFORME,
+      "Déclassé" => Lot::STATUT_DECLASSE,
+      "Non Conforme" => Lot::STATUT_NONCONFORME,
+      "Prélevé A" => Lot::STATUT_PRELEVE,
+      "Prélevé NA" => Lot::STATUT_PRELEVE,
+      "Prévu" => Lot::STATUT_PRELEVE,
+      "Revendiqué C" => array(Lot::STATUT_PRELEVABLE, Lot::STATUT_PRELEVE),
+      "Revendiqué NC" => array(Lot::STATUT_PRELEVABLE, Lot::STATUT_PRELEVE)
+    );
 
     protected function configure()
     {
@@ -86,12 +113,19 @@ EOF;
             if (!$data) {
               continue;
             }
+
+            $type = trim($data[self::CSV_TYPE]);
+            if ($type != self::TYPE_REVENDIQUE) {
+                echo "SQUEEZE;lot non issu de la revendication, type : ".$type.";pas d'import;$line\n";
+                continue;
+            }
+
             $etablissement = $this->identifyEtablissement($data);
             if (!$etablissement) {
                echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
                continue;
             }
-            $produitKey = KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR]));
+            $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
             if (!isset($this->produits[$produitKey])) {
               echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR].";pas d'import;$line\n";
               continue;
@@ -100,39 +134,52 @@ EOF;
             $cepages = array();
             $volume = str_replace(',','.',trim($data[self::CSV_VOLUME_INITIAL])) * 1;
             if (trim($data[self::CSV_CEPAGE_1])) {
-              if (!isset($this->cepages[KeyInflector::slugify(trim($data[self::CSV_CEPAGE_1]))])) {
+              $cep1 = $this->identifyCepage($data[self::CSV_CEPAGE_1]);
+              if (!$cep1) {
                 echo "WARNING;cepage_1 non trouvé ".$data[self::CSV_CEPAGE_1].";pas d'import;$line\n";
                 continue;
               }
               $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_1]) * 1;
               $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$this->cepages[KeyInflector::slugify(trim($data[self::CSV_CEPAGE_1]))]] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
+              $cepages[$cep1] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             if (trim($data[self::CSV_CEPAGE_2])) {
-              if (!isset($this->cepages[KeyInflector::slugify(trim($data[self::CSV_CEPAGE_2]))])) {
+              $cep2 = $this->identifyCepage($data[self::CSV_CEPAGE_2]);
+              if (!$cep2) {
                 echo "WARNING;cepage_2 non trouvé ".$data[self::CSV_CEPAGE_2].";pas d'import;$line\n";
                 continue;
               }
               $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_2]) * 1;
               $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$this->cepages[KeyInflector::slugify(trim($data[self::CSV_CEPAGE_2]))]] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
+              $cepages[$cep2] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             if (trim($data[self::CSV_CEPAGE_3])) {
-              if (!isset($this->cepages[KeyInflector::slugify(trim($data[self::CSV_CEPAGE_3]))])) {
+              $cep3 = $this->identifyCepage($data[self::CSV_CEPAGE_3]);
+              if (!$cep3) {
                 echo "WARNING;cepage_3 non trouvé ".$data[self::CSV_CEPAGE_3].";pas d'import;$line\n";
                 continue;
               }
               $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_3]) * 1;
               $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$this->cepages[KeyInflector::slugify(trim($data[self::CSV_CEPAGE_3]))]] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
+              $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
             $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
-            $numero = trim($data[self::CSV_NUM_LOT_ODG]).' | '.trim($data[self::CSV_NUM_LOT_OPERATEUR]);
+            $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
+            $numeroLot = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
+            $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
             $destinationDate = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_TRANSACTION_DATE]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-            $types = self::$types;
-            $destination = (isset($types[trim($data[self::CSV_DESTINATION_TYPE])]))? $types[trim($data[self::CSV_DESTINATION_TYPE])] : null;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            $statut = trim($data[self::CSV_STATUT]);
+            $preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
+            $correspondances = self::$correspondancesStatuts;
+
+            if (!isset($correspondances[$statut])) {
+                echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+                continue;
+            }
+
+            $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
 
             $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
 
@@ -140,9 +187,12 @@ EOF;
               $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
               $drev->constructId();
               $drev->storeDeclarant();
+              $drev->validation = $date;
+              $drev->validation_odg = $date;
+              $drev->numero_archive = $numeroDossier;
             }
 
-            $lot = $drev->getOrAdd('lots')->add();
+            $lot = $drev->addLot();
 
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
@@ -150,23 +200,44 @@ EOF;
             $lot->elevage = 0;
             $lot->id_document = $drev->_id;
             $lot->millesime = $millesime;
-            $lot->numero = $numero;
+            $lot->numero_dossier = $numeroDossier;
+            $lot->numero_archive = $numeroLot;
+            $lot->numero_cuve = $numero;
             $lot->volume = $volume;
-            $lot->destination_type = $destination;
+            $lot->destination_type = null;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
+            $lot->statut = $statut;
+            $lot->statut = $statut;
 
-            $nbOc = 0;
-            foreach($drev->lots as $l) {
-              if ($lot->getUnicityKey() == $l->getUnicityKey()) {
-                $nbOc++;
+            $deleted = array();
+            foreach($drev->lots as $k => $l) {
+              if ($lot->getUnicityKey() == $l->getUnicityKey() && $lot->getKey() != $k) {
+                $deleted[] = $l;
               }
             }
-            if ($nbOc > 1) {
-              $lot->delete();
+            foreach($deleted as $d) {
+              $d->delete();
             }
+
+            $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             $drev->save();
+            echo "SUCCESS;Lot importé;".$drev->_id.";\n";
         }
+    }
+
+    protected function clearProduitKey($key) {
+      $key = str_replace('PAYS-DES-', '', $key);
+      return $key;
+    }
+
+    protected function identifyCepage($key) {
+      if (isset($this->cepages[KeyInflector::slugify(trim($key))])) {
+        return $this->cepages[KeyInflector::slugify(trim($key))];
+      } else {
+        $correspondances = self::$correspondancesCepages;
+        return (isset($correspondances[trim($key)]))? $correspondances[trim($key)] : null;
+      }
     }
 
     protected function identifyEtablissement($data) {

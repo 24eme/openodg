@@ -30,6 +30,7 @@ DRev:
       denomination_auto: { required: false }
       date_degustation_voulue: { required: false }
       version: {  }
+      numero_archive: {  }
       declarant:
         type: collection
         class: DRevDeclarant
@@ -116,7 +117,9 @@ DRev:
                 fields:
                   date: { }
                   id_document: { }
-                  numero: { }
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  numero_cuve: { }
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }
@@ -124,6 +127,7 @@ DRev:
                   produit_hash: { }
                   produit_libelle: { }
                   elevage: {}
+                  statut: {}
                   cepages:
                     type: collection
                     definition:
@@ -140,6 +144,7 @@ DRev:
               definition:
                 fields:
                   statut: { }
+                  libelle: { }
       documents_rappel: { required: false }
       documents_rappels:
         required: false
@@ -206,8 +211,6 @@ DRev:
                     type: collection
                     definition:
                       fields:
-                        prelevable: { type: integer }
-                        preleve: { type: integer }
                         produit_hash: {  }
                         produit_libelle: {  }
                         produit_couleur: { }
@@ -216,7 +219,9 @@ DRev:
                         millesime: {  }
                         elevage: {  }
                         region: {  }
-                        numero: {  }
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        numero_cuve: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -230,6 +235,7 @@ DRev:
                         region: {}
                         campagne: {}
                         id_document: {  }
+                        statut: {  }
       pieces:
         type: array_collection
         definition:

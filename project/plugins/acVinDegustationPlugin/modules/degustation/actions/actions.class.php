@@ -105,7 +105,17 @@ class degustationActions extends sfActions {
                 $mvmt->prelevable = 0;
 
                 $drev->save();
+                $modificatrice->validate();
+                $modificatrice->validateOdg();
                 $modificatrice->save();
+
+                $l = $this->form->getObject();
+                $l->id_document = $modificatrice->_id;
+                $this->form->save();
+
+                $this->degustation->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
+
+                $this->degustation->validate($this->degustation->validation);
 
                 return $this->redirect('degustation_preleve', $this->degustation);
             }
@@ -343,19 +353,17 @@ class degustationActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
 
         $this->form->save();
 
-
         if($this->popup_validation){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
         }
 
-        if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable()-1)){
+        if($this->numero_table != $this->nb_tables){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 

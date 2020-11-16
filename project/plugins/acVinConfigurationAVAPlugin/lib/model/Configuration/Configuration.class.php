@@ -19,7 +19,7 @@ class Configuration extends BaseConfiguration {
     	}
     	return $factures;
     }
-    
+
     public function getAppellationsLieuDit()
     {
       $result = array();
@@ -211,17 +211,6 @@ class Configuration extends BaseConfiguration {
         }
       }
 
-      return $produits;
-    }
-
-    public function getProduitsCahierDesCharges() {
-      $produits = array();
-      foreach ($this->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE) as $produit) {
-          if($produit->getNodeCahierDesCharges()){
-            $produitAppellation = $produit->getNodeCahierDesCharges();
-            $produits[$produitAppellation->getHash()] = $produitAppellation;
-          }
-      }
       return $produits;
     }
 }

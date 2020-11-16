@@ -52,15 +52,17 @@
 
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
-            <a href="<?php echo ($drev->isModificative())? url_for("drev_lots", $drev) : url_for("drev_revendication", array('sf_subject' => $drev, 'prec' => true)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+            <a href="<?php echo ($drev->isModificative())? url_for("drev_lots", $drev) : url_for("drev_revendication", array('sf_subject' => $drev, 'prec' => true)); ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-            <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default pull-left <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
-                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
-            </a>
-            <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">
-                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
-            </a>
+            <div class="btn-group">
+                <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
+                </a>
+                <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
+                </a>
+            </div>
         </div>
         <div class="col-xs-4 text-right">
             <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>

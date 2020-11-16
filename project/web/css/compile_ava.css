@@ -7843,7 +7843,6 @@ h4,
   background-clip: padding-box;
   position: relative;
   vertical-align: middle;
-  width: auto;
 }
 .table thead > tr > th.table-split,
 .table tbody > tr > td.table-split {

@@ -53,8 +53,6 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_WARNING, 'revendication_superficie_warn', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
-        $this->addControle(self::TYPE_ENGAGEMENT, 'revendication_superficie_dae', 'Je m\'engage à transmettre le DAE justifiant le transfert de récolte vers ce chais');
-
 
         $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L5)");
         $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
@@ -71,16 +69,15 @@ class DRevValidation extends DocumentValidation
         /*
          * Engagement
          */
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, 'Je m\'engage à transmettre la déclaration de mutage');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, "Je n'ai aucune parcelle de VDN avec un % de manquants > à 20%");
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, "Je m'engage à transmettre la liste de mes parcelles de VDN avec un % de manquant > à 20 %");
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil");
-
-
-        $this->addControle(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "Élevage : je m'engage à contacter le syndicat quand le vin sera prêt");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV11));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV12));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VCI));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_MUTAGE_DECLARATION));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
     }
 
     public function controle()
@@ -99,6 +96,7 @@ class DRevValidation extends DocumentValidation
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleEngagementMutage();
+        $this->controleEngagementParcelleManquante();
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleHabilitationINAO();
         $this->controleLots();
@@ -150,10 +148,28 @@ class DRevValidation extends DocumentValidation
             return;
         }
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, '');
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_INF, '');
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_MANQUANTS_OUEX_SUP, '');
     }
 
+    protected function controleEngagementParcelleManquante()
+    {
+        if($this->document->isPapier()) {
+            return;
+        }
+        $produits_manquants = array();
+        foreach($this->document->getProduits() as $produit) {
+            if(!$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')) {
+                continue;
+            }
+            $produits_manquants[$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
+        }
+
+        if(!count($produits_manquants)) {
+            return;
+        }
+
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF, implode(", ", $produits_manquants));
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP, implode(", ", $produits_manquants));
+    }
     protected function controleEngagementSv()
     {
         if($this->document->isPapier()) {
@@ -222,7 +238,7 @@ class DRevValidation extends DocumentValidation
         if ($this->document->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR && !$produit->recolte->volume_sur_place) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->recolte->recolte_nette) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_volumes', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } else {
 
 	        if ((round($produit->volume_revendique_issu_recolte + $produit->vci->rafraichi, 4)) != round($produit->recolte->recolte_nette, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4)) {
@@ -238,7 +254,7 @@ class DRevValidation extends DocumentValidation
         if ( (!$produit->recolte->superficie_total && $produit->superficie_revendique > 0) || ($produit->superficie_revendique > $produit->recolte->superficie_total) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
-                $this->addPoint(self::TYPE_ENGAGEMENT, 'revendication_superficie_dae', $produit->getLibelleComplet());
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, $produit->getLibelleComplet());
             }else{
         	    $this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
             }
@@ -329,7 +345,7 @@ class DRevValidation extends DocumentValidation
           }
 
           if ($lot->elevage) {
-              $this->addPoint(self::TYPE_ENGAGEMENT, 'elevage_contact_syndicat', "$lot->produit_libelle ( $lot->volume hl )");
+              $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, "$lot->produit_libelle ( $lot->volume hl )");
           }
       }
 

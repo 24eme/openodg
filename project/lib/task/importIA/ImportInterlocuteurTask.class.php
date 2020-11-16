@@ -59,45 +59,85 @@ EOF;
             }
             if(!$societe) {
                 $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR);
-                $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
-                $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2];
-                $societe->siege->code_postal = $data[self::CSV_CODE_POSTAL];
-                $societe->siege->commune = $data[self::CSV_VILLE];
-                $societe->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
-                $societe->telephone_mobile = Phone::format($data[self::CSV_PORTABLE]);
-                $societe->fax = Phone::format($data[self::CSV_FAX]);
-                $societe->email = $data[self::CSV_EMAIL];
+                if (isset($data[self::CSV_ADRESSE_1])){
+                  $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
+                }
+                if (isset($data[self::CSV_ADRESSE_2])){
+                  $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2];
+                }
+                if (isset($data[self::CSV_CODE_POSTAL])){
+                  $societe->siege->code_postal = $data[self::CSV_CODE_POSTAL];
+                }
+                if (isset($data[self::CSV_VILLE])){
+                  $societe->siege->commune = $data[self::CSV_VILLE];
+                }
+                if (isset($data[self::CSV_TELEPHONE])){
+                  $societe->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
+                }
+                if (isset($data[self::CSV_PORTABLE])){
+                  $societe->telephone_mobile = Phone::format($data[self::CSV_PORTABLE]);
+                }
+                if(isset($data[self::CSV_FAX])){
+                  $societe->fax = Phone::format($data[self::CSV_FAX]);
+                }
+                if (isset($data[self::CSV_EMAIL])){
+                  $societe->email = $data[self::CSV_EMAIL];
+                }
                 $societe->save();
             }
 
             $compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
-            if($data[self::CSV_CIVILITE] == "Madame") {
-                $compte->civilite = "Mme";
+            if (isset($data[self::CSV_CIVILITE])){
+              if($data[self::CSV_CIVILITE] == "Madame") {
+                  $compte->civilite = "Mme";
+              }
+              if($data[self::CSV_CIVILITE] == "Mademoiselle") {
+                  $compte->civilite = "Mme";
+              }
+              if($data[self::CSV_CIVILITE] == "Monsieur") {
+                  $compte->civilite = "M";
+              }
             }
-            if($data[self::CSV_CIVILITE] == "Mademoiselle") {
-                $compte->civilite = "Mme";
+            if (isset($data[self::CSV_NOM])){
+              $compte->nom = $data[self::CSV_NOM];
             }
-            if($data[self::CSV_CIVILITE] == "Monsieur") {
-                $compte->civilite = "M";
+            if (isset($data[self::CSV_PRENOM])){
+              $compte->prenom = $data[self::CSV_PRENOM];
             }
-            $compte->nom = $data[self::CSV_NOM];
-            $compte->prenom = $data[self::CSV_PRENOM];
-            $compte->adresse = $data[self::CSV_ADRESSE_1];
-            $compte->adresse_complementaire = $data[self::CSV_ADRESSE_2];
-            $compte->code_postal = $data[self::CSV_CODE_POSTAL];
-            $compte->commune = $data[self::CSV_VILLE];
-            $compte->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
-            $compte->telephone_mobile = Phone::format($data[self::CSV_PORTABLE]);
-            $compte->fax = Phone::format($data[self::CSV_FAX]);
-            $compte->email = $data[self::CSV_EMAIL];
-            if(preg_match('/Porteur de mémoire/', $data[self::CSV_COLLEGE])) {
-                $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
+            if (isset($data[self::CSV_ADRESSE_1])){
+              $compte->adresse = $data[self::CSV_ADRESSE_1];
             }
-            if(preg_match('/Technicien/', $data[self::CSV_COLLEGE])) {
-                $compte->add('droits')->add(null, 'degustateur:technicien');
+            if (isset($data[self::CSV_ADRESSE_2])){
+              $compte->adresse_complementaire = $data[self::CSV_ADRESSE_2];
             }
-            if(preg_match('/Usager du produit/', $data[self::CSV_COLLEGE])) {
-                $compte->add('droits')->add(null, 'degustateur:usager_du_produit');
+            if (isset($data[self::CSV_CODE_POSTAL])){
+              $compte->code_postal = $data[self::CSV_CODE_POSTAL];
+            }
+            if (isset($data[self::CSV_VILLE])){
+              $compte->commune = $data[self::CSV_VILLE];
+            }
+            if (isset($data[self::CSV_TELEPHONE])){
+              $compte->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
+            }
+            if (isset($data[self::CSV_PORTABLE])){
+              $compte->telephone_mobile = Phone::format($data[self::CSV_PORTABLE]);
+            }
+            if (isset($data[self::CSV_FAX])){
+              $compte->fax = Phone::format($data[self::CSV_FAX]);
+            }
+            if (isset($data[self::CSV_EMAIL])){
+              $compte->email = $data[self::CSV_EMAIL];
+            }
+            if (isset($data[self::CSV_COLLEGE])){
+              if(preg_match('/Porteur de mémoire/', $data[self::CSV_COLLEGE])) {
+                  $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
+              }
+              if(preg_match('/Technicien/', $data[self::CSV_COLLEGE])) {
+                  $compte->add('droits')->add(null, 'degustateur:technicien');
+              }
+              if(preg_match('/Usager du produit/', $data[self::CSV_COLLEGE])) {
+                  $compte->add('droits')->add(null, 'degustateur:usager_du_produit');
+              }
             }
             $compte->save();
 
