@@ -21,6 +21,11 @@
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+
+        <script src="https://weareoutman.github.io/clockpicker/dist/jquery-clockpicker.min.js"></script>
+        <link rel="stylesheet" href="https://weareoutman.github.io/clockpicker/dist/jquery-clockpicker.min.css"></link>
 
         <!--[if lt IE 9]>
             <script type="text/javascript" src="/js/lib/respond.min.js"></script>

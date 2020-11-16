@@ -147,8 +147,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos["nbTables"] = count($tables);
 		$infos["nbFreeLots"] = count($this->getFreeLots());
 		$infos["nbLotsDegustes"] = $infos["nbLots"] - $infos["nbFreeLots"];
-		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
-		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
+		$infos["nbLotsConformes"] = $this->getNbLotsConformes();
+		$infos["nbLotsNonConformes"] = $this->getNbLotsNonConformes();
 		return $infos;
 	}
 
@@ -315,6 +315,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 	 }
 
+
+	 public function getNbLotsConformes(){
+
+			return count($this->getLotsConformesOrNot(true));
+	 }
+
+	 public function getNbLotsNonConformes(){
+
+		 return count($this->getLotsConformesOrNot(false));
+	 }
+
+	 public function getLotsConformesOrNot($conforme = true){
+		 $lots = array();
+		 foreach ($this->getLotsWithStatut(Lot::STATUT_DEGUSTE) as $lot) {
+			 if($conforme && $lot->exist('conformite') && $lot->conformite == Lot::CONFORMITE_CONFORME){
+				 $lots[] = $lot;
+			 }
+			 if(!$conforme && $lot->isNonConforme()){
+				 $lots[] = $lot;
+			 }
+		 }
+		 return $lots;
+	 }
 
     /**** FIN DES PIECES ****/
 
