@@ -109,4 +109,11 @@
 
     }
 
+    $('#time').on('click',function(){
+      $(this).clockpicker({
+        placement: 'bottom',
+        align: 'left',
+        autoclose: true});
+    });
+
   });
