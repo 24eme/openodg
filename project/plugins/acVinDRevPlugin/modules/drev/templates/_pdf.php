@@ -93,7 +93,7 @@ Les produits déclarés sont du millésime du VCI
 <?php endif; ?>
 <?php endif; ?>
 
-<?php if(count($drev->declaration->getProduitsLots($region))): ?>
+<?php if(count($drev->getLotsRevendiques())): ?>
 <br />
 <div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
@@ -104,8 +104,7 @@ Les produits déclarés sont du millésime du VCI
         <th class="th" style="text-align: center; width: 150px">Volume</th>
         <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
     </tr>
-<?php foreach($drev->getLots() as $lot): ?>
-<?php   if($lot->hasVolumeAndHashProduit()): ?>
+<?php foreach($drev->getLotsRevendiques() as $lot): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_cuve ?></td>
@@ -113,7 +112,6 @@ Les produits déclarés sont du millésime du VCI
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
         <td class="td" style="text-align: center;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
     </tr>
-    <?php endif; ?>
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
