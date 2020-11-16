@@ -115,7 +115,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function updateLotLogement($lot, $logement)
     {
         $lots = $this->getLots();
-        $lots[$lot]->numero_cuve = $logement;
+        $lots[$lot->getKey()]->numero_cuve = $logement;
         // TODO: voir pour les mouvements
     }
 
@@ -169,7 +169,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->version = $this->getVersion();
 			$mvt->origine_hash = $lot->getHash();
 			$mvt->origine_type = 'degustation';
-			$mvt->origine_document_id = $this->_id;
+			$mvt->origine_document_id = $lot->origine_document_id;
 			$mvt->id_document = $this->_id;
 			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
 			$mvt->declarant_identifiant = $lot->declarant_identifiant;

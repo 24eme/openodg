@@ -49,7 +49,7 @@ $i=1;
 foreach($drev->lots as $lot) {
 $lot->id_document = $drev->_id;
 $lot->millesime = $campagne;
-$lot->numero = $i;
+$lot->numero_cuve = $i;
 $lot->volume = rand(10,50);
 $lot->destination_type = null;
 $lot->destination_date = ($campagne+1).'-'.sprintf("%02d", rand(1,12)).'-'.sprintf("%02d", rand(1,28));
@@ -62,7 +62,7 @@ $t->is(count($drev->lots), 3, "3 lots ont automatiquement été créés");
 $nbLotPrelevable=0;
 if ($drev->mouvements_lots->exist($viti->identifiant)) {
   foreach($drev->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if ($mvtLot->prelevable && !$mvtLot->preleve) {
+    if ($mvtLot->statut == Lot::STATUT_PRELEVABLE) {
       $nbLotPrelevable++;
     }
   }
@@ -73,6 +73,17 @@ $newDegutation = new Degustation();
 $t->is(count($newDegutation->getLotsPrelevables()), 3, "3 lots en attentes de dégustation");
 
 $chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant);
+$mvtLots = $chgtDenom->getMvtLots();
+$t->is(count($mvtLots), 0, "Aucun mvtlots disponibles au chgt de denom");
+
+$lots = $drev->lots;
+$newDegutation->lots = $drev->lots;
+$lots->0->statut = Lot::STATUT_CONFORME;
+$lots->statut = Lot::STATUT_CONFORME;
+$lots->statut = Lot::STATUT_NONCONFORME;
+$newDegutation->generateMouvementsLots();
+$newDegutation->save();
+
 $mvtLots = $chgtDenom->getMvtLots();
 $t->is(count($mvtLots), 3, "3 mvtlots disponibles au chgt de denom");
 
