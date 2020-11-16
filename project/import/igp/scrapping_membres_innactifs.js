@@ -17,28 +17,26 @@ nightmare
   //fin authentification
 
 
-  //cépages
+  //list_membres_innactifs
+
   .evaluate(()=>{
     var elements = Array.from(document.querySelectorAll('a'))
-    elements[117].className += "cepages";
+    elements[122].className += "membres_innactifs";
   })
-   .click('.cepages')   //pour donner accès au lien sinon site en maintenance
-   .goto(config.web_site_produits)
-   .refresh()
-   .wait(3000)
-   .wait('#btnCepage')
-   .click('#btnCepage')
-   .wait('#ContentPlaceHolder1_gvCepage')
-   .evaluate(()=>{
-     var elements = document.querySelector('#ContentPlaceHolder1_gvCepage').innerText
-     return elements;
-     })
-   .end()
-   .then((text) => {
-     fs.writeFileSync(destination_file+'cépages.txt',text);
+  .click('.membres_innactifs')
+  .wait('#Button1')
+  .click('#Button1')
+  .wait('#gvMembre')
+  .evaluate(()=>{
+    var elements = document.querySelector('#gvMembre').innerText
+    return elements;
+    })
+  .end()
+  .then((text) => {
+    fs.writeFileSync(destination_file+'membres_innactifs.txt',text);
   })
-  // fin cépages
 
+  //fin list_membres_innactifs
 
     .catch(error => {
       console.error('Search failed:', error)

@@ -33,7 +33,7 @@
             <?php $lot = $degustation->lots->get($key); ?>
 			<tr class="vertical-center cursor-pointer">
                 <td><?php echo $lot->declarant_nom; ?></td>
-                <td class="edit"><?= $lot->numero ?>
+                <td class="edit"><?= $lot->numero_cuve ?>
                   <?php if (! $lot->isLeurre()): ?>
                     <span class="pull-right">
                       <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -42,11 +42,11 @@
                 </td>
 				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
         <td class="text-right edit">
-          <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
+          <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>&nbsp;&nbsp;
           <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
         </td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
+                    <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $formLot['preleve']->renderError() ?>
                         <div class="col-xs-12">
 			            	<?php echo $formLot['preleve']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
