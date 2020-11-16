@@ -34,6 +34,9 @@
             <vci_stock_n value="<?php echo floatval($produit->vci->stock_final); ?>"/>
             <vci_stock_n_1 value="<?php echo floatval($produit->vci->stock_precedent); ?>"/>
           <?php endif; ?>
+          <?php if($produit->hasReserveInterpro()): ?>
+              <vsi value="<?php echo floatval($produit->getVolumeReserveInterpro()); ?>" />
+          <?php endif; ?>
   					</ligne>
 	<?php endif; ?>
 <?php endforeach; ?>
