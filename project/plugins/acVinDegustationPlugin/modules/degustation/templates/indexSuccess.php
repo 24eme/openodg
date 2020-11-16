@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- <script>$("div[id=time]").clockpicker({placement: 'bottom',align: 'left',autoclose: true});</script> -->
+                <script>$("div[id=time]").clockpicker({placement: 'bottom',align: 'left',autoclose: true});</script>
 
             </div>
             <div class="form-group <?php if($form["lieu"]->getError()): ?>has-error<?php endif; ?> <?php if($form["max_lots"]->getError()): ?>has-error<?php endif; ?>">
