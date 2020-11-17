@@ -1,4 +1,4 @@
 all:
   configuration:
     societe:
-      disable_save: true
+      disable_save: false

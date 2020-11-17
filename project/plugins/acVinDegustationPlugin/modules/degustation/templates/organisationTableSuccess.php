@@ -32,7 +32,6 @@
           	</table>
           </div>
 
-
           	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>" method="post" class="form-horizontal degustation table">
           		<?php echo $form->renderHiddenFields(); ?>
           		<div class="bg-danger">
