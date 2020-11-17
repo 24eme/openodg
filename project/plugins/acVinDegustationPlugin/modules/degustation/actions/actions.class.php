@@ -142,11 +142,19 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
+        $colleges = DegustationConfiguration::getInstance()->getColleges();
+        $first_college = array_key_first($colleges);
+
+        if(!$this->college = $request->getParameter('college')) {
+
+            return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id, 'college' => $first_college));
+        }
+
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
             $this->degustation->save();
         }
 
-        $this->form = new DegustationSelectionDegustateursForm($this->degustation);
+        $this->form = new DegustationSelectionDegustateursForm($this->degustation,array(),array('college' => $this->college));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -154,7 +162,6 @@ class degustationActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -467,6 +474,23 @@ class degustationActions extends sfActions {
 
     public function executeManquements(sfWebRequest $request) {
         $this->manquements = DegustationClient::getInstance()->getManquements();
+    }
+
+    public function executeEtiquettesPdf(sfWebRequest $request) {
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationEtiquettesPdf($degustation, $this->getRequestParameter('output', 'pdf'), false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
     }
 
 }

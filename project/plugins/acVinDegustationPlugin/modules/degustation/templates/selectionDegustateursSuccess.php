@@ -27,7 +27,7 @@
   <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
 </div>
 
-<form action="<?php echo url_for("degustation_selection_degustateurs", $degustation) ?>" method="post" class="form-horizontal degustation degustateurs">
+<form action="<?php echo url_for("degustation_selection_degustateurs", array('id' => $degustation->_id, 'college' => $college)) ?>" method="post" class="form-horizontal degustation degustateurs">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
@@ -60,7 +60,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $compteForm['selectionne']->renderError() ?>
                         <div class="col-xs-12">
-			            	<?php echo $compteForm['selectionne']->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+			            	<?php echo $compteForm['selectionne']->render(array('class' => "bsswitch ", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                         </div>
                     </div>
             	</td>
