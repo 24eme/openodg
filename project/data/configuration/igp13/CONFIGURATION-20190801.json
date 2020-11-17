@@ -376,7 +376,8 @@
                 "attributs": {
                   "rendement": null,
                   "rendement_conseille": null,
-                  "rendement_dr": null,
+                  "rendement_dr_l5": null,
+                  "rendement_dr_l15": null,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -750,7 +751,8 @@
                                 "attributs": {
                                   "rendement": null,
                                   "rendement_conseille": null,
-                                  "rendement_dr": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
                                   "rendement_vci": null,
                                   "rendement_vci_total": null
                                 }
@@ -1040,7 +1042,8 @@
                                 "attributs": {
                                   "rendement": null,
                                   "rendement_conseille": null,
-                                  "rendement_dr": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
                                   "rendement_vci": null,
                                   "rendement_vci_total": null
                                 }
@@ -1055,7 +1058,8 @@
                 "attributs": {
                   "rendement": null,
                   "rendement_conseille": null,
-                  "rendement_dr": null,
+                  "rendement_dr_l5": null,
+                  "rendement_dr_l15": null,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -2027,7 +2031,8 @@
                 "attributs": {
                   "rendement": null,
                   "rendement_conseille": null,
-                  "rendement_dr": null,
+                  "rendement_dr_l5": null,
+                  "rendement_dr_l15": null,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -2421,7 +2426,8 @@
                                 "attributs": {
                                   "rendement": null,
                                   "rendement_conseille": null,
-                                  "rendement_dr": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
                                   "rendement_vci": null,
                                   "rendement_vci_total": null
                                 }
@@ -2711,7 +2717,8 @@
                                 "attributs": {
                                   "rendement": null,
                                   "rendement_conseille": null,
-                                  "rendement_dr": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
                                   "rendement_vci": null,
                                   "rendement_vci_total": null
                                 }
@@ -2726,7 +2733,8 @@
                 "attributs": {
                   "rendement": null,
                   "rendement_conseille": null,
-                  "rendement_dr": null,
+                  "rendement_dr_l5": null,
+                  "rendement_dr_l15": null,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -2735,7 +2743,8 @@
             "attributs": {
               "rendement": null,
               "rendement_conseille": null,
-              "rendement_dr": null,
+              "rendement_dr_l5": null,
+              "rendement_dr_l15": null,
               "rendement_vci": null,
               "rendement_vci_total": null
             }
@@ -2744,7 +2753,8 @@
         "attributs": {
           "rendement": 90,
           "rendement_conseille": null,
-          "rendement_dr": 95,
+          "rendement_dr_l5": 95,
+          "rendement_dr_l15": null,
           "rendement_vci": null,
           "rendement_vci_total": null
         }

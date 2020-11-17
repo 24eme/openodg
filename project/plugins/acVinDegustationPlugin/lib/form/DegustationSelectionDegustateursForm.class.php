@@ -3,10 +3,12 @@
 class DegustationSelectionDegustateursForm extends acCouchdbForm {
 
     protected $degustateurs;
+    protected $college;
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
-        parent::__construct($doc, $defaults, $options, $CSRFSecret);
         $doc->getOrAdd('degustateurs');
+        $this->college = $options['college'];
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
         $defaults = array_merge($this->getDefaults(), $this->getDefaultsByDoc($doc));
         $this->setDefaults($defaults);
     }
@@ -14,29 +16,25 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 	public function configure()
     {
 	    $form = new BaseForm();
-        foreach($this->getDegustateursByColleges() as $college => $comptes) {
-            $subForm = new BaseForm();
-            foreach ($comptes as $compte) {
-                $subForm->embedForm($compte->_id, new DegustationSelectionDegustateurForm());
-            }
-            $form->embedForm($college, $subForm);
-        }
-        $this->embedForm('degustateurs', $form);
-        $this->widgetSchema->setNameFormat('degustation[%s]');
+      $subForm = new BaseForm();
+      foreach($this->getDegustateursByCollege() as $compte_id => $compte) {
+          $subForm->embedForm($compte->_id, new DegustationSelectionDegustateurForm());
+      }
+      $form->embedForm($this->college, $subForm);
+      $this->embedForm('degustateurs', $form);
+      $this->widgetSchema->setNameFormat('degustation[%s]');
     }
 
     protected function getDefaultsByDoc($doc)
     {
         $defaults = array();
-        foreach($this->getDegustateursByColleges() as $college => $comptes) {
-            foreach ($comptes as $compte) {
-                $idCompte = $compte->_id;
+        foreach($this->getDegustateursByCollege() as $compte_id => $compte) {
                 $selectionne = 0;
-                if ($doc->degustateurs->exist($college) && $doc->degustateurs->{$college}->exist($idCompte)) {
+                if ($doc->degustateurs->exist($this->college) && $doc->degustateurs->{$this->college}->exist($compte_id)) {
                     $selectionne = 1;
                 }
-                $defaults['degustateurs'][$college][$idCompte] = array('selectionne' => $selectionne);
-            }
+                $defaults['degustateurs'][$this->college][$compte_id] = array('selectionne' => $selectionne);
+
         }
         return $defaults;
     }
@@ -49,7 +47,7 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 		foreach ($values['degustateurs'] as $college => $items) {
 		    foreach ($items as $compteId => $val) {
     		    if (isset($val['selectionne']) && !empty($val['selectionne'])) {
-    		        $compte = $this->getCompteByCollegeAndIdentifiant($college, $compteId);
+    		        $compte = $this->getCompteByIdentifiant($compteId);
     		        $degustateur = $doc->degustateurs->getOrAdd($college)->add($compteId);
                 $degustateur->add('libelle',$compte->getLibelleWithAdresse());
     		    }
@@ -58,27 +56,25 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 		$doc->save();
 	}
 
-    public function getDegustateursByColleges() {
+    public function getDegustateursByCollege() {
         if (!$this->degustateurs) {
             $this->degustateurs = array();
-            foreach (DegustationConfiguration::getInstance()->getColleges() as $tag => $libelle) {
-                $comptes = CompteTagsView::getInstance()->listByTags('automatique', $tag);
+                $comptes = CompteTagsView::getInstance()->listByTags('automatique', $this->college);
                 if (count($comptes) > 0) {
                     $result = array();
                     foreach ($comptes as $compte) {
                         $result[$compte->id] = CompteClient::getInstance()->find($compte->id);
                     }
-                    $this->degustateurs[$tag] = $result;
+                    $this->degustateurs = $result;
                 }
-            }
             ksort($this->degustateurs);
         }
         return $this->degustateurs;
     }
 
-    public function getCompteByCollegeAndIdentifiant($college, $identifiant) {
-        $comptes = $this->getDegustateursByColleges();
-        return (isset($comptes[$college]) && isset($comptes[$college][$identifiant]))? $comptes[$college][$identifiant] : null;
+    public function getCompteByIdentifiant($identifiant) {
+        $comptes = $this->getDegustateursByCollege();
+        return (isset($comptes[$identifiant]))? $comptes[$identifiant] : null;
     }
 
 }

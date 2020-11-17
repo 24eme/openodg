@@ -24,8 +24,8 @@ degustation_prelevement_lots:
     sf_method: [get, post]
 
 degustation_selection_degustateurs:
-  url: /degustation/:id/selection-degustateurs
-  param: { module: degustation, action: selectionDegustateurs }
+  url: /degustation/:id/selection-degustateurs/:college
+  param: { module: degustation, action: selectionDegustateurs, college: 0 }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -200,9 +200,21 @@ degustation_manquements:
   requirements:
     sf_method: [get]
 
+
+degustation_etiquette_pdf:
+  url: /degustation/:id/etiquettes/pdf
+  param: { module: degustation, action: etiquettesPdf }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
 degustation_fiche_individuelle_pdf:
-    url: /degustation/pdf/:id
-    param: { module: degustation, action: PDF }
+    url: /degustation/:id/ficheIndividuelle/pdf
+    param: { module: degustation, action: ficheIndividuellePdf }
     class: DegustationRoute
     options:
       model:    Degustation
