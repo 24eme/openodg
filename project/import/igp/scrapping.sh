@@ -21,4 +21,3 @@ bash script_verify.sh
 sed "s/\t/;/" imports/$FILE_NAME/produits.txt >> imports/$FILE_NAME/produits.csv
 sed "s/\t/;/" imports/$FILE_NAME/cépages.txt | cut -d ";" -f 1 >> imports/$FILE_NAME/cépages.csv
 sed "s/\t/;/" imports/$FILE_NAME/membres_innactifs.txt >> imports/$FILE_NAME/membres_innactifs.csv
-sed "s/\t/;/g"  imports/var/membres_innactifs.txt >> imports/var/membres_innactifs.csv

@@ -1695,9 +1695,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->_add('date_degustation_voulue', $date);
     }
 
-    public function getProduitsWithReserveInterpro() {
+    public function getProduitsWithReserveInterpro($region = null) {
         $produits = array();
-        foreach($this->getProduits() as $p) {
+        foreach($this->getProduits($region) as $p) {
             if ($p->hasReserveInterpro()) {
                 $produits[] = $p;
             }
@@ -1705,7 +1705,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $produits;
     }
 
-    public function hasProduitsReserveInterpro() {
-        return (count($this->getProduitsWithReserveInterpro()));
+    public function hasProduitsReserveInterpro($region = null) {
+        return (count($this->getProduitsWithReserveInterpro($region)));
     }
 }

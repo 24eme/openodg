@@ -2,12 +2,6 @@
 
 . $(echo $0 | sed 's/[^\/]*$//')config.inc
 
-if [ "$(echo $COUCHTEST | grep -E _test$)" == "" ]
-then
-    echo "La base COUCHTEST ($COUCHTEST) ne semble pas être une base de test ( doit se terminer par \"_test\", par exemple http://localhost:5984/giilda_app_test )"
-    exit;
-fi
-
 APPLICATION=$1
 FORCE=$2
 
@@ -46,25 +40,12 @@ then
     exit;
 fi
 
-curl -s -X DELETE $COUCHTEST
-curl -s -X PUT $COUCHTEST  || ( echo "connexion à $COUCHTEST impossible"  ;  exit 2 )
-
-cd ..
-make clean
-make couchurl=$COUCHTEST
-cd -
-
-ls $WORKINGDIR"/data/configuration/"$APPLICATION | while read jsonFile
-do
-    curl -s -X POST -d @data/configuration/$APPLICATION/$jsonFile -H "content-type: application/json" $COUCHTEST
-done
-
-rm -rf cache/*
-php symfony cc
-
 XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"_"$BRANCH".xml
 
-APPLICATION=$APPLICATION COUCHURL=$COUCHTEST NODELETE=1 php symfony test:all --xml=$XMLFILE
+bash $(dirname $0)/run_test.sh -x $XMLFILE $APPLICATION
+
 sed -i "s|$WORKINGDIR/||" $XMLFILE
+
+echo "Output XML file : $XMLFILE"
 
 rm $PID_PATH

@@ -115,7 +115,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function updateLotLogement($lot, $logement)
     {
         $lots = $this->getLots();
-        $lots[$lot]->numero_cuve = $logement;
+        $lots[$lot->getKey()]->numero_cuve = $logement;
         // TODO: voir pour les mouvements
     }
 
@@ -147,8 +147,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos["nbTables"] = count($tables);
 		$infos["nbFreeLots"] = count($this->getFreeLots());
 		$infos["nbLotsDegustes"] = $infos["nbLots"] - $infos["nbFreeLots"];
-		$infos["nbLotsConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
-		$infos["nbLotsNonConformes"] = $this->getNbLotsWithStatut(Lot::STATUT_DEGUSTE);
+		$infos["nbLotsConformes"] = $this->getNbLotsConformes();
+		$infos["nbLotsNonConformes"] = $this->getNbLotsNonConformes();
 		return $infos;
 	}
 
@@ -169,7 +169,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->version = $this->getVersion();
 			$mvt->origine_hash = $lot->getHash();
 			$mvt->origine_type = 'degustation';
-			$mvt->origine_document_id = $this->_id;
+			$mvt->origine_document_id = $lot->origine_document_id;
 			$mvt->id_document = $this->_id;
 			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
 			$mvt->declarant_identifiant = $lot->declarant_identifiant;
@@ -315,6 +315,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 	 }
 
+
+	 public function getNbLotsConformes(){
+
+			return count($this->getLotsConformesOrNot(true));
+	 }
+
+	 public function getNbLotsNonConformes(){
+
+		 return count($this->getLotsConformesOrNot(false));
+	 }
+
+	 public function getLotsConformesOrNot($conforme = true){
+		 $lots = array();
+		 foreach ($this->getLotsWithStatut(Lot::STATUT_DEGUSTE) as $lot) {
+			 if($conforme && $lot->exist('conformite') && $lot->conformite == Lot::CONFORMITE_CONFORME){
+				 $lots[] = $lot;
+			 }
+			 if(!$conforme && $lot->isNonConforme()){
+				 $lots[] = $lot;
+			 }
+		 }
+		 return $lots;
+	 }
 
     /**** FIN DES PIECES ****/
 
