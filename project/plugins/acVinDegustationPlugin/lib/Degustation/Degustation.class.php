@@ -581,4 +581,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Fin Gestion dégustateurs ****/
 
+		/**** Gestion PDF ****/
+
+		public function getEtiquettesFromLots(){
+			
+			foreach ($this->getLots() as $lot) {
+				// code...
+			}
+		}
+
 }
