@@ -449,6 +449,17 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         return false;
     }
 
+    public function hasAcheteursExternes()
+    {
+        foreach ($this->acheteurs as $type => $acheteurs) {
+            if (in_array($type, array_keys(ParcellaireClient::$destinations_libelles)) && $type !== ParcellaireClient::DESTINATION_SUR_PLACE) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function validate($date = null) {
         if (is_null($date)) {
             $date = date('Y-m-d');
