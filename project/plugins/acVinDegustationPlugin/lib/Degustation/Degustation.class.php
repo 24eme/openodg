@@ -584,10 +584,37 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		/**** Gestion PDF ****/
 
 		public function getEtiquettesFromLots(){
-			
+			$nbLots = 0;
+			$planche = 0;
+			$maxLotsParPlanche = 7;
+			$etiquettesPlanches = array();
+			$etablissements = array();
+			$produits = array();
 			foreach ($this->getLots() as $lot) {
-				// code...
+				if($nbLots > $maxLotsParPlanche){
+					$planche++;
+					$nbLots = 0;
+				}
+				if(!array_key_exists($planche,$etiquettesPlanches)){
+					$etiquettesPlanches[$planche] = array();
+				}
+
+				if(!array_key_exists($lot->declarant_identifiant,$etablissements)){
+					$etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+				}
+
+				if(!array_key_exists($lot->produit_hash,$produits)){
+					$produits[$lot->produit_hash] = $lot->getConfig()->getCouleur()->getLibelle();
+				}
+
+				$infosLot = new stdClass();
+				$infosLot->lot = $lot;
+				$infosLot->etablissement = $etablissements[$lot->declarant_identifiant];
+				$infosLot->couleur = $produits[$lot->produit_hash];
+				$etiquettesPlanches[$planche][] = $infosLot;
+				$nbLots++;
 			}
+			return $etiquettesPlanches;
 		}
 
 }

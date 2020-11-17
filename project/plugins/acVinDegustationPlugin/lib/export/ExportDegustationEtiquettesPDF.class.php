@@ -14,7 +14,9 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
     }
 
     public function create() {
-      $this->printable_document->addPage($this->getPartial('degustation/etiquettesPdf', array('degustation' => $this->degustation)));
+      foreach ($this->degustation->getEtiquettesFromLots() as $plancheLots) {
+        $this->printable_document->addPage($this->getPartial('degustation/etiquettesPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
+      }
     }
 
 
@@ -26,7 +28,7 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
         return file_get_contents($this->getFile());
     }
 
-    public function getFile() {      
+    public function getFile() {
 
         if($this->printable_document instanceof PageableHTML) {
             return parent::getFile();
