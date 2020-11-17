@@ -73,6 +73,12 @@ class DRevConfiguration {
       return array_keys($this->configuration['odg']);
     }
 
+    public function getSpecificites(){
+      if($this->hasSpecificiteLot()){
+        return $this->configuration['specificites'];
+      }
+    }
+
     public function hasHabilitationINAO() {
         return isset($this->configuration['habilitation_inao']) && ($this->configuration['habilitation_inao']);
     }
@@ -135,6 +141,9 @@ class DRevConfiguration {
 
     public function hasPDFUniqueRegion() {
         return isset($this->configuration['pdf_unique_region']) && boolval($this->configuration['pdf_unique_region']);
+    }
+    public function hasSpecificiteLot(){
+      return isset($this->configuration['specificite_lot']) && boolval($this->configuration['specificite_lot']);
     }
 
     public function hasEngagementsPdf(){
