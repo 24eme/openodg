@@ -119,7 +119,8 @@ DRev:
                   id_document: { }
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero_cuve: { }
+                  numero: { }
+                  numero_cuve: { required: false } # a supprimer
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }
