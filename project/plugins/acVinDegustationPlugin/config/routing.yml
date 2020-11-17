@@ -199,3 +199,13 @@ degustation_manquements:
   param: { module: degustation, action: manquements }
   requirements:
     sf_method: [get]
+
+degustation_fiche_individuelle_pdf:
+    url: /degustation/pdf/:id
+    param: { module: degustation, action: PDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]

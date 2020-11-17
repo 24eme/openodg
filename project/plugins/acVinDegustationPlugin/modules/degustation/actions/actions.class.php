@@ -469,4 +469,6 @@ class degustationActions extends sfActions {
         $this->manquements = DegustationClient::getInstance()->getManquements();
     }
 
+    // public function executePDF(sfWebRequest $request) {
+    // }
 }
