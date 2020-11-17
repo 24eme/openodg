@@ -1,12 +1,13 @@
 <?php use_helper('TemplatingPDF'); ?>
 <style>
-<?php echo styleDRev(); ?>
 </style>
-    <div><span class="h3">&nbsp;Engagement(s)&nbsp;</span></div>
+    <div><span class="h3">&nbsp;Etiquettes des prélévements&nbsp;</span></div>
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
-    <?php foreach($degustation->lots as $lot): ?>
+    <?php foreach($degustation->getEtiquettesFromLots() as $lot): ?>
         <tr>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo $lot->volume;  ?></td>
+          <?php for($i=0; $i <3 ; $i++): ?>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<strong><?php echo $degustation->volume;  ?></strong></td>
+          <?php endfor; ?>
         </tr>
     <?php endforeach; ?>
     </table>

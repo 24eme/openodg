@@ -479,7 +479,7 @@ class degustationActions extends sfActions {
     public function executeEtiquettesPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
 
-      $this->document = new ExportDegustationEtiquettesPdf($degustation, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);
+      $this->document = new ExportDegustationEtiquettesPdf($degustation, $this->getRequestParameter('output', 'pdf'), false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {

@@ -19,11 +19,6 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
 
 
     public function output() {
-        if(count($this->regions) <= 1) {
-
-            return parent::output();
-        }
-
         if($this->printable_document instanceof PageableHTML) {
             return parent::output();
         }
@@ -31,11 +26,7 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
         return file_get_contents($this->getFile());
     }
 
-    public function getFile() {
-        if(count($this->regions) <= 1) {
-
-            return parent::getFile();
-        }
+    public function getFile() {      
 
         if($this->printable_document instanceof PageableHTML) {
             return parent::getFile();
