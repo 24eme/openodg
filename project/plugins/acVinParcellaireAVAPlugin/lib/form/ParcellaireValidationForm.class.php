@@ -3,7 +3,7 @@
 class ParcellaireValidationForm extends acCouchdbObjectForm {
 
     public function configure() {
-        if(!$this->getObject()->isPapier() && $this->getObject()->hasProduitWithMultipleAcheteur()) {
+        if(!$this->getObject()->isPapier()) {
             $this->setWidget('autorisation_acheteur', new sfWidgetFormInputCheckbox());
             $this->setValidator('autorisation_acheteur', new sfValidatorBoolean());
         }
