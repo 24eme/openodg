@@ -246,8 +246,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             }
             $this->etablissement_informations->cvi = implode('|', $cvis);
             $this->etablissement_informations->ppm = implode('|', $ppms);
-            $this->add('region', implode('|', $regions));
-
+            if($societe->exist('region') && $societe->region) {
+                $this->add('region', $societe->region);
+            } else {
+                $this->add('region', implode('|', $regions));
+            }
         }else{
             $this->etablissement_informations->cvi = null;
             $this->etablissement_informations->ppm = null;
