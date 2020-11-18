@@ -11,17 +11,22 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
             $filename = $this->getFileName(true);
         }
         parent::__construct($type, $use_cache, $file_dir, $filename);
+        if($this->printable_document->getPdf()){
+          $this->printable_document->getPdf()->setPrintHeader(false);
+          $this->printable_document->getPdf()->setPrintFooter(false);
+        }
     }
 
     public function create() {
       foreach ($this->degustation->getEtiquettesFromLots() as $plancheLots) {
         $this->printable_document->addPage($this->getPartial('degustation/etiquettesPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
       }
-    }
+  }
 
 
     public function output() {
         if($this->printable_document instanceof PageableHTML) {
+
             return parent::output();
         }
 
@@ -38,9 +43,7 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Etiquettes de degustation %s", $this->degustation->_id);
-
-        return $titre;
+        return "";
     }
 
     protected function getFooterText() {
@@ -49,16 +52,13 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
-
-        return $header_subtitle;
+        return "";
     }
 
 
     protected function getConfig() {
 
-        return new ExportDRevPDFConfig();
+        return new ExportDegustationEtiquettesPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
