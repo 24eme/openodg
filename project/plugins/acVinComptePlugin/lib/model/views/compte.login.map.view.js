@@ -7,7 +7,7 @@ function(doc) {
          for (key in doc.alternative_logins) {
 	     var login = doc.alternative_logins[key];
 	     if(login) {
-             	emit([doc.alternative_logins[login]], doc.mot_de_passe);
+             emit([login], doc.mot_de_passe);
 	     }
          }
      }
