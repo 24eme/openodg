@@ -614,7 +614,44 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$etiquettesPlanches[$planche][] = $infosLot;
 				$nbLots++;
 			}
+			// var_dump($etiquettesPlanches);
 			return $etiquettesPlanches;
 		}
 
+		public function getInfoFromLots(){
+			$produits = array();
+			$etablissements = array();
+			$tablots=[];
+			foreach ($this->getLots() as $lot){
+				if(!array_key_exists($lot->produit_hash,$produits)){
+					$produits[$lot->produit_hash] = $lot->getConfig()->getCouleur()->getLibelle();
+				}
+				if(!array_key_exists($lot->declarant_identifiant,$etablissements)){
+					$etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+				}
+				$infosLot = new stdClass();
+				$infosLot->lot= $lot;
+				$infosLot->campagne= $this->getCampagne();
+				$infosLot->adresse=$this->getAdresse();
+				$infosLot->etablissement = $etablissements[$lot->declarant_identifiant];
+				$infosLot->couleur = $produits[$lot->produit_hash];
+				array_push($tablots,$infosLot);
+			}
+			return $tablots;
+		}
+
+//honorine
+		public function getOdg(){
+			return sfConfig::get('sf_app');
+		}
+
+		public function getCampagne(){
+		//TODO : a changer
+			return '2019';
+		}
+
+		public function getAdresse(){
+		//TODO : a changer	
+			return '$this->$adresse';
+		}
 }
