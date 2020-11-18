@@ -614,7 +614,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$etiquettesPlanches[$planche][] = $infosLot;
 				$nbLots++;
 			}
-			// var_dump($etiquettesPlanches);
 			return $etiquettesPlanches;
 		}
 
