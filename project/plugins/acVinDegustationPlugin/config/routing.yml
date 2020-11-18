@@ -214,7 +214,7 @@ degustation_etiquette_pdf:
 
 degustation_fiche_individuelle_pdf:
     url: /degustation/:id/ficheIndividuelle/pdf
-    param: { module: degustation, action: ficheIndividuellePdf }
+    param: { module: degustation, action: ficheIndividuellePDF }
     class: DegustationRoute
     options:
       model:    Degustation
