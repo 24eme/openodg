@@ -149,7 +149,7 @@ $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $drev->_rev,
 );
-$valuesRev['lots']['0']['numero_cuve'] = "Cuve A";
+$valuesRev['lots']['0']['numero'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$campagne;
@@ -159,7 +159,7 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
 $t->is(count($drev->lots), 2, "Les deux lots sont conservés dans la DRev");
-$t->is($drev->lots[0]->numero_cuve, $valuesRev['lots']['0']['numero_cuve'], "Le numéro de cuve du lot 1 est bien enregistré");
+$t->is($drev->lots[0]->numero_cuve, $valuesRev['lots']['0']['numero'], "Le numéro de cuve du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->volume, $valuesRev['lots']['0']['volume'], "Le volume du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->destination_type, $valuesRev['lots']['0']['destination_type'], "Le type de destination lot 1 est bien enregistré");
 $t->is($drev->lots[0]->destination_date, join('-', array_reverse(explode('/', $valuesRev['lots']['0']['destination_date']))), "La date de destination du lot 1 est bien enregistré");
@@ -274,7 +274,7 @@ $valuesRev = array(
     '_revision' => $drev_modif->_rev,
 );
 
-$valuesRev['lots']['1']['numero_cuve'] = "Cuve B";
+$valuesRev['lots']['1']['numero'] = "Cuve B";
 $valuesRev['lots']['1']['volume'] = 1;
 $valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['1']['destination_date'] = '30/11/'.$campagne;
@@ -282,7 +282,7 @@ $valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
 $valuesRev['lots']['1']['millesime'] = '2010';
 
 $valuesRev['lots']['2'] = $valuesRev['lots']['1'];
-$valuesRev['lots']['2']['numero_cuve'] = "Cuve C";
+$valuesRev['lots']['2']['numero'] = "Cuve C";
 $valuesRev['lots']['2']['produit_hash'] = $produitconfig_horsDR->getHash();
 
 $form->bind($valuesRev);
@@ -296,11 +296,11 @@ foreach ($form->getErrorSchema() as $key => $err) {
 }
 $t->is($errors, null, "Pas d'erreur dans le formulaire validé");
 $form->save();
-$t->is($drev_modif->lots[1]->numero_cuve, $valuesRev['lots']['1']['numero_cuve'], "Le numéro de cuve du lot 2 est bien enregistré");
+$t->is($drev_modif->lots[1]->numero_cuve, $valuesRev['lots']['1']['numero'], "Le numéro de cuve du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->volume, $valuesRev['lots']['1']['volume'], "Le volume du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Le libellé du produit du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->millesime, $valuesRev['lots']['1']['millesime'], "Le millesime du lot 2 est bien enregistré");
-$t->is($drev_modif->lots[2]->numero_cuve, $valuesRev['lots']['2']['numero_cuve'], "Le numéro de cuve du lot 3 est bien enregistré");
+$t->is($drev_modif->lots[2]->numero_cuve, $valuesRev['lots']['2']['numero'], "Le numéro de cuve du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->volume, $valuesRev['lots']['2']['volume'], "Le volume du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->produit_libelle, $produitconfig_horsDR->getLibelleComplet(), "Le libellé du produit du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->millesime, $valuesRev['lots']['2']['millesime'], "Le millesime du lot 3 est bien enregistré");

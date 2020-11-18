@@ -99,4 +99,21 @@ class DRevLot extends BaseDRevLot
         return $libelle;
     }
 
+    public function getNumeroCuve() {
+        if($this->exist('numero_cuve') && $this->get('numero_cuve')) {
+            $this->numero = $this->get('numero_cuve');
+        }
+        if($this->exist('numero_cuve')) {
+            $this->remove('numero_cuve');
+
+            return $this->getNumeroCuve();
+        }
+        return $this->numero;
+    }
+
+    public function setNumeroCuve($numero) {
+
+        return $this->setNumero($numero);
+    }
+
 }
