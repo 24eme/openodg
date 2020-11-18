@@ -16,3 +16,4 @@ all:
         effervescent: "effervescent"
         base_mousseux: "base mousseux"
         HVE: "HVE"
+        aucune: "aucune"
