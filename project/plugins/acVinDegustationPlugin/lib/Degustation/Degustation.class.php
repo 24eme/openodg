@@ -631,8 +631,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 				$infosLot = new stdClass();
 				$infosLot->lot= $lot;
-				$infosLot->campagne= $this->getCampagne();
-				$infosLot->adresse=$this->getAdresse();
 				$infosLot->etablissement = $etablissements[$lot->declarant_identifiant];
 				$infosLot->couleur = $produits[$lot->produit_hash];
 				array_push($tablots,$infosLot);
@@ -643,15 +641,5 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 //honorine
 		public function getOdg(){
 			return sfConfig::get('sf_app');
-		}
-
-		public function getCampagne(){
-		//TODO : a changer
-			return '2019';
-		}
-
-		public function getAdresse(){
-		//TODO : a changer	
-			return '$this->$adresse';
 		}
 }
