@@ -614,7 +614,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$etiquettesPlanches[$planche][] = $infosLot;
 				$nbLots++;
 			}
-			// var_dump($etiquettesPlanches);
 			return $etiquettesPlanches;
 		}
 
@@ -651,7 +650,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function getAdresse(){
-		//TODO : a changer	
+		//TODO : a changer
 			return '$this->$adresse';
 		}
 }
