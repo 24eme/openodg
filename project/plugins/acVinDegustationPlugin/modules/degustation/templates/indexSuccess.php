@@ -88,9 +88,6 @@
             <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la saisie</a>
           <?php endif; ?>
         </td>
-        <td>
-          <a href="<?php echo url_for('degustation_fiche_individuelle_pdf',$d)?>"class="btn btn-default">Fiche</a>
-        </td>
     </tr>
 <?php endforeach; ?>
 <tbody>
