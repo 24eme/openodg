@@ -129,6 +129,7 @@ DRev:
                   produit_libelle: { }
                   elevage: {}
                   statut: {}
+                  specificite: {}
                   cepages:
                     type: collection
                     definition:
