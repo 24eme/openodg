@@ -83,9 +83,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['numero_cuve']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-3 control-label")); ?>
+                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-3 control-label")); ?>
                             <div class="col-sm-6">
-                                  <?php echo $lot['numero_cuve']->render(); ?>
+                                  <?php echo $lot['numero']->render(); ?>
                             </div>
                         </div>
                     </div>

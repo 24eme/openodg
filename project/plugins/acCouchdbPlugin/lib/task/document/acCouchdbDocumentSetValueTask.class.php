@@ -70,6 +70,11 @@ EOF;
 
             return;
         }
+
+        if($value === "null") {
+            $value = null;
+        }
+
         if($doc->get($hash) === $value) {
 
             continue;

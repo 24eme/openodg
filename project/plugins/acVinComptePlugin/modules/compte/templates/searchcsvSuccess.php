@@ -16,13 +16,18 @@ foreach ($results as $res) {
   $societe_informations = $data['doc']['societe_informations'];
   $groupesAndFonction = CompteClient::getGroupesAndFonction($data['doc']['groupes'],$groupe);
   $id_societe = preg_replace('/SOCIETE-/', '', $data['doc']['id_societe']);
+  $compte_type = CompteClient::getInstance()->createTypeFromOrigines($data['doc']['origines']);
 
-  $compteclient = CompteClient::getInstance()->find("COMPTE-".$id_societe,acCouchdbClient::HYDRATE_JSON);
-  $mot_de_passe = ($compteclient) ? $compteclient->mot_de_passe : $data['doc']['mot_de_passe'];
+  $mot_de_passe_societe = null;
+  if(isset($logins[$id_societe])) {
+      $mot_de_passe_societe = $logins[$id_societe];
+  }
 
-  $mdp = (preg_match("/\{TEXT\}/", $mot_de_passe)) ? str_replace("{TEXT}", "", $mot_de_passe) : '';
-
-
+  $mot_de_passe = ($data['doc']['mot_de_passe'] || $compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR) ? $data['doc']['mot_de_passe'] : $mot_de_passe_societe;
+  $mdp = null;
+  if($mot_de_passe) {
+      $mdp = (preg_match("/\{TEXT\}/", $mot_de_passe)) ? str_replace("{TEXT}", "", $mot_de_passe) : 'ACTIVÉ';
+  }
   $telephone_societe = isset($societe_informations['telephone'])? $societe_informations['telephone'] : '';
 
   $adresses_complementaires = explode('−',$data['doc']['adresse_complementaire']);
@@ -41,7 +46,7 @@ foreach ($results as $res) {
 
   $csv .= '"'.$id_societe. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom_a_afficher']). '";';
-  $csv .= '"'.CompteClient::getInstance()->createTypeFromOrigines($data['doc']['origines']).'";';
+  $csv .= '"'.$compte_type.'";';
   $csv .= '" '.$data['doc']['identifiant']. '";';
   $csv .= '"'.$data['doc']['num_interne']. '";';
   $csv .= '"'.$data['doc']['civilite']. '";';
