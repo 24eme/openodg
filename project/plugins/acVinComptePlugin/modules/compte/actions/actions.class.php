@@ -185,6 +185,7 @@ class compteActions extends sfCredentialActions {
         $q->setSize($nbTotal);
         $resset = $index->search($q);
         $this->results = $resset->getResults();
+        $this->logins = CompteLoginView::getInstance()->getAllLogins();
         $this->setLayout(false);
         $filename = 'export_contacts';
         $attachement = "attachment; filename=".$filename.".csv";
