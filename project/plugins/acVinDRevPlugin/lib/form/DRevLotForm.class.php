@@ -47,6 +47,11 @@ class DRevLotForm extends acCouchdbObjectForm
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
+          $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
+          $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
+        }
+
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
             $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
@@ -77,6 +82,11 @@ class DRevLotForm extends acCouchdbObjectForm
     public function getDestinationsType()
     {
         return array_merge(array("" => ""), DRevClient::$lotDestinationsType);
+    }
+
+    public function getSpecificites()
+    {
+        return array_merge(array("" => ""), DRevConfiguration::getInstance()->getSpecificites());
     }
 
     public function getProduits()
