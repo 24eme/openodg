@@ -417,6 +417,13 @@ class Tournee extends BaseTournee {
         }
     }
 
+    public function updateOperateursFromOthers(){
+      $others = TourneeClient::getInstance()->getPrelevementsFiltered($this->appellation, $this->date_prelevement_fin, "2030-12-01", $this->getCampagne());
+      foreach ($others as $operateur) {
+            $degustation = $this->addOperateurFromDRev($operateur->_id);
+      }
+    }
+
     public function getCampagne() {
 
         return $this->millesime;

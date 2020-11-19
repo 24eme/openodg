@@ -11,6 +11,7 @@
 <form id="form_degustation_choix_operateurs" action="<?php echo url_for('degustation_operateurs', $tournee) ?>" method="post" class="form-horizontal ajaxForm">
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
+
 <input type="hidden" id="nb_a_prelever" value="<?php echo $nb_a_prelever ?>"/>
 
 <div class="row">
@@ -27,7 +28,8 @@
                 <?php if($field->isHidden()): continue; endif; ?>
                 <?php $operateur = $tournee->operateurs->get($key); ?>
                 <?php $exist = count($operateur->getLotsPrelevement()) > 0; ?>
-                <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
+                <?php if ($operateur->date_demande < $tournee->date_prelevement_fin): ?>
+                <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item pre-selected col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                 <div class="row">
                     <div class="col-xs-6"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><?php echo $operateur->commune ?></small></div>
                     <div class="col-xs-2 text-right"><!--<small class="text-muted">Prélevé le</small> 2012, 2014--> <?php if($operateur->reporte): ?><span class="label label-warning">Report du <?php echo format_date($operateur->reporte, "D", "fr_FR") ?></span><?php elseif ($operateur->force): ?><span class="label label-warning">Prélèvement forcé</span><?php elseif($derniereDegustation=$operateur->getLastDegustationDate()): ?><span class="label label-info">Dégusté en <?php echo format_date($derniereDegustation, "yyyy   ", "fr_FR") ?></span><?php endif; ?></div>
@@ -44,7 +46,38 @@
                         </div>
                     </div>
                 </div>
+                </div>
+              <?php endif; ?>
+            <?php endforeach; ?>
+
+            <div class="col-xs-12" style="padding: 15px;">
+                <h3 class="">Autres Opérateurs</h3>
             </div>
+
+            <?php foreach($form as $key => $field): ?>
+                <?php if($field->isHidden()): continue; endif; ?>
+                <?php $operateur = $tournee->operateurs->get($key); ?>
+                <?php $exist = count($operateur->getLotsPrelevement()) > 0; ?>
+                <?php if ($operateur->date_demande > $tournee->date_prelevement_fin): ?>
+                <div <?php if($exist): ?>data-state=""<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
+                <div class="row">
+                    <div class="col-xs-6"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><?php echo $operateur->commune ?></small></div>
+                    <div class="col-xs-2 text-right"><!--<small class="text-muted">Prélevé le</small> 2012, 2014--> <?php if($operateur->reporte): ?><span class="label label-warning">Report du <?php echo format_date($operateur->reporte, "D", "fr_FR") ?></span><?php elseif ($operateur->force): ?><span class="label label-warning">Prélèvement forcé</span><?php elseif($derniereDegustation=$operateur->getLastDegustationDate()): ?><span class="label label-info">Dégusté en <?php echo format_date($derniereDegustation, "yyyy   ", "fr_FR") ?></span><?php endif; ?></div>
+                    <div class="col-xs-3 text-right">
+                        <small class="text-muted">Pour le </small> <?php echo format_date($operateur->date_demande, "D", "fr_FR") ?>
+                    </div>
+                    <div class="col-xs-1">
+                        <button class="btn btn-success btn-sm pull-right <?php if($exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                        <button class="btn btn-danger btn-sm pull-right <?php if(!$exist): ?>hidden<?php endif; ?>" style="opacity: 0.7;" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="btn-group select" <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> data-selection-mode="<?php echo ($tournee->appellation == 'VTSGN') ? "all" : "auto"?>" data-toggle="buttons">
+                            <?php echo $field->render(); ?>
+                        </div>
+                    </div>
+                </div>
+                </div>
+              <?php endif; ?>
             <?php endforeach; ?>
         </div>
     </div>

@@ -245,6 +245,7 @@ class degustationActions extends sfActions {
 
         $this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
+        $this->tournee->updateOperateursFromOthers();
 
         $this->form = new TourneeOperateursForm($this->tournee);
 
