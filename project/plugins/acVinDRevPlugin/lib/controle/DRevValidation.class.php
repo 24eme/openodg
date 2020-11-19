@@ -265,7 +265,7 @@ class DRevValidation extends DocumentValidation
 
         if($produit->getConfig()->hasMutageAlcoolique()) {
             $ratioMutageRecolte = ($produit->volume_revendique_issu_recolte) ? round($produit->volume_revendique_issu_mutage * 100 / $produit->volume_revendique_issu_recolte, 2) : 0;
-            if ($ratioMutageRecolte < 5 || $ratioMutageRecolte > 10) {
+            if ($ratioMutageRecolte < 5 || $ratioMutageRecolte > 10.42) {
             	$this->addPoint(self::TYPE_ERROR, 'mutage_ratio', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
         }
