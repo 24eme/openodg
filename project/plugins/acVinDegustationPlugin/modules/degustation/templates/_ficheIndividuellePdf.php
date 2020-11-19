@@ -6,14 +6,13 @@
       <table>
         <tr>
           <td><?php echo tdStart() ?><br>
-
-              <strong>Date : <?php echo $degustation->date ?></strong><br>
-              <strong>Heure : </strong><br>
-              <strong>Commission: 19-14</strong><br>
+              <strong>Date : <?php echo substr($degustation->date,0,10); ?></strong><br>
+              <strong>Heure : <?php echo substr($degustation->date,11,16); ?></strong><br>
+              <strong>Commission: <?php  ?></strong><br>
           </td>
           <td><?php echo tdStart() ?><br>
               <strong>Campagne : <?php echo $degustation->campagne ?></strong><br>
-              <strong>Millesime :<?php echo $lots[1]->lot->millesime; ?></strong><br>
+              <strong>Millesime :</strong><br>
           </td>
           <td><?php echo tdStart() ?><br>
             <strong>Lieu: <?php echo $degustation->lieu; ?></strong>
@@ -42,9 +41,9 @@
          <td style="width:13%;">IGP</td>
          <td style="width:10%;">Cépage</td>
          <td style="width:26%;">
-           <table border="1" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
-             <tr>
-               <td colspan="4">Notation</td>
+           <table border="1" class="" cellspacing=0 cellpadding=0 style="text-align: center; width:100%;">
+             <tr style="text-align: center; width:100%;">
+               <td style="text-align: center; width:100%;" colspan="4">Notation</td>
              </tr>
              <tr>
                <td>Visuel<br>/12</td>
@@ -78,23 +77,23 @@
          </td>
          <td>Motifs</td>
       </tr>
-    <?php $i=1?>
-    <?php foreach($lots as $lotInfo): ?>
+    <?php $i=1;?>
+    <?php  foreach($lots as $lotInfo): ?>
       <tr style="line-height:7px;">
         <td >
           <?php echo tdStart() ?>&nbsp;<strong><?php echo $i ?></strong>
         </td>
 
         <td >
-          <?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->couleur;  ?></strong>
+          <?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong>
         </td>
 
         <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->igp;  ?>
+          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?>
         </td>
 
         <td>
-          <?php echo tdStart() ?>&nbsp;
+          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->details;?>
         </td>
         <td>
           <?php echo tdStart() ?>&nbsp;
