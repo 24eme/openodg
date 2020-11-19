@@ -31,8 +31,10 @@ EOF;
         	$drev = DRevClient::getInstance()->find($item->id);
             try {
               	 $drevOi = new DRevOI($drev, $contextInstance);
-              	 $drevOi->send();
-                 echo sprintf("SUCCESS;La DRev a bien été envoyée à l'organisme d'inspection;%s;\n", $drev->_id);
+              	 $sended = $drevOi->send();
+                 foreach($sended as $region) {
+                     echo sprintf("SUCCESS;La DRev a bien été envoyée à l'organisme d'inspection%s;%s;\n", ($region) ? " de ".$region : "", $drev->_id);
+                 }
                } catch (sfException $e) {
                  echo sprintf("ERROR;L'envoi de la DRev à l'organisme d'inspection a échoué;%s;\n", $e->getMessage());
                }
