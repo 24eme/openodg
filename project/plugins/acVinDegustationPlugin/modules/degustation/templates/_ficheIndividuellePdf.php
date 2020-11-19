@@ -7,7 +7,7 @@
         <tr>
           <td><?php echo tdStart() ?><br>
 
-              <strong>Date : <?php echo $degustation->date  ?></strong><br>
+              <strong>Date : <?php echo $degustation->date ?></strong><br>
               <strong>Heure : </strong><br>
               <strong>Commission: 19-14</strong><br>
           </td>
@@ -35,14 +35,14 @@
       </p>
     </table>
 
-    <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
+    <table border="1px" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
       <tr>
-         <td>N°Ano</td>
-         <td>Couleur</td>
-         <td>IGP</td>
-         <td>Cépage</td>
-         <td>
-           <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
+         <td style="width:5%;">N°Ano</td>
+         <td style="width:7%;">Couleur</td>
+         <td style="width:13%;">IGP</td>
+         <td style="width:10%;">Cépage</td>
+         <td style="width:26%;">
+           <table border="1" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
              <tr>
                <td colspan="4">Notation</td>
              </tr>
@@ -55,7 +55,7 @@
            </table>
          </td>
          <td>
-           <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
+           <table border="1" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
              <tr>
                <td colspan="2">Avis</td>
              </tr>
@@ -66,7 +66,7 @@
            </table>
          </td>
          <td>
-           <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
+           <table border="1" class="" cellspacing=0 cellpadding=0 style="text-align: center;">
              <tr>
                <td colspan="2">Typicité <br>cépage</td>
              </tr>
@@ -90,24 +90,24 @@
         </td>
 
         <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->lot->millesime;  ?>
+          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->igp;  ?>
         </td>
 
         <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->lot->millesime;  ?>
+          <?php echo tdStart() ?>&nbsp;
         </td>
         <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->lot->millesime;  ?>
+          <?php echo tdStart() ?>&nbsp;
         </td>
         <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->lot->millesime;  ?>
+          <?php echo tdStart() ?>&nbsp;
         </td>
 
         <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->lot->millesime;  ?>
+          <?php echo tdStart() ?>&nbsp;
         </td>
         <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->lot->millesime;  ?>
+          <?php echo tdStart() ?>&nbsp;
         </td>
       </tr>
 

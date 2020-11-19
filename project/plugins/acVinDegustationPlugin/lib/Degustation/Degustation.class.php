@@ -619,19 +619,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getInfoFromLots(){
 			$produits = array();
-			$etablissements = array();
 			$tablots=[];
 			foreach ($this->getLots() as $lot){
 				if(!array_key_exists($lot->produit_hash,$produits)){
 					$produits[$lot->produit_hash] = $lot->getConfig()->getCouleur()->getLibelle();
 				}
-				if(!array_key_exists($lot->declarant_identifiant,$etablissements)){
-					$etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+				if(!array_key_exists($lot->volume,$produits)){
+					$produits[$lot->produit_libelle] = $lot->getConfig()->getAppellation()->getLibelle();
 				}
 				$infosLot = new stdClass();
 				$infosLot->lot= $lot;
-				$infosLot->etablissement = $etablissements[$lot->declarant_identifiant];
 				$infosLot->couleur = $produits[$lot->produit_hash];
+				$infosLot->igp = $produits[$lot->produit_libelle];
 				array_push($tablots,$infosLot);
 			}
 			return $tablots;
