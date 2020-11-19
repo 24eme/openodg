@@ -64,10 +64,10 @@
          </td>
          <td style="width:8%;">
            <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0>
-             <tr>
+             <tr style="text-align: center;line-height:20px;">
                <td colspan="2"><strong>Typicité cépage</strong></td>
              </tr>
-             <tr>
+             <tr style="text-align: center;line-height:20px;">
                <td style='width:50%;'><strong>C</strong></td>
                <td style='width:50%;'><strong>NC</strong></td>
              </tr>
@@ -105,9 +105,7 @@
         <td>
           <table width="100%" border="1" class="0" cellspacing="0" cellpadding=0 >
             <tr style="text-align: center;line-height:100%;">
-              <td style='width:25%;'>&#9633;</td>
-              <td style='width:25%;'>&#x25A1;</td>
-              <td style='width:25%;'></td>
+              <td style='width:25%;'><span style="font-size: 20px"></span></td>
               <td style='width:25%;'><?php echo '□ ';?></td>
             </tr>
           </table>
