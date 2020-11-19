@@ -48,7 +48,7 @@
 		<tbody>
 		<?php
 			foreach ($collegeForm as $idCompte => $compteForm):
-			$compte = $form->getCompteByCollegeAndIdentifiant($college, $idCompte);
+			$compte = $form->getCompteByIdentifiant($idCompte);
       $words = json_encode(array_merge(
         explode(' ', strtolower($compte->getNomAAfficher())), explode(' ', $compte->getAdresse()), explode(' ', $compte->getAdresseComplementaire()),
         [$compte->getCommune(), $compte->getCodePostal(), $compte->identifiant]
