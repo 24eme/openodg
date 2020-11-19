@@ -64,7 +64,7 @@
         </div>
         <div class="col-xs-4 text-center">
         <?php if ($sf_user->hasDrevAdmin()): ?>
-          <a href="<?php echo url_for('drev_document_douanier_pdf', $drev); ?>" class="btn btn-default <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
+          <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
           </a>
         <?php endif; ?>
