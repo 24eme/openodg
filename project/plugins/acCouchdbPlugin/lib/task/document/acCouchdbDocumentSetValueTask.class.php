@@ -62,10 +62,8 @@ EOF;
 
     $output = array();
     foreach($values as $hash => $value) {
-        if(!$doc->exist($hash)) {
+        $doc->add($hash);
 
-            return;
-        }
         if($doc->get($hash) instanceof acCouchdbJson) {
 
             return;
