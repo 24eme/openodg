@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationEtiquettesPDF extends ExportPDF {
+class ExportDegustationFicheIndividuellePDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -11,22 +11,15 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
             $filename = $this->getFileName(true);
         }
         parent::__construct($type, $use_cache, $file_dir, $filename);
-        if($this->printable_document->getPdf()){
-          $this->printable_document->getPdf()->setPrintHeader(false);
-          $this->printable_document->getPdf()->setPrintFooter(false);
-        }
     }
 
     public function create() {
-      foreach ($this->degustation->getEtiquettesFromLots() as $plancheLots) {
-        $this->printable_document->addPage($this->getPartial('degustation/etiquettesPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
-      }
-  }
+        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('degustation' => $this->degustation, 'lots' => $this->degustation->getInfoFromLots())));
+    }
 
 
     public function output() {
         if($this->printable_document instanceof PageableHTML) {
-
             return parent::output();
         }
 
@@ -43,22 +36,28 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return "";
-    }
+        $titre = sprintf("Syndicat des Vins IGP de %s FICHE INDIVIDUELLE DE DEGUSTATION", $this->degustation->getOdg());
 
-    protected function getFooterText() {
-        return "";
+        return $titre;
     }
 
     protected function getHeaderSubtitle() {
 
-        return "";
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
+        );
+
+        return $header_subtitle;
     }
 
 
+    protected function getFooterText() {
+        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
+        return $footer;
+    }
+
     protected function getConfig() {
 
-        return new ExportDegustationEtiquettesPDFConfig();
+        return new ExportDegustationFicheIndividuellePDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -67,7 +66,7 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("DEGUSTATION_%s", $degustation->_id);
+        $filename = sprintf("fiche_individuelle_degustation_%s", $degustation->_id);
 
 
         if ($with_rev) {

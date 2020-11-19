@@ -123,6 +123,18 @@
                         </div>
                     </div>
                 </div>
+                <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
+                            <div class="col-sm-9">
+                                  <?php echo $lot['specificite']->render(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif ?>
                 <div class="row">
                     <div class="col-md-6 col-md-offset-6">
                       <label>

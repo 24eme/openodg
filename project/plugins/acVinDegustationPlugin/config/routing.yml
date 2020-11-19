@@ -210,3 +210,14 @@ degustation_etiquette_pdf:
     type:     object
   requirements:
     sf_method: [get]
+
+
+degustation_fiche_individuelle_pdf:
+    url: /degustation/:id/ficheIndividuelle/pdf
+    param: { module: degustation, action: ficheIndividuellePDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]

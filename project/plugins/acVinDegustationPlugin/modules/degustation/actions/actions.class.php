@@ -493,4 +493,22 @@ class degustationActions extends sfActions {
       return $this->renderText($this->document->output());
     }
 
+
+    public function executeFicheIndividuellePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheIndividuellePDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
 }
