@@ -624,7 +624,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!array_key_exists($lot->produit_hash,$produits)){
 					$produits[$lot->produit_hash] = $lot->getConfig()->getCouleur()->getLibelle();
 				}
-				if(!array_key_exists($lot->volume,$produits)){
+				if(!array_key_exists($lot->produit_libelle,$produits)){
 					$produits[$lot->produit_libelle] = $lot->getConfig()->getAppellation()->getLibelle();
 				}
 				$infosLot = new stdClass();
