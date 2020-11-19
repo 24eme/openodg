@@ -33,16 +33,15 @@ $t->comment("Saisie des volumes");
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
     if($produit->getRendement() > 0) {
-        continue;
+        $produit_hash1 = $produit->getHash();
+        break;
     }
-    $produit_hash1 = $produit->getHash();
-    break;
 }
 foreach($produits as $produit) {
-    if($produit->getRendement() > 0) {
-        continue;
+    if($produit->getRendement() > 0 && $produit_hash1!=$produit->getHash()) {
+      $produit_hash2 = $produit->getHash();
+      break;
     }
-    $produit_hash2 = $produit->getHash();
 }
 foreach($produits as $produit) {
     if($produit->getRendement() <= 0 || !$produit->hasMutageAlcoolique()) {
@@ -134,9 +133,9 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume 
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
 if(DRevConfiguration::getInstance()->hasValidationOdgAuto()) {
-    $t->is($drev->validation_odg, null, "La DRev a la date du jour comme date de validation odg");
+    $t->is($drev->validation_odg, date('Y-m-d'), "La DRev a la date du jour comme date de validation odg");
 } else {
-    $t->is($drev->validation_odg, date('Y-m-d'), "La date de validation ODG n'est pas mise automatiquement");
+    $t->is($drev->validation_odg, null, "La date de validation ODG n'est pas mise automatiquement");
 }
 
 if(FactureConfiguration::getInstance()->isActive()) {

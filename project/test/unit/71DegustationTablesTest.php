@@ -29,7 +29,7 @@ $produitLeurre = $doc->lots->add();
 $produitLeurre->setProduitHash($produitLeurreHash);
 $produitLeurre->leurre = true;
 $produitLeurre->declarant_nom = 'SARL Leurre';
-$produitLeurre->numero = '999';
+$produitLeurre->numero_cuve = '999';
 
 $t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
 $t->is($produitLeurre->produit_hash, $produitLeurreHash, "Le hash produit est $produitLeurreHash");
@@ -46,7 +46,7 @@ $t->comment('On ajoute une table');
 $t->is($doc->getLastNumeroTable(), 1, 'La table courante est la 1');
 $doc->lots->add();
 $doc->lots[2] = clone $doc->lots[0];
-$doc->lots[2]->numero = $doc->lots[0]->numero + 1;
+$doc->lots[2]->numero_cuve = $doc->lots[0]->numero_cuve + 1;
 $doc->lots[2]->numero_table = 2;
 $t->is($doc->getLastNumeroTable(), 2, 'La dernière table est la 2');
 
@@ -55,7 +55,7 @@ $leurreTable2 = $doc->addLeurre($produitLeurreHash, '888', 2);
 $t->is($leurreTable2->leurre, true, 'C\'est un leurre');
 $t->is($leurreTable2->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
 $t->is($leurreTable2->numero_table, 2, 'Le numéro de table est le 2');
-$t->is($leurreTable2->numero, '888', 'Le numéro de lot est le 888');
+$t->is($leurreTable2->numero_cuve, '888', 'Le numéro de lot est le 888');
 $doc->lots->remove(3);
 
 $t->comment('puis on la retire');

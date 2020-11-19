@@ -113,6 +113,8 @@ class degustationActions extends sfActions {
                 $l->id_document = $modificatrice->_id;
                 $this->form->save();
 
+                $this->degustation->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
+
                 $this->degustation->validate($this->degustation->validation);
 
                 return $this->redirect('degustation_preleve', $this->degustation);
@@ -140,11 +142,19 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
+        $colleges = DegustationConfiguration::getInstance()->getColleges();
+        $first_college = array_key_first($colleges);
+
+        if(!$this->college = $request->getParameter('college')) {
+
+            return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id, 'college' => $first_college));
+        }
+
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
             $this->degustation->save();
         }
 
-        $this->form = new DegustationSelectionDegustateursForm($this->degustation);
+        $this->form = new DegustationSelectionDegustateursForm($this->degustation,array(),array('college' => $this->college));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -152,7 +162,6 @@ class degustationActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -351,19 +360,17 @@ class degustationActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
 
         $this->form->save();
 
-
         if($this->popup_validation){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
         }
 
-        if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable()-1)){
+        if($this->numero_table != $this->nb_tables){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
@@ -469,4 +476,39 @@ class degustationActions extends sfActions {
         $this->manquements = DegustationClient::getInstance()->getManquements();
     }
 
+    public function executeEtiquettesPdf(sfWebRequest $request) {
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationEtiquettesPdf($degustation, $this->getRequestParameter('output', 'pdf'), false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+    }
+
+
+    public function executeFicheIndividuellePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheIndividuellePDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
 }

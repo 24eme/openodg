@@ -12,12 +12,16 @@ class DRevConfiguration {
         return self::$_instance;
     }
 
+    public function load() {
+        $this->configuration = sfConfig::get('drev_configuration_drev', array());
+    }
+
     public function __construct() {
         if(!sfConfig::has('drev_configuration_drev')) {
 			throw new sfException("La configuration pour les drev n'a pas été défini pour cette application");
 		}
 
-        $this->configuration = sfConfig::get('drev_configuration_drev', array());
+        $this->load();
     }
 
     public function hasPrelevements() {
@@ -69,6 +73,12 @@ class DRevConfiguration {
       return array_keys($this->configuration['odg']);
     }
 
+    public function getSpecificites(){
+      if($this->hasSpecificiteLot()){
+        return $this->configuration['specificites'];
+      }
+    }
+
     public function hasHabilitationINAO() {
         return isset($this->configuration['habilitation_inao']) && ($this->configuration['habilitation_inao']);
     }
@@ -108,6 +118,10 @@ class DRevConfiguration {
       return $this->hasValidationOdgAdmin() || $this->hasValidationOdgRegion();
     }
 
+    public function hasValidationOdgAdminOrAuto(){
+      return $this->hasValidationOdgAdmin() || $this->hasValidationOdgAuto();
+    }
+
     public function hasCgu(){
       return isset($this->configuration['cgu']) && boolval($this->configuration['cgu']);
     }
@@ -127,6 +141,9 @@ class DRevConfiguration {
 
     public function hasPDFUniqueRegion() {
         return isset($this->configuration['pdf_unique_region']) && boolval($this->configuration['pdf_unique_region']);
+    }
+    public function hasSpecificiteLot(){
+      return isset($this->configuration['specificite_lot']) && boolval($this->configuration['specificite_lot']);
     }
 
 }

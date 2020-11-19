@@ -73,7 +73,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
 
         }
 
-        if(count($acheteurs) <= 1 && count($this->getCepage()->getProduitsCepageDetails()) <= 1) {
+        if(count($acheteurs) <= 1) {
 
             return false;
         }

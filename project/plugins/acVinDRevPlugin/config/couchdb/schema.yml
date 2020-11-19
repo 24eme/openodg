@@ -117,7 +117,10 @@ DRev:
                 fields:
                   date: { }
                   id_document: { }
+                  numero_dossier: {  }
+                  numero_archive: {  }
                   numero: { }
+                  numero_cuve: { required: false } # a supprimer
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }
@@ -125,6 +128,8 @@ DRev:
                   produit_hash: { }
                   produit_libelle: { }
                   elevage: {}
+                  statut: {}
+                  specificite: {}
                   cepages:
                     type: collection
                     definition:
@@ -208,8 +213,6 @@ DRev:
                     type: collection
                     definition:
                       fields:
-                        prelevable: { type: integer }
-                        preleve: { type: integer }
                         produit_hash: {  }
                         produit_libelle: {  }
                         produit_couleur: { }
@@ -218,7 +221,9 @@ DRev:
                         millesime: {  }
                         elevage: {  }
                         region: {  }
-                        numero: {  }
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        numero_cuve: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -232,6 +237,7 @@ DRev:
                         region: {}
                         campagne: {}
                         id_document: {  }
+                        statut: {  }
       pieces:
         type: array_collection
         definition:

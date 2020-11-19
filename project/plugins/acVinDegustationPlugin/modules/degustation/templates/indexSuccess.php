@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="col-sm-3 col-xs-3">
-                    <div class="input-group date-picker-time">
+                    <div class="input-group" id="time">
                         <?php echo $form["time"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-time glyphicon"></span>

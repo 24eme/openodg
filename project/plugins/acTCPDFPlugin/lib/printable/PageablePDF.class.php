@@ -11,7 +11,7 @@ class PageablePDF extends PageableOutput {
             $config = new acTCPDFConfig();
         }
 
-        if($config->path_images && (!defined('K_PATH_IMAGES'))) { 
+        if($config->path_images && (!defined('K_PATH_IMAGES'))) {
             define('K_PATH_IMAGES', $config->path_images);
         }
         // create new PDF document
@@ -34,7 +34,7 @@ class PageablePDF extends PageableOutput {
         // set default monospaced font
         $this->pdf->SetDefaultMonospacedFont($config->font_monospaced);
         //set margins
-       
+
         $this->pdf->SetMargins($config->margin_left, $config->margin_top, $config->margin_right);
         $this->pdf->SetHeaderMargin($config->margin_header);
         $this->pdf->SetFooterMargin($config->margin_footer);
@@ -114,5 +114,8 @@ class PageablePDF extends PageableOutput {
         return file_get_contents($this->pdf_file);
     }
 
-}
+    public function getPdf(){
+      return $this->pdf;
+    }
 
+}

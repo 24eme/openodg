@@ -33,7 +33,7 @@
             </div>
             <div class="row">
               <div class="col-md-2"></div>
-              <div class="col-md-3">Numéro cuve : <?php echo $lot->numero; ?></div>
+              <div class="col-md-3">Numéro cuve : <?php echo $lot->numero_cuve; ?></div>
               <div class="col-md-3">Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></div>
               <div class="col-md-3"><?php echo $lot->destination_type; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
               <div class="col-md-1 text-right">
@@ -123,6 +123,18 @@
                         </div>
                     </div>
                 </div>
+                <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
+                            <div class="col-sm-9">
+                                  <?php echo $lot['specificite']->render(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif ?>
                 <div class="row">
                     <div class="col-md-6 col-md-offset-6">
                       <label>

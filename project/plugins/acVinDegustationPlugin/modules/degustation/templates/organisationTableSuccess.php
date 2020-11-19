@@ -32,7 +32,6 @@
           	</table>
           </div>
 
-
           	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>" method="post" class="form-horizontal degustation table">
           		<?php echo $form->renderHiddenFields(); ?>
           		<div class="bg-danger">
@@ -43,6 +42,7 @@
           			<thead>
           				<tr>
           					<th class="col-xs-10">Échantillons</th>
+                    <th class="col-xs-5">Millésime</th>
           					<th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
@@ -57,13 +57,14 @@
           								<div class="row">
                                               <div class="col-xs-5 text-right">
                                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
-                                                  <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
+                                                  <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?>
                                               </div>
           									<div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
                             <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
-          									<div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
           								</div>
           							</td>
+                        <td><div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div></td>
+
           							<td class="text-center" data-hash="<?php echo $lot->produit_hash; ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>
