@@ -15,7 +15,7 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
 
     public function create() {
       for($nbtable=1 ;$nbtable <= $this->degustation->getLastNumeroTable(); $nbtable++){
-        $this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable('1'))));
+        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable))));
       }
     }
 
