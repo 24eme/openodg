@@ -33,14 +33,18 @@
         &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
       </p>
     </table>
-    <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;" scope="colgroup" >
+
+
+
+
+    <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
       <tr style="line-height:10px;">
-         <th style="width:6%; "><?php echo tdStart() ?><strong><br><br>N°Ano</strong></th>
+         <th  style="width:6%; "><?php echo tdStart() ?><strong><br><br>N°Ano</strong></th>
          <th style="width:7%; "><?php echo tdStart() ?><strong><br><br>Couleur</strong></th>
          <th style="width:13%;"><?php echo tdStart() ?><strong><br><br>IGP</strong></th>
          <th style="width:10%;"><?php echo tdStart() ?><strong><br><br>Cépage</strong></th>
          <th style="width:29%;"><?php echo tdStart() ?>
-           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0 scope="colgroup">
+           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;">
              <tr style="text-align: center;line-height:30px;"scope="colgroup">
                <td  colspan="4"><strong>NOTATION</strong></td>
               </tr>
@@ -52,8 +56,8 @@
              </tr>
            </table>
          </th>
-         <th style="width:7%;"><?php echo tdStart2() ?>
-           <table width="100%"border="1" class="table" cellspacing=0 cellpadding=0 scope="colgroup" >
+         <th style="width:7%;"><?php echo tdStart() ?>
+           <table width="100%"border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" >
              <tr style="text-align: center;line-height:30px;" scope="colgroup">
                <td colspan="2"><strong>Avis</strong></td>
              </tr>
@@ -63,8 +67,8 @@
              </tr>
            </table>
          </th>
-         <th style="width:7%;"><?php echo tdStart2() ?>
-           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0 >
+         <th style="width:7%;"><?php echo tdStart() ?>
+           <table width="100%" border="1" class="table" cellspacing=0 style="text-align: center;border-collapse:collapse;" >
              <tr style="text-align: center;line-height:15px;" scope="colgroup">
                <td colspan="2"><strong>Typicité cépage</strong></td>
              </tr>
@@ -93,8 +97,8 @@
         <td>
           <?php echo tdStart() ?>&nbsp;<small><?php echo $lotInfo->details;?></small>
         </td>
-          <td ><?php echo tdStart2() ?>
-            <table  border="1" class="0" cellspacing="0" cellpadding=0 >
+          <td ><?php echo tdStart() ?>
+            <table height="100%"width="100%"border="1" class="0" cellspacing="0" cellpadding=0 style="text-align: center;border-collapse:collapse;">
               <tr style="text-align: center;line-height:200%;">
                 <td style='width:25%;'><?php echo tdStart() ?></td>
                 <td style='width:25%;'><?php echo tdStart() ?></td>
@@ -103,8 +107,8 @@
               </tr>
             </table>
           </td>
-        <td><?php echo tdStart2() ?>
-          <table border="1" class="0" cellspacing="0" cellpadding=0 >
+        <td><?php echo tdStart() ?>
+          <table height="100%" width="100%" border="1" class="0" cellspacing="0" cellpadding=0 style="text-align: center;border-collapse:collapse;">
             <tr style="text-align: center;line-height:200%;">
               <td style='width:25%; height:20px;'><?php echo tdStart() ?><span class="zap">o</span></td>
               <td style='width:25%;height:20px'><?php echo tdStart() ?><span class="zap">o</span></td>
@@ -112,8 +116,8 @@
           </table>
         </td>
 
-        <td><?php echo tdStart2() ?>
-          <table border="1" class="0" cellspacing="0" cellpadding=0 >
+        <td><?php echo tdStart() ?>
+          <table  width="100%"border="1" class="0" cellspacing="0" cellpadding=0 style="text-align: center;border-collapse:collapse;">
             <tr style="text-align: center;line-height:200%;">
               <td style='width:25%; height:20px;'><?php echo tdStart() ?><span class="zap">o</span></td>
               <td style='width:25%;height:20px'><?php echo tdStart() ?><span class="zap">o</span></td>
