@@ -414,11 +414,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return $drev;
     }
 
-    public function getProduitsBailleur() {
+    public function getBailleurs() {
     	$csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
         return array();
       }
+        $etablissement = $this->getEtablissementObject();
+        $etablissementBailleurs = array();
+        foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
+            if(!$etablissementBailleur->ppm) {
+                continue;
+            }
+            if(!$etablissementBailleur->exist('liaisons_operateurs/METAYER_'.$etablissement->_id)) {
+                continue;
+            }
+            $etablissementBailleurs[$etablissementBailleur->ppm] = $etablissementBailleur;
+        }
+
+
     	$bailleurs = array();
     	foreach($csv as $line) {
     		$produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
@@ -430,7 +443,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		}
 
     		if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
-    			$bailleurs[$produitConfig->getHash()] = $produitConfig->getHash();
+    			$bailleurs[isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : $line[DRCsvFile::CSV_BAILLEUR_PPM]]  = $line[DRCsvFile::CSV_BAILLEUR_NOM];
     		}
     	}
     	return $bailleurs;
