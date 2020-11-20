@@ -1,5 +1,7 @@
 <?php use_helper('TemplatingPDF'); ?>
 <style>
+<?php echo style(); ?>
+
 </style>
       <table>
         <tr>
@@ -31,52 +33,51 @@
         &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
       </p>
     </table>
-
-    <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
-      <tr style="line-height:15px;">
-         <td style="width:5%; "><strong>N°Ano</strong></td>
-         <td style="width:7%; "><strong>Couleur</strong></td>
-         <td style="width:13%;"><strong>IGP</strong></td>
-         <td style="width:10%;"><strong>Cépage</strong></td>
-         <td style="width:26%;">
-           <table width="100%" border="1" class="0" cellspacing="0" cellpadding=0 >
-             <tr style="text-align: center; width:100%;line-height:30px;">
+    <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;" scope="colgroup" >
+      <tr style="line-height:10px;">
+         <th style="width:6%; "><?php echo tdStart() ?><strong><br><br>N°Ano</strong></th>
+         <th style="width:7%; "><?php echo tdStart() ?><strong><br><br>Couleur</strong></th>
+         <th style="width:13%;"><?php echo tdStart() ?><strong><br><br>IGP</strong></th>
+         <th style="width:10%;"><?php echo tdStart() ?><strong><br><br>Cépage</strong></th>
+         <th style="width:29%;"><?php echo tdStart() ?>
+           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0 scope="colgroup">
+             <tr style="text-align: center;line-height:30px;"scope="colgroup">
                <td  colspan="4"><strong>NOTATION</strong></td>
               </tr>
-             <tr style="text-align: center;line-height:10px;">
-               <td style='width:25%;'><strong><small>Visuel <br>/12</small></strong></td>
-               <td style='width:25%;'><strong><small>Oifactif <br>/12</small></strong></td>
-               <td style='width:25%;'><strong><small>Gustatif  <br> /24</small></strong></td>
-               <td style='width:25%;'><strong><small>NOTE TOTALE <br> /48</small></strong></td>
+             <tr style="text-align: center;line-height:15px;">
+               <td style='width:25%;'><?php echo tdStart() ?><strong><small>Visuel <br>/12</small></strong></td>
+               <td style='width:25%;'><?php echo tdStart() ?><strong><small>Oifactif <br>/12</small></strong></td>
+               <td style='width:25%;'><?php echo tdStart() ?><strong><small>Gustatif  <br> /24</small></strong></td>
+               <td style='width:25%;'><?php echo tdStart() ?><strong><small>NOTE TOTALE /48</small></strong></td>
              </tr>
            </table>
-         </td>
-         <td style="width:7%;">
-           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0 >
-             <tr style="text-align: center;line-height:30px;">
+         </th>
+         <th style="width:7%;"><?php echo tdStart2() ?>
+           <table width="100%"border="1" class="table" cellspacing=0 cellpadding=0 scope="colgroup" >
+             <tr style="text-align: center;line-height:30px;" scope="colgroup">
                <td colspan="2"><strong>Avis</strong></td>
              </tr>
              <tr style="text-align: center;line-height:27px;">
-               <td style='width:50%;' ><strong>C</strong></td>
-               <td style='width:50%;'><strong>NC</strong></td>
+               <td style='width:50%;' ><?php echo tdStart() ?><strong>C</strong></td>
+               <td style='width:50%;'><?php echo tdStart() ?><strong>NC</strong></td>
              </tr>
            </table>
-         </td>
-         <td style="width:8%;">
-           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0>
-             <tr style="text-align: center;line-height:20px;">
+         </th>
+         <th style="width:7%;"><?php echo tdStart2() ?>
+           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0 >
+             <tr style="text-align: center;line-height:15px;" scope="colgroup">
                <td colspan="2"><strong>Typicité cépage</strong></td>
              </tr>
-             <tr style="text-align: center;line-height:20px;">
+             <tr style="text-align: center;line-height:32px;">
                <td style='width:50%;'><strong>C</strong></td>
                <td style='width:50%;'><strong>NC</strong></td>
              </tr>
            </table>
-         </td>
-         <td style="width:25%;"><strong>Motifs (si non conforme)</strong></td>
+         </th>
+         <th style="width:30%;"><strong><br><br>Motifs (si non conforme)</strong></th>
       </tr>
     <?php $i=1;?>
-    <?php  foreach($lots as $lotInfo): ?>
+     <?php  foreach($lots as $lotInfo): ?>
       <tr style="line-height:8px;">
         <td >
           <?php echo tdStart() ?>&nbsp;<strong><?php echo $i ?></strong>
@@ -92,27 +93,32 @@
         <td>
           <?php echo tdStart() ?>&nbsp;<small><?php echo $lotInfo->details;?></small>
         </td>
-          <td >
-            <table width="100%" border="1" class="0" cellspacing="0" cellpadding=0 >
-              <tr style="text-align: center;line-height:100%;">
-                <td style='width:25%;'><?php echo ''?></td>
-                <td style='width:25%;'><?php echo '';?></td>
-                <td style='width:25%;'><?php echo '';?></td>
-                <td style='width:25%;'><?php echo '';?></td>
+          <td ><?php echo tdStart2() ?>
+            <table  border="1" class="0" cellspacing="0" cellpadding=0 >
+              <tr style="text-align: center;line-height:200%;">
+                <td style='width:25%;'><?php echo tdStart() ?></td>
+                <td style='width:25%;'><?php echo tdStart() ?></td>
+                <td style='width:25%;'><?php echo tdStart() ?></td>
+                <td style='width:25%;'><?php echo tdStart() ?></td>
               </tr>
             </table>
           </td>
-        <td>
-          <table width="100%" border="1" class="0" cellspacing="0" cellpadding=0 >
-            <tr style="text-align: center;line-height:100%;">
-              <td style='width:25%;'><span style="font-size: 20px"></span></td>
-              <td style='width:25%;'><?php echo '□ ';?></td>
+        <td><?php echo tdStart2() ?>
+          <table border="1" class="0" cellspacing="0" cellpadding=0 >
+            <tr style="text-align: center;line-height:200%;">
+              <td style='width:25%; height:20px;'><?php echo tdStart() ?><span class="zap">o</span></td>
+              <td style='width:25%;height:20px'><?php echo tdStart() ?><span class="zap">o</span></td>
             </tr>
           </table>
         </td>
 
-        <td>
-          <?php echo tdStart() ?>&nbsp;
+        <td><?php echo tdStart2() ?>
+          <table border="1" class="0" cellspacing="0" cellpadding=0 >
+            <tr style="text-align: center;line-height:200%;">
+              <td style='width:25%; height:20px;'><?php echo tdStart() ?><span class="zap">o</span></td>
+              <td style='width:25%;height:20px'><?php echo tdStart() ?><span class="zap">o</span></td>
+            </tr>
+          </table>
         </td>
         <td>
           <?php echo tdStart() ?>&nbsp;
