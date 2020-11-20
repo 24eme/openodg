@@ -419,13 +419,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$csv) {
         return array();
       }
+        $etablissement = $this->getEtablissementObject();
         $etablissementBailleurs = array();
-        foreach($this->getEtablissementObject()->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
+        foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
             if(!$etablissementBailleur->ppm) {
+                continue;
+            }
+            if(!$etablissementBailleur->exist('liaisons_operateurs/METAYER_'.$etablissement->_id)) {
                 continue;
             }
             $etablissementBailleurs[$etablissementBailleur->ppm] = $etablissementBailleur;
         }
+
+
     	$bailleurs = array();
     	foreach($csv as $line) {
     		$produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
