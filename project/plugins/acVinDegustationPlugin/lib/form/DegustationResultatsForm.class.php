@@ -55,11 +55,12 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
             $lot->setConformite($values['conformite_'.$name]);
             $lot->setMotif($values['motif_'.$name]);
             $lot->setObservation($values['observation_'.$name]);
-            $lot->setStatut(Lot::STATUT_DEGUSTE);
+            $lot->setStatut(($values['conformite_'.$name] == Lot::CONFORMITE_CONFORME)? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME);
           }else {
-            $lot->setStatut(Lot::STATUT_PRELEVE);
+            $lot->setStatut(Lot::STATUT_NONCONFORME);
         }
       }
+      $this->getObject()->generateMouvementsLots();
     }
 
     protected function updateDefaultsFromObject() {
