@@ -34,99 +34,48 @@
       </p>
     </table>
 
-
-
-
     <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
-      <tr style="line-height:10px;">
-         <th  style="width:6%; "><?php echo tdStart() ?><strong><br><br>N°Ano</strong></th>
-         <th style="width:7%; "><?php echo tdStart() ?><strong><br><br>Couleur</strong></th>
-         <th style="width:13%;"><?php echo tdStart() ?><strong><br><br>IGP</strong></th>
-         <th style="width:10%;"><?php echo tdStart() ?><strong><br><br>Cépage</strong></th>
-         <th style="width:29%;"><?php echo tdStart() ?>
-           <table width="100%" border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;">
-             <tr style="text-align: center;line-height:30px;"scope="colgroup">
-               <td  colspan="4"><strong>NOTATION</strong></td>
-              </tr>
-             <tr style="text-align: center;line-height:15px;">
-               <td style='width:25%;'><?php echo tdStart() ?><strong><small>Visuel <br>/12</small></strong></td>
-               <td style='width:25%;'><?php echo tdStart() ?><strong><small>Oifactif <br>/12</small></strong></td>
-               <td style='width:25%;'><?php echo tdStart() ?><strong><small>Gustatif  <br> /24</small></strong></td>
-               <td style='width:25%;'><?php echo tdStart() ?><strong><small>NOTE TOTALE /48</small></strong></td>
-             </tr>
-           </table>
-         </th>
-         <th style="width:7%;"><?php echo tdStart() ?>
-           <table width="100%"border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" >
-             <tr style="text-align: center;line-height:30px;" scope="colgroup">
-               <td colspan="2"><strong>Avis</strong></td>
-             </tr>
-             <tr style="text-align: center;line-height:27px;">
-               <td style='width:50%;' ><?php echo tdStart() ?><strong>C</strong></td>
-               <td style='width:50%;'><?php echo tdStart() ?><strong>NC</strong></td>
-             </tr>
-           </table>
-         </th>
-         <th style="width:7%;"><?php echo tdStart() ?>
-           <table width="100%" border="1" class="table" cellspacing=0 style="text-align: center;border-collapse:collapse;" >
-             <tr style="text-align: center;line-height:15px;" scope="colgroup">
-               <td colspan="2"><strong>Typicité cépage</strong></td>
-             </tr>
-             <tr style="text-align: center;line-height:32px;">
-               <td style='width:50%;'><strong>C</strong></td>
-               <td style='width:50%;'><strong>NC</strong></td>
-             </tr>
-           </table>
-         </th>
-         <th style="width:30%;"><strong><br><br>Motifs (si non conforme)</strong></th>
+      <tr style="line-height:20px;">
+         <th class="topempty"style="width:50px; "><?php echo tdStart() ?><strong>N°Ano</strong></th>
+         <th class="topempty" style="width:70px; "><?php echo tdStart() ?><strong>Couleur</strong></th>
+         <th class="topempty"style="width:150px;"><?php echo tdStart() ?><strong>IGP</strong></th>
+         <th class="topempty"style="width:100px;"><?php echo tdStart() ?><strong>Cépage</strong></th>
+         <th colspan="4"style="width:200px;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
+         <th colspan="2"style="width:60px;"><?php echo tdStart() ?><strong>Avis</strong></th>
+         <th colspan="2"style="width:60px;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
+         <th class="topempty" style="width:300px;"><strong>Motifs (si non conforme)</strong></th>
+      </tr>
+      <tr style="line-height:13px;">
+        <th class="empty"></th>
+        <th class="empty"></th>
+        <th class="empty"></th>
+        <th class="empty"></th>
+        <th style="width:50px;"><?php echo tdStart() ?><strong><small>Visuel <br>/12</small></strong></th>
+        <th style="width:50px;"><?php echo tdStart() ?><strong><small>Oifactif <br>/12</small></strong></th>
+        <th style="width:50px;"><?php echo tdStart() ?><strong><small>Gustatif  <br> /24</small></strong></th>
+        <th style="width:50px;"><?php echo tdStart() ?><strong><small>NOTE TOTALE /48</small></strong></th>
+        <th style="width:30px;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
+        <th style="width:30px;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+        <th style="width:30px;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+        <th style="width:30px;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+        <th class="empty"></th>
       </tr>
     <?php $i=1;?>
      <?php  foreach($lots as $lotInfo): ?>
-      <tr style="line-height:8px;">
-        <td >
-          <?php echo tdStart() ?>&nbsp;<strong><?php echo $i ?></strong>
-        </td>
-
-        <td >
-          <?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong>
-        </td>
-
-        <td>
-          <?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?>
-        </td>
-        <td>
-          <?php echo tdStart() ?>&nbsp;<small><?php echo $lotInfo->details;?></small>
-        </td>
-          <td ><?php echo tdStart() ?>
-            <table height="100%"width="100%"border="1" class="0" cellspacing="0" cellpadding=0 style="text-align: center;border-collapse:collapse;">
-              <tr style="text-align: center;line-height:200%;">
-                <td style='width:25%;'><?php echo tdStart() ?></td>
-                <td style='width:25%;'><?php echo tdStart() ?></td>
-                <td style='width:25%;'><?php echo tdStart() ?></td>
-                <td style='width:25%;'><?php echo tdStart() ?></td>
-              </tr>
-            </table>
-          </td>
-        <td><?php echo tdStart() ?>
-          <table height="100%" width="100%" border="1" class="0" cellspacing="0" cellpadding=0 style="text-align: center;border-collapse:collapse;">
-            <tr style="text-align: center;line-height:200%;">
-              <td style='width:25%; height:20px;'><?php echo tdStart() ?><span class="zap">o</span></td>
-              <td style='width:25%;height:20px'><?php echo tdStart() ?><span class="zap">o</span></td>
-            </tr>
-          </table>
-        </td>
-
-        <td><?php echo tdStart() ?>
-          <table  width="100%"border="1" class="0" cellspacing="0" cellpadding=0 style="text-align: center;border-collapse:collapse;">
-            <tr style="text-align: center;line-height:200%;">
-              <td style='width:25%; height:20px;'><?php echo tdStart() ?><span class="zap">o</span></td>
-              <td style='width:25%;height:20px'><?php echo tdStart() ?><span class="zap">o</span></td>
-            </tr>
-          </table>
-        </td>
-        <td>
-          <?php echo tdStart() ?>&nbsp;
-        </td>
+      <tr style="line-height:17px;">
+        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $i ?></strong></td>
+        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
+        <td><?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?></td>
+        <td><?php echo tdStart() ?>&nbsp;<small><?php echo $lotInfo->details;?></small></td>
+        <td><?php echo tdStart() ?></td>
+        <td><?php echo tdStart() ?></td>
+        <td><?php echo tdStart() ?></td>
+        <td><?php echo tdStart() ?></td>
+        <td><?php echo tdStart() ?><span class="zap">o</span></td>
+        <td><?php echo tdStart() ?><span class="zap">o</span></td>
+        <td><?php echo tdStart() ?><span class="zap">o</span></td>
+        <td><?php echo tdStart() ?><span class="zap">o</span></td>
+        <td><?php echo tdStart() ?>&nbsp;</td>
       </tr>
 
       <?php $i=$i+1 ?>

@@ -296,8 +296,19 @@ function styleDegustation() {
 }
 
 function style(){
-  return "span.zap { font-family:'zapfdingbats';
-  }";
+  return "span.zap { font-family:'zapfdingbats';}
+  th{
+    background-color:grey;
+  }
+
+  .topempty{
+    border-left:1px solid black;
+    border-top:1px solid black;
+    border-right: 1px solid black;
+    border-bottom-color: grey;
+    border-bottom-style:dotted;
+    }
+  ";
 }
 
 function tdStart() {
