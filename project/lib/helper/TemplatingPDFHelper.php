@@ -295,11 +295,19 @@ function styleDegustation() {
 ";
 }
 
+function style(){
+  return "span.zap { font-family:'zapfdingbats';
+  }";
+}
+
 function tdStart() {
 
     return "<small style=\"font-size: 2pt;\"><br /></small>";
 }
 
+function tdStart2(){
+  return "<small style=\"font-size: 1pt;\"><br></small>";
+}
 function styleTirage() {
     return "
 
