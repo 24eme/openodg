@@ -60,6 +60,8 @@ class DRevValidation extends DocumentValidation
 
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
 
+        $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas reconnus");
+
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
@@ -99,6 +101,7 @@ class DRevValidation extends DocumentValidation
         $this->controleEngagementParcelleManquante();
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleHabilitationINAO();
+        $this->controleBailleurs();
         $this->controleLots();
     }
 
@@ -294,6 +297,23 @@ class DRevValidation extends DocumentValidation
         }
         foreach($this->document->getNonHabilitationINAO() as $produit) {
             $this->addPoint(self::TYPE_WARNING, 'drev_habilitation_inao', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }
+    }
+
+    protected function controleBailleurs(){
+        if(!sfContext::getInstance()->getUser()->hasDrevAdmin()) {
+            return;
+        }
+        $bailleursNonReconnus = array();
+        foreach($this->document->getBailleurs() as $id => $nom) {
+            if(preg_match("/^ETABLISSEMENT-/", $id)) {
+                continue;
+            }
+            $bailleursNonReconnus[] = $nom . " (".$id.")";
+        }
+
+        if(count($bailleursNonReconnus)) {
+            $this->addPoint(self::TYPE_WARNING, 'bailleurs', implode(", ", $bailleursNonReconnus));
         }
     }
 

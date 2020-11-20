@@ -41,6 +41,13 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?php $bailleurs = $drev->getBailleurs()->getRawValue(); ?>
+<?php if(count($bailleurs)): ?>
+    <p style="margin-top: -10px; margin-bottom: 20px;">
+        Une partie du volume a été récolté pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?> <?php echo implode($bailleurs, ", "); ?>.  Ce volume sera directement revendiqué par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
+    </p>
+<?php endif; ?>
+
 <?php endif; ?>
 <?php if($drev->exist('lots')): ?>
     <h3>Déclaration des lots IGP</h3>
