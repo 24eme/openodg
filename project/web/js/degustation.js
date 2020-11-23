@@ -40,7 +40,10 @@
       var libelleProduit = elt.parents('td').attr("data-libelle-produit");
       if(!$('tr[data-hash="'+hash+'"] .nblots').length){
         var newContent = '<tr class="vertical-center cursor-pointer" data-hash="'+hash+'"><td>'+libelleProduit+'</td><td class="nblots">1</td></tr>';
-        $('tbody#synthese').append(newContent);
+        $('tr[data-total="1"]').before(newContent)
+        let val = parseInt($('tr[data-total="1"] .nblots').html());
+        val +=1;
+        $('tr[data-total="1"] .nblots').html(val);
       }else{
       var val = $('tr[data-hash="'+hash+'"] .nblots').html();
       var regex = /[0-9]+$/g;
