@@ -5,6 +5,8 @@ all:
         convert:
           appellation_PINOTNOIR: appellation_ALSACE
           appellation_PINOTNOIRROUGE: appellation_ALSACE
+          appellation_COMMUNALE: appellation_ALSACE
+          appellation_LIEUDIT: appellation_ALSACE
       activites:
         PRODUCTEUR: "Producteur de raisins"
         PRODUCTEUR_MOUTS: "Producteur de moût"
