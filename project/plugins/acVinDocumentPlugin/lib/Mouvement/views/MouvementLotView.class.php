@@ -79,7 +79,10 @@ class MouvementLotView extends acCouchdbView
         $lot->elevage = (isset($mvt->elevage))? $mvt->elevage : null;
         $lot->statut = $mvt->statut;
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
-  				$lot->specificite = $mvt->specificite;
+          if(isset($mvt->specificite))
+            $lot->specificite = $mvt->specificite;
+          else
+            $lot->specificite = DRevConfiguration::getInstance()->getSpecificites()["aucune"];
   			}
         return $lot;
     }
