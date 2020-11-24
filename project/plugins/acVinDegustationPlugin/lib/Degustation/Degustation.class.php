@@ -178,6 +178,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->destination_date = $lot->destination_date;
 			$mvt->details = $lot->details;
 			$mvt->campagne = $this->campagne;
+			$mvt->specificite = $lot->specificite;
 			return $mvt;
 	}
 

@@ -600,12 +600,11 @@
             });
             $("#engagements .alert-danger").addClass("hidden");
             engagements = new Array();
-            $("input:checkbox[name*=validation]").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')] = 0; })
+            var nbEngagements = 0;
+            $("input:checkbox[name*=validation]").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')] = 0; nbEngagements++; })
             $("input:checkbox[name*=validation]:checked").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')]++; })
             is_valid = true;
-            $("input:checkbox[name*=validation]").each(function() { if (engagements[this.id.replace(/_OUEX_.*/, '')] != 1) {is_valid = false ;} })
-            console.log(engagements);
-            console.log(is_valid);
+            $("input:checkbox[name*=validation]").each(function() { if (engagements[this.id.replace(/_OUEX_.*/, '')] != nbEngagements) {is_valid = false ;} })
             if(! is_valid) {
                 $("#engagements .alert-danger").removeClass("hidden");
                 $("input:checkbox[name*=validation]:not(:checked)").each(function() {
