@@ -553,10 +553,8 @@ class HabilitationClient extends acCouchdbClient {
         public function getProduitsConfig($config) {
           $produits = array();
           foreach ($config->declaration->getProduits() as $produit) {
-              if($produit->getAppellation()){
-                $produithab = $produit->getAppellation();
-                $produits[$produithab->getHash()] = HabilitationConfiguration::getInstance()->getProduitConverted($produithab);;
-              }
+              $produithab = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit);
+              $produits[$produithab->getHash()] = $produithab;
           }
           return $produits;
         }

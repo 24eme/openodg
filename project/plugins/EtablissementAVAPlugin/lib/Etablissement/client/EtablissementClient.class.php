@@ -42,6 +42,10 @@ class EtablissementClient extends acCouchdbClient {
         return $query->execute(acCouchdbClient::HYDRATE_ARRAY);
     }
 
+    public function findByCvi($identifiant) {
+        return $this->findByIdentifiant($identifiant);
+    }
+
     public function findByIdentifiant($identifiant) {
 
         return $this->find('ETABLISSEMENT-'.$identifiant);
