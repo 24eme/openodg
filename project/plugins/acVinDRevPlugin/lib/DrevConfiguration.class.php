@@ -137,4 +137,9 @@ class DRevConfiguration {
         return isset($this->configuration['pdf_unique_region']) && boolval($this->configuration['pdf_unique_region']);
     }
 
+    public function hasEngagementsPdf(){
+      return isset($this->configuration['engagement_pdf']) && boolval($this->configuration['engagement_pdf']);
+    }
+
+
 }
