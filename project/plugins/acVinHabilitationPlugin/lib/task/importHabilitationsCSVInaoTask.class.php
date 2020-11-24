@@ -27,19 +27,26 @@ class importHabilitationsCSVInaoTask extends sfBaseTask
   const CSV_VINIFICATEUR = 21;
   const CSV_CONDITIONNEUR = 22;
   const CSV_ACHAT = 23;
+  const CSV_ELABORATEUR = 24;
 
   public static $activites = array( self::CSV_PRODUCTEUR_RAISINS => HabilitationClient::ACTIVITE_PRODUCTEUR,
                              self::CSV_PRODUCTEUR_MOUTS => HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS,
                              self::CSV_VINIFICATEUR => HabilitationClient::ACTIVITE_VINIFICATEUR,
                              self::CSV_CONDITIONNEUR => HabilitationClient::ACTIVITE_CONDITIONNEUR,
-                             self::CSV_ACHAT => HabilitationClient::ACTIVITE_VRAC);
+                             self::CSV_ACHAT => HabilitationClient::ACTIVITE_VRAC,
+                             self::CSV_ELABORATEUR => HabilitationClient::ACTIVITE_ELABORATEUR,
+                         );
 
   public $produits = array( "Muscadet" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",
                             "Muscadet Sèvre et Maine" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSSM/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",
                             "Muscadet Côtes de Grand Lieu" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSCGL/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",
                             "Muscadet Coteaux de la Loire" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSCDL/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",
                             "Gros plant" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/GPL/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/FBL",
-                            "Coteaux d'Ancenis" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT");
+                            "Coteaux d'Ancenis" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT",
+                            "Alsace" => "certification/genre/appellation_ALSACE",
+                            "Alsace Crémant" => "certification/genre/appellation_CREMANT",
+                            "Alsace Grands crus" => "certification/genre/appellation_GRDCRU"
+                          );
 
 
     protected function configure()
