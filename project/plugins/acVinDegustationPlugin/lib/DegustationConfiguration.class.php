@@ -34,4 +34,8 @@ class DegustationConfiguration {
         $colleges = $this->getColleges();
         return (isset($colleges[$key]))? $colleges[$key] : '';
     }
+
+    public function hasSpecificiteLotPdf(){
+      return isset($this->configuration['specificite_lot_pdf']) && boolval($this->configuration['specificite_lot_pdf']);
+    }
 }

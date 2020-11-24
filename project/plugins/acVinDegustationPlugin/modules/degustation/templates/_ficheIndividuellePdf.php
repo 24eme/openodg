@@ -65,7 +65,12 @@
       <tr style="line-height:17px;">
         <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $i ?></strong></td>
         <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
-        <td><?php echo tdStart() ?>&nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?></td>
+        <td><?php echo tdStart() ?>
+          &nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?>
+          <?php if(DegustationConfiguration::getInstance()->hasSpecificiteLotPdf() && DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+          <br/><small style="color: #777777;font-size :14px"><?php echo " ($lotInfo->specificite)";?></small>
+        <?php endif ?>
+        </td>
         <td><?php echo tdStart() ?>&nbsp;<small><?php echo $lotInfo->details;?></small></td>
         <td><?php echo tdStart() ?></td>
         <td><?php echo tdStart() ?></td>
