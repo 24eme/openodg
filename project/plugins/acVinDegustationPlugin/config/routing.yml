@@ -221,3 +221,14 @@ degustation_fiche_individuelle_pdf:
       type:     object
     requirements:
       sf_method: [get]
+
+
+degustation_fiche_echantillons_preleves_pdf:
+    url: /degustation/:id/ficheEchantillonsPreleves/pdf
+    param: { module: degustation, action: ficheEchantillonsPrelevesPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
