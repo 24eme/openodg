@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(25);
+$t = new lime_test(26);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -110,16 +110,29 @@ $t->is(count($mvtLots), 3, "3 mvtlots disponibles au chgt de denom");
 
 $mvtLot = current($mvtLots);
 $mvtLotKey = Lot::generateMvtKey($mvtLot);
-$lot = $drev->get($mvtLot->origine_hash);
+$volume = $mvtLot->volume;
 $autreLot = $drev->get(next($mvtLots)->origine_hash);
 
 $t->comment("Création d'un Chgt de Denom Total");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
-$chgtDenom->changement_volume = null;
+$chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
+$chgtDenom->generateMouvementsLots(0);
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
+  }
+  $postfix++;
+}
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -128,9 +141,23 @@ $t->comment("Création d'un Chgt de Denom Partiel");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
-$chgtDenom->changement_volume = round($lot->volume / 2, 2);
+$chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
+$chgtDenom->generateMouvementsLots(1);
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
+  }
+  $postfix++;
+}
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_PRELEVABLE, "statut du nouveau lot prelevable");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -139,9 +166,22 @@ $t->comment("Création d'un Declassement Total");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = null;
 $chgtDenom->changement_produit_libelle = null;
-$chgtDenom->changement_volume = null;
+$chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
+$chgtDenom->generateMouvementsLots(1);
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
+  }
+  $postfix++;
+}
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_DECLASSE, "statut origine déclassé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -150,6 +190,20 @@ $t->comment("Création d'un Declassement Partiel");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = null;
 $chgtDenom->changement_produit_libelle = null;
-$chgtDenom->changement_volume = round($lot->volume / 2, 2);
+$chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
+$chgtDenom->generateMouvementsLots(1);
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
+  }
+  $postfix++;
+}
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_CONFORME, "statut du nouveau lot prelevable");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");

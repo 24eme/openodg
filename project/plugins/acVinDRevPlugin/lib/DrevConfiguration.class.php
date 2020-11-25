@@ -146,4 +146,9 @@ class DRevConfiguration {
       return isset($this->configuration['specificite_lot']) && boolval($this->configuration['specificite_lot']);
     }
 
+    public function hasEngagementsPdf(){
+      return isset($this->configuration['engagement_pdf']) && boolval($this->configuration['engagement_pdf']);
+    }
+
+
 }
