@@ -51,6 +51,20 @@ class EtablissementClient extends acCouchdbClient {
         return $this->find('ETABLISSEMENT-'.$identifiant);
     }
 
+    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
+        $qs = new acElasticaQueryQueryString($cvi_or_accise_or_ppm);
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        $index = acElasticaManager::getType('COMPTE');
+        $resset = $index->search($q);
+        $results = $resset->getResults();
+        foreach ($results as $res) {
+            $data = $res->getData()['doc'];
+            return $this->findByCvi($data['cvi']);
+        }
+        return null;
+    }
+
     public function createOrFind($identifiant) {
         $doc = $this->findByIdentifiant($identifiant);
 

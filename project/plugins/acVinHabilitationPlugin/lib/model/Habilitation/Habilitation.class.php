@@ -132,7 +132,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
             }
             $this->declaration->reorderByConf();
         }
-        return $this->get($produit->getHash());
+        return $produit;
     }
 
 

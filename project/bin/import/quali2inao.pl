@@ -9,8 +9,8 @@ while(<STDIN>) {
     $d[19] = 'x' if ($l[3] =~ /A/); #Producteur de raison
     $d[20] = 'x' if ($l[3] =~ /P/); #Producteur de mouts
     $d[21] = 'x' if ($l[3] =~ /B/); #vinificateur
-    $d[22] = 'x' if ($l[3] =~ /D/); #conditionneur
-    $d[24] = 'x' if ($l[3] =~ /L/); #Elaboration
+    $d[27] = 'x' if ($l[3] =~ /D/); #conditionneur
+    $d[29] = 'x' if ($l[3] =~ /L/); #Elaboration
     $d[40] = '';
     print join(';', @d);
     print "\n";

@@ -25,9 +25,14 @@ class importHabilitationsCSVInaoTask extends sfBaseTask
   const CSV_PRODUCTEUR_RAISINS = 19;
   const CSV_PRODUCTEUR_MOUTS = 20;
   const CSV_VINIFICATEUR = 21;
-  const CSV_CONDITIONNEUR = 22;
+  const CSV_CONDITIONNEUR = 27;
   const CSV_ACHAT = 23;
   const CSV_ELABORATEUR = 24;
+  const CSV_DISTILLATEUR = 26;
+  const CSV_METTEUR_EN_MARCHE = 28;
+  const CSV_ELEVEUR = 29;
+  const CSV_PRESTATAIRE_DE_SERVICE = 30;
+
 
   public static $activites = array( self::CSV_PRODUCTEUR_RAISINS => HabilitationClient::ACTIVITE_PRODUCTEUR,
                              self::CSV_PRODUCTEUR_MOUTS => HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS,
@@ -35,6 +40,10 @@ class importHabilitationsCSVInaoTask extends sfBaseTask
                              self::CSV_CONDITIONNEUR => HabilitationClient::ACTIVITE_CONDITIONNEUR,
                              self::CSV_ACHAT => HabilitationClient::ACTIVITE_VRAC,
                              self::CSV_ELABORATEUR => HabilitationClient::ACTIVITE_ELABORATEUR,
+                             self::CSV_DISTILLATEUR => HabilitationClient::ACTIVITE_DISTILLATEUR,
+                             self::CSV_METTEUR_EN_MARCHE => HabilitationClient::ACTIVITE_METTEUR_EN_MARCHE,
+                             self::CSV_ELEVEUR => HabilitationClient::ACTIVITE_ELEVEUR,
+                             self::CSV_PRESTATAIRE_DE_SERVICE => HabilitationClient::ACTIVITE_PRESTATAIRE_DE_SERVICE,
                          );
 
   public $produits = array( "Muscadet" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/MUSAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/MEL",
@@ -45,7 +54,8 @@ class importHabilitationsCSVInaoTask extends sfBaseTask
                             "Coteaux d'Ancenis" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT",
                             "Alsace" => "certification/genre/appellation_ALSACE",
                             "Alsace Crémant" => "certification/genre/appellation_CREMANT",
-                            "Alsace Grands crus" => "certification/genre/appellation_GRDCRU"
+                            "Alsace Grands crus" => "certification/genre/appellation_GRDCRU",
+                            "Marc d'Alsace Gewurztraminer" => "certification/genre/appellation_MARC",
                           );
 
 
@@ -79,10 +89,14 @@ EOF;
         foreach ($inaoHabilitationCsvFile->getLignes() as $key => $data) {
 
              $cvi = sprintf('%s', $data[self::CSV_CVI]);
-             echo " => import pour  $cvi \n";
+             $siren = preg_replace('/^([0-9]{9}).*/', '\1', str_replace(' ', '', $data[self::CSV_SIRET]));
+             echo " => import pour  $cvi - $siren \n";
              $eta = EtablissementClient::getInstance()->findByCvi($cvi);
              if (!$eta) {
-                 echo "WARNING: établissement non trouvé ".$data[self::CSV_CVI]." : pas d'import\n";
+                 $eta = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSiren($siren);
+             }
+             if (!$eta) {
+                 echo "WARNING: établissement non trouvé ".$data[self::CSV_CVI]." - ".$data[self::CSV_SIRET]." : pas d'import\n";
                  continue;
              }
 
@@ -112,7 +126,8 @@ EOF;
                 //   $hab_activites->add($activite)->updateHabilitation(HabilitationClient::STATUT_ATTENTE_HABILITATION, null, $dateDemande);
                 // }
                 //statut habilite
-                $hab_activites->add($activite)->updateHabilitation(HabilitationClient::STATUT_HABILITE, null, $dateDemande);
+                $a = $hab_activites->add($activite);
+                $a->updateHabilitation(HabilitationClient::STATUT_HABILITE, null, $dateDemande);
 
               }
             }
