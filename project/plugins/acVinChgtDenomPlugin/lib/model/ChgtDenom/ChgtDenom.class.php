@@ -209,6 +209,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = $lot->details;
         $mvt->campagne = $this->campagne;
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
+  				$mvt->specificite = $lot->specificite;
+  			}
         return $mvt;
     }
 
