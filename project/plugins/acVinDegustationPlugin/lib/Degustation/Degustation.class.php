@@ -178,9 +178,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->destination_date = $lot->destination_date;
 			$mvt->details = $lot->details;
 			$mvt->campagne = $this->campagne;
-			if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
-				$mvt->specificite = $lot->specificite;
-			}
+			$mvt->specificite = $lot->specificite;
 			return $mvt;
 	}
 
@@ -618,6 +616,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$nbLots++;
 			}
 			return $etiquettesPlanches;
+		}
+
+		public function getLotsByNumDossier(){
+			$lots = array();
+			foreach ($this->getLots() as $lot) {
+					$lots[$lot->numero_dossier][$lot->numero_cuve] = $lot;
+			}
+
+			return $lots;
 		}
 
 		public function getOdg(){

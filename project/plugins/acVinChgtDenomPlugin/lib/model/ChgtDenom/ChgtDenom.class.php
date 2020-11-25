@@ -173,7 +173,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         if (count($this->changement_cepages->toArray(true, false))) {
           $lot->details = '';
           foreach($this->getPourcentagesCepages() as $cep => $pc) {
-              $lotBis->details .= $cep.' ('.$pc.'%) ';
+              $lot->details .= $cep.' ('.$pc.'%) ';
           }
         }
         $lots[] = $lot;
@@ -209,6 +209,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = $lot->details;
         $mvt->campagne = $this->campagne;
+  			$mvt->specificite = $lot->specificite;  			
         return $mvt;
     }
 
@@ -221,9 +222,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function generateMouvementsLots($prelevable = 1) {
-        $origine = $this->getOrigineDocumentMvtLot();
         foreach($this->lots as $k => $lot) {
-          if ($prelevable && $lot->produit_hash) {
+          if ($prelevable && $lot->produit_hash && $lot->produit_hash == $this->changement_produit) {
             $lot->statut = Lot::STATUT_PRELEVABLE;
           }
           $key = $lot->getUnicityKey();

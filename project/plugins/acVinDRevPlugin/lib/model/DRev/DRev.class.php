@@ -1362,9 +1362,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         $mvt->region = '';
         $mvt->campagne = $this->campagne;
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
-  				$mvt->specificite = $lot->specificite;
-  			}
+  			$mvt->specificite = $lot->specificite;
         return $mvt;
     }
 
