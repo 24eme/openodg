@@ -20,7 +20,7 @@ class DRCIVACsvFile
   const CSV_USAGES_INDUSTRIELS_TOTAL = 14;
   const CSV_VCI = 15;
   const CSV_VCI_TOTAL = 16;
-  const CSV_HASH = 22;
+  const CSV_HASH = 20;
 
   private $file = null;
   private $separator = null;
