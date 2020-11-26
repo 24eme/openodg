@@ -20,6 +20,7 @@ class DRCIVACsvFile
   const CSV_USAGES_INDUSTRIELS_TOTAL = 14;
   const CSV_VCI = 15;
   const CSV_VCI_TOTAL = 16;
+  const CSV_HASH = 22;
 
   private $file = null;
   private $separator = null;
@@ -53,7 +54,7 @@ class DRCIVACsvFile
 
     public static function getHashProduitByLine($line) {
 
-        return $line[count($line) - 1];
+        return $line[self::CSV_HASH];
     }
 
   public function getCsvRecoltant($cvi) {
