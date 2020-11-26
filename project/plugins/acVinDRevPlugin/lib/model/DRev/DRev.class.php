@@ -1213,9 +1213,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalTotalSuperficie();
 	}
 
-	public function getVolumeFacturable()
+	public function getVolumeFacturable($produitFilter = null)
 	{
-		return $this->declaration->getTotalVolumeRevendique();
+		return $this->declaration->getTotalVolumeRevendique($produitFilter);
 	}
 
 	public function getSurfaceVinifieeFacturable()
@@ -1362,6 +1362,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         $mvt->region = '';
         $mvt->campagne = $this->campagne;
+  			$mvt->specificite = $lot->specificite;
         return $mvt;
     }
 

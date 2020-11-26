@@ -60,7 +60,12 @@
             <tr>
                 <th class="col-xs-1">Date Rev.</th>
                 <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-5">Produit (millesime)</th>
+                <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                  <th class="text-center col-xs-4">Produit (millesime)</th>
+                	<th class="col-xs-1">Spécificité</th>
+                <?php else: ?>
+                  <th class="text-center col-xs-5">Produit (millesime)</th>
+                <?php endif ?>
                 <th class="text-center col-xs-1">Superficie</th>
                 <th class="text-center col-xs-2">Volume</th>
                 <th class="text-center col-xs-2">Destination (date)</th>
@@ -88,6 +93,9 @@
                       <?php endif; ?>
                       <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                     </td>
+                    <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+        		          <td><?php echo $lot->specificite; ?></td>
+        		        <?php endif ?>
                     <td>&nbsp;</td>
                     <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
                     <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>

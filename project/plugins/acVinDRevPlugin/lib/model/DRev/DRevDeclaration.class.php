@@ -228,13 +228,24 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $total;
     }
 
-	public function getTotalVolumeRevendique()
+	public function getTotalVolumeRevendique($produitFilter = null)
     {
     	$total = 0;
-        foreach($this->getProduits() as $key => $item) {
+
+			$produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+			$produitExclude = (bool) $produitExclude;
+			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
+      foreach($this->getProduits() as $key => $item) {
+				if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $key)) {
+						continue;
+				}
+				if($produitFilter && $produitExclude && preg_match($regexpFilter, $key)) {
+						continue;
+				}
             $total += $item->getTotalVolumeRevendique();
-        }
-        return $total;
+      }
+
+			return $total;
     }
 
 	public function getTotalSuperficieVinifiee()

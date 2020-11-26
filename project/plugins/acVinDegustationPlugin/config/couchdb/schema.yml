@@ -42,6 +42,7 @@ Degustation:
                   leurre: {}
                   conformite: {}
                   motif: {}
+                  specificite: {}
                   observation: {}
       mouvements_lots:
         type: collection
@@ -82,6 +83,7 @@ Degustation:
                         campagne: {}
                         id_document: {  }
                         statut: {  }
+                        specificite: {}
       degustateurs:
         type: collection
         definition:

@@ -187,7 +187,10 @@ class EtablissementClient extends acCouchdbClient {
       return $this->findByCviOrAcciseOrPPM($accise, $with_suspendu);
     }
 
-    public function findByCviOrAcciseOrPPM($cvi_or_accise_or_ppm, $with_suspendu = false){
+    public function findByCviOrAcciseOrPPM($accise, $with_suspendu = false) {
+      return $this->findByCviOrAcciseOrPPMOrSiren($accise, $with_suspendu);
+    }
+    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
       $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi_or_accise_or_ppm));
 
       if (!count($rows)) {

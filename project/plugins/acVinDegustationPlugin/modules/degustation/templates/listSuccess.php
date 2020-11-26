@@ -34,7 +34,7 @@
             <td></td>
             <td></td>
             <td class="text-center"><?php echo preg_replace('/-.*/', '', $s->id_document); ?></td>
-            <td class="text-muted"><?php echo ($s->preleve) ? 'Prélevé' : '' ; ?></td>
+            <td class="text-muted"><?php echo isset($s->preleve) ? 'Prélevé' : '' ; ?></td>
             <td><a href="#" class="btn btn-default">Voir</a></td>
         </tr>
     <?php endforeach; ?>

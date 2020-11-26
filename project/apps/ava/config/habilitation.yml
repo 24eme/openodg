@@ -5,6 +5,9 @@ all:
         convert:
           appellation_PINOTNOIR: appellation_ALSACE
           appellation_PINOTNOIRROUGE: appellation_ALSACE
+          appellation_COMMUNALE: appellation_ALSACE
+          appellation_LIEUDIT: appellation_ALSACE
+          appellation_ALSACEBLANC: appellation_ALSACE
       activites:
         PRODUCTEUR: "Producteur de raisins"
         PRODUCTEUR_MOUTS: "Producteur de moût"
@@ -15,3 +18,6 @@ all:
         MARC: "Producteur de Marc"
         DISTILLATEUR: "Distillateur"
         METTEUR_EN_MARCHE: "Metteur en Marché"
+        DISTILLATEUR: 'Distillateur'
+        ELEVEUR: 'Eleveur'
+        PRESTATAIRE_DE_SERVICE: 'Prestataire de service'
