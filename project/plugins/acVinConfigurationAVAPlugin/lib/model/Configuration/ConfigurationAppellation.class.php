@@ -2,6 +2,10 @@
 
 class ConfigurationAppellation extends BaseConfigurationAppellation {
 
+    public function getAppellation() {
+        return $this;
+    }
+
     public function getMentions() {
         return $this->filter('^mention');
     }

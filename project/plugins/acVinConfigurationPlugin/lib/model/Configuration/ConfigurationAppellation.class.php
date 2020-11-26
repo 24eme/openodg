@@ -13,6 +13,10 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
       return $this->mentions;
     }
 
+	public function getAppellation() {
+		return $this;
+	}
+
     public function getGenre() {
 
       return $this->getParentNode();
@@ -21,9 +25,6 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
     public function getCertification() {
 
         return $this->getGenre()->getCertification();
-    }
-		public function getNodeCahierDesCharges() {
-        return $this;
     }
 
     public function setDonneesCsv($datas) {
@@ -53,9 +54,5 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
 
         return $this->attributs->get('detail_lieu_editable');
     }
-
-		public function getCahierDesCharges(){
-			return true;
-		}
 
 }

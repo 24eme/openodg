@@ -618,6 +618,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $etiquettesPlanches;
 		}
 
+		public function getLotsByNumDossier(){
+			$lots = array();
+			foreach ($this->getLots() as $lot) {
+					$lots[$lot->numero_dossier][$lot->numero_cuve] = $lot;
+			}
+
+			return $lots;
+		}
+
 		public function getOdg(){
 			return sfConfig::get('sf_app');
 		}

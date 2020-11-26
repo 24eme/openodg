@@ -110,16 +110,6 @@ class ConfigurationCepage extends BaseConfigurationCepage {
         return $this->getParent()->getParent()->getParent()->getParent()->hasLieuEditable();
     }
 
-    public function getCahierDesCharges() {
-
-        return $this->getParent()->getParent()->getParent()->getParent()->getCahierDesCharges();
-    }
-
-    public function getNodeCahierDesCharges() {
-
-        return $this->getAppellation();
-    }
-
     public function hasDenomination() {
         if ($this->exist('attributs') && $this->attributs->exist('no_denomination')) {
 
