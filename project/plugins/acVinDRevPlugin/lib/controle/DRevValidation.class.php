@@ -60,7 +60,7 @@ class DRevValidation extends DocumentValidation
 
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
 
-        $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas reconnus");
+        $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Le volume total est dépassé');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
@@ -305,11 +305,11 @@ class DRevValidation extends DocumentValidation
             return;
         }
         $bailleursNonReconnus = array();
-        foreach($this->document->getBailleurs() as $id => $nom) {
-            if(preg_match("/^ETABLISSEMENT-/", $id)) {
+        foreach($this->document->getBailleurs() as $b) {
+            if($b['etablissement_id']) {
                 continue;
             }
-            $bailleursNonReconnus[] = $nom . " (".$id.")";
+            $bailleursNonReconnus[] = $b['raison_sociale'] . " (".$b['ppm'].")";
         }
 
         if(count($bailleursNonReconnus)) {
