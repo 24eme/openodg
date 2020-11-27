@@ -21,8 +21,8 @@
 	<?php if ($codeProduit = $produit->getConfig()->getCodeProduit()): ?>
 					<ligne>
 						<code_cvi_vin value="<?php echo $produit->getConfig()->getCodeDouane(); ?>" />
-						<libelle_produit value="<?php echo $produit->denomination_complementaire; ?>" />
-                        <mention_valorisante value="<?php echo $produit->getLibelleComplet(); ?>" />
+                        <libelle_produit value="<?php echo $produit->getLibelleComplet(); ?>" />
+                        <mention_valorisante value="<?php echo $produit->denomination_complementaire; ?>" />
 						<code_syndicat_vin value="<?php echo $codeProduit; ?>" />
 						<surface value="<?php echo $produit->superficie_revendique; ?>" />
 						<volume value="<?php echo $produit->volume_revendique_total * 100; ?>" />
