@@ -889,7 +889,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function validate($date = null) {
         if(is_null($date)) {
-            $date = date('Y-m-d');
+            $date = date('c');
         }
 
         $this->storeLotsDateVersion($date);
@@ -927,7 +927,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function validateOdg($date = null, $region = null) {
         if(is_null($date)) {
-            $date = date('Y-m-d');
+            $date = date('c');
         }
 
         if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
@@ -1431,9 +1431,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getAllPieces() {
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
+      $date = null;
+      if ($this->getValidation()) {
+        $dt = new DateTime($this->getValidation());
+        $date = $dt->format('Y-m-d');
+      }
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->getValidation(),
+    		'date_depot' => $date,
     		'libelle' => 'Revendication des produits '.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
