@@ -44,6 +44,13 @@ class ImportLotsIATask extends sfBaseTask
 
   const TYPE_REVENDIQUE = 'R';
 
+  const STATUT_PRELEVE = "PRELEVE";
+  const STATUT_DEGUSTE = "DEGUSTE";
+  const STATUT_CONFORME = "CONFORME";
+  const STATUT_NONCONFORME = "NON_CONFORME";
+  const STATUT_CHANGE = "CHANGE";
+  const STATUT_DECLASSE = "DECLASSE";
+
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
@@ -68,14 +75,14 @@ class ImportLotsIATask extends sfBaseTask
     "Vermentino B" => "VERMENT.B"
   );
     public static $correspondancesStatuts = array(
-      "Conforme" => Lot::STATUT_CONFORME,
-      "Déclassé" => Lot::STATUT_DECLASSE,
-      "Non Conforme" => Lot::STATUT_NONCONFORME,
-      "Prélevé A" => Lot::STATUT_PRELEVE,
-      "Prélevé NA" => Lot::STATUT_PRELEVE,
-      "Prévu" => Lot::STATUT_PRELEVE,
-      "Revendiqué C" => array(Lot::STATUT_PRELEVABLE, Lot::STATUT_PRELEVE),
-      "Revendiqué NC" => array(Lot::STATUT_PRELEVABLE, Lot::STATUT_PRELEVE)
+      "Conforme" => self::STATUT_CONFORME,
+      "Déclassé" => self::STATUT_DECLASSE,
+      "Non Conforme" => self::STATUT_NONCONFORME,
+      "Prélevé A" => self::STATUT_PRELEVE,
+      "Prélevé NA" => self::STATUT_PRELEVE,
+      "Prévu" => self::STATUT_PRELEVE,
+      "Revendiqué C" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE),
+      "Revendiqué NC" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE)
     );
 
     protected function configure()
