@@ -104,6 +104,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function summerizeProduitsLotsByCouleur() {
         $couleurs = array();
+
+        // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
@@ -117,9 +119,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
         }
+
+        // Parcours dans les lots
         foreach($this->lots as $lot) {
-            $couleur = $lot->getProduitRevendiqueLibelleComplet();
-            $couleurs[$couleur]['volume_lots'] = $lot->volume;
+
+          $couleur = $lot->getProduitRevendiqueLibelleComplet();
+          if($lot->getProduitRevendique()){
+            $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleComplet();
+          }
+
+          if (!isset($couleurs[$couleur]['volume_lots'])) {
+              $couleurs[$couleur]['volume_lots'] = 0;
+          }
+            $couleurs[$couleur]['volume_lots'] += $lot->volume;
         }
         foreach($couleurs as $k => $couleur) {
             if (!isset($couleur['volume_lots'])) {
@@ -443,7 +455,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		}
 
     		if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
-    			$bailleurs[isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : $line[DRCsvFile::CSV_BAILLEUR_PPM]]  = $line[DRCsvFile::CSV_BAILLEUR_NOM];
+                $etablissement_id = isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : null;
+                $id = ($etablissement_id) ? $etablissement_id : $line[DRCsvFile::CSV_BAILLEUR_PPM];
+    			$bailleurs[$id]  = array('raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM], 'etablissement_id' => $etablissement_id, 'ppm' => $line[DRCsvFile::CSV_BAILLEUR_PPM]);
     		}
     	}
     	return $bailleurs;
@@ -875,7 +889,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function validate($date = null) {
         if(is_null($date)) {
-            $date = date('Y-m-d');
+            $date = date('c');
         }
 
         $this->storeLotsDateVersion($date);
@@ -913,7 +927,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function validateOdg($date = null, $region = null) {
         if(is_null($date)) {
-            $date = date('Y-m-d');
+            $date = date('c');
         }
 
         if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
@@ -1417,9 +1431,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getAllPieces() {
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
+      $date = null;
+      if ($this->getValidation()) {
+        $dt = new DateTime($this->getValidation());
+        $date = $dt->format('Y-m-d');
+      }
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->getValidation(),
+    		'date_depot' => $date,
     		'libelle' => 'Revendication des produits '.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,

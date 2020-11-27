@@ -1,10 +1,11 @@
 <?php
 
-class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument {
+class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument {
 
     const DEFAULT_KEY = 'DEFAUT';
 
     protected $declarant_document = null;
+    protected $mouvement_document = null;
     protected $piece_document = null;
 
     public function __construct() {
@@ -21,6 +22,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->piece_document = new PieceDocument($this);
     }
 
@@ -227,7 +229,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $lot->statut = Lot::STATUT_PRELEVABLE;
           }
           $key = $lot->getUnicityKey();
-          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key, $p);
+          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
         }
         $this->updateMouvementOrigineDocument();
     }
@@ -327,4 +329,112 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     	return false;
     }
     /**** FIN DES PIECES ****/
+
+    /**** MOUVEMENTS ****/
+
+    public function getTemplateFacture() {
+        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getCampagne())){
+          return TemplateFactureClient::getInstance()->find($templateName);
+        }
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+    }
+
+    public function getMouvementsFactures() {
+
+        return $this->_get('mouvements');
+    }
+
+    public function getMouvementsFacturesCalcule() {
+      $templateFacture = $this->getTemplateFacture();
+      if(!$templateFacture) {
+          return array();
+      }
+
+      $cotisations = $templateFacture->generateCotisations($this);
+
+      $identifiantCompte = $this->getIdentifiant();
+
+      $mouvements = array();
+
+      $rienAFacturer = true;
+
+      foreach($cotisations as $cotisation) {
+          $mouvement = ChgtDenomMouvementFactures::freeInstance($this);
+          $mouvement->fillFromCotisation($cotisation);
+          $mouvement->facture = 0;
+          $mouvement->facturable = 1;
+          $mouvement->date = $this->getCampagne().'-12-10';
+          $mouvement->date_version = $this->validation;
+          $mouvement->version = $this->version;
+
+          if(!$mouvement->quantite) {
+              continue;
+          }
+
+          if($mouvement->quantite) {
+              $rienAFacturer = false;
+          }
+
+          $mouvements[$mouvement->getMD5Key()] = $mouvement;
+      }
+
+      if($rienAFacturer) {
+          return array($identifiantCompte => array());
+
+      }
+
+      return array($identifiantCompte => $mouvements);
+    }
+
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+    }
+
+    public function generateMouvementsFactures() {
+        return $this->mouvement_document->generateMouvementsFactures();
+    }
+
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvementsFactures(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }
+
+    /**** FIN DES MOUVEMENTS ****/
+
+
+    public function getVolumeFacturable($produitFilter = null)
+    {
+      $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+			$produitExclude = (bool) $produitExclude;
+			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
+			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $this->changement_produit)) {
+					return;
+			}
+			if($produitFilter && $produitExclude && preg_match($regexpFilter, $this->changement_produit)) {
+					return;
+			}
+
+      return $this->changement_volume;
+    }
+
 }

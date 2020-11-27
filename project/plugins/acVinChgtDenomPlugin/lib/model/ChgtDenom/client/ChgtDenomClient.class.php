@@ -1,6 +1,6 @@
 <?php
 
-class ChgtDenomClient extends acCouchdbClient {
+class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "ChgtDenom";
     const TYPE_COUCHDB = "CHGTDENOM";
@@ -52,6 +52,19 @@ class ChgtDenomClient extends acCouchdbClient {
         }
         $chgtdenom->storeDeclarant();
         return $chgtdenom;
+    }
+
+    public function findFacturable($identifiant, $campagne) {
+      $chgtsdenom = $this->getHistory($identifiant);
+      $chgtsdenomFacturants = array();
+      foreach ($chgtsdenom as $chgtdenom) {
+        if($chgtdenom && !$chgtdenom->validation_odg) {
+          continue;
+        }
+        $chgtsdenomFacturants[] = $chgtdenom;
+      }
+
+      return $chgtsdenomFacturants;
     }
 
 }
