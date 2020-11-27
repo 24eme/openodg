@@ -22,7 +22,9 @@
 					<ligne>
 						<code_cvi_vin value="<?php echo $produit->getConfig()->getCodeDouane(); ?>" />
                         <libelle_produit value="<?php echo $produit->getLibelleComplet(); ?>" />
+<?php if ($produit->denomination_complementaire): ?>
                         <mention_valorisante value="<?php echo $produit->denomination_complementaire; ?>" />
+<?php endif; ?>
 						<code_syndicat_vin value="<?php echo $codeProduit; ?>" />
 						<surface value="<?php echo $produit->superficie_revendique; ?>" />
 						<volume value="<?php echo $produit->volume_revendique_total * 100; ?>" />
