@@ -44,7 +44,13 @@
 <?php $bailleurs = $drev->getBailleurs()->getRawValue(); ?>
 <?php if(count($bailleurs)): ?>
     <p style="margin-top: -10px; margin-bottom: 20px;">
-        Une partie du volume a été récolté pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?> <?php echo implode($bailleurs, ", "); ?>.  Ce volume sera directement revendiqué par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
+        Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
+        <?php $extra = '' ; foreach($bailleurs as $b): ?>
+        <?php  if ($b['etablissement_id'] && $sf_user->hasDrevAdmin()) echo "<a href='".url_for('declaration_etablissement', array('identifiant' => $b['etablissement_id'], 'campagne' => $drev->campagne))."'>" ; ?>
+        <?php echo $extra.$b['raison_sociale']; $extra = ', '; ?>
+        <?php  if ($b['etablissement_id'] && $sf_user->hasDrevAdmin()) echo " (son espace) </a>"; ?>
+        <?php endforeach; ?>.
+        Ces volumes seront directement revendiqués par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
     </p>
 <?php endif; ?>
 
