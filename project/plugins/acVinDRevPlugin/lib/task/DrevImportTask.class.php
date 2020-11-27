@@ -106,8 +106,18 @@ EOF;
                 }
 
                 $drev->update();
-                $drev->validate($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]);
-                $drev->validateOdg($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]);
+                $dateValidation = null;
+                if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]){
+                      $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]);
+                      $dateValidation = $dt->modify('+1 minute')->format('c');
+                }
+                $drev->validate($dateValidation);
+                $dateValidation = null;
+                if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]){
+                      $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]);
+                      $dateValidation = $dt->modify('+1 minute')->format('c');
+                }
+                $drev->validateOdg($dateValidation);
                 $drev->save();
 
                 echo "IMPORTE;$drev->_id\n";

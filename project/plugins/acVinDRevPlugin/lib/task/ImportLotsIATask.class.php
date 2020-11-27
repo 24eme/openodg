@@ -15,7 +15,7 @@ class ImportLotsIATask extends sfBaseTask
   const CSV_TELEPHONE = 10;
   const CSV_FAMILLE = 11;
   const CSV_NUM_LOT_OPERATEUR = 12;
-  const CSV_DESTINATION_TYPE = 13;
+  const CSV_TYPE = 13;
   const CSV_APPELLATION = 14;
   const CSV_COULEUR = 15;
   const CSV_CEPAGE_1 = 16;
@@ -42,6 +42,8 @@ class ImportLotsIATask extends sfBaseTask
   const CSV_VILLE_SITE = 37;
   const CSV_EMAIL = 38;
 
+  const TYPE_REVENDIQUE = 'R';
+
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
@@ -65,6 +67,17 @@ class ImportLotsIATask extends sfBaseTask
     "Savagnin Blanc B" => "SAVAGN.B",
     "Vermentino B" => "VERMENT.B"
   );
+    public static $correspondancesStatuts = array(
+      "Conforme" => Lot::STATUT_CONFORME,
+      "Déclassé" => Lot::STATUT_DECLASSE,
+      "Non Conforme" => Lot::STATUT_NONCONFORME,
+      "Prélevé A" => Lot::STATUT_PRELEVE,
+      "Prélevé NA" => Lot::STATUT_PRELEVE,
+      "Prévu" => Lot::STATUT_PRELEVE,
+      "Revendiqué C" => array(Lot::STATUT_PRELEVABLE, Lot::STATUT_PRELEVE),
+      "Revendiqué NC" => array(Lot::STATUT_PRELEVABLE, Lot::STATUT_PRELEVE)
+    );
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -99,6 +112,12 @@ EOF;
             $data = str_getcsv($line, ';');
             if (!$data) {
               continue;
+            }
+
+            $type = trim($data[self::CSV_TYPE]);
+            if ($type != self::TYPE_REVENDIQUE) {
+                echo "SQUEEZE;lot non issu de la revendication, type : ".$type.";pas d'import;$line\n";
+                continue;
             }
 
             $etablissement = $this->identifyEtablissement($data);
@@ -146,11 +165,25 @@ EOF;
             }
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
             $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
-            $numero = trim($data[self::CSV_NUM_LOT_ODG]).' | '.trim($data[self::CSV_NUM_LOT_OPERATEUR]);
+            $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
+            $numeroLot = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
+            $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
             $destinationDate = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_TRANSACTION_DATE]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-            $types = self::$types;
-            $destination = (isset($types[trim($data[self::CSV_DESTINATION_TYPE])]))? $types[trim($data[self::CSV_DESTINATION_TYPE])] : null;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            if ($date) {
+                  $dt = new DateTime($date);
+                  $date = $dt->modify('+1 minute')->format('c');
+            }
+            $statut = trim($data[self::CSV_STATUT]);
+            $preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
+            $correspondances = self::$correspondancesStatuts;
+
+            if (!isset($correspondances[$statut])) {
+                echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+                continue;
+            }
+
+            $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
 
             $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
 
@@ -160,9 +193,10 @@ EOF;
               $drev->storeDeclarant();
               $drev->validation = $date;
               $drev->validation_odg = $date;
+              $drev->numero_archive = $numeroDossier;
             }
 
-            $lot = $drev->getOrAdd('lots')->add();
+            $lot = $drev->addLot();
 
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
@@ -170,11 +204,15 @@ EOF;
             $lot->elevage = 0;
             $lot->id_document = $drev->_id;
             $lot->millesime = $millesime;
-            $lot->numero = $numero;
+            $lot->numero_dossier = $numeroDossier;
+            $lot->numero_archive = $numeroLot;
+            $lot->numero_cuve = $numero;
             $lot->volume = $volume;
-            $lot->destination_type = $destination;
+            $lot->destination_type = null;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
+            $lot->statut = $statut;
+            $lot->statut = $statut;
 
             $deleted = array();
             foreach($drev->lots as $k => $l) {
@@ -186,8 +224,7 @@ EOF;
               $d->delete();
             }
 
-            $mvtLot = $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
-            $mvtLot->preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
+            $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             $drev->save();
             echo "SUCCESS;Lot importé;".$drev->_id.";\n";
         }

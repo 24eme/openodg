@@ -90,7 +90,7 @@ function(doc) {
 	    statut = "Approuvé";
         infos = null;
         if(validation_odg !== false && validation_odg !== true) {
-            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)/, "$3/$2/$1");
+            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)(T.*)/, "$3/$2/$1");
         }
     }
 

@@ -71,7 +71,13 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
           $date_envoi_oi = date_create($date_envoi_oi)->format('Y-m-d H:i:s');
         }
         $date_declarant = $this->drev->validation;
+        if($date_declarant){
+          $date_declarant = date_create($date_declarant)->format('Y-m-d');
+        }
         $date_odg = $this->drev->validation_odg;
+        if($date_odg){
+          $date_odg = date_create($date_odg)->format('Y-m-d');
+        }
         foreach($this->drev->declaration->getProduitsWithoutLots($this->region) as $produit) {
 
             $configProduit = $produit->getConfig();
