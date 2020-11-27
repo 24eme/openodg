@@ -1,6 +1,6 @@
 <?php
 
-class ChgtDenomClient extends acCouchdbClient {
+class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "ChgtDenom";
     const TYPE_COUCHDB = "CHGTDENOM";
@@ -21,12 +21,26 @@ class ChgtDenomClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getHistory($identifiant, $campagne_to = "9999-99-99T999999", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000-00-00T000000";
-        $campagne_to = "9999-99-99T999999";
         return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
+    }
+
+    public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+        return $this->findPreviousByIdentifiantAndDate($identifiant, "9999-99-99T999999");
+    }
+
+    public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $h = $this->getHistory($identifiant, $date, $hydrate);
+        if (!count($h)) {
+        return NULL;
+        }
+        $h = $h->getDocs();
+        end($h);
+        $doc = $h[key($h)];
+        return $doc;
     }
 
     public function createDoc($identifiant, $date = null, $papier = false) {
@@ -38,6 +52,19 @@ class ChgtDenomClient extends acCouchdbClient {
         }
         $chgtdenom->storeDeclarant();
         return $chgtdenom;
+    }
+
+    public function findFacturable($identifiant, $campagne) {
+      $chgtsdenom = $this->getHistory($identifiant);
+      $chgtsdenomFacturants = array();
+      foreach ($chgtsdenom as $chgtdenom) {
+        if($chgtdenom && !$chgtdenom->validation_odg) {
+          continue;
+        }
+        $chgtsdenomFacturants[] = $chgtdenom;
+      }
+
+      return $chgtsdenomFacturants;
     }
 
 }

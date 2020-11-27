@@ -37,7 +37,10 @@ class DegustationClient extends acCouchdbClient {
         foreach($this->getHistory() as $degust) {
             foreach($degust->lots as $lot) {
                 if ($lot->conformite && ($lot->conformite != Lot::CONFORMITE_CONFORME)) {
-                    $manquements[] = $lot;
+                    $keyLot = $lot->id_document . '-'.str_replace(['/', '_'], '-', mb_strtoupper(
+                      substr($lot->origine_mouvement, 1)
+                    ));
+                  $manquements[$keyLot] = $lot;
                 }
             }
         }

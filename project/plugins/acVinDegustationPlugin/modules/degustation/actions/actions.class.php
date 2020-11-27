@@ -473,7 +473,17 @@ class degustationActions extends sfActions {
     }
 
     public function executeManquements(sfWebRequest $request) {
-        $this->manquements = DegustationClient::getInstance()->getManquements();
+      $this->chgtDenoms = [];
+      $this->manquements = DegustationClient::getInstance()->getManquements();
+      foreach ($this->manquements as $keyLot => $manquement) {
+          $etablissement = EtablissementClient::getInstance()->find($manquement->declarant_identifiant);
+          $chgtDenom = ChgtDenomClient::getInstance()->getLast($etablissement->identifiant);
+          if($chgtDenom == null){
+            $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
+            $chgtDenom->save();
+          }
+          $this->chgtDenoms[$keyLot] = $chgtDenom;
+      }
     }
 
     public function executeEtiquettesPdf(sfWebRequest $request) {
@@ -498,6 +508,24 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
 
       $this->document = new ExportDegustationFicheIndividuellePDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeFicheEchantillonsPrelevesPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheEchantillonsPrelevesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {
