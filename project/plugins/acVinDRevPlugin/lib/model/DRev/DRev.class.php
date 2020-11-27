@@ -104,6 +104,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function summerizeProduitsLotsByCouleur() {
         $couleurs = array();
+
+        // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
@@ -117,9 +119,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
         }
+
+        // Parcours dans les lots
         foreach($this->lots as $lot) {
-            $couleur = $lot->getProduitRevendiqueLibelleComplet();
-            $couleurs[$couleur]['volume_lots'] = $lot->volume;
+
+          $couleur = $lot->getProduitRevendiqueLibelleComplet();
+          if($lot->getProduitRevendique()){
+            $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleComplet();
+          }
+
+          if (!isset($couleurs[$couleur]['volume_lots'])) {
+              $couleurs[$couleur]['volume_lots'] = 0;
+          }
+            $couleurs[$couleur]['volume_lots'] += $lot->volume;
         }
         foreach($couleurs as $k => $couleur) {
             if (!isset($couleur['volume_lots'])) {
