@@ -45,6 +45,7 @@ class ImportLotsIATask extends sfBaseTask
   const TYPE_REVENDIQUE = 'R';
 
   const STATUT_PRELEVE = "PRELEVE";
+  const STATUT_PRELEVABLE = "PRELEVE";
   const STATUT_DEGUSTE = "DEGUSTE";
   const STATUT_CONFORME = "CONFORME";
   const STATUT_NONCONFORME = "NON_CONFORME";
