@@ -170,6 +170,10 @@ EOF;
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
             $destinationDate = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_TRANSACTION_DATE]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            if ($date) {
+                  $dt = new DateTime($date);
+                  $date = $dt->modify('+1 minute')->format('c');
+            }
             $statut = trim($data[self::CSV_STATUT]);
             $preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
             $correspondances = self::$correspondancesStatuts;
