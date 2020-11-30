@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheIndividuellePDF extends ExportPDF {
+class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -14,9 +14,13 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     public function create() {
-      for($nbtable=1 ;$nbtable <= $this->degustation->getLastNumeroTable(); $nbtable++){
-        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable))));
-      }
+        @$this->printable_document->addPage(
+          $this->getPartial('degustation/ficheEchantillonsPrelevesPdf',
+          array(
+            'degustation' => $this->degustation,
+            'lots' => $this->degustation->getLotsByNumDossier()
+          )
+        ));
     }
 
 
@@ -38,7 +42,7 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s FICHE INDIVIDUELLE DE DEGUSTATION", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s \n\n\n LISTE DES LOTS VENTILES", $this->degustation->getOdg());
 
         return $titre;
     }
@@ -59,7 +63,7 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationFicheIndividuellePDFConfig();
+        return new ExportDegustationFicheEchantillonsPrelevesPDFConf();
     }
 
     public function getFileName($with_rev = false) {
@@ -68,7 +72,7 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_individuelle_degustation_%s", $degustation->_id);
+        $filename = sprintf("fiche_echantillons_preleves_%s", $degustation->_id);
 
 
         if ($with_rev) {

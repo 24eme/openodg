@@ -82,8 +82,4 @@ class ConfigurationLieu extends BaseConfigurationLieu {
         return $this->getRendementAppellation();
     }
 
-    public function getNodeCahierDesCharges() {
-        return $this;
-    }
-
 }

@@ -11,6 +11,7 @@ all:
       dr_douane_required: false
       degustation: true
       specificite_lot: true
+      engagement_pdf: true
       specificites:
         bio: "bio"
         effervescent: "effervescent"

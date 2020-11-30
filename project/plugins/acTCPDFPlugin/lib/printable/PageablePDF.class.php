@@ -65,6 +65,8 @@ class PageablePDF extends PageableOutput {
         // set font
 
         $this->pdf->SetFont($config->font_name, '', $config->font_size);
+        $this->pdf->SetFont('zapfdingbats', '', 11, '', true);
+        $this->pdf->SetFont('helvetica', '', 11, '', true);
     }
 
     public function isCached() {

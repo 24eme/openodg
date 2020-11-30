@@ -238,6 +238,7 @@ DRev:
                         campagne: {}
                         id_document: {  }
                         statut: {  }
+                        specificite: {}
       pieces:
         type: array_collection
         definition:

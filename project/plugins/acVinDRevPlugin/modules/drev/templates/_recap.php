@@ -41,6 +41,19 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?php $bailleurs = $drev->getBailleurs()->getRawValue(); ?>
+<?php if(count($bailleurs)): ?>
+    <p style="margin-top: -10px; margin-bottom: 20px;">
+        Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
+        <?php $extra = '' ; foreach($bailleurs as $b): ?>
+        <?php  if ($b['etablissement_id'] && $sf_user->hasDrevAdmin()) echo "<a href='".url_for('declaration_etablissement', array('identifiant' => $b['etablissement_id'], 'campagne' => $drev->campagne))."'>" ; ?>
+        <?php echo $extra.$b['raison_sociale']; $extra = ', '; ?>
+        <?php  if ($b['etablissement_id'] && $sf_user->hasDrevAdmin()) echo " (son espace) </a>"; ?>
+        <?php endforeach; ?>.
+        Ces volumes seront directement revendiqués par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
+    </p>
+<?php endif; ?>
+
 <?php endif; ?>
 <?php if($drev->exist('lots')): ?>
     <h3>Déclaration des lots IGP</h3>
@@ -53,7 +66,12 @@
             <tr>
                 <th class="col-xs-1">Date Rev.</th>
                 <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-5">Produit (millesime)</th>
+                <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                  <th class="text-center col-xs-4">Produit (millesime)</th>
+                	<th class="col-xs-1">Spécificité</th>
+                <?php else: ?>
+                  <th class="text-center col-xs-5">Produit (millesime)</th>
+                <?php endif ?>
                 <th class="text-center col-xs-1">Superficie</th>
                 <th class="text-center col-xs-2">Volume</th>
                 <th class="text-center col-xs-2">Destination (date)</th>
@@ -81,6 +99,9 @@
                       <?php endif; ?>
                       <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                     </td>
+                    <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+        		          <td><?php echo $lot->specificite; ?></td>
+        		        <?php endif ?>
                     <td>&nbsp;</td>
                     <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
                     <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>

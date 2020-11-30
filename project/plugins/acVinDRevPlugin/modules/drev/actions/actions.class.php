@@ -661,10 +661,11 @@ class drevActions extends sfActions {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
-        $dateValidation = date('Y-m-d');
+        $dateValidation = date('c');
 
         if($this->form->getValue("date")) {
-            $dateValidation = $this->form->getValue("date");
+            $dt = new DateTime($this->form->getValue("date"));
+            $dateValidation = $dt->modify('+1 minute')->format('c');
         }
 
         $this->drev->validate($dateValidation);
@@ -855,38 +856,29 @@ class drevActions extends sfActions {
     	return $this->redirect('drev_visualisation', $drev);
     }
 
-    public function executeDocumentDouanierPdf(sfWebRequest $request) {
+    public function executeDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
         $fileContent = file_get_contents($drev->getDocumentDouanier('pdf'));
+        $extension = 'pdf';
+
+        if(!$fileContent) {
+            $fileContent = file_get_contents($drev->getDocumentDouanier('xls'));
+            $extension = 'xls';
+        }
+
+        if(!$fileContent) {
+            $fileContent = file_get_contents($drev->getDocumentDouanier('csv'));
+            $extension = 'csv';
+        }
 
         if(!$fileContent) {
 
-            return $this->redirect('drev_document_douanier_xls', $drev);
+            return $this->forward404();
         }
 
-        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
-        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
-        $this->getResponse()->setHttpHeader('Pragma', '');
-        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
-        $this->getResponse()->setHttpHeader('Expires', '0');
-
-        return $this->renderText($fileContent);
-    }
-
-    public function executeDocumentDouanierXls(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
-
-        $fileContent = file_get_contents($drev->getDocumentDouanier('xls'));
-
-        if(!$fileContent) {
-
-            $this->forward404();
-        }
-
-        $this->getResponse()->setHttpHeader('Content-Type', 'application/xls');
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.xls"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/'.$extension);
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.'.$extension.'"', $drev->identifiant, $drev->campagne));
         $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
         $this->getResponse()->setHttpHeader('Pragma', '');
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');

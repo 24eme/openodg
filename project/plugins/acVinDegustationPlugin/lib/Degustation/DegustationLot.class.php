@@ -7,11 +7,11 @@
 class DegustationLot extends BaseDegustationLot {
 
   public function isNonConforme(){
-    return ($this->statut == Lot::STATUT_DEGUSTE) && $this->exist('conformite') && in_array($this->conformite,Lot::$nonConformites);
+    return ($this->statut == Lot::STATUT_NONCONFORME);
   }
 
   public function isConformeObs(){
-    return ($this->statut == Lot::STATUT_DEGUSTE) && $this->exist('conformite') && ($this->conformite == Lot::CONFORMITE_CONFORME) && $this->exist('observation') && $this->observation;
+    return ($this->statut == Lot::STATUT_CONFORME) && $this->exist('observation') && $this->observation;
   }
 
   public function getShortLibelleConformite(){
