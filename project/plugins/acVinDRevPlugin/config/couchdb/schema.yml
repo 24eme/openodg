@@ -129,7 +129,7 @@ DRev:
                   produit_libelle: { }
                   elevage: {}
                   statut: {}
-                  specificite: {}
+                  specificite: { required: false }
                   cepages:
                     type: collection
                     definition:
@@ -238,7 +238,6 @@ DRev:
                         campagne: {}
                         id_document: {  }
                         statut: {  }
-                        specificite: {}
       pieces:
         type: array_collection
         definition:
