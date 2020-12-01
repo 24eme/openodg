@@ -42,9 +42,11 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 	public function save() {
 		$values = $this->getValues();
 		$doc = $this->getDocument();
-		$doc->remove('degustateurs');
 		$doc->add('degustateurs');
 		foreach ($values['degustateurs'] as $college => $items) {
+        if($college == $this->college){
+          $doc->degustateurs->remove($college);
+        }
 		    foreach ($items as $compteId => $val) {
     		    if (isset($val['selectionne']) && !empty($val['selectionne'])) {
     		        $compte = $this->getCompteByIdentifiant($compteId);
