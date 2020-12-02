@@ -41,6 +41,7 @@
                     <th class="col-xs-10">Échantillons</th>
                     <th class="col-xs-1"></th>
                     <th class="col-xs-1">Conformité</th>
+                    <th class="col-xs-1">Courrier</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -75,6 +76,9 @@
                               <?php echo $lot->getShortLibelleConformite(); ?>
                             <?php endif; ?>
                           <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                          <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
                         </td>
                       </tr>
                     <?php  endif; ?>
