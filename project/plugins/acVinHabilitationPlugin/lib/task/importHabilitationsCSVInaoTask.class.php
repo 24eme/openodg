@@ -120,13 +120,14 @@ EOF;
             $hab_activites = $habilitation->addProduit($produitKey)->add('activites');
 
             foreach (self::$activites as $csvkey => $activite) {
-              if(trim($data[$csvkey])){
+              trim($data[$csvkey]);
+              if($data[$csvkey]){
                 //demande
                 // if($dateDemande){
                 //   $hab_activites->add($activite)->updateHabilitation(HabilitationClient::STATUT_ATTENTE_HABILITATION, null, $dateDemande);
                 // }
                 //statut habilite
-                $a = $hab_activites->add($activite);
+                $a = $habilitation->addProduit($produitKey)->add('activites')->add($activite);
                 $a->updateHabilitation(HabilitationClient::STATUT_HABILITE, null, $dateDemande);
 
               }

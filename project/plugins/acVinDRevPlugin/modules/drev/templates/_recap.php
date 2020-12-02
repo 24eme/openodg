@@ -44,7 +44,13 @@
 <?php $bailleurs = $drev->getBailleurs()->getRawValue(); ?>
 <?php if(count($bailleurs)): ?>
     <p style="margin-top: -10px; margin-bottom: 20px;">
-        Une partie du volume a été récolté pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?> <?php echo implode($bailleurs, ", "); ?>.  Ce volume sera directement revendiqué par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
+        Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
+        <?php $extra = '' ; foreach($bailleurs as $b): ?>
+        <?php  if ($b['etablissement_id'] && $sf_user->hasDrevAdmin()) echo "<a href='".url_for('declaration_etablissement', array('identifiant' => $b['etablissement_id'], 'campagne' => $drev->campagne))."'>" ; ?>
+        <?php echo $extra.$b['raison_sociale']; $extra = ', '; ?>
+        <?php  if ($b['etablissement_id'] && $sf_user->hasDrevAdmin()) echo " (son espace) </a>"; ?>
+        <?php endforeach; ?>.
+        Ces volumes seront directement revendiqués par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
     </p>
 <?php endif; ?>
 
@@ -118,7 +124,7 @@
                     <td><strong><?php echo $couleur ?></strong><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
                     <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong><?php endif; ?></td>
                     <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?><?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small></strong><?php endif; ?></td>
-                    <td class="text-center"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_restant']): ?><small class="text-muted">il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?>&nbsp;hl max à revendiquer</small><?php endif; ?></td>
+                    <td class="text-center"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_restant'] > 0.00001): ?><small class="text-muted">il reste donc <?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?>&nbsp;hl max à revendiquer</small><?php endif; ?></td>
                 </tr>
 
             <?php endforeach; ?>

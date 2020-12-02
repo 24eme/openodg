@@ -60,7 +60,10 @@ class EtablissementClient extends acCouchdbClient {
         $results = $resset->getResults();
         foreach ($results as $res) {
             $data = $res->getData()['doc'];
-            return $this->findByCvi($data['cvi']);
+            if ($data['type_compte'] != 'ETABLISSEMENT') {
+                continue;
+            }
+            return $this->find($data['etablissement']);
         }
         return null;
     }
