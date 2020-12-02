@@ -720,9 +720,8 @@ class drevActions extends sfActions {
 
         if($this->drev->validation_odg) {
             Email::getInstance()->sendDRevValidation($this->drev);
+            $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
         }
-
-        $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
 
         $service = $request->getParameter("service");
         $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
