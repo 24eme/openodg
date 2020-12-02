@@ -231,7 +231,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function isExcluExportCsv() {
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement || $etablissement->statut != EtablissementClient::STATUT_ACTIF) {
+        if(!$etablissement || ( isset($etablissement->statut) && $etablissement->statut != EtablissementClient::STATUT_ACTIF) ) {
 
             return true;
         }
