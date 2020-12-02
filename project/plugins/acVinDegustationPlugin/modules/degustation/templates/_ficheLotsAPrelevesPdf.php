@@ -27,7 +27,7 @@ th {
             <p>Préveleur :</p>
           </td>
           <td style="width:30%">
-            <p>Date d'édition :</p>
+            <p>Date d'édition : <?php echo $date_edition;?></p>
           </td>
           <td style="width:20%;">
           </td>
