@@ -233,9 +233,29 @@ degustation_fiche_echantillons_preleves_pdf:
     requirements:
       sf_method: [get]
 
+degustation_conformite_pdf:
+  url: /degustation/:id/:identifiant/DegustationConformite/pdf
+  param: { module: degustation, action: degustationConformitePDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get,post]
+    
 degustation_fiche_recap_tables_pdf:
     url: /degustation/:id/ficheRecapTables/pdf
     param: { module: degustation, action: ficheRecapTablesPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_fiche_lots_a_preleves_pdf:
+    url: /degustation/:id/ficheLotsAPreleves/pdf
+    param: { module: degustation, action: ficheLotsAPrelevesPDF }
     class: DegustationRoute
     options:
       model:    Degustation
