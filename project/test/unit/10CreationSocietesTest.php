@@ -21,7 +21,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(32);
+$t = new lime_test(31);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
