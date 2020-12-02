@@ -12,8 +12,8 @@
           <table class="table table-condensed">
               <thead>
                 <tr>
-                  <th class="col-xs-9">Appellation couleur cepage</th>
-                  <th class="col-xs-3">nb échantillons</th>
+                  <th class="col-xs-9">Couleur|Appellation|Cépage</th>
+                  <th class="col-xs-3">Nombre d'échantillons</th>
                 </tr>
               </thead>
               <tbody id="synthese">
@@ -29,8 +29,8 @@
           <table class="table table-condensed">
             <thead>
                 <tr>
-                    <th>Table</th>
-                    <th>nb échantillons</th>
+                    <th class="col-xs-9">Table</th>
+                    <th class="col-xs-3">Nombre d'échantillons</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,8 +42,8 @@
                 </tr>
             <?php endforeach ?>
               <tr>
-                <td class="text-right"><strong>Total</strong></td>
-                <td class="nblots"><?= $total ?></td>
+                <td class=""></td>
+                <td class="nblots"><strong>Total </strong><?= $total ?></td>
               </tr>
             </tbody>
           </table>
