@@ -48,9 +48,7 @@ class Email {
 
             return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
         }
-
-
-
+        
         return Email::getInstance()->getMessageDrevConfirmee($drev);
     }
 
