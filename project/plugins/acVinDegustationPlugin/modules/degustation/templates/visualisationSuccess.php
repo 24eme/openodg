@@ -116,7 +116,38 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-6">
+  <div class="col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          <div class="row">
+            <div class="col-xs-4">Conformité des échantillons / Commission</div>
+            <div class="col-xs-8 text-right">
+              <div class="dropdown btn-group">
+                <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>">Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a></li>
+                  <li><a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>">Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-7">
+            <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsConformes"]>1)? 'échantillons <strong>conformes</strong>' : 'échantillon <strong>conforme</strong>' ?><br/>
+            <strong class="lead"><?php echo $infosDegustation["nbLotsNonConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsNonConformes"]>1)? 'échantillons <strong>non conformes</strong>' : 'échantillon <strong>non conforme</strong>' ?>
+          </div>
+          <div class="col-xs-5 text-right">
+            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_resultats', $degustation) ?>" >&nbsp;Résultats échantillons&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h2 class="panel-title">Présence des dégustateurs</h2>
@@ -129,24 +160,6 @@
           </div>
           <div class="col-xs-5 text-right">
             <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_presences', $degustation) ?>" >&nbsp;Présence des dégustateurs&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-xs-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h2 class="panel-title">Conformité des échantillons</h2>
-      </div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-xs-7">
-            <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsConformes"]>1)? 'échantillons <strong>conformes</strong>' : 'échantillon <strong>conforme</strong>' ?><br/>
-            <strong class="lead"><?php echo $infosDegustation["nbLotsNonConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsNonConformes"]>1)? 'échantillons <strong>non conformes</strong>' : 'échantillon <strong>non conforme</strong>' ?>
-          </div>
-          <div class="col-xs-5 text-right">
-            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_resultats', $degustation) ?>" >&nbsp;Résultats échantillons&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
         </div>
       </div>
