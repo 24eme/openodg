@@ -630,4 +630,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getOdg(){
 			return sfConfig::get('sf_app');
 		}
+
+		public function getLotsTablesByNumAnonyme(){
+			$lots = array();
+			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
+				$table = chr($numTab+64);
+				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
+					$numAnonyme = $table.$lot->numero_cuve;
+					$lots[$numAnonyme] = $lot;					
+				}
+			}
+			return $lots;
+		}
 }

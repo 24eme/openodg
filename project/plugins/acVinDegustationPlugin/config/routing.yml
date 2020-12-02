@@ -242,3 +242,13 @@ degustation_conformite_pdf:
     type:     object
   requirements:
     sf_method: [get,post]
+    
+degustation_fiche_recap_tables_pdf:
+    url: /degustation/:id/ficheRecapTables/pdf
+    param: { module: degustation, action: ficheRecapTablesPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
