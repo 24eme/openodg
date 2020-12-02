@@ -35,14 +35,14 @@
 <table style="font-size:12px;"><tr><td style="width: 324px;"><?php echo 'Aix-en-Provence, le ' . format_date($degustation->date, "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
 
-<table style="font-size:12px;"><tr><td>Objet : Résultats contrôle interne,<strong> lots <?php if($degustation->getNbLotsConformes() > 0): ?> non conformes <?php else: ?> conformes <?php endif; ?></strong></td></tr></table>
+<table style="font-size:12px;"><tr><td>Objet : Résultats contrôle interne,<strong> lots <?php if($degustation->getNbLotsNonConformes()  0): ?> non conformes <?php else: ?> conformes <?php endif; ?></strong></td></tr></table>
 <br/><br/>
 
 <table style="font-size:12px;">
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
   <tr><td>Nous  vous  prions  de  bien  vouloir  trouver  ci-dessous  extrait  du  procès  verbal  de  la  séance  de  dégustation  du  :<br/><strong><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?></strong></td></tr><br/>
-  <tr><td>Au vu des documents fournis, et des résultats du contrôle documentaire, analytique et organoleptique, nous vous confirmons que <strong>LES LOTS</strong> listés dans le tableau suivant <strong><?php if($degustation->getNbLotsConformes() > 0): ?>SONT NON CONFORMES<?php else: ?>SONT CONFORMES <?php endif; ?></strong> et aptes à la commercialisation</td></tr>
+  <tr><td>Au vu des documents fournis, et des résultats du contrôle documentaire, analytique et organoleptique, nous vous confirmons que <strong>LES LOTS</strong> listés dans le tableau suivant <strong><?php if($degustation->getNbLotsNonConformes() > 0): ?>SONT NON CONFORMES<?php else: ?>SONT CONFORMES <?php endif; ?></strong> et aptes à la commercialisation</td></tr>
 </table><br/><br/>
 
 <table border="0.5" class="" cellspacing=0 cellpadding=0 style="text-align:center;font-size:12px;">

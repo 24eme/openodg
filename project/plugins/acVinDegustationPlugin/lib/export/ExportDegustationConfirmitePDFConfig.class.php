@@ -14,7 +14,7 @@ class ExportDegustationConformitePDFConfig extends ExportPDFConfig
         $this->margin_left = 15;
         $this->margin_top = 40;
         $this->margin_right = 15;
-        $this->margin_bottom = 0;
+        $this->margin_bottom = 20;
         $this->margin_header = 5;
         $this->margin_footer = 0;
         $this->font_size = 8;
