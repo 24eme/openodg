@@ -10,12 +10,12 @@
       <table>
           <tr>
             <td style="width:33%;">
-              <p>Code Commission</p>
+              <p>Code Commission: _ _ _ _ </p>
             </td>
-            <td style="width:33%;">
-              <p>Responsable : CHAMPETIER Pierre</p>
+            <td style="width:60%;">
+              <p>Responsable : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
             </td>
-            <td style="width:33%">
+            <td style="width:2%">
             </td>
           </tr>
 
