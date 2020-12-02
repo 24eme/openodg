@@ -10,12 +10,12 @@
       <table>
           <tr>
             <td style="width:33%;">
-              <p>Code Commission</p>
+              <p>Code Commission: _ _ _ _ </p>
             </td>
-            <td style="width:33%;">
-              <p>Responsable : CHAMPETIER Pierre</p>
+            <td style="width:60%;">
+              <p>Responsable : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
             </td>
-            <td style="width:33%">
+            <td style="width:2%">
             </td>
           </tr>
 
@@ -61,33 +61,36 @@
     </p>
 
 
-    <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;" scope="colgroup" >
+    <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
       <tr style="line-height:20px;">
-         <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>N° Dossier</strong></th>
-         <th class="topempty bg-white" style="width:20%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
-         <th class="bg-white" colspan="5"style="width:70%;"><?php echo tdStart() ?><strong>Liste des lots</strong></th>
+         <th rowspan="2" class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>N° Dossier</strong></th>
+         <th rowspan="2" class="topempty bg-white" style="width:20%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
+         <th class="bg-white" colspan="6"style="width:70%;"><?php echo tdStart() ?><strong>Liste des lots</strong></th>
       </tr>
       <tr style="line-height:13px;">
-        <th class="empty bg-white"></th>
-        <th class="empty bg-white"></th>
-        <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>N°Lot ODG</small></strong></th>
+        <th class="bg-white" style="width:7%;"><?php echo tdStart() ?><strong><small>N°Lot ODG</small></strong></th>
+        <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>N°Anonyme</small></strong></th>
         <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>N°Lot Opérateur</small></strong></th>
-        <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>
+        <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>Volume (hl)</small></strong></th>
         <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>IGP/Couleur</small></strong></th>
         <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>Cepage</small></strong></th>
       </tr>
     <?php $i=1;?>
      <?php  foreach($lots as $numero_dossier => $lotInfo): ?>
+       <?php $firstDisplay = true; ?>
 
-        <?php foreach ($lotInfo as $lot): ?>
+        <?php foreach ($lotInfo as $numAnonyme => $lot): ?>
           <tr>
-            <td><small><?php echo $lot->numero_dossier ?></small></td>
-            <td><small><?php echo $lot->declarant_nom."<br>".$lot->declarant_identifiant;?></small></td>
+            <?php if($firstDisplay == true): ?>
+              <td rowspan="<?php echo count($lotInfo); ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo $lot->numero_dossier ?></small></td>
+              <td rowspan="<?php echo count($lotInfo); ?>" style="vertical-align: middle;"><small><?php echo $lot->declarant_nom."<br>".$lot->declarant_identifiant;?></small></td>
+            <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
+            <td><small><?php echo $numAnonyme ?></small></td>
             <td><small><?php echo $lot->numero_cuve ?></small></td>
-            <td><small><?php echo $lot->volume ?></small></td>
+            <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
             <td><small><?php echo $lot->produit_libelle ?></small></td>
-            <td><small><?php echo $lot->produit_libelle ?></small></td>
+            <td><small><?php echo $lot->details ?></small></td>
           </tr>
       <?php endforeach; ?>
 

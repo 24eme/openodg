@@ -142,13 +142,19 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        $colleges = DegustationConfiguration::getInstance()->getColleges();
-        $first_college = array_key_first($colleges);
+        $this->colleges = DegustationConfiguration::getInstance()->getColleges();
+        $first_college = array_key_first($this->colleges);
 
+        $this->previous_college = null;
         if(!$this->college = $request->getParameter('college')) {
 
             return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id, 'college' => $first_college));
         }
+
+        $colleges_keys = array_keys($this->colleges);
+        $currentCollegeKey = array_search($this->college, $colleges_keys);
+        $next_college = ($currentCollegeKey+1 >= count($colleges_keys))? null : $colleges_keys[$currentCollegeKey+1];
+        $this->previous_college = ($currentCollegeKey-1 < 0 )? null : $colleges_keys[$currentCollegeKey-1];
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
             $this->degustation->save();
@@ -174,7 +180,11 @@ class degustationActions extends sfActions {
           return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
         }
 
-        return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        if(!$next_college){
+          ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        }
+
+        return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id ,'college' => $next_college));
     }
 
     public function executeValidation(sfWebRequest $request) {
@@ -539,4 +549,60 @@ class degustationActions extends sfActions {
       return $this->renderText($this->document->output());
 
     }
+    public function executeDegustationConformitePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+
+      $this->document = new ExportDegustationConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeFicheRecapTablesPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheRecapTablesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeFicheLotsAPrelevesPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheLotsAPrelevesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
 }

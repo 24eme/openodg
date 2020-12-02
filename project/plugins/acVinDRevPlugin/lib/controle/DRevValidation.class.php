@@ -62,8 +62,8 @@ class DRevValidation extends DocumentValidation
 
         $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
-        $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Le volume total est dépassé');
-        $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Le volume total est dépassé');
+        $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
+        $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
@@ -380,7 +380,7 @@ class DRevValidation extends DocumentValidation
                 $volume += $produit->volume;
             }
 
-            if ($volume > $synthese[$couleur]['volume_max']) {
+            if (round($volume,2) > round($synthese[$couleur]['volume_max'],2)) {
                 if ($this->document->exist('achat_tolerance') && $this->document->get('achat_tolerance')) {
                     $this->addPoint(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', $couleur, $this->generateUrl('drev_lots', array('id' => $this->document->_id)));
                 }else{

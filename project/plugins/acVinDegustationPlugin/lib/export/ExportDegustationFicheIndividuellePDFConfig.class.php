@@ -7,5 +7,7 @@ class ExportDegustationFicheIndividuellePDFConfig extends ExportPDFConfig
         $this->subject = 'Fiche Individuelle';
         $this->orientation = self::ORIENTATION_LANDSCAPE;
         $this->keywords = 'Degustation';
+        $this->creator = 'IGP';
+        $this->author = 'IGP';
     }
 }
