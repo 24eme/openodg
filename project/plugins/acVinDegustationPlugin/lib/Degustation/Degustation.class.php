@@ -620,8 +620,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsByNumDossier(){
 			$lots = array();
-			foreach ($this->getLots() as $lot) {
-					$lots[$lot->numero_dossier][$lot->numero_cuve] = $lot;
+			foreach ($this->getLotsTablesByNumAnonyme() as $numAnonyme => $lot) {
+					$lots[$lot->numero_dossier][$numAnonyme] = $lot;
 			}
 
 			return $lots;
@@ -637,7 +637,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$table = chr($numTab+64);
 				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
 					$numAnonyme = $table.$lot->numero_cuve;
-					$lots[$numAnonyme] = $lot;					
+					$lots[$numAnonyme] = $lot;
 				}
 			}
 			return $lots;
