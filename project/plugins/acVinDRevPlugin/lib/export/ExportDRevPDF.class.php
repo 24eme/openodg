@@ -118,9 +118,16 @@ class ExportDRevPDF extends ExportPDF {
             if($region && $this->drev->getValidationOdgDateByRegion($region)){
               $dateOdg = new DateTime($this->drev->getValidationOdgDateByRegion($region));
               $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
-            }else{
-              $header_subtitle .= ", en attente de l'approbation par l'ODG";
+            }elseif($region){
+                $header_subtitle .= ", en attente de l'approbation par l'ODG";
             }
+            if(!$region && $this->drev->validation_odg) {
+                $dateOdg = new DateTime($this->drev->validation_odg);
+                $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
+            } elseif(!$region) {
+                $header_subtitle .= ", en attente de l'approbation par l'ODG";
+            }
+
         } elseif(!$this->drev->isPapier()) {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }
