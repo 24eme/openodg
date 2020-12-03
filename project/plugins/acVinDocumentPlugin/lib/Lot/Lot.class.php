@@ -163,6 +163,11 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDateVersionfr(){
+
+      if(!preg_match("/\d{4}\-\d{2}-\d{2}$/", $this->date)){
+        return Date::francizeDate(DateTime::createFromFormat('Y-m-d\TH:i:sO', $this->date)->format('Y-m-d'));
+      }
+
       if($this->date){
         return Date::francizeDate($this->date);
       }
