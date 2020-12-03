@@ -9,41 +9,39 @@
       <div class="panel-body">
         <div class="alert alert-info" role="alert">
           <h3>Synthèse toutes tables</h3>
-          <table class="table table-condensed">
-              <thead>
-                <tr>
-                  <th class="col-xs-9">Couleur|Appellation|Cépage</th>
-                  <th class="col-xs-3">Nombre d'échantillons</th>
-                </tr>
-              </thead>
-              <tbody id="synthese">
-              <?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
-                <tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
-                  <td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
-                  <td class="nblots"><?php echo count($lotsProduit->lots) ?></td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
 
           <table class="table table-condensed">
             <thead>
                 <tr>
-                    <th class="col-xs-9">Table</th>
-                    <th class="col-xs-3">Nombre d'échantillons</th>
+                    <th class="col-xs-2">Table</th>
+                    <th class="col-xs-6">Couleur|Appellation|Cépage</th>
+                    <th class="col-xs-2"></th>
+                    <th class="col-xs-2">Nombre d'échantillons</th>
                 </tr>
             </thead>
             <tbody>
             <?php $total = 0; ?>
             <?php foreach($degustation->getTablesWithFreeLots() as $numero_table => $table): ?>
-                <tr>
-                    <td class="col-xs-9">Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></td>
-                    <td class="col-xs-3"><?php echo count($table->lots); $total += count($table->lots); ?></td>
+                <tr data-toggle="collapse" data-target=".accordion_<?php echo $numero_table ?>" class="clickable" style="cursor:pointer;">
+                    <td>Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?>&nbsp;<span class="caret"></span></td>
+                    <td></td>
+                    <td></td>
+                    <td><strong><?php echo count($table->lots); $total += count($table->lots); ?></strong></td>
                 </tr>
+                    <?php foreach ($degustation->getSyntheseLotsTable($numero_table) as $hash => $lotsProduit): ?>
+                      <tr class="vertical-center collapse accordion_<?php echo $numero_table ?>" data-hash="<?php echo $hash; ?>" >
+                        <td></td>
+                        <td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
+                        <td></td>
+                        <td class="nblots"><?php echo count($lotsProduit->lotsTable) ?></td>
+                      </tr>
+                    <?php endforeach; ?>
             <?php endforeach ?>
               <tr>
                 <td class=""></td>
-                <td class="nblots"><strong>Total </strong><?= $total ?></td>
+                <td></td>
+                <td class="text-right"><strong>Total : </strong></td>
+                <td class="nblots"><strong><?php echo $total ?></strong></td>
               </tr>
             </tbody>
           </table>
