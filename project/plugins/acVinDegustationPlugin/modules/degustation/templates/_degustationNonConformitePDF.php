@@ -97,11 +97,11 @@
 </table>
 
 <table style="font-size:12px;">
-  <tr><td>Identité opérateur : <?php $etablissement->raison_sociale ?></td></tr>
-  <tr><td>Adresse : <?php $etablissement->adresse .' '. $etablissement->adresse_complementaire .' '. $etablissement->code_postal .' '.$etablissement->commune ?></td></tr>
-  <tr><td>Tél : <?php $etablissement->telephone_bureau .' - Fax : '.$etablissement->fax .' - Courriel : '. $etablissement ->email ?></td></tr><br/>
+  <tr><td>Identité opérateur : <?php echo $etablissement->raison_sociale ?></td></tr>
+  <tr><td>Adresse : <?php echo $etablissement->adresse .' '. $etablissement->adresse_complementaire .' '. $etablissement->code_postal .' '.$etablissement->commune ?></td></tr>
+  <tr><td>Tél : <?php echo $etablissement->telephone_bureau .' - Fax : '.$etablissement->fax .' - Courriel : '. $etablissement ->email ?></td></tr><br/>
 
-  <tr><td>N°immatriculation CVI : <?php $etablissement->cvi .' - N°SIRET : '. $etablissement->siret  ?></td></tr>
+  <tr><td>N°immatriculation CVI : <?php echo $etablissement->cvi .' - N°SIRET : '. $etablissement->siret  ?></td></tr>
   <tr><td>Commission de Dégustation réunie le : <?php echo date('d/m/Y',strtotime($degustation->date)) .' '. $degustation->lieu ?></td></tr>
 </table>
 
@@ -110,7 +110,7 @@
         <?php $Newlot = $lot  ?>
   <?php endif; ?>
 <?php endforeach; ?>
-<p><strong>Lot Concerné par la Non-Conformité : <?php echo $Newlot->numero_archive ?></strong></p>
+<p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$Newlot->numero_archive ?></strong></p>
 
 <table border="3" cellpadding=0 cellspacing=0 style="text-align: center;font-size:12px;">
   <tr>
