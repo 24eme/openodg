@@ -12,7 +12,8 @@
           	<table class="table table-condensed">
           			<thead>
           				<tr>
-          					<th class="col-xs-9">Couleur|Appellation|Cépage</th>
+          					<th class="col-xs-8">Couleur|Appellation|Cépage</th>
+                    <th class="col-xs-1"></th>
           					<th class="col-xs-3">Nombre d'échantillons</th>
           				</tr>
           			</thead>
@@ -21,12 +22,14 @@
           			<?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
           				<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
           					<td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
-						<td class="nblots"><?php echo count($lotsProduit->lots); $total += count($lotsProduit->lots); ?></td>
+                    <td></td>
+                    <td class="nblots"><?php echo count($lotsProduit->lotsTable); $total += count($lotsProduit->lotsTable); ?></td>
           				</tr>
           			<?php endforeach; ?>
-                  <tr data-total="1">
+                  <tr>
                     <td class="text-right"></td>
-                    <td class="nblots" ><strong>Total</strong> <?= $total ?></td>
+                    <td><strong>Total</strong> : </td>
+                    <td class="nblots" ><span data-total="1"><?php echo $total ?></span></td>
                   </tr>
           		</tbody>
           	</table>

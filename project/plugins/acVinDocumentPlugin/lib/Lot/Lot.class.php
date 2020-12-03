@@ -60,6 +60,15 @@ abstract class Lot extends acCouchdbDocumentTree
         self::CONFORMITE_NONTYPICITE_CEPAGE
     );
 
+    public static $statuts_preleves = array(
+        self::STATUT_CONFORME,
+        self::STATUT_NONCONFORME,
+        self::STATUT_PRELEVE,
+        self::STATUT_DEGUSTE,
+        self::STATUT_CHANGE,
+        self::STATUT_DECLASSE
+    );
+
     public static function getLibelleStatut($statut) {
         $libelles = self::$libellesStatuts;
         return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
@@ -154,6 +163,11 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDateVersionfr(){
+
+      if(!preg_match("/\d{4}\-\d{2}-\d{2}$/", $this->date)){
+        return Date::francizeDate(DateTime::createFromFormat('Y-m-d\TH:i:sO', $this->date)->format('Y-m-d'));
+      }
+
       if($this->date){
         return Date::francizeDate($this->date);
       }
@@ -189,7 +203,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isPreleve(){
-      return ($this->statut == Lot::STATUT_PRELEVE || array_key_exists($this->statut, self::$libellesConformites));
+      return in_array($this->statut, self::$statuts_preleves);
     }
 
     public function isLeurre()

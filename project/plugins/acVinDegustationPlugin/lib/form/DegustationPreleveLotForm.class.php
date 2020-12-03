@@ -5,7 +5,6 @@ class DegustationPreleveLotForm extends BaseForm {
     public function __construct($lot, $defaults = array(), $options = array(), $CSRFSecret = null)
     {
         $defaults['preleve'] = $lot->isPreleve();
-
         parent::__construct($defaults, $options, $CSRFSecret);
     }
 
