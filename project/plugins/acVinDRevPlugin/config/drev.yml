@@ -11,3 +11,4 @@ all:
       etape_superficie: true
       dr_douane_required: true
       degustation: false
+      logement_adresse: true

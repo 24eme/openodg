@@ -137,4 +137,8 @@ class DRevConfiguration {
         return isset($this->configuration['pdf_unique_region']) && boolval($this->configuration['pdf_unique_region']);
     }
 
+    public function hasLogementAdresse() {
+        return isset($this->configuration['logement_adresse']) && boolval($this->configuration['logement_adresse']);
+    }
+
 }
