@@ -460,17 +460,22 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getSyntheseLotsTable($numero_table = null){
 			$syntheseLots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table == $numero_table || is_null($numero_table)){
+				if($lot->numero_table == $numero_table || is_null($numero_table) || is_null($lot->numero_table)){
 					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
 						$synthese = new stdClass();
-						$synthese->lots = array();
+						$synthese->lotsTable = array();
+						$synthese->lotsFree = array();
 						$synthese->libelle = $lot->getProduitLibelle();
 						$synthese->details = $lot->getDetails();
 						$synthese->millesime = $lot->getMillesime();
 
 						$syntheseLots[$lot->getProduitHash()] = $synthese;
 					}
-					$syntheseLots[$lot->getProduitHash()]->lots[] = $lot;
+					if($lot->numero_table == $numero_table || (is_null($numero_table) && $lot->numero_table)){
+						$syntheseLots[$lot->getProduitHash()]->lotsTable[] = $lot;
+					}else{
+						$syntheseLots[$lot->getProduitHash()]->lotsFree[] = $lot;
+					}
 				}
 			}
 			ksort($syntheseLots);
