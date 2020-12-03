@@ -78,7 +78,11 @@
                           <?php endif; ?>
                         </td>
                         <td class="text-center">
+                          <?php if(!$lot->isNonConforme()): ?>
                           <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
+                          <?php else: ?>
+                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
+                          <?php endif; ?>
                         </td>
                       </tr>
                     <?php  endif; ?>
