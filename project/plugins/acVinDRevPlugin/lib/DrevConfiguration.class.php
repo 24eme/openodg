@@ -29,7 +29,7 @@ class DRevConfiguration {
         return isset($this->configuration['prelevements']) && boolval($this->configuration['prelevements']);
     }
 
-    public function hasImportWithMentionsComplementaire() {
+    public function hasImportDRWithMentionsComplementaire() {
 
         return isset($this->configuration['import_with_mentions_complementaire']) && boolval($this->configuration['import_with_mentions_complementaire']);
     }
@@ -150,5 +150,9 @@ class DRevConfiguration {
       return isset($this->configuration['engagement_pdf']) && boolval($this->configuration['engagement_pdf']);
     }
 
+
+    public function hasLogementAdresse() {
+        return isset($this->configuration['logement_adresse']) && boolval($this->configuration['logement_adresse']);
+    }
 
 }
