@@ -73,15 +73,15 @@
                   <th class="text-center col-xs-5">Produit (millesime)</th>
                 <?php endif ?>
                 <th class="text-center col-xs-1">Superficie</th>
-                <th class="text-center col-xs-2">Volume</th>
-                <th class="text-center col-xs-2">Destination (date)</th>
+                <th class="text-center col-xs-1">Volume</th>
+                <th class="text-center col-xs-3">Destination (date)</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($lots as $couleur => $lots) :
+            <?php foreach ($lots as $couleur => $lotsByCouleur) :
                 $volume = 0;
                 if(count($lots)):
-                foreach ($lots as  $lot) :
+                foreach ($lotsByCouleur as  $lot) :
                   ?>
                 <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?>">
                     <td>
@@ -104,23 +104,34 @@
         		        <?php endif ?>
                     <td>&nbsp;</td>
                     <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-                    <td class="text-center"><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
+                    <td class="text-center"><?php echo DRevClient::$lotDestinationsType[$lot->destination_type]; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                 </tr>
                 <?php
                 endforeach;
-                else: ?>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Vous n'avez pas déclaré de lot</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                <?php endif; ?>
+                endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <h3>Synthèse IGP des lots déclarés</h3>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="col-xs-1">Nb lots</th>
+                <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                  <th class="text-center col-xs-5">Produit (millesime)</th>
+                <?php else: ?>
+                  <th class="text-center col-xs-5">Produit (millesime)</th>
+                <?php endif ?>
+                <th class="text-center col-xs-1">Superficie</th>
+                <th class="text-center col-xs-2">Somme volume</th>
+                <th class="text-center col-xs-3">Restant à revendiquer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($lots as $couleur => $lotsByCouleur) : ?>
                 <tr>
-                    <td></td>
-                    <td><strong>Total</strong></td>
+                    <td class="text-right"><?php  echo (count($lotsByCouleur))? '<strong>'.count($lotsByCouleur).'</strong>' : 'aucun lots'; ?></td>
                     <td><strong><?php echo $couleur ?></strong><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
                     <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small></strong><?php endif; ?></td>
                     <td class="text-right"><strong><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?><?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small></strong><?php endif; ?></td>
