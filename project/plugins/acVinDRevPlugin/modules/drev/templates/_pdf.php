@@ -26,7 +26,7 @@
   </tr>
 </table>
 </td></tr></table>
-<?php if($drev->isAdresseLogementDifferente()): ?>
+<?php if(DRevConfiguration::getInstance()->hasLogementAdresse() && $drev->isAdresseLogementDifferente()): ?>
     <span class="h3Alt">&nbsp;Logement du vin&nbsp;</span><br/>
     <table class="tableAlt"><tr><td>
     <table border="0" >
