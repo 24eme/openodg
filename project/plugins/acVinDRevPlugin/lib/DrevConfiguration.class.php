@@ -29,7 +29,7 @@ class DRevConfiguration {
         return isset($this->configuration['prelevements']) && boolval($this->configuration['prelevements']);
     }
 
-    public function hasImportWithMentionsComplementaire() {
+    public function hasImportDRWithMentionsComplementaire() {
 
         return isset($this->configuration['import_with_mentions_complementaire']) && boolval($this->configuration['import_with_mentions_complementaire']);
     }

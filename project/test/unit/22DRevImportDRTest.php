@@ -51,7 +51,7 @@ $drev->save();
 $produits = array();
 foreach ($csv as $line) {
     $key = $line[DouaneCsvFile::CSV_PRODUIT_INAO];
-    if(DRevConfiguration::getInstance()->hasImportWithMentionsComplementaire()) {
+    if(DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire()) {
         $key .= $line[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
     }
     $produits[$key] = $key;

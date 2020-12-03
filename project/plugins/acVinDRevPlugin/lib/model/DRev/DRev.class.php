@@ -521,6 +521,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $complement = null;
+<<<<<<< HEAD
             if (DRevConfiguration::getInstance()->hasDenominationAuto() && preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) ) {
                 $has_bio_in_dr = true;
                 $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
@@ -532,6 +533,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }elseif(DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_HVE, true)){
                 $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
             } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+=======
+
+            if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
+                  ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
+                ) {
+              $has_bio = true;
+              $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
+          } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+>>>>>>> 18ee490430 (L'option d'import des denominations complémentaire est limité à la DR)
                 $complement = $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT];
             }
 
