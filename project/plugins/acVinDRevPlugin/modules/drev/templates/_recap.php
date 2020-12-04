@@ -56,7 +56,7 @@
 
         <?php endif; ?>
         <?php if($drev->exist('lots')): ?>
-          <h3>Déclaration des lots IGP</h3>
+          <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <?php
           $lots = $drev->getLotsByCouleur();
           $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
@@ -93,11 +93,13 @@
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
                         <td><?php echo $lot->numero_cuve; ?></td>
-                        <td><?php echo $lot->produit_libelle; echo ($lot->millesime)? " (".$lot->millesime.")" : ""; ?>
+                        <td>
+                          <?php echo $lot->produit_libelle; ?>
+                          <small >
                           <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <?php echo ($lot->specificite && $lot->specificite != "aucune")? "&nbsp;".$lot->specificite : ""; ?>
+                            <?php echo ($lot->specificite && $lot->specificite != "aucune")? $lot->specificite : ""; ?>
                           <?php endif ?>
-
+                          <?php echo ($lot->millesime)? " ".$lot->millesime."" : ""; ?></small>
                           <?php if(count($lot->cepages)): ?>
                             <br/>
                             <small class="text-muted">
@@ -139,40 +141,32 @@
                   <th class="text-center col-xs-1">Superficie</th>
                   <th class="text-center col-xs-1">Volume</th>
                   <th class="text-center col-xs-1">Nb lots</th>
-                  <th class="text-center col-xs-2">Somme lots</th>
+                  <th class="text-center col-xs-1">Vol. revendiqué</th>
                   <th class="text-center col-xs-2">Restant à revendiquer</th>
                 </tr>
               </thead>
               <tbody>
                 <?php foreach ($lots as $couleur => $lotsByCouleur) : ?>
                   <tr>
-                    <td><strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($volume / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
+                    <td><strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($synthese_revendication[$couleur]['volume_total'] / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
                     <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?></td>
                     <td class="text-right">
                       <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_total']): ?>
-                        <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?>
-                          <span class="text-danger">
-                            <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small>&nbsp;hl</small>
-                          </span>
-                        <?php else: ?>
+
                         <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small class="text-muted">&nbsp;hl</small>
-                        <?php endif; ?>
+
                       <?php endif; ?>
                     </td>
                     <td class="text-right"><?php  echo (count($lotsByCouleur))? count($lotsByCouleur) : 'aucun lots'; ?></td>
                     <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
-                      <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?>
-                        <span class="text-danger">
-                          <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small>&nbsp;hl</small>
-                        </span>
-                      <?php else: ?>
+
                         <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
-                      <?php endif; ?>
+
                       <?php endif; ?>
                     </td>
                     <td class="text-right">
                       <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) >= 0): ?><?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?><small>&nbsp;hl</small><?php endif; ?>
-                      <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?><span class="text-danger">excédent : <?php echoFloat($synthese_revendication[$couleur]['volume_restant']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                      <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese_revendication[$couleur]['volume_restant']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
                     </td>
                   </tr>
 
