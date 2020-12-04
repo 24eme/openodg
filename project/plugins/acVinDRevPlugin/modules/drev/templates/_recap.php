@@ -82,11 +82,10 @@
               foreach ($lots as $couleur => $lotsByCouleur) :
                 $volume = 0;
                 if(count($lotsByCouleur)):
-                  $cptLots=1;
                   foreach ($lotsByCouleur as $lot) :
                     $totalVolume+=$lot->volume;
                     ?>
-                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>' style="<?php if($cptLots++ >= count($lotsByCouleur)):?>border-bottom:2px solid grey;<?php endif; ?><?php if($firstRow):?>border-top:2px solid grey;<?php endif; ?>" >
+                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
                       <td>
                         <?php $drevDocOrigine = $lot->getDrevDocOrigine(); ?>
                         <?php if($drevDocOrigine): ?><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $drevDocOrigine); ?>"><?php endif; ?>
@@ -164,10 +163,11 @@
                     <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
                       <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?>
                         <span class="text-danger">
-                          <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small>&nbsp;hl</small><?php endif; ?>
+                          <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small>&nbsp;hl</small>
                         </span>
                       <?php else: ?>
                         <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
+                      <?php endif; ?>
                       <?php endif; ?>
                     </td>
                     <td class="text-right">
@@ -180,7 +180,8 @@
               </tbody>
             </table>
 
-            <?php if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
+            <?php
+              if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
               <div class="col-xs-12" style="margin-bottom: 20px;">
                 <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
               </div>
