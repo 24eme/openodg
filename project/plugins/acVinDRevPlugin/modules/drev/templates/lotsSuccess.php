@@ -123,8 +123,8 @@
                         </div>
                     </div>
                 </div>
-                <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
                 <div class="row">
+                  <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
@@ -133,15 +133,13 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php endif ?>
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-6">
-                      <label>
-                        <?php echo $lot['elevage']->render() ?>
-                        <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
-                      </label>
-                    </div>
+                  <?php endif ?>
+                  <div class="col-md-6 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
+                    <label>
+                      <?php echo $lot['elevage']->render() ?>
+                      <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
+                    </label>
+                  </div>
                 </div>
             </div>
         </div>
