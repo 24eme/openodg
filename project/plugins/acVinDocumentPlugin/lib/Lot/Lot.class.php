@@ -131,25 +131,11 @@ abstract class Lot extends acCouchdbDocumentTree
           return true;
         }
 
-        foreach($this as $key => $value) {
-            if($key == 'millesime' && $value = $this->getDocument()->getCampagne()) {
-
-                continue;
-            }
-            if($key == 'produit_hash' || $key == "produit_libelle") {
-                continue;
-            }
-
-            if($value instanceof acCouchdbJson && !count($value->toArray(true, false))) {
-                continue;
-            }
-
-            if($value) {
-                return false;
-            }
+        if(!$this->exist('volume') || !$this->volume){
+          return true;
         }
 
-        return true;
+        return false;
     }
 
     public function getDestinationDateFr()

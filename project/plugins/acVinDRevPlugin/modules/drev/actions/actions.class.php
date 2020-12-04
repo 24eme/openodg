@@ -669,6 +669,7 @@ class drevActions extends sfActions {
         }
 
         $this->drev->validate($dateValidation);
+        $this->drev->cleanLots();
         $this->drev->save();
 
         if($this->getUser()->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
@@ -679,6 +680,7 @@ class drevActions extends sfActions {
 
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
+            $this->drev->cleanLots();  
             $this->drev->save();
             $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
 
