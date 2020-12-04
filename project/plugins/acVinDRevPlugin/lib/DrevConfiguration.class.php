@@ -151,4 +151,8 @@ class DRevConfiguration {
     }
 
 
+    public function hasLogementAdresse() {
+        return isset($this->configuration['logement_adresse']) && boolval($this->configuration['logement_adresse']);
+    }
+
 }

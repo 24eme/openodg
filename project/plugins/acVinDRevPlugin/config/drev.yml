@@ -12,3 +12,4 @@ all:
       dr_douane_required: true
       degustation: false
       engagement_pdf: false
+      logement_adresse: true

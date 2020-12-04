@@ -3,6 +3,7 @@ all:
     drev:
       validation_odg: 'admin'
       pdf_unique_region: true
+      logement_adresse: false
       odg:
         BEAUMESVENISES:
           nom: "Conservatoire AOC Beaumes Venise"

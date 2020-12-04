@@ -354,6 +354,16 @@
         })
     }
 
+    $.calculTotal = function() {
+      var total = 0.0;
+      $("tr.hamzastyle-item:visible").each(function(){
+        total+=parseFloat($(this).find(".lot_volume").html());
+      });
+
+      $("tr .total_lots").html(total.toFixed(2));
+
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
