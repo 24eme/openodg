@@ -27,7 +27,7 @@
 </table>
 <br/>
 <br/>
-<table style="font-size:12px;"><tr><td style="width: 324px;"><?php echo 'Aix-en-Provence, le ' . format_date($degustation->date, "P", "fr_FR"); ?></td></tr></table>
+<table style="font-size:12px;"><tr><td style="width: 324px;"><?php echo 'Aix-en-Provence, le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
 <!-- Temporaire car fonction non fonctionnel -->
 <?php $Nonconforme = false; ?>
