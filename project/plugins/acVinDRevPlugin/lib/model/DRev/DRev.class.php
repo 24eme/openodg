@@ -829,6 +829,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot = $this->add('lots')->add();
         $lot->millesime = $this->campagne;
         $lot->statut = Lot::STATUT_PRELEVABLE;
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+          $lot->add('specificite','aucune');
+        }
         return $lot;
     }
 
