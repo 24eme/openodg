@@ -361,6 +361,7 @@
       });
 
       $("tr .total_lots").html(total.toFixed(2));
+      $(document).scrollTo("#table_igp_title");
 
     }
 
