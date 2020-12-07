@@ -729,10 +729,10 @@
                   "rendement_vci_total": null
                 }
               },
-              "D84": {
+              "VAU": {
                 "libelle": "Vaucluse",
                 "format_libelle": "",
-                "code": "D84",
+                "code": "VAU",
                 "code_produit": null,
                 "code_comptable": null,
                 "code_douane": null,
@@ -1227,10 +1227,59 @@
                             }
                           }
                         }
-                      },
-                      "AIG": {
-                        "libelle": "Aigues",
-                        "format_libelle": "",
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": null,
+                  "rendement_conseille": null,
+                  "rendement_dr_l5": null,
+                  "rendement_dr_l15": null,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null
+                }
+              },
+              "PDO": {
+                "libelle": "Principauté d'Orange",
+                "format_libelle": "",
+                "code": "PDO",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": null,
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": "",
+                        "format_libelle": null,
                         "code": "",
                         "code_produit": null,
                         "code_comptable": null,
@@ -1270,7 +1319,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3R130",
+                                "code_douane": "3R131",
                                 "cepages_autorises": [
                                   "ALEATICO N",
                                   "ALIC.H.B.N",
@@ -1418,7 +1467,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3S130",
+                                "code_douane": "3S131",
                                 "cepages_autorises": [
                                   "ALEATICO N",
                                   "ALIC.H.B.N",
@@ -1564,7 +1613,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3B130",
+                                "code_douane": "3B131",
                                 "cepages_autorises": [
                                   "ALEATICO N",
                                   "ALIC.H.B.N",
@@ -1689,9 +1738,58 @@
                             }
                           }
                         }
-                      },
-                      "PDO": {
-                        "libelle": "Principauté d'Orange",
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": null,
+                  "rendement_conseille": null,
+                  "rendement_dr_l5": null,
+                  "rendement_dr_l15": null,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null
+                }
+              },
+              "AIG": {
+                "libelle": "Aigues",
+                "format_libelle": "",
+                "code": "AIG",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": null,
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": "",
                         "format_libelle": null,
                         "code": "",
                         "code_produit": null,
@@ -1732,7 +1830,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3R130",
+                                "code_douane": "3R131",
                                 "cepages_autorises": [
                                   "ALEATICO N",
                                   "ALIC.H.B.N",
@@ -1880,7 +1978,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3S130",
+                                "code_douane": "3S131",
                                 "cepages_autorises": [
                                   "ALEATICO N",
                                   "ALIC.H.B.N",
@@ -2026,7 +2124,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3B130",
+                                "code_douane": "3B131",
                                 "cepages_autorises": [
                                   "ALEATICO N",
                                   "ALIC.H.B.N",

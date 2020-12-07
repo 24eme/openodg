@@ -219,7 +219,6 @@ EOF;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
             $lot->statut = $statut;
-            $lot->statut = $statut;
 
             $deleted = array();
             foreach($drev->lots as $k => $l) {
