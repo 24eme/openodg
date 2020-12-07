@@ -129,7 +129,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $type = strtolower($type);
         $type = str_replace('é', 'e', $type);
         if ($type == 'millesime') {
-            return $this->millesime;
+            return ($this->millesime) ? $this->millesime : 'XXXX';
         }
         if ($type == 'appellation') {
             return $this->getConfig()->getAppellation()->getKey();
@@ -224,5 +224,39 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getUnicityKey(){
         return KeyInflector::slugify($this->produit_hash.'/'.$this->volume.'/'.$this->millesime.'/'.$this->numero_dossier.'/'.$this->numero_archive);
+    }
+
+    public function getTriHash(array $tri = null) {
+        if (!$tri) {
+            return $this->produit_hash;
+        }
+        $hash = '';
+        foreach($tri as $type) {
+            $hash .= $this->getValueForTri($type);
+        }
+        return $hash;
+    }
+    public function getTriLibelle(array $tri = null) {
+        if (!$tri) {
+            return $this->produit_libelle;
+        }
+        $format = '';
+        if (in_array('appellation', $tri)) {
+            $format .= '%a% ';
+        }
+        if (in_array('genre', $tri)) {
+            $format .= '%g% ';
+        }
+        if (in_array('couleur', $tri)) {
+            $format .= '%co% ';
+        }
+        $libelle = $this->getConfig()->getLibelleFormat(null, $format)." ";
+        if (in_array('millesime', $tri)) {
+            $libelle .= $this->millesime.' ';
+        }
+        if (in_array('cépage', $tri)) {
+            $libelle .= "- ".$this->details.' ';
+        }
+        return $libelle;
     }
 }

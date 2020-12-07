@@ -483,26 +483,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 		public function getSyntheseLotsTableCustomTri($numero_table = null, array $tri){
 			$lots = $this->getLotsPrelevesCustomSort($tri);
-			return $this->createSynthesFromLots($lots, $numero_table);
+			return $this->createSynthesFromLots($lots, $numero_table, $tri);
 		}
-		private function createSynthesFromLots($lots, $numero_table) {
+		private function createSynthesFromLots($lots, $numero_table, array $tri = null) {
 			$syntheseLots = array();
 			foreach ($lots as $lot) {
 				if($lot->numero_table == $numero_table || is_null($numero_table) || is_null($lot->numero_table)){
-					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
+					if(!array_key_exists($lot->getTriHash($tri),$syntheseLots)){
 						$synthese = new stdClass();
 						$synthese->lotsTable = array();
 						$synthese->lotsFree = array();
-						$synthese->libelle = $lot->getProduitLibelle();
-						$synthese->details = $lot->getDetails();
+						$synthese->libelle = $lot->getTriLibelle($tri);
+						$synthese->details = '';
+						if (!$tri || in_array('Cépage', $tri)) {
+							$synthese->details = $lot->getDetails();
+						}
 						$synthese->millesime = $lot->getMillesime();
 
-						$syntheseLots[$lot->getProduitHash()] = $synthese;
+						$syntheseLots[$lot->getTriHash($tri)] = $synthese;
 					}
 					if($lot->numero_table == $numero_table || (is_null($numero_table) && $lot->numero_table)){
-						$syntheseLots[$lot->getProduitHash()]->lotsTable[] = $lot;
+						$syntheseLots[$lot->getTriHash($tri)]->lotsTable[] = $lot;
 					}else{
-						$syntheseLots[$lot->getProduitHash()]->lotsFree[] = $lot;
+						$syntheseLots[$lot->getTriHash($tri)]->lotsFree[] = $lot;
 					}
 				}
 			}

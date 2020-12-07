@@ -273,15 +273,16 @@ class degustationActions extends sfActions {
         $this->numero_table = $request->getParameter('numero_table');
 
         if (!$request->getParameter('tri')) {
-            $tri_default = 'Couleur|Appellation|Cepage';
+            $tri_default = 'Couleur|Genre|Appellation';
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $tri_default));
         }
         $this->tri = $request->getParameter('tri');
-        $tri_array = explode('|', strtolower($this->tri));
+        $this->tri_array = explode('|', strtolower($this->tri));
 
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $tri_array);
-        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $tri_array);
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
+        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -632,5 +633,28 @@ class degustationActions extends sfActions {
 
       return $this->renderText($this->document->output());
 
+    }
+
+    public function executeTriTable(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $numero_table = $request->getParameter('numero_table');
+
+        $this->triTableForm = new DegustationTriTableForm(array());
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
+        }
+
+        $this->triTableForm->bind($request->getParameter($this->triTableForm->getName()));
+
+        if (!$this->triTableForm->isValid()) {
+
+            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
+        }
+
+        $values = $this->triTableForm->getValues();
+
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
     }
 }

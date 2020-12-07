@@ -93,7 +93,7 @@
               </table>
 
           <div class="row row-margin row-button">
-                <div class="col-xs-4"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => count($degustation->getTablesWithFreeLots(), 'tri' => $tri))) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a></div>
+                <div class="col-xs-4"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => count($degustation->getTablesWithFreeLots()), 'tri' => $tri)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a></div>
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">

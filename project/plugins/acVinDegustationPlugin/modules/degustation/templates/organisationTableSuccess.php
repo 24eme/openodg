@@ -12,7 +12,7 @@
           	<table class="table table-condensed">
           			<thead>
           				<tr>
-          					<th class="col-xs-8"><?php echo $tri; ?></th>
+          					<th class="col-xs-8"><?php echo $tri; ?> (<a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</th>
                     <th class="col-xs-1"></th>
           					<th class="col-xs-3">Nombre d'échantillons</th>
           				</tr>
@@ -21,7 +21,7 @@
                 <?php $total = 0; ?>
           			<?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
           				<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
-          					<td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
+          					<td><?php echo preg_replace('/ -(.*)/', '<span class="text-muted">\1</span>', $lotsProduit->libelle) ?></td>
                     <td></td>
                     <td class="nblots"><?php echo count($lotsProduit->lotsTable); $total += count($lotsProduit->lotsTable); ?></td>
           				</tr>
@@ -44,7 +44,7 @@
           		<table class="table table-bordered table-condensed table-striped">
           			<thead>
           				<tr>
-          					<th class="col-xs-11">Échantillons &nbsp; <span class="text-muted"><?php echo "($tri)"; ?></span></th>
+          					<th class="col-xs-11">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a> )</span></th>
           					<th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
@@ -68,7 +68,7 @@
                                             </div>
           								</div>
           							</td>
-          							<td class="text-center" data-hash="<?php echo $lot->produit_hash; ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
+          							<td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>" data-hash="<?php echo $lot->getTriHash($tri_array->getRawValue()); ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>
           									<div class="col-xs-12">
@@ -100,6 +100,7 @@
           	</form>
 
           <?php include_partial('degustation/popupAjoutLeurreForm', array('url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm, 'table' => $numero_table)); ?>
+          <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => $numero_table)), 'form' => $triTableForm, 'table' => $numero_table)); ?>
       </div>
     </div>
   </div>
