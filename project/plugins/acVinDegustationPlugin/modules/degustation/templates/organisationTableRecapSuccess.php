@@ -28,10 +28,10 @@
                     <td></td>
                     <td><strong><?php echo count($table->lots); $total += count($table->lots); ?></strong></td>
                 </tr>
-                    <?php foreach ($degustation->getSyntheseLotsTable($numero_table) as $hash => $lotsProduit): ?>
+                    <?php foreach ($degustation->getSyntheseLotsTableCustomTri($numero_table, $tri_array->getRawValue()) as $hash => $lotsProduit): ?>
                       <tr class="vertical-center collapse accordion_<?php echo $numero_table ?>" data-hash="<?php echo $hash; ?>" >
                         <td></td>
-                        <td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
+                        <td><?php echo preg_replace('/ -(.*)/', '<span class="text-muted">\1</span>', $lotsProduit->libelle) ?></td>
                         <td></td>
                         <td class="nblots"><?php echo count($lotsProduit->lotsTable) ?></td>
                       </tr>
@@ -62,22 +62,24 @@
               </thead>
               <tbody>
               <?php
-                foreach ($degustation->getLotsPreleves($tri_array) as $lot):
+                foreach ($degustation->getLotsPrelevesCustomSort($tri_array->getRawValue()) as $lot):
                 $name = $form->getWidgetNameFromLot($lot);
                 if (isset($form[$name])):
               ?>
                 <tr class="vertical-center cursor-pointer">
-                  <td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
-                      <div class="row">
-                              <div class="col-xs-5 text-right">
-                                  <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
-                                  <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?>
-                              </div>
-                          <div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
-                          <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
-                        <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
-                      </div>
-                  </td>
+                        <td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
+                            <div class="row">
+                                  <div class="col-xs-4 text-right">
+                                      <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
+                                      <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?>
+                                  </div>
+                                  <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
+                                <div class="col-xs-7 text-left">
+                                    <?php echo $lot->produit_libelle;?>
+                                    <small class="text-muted"><?php echo $lot->details; ?></small>
+                                </div>
+                            </div>
+                        </td>
                         <td class="text-center">
                             <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                                 <?php echo $form[$name]->renderError() ?>
@@ -101,7 +103,7 @@
       			</div>
             </div>
           </form>
-          <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => $numero_table)), 'form' => $triTableForm)); ?>
+          <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => 0, 'recap' => true)), 'form' => $triTableForm)); ?>
       </div>
     </div>
   </div>

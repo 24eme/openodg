@@ -282,7 +282,7 @@ class degustationActions extends sfActions {
         $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
         $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
-        $this->triTableForm = new DegustationTriTableForm($this->tri_array);
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array, false);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -321,7 +321,7 @@ class degustationActions extends sfActions {
         $this->tri_array = explode('|', $this->tri);
 
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
-        $this->triTableForm = new DegustationTriTableForm($this->tri_array);
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array, true);
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
@@ -643,18 +643,14 @@ class degustationActions extends sfActions {
     public function executeTriTable(sfWebRequest $request) {
         $degustation = $this->getRoute()->getDegustation();
         $numero_table = $request->getParameter('numero_table');
-        $recap = $request->getParameter('recap');
-
         $this->triTableForm = new DegustationTriTableForm(array());
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-            if($recap) {
-                return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
-            }
             return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
         }
 
         $this->triTableForm->bind($request->getParameter($this->triTableForm->getName()));
+        $recap = $this->triTableForm->getValue('recap');
 
         if (!$this->triTableForm->isValid()) {
             if($recap) {
@@ -664,6 +660,8 @@ class degustationActions extends sfActions {
         }
 
         $values = $this->triTableForm->getValues();
+        unset($values['recap']);
+
         if($recap) {
             return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id, 'tri' => join('|', array_filter(array_values($values)))));
         }
