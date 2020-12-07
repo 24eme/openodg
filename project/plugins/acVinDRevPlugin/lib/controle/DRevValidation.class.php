@@ -364,7 +364,7 @@ class DRevValidation extends DocumentValidation
             }
           }
 
-          if ($lot->elevage) {
+          if ($lot->statut == Lot::STATUT_ELEVAGE) {
               $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, "$lot->produit_libelle ( $lot->volume hl )");
           }
       }

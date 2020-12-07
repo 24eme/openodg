@@ -56,7 +56,7 @@ ChgtDenom:
                   numero_archive: {  }
                   numero_cuve: { }
                   millesime: { }
-                  elevage: { }
+                  elevage: { required: false }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -122,7 +122,7 @@ ChgtDenom:
                         volume: { type: float }
                         date: {  }
                         millesime: {  }
-                        elevage: {  }
+                        elevage: { required: false }
                         region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }

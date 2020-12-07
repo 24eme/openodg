@@ -200,6 +200,11 @@ degustation_manquements:
   requirements:
     sf_method: [get]
 
+degustation_elevages:
+  url: /degustation/elevages
+  param: { module: degustation, action: elevages }
+  requirements:
+    sf_method: [get]
 
 degustation_etiquette_pdf:
   url: /degustation/:id/etiquettes/pdf

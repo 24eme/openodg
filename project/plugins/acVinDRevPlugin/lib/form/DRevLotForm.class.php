@@ -77,6 +77,9 @@ class DRevLotForm extends acCouchdbObjectForm
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
+        if (!empty($values['elevage'])) {
+          $this->getObject()->statut = Lot::STATUT_ELEVAGE;
+        }
     }
 
     public function getDestinationsType()

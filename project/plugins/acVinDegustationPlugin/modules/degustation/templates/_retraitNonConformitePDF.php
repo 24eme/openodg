@@ -60,9 +60,9 @@
   </tr>
   <tr>
     <td><?php echo (int)$Newlot->numero_archive ?></td>
-    <td><?php echo (int)$Newlot->numero_archive ?></td>
+    <td><?php echo (int)$Newlot->numero_cuve ?></td>
     <td><?php echo $Newlot->produit_libelle ?></td>
-    <td><?php echo $Newlot->elevage ?></td>
+    <td><?php echo $Newlot->details ?></td>
     <td><?php echo sprintf("%.2f", $Newlot->volume) ?></td>
     <td><?php echo $Newlot->observation ?></td>
   </tr>
