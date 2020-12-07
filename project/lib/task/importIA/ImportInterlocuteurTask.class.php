@@ -70,12 +70,12 @@ EOF;
                 $raisonSociale = trim($civilite." ".$data[self::CSV_NOM]." ".$data[self::CSV_PRENOM]);
             }
 
-            $resultat = SocieteClient::matchSociete($societes, $data[self::CSV_RAISON_SOCIALE], 1);
-            if($resultat && count($resultat) >= 1 && $data[self::CSV_RAISON_SOCIALE]) {
+            $resultat = SocieteClient::matchSociete($societes, $raisonSociale, 1);
+            if($resultat && count($resultat) >= 1 && $raisonSociale) {
                 $societe = SocieteClient::getInstance()->find(key($resultat));
             }
             if(!$societe) {
-                $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR);
+                $societe = SocieteClient::getInstance()->createSociete($raisonSociale, SocieteClient::TYPE_OPERATEUR);
                 if (isset($data[self::CSV_ADRESSE_1])){
                   $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
                 }
