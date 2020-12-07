@@ -97,4 +97,9 @@
     <h2>Elevages</h2>
 </div>
 <p><strong><?php echo count($lotsElevages); ?> lots</strong> sont actuellement en élevages : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
+
+<div class="page-header no-border">
+    <h2>Manquements</h2>
+</div>
+<p>Manquements en cours : <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>
 </div>
