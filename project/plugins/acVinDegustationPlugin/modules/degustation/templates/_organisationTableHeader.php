@@ -21,5 +21,5 @@
     <li role="presentation" class="active"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri)) ?>">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></a></li>
   <?php endif; ?>
   <li role="presentation"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => count($liste_tables)+1, 'tri' => $tri)) ?>"><span class="glyphicon glyphicon-plus"></span></a></li>
-  <li role="presentation" class="<?php if(!$numero_table): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_organisation_table_recap", $degustation) ?>"><span class="glyphicon glyphicon-th-list"></span> Récapitulatif</a></li>
+  <li role="presentation" class="<?php if(!$numero_table): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_organisation_table_recap", array('id' => $degustation->_id, 'tri' => $tri)) ?>"><span class="glyphicon glyphicon-th-list"></span> Récapitulatif</a></li>
 </ul>
