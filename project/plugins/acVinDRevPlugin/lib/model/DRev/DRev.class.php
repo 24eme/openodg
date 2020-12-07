@@ -1199,9 +1199,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $num = $m[1];
       }
       foreach($this->lots as $lot) {
-        $num++;
-        $lot->numero_archive = sprintf("%05d", $num);
-        $lot->numero_dossier = $numeroDossier;
+        if (empty($lot->numero_archive) && empty($lot->numero_dossier)) {
+          $num++;
+          $lot->numero_archive = sprintf("%05d", $num);
+          $lot->numero_dossier = $numeroDossier;
+        }
       }
   }
 
