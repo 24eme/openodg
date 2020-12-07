@@ -27,7 +27,7 @@
       }
 
       if(form.hasClass('prelevements')){
-        updateSynthesePrelevementLots($(this),state,hash);
+        updateSynthesePrelevementLots();
       }
 
       if(form.hasClass('degustateurs')){
@@ -60,32 +60,26 @@
       }
     }
 
-    var updateSynthesePrelevementLots = function(elt,state,hash){
-      var valLotsSelectionnes = $('tr strong.nbLotsSelectionnes').html();
-      var regex = /[0-9]+$/g;
+    var updateSynthesePrelevementLots = function(){
 
-      if(valLotsSelectionnes.match(regex)){
-        var nbLotToAdd = -1;
-        if(state){
-          nbLotToAdd = 1;
-        }
-        var old = parseInt(valLotsSelectionnes);
-        var diff = parseInt(nbLotToAdd);
-        var newvalLotsSelectionnes = old+diff;
-        $('tr strong.nbLotsSelectionnes').html(""+newvalLotsSelectionnes);
-      }
+      $('.degustation.prelevements').each(function(){
+        var nbLotsSelectionnes = 0;
+        var adherents = {};
 
-      adherents = {};
-      $('.degustation .bsswitch').each(function () {
-        var state = $(this).bootstrapSwitch('state');
-        if(state){
-          adherents[$(this).parents('td').attr("data-hash")]=1;
-        }
+        $(this).find('.bsswitch').each(function () {
+           var state = $(this).bootstrapSwitch('state');
+           if(state){
+             nbLotsSelectionnes++;
+             adherents[$(this).parents('td').attr("data-hash")]=1;
+           }
+
       });
-
+      $('tr strong.nbLotsSelectionnes').html(""+nbLotsSelectionnes);
       $('tr strong.nbAdherents').html(""+Object.size(adherents));
-
+       });
     }
+
+    updateSynthesePrelevementLots();
 
     var updateSyntheseDegustateurs = function(elt,state,hash){
       var collegeKey =elt.parents('td').attr('data-hash');
