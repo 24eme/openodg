@@ -1195,7 +1195,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
   public function archiverLot($numeroDossier) {
       $lastNum = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne(Lot::TYPE_ARCHIVE, $this->archivage_document->getCampagne());
       $num = 0;
-      if (preg_match("/[0-9]+/", $lastNum, $m)) {
+      if (preg_match("/^([0-9]+).*/", $lastNum, $m)) {
         $num = $m[1];
       }
       foreach($this->lots as $lot) {
