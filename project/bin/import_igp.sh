@@ -1,17 +1,13 @@
 #!/bin/bash
 
-. bin/config.inc
-
-mkdir $TMPDIR 2> /dev/null
-
 if ! test "$1"; then
     echo "Nom du dossier/de l'ODG";
     exit 1;
 fi
 
-# ODG=igp13
 ODG=$1
 
+. bin/config_$ODG.inc
 
 EXPORT=$2
 
@@ -19,15 +15,13 @@ if test "$EXPORT"; then
   if test "$EXPORT" = "-exp"; then
     echo "Export données";
     cd $WORKINGDIR/import/igp/;
-    bash scrapping.sh;
+    bash scrapping.sh config_$ODG.json;
     cd $WORKINGDIR;
   fi
 fi
 
-DATA_DIR=$TMPDIR/import_$ODG
-mkdir $DATA_DIR 2> /dev/null
-
-
+DATA_DIR=$WORKINGDIR/import/igp/imports/$ODG
+mkdir -p $DATA_DIR 2> /dev/null
 
 if test "$2" = "--delete"; then
 
@@ -43,7 +37,7 @@ if test "$2" = "--delete"; then
       if test "$3" = "-exp"; then
         echo "Export données"
         cd $WORKINGDIR/import/igp/
-        bash scrapping.sh
+        bash scrapping.sh config_$ODG.json
         cd $WORKINGDIR
       fi
     fi
@@ -55,7 +49,7 @@ curl -sX PUT http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 
 cd .. > /dev/null
 make clean > /dev/null
-make > /dev/null
+make couchurl=http://$COUCHHOST:$COUCHPORT/$COUCHBASE > /dev/null
 cd - > /dev/null
 
 echo "Création des documents de configuration"
@@ -64,8 +58,6 @@ ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
 do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
-
-rsync -a $DOCUMENTSDIR$ODG/ $DATA_DIR/
 
 echo "Import des Opérateurs"
 
@@ -78,14 +70,10 @@ php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --applicatio
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
-
-
 echo "Contacts"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
 php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
-
-
 
 echo "Import des interlocuteurs"
 

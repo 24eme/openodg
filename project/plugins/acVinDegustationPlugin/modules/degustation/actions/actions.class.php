@@ -485,15 +485,15 @@ class degustationActions extends sfActions {
         $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);
         $this->forward404Unless($this->etablissement);
 
-        $this->lots = array();
-        foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement_id)->rows as $item) {
-            $key = Lot::generateMvtKey($item->value);
-            if (!isset($this->lots[$key])) {
-                $this->lots[$key] = $item->value;
-                $this->lots[$key]->steps = array();
-            }
-            $this->lots[$key]->steps[] = $item->value;
-        }
+        $this->lots = MouvementLotView::getInstance()->getLotsStepsByDeclarantIdentifiant($etablissement_id);
+
+    }
+
+    public function executeLot(sfWebRequest $request) {
+        $campagne = $request->getParameter('campagne');
+        $lot_id = $request->getParameter('id');
+        $this->lotsStepsHistory = MouvementLotView::getInstance()->getLotStepsByArchive($campagne, $lot_id);
+
     }
 
     public function executeManquements(sfWebRequest $request) {

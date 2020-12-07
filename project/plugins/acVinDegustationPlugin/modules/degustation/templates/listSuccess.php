@@ -5,41 +5,75 @@
 <?php use_helper('Float') ?>
 
 <div class="page-header no-border">
-    <h2>Les lots de <?php echo $etablissement->getNom(); ?></h2>
+  <h2>Les lots de <?php echo $etablissement->getNom(); ?></h2>
 </div>
 <?php if (count($lots)): ?>
-<div class="row">
-<table class="table table-condensed table-striped">
-<thead>
-    <th class="col-sm-2 text-center">Date</th>
-    <th class="col-sm-3">Appellation</th>
-    <th class="col-sm-1">Volume</th>
-    <th class="col-sm-2 text-center">Étape</th>
-    <th class="col-sm-1"></th>
-    <th class="col-sm-1"></th>
-</thead>
-<tbody>
-<?php foreach($lots as $l): ?>
-    <tr>
-        <td class="text-center"><strong><?php echo $l->date; ?></strong></td>
-        <td><strong><?php echo $l->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $l->details; ?></small></td>
-        <td class="text-right"><strong><?php echo echoFloat($l->volume); ?>&nbsp;hl</strong></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <?php foreach($l->steps as $s): ?>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="text-center"><?php echo preg_replace('/-.*/', '', $s->id_document); ?></td>
-            <td class="text-muted"><?php echo isset($s->preleve) ? 'Prélevé' : '' ; ?></td>
-            <td><a href="#" class="btn btn-default">Voir</a></td>
-        </tr>
-    <?php endforeach; ?>
-<?php endforeach; ?>
-<tbody>
-</table>
-<?php endif; ?>
-</div>
+  <div class="row">
+    <table class="table table-condensed table-striped">
+      <thead>
+        <th class="col-sm-1">N° Lot</th>
+        <th class="col-sm-1">N° Dossier</th>
+        <th class="col-sm-1">Date</th>
+        <th class="col-sm-3">Appellation</th>
+        <th class="col-sm-1 text-center">Dossier</th>
+        <th class="col-sm-1 text-center">Degust.</th>
+        <th class="col-sm-1 text-center">Table</th>
+        <th class="col-sm-1 text-center">Dégusté</th>
+        <th class="col-sm-2 text-right"></th>
+      </thead>
+      <tbody>
+        <?php foreach($lots as $lotKey => $lotDocs): ?>
+          <?php foreach($lotDocs as $id_doc => $lot): ?>
+              <tr>
+                <td><?php echo $lot->numero_archive;  ?></td>
+                <td><?php echo $lot->numero_dossier;  ?></td>
+                <td ><strong><?php echo Date::francizeDate($lot->date); ?></strong></td>
+                <td><strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?><strong class="pull-right">&nbsp;<?php echo echoFloat($lot->volume); ?>&nbsp;hl</strong></small></td>
+                <td class="text-center"><a class="btn btn-xs btn-success" href="<?php echo url_for($lot->dossier_type.'_visualisation',$lot->dossier_origine)?>"><?php echo $lot->dossier_libelle; ?></a></td>
+                <td class="text-center" >
+                  <?php if($lot->degustation): ?>
+                    <a class="btn btn-xs btn-<?php echo $lot->degustation_color?>" href="<?php echo url_for($lot->degustation_step_route,$lot->degustation)?>"><?php echo $lot->degustation_libelle; ?></a>
+
+                  <?php endif; ?>
+                </td>
+                <td class="text-center">
+                  <?php if(isset($lot->numero_table_step_route)): ?>
+                    <a class="btn btn-xs btn-<?php echo $lot->numero_table_color?>"
+                      href="<?php echo ($lot->numero_table)? url_for($lot->numero_table_step_route , array('id' => $lot->degustation->_id, 'numero_table' => $lot->numero_table))
+                      : url_for($lot->numero_table_step_route, array('id' => $lot->degustation->_id)); ?>">
+                      <?php echo ($lot->numero_table)? "Table ".$lot->numero_table : "Choisir"; ?>
+                    </a>
+                  <?php endif; ?>
+
+                </td>
+                <td class="text-center">
+                  <?php if(isset($lot->resultat_step_route)): ?>
+                    <a class="btn btn-xs btn-<?php echo $lot->resultat_color ?>"
+                      href="<?php echo url_for($lot->resultat_step_route , array('id' => $lot->degustation->_id, 'numero_table' => $lot->numero_table))."#".$lot->degustation_anchor; ?>">
+                      <?php if(is_null($lot->conformite)):
+                        echo "Resultat";
+                        elseif($r = Lot::$shortLibellesConformites[$lot->conformite]):
+                          echo $r;
+                          else :
+                            echo "Conforme";
+                          endif;
+                          ?>
+                        </a>
+                      <?php endif; ?>
+                    </td>
+                    <td class=" text-right">
+                      <?php if($lot->chgtdenom): ?>
+                      <a class="btn btn-xs btn-success"
+                      href="<?php echo  url_for('chgtdenom_visualisation' , array('id' => $lot->chgtdenom))  ?>">ChgDenom&nbsp;</a>
+                    <?php endif; ?>
+                      <a class="btn btn-xs btn-default"
+                      href="<?php echo  url_for('degustation_lot' , array('id' => preg_replace("/^([0-9]{5}).+/","$1",$lot->numero_archive), 'campagne' => $lot->campagne))  ?>">detail&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                  </td>
+                  </tr>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+            <tbody>
+            </table>
+          <?php endif; ?>
+        </div>
