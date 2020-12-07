@@ -12,7 +12,7 @@
           	<table class="table table-condensed">
           			<thead>
           				<tr>
-          					<th class="col-xs-8">Couleur|Appellation|Cépage</th>
+          					<th class="col-xs-8"><?php echo $tri; ?></th>
                     <th class="col-xs-1"></th>
           					<th class="col-xs-3">Nombre d'échantillons</th>
           				</tr>
@@ -35,7 +35,7 @@
           	</table>
           </div>
 
-          	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>" method="post" class="form-horizontal degustation table">
+          	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri)) ?>" method="post" class="form-horizontal degustation table">
           		<?php echo $form->renderHiddenFields(); ?>
           		<div class="bg-danger">
           			<?php echo $form->renderGlobalErrors(); ?>
@@ -44,9 +44,8 @@
           		<table class="table table-bordered table-condensed table-striped">
           			<thead>
           				<tr>
-          					<th class="col-xs-10">Échantillons</th>
-                    <th class="col-xs-5">Millésime</th>
-          					<th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
+          					<th class="col-xs-11">Échantillons &nbsp; <span class="text-muted"><?php echo "($tri)"; ?></span></th>
+          					<th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
           			<tbody>
@@ -58,16 +57,17 @@
           						<tr class="vertical-center cursor-pointer">
           							<td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
           								<div class="row">
-                                              <div class="col-xs-5 text-right">
+                                              <div class="col-xs-4 text-right">
                                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
                                                   <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?>
                                               </div>
-          									<div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
-                            <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
+                                              <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
+          									<div class="col-xs-7 text-left">
+                                                <?php echo $lot->produit_libelle;?>
+                                                <small class="text-muted"><?php echo $lot->details; ?></small>
+                                            </div>
           								</div>
           							</td>
-                        <td><div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div></td>
-
           							<td class="text-center" data-hash="<?php echo $lot->produit_hash; ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>
@@ -85,7 +85,7 @@
           		<div class="row row-margin row-button">
           			<div class="col-xs-4">
                         <?php if($numero_table > 1): ?>
-                        <a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table - 1)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a>
+                        <a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table - 1, 'tri' => $tri)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a>
                         <?php else: ?>
                             <a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
                         <?php endif; ?>

@@ -6,7 +6,7 @@ class degustationActions extends sfActions {
         $newDegutation = new Degustation();
         $this->form = new DegustationCreationForm($newDegutation);
         $newDegutation->getMvtLotsPrelevables();
-        $this->lotsPrelevables = $newDegutation->getLotsPrelevables();
+        $this->lotsPrelevables = $newDegutation->getLotsPrelevablesSortByDate();
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -270,10 +270,17 @@ class degustationActions extends sfActions {
 
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
-
         $this->numero_table = $request->getParameter('numero_table');
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTable($this->numero_table);
-        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table);
+
+        if (!$request->getParameter('tri')) {
+            $tri_default = 'Couleur|Appellation|Cepage';
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $tri_default));
+        }
+        $this->tri = $request->getParameter('tri');
+        $tri_array = explode('|', strtolower($this->tri));
+
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $tri_array);
+        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $tri_array);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -301,7 +308,7 @@ class degustationActions extends sfActions {
 
         if($this->degustation->hasFreeLots()) {
 
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1));
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1, 'tri' => $this->tri));
         }
 
         return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id));

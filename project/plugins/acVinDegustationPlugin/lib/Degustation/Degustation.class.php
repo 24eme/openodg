@@ -7,6 +7,7 @@
 class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument {
 
 	protected $piece_document = null;
+	protected $tri = null;
 
     public function __construct() {
         parent::__construct();
@@ -253,7 +254,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lot = MouvementLotView::generateLotByMvt($mvt);
             $lots[$key] = $lot;
         }
-
+		return $lots;
+	}
+	public function getLotsPrelevablesSortByDate() {
+		$lots = $this->getLotsPrelevables();
         uasort($lots, function ($lot1, $lot2) {
             $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
             $date2 = DateTime::createFromFormat('Y-m-d', $lot2->date);
@@ -372,7 +376,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	   			}
 	   			$lots[] = $lot;
 	   		}
-	   		uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
+			return $lots;
+		}
+
+		public function getLotsPrelevesCustomSort(array $tri = null) {
+			$lots = $this->getLotsPreleves();
+			if (!$tri) {
+				$tri = array('couleur', 'appellation', 'cepage');
+			}
+			$this->tri = $tri;
+	   		uasort($lots, array($this, "sortLotsByThisTri"));
 	   		return $lots;
    	 	}
 
@@ -427,7 +440,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-			uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
 			return $lots;
 		}
 
@@ -444,7 +456,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 			}
-			uasort($lots, "Degustation::sortLotsByCouleurAppelationCepage");
+			return $lots;
+		}
+
+		public function getLotsTableOrFreeLotsCustomSort($numero_table, array $tri,  $free = true){
+			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
+			$this->tri = $tri;
+			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
 		}
 
@@ -458,8 +476,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function getSyntheseLotsTable($numero_table = null){
+			$lots = $this->getLotsPreleves();
+			$syntheseLots =  $this->createSynthesFromLots($lots, $numero_table);
+			ksort($syntheseLots);
+			return $syntheseLots;
+		}
+		public function getSyntheseLotsTableCustomTri($numero_table = null, array $tri){
+			$lots = $this->getLotsPrelevesCustomSort($tri);
+			return $this->createSynthesFromLots($lots, $numero_table);
+		}
+		private function createSynthesFromLots($lots, $numero_table) {
 			$syntheseLots = array();
-			foreach ($this->getLotsPreleves() as $lot) {
+			foreach ($lots as $lot) {
 				if($lot->numero_table == $numero_table || is_null($numero_table) || is_null($lot->numero_table)){
 					if(!array_key_exists($lot->getProduitHash(),$syntheseLots)){
 						$synthese = new stdClass();
@@ -478,7 +506,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					}
 				}
 			}
-			ksort($syntheseLots);
 			return $syntheseLots;
 		}
 
@@ -494,10 +521,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return max($tables);
 		}
 
-        public static function sortLotsByCouleurAppelationCepage($a, $b){
-            $a_data = $a->getCouleurLibelle().$a->getProduitLibelle();
-            $b_data = $b->getCouleurLibelle().$b->getProduitLibelle();
-            return strcmp($a_data, $b_data);
+        public function sortLotsByThisTri($a, $b){
+			$a_data = '';
+			$b_data = '';
+			foreach($this->tri as $t) {
+				$a_data .= $a->getValueForTri($t);
+				$b_data .= $b->getValueForTri($t);
+				$cmp = strcmp($a_data, $b_data);
+				if ($cmp) {
+					return $cmp;
+				}
+			}
+            return 0;
         }
 
     public function addLeurre($hash, $numero_lot, $numero_table)

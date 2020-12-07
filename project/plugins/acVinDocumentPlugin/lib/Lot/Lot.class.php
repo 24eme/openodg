@@ -125,6 +125,31 @@ abstract class Lot extends acCouchdbDocumentTree
 		return $this->_get('produit_libelle');
 	}
 
+    public function getValueForTri($type) {
+        $type = strtolower($type);
+        $type = str_replace('é', 'e', $type);
+        if ($type == 'millesime') {
+            return $this->millesime;
+        }
+        if ($type == 'appellation') {
+            return $this->getConfig()->getAppellation()->getKey();
+        }
+
+        if ($type == 'couleur') {
+            return $this->getConfig()->getCouleur()->getKey();
+        }
+        if ($type == 'genre') {
+            return $this->getConfig()->getGenre()->getKey();
+        }
+        if ($type == 'cepage') {
+            return $this->details;
+        }
+        if ($type == 'produit') {
+            return $this->_get('produit_hash').$this->_get('details');
+        }
+        throw new sfException('unknown type of value : '.$type);
+    }
+
     public function isCleanable() {
 
         if(!$this->exist('produit_hash') || !$this->produit_hash){
