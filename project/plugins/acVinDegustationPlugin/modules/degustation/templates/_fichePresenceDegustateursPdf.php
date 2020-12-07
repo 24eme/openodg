@@ -34,16 +34,22 @@
     </div>
 
     <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
+      <tr>
+        <td style="width:40%;">Nom et prénom<br/>Téléphone / protable</td>
+        <td style="width:20%;">Collège</td>
+        <td style="width:20%;">Jury</td>
+        <td style="width:20%;">Signature</td>
+      </tr>
      <?php  foreach($degustateursByCollegeComptes as $college => $degustateurs): ?>
           <?php foreach ($degustateurs as $id_degustateur => $degustateur): ?>
             <tr>
-              <td style="width:40%;">
+              <td>
                 <small><?php echo $degustateur->nom_a_afficher ?></small><br/>
                 <small><?php echo $degustateur->telephone_bureau.($degustateur->telephone_mobile ? ' / '.$degustateur->telephone_mobile : null) ?></small>
               </td>
-              <td style="width:20%;"><br/><br/><small><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></small></td>
-              <td style="width:20%;"></td>
-              <td style="width:20%;"><small><?php echo "Présent(e)"  ?></small></td>
+              <td><br/><br/><small><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></small></td>
+              <td></td>
+              <td><small><?php echo "Présent(e)"  ?></small></td>
             </tr>
           <?php endforeach; ?>
     <?php endforeach; ?>
