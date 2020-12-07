@@ -27,7 +27,7 @@ Degustation:
                   numero_archive: { }
                   numero_cuve: { }
                   millesime: { }
-                  elevage: { }
+                  elevage: { required: false }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -63,7 +63,7 @@ Degustation:
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
-                        elevage: { }
+                        elevage: { required: false }
                         millesime: {  }
                         region: {  }
                         numero_dossier: {  }

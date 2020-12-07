@@ -164,7 +164,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->numero_cuve = $lot->numero_cuve;
 			$mvt->millesime = $lot->millesime;
 			$mvt->volume = $lot->volume;
-			$mvt->elevage = $lot->elevage;
 			$mvt->produit_hash = $lot->produit_hash;
 			$mvt->produit_libelle = $lot->produit_libelle;
 			$mvt->produit_couleur = $lot->getCouleurLibelle();
@@ -239,9 +238,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getMvtLotsPrelevables() {
          $mvt = array();
          foreach (MouvementLotView::getInstance()->getByStatut($this->campagne, Lot::STATUT_PRELEVABLE)->rows as $item) {
-             if (property_exists($item->value, 'elevage') && $item->value->elevage) {
-                 continue;
-             }
              $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
@@ -689,6 +685,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function getLotsByNumDossierNumCuve(){
+			$lots = array();
+			foreach ($this->getLots() as  $lot) {
+					$lots[$lot->numero_dossier][$lot->numero_cuve] = $lot;
+			}
+
+			return $lots;
+		}
+
 		public function getOdg(){
 			return sfConfig::get('sf_app');
 		}
@@ -703,5 +708,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $lots;
+		}
+
+		public function getComptesDegustateurs(){
+			$arrayAssocDegustCompte = array();
+			foreach ($this->getDegustateursStatutsParCollege() as $college => $degs) {
+				if(count($degs)){
+					foreach ($degs as $id_compte => $value) {
+						$compte = CompteClient::getInstance()->findByIdentifiant($id_compte);
+						$arrayAssocDegustCompte[$college][$id_compte] = $compte;
+					}
+				}
+			}
+			return $arrayAssocDegustCompte;
 		}
 }
