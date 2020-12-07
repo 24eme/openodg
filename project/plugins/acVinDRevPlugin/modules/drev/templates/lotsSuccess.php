@@ -28,17 +28,18 @@
                 <?php endif; ?>
               </div>
               <div class="col-md-3"><?php echo $lot->millesime; ?></div>
-              <div class="col-md-1"></div>
+              <div class="col-md-1 text-right">
+                <?php if($isAdmin): ?>
+                  <a href="<?php echo url_for("drev_lots_delete", $drev) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
+                <?php endif; ?>
+              </div>
             </div>
             <div class="row">
               <div class="col-md-2"></div>
               <div class="col-md-3">Numéro cuve : <?php echo $lot->numero_cuve; ?></div>
               <div class="col-md-3"><strong>Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></strong></div>
               <div class="col-md-3"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
-              <div class="col-md-1 text-right">
-                <?php if($isAdmin): ?>
-                  <a href="<?php echo url_for("drev_lots_delete", $drev) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
-                <?php endif; ?>
+              <div class="col-md-1" >
               </div>
             </div>
           </div>
@@ -55,6 +56,7 @@
               <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+
                             <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-3 control-label")); ?>
                             <div class="col-sm-9">
                                   <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
@@ -62,6 +64,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
+                      <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
                           <div class="col-sm-7">
                             <div class="checkbox checkboxlots">
@@ -89,7 +92,6 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
                             <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
