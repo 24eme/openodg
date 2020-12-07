@@ -33,9 +33,7 @@
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                 <li><a class="dropdown-item" href="#">Redéguster</a></li>
-                <?php if($chgtDenoms != null && isset($chgtDenoms[$keyLot])): ?>
-                <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_edition', array("sf_subject" => $chgtDenoms[$keyLot], 'key' => $keyLot)) ?>">Déclassement</a></li>
-              <?php endif; ?>
+                <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_lot', array('identifiant' => $m->declarant_identifiant, 'lot' => $keyLot)) ?>">Déclassement / Chgmt denom.</a></li>
                 <li><a class="dropdown-item" href="<?php echo url_for('degustation_etablissement_list', array('id' => $m->declarant_identifiant)) ?>">Voir l'historique</a></li>
                 <li><a class="dropdown-item" href="#">Clore</a></li>
             </ul>
