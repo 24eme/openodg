@@ -321,6 +321,8 @@ class degustationActions extends sfActions {
         $this->tri_array = explode('|', $this->tri);
 
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array);
+
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -641,23 +643,30 @@ class degustationActions extends sfActions {
     public function executeTriTable(sfWebRequest $request) {
         $degustation = $this->getRoute()->getDegustation();
         $numero_table = $request->getParameter('numero_table');
+        $recap = $request->getParameter('recap');
 
         $this->triTableForm = new DegustationTriTableForm(array());
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-
+            if($recap) {
+                return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
+            }
             return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
         }
 
         $this->triTableForm->bind($request->getParameter($this->triTableForm->getName()));
 
         if (!$this->triTableForm->isValid()) {
-
+            if($recap) {
+                return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
+            }
             return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
         }
 
         $values = $this->triTableForm->getValues();
-
+        if($recap) {
+            return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id, 'tri' => join('|', array_filter(array_values($values)))));
+        }
         return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
     }
 }

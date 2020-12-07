@@ -14,7 +14,7 @@
             <thead>
                 <tr>
                     <th class="col-xs-2">Table</th>
-                    <th class="col-xs-6">Couleur|Appellation|Cépage</th>
+                    <th class="col-xs-6"><?php echo $tri; ?> - <a href="#"  data-toggle="modal" data-target="#popupTableTriForm">changer</a></th>
                     <th class="col-xs-2"></th>
                     <th class="col-xs-2">Nombre d'échantillons</th>
                 </tr>
@@ -56,8 +56,8 @@
               <table class="table table-bordered table-condensed table-striped">
               <thead>
                     <tr>
-                      <th class="col-xs-10">Échantillons</th>
-                      <th class="col-xs-2">Tables</th>
+                        <th class="col-xs-10">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" href="#">changer</a> )</span></th>
+                        <th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
                     </tr>
               </thead>
               <tbody>
@@ -101,6 +101,7 @@
       			</div>
             </div>
           </form>
+          <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => $numero_table)), 'form' => $triTableForm)); ?>
       </div>
     </div>
   </div>
