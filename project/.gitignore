@@ -7,6 +7,7 @@ config/properties.ini
 apps/*/config/factories.yml
 web/declaration_dev.php
 web/*_*.php
+!web/*_dev.php
 cache/[^.]*
 log/[^.]*
 data/*
