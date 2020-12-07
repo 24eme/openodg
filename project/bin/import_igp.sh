@@ -9,8 +9,6 @@ ODG=$1
 
 . bin/config_$ODG.inc
 
-mkdir $TMPDIR 2> /dev/null
-
 EXPORT=$2
 
 if test "$EXPORT"; then
@@ -22,8 +20,8 @@ if test "$EXPORT"; then
   fi
 fi
 
-DATA_DIR=$TMPDIR/import_$ODG
-mkdir $DATA_DIR 2> /dev/null
+DATA_DIR=$WORKINGDIR/import/igp/imports/$ODG
+mkdir -p $DATA_DIR 2> /dev/null
 
 if test "$2" = "--delete"; then
 
@@ -39,7 +37,7 @@ if test "$2" = "--delete"; then
       if test "$3" = "-exp"; then
         echo "Export données"
         cd $WORKINGDIR/import/igp/
-        bash scrapping.sh
+        bash scrapping.sh config_$ODG.json
         cd $WORKINGDIR
       fi
     fi
@@ -60,8 +58,6 @@ ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
 do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
-
-rsync -a $DOCUMENTSDIR$ODG/ $DATA_DIR/
 
 echo "Import des Opérateurs"
 
