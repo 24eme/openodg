@@ -13,8 +13,9 @@
           			<thead>
           				<tr>
           					<th class="col-xs-8"><?php echo $tri; ?> (<a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</th>
-                    <th class="col-xs-1"></th>
-          					<th class="col-xs-3">Nombre d'échantillons</th>
+                            <th class="col-xs-1"></th>
+          					<th class="col-xs-2">Nombre d'échantillons</th>
+                            <th class="col-xs-1"></th>
           				</tr>
           			</thead>
           			<tbody id="synthese">
@@ -23,13 +24,15 @@
           				<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
           					<td><?php echo preg_replace('/ -(.*)/', '<span class="text-muted">\1</span>', $lotsProduit->libelle) ?></td>
                     <td></td>
-                    <td class="nblots"><?php echo count($lotsProduit->lotsTable); $total += count($lotsProduit->lotsTable); ?></td>
+                    <td class="nblots text-right"><?php echo count($lotsProduit->lotsTable); $total += count($lotsProduit->lotsTable); ?></td>
+                    <td></td>
           				</tr>
           			<?php endforeach; ?>
                   <tr>
                     <td class="text-right"></td>
                     <td><strong>Total</strong> : </td>
-                    <td class="nblots" ><span data-total="1"><?php echo $total ?></span></td>
+                    <td class="nblots text-right" ><span data-total="1"><?php echo $total ?></span></td>
+                    <td></td>
                   </tr>
           		</tbody>
           	</table>

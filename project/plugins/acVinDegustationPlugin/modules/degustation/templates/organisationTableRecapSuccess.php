@@ -15,8 +15,9 @@
                 <tr>
                     <th class="col-xs-2">Table</th>
                     <th class="col-xs-6"><?php echo $tri; ?> - <a href="#"  data-toggle="modal" data-target="#popupTableTriForm">changer</a></th>
-                    <th class="col-xs-2"></th>
+                    <th class="col-xs-1"></th>
                     <th class="col-xs-2">Nombre d'échantillons</th>
+                    <th class="col-xs-1"></th>
                 </tr>
             </thead>
             <tbody>
@@ -26,14 +27,16 @@
                     <td>Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?>&nbsp;<span class="caret"></span></td>
                     <td></td>
                     <td></td>
-                    <td><strong><?php echo count($table->lots); $total += count($table->lots); ?></strong></td>
+                    <td class='text-right'><strong><?php echo count($table->lots); $total += count($table->lots); ?></strong></td>
+                    <td></td>
                 </tr>
                     <?php foreach ($degustation->getSyntheseLotsTableCustomTri($numero_table, $tri_array->getRawValue()) as $hash => $lotsProduit): ?>
                       <tr class="vertical-center collapse accordion_<?php echo $numero_table ?>" data-hash="<?php echo $hash; ?>" >
                         <td></td>
                         <td><?php echo preg_replace('/ -(.*)/', '<span class="text-muted">\1</span>', $lotsProduit->libelle) ?></td>
                         <td></td>
-                        <td class="nblots"><?php echo count($lotsProduit->lotsTable) ?></td>
+                        <td class="nblots text-right"><?php echo count($lotsProduit->lotsTable) ?></td>
+                        <td></td>
                       </tr>
                     <?php endforeach; ?>
             <?php endforeach ?>
@@ -41,7 +44,8 @@
                 <td class=""></td>
                 <td></td>
                 <td class="text-right"><strong>Total : </strong></td>
-                <td class="nblots"><strong><?php echo $total ?></strong></td>
+                <td class="nblots text-right"><strong><?php echo $total ?></strong></td>
+                <td></td>
               </tr>
             </tbody>
           </table>
@@ -57,7 +61,7 @@
               <thead>
                     <tr>
                         <th class="col-xs-10">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" href="#">changer</a> )</span></th>
-                        <th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
+                        <th class="col-xs-2 text-center">Table</th>
                     </tr>
               </thead>
               <tbody>
