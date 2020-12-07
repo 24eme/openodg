@@ -13,7 +13,9 @@
 
 <ul class="nav nav-pills degustation">
   <?php for ($i= 0; $i < count($liste_tables); $i++): ?>
-    <li role="presentation" class="ajax <?php if($numero_table == ($i + 1)): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => ($i + 1), 'tri' => $tri)) ?>">Table <?php echo DegustationClient::getNumeroTableStr($i + 1); ?></a></li>
+    <li role="presentation" class="ajax <?php if($numero_table == ($i + 1)): echo "active"; endif; ?>">
+        <a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => ($i + 1), 'tri' => $tri)) ?>">Table <?php echo DegustationClient::getNumeroTableStr($i + 1); ?></a>
+    </li>
   <?php endfor;?>
   <?php if( $numero_table > count($liste_tables)): ?>
     <li role="presentation" class="active"><a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri)) ?>">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></a></li>

@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 
-<?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'tri' => $tri)); ?>
 
 <div class="row row-condensed">
   <div class="col-xs-12">
