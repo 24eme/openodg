@@ -7,6 +7,7 @@ class degustationActions extends sfActions {
         $this->form = new DegustationCreationForm($newDegutation);
         $newDegutation->getMvtLotsPrelevables();
         $this->lotsPrelevables = $newDegutation->getLotsPrelevables();
+        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -494,6 +495,10 @@ class degustationActions extends sfActions {
           }
           $this->chgtDenoms[$keyLot] = $chgtDenom;
       }
+    }
+
+    public function executeElevages(sfWebRequest $request) {
+      $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
     }
 
     public function executeEtiquettesPdf(sfWebRequest $request) {

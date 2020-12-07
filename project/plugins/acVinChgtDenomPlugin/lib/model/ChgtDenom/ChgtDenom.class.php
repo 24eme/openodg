@@ -194,7 +194,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
   			$mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
-        $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = ($lot->produit_hash)? $lot->getCouleurLibelle() : null;
@@ -211,7 +210,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = $lot->details;
         $mvt->campagne = $this->campagne;
-  			$mvt->specificite = $lot->specificite;  			
+  			$mvt->specificite = $lot->specificite;
         return $mvt;
     }
 
