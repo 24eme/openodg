@@ -1,8 +1,9 @@
+var configFile = process.argv.slice(2)[0];
 var Nightmare = require('nightmare');
 var fs = require('fs');
 const nightmare = Nightmare({ show: false
 })
-var config = require('./config.json');
+var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 
 
