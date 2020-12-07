@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheLotsAPrelevesPDFConfig extends ExportPDFConfig
+class ExportDegustationFicheLotsAPreleverPDFConfig extends ExportPDFConfig
 {
     public function __construct() {
         parent::__construct();
