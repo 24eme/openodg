@@ -273,9 +273,9 @@ degustation_fiche_recap_tables_pdf:
     requirements:
       sf_method: [get]
 
-degustation_fiche_lots_a_preleves_pdf:
-    url: /degustation/:id/ficheLotsAPreleves/pdf
-    param: { module: degustation, action: ficheLotsAPrelevesPDF }
+degustation_fiche_lots_a_prelever_pdf:
+    url: /degustation/:id/ficheLotsAPrelever/pdf
+    param: { module: degustation, action: ficheLotsAPreleverPDF }
     class: DegustationRoute
     options:
       model:    Degustation

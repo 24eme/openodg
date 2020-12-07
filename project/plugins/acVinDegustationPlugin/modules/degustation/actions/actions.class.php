@@ -627,10 +627,10 @@ class degustationActions extends sfActions {
 
     }
 
-    public function executeFicheLotsAPrelevesPDF(sfWebRequest $request){
+    public function executeFicheLotsAPreleverPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
 
-      $this->document = new ExportDegustationFicheLotsAPrelevesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportDegustationFicheLotsAPreleverPDF($degustation,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {
