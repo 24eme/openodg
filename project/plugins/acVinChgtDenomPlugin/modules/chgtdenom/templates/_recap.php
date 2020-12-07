@@ -11,7 +11,7 @@
   foreach($chgtDenom->lots as $k => $lot):
 ?>
   <div class="alert col-sm-<?php if (count($chgtDenom->lots) == 1): ?>12<?php else: ?>6<?php endif; ?>" style="background-color: #f8f8f8; border: 1px solid #e7e7e7;">
-    <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong></h4>
+    <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong><a href="<?php echo url_for('degustation_etablissement_list',array('id' => $lot->declarant_identifiant))."#".$lot->numero_dossier.$lot->numero_archive; ?>" class="btn btn-default btn-xs pull-right">visu du lot&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></h4>
     <table class="table table-condensed" style="margin: 0;">
       <tbody>
         <tr>

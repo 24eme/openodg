@@ -73,6 +73,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->validation);
     }
 
+    public function isValidee() {
+      return $this->isValide();
+    }
+
     public function isApprouve() {
       return ($this->validation_odg);
     }

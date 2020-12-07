@@ -81,4 +81,76 @@ class MouvementLotView extends acCouchdbView
         return $lot;
     }
 
+  public function getLotsStepsByDeclarantIdentifiant($identifiant){
+
+    $lotsSteps = array();
+
+    foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($identifiant)->rows as $item) {
+      $key = Lot::generateMvtKey($item->value);
+      if (!isset($lotsSteps[$key])) {
+        $lotsSteps[$key] = array();
+      }
+      if (!isset($lotsSteps[$key][$item->value->id_document])) {
+        $lotsSteps[$key][$item->value->id_document] = array();
+      }
+
+      $lotsSteps[$key][$item->value->id_document][$item->value->statut] = $this->constructLotsSteps($item->value);
+//var_dump($item->value);
+    }
+  //  exit;
+    return $lotsSteps;
+  }
+
+  private function constructLotsSteps($item){
+
+    $item->dossier_type = strtolower(preg_replace('/-.*/', '', $item->origine_document_id));
+    $item->dossier_libelle = ucfirst($item->dossier_type);
+    $client = $item->dossier_libelle."Client";
+    $item->dossier_origine = $client::getInstance()->find($item->origine_document_id);
+
+    $item->degustation = false;
+    if(preg_replace('/-.*/', '', $item->id_document) == DegustationClient::TYPE_COUCHDB){
+      $item->degustation = DegustationClient::getInstance()->find($item->id_document);
+      $item->degustation_anchor = $item->numero_dossier.$item->numero_archive;
+      $lot = $item->degustation->getLotByNumArchive($item->numero_archive);
+
+      if($item->degustation->isValidee() && in_array($lot->statut,Lot::$statuts_preleves)){
+        $item->degustation_step_route = "degustation_preleve";
+        $item->degustation_libelle = "prélévé";
+        $item->degustation_color = "success";
+
+        $item->numero_table_step_route = "degustation_organisation_table";
+        $item->numero_table_color = "default";
+        $item->numero_table = null;
+        if($lot->numero_table){
+          $item->numero_table = $lot->numero_table;
+          $item->numero_table_color = "success";
+
+          $item->resultat_step_route = "degustation_resultats";
+          $item->resultat_color = "default";
+          $item->conformite = null;
+          if($lot->exist('conformite') && !is_null($lot->conformite)){
+            $item->conformite = $lot->conformite;
+            if($lot->conformite == Lot::CONFORMITE_CONFORME){
+              $item->resultat_color = "success";
+            }else{
+              $item->resultat_color = "danger";
+            }
+          }
+        }
+
+      }elseif($item->degustation->isValidee()){
+        $item->degustation_step_route = "degustation_preleve";
+        $item->degustation_libelle = "préléver";
+        $item->degustation_color = "default";
+      }else{
+        $item->degustation_step_route = "degustation_validation";
+        $item->degustation_libelle = "à valider";
+        $item->degustation_color = "warning";
+      }
+    }
+
+    return $item;
+  }
+
 }

@@ -323,6 +323,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 	 }
 
+	 public function getLotByNumArchive($numero_archive){
+		 foreach ($this->lots as $lot) {
+			 if($lot->numero_archive == $numero_archive){
+				 return $lot;
+			 }
+		 }
+		 return null;
+	 }
+
 	 public function getNbLotsRestantAPreleve(){
 		 return $this->getNbLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT,false);
 	 }
