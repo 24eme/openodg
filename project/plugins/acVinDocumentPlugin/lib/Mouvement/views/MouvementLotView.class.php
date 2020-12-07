@@ -87,22 +87,36 @@ class MouvementLotView extends acCouchdbView
 
     foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($identifiant)->rows as $item) {
       $key = Lot::generateMvtKey($item->value);
+      $key = $item->value->numero_dossier.preg_replace("/[a-z]*$/", "", $item->value->numero_archive);
       if (!isset($lotsSteps[$key])) {
         $lotsSteps[$key] = array();
       }
       if (!isset($lotsSteps[$key][$item->value->id_document])) {
         $lotsSteps[$key][$item->value->id_document] = array();
       }
-
-      $lotsSteps[$key][$item->value->id_document][$item->value->statut] = $this->constructLotsSteps($item->value);
-//var_dump($item->value);
+      $lotsSteps[$key][$item->value->id_document] = $this->constructLotsSteps($item->value);
     }
-  //  exit;
+
+    foreach ($lotsSteps as $key => $itemsDocs) {
+        foreach ($itemsDocs as $keyDoc => $item) {
+          $item->chgtdenom = false;
+          if($item->origine_type == "chgtdenom"){
+            foreach ($itemsDocs as $item) {
+              $item->chgtdenom = $keyDoc;
+           }
+         }
+        foreach ($itemsDocs as $keyDoc => $item) {
+          if(preg_replace('/-.*/', '', $keyDoc) != DegustationClient::TYPE_COUCHDB){
+            unset($lotsSteps[$key][$keyDoc]);
+          }
+        }
+      }
+    }
+    ksort($lotsSteps);
     return $lotsSteps;
   }
 
   private function constructLotsSteps($item){
-
     $item->dossier_type = strtolower(preg_replace('/-.*/', '', $item->origine_document_id));
     $item->dossier_libelle = ucfirst($item->dossier_type);
     $client = $item->dossier_libelle."Client";
