@@ -489,6 +489,13 @@ class degustationActions extends sfActions {
 
     }
 
+    public function executeLot(sfWebRequest $request) {
+        $campagne = $request->getParameter('campagne');
+        $lot_id = $request->getParameter('id');
+        $this->lotsStepsHistory = MouvementLotView::getInstance()->getLotStepsByArchive($campagne, $lot_id);
+
+    }
+
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
       $this->manquements = DegustationClient::getInstance()->getManquements();

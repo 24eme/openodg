@@ -298,8 +298,11 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
 
         if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, $this->drev)) {
-
-            return $this->redirect('drev_vci', $this->drev);
+            if ($request->getParameter('prec')) {
+                return $this->redirect('drev_dr', $this->drev);
+            }else{
+                return $this->redirect('drev_vci', $this->drev);
+            }
         }
 
         if (DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
@@ -551,7 +554,7 @@ class drevActions extends sfActions {
                 return $this->redirect('drev_revendication_superficie', $this->drev);
             }
 
-            if(count($this->drev->declaration->getProduitsLots()) > 0) {
+            if(count($this->drev->declaration->getProduitsLots()) > 0 || ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()) {
 
                 return $this->redirect('drev_lots', $this->drev);
             }
@@ -598,7 +601,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if(count($this->drev->declaration->getProduitsLots()) > 0){
+        if(count($this->drev->declaration->getProduitsLots()) > 0 || ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
             return $this->redirect('drev_lots', $this->drev);
         }
 

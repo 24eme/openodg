@@ -13,28 +13,27 @@
       <thead>
         <th class="col-sm-1">N° Lot</th>
         <th class="col-sm-1">N° Dossier</th>
-        <th class="col-sm-2">Date</th>
-        <th class="col-sm-4">Appellation</th>
+        <th class="col-sm-1">Date</th>
+        <th class="col-sm-3">Appellation</th>
         <th class="col-sm-1 text-center">Dossier</th>
         <th class="col-sm-1 text-center">Degust.</th>
         <th class="col-sm-1 text-center">Table</th>
         <th class="col-sm-1 text-center">Dégusté</th>
+        <th class="col-sm-2 text-right"></th>
       </thead>
       <tbody>
         <?php foreach($lots as $lotKey => $lotDocs): ?>
-          <?php foreach($lotDocs as $id_doc => $lotSteps): ?>
-            <?php foreach($lotSteps as $step => $lot): ?>
+          <?php foreach($lotDocs as $id_doc => $lot): ?>
               <tr>
-                <td><?php echo $lot->numero_dossier;  ?></td>
                 <td><?php echo $lot->numero_archive;  ?></td>
+                <td><?php echo $lot->numero_dossier;  ?></td>
                 <td ><strong><?php echo Date::francizeDate($lot->date); ?></strong></td>
                 <td><strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?><strong class="pull-right">&nbsp;<?php echo echoFloat($lot->volume); ?>&nbsp;hl</strong></small></td>
                 <td class="text-center"><a class="btn btn-xs btn-success" href="<?php echo url_for($lot->dossier_type.'_visualisation',$lot->dossier_origine)?>"><?php echo $lot->dossier_libelle; ?></a></td>
                 <td class="text-center" >
                   <?php if($lot->degustation): ?>
                     <a class="btn btn-xs btn-<?php echo $lot->degustation_color?>" href="<?php echo url_for($lot->degustation_step_route,$lot->degustation)?>"><?php echo $lot->degustation_libelle; ?></a>
-                  <?php else: ?>
-                    <span class="glyphicon glyphicon-remove-sign text-muted"></span>
+
                   <?php endif; ?>
                 </td>
                 <td class="text-center">
@@ -44,8 +43,6 @@
                       : url_for($lot->numero_table_step_route, array('id' => $lot->degustation->_id)); ?>">
                       <?php echo ($lot->numero_table)? "Table ".$lot->numero_table : "Choisir"; ?>
                     </a>
-                  <?php else: ?>
-                    <span class="glyphicon glyphicon-remove-sign text-muted"></span>
                   <?php endif; ?>
 
                 </td>
@@ -62,13 +59,19 @@
                           endif;
                           ?>
                         </a>
-                      <?php else: ?>
-                        <span class="glyphicon glyphicon-remove-sign text-muted"></span>
                       <?php endif; ?>
                     </td>
+                    <td class=" text-right">
+                      <?php if($lot->chgtdenom): ?>
+                      <a class="btn btn-xs btn-success"
+                      href="<?php echo  url_for('chgtdenom_visualisation' , array('id' => $lot->chgtdenom))  ?>">ChgDenom&nbsp;</a>
+                    <?php endif; ?>
+                      <a class="btn btn-xs btn-default"
+                      href="<?php echo  url_for('degustation_lot' , array('id' => preg_replace("/^([0-9]{5}).+/","$1",$lot->numero_archive), 'campagne' => $lot->campagne))  ?>">detail&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                  </td>
                   </tr>
                 <?php endforeach; ?>
-              <?php endforeach; ?>
             <?php endforeach; ?>
             <tbody>
             </table>
