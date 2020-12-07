@@ -25,8 +25,6 @@ fi
 DATA_DIR=$TMPDIR/import_$ODG
 mkdir $DATA_DIR 2> /dev/null
 
-
-
 if test "$2" = "--delete"; then
 
     echo -n "Delete database http://$COUCHHOST:$COUCHPORT/$COUCHBASE, type database name to confirm ($COUCHBASE) : "
@@ -53,7 +51,7 @@ curl -sX PUT http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 
 cd .. > /dev/null
 make clean > /dev/null
-make > /dev/null
+make couchurl=http://$COUCHHOST:$COUCHPORT/$COUCHBASE > /dev/null
 cd - > /dev/null
 
 echo "Création des documents de configuration"
