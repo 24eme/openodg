@@ -134,8 +134,8 @@ degustation_tri_table:
     sf_method: [post]
 
 degustation_organisation_table_recap:
-  url: /degustation/:id/organisation-table-recap
-  param: { module: degustation, action: organisationTableRecap }
+  url: /degustation/:id/organisation-table-recap/:tri
+  param: { module: degustation, action: organisationTableRecap, tri: 0 }
   class: DegustationRoute
   options:
     model:    Degustation

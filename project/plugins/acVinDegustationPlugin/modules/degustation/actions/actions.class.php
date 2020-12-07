@@ -312,11 +312,14 @@ class degustationActions extends sfActions {
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1, 'tri' => $this->tri));
         }
 
-        return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id, 'tri' => $this->tri));
     }
 
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->tri = $request->getParameter('tri');
+        $this->tri_array = explode('|', $this->tri);
+
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
