@@ -53,6 +53,23 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
             $societe = null;
+
+            $civilite = null;
+            if(isset($data[self::CSV_CIVILITE]) && $data[self::CSV_CIVILITE] == "Madame") {
+                $civilite = "Mme";
+            }
+            if(isset($data[self::CSV_CIVILITE]) && $data[self::CSV_CIVILITE] == "Mademoiselle") {
+                $civilite = "Mme";
+            }
+            if(isset($data[self::CSV_CIVILITE]) && $data[self::CSV_CIVILITE] == "Monsieur") {
+                $civilite = "M";
+            }
+
+            $raisonSociale = $data[self::CSV_RAISON_SOCIALE];
+            if(!$raisonSociale) {
+                $raisonSociale = trim($civilite." ".$data[self::CSV_NOM]." ".$data[self::CSV_PRENOM]);
+            }
+
             $resultat = SocieteClient::matchSociete($societes, $data[self::CSV_RAISON_SOCIALE], 1);
             if($resultat && count($resultat) >= 1 && $data[self::CSV_RAISON_SOCIALE]) {
                 $societe = SocieteClient::getInstance()->find(key($resultat));
@@ -87,17 +104,8 @@ EOF;
             }
 
             $compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
-            if (isset($data[self::CSV_CIVILITE])){
-              if($data[self::CSV_CIVILITE] == "Madame") {
-                  $compte->civilite = "Mme";
-              }
-              if($data[self::CSV_CIVILITE] == "Mademoiselle") {
-                  $compte->civilite = "Mme";
-              }
-              if($data[self::CSV_CIVILITE] == "Monsieur") {
-                  $compte->civilite = "M";
-              }
-            }
+            $compte->civilite = $civilite;
+
             if (isset($data[self::CSV_NOM])){
               $compte->nom = $data[self::CSV_NOM];
             }
