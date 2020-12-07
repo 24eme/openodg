@@ -318,7 +318,7 @@ class degustationActions extends sfActions {
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->tri = $request->getParameter('tri');
-        $this->tri_array = explode('|', $this->tri);
+        $this->tri_array = explode('|', strtolower($this->tri));
 
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
         $this->triTableForm = new DegustationTriTableForm($this->tri_array, true);
