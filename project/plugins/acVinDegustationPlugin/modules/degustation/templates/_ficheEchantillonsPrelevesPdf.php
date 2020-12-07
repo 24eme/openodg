@@ -45,7 +45,7 @@
     </div>
 
     <p style="margin-left:0;">
-      <?php echo "Nombre total de lots : ".count($degustation->lots)."  dont : ";?>
+      <?php echo "Nombre total de lots : ".count($lots)."  dont : ";?>
       <?php $i = 0; foreach ($lots as $key => $l): ?>
         <?php foreach ($l as $key => $value): ?>
           <?php echo count($l)." éch. ".$value->declarant_nom; break;?>
