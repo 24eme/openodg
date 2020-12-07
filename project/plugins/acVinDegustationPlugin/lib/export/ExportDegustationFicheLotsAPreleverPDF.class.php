@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
+class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -73,7 +73,7 @@ class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationFicheLotsAPrelevesPDFConfig();
+        return new ExportDegustationFicheLotsAPreleverPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -82,7 +82,7 @@ class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_echantillons_preleves_%s", $degustation->_id);
+        $filename = sprintf("fiche_tournee_prelevements_%s", $degustation->_id);
 
 
         if ($with_rev) {
