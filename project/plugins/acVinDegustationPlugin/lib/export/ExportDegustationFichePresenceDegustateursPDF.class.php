@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
+class ExportDegustationFichePresenceDegustateursPDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -14,21 +14,12 @@ class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
     }
 
     public function create() {
-      $etablissements = array();
-      $nbLotTotal = 0;
-      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
-				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
-        $nbLotTotal += count($lotsEtablissement);
-        $etablissements[$numDossier] = $etablissement;
-      }
         @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheLotsAPrelevesPdf',
+          $this->getPartial('degustation/fichePresenceDegustateursPdf',
           array(
             'degustation' => $this->degustation,
-            'etablissements' => $etablissements,
-            "date_edition" => date("d/m/Y"),
-            'nbLotTotal' => $nbLotTotal,
-            'lots' => $this->degustation->getLotsByNumDossierNumCuve()
+            'degustateursByCollegeComptes' => $this->degustation->getComptesDegustateurs()
+
           )
         ));
     }
@@ -52,7 +43,7 @@ class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s Feuille de présence", $this->degustation->getOdg());
 
         return $titre;
     }
@@ -73,7 +64,7 @@ class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationFicheLotsAPrelevesPDFConfig();
+        return new ExportDegustationFichePresenceDegustateursPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -82,7 +73,7 @@ class ExportDegustationFicheLotsAPrelevesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_echantillons_preleves_%s", $degustation->_id);
+        $filename = sprintf("feuille_de_presence_%s", $degustation->_id);
 
 
         if ($with_rev) {

@@ -72,7 +72,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_echantillons_preleves_%s", $degustation->_id);
+        $filename = sprintf("fiche_synthese_recap_tables_%s", $degustation->_id);
 
 
         if ($with_rev) {

@@ -63,7 +63,7 @@
     <?php $i=1;?>
      <?php  foreach($lots as $lotInfo): ?>
       <tr style="line-height:17px;">
-        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $i ?></strong></td>
+        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymise() ?></strong></td>
         <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
         <td><?php echo tdStart() ?>
           &nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?>

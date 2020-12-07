@@ -6,7 +6,8 @@ class degustationActions extends sfActions {
         $newDegutation = new Degustation();
         $this->form = new DegustationCreationForm($newDegutation);
         $newDegutation->getMvtLotsPrelevables();
-        $this->lotsPrelevables = $newDegutation->getLotsPrelevables();
+        $this->lotsPrelevables = $newDegutation->getLotsPrelevablesSortByDate();
+        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -270,11 +271,19 @@ class degustationActions extends sfActions {
 
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
-
         $this->numero_table = $request->getParameter('numero_table');
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTable($this->numero_table);
-        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table);
+
+        if (!$request->getParameter('tri')) {
+            $tri_default = 'Couleur|Genre|Appellation';
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $tri_default));
+        }
+        $this->tri = $request->getParameter('tri');
+        $this->tri_array = explode('|', strtolower($this->tri));
+
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
+        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array, false);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -301,15 +310,20 @@ class degustationActions extends sfActions {
 
         if($this->degustation->hasFreeLots()) {
 
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1));
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1, 'tri' => $this->tri));
         }
 
-        return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id, 'tri' => $this->tri));
     }
 
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->tri = $request->getParameter('tri');
+        $this->tri_array = explode('|', strtolower($this->tri));
+
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array, true);
+
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -487,6 +501,10 @@ class degustationActions extends sfActions {
       $this->manquements = DegustationClient::getInstance()->getManquements();
     }
 
+    public function executeElevages(sfWebRequest $request) {
+      $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
+    }
+
     public function executeEtiquettesPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
 
@@ -618,10 +636,55 @@ class degustationActions extends sfActions {
 
     }
 
-    public function executeFicheLotsAPrelevesPDF(sfWebRequest $request){
+    public function executeTriTable(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $numero_table = $request->getParameter('numero_table');
+        $this->triTableForm = new DegustationTriTableForm(array());
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
+        }
+
+        $this->triTableForm->bind($request->getParameter($this->triTableForm->getName()));
+        $recap = $this->triTableForm->getValue('recap');
+
+        if (!$this->triTableForm->isValid()) {
+            if($recap) {
+                return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
+            }
+            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
+        }
+
+        $values = $this->triTableForm->getValues();
+        unset($values['recap']);
+
+        if($recap) {
+            return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id, 'tri' => join('|', array_filter(array_values($values)))));
+        }
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
+    }
+
+    public function executeFicheLotsAPreleverPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
 
-      $this->document = new ExportDegustationFicheLotsAPrelevesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportDegustationFicheLotsAPreleverPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+    }
+
+    public function executeFichePresenceDegustateursPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFichePresenceDegustateursPDF($degustation,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {

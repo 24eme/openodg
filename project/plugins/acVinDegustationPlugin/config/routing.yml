@@ -114,8 +114,8 @@ degustation_degustateur_absence:
     sf_method: [get, post]
 
 degustation_organisation_table:
-  url: /degustation/:id/organisation-table/:numero_table
-  param: { module: degustation, action: organisationTable, numero_table: 0 }
+  url: /degustation/:id/organisation-table/:numero_table/:tri
+  param: { module: degustation, action: organisationTable, numero_table: 0, tri: 0}
   class: DegustationRoute
   options:
     model:    Degustation
@@ -123,9 +123,19 @@ degustation_organisation_table:
   requirements:
     sf_method: [get, post]
 
+degustation_tri_table:
+  url: /degustation/:id/tri-table/:numero_table
+  param: { module: degustation, action: triTable}
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [post]
+
 degustation_organisation_table_recap:
-  url: /degustation/:id/organisation-table-recap
-  param: { module: degustation, action: organisationTableRecap }
+  url: /degustation/:id/organisation-table-recap/:tri
+  param: { module: degustation, action: organisationTableRecap, tri: 0 }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -200,6 +210,11 @@ degustation_manquements:
   requirements:
     sf_method: [get]
 
+degustation_elevages:
+  url: /degustation/elevages
+  param: { module: degustation, action: elevages }
+  requirements:
+    sf_method: [get]
 
 degustation_etiquette_pdf:
   url: /degustation/:id/etiquettes/pdf
@@ -273,9 +288,19 @@ degustation_fiche_recap_tables_pdf:
     requirements:
       sf_method: [get]
 
-degustation_fiche_lots_a_preleves_pdf:
-    url: /degustation/:id/ficheLotsAPreleves/pdf
-    param: { module: degustation, action: ficheLotsAPrelevesPDF }
+degustation_fiche_lots_a_prelever_pdf:
+    url: /degustation/:id/ficheLotsAPrelever/pdf
+    param: { module: degustation, action: ficheLotsAPreleverPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_fiche_presence_degustateurs_pdf:
+    url: /degustation/:id/fichePresenceDegustateurs/pdf
+    param: { module: degustation, action: fichePresenceDegustateursPDF }
     class: DegustationRoute
     options:
       model:    Degustation

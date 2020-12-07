@@ -235,8 +235,10 @@ class Configuration extends BaseConfiguration {
 
     public function getLabelsLibelles($labels) {
         $libelles = array();
-        foreach ($labels as $key) {
-            $libelles[$key] = $this->labels[$key];
+        if (is_array($labels)) {
+            foreach ($labels as $key) {
+                $libelles[$key] = $this->labels[$key];
+            }
         }
 
         return $libelles;
