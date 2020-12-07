@@ -499,15 +499,6 @@ class degustationActions extends sfActions {
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
       $this->manquements = DegustationClient::getInstance()->getManquements();
-      foreach ($this->manquements as $keyLot => $manquement) {
-          $etablissement = EtablissementClient::getInstance()->find($manquement->declarant_identifiant);
-          $chgtDenom = ChgtDenomClient::getInstance()->getLast($etablissement->identifiant);
-          if($chgtDenom == null){
-            $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
-            $chgtDenom->save();
-          }
-          $this->chgtDenoms[$keyLot] = $chgtDenom;
-      }
     }
 
     public function executeElevages(sfWebRequest $request) {
