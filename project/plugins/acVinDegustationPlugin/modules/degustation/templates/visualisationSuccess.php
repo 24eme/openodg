@@ -25,7 +25,8 @@
                 <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>">Étiquettes</a></li>
-                  <li><a href="<?php echo url_for('degustation_fiche_lots_a_preleves_pdf', $degustation) ?>">Fiche tournée prélevement</a></li>
+                  <li><a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>">Fiche tournée prélevement</a></li>
+                  <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>">Fiche lots ventilés</a></li>
                 </ul>
               </div>
             </div>
@@ -150,7 +151,19 @@
   <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2 class="panel-title">Présence des dégustateurs</h2>
+        <h2 class="panel-title">
+          <div class="row">
+            <div class="col-xs-4">Présence des dégustateurs</div>
+            <div class="col-xs-8 text-right">
+              <div class="dropdown btn-group">
+                <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>">Feuille de présence</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </h2>
       </div>
       <div class="panel-body">
         <div class="row">

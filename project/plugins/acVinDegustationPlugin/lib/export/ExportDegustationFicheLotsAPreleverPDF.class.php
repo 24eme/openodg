@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
+class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -14,11 +14,21 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public function create() {
+      $etablissements = array();
+      $nbLotTotal = 0;
+      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
+				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
+        $nbLotTotal += count($lotsEtablissement);
+        $etablissements[$numDossier] = $etablissement;
+      }
         @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheRecapTablesPdf',
+          $this->getPartial('degustation/ficheLotsAPrelevesPdf',
           array(
             'degustation' => $this->degustation,
-            'lots' => $this->degustation->getLotsTablesByNumAnonyme()
+            'etablissements' => $etablissements,
+            "date_edition" => date("d/m/Y"),
+            'nbLotTotal' => $nbLotTotal,
+            'lots' => $this->degustation->getLotsByNumDossierNumCuve()
           )
         ));
     }
@@ -42,7 +52,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s \n\n\n FICHE DE SYNTHÈSE", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
 
         return $titre;
     }
@@ -63,7 +73,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationFicheRecapTablesPDFConfig();
+        return new ExportDegustationFicheLotsAPreleverPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -72,7 +82,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_synthese_recap_tables_%s", $degustation->_id);
+        $filename = sprintf("fiche_tournee_prelevements_%s", $degustation->_id);
 
 
         if ($with_rev) {

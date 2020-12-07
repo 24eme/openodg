@@ -671,4 +671,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 			return $lots;
 		}
+
+		public function getComptesDegustateurs(){
+			$arrayAssocDegustCompte = array();
+			foreach ($this->getDegustateursStatutsParCollege() as $college => $degs) {
+				if(count($degs)){
+					foreach ($degs as $id_compte => $value) {
+						$compte = CompteClient::getInstance()->findByIdentifiant($id_compte);
+						$arrayAssocDegustCompte[$college][$id_compte] = $compte;
+					}
+				}
+			}
+			return $arrayAssocDegustCompte;
+		}
 }
