@@ -1,20 +1,28 @@
-mkdir -p imports
-if [ -d "imports/$(cat config.json | jq '.file_name' | sed s/\"//g)" ]; then
-  rm -r "imports/$(cat config.json | jq '.file_name' | sed s/\"//g)";
+
+if ! test "$1"; then
+    echo "Fichier config requis";
+    exit 1;
 fi
 
-FILE_NAME=$(cat config.json | jq '.file_name' | sed s/\"//g)
+CONFIGFILE=$1
 
-mkdir -p imports/$(cat config.json | jq '.file_name' | sed s/\"//g)
+mkdir -p imports
+if [ -d "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)" ]; then
+  rm -r "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)";
+fi
+
+FILE_NAME=$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+
+mkdir -p imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
 if test "$DISPLAY"; then
-  node scrapping.js
-  node scrapping_cepages.js
-  node scrapping_membres_innactifs.js
+  node scrapping.js $CONFIGFILE
+  node scrapping_cepages.js $CONFIGFILE
+  node scrapping_membres_innactifs.js $CONFIGFILE
 
 else
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_cepages.js
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_membres_innactifs.js
+  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js $CONFIGFILE
+  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_cepages.js $CONFIGFILE
+  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_membres_innactifs.js $CONFIGFILE
 fi
 
 bash script_verify.sh
