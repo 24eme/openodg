@@ -1,6 +1,6 @@
 <?php
 
-class igp13Configuration extends sfApplicationConfiguration
+class igpConfiguration extends sfApplicationConfiguration
 {
 
     public function configure()

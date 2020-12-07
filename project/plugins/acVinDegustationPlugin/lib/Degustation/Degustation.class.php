@@ -163,7 +163,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->numero_cuve = $lot->numero_cuve;
 			$mvt->millesime = $lot->millesime;
 			$mvt->volume = $lot->volume;
-			$mvt->elevage = $lot->elevage;
 			$mvt->produit_hash = $lot->produit_hash;
 			$mvt->produit_libelle = $lot->produit_libelle;
 			$mvt->produit_couleur = $lot->getCouleurLibelle();
@@ -238,9 +237,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getMvtLotsPrelevables() {
          $mvt = array();
          foreach (MouvementLotView::getInstance()->getByStatut($this->campagne, Lot::STATUT_PRELEVABLE)->rows as $item) {
-             if (property_exists($item->value, 'elevage') && $item->value->elevage) {
-                 continue;
-             }
              $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);

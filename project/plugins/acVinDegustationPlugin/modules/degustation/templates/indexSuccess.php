@@ -93,4 +93,8 @@
 <tbody>
 </table>
 <?php endif; ?>
+<div class="page-header no-border">
+    <h2>Elevages</h2>
+</div>
+<p><strong><?php echo count($lotsElevages); ?> lots</strong> sont actuellement en élevages : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
 </div>
