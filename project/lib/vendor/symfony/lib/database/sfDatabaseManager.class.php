@@ -62,7 +62,7 @@ class sfDatabaseManager
    */
   public function loadConfiguration()
   {
-    if ($this->configuration instanceof sfApplicationConfiguration && $this->configuration->getConfigCache()->checkConfig('config/databases.'.$this->configuration->getApplication().'.yml'))
+    if ($this->configuration instanceof sfApplicationConfiguration && count($this->configuration->getConfigPaths('config/databases.'.$this->configuration->getApplication().'.yml')))
     {
         $databases = include($this->configuration->getConfigCache()->checkConfig('config/databases.'.$this->configuration->getApplication().'.yml'));
     }
