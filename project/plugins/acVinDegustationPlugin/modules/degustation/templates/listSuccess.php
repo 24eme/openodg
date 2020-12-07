@@ -67,7 +67,7 @@
                       href="<?php echo  url_for('chgtdenom_visualisation' , array('id' => $lot->chgtdenom))  ?>">ChgDenom&nbsp;</a>
                     <?php endif; ?>
                       <a class="btn btn-xs btn-default"
-                      href="<?php echo  url_for('degustation_lot' , array('id' => $lot->numero_archive))  ?>">detail&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
+                      href="<?php echo  url_for('degustation_lot' , array('id' => preg_replace("/^([0-9]{5}).+/","$1",$lot->numero_archive), 'campagne' => $lot->campagne))  ?>">detail&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
                     </a>
                   </td>
                   </tr>

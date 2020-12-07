@@ -6,7 +6,7 @@ degustation:
   class: DegustationGeneralRoute
 
 degustation_lot:
-  url: /degustation/lot/:id
+  url: /degustation/lot/:campagne/:id
   param: { module: degustation, action: lot }
   requirements:
     sf_method: [get]
