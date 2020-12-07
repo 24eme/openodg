@@ -1,11 +1,19 @@
-mkdir -p imports
-if [ -d "imports/$(cat config.json | jq '.file_name' | sed s/\"//g)" ]; then
-  rm -r "imports/$(cat config.json | jq '.file_name' | sed s/\"//g)";
+
+if ! test "$1"; then
+    echo "Fichier config requis";
+    exit 1;
 fi
 
-FILE_NAME=$(cat config.json | jq '.file_name' | sed s/\"//g)
+CONFIGFILE=$1
 
-mkdir -p imports/$(cat config.json | jq '.file_name' | sed s/\"//g)
+mkdir -p imports
+if [ -d "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)" ]; then
+  rm -r "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)";
+fi
+
+FILE_NAME=$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+
+mkdir -p imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
 if test "$DISPLAY"; then
   node scrapping.js
   node scrapping_cepages.js
