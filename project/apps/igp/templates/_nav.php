@@ -23,14 +23,14 @@
 
 
 <nav id="menu_navigation" class="navbar navbar-default container">
-        <div class="navbar-header hidden-lg hidden-md">
+        <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="<?php echo url_for('accueil') ?>"></a>
+          <a class="navbar-brand" style="padding: 0;" href="<?php echo url_for('accueil') ?>"><img style="height:50px;" src="/images/logo_<?php echo sfConfig::get('sf_app') ?>.png" /></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
