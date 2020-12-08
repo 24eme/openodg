@@ -297,3 +297,13 @@ degustation_fiche_presence_degustateurs_pdf:
       type:     object
     requirements:
       sf_method: [get]
+
+degustation_proces_verbal_degustation_pdf:
+    url: /degustation/:id/procesVerbalDegustation/pdf
+    param: { module: degustation, action: procesVerbalDegustationPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
