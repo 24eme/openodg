@@ -4,12 +4,12 @@ cd $(dirname $0)/..
 
 . bin/config.inc
 
-DOC=$1
+DOC_TYPE=$1
 WAITSLEEP=$2
 REGION=$3
 
-if ! test "$DOC" ; then
-	echo "USAGE: $0 DOC_TYPE";
+if ! test "$DOC_TYPE" ; then
+	echo "USAGE: $0 DOC_TYPE_TYPE";
 	exit 1
 fi
 
