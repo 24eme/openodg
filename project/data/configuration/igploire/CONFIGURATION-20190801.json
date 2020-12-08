@@ -6,7 +6,7 @@
     "certifications": {
       "IGP_VALDELOIRE": {
         "libelle": "IGP",
-        "format_libelle": "%c% %g% %a% %l% %co% %ce% %m%",
+        "format_libelle": "%a% %l% %co% %ce% %m%",
         "code": "IGP_VALDELOIRE",
         "code_produit": null,
         "code_comptable": null,
