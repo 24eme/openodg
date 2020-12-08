@@ -209,7 +209,6 @@ EOF;
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
             $lot->cepages = $cepages;
-            $lot->elevage = 0;
             $lot->id_document = $drev->_id;
             $lot->millesime = $millesime;
             $lot->numero_dossier = $numeroDossier;
@@ -219,7 +218,6 @@ EOF;
             $lot->destination_type = null;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
-            $lot->statut = $statut;
             $lot->statut = $statut;
 
             $deleted = array();

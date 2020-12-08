@@ -15,8 +15,8 @@ $degust_date = $campagne.'-09-01 12:45';
 $degust_date_fr = '01/09/'.$campagne;
 $degust_time_fr = '12:45';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
-$degust =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_degustateur');
-
+$degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
+var_dump($degust->_id);
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
@@ -159,25 +159,53 @@ $degustation->updateLotLogement($degustation->lots[0], $degustation->lots[0]->nu
 $t->is($degustation->lots[0]->numero_cuve, $lot_mvt2->numero_cuve + 1);
 
 $t->comment("Dégustateurs");
-$form = new DegustationSelectionDegustateursForm($degustation);
-$defaults = $form->getDefaults();
-$t->ok(isset($defaults['degustateurs']['degustateur_porteur_de_memoire'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme porteur de mémoire');
-$t->ok(isset($defaults['degustateurs']['degustateur_technicien'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme technicien');
-$t->ok(isset($defaults['degustateurs']['degustateur_usager_du_produit'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme usager du produit');
+$formPorteurDeMemoire = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_porteur_de_memoire'));
+$defaultsPorteurDeMemoire = $formPorteurDeMemoire->getDefaults();
+
+$t->ok(isset($defaultsPorteurDeMemoire['degustateurs']['degustateur_porteur_de_memoire'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme porteur de mémoire');
 $valuesRev = array(
     '_revision' => $degustation->_rev,
 );
+
 $valuesRev['degustateurs']['degustateur_porteur_de_memoire'][$degust->_id]['selectionne'] = 1;
+$formPorteurDeMemoire->bind($valuesRev);
+$formPorteurDeMemoire->save();
+$t->is(count($degustation->degustateurs->degustateur_porteur_de_memoire), 1, 'On a bien notre dégustateur porteur de mémoire');
+
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$formTechnicien = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_technicien'));
+$defaultsTechnicien = $formTechnicien->getDefaults();
+$t->ok(isset($defaultsTechnicien['degustateurs']['degustateur_technicien'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme technicien');
+$valuesRev = array(
+    '_revision' => $degustation->_rev,
+);
+
 $valuesRev['degustateurs']['degustateur_technicien'][$degust->_id]['selectionne'] = 1;
+$formTechnicien->bind($valuesRev);
+$formTechnicien->save();
+$t->is(count($degustation->degustateurs->degustateur_technicien), 1, 'On a bien le dégustateur technicien');
+
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$formUsager = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_usager_du_produit'));
+$defaultsUsager = $formUsager->getDefaults();
+$t->ok(isset($defaultsUsager['degustateurs']['degustateur_usager_du_produit'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme usager du produit');
+
+$valuesRev = array(
+    '_revision' => $degustation->_rev,
+);
+
 $valuesRev['degustateurs']['degustateur_usager_du_produit'][$degust->_id]['selectionne'] = 1;
 
-$form->bind($valuesRev);
-$form->save();
+$formUsager->bind($valuesRev);
+$formUsager->save();
+
+$t->is(count($degustation->degustateurs->degustateur_usager_du_produit), 1, 'On a bien le dégustateur usager du produit');
+
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is(count($degustation->degustateurs), 3, 'On a bien les trois collèges');
-$t->is(count($degustation->degustateurs->degustateur_porteur_de_memoire), 1, 'On a bien notre dégustateur porteur de mémoire');
-$t->is(count($degustation->degustateurs->degustateur_technicien), 1, 'On a bien le dégustateur technicien');
-$t->is(count($degustation->degustateurs->degustateur_usager_du_produit), 1, 'On a bien le dégustateur usager du produit');
+
 
 $t->comment('Présence dégustateur');
 $t->comment('On confirme les deux premiers degustateurs');

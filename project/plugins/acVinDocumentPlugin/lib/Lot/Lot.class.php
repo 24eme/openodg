@@ -15,6 +15,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_NONCONFORME = "NON_CONFORME";
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
+    const STATUT_ELEVAGE = "ELEVAGE";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -33,7 +34,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CONFORME => 'Conforme',
         self::STATUT_NONCONFORME => 'Non conforme',
         self::STATUT_CHANGE => 'Changé',
-        self::STATUT_DECLASSE => 'Déclassé'
+        self::STATUT_DECLASSE => 'Déclassé',
+        self::STATUT_ELEVAGE => 'En élevage'
     );
 
 
@@ -125,31 +127,42 @@ abstract class Lot extends acCouchdbDocumentTree
 		return $this->_get('produit_libelle');
 	}
 
+    public function getValueForTri($type) {
+        $type = strtolower($type);
+        $type = str_replace('é', 'e', $type);
+        if ($type == 'millesime') {
+            return ($this->millesime) ? $this->millesime : 'XXXX';
+        }
+        if ($type == 'appellation') {
+            return $this->getConfig()->getAppellation()->getKey();
+        }
+
+        if ($type == 'couleur') {
+            return $this->getConfig()->getCouleur()->getKey();
+        }
+        if ($type == 'genre') {
+            return $this->getConfig()->getGenre()->getKey();
+        }
+        if ($type == 'cepage') {
+            return $this->details;
+        }
+        if ($type == 'produit') {
+            return $this->_get('produit_hash').$this->_get('details');
+        }
+        throw new sfException('unknown type of value : '.$type);
+    }
+
     public function isCleanable() {
 
         if(!$this->exist('produit_hash') || !$this->produit_hash){
           return true;
         }
 
-        foreach($this as $key => $value) {
-            if($key == 'millesime' && $value = $this->getDocument()->getCampagne()) {
-
-                continue;
-            }
-            if($key == 'produit_hash' || $key == "produit_libelle") {
-                continue;
-            }
-
-            if($value instanceof acCouchdbJson && !count($value->toArray(true, false))) {
-                continue;
-            }
-
-            if($value) {
-                return false;
-            }
+        if(!$this->exist('volume') || !$this->volume){
+          return true;
         }
 
-        return true;
+        return false;
     }
 
     public function getDestinationDateFr()
@@ -213,5 +226,39 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getUnicityKey(){
         return KeyInflector::slugify($this->produit_hash.'/'.$this->volume.'/'.$this->millesime.'/'.$this->numero_dossier.'/'.$this->numero_archive);
+    }
+
+    public function getTriHash(array $tri = null) {
+        if (!$tri) {
+            return $this->produit_hash;
+        }
+        $hash = '';
+        foreach($tri as $type) {
+            $hash .= $this->getValueForTri($type);
+        }
+        return $hash;
+    }
+    public function getTriLibelle(array $tri = null) {
+        if (!$tri) {
+            return $this->produit_libelle;
+        }
+        $format = '';
+        if (in_array('appellation', $tri)) {
+            $format .= '%a% ';
+        }
+        if (in_array('genre', $tri)) {
+            $format .= '%g% ';
+        }
+        if (in_array('couleur', $tri)) {
+            $format .= '%co% ';
+        }
+        $libelle = $this->getConfig()->getLibelleFormat(null, $format)." ";
+        if (in_array('millesime', $tri)) {
+            $libelle .= $this->millesime.' ';
+        }
+        if (in_array('cépage', $tri)) {
+            $libelle .= "- ".$this->details.' ';
+        }
+        return $libelle;
     }
 }

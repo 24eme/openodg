@@ -52,8 +52,7 @@
                       <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                         <td>
                           <div class="row">
-                            <div class="col-xs-4 text-right"><?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
-                              <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?></div>
+                            <div class="col-xs-4 text-right"><?php echo $lot->getNumeroAnonymise() ?></div>
                             <div class="col-xs-4 text-right"><?php echo $lot->produit_libelle;?></div>
                             <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
                             <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>

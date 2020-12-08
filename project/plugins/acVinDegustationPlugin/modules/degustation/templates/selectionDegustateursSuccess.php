@@ -8,30 +8,18 @@
   <h2>Sélection des dégustateurs</h2>
 </div>
 
-<ul class="nav nav-pills degustation">
+<ul class="nav nav-pills degustation collegeCounter">
   <?php foreach ($colleges as $college_local_key => $college_local): ?>
     <?php if($college_local_key == $college): $college_libelle = $college_local;  endif; ?>
-    <li role="presentation" class="ajax <?php if($college_local_key == $college): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_selection_degustateurs", array('id' => $degustation->_id, 'college' => $college_local_key)) ?>"><?php echo $college_local; ?></a></li>
+    <li role="presentation" class="ajax <?php if($college_local_key == $college): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_selection_degustateurs", array('id' => $degustation->_id, 'college' => $college_local_key)) ?>"><?php echo $college_local; ?>
+      &nbsp;<span class="badge <?php echo $college_local_key; ?>"><?php echo count($degustation->getOrAdd('degustateurs')->getOrAdd($college_local_key)); ?></span></a></li>
   <?php endforeach; ?>
 </ul>
 <div class="row row-condensed">
   <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-body">
-        <div class="alert alert-info" role="alert">
-          <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?></h3>
-          <h4>Lieu : <strong><?php echo $degustation->getLieuNom(); ?></strong></h4>
-          <table class="table table-condensed">
-            <tbody>
-              <?php foreach (DegustationConfiguration::getInstance()->getColleges() as $tag => $libelle): ?>
-                <tr class="vertical-center" data-hash="<?php echo $infosDegustation["degustateurs"][$libelle]['key']; ?>" >
-                  <td class="col-xs-4" >Nombre de <strong><?php echo $libelle; ?>&nbsp;:</strong></td>
-                  <td class="col-xs-8"><strong class="<?php echo $infosDegustation["degustateurs"][$libelle]['key']; ?>" ><?php echo $infosDegustation["degustateurs"][$libelle]['total']; ?></strong></td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
+
         <p>Sélectionnez l'ensemble des <?php echo strtolower($college_libelle).'s'; ?> en vue de leurs participations à la dégustation</p>
 
         <div class="form-group">
@@ -73,7 +61,7 @@
                   ?>
                   <tr class="vertical-center cursor-pointer hamzastyle-item" data-words='<?= $words ?>'>
                     <td><?php echo $compte->getLibelleWithAdresse() ?></td>
-                    <td class="text-center" data-hash="<?php echo $infosDegustation["degustateurs"][$collegeName]['key']; ?>">
+                    <td class="text-center">
                       <div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $compteForm['selectionne']->renderError() ?>
                         <div class="col-xs-12">

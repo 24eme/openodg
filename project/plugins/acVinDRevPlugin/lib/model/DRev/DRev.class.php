@@ -157,6 +157,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
        return $lots;
     }
 
+    public function getLotByNumArchive($numero_archive){
+      foreach ($this->lots as $lot) {
+        if($lot->numero_archive == $numero_archive){
+          return $lot;
+        }
+      }
+      return null;
+    }
+
     public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
 
@@ -829,6 +838,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot = $this->add('lots')->add();
         $lot->millesime = $this->campagne;
         $lot->statut = Lot::STATUT_PRELEVABLE;
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+          $lot->add('specificite','aucune');
+        }
         return $lot;
     }
 
@@ -1192,13 +1204,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
   public function archiverLot($numeroDossier) {
       $lastNum = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne(Lot::TYPE_ARCHIVE, $this->archivage_document->getCampagne());
       $num = 0;
-      if (preg_match("/[0-9]+/", $lastNum, $m)) {
+      if (preg_match("/^([0-9]+).*/", $lastNum, $m)) {
         $num = $m[1];
       }
       foreach($this->lots as $lot) {
-        $num++;
-        $lot->numero_archive = sprintf("%05d", $num);
-        $lot->numero_dossier = $numeroDossier;
+        if (empty($lot->numero_archive) && empty($lot->numero_dossier)) {
+          $num++;
+          $lot->numero_archive = sprintf("%05d", $num);
+          $lot->numero_dossier = $numeroDossier;
+        }
       }
   }
 
@@ -1355,7 +1369,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
-        $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = $lot->getCouleurLibelle();

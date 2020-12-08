@@ -49,7 +49,7 @@ class DRevLotForm extends acCouchdbObjectForm
 
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
-          $this->setValidator('specificite', new sfValidatorChoice(array('choices' => array_keys($this->getSpecificites()))));
+          $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
 
         for($i = 0; $i < self::NBCEPAGES; $i++) {
@@ -76,6 +76,9 @@ class DRevLotForm extends acCouchdbObjectForm
             }
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+        }
+        if (!empty($values['elevage'])) {
+          $this->getObject()->statut = Lot::STATUT_ELEVAGE;
         }
     }
 

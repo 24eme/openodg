@@ -298,8 +298,11 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
 
         if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, $this->drev)) {
-
-            return $this->redirect('drev_vci', $this->drev);
+            if ($request->getParameter('prec')) {
+                return $this->redirect('drev_dr', $this->drev);
+            }else{
+                return $this->redirect('drev_vci', $this->drev);
+            }
         }
 
         if (DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
@@ -551,7 +554,7 @@ class drevActions extends sfActions {
                 return $this->redirect('drev_revendication_superficie', $this->drev);
             }
 
-            if(count($this->drev->declaration->getProduitsLots()) > 0) {
+            if(count($this->drev->declaration->getProduitsLots()) > 0 || ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()) {
 
                 return $this->redirect('drev_lots', $this->drev);
             }
@@ -598,7 +601,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if(count($this->drev->declaration->getProduitsLots()) > 0){
+        if(count($this->drev->declaration->getProduitsLots()) > 0 || ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
             return $this->redirect('drev_lots', $this->drev);
         }
 
@@ -669,6 +672,7 @@ class drevActions extends sfActions {
         }
 
         $this->drev->validate($dateValidation);
+        $this->drev->cleanLots();
         $this->drev->save();
 
         if($this->getUser()->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
@@ -679,6 +683,7 @@ class drevActions extends sfActions {
 
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
+            $this->drev->cleanLots();  
             $this->drev->save();
             $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
 

@@ -17,6 +17,14 @@
       var state = $(this).bootstrapSwitch('state');
       var form = $(this).parents('form');
 
+      if(form.hasClass('prelevements')){
+        updateSynthesePrelevementLots();
+      }
+
+      if(form.hasClass('degustateurs')){
+        updateSyntheseDegustateurs();
+      }
+
       var hash = $(this).parents('td').attr("data-hash");
       if (hash === undefined) {
          return true;
@@ -26,13 +34,6 @@
         updateSyntheseTable($(this),state,hash);
       }
 
-      if(form.hasClass('prelevements')){
-        updateSynthesePrelevementLots($(this),state,hash);
-      }
-
-      if(form.hasClass('degustateurs')){
-        updateSyntheseDegustateurs($(this),state,hash);
-      }
 
     });
 
@@ -60,50 +61,46 @@
       }
     }
 
-    var updateSynthesePrelevementLots = function(elt,state,hash){
-      var valLotsSelectionnes = $('tr strong.nbLotsSelectionnes').html();
-      var regex = /[0-9]+$/g;
+    var updateSynthesePrelevementLots = function(){
 
-      if(valLotsSelectionnes.match(regex)){
-        var nbLotToAdd = -1;
-        if(state){
-          nbLotToAdd = 1;
-        }
-        var old = parseInt(valLotsSelectionnes);
-        var diff = parseInt(nbLotToAdd);
-        var newvalLotsSelectionnes = old+diff;
-        $('tr strong.nbLotsSelectionnes').html(""+newvalLotsSelectionnes);
-      }
+      $('.degustation.prelevements').each(function(){
+        var nbLotsSelectionnes = 0;
+        var adherents = {};
 
-      adherents = {};
-      $('.degustation .bsswitch').each(function () {
-        var state = $(this).bootstrapSwitch('state');
-        if(state){
-          adherents[$(this).parents('td').attr("data-hash")]=1;
-        }
+        $(this).find('.bsswitch').each(function () {
+           var state = $(this).bootstrapSwitch('state');
+           if(state){
+             nbLotsSelectionnes++;
+             adherents[$(this).parents('td').attr("data-hash")]=1;
+           }
+
       });
-
+      $('tr strong.nbLotsSelectionnes').html(""+nbLotsSelectionnes);
       $('tr strong.nbAdherents').html(""+Object.size(adherents));
+       });
+    }
+
+    updateSynthesePrelevementLots();
+
+    var updateSyntheseDegustateurs = function(){
+      $('.degustation.degustateurs').each(function(){
+
+        var college = 0;
+
+        $(this).find('.bsswitch').each(function () {
+           var state = $(this).bootstrapSwitch('state');
+           if(state){
+             college++;
+           }
+
+      });
+        $(".collegeCounter li.active span.badge").html(""+college);
+
+       });
 
     }
 
-    var updateSyntheseDegustateurs = function(elt,state,hash){
-      var collegeKey =elt.parents('td').attr('data-hash');
-      var valDegustateurSelectionne = $('tr td strong.'+collegeKey).html();
-      var regex = /[0-9]+$/g;
-
-      if(valDegustateurSelectionne.match(regex)){
-        var nbLotToAdd = -1;
-        if(state){
-          nbLotToAdd = 1;
-        }
-        var old = parseInt(valDegustateurSelectionne);
-        var diff = parseInt(nbLotToAdd);
-        var newvalDegustateurSelectionne = old+diff;
-        $('tr td strong.'+collegeKey).html(""+newvalDegustateurSelectionne);
-      }
-
-    }
+    updateSyntheseDegustateurs();
 
     $('#time').on('click',function(){
       $(this).clockpicker({placement: 'bottom',align: 'left',autoclose: true});

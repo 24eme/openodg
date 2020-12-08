@@ -73,6 +73,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->validation);
     }
 
+    public function isValidee() {
+      return $this->isValide();
+    }
+
     public function isApprouve() {
       return ($this->validation_odg);
     }
@@ -95,6 +99,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lots[$key] = $item->value;
       }
       return $lots;
+    }
+
+    public function getLotByNumArchive($numero_archive){
+      foreach ($this->lots as $lot) {
+        if($lot->numero_archive == $numero_archive){
+          return $lot;
+        }
+      }
+      return null;
     }
 
     public function hasLots() {
@@ -194,7 +207,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
   			$mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
-        $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = ($lot->produit_hash)? $lot->getCouleurLibelle() : null;
@@ -211,7 +223,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = $lot->details;
         $mvt->campagne = $this->campagne;
-  			$mvt->specificite = $lot->specificite;  			
+  			$mvt->specificite = $lot->specificite;
         return $mvt;
     }
 

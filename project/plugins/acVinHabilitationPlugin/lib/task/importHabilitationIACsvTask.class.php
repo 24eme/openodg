@@ -12,7 +12,7 @@ class importHabilitationIACsvTask extends sfBaseTask
   const CSV_COMPLEMENT = 6;
   const CSV_CP = 7;
   const CSV_VILLE = 8;
-  
+
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
@@ -59,6 +59,24 @@ EOF;
         $this->convert_products['Mont Caume'] = 'certifications/IGP/genres/TRANQ/appellations/MCA';
         $this->convert_products['Maures'] = 'certifications/IGP/genres/TRANQ/appellations/MAU';
         $this->convert_products['Alpes Maritimes'] = 'certifications/IGP/genres/TRANQ/appellations/AMA';
+        $this->convert_products['Vaucluse'] = 'certifications/IGP/genres/TRANQ/appellations/VAU';
+        $this->convert_products['Principaute Orange'] = 'certifications/IGP/genres/TRANQ/appellations/PDO';
+        $this->convert_products['Aigues'] = 'certifications/IGP/genres/TRANQ/appellations/AIG';
+        $this->convert_products['Val de Loire'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Loire Atlantique'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/LAT';
+        $this->convert_products['Maine et Loire'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/MEL';
+        $this->convert_products['Loir et Cher'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/LEC';
+        $this->convert_products['Vendée'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/VEN';
+        $this->convert_products['Cotes de la Charité'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
+        $this->convert_products['Indre et Loire'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IDL';
+        $this->convert_products["Coteaux du Cher et de l'Arnon"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/CHE';
+        $this->convert_products["Coteaux de Tannay"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
+        $this->convert_products['Cher'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/CHE';
+        $this->convert_products['Allier'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/ALL';
+        $this->convert_products['Vienne'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/VIE';
+        $this->convert_products['Nievre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
+        $this->convert_products['Sarthe'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/SAR';
+        $this->convert_products['Indre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IND';
     }
 
     protected function execute($arguments = array(), $options = array())
@@ -66,9 +84,9 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        
+
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
-        
+
         $datas = array();
         foreach(file($arguments['fichier_habilitations']) as $line) {
             $line = str_replace("\n", "", $line);
