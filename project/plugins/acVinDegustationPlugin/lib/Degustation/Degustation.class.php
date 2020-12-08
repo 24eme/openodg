@@ -731,4 +731,32 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 			return $arrayAssocDegustCompte;
 		}
+
+		public function getVolumeLotsConformesOrNot($conforme = true){
+			$volume = 0;
+			foreach ($this->getLotsDegustes() as $lot) {
+				if($conforme && $lot->exist('conformite') && $lot->conformite == Lot::CONFORMITE_CONFORME){
+					$volume += $lot->volume;
+				}
+				if(!$conforme && $lot->isNonConforme()){
+					$volume += $lot->volume;
+				}
+			}
+			return $volume;
+		}
+
+		public function getEtablissementLotsConformesOrNot($conforme = true){
+			$etablissements = array();
+
+			foreach ($this->getLotsDegustes() as $lot) {
+				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
+				if($conforme && $lot->exist('conformite') && $lot->conformite == Lot::CONFORMITE_CONFORME){
+					$etablissements[] = $etablissement;
+				}
+				if(!$conforme && $lot->isNonConforme()){
+					$etablissements[] = $etablissement;
+				}
+			}
+			return $etablissements;
+		}
 }
