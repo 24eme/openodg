@@ -10,8 +10,6 @@ cat $DREVPATH | grep -E "      [A-Z_]+\:" | sed -r 's|^([\ ]+)([A-Z_]+)\:|\2|' |
 
   bash bin/export_docs.sh DRev 10 $odg > $EXPORTDIR"/"$odg"/drev.csv.part"
   iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR"/"$odg"/drev.csv.part" > $EXPORTDIR"/"$odg"/drev.csv"
-  rm $EXPORTDIR"/"$odg"/drev.csv.part"
-
 done
 
 sleep 10
@@ -32,7 +30,7 @@ sleep 10
 
 
 cat $DREVPATH | grep -E "      [A-Z_]+\:" | sed -r 's|^([\ ]+)([A-Z_]+)\:|\2|' | while read odg ; do
-  head -n 1 $EXPORTDIR/drev.csv.part > $EXPORTDIR"/"$odg"/dr.csv.part"
+  head -n 1 $EXPORTDIR/dr.csv.part > $EXPORTDIR"/"$odg"/dr.csv.part"
   head -n 1 $EXPORTDIR/sv12.csv.part > $EXPORTDIR"/"$odg"/sv12.csv.part"
   head -n 1 $EXPORTDIR/sv11.csv.part > $EXPORTDIR"/"$odg"/sv11.csv.part"
   head -n 1 $EXPORTDIR/pieces.csv.part > $EXPORTDIR"/"$odg"/pieces.csv.part"
@@ -63,7 +61,7 @@ cat $DREVPATH | grep -E "      [A-Z_]+\:" | sed -r 's|^([\ ]+)([A-Z_]+)\:|\2|' |
   rm $EXPORTDIR"/"$odg"/sv11.csv.part"
   iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR"/"$odg"/pieces.csv.part" > $EXPORTDIR"/"$odg"/pieces.csv"
   rm $EXPORTDIR"/"$odg"/pieces.csv.part"
-
+  rm $EXPORTDIR"/"$odg"/drev.csv.part"
 done
 
 rm $EXPORTDIR/dr.csv.part
