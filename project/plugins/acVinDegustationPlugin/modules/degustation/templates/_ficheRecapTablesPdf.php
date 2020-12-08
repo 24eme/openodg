@@ -63,7 +63,7 @@ th {
     <div>
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
-           <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>N°A</strong></th>
+           <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>N°Ano</strong></th>
            <th class="topempty bg-white" style="width:10%; "><?php echo tdStart() ?><strong>Couleur</strong></th>
            <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>IGP</strong></th>
            <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Cépage</strong></th>
@@ -86,7 +86,7 @@ th {
         </tr>
         <?php  foreach($lots as $numAnonyme => $lotInfo): ?>
          <tr style="line-height:17px;">
-           <td><?php echo tdStart() ?><strong><small><?php echo $numAnonyme ?></small></strong></td>
+           <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymise() ?></small></strong></td>
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></small></strong></td>
            <td><?php echo tdStart() ?>
              <small>&nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?></small>

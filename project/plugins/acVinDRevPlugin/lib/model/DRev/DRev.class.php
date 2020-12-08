@@ -157,6 +157,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
        return $lots;
     }
 
+    public function getLotByNumArchive($numero_archive){
+      foreach ($this->lots as $lot) {
+        if($lot->numero_archive == $numero_archive){
+          return $lot;
+        }
+      }
+      return null;
+    }
+
     public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
 
@@ -1199,9 +1208,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $num = $m[1];
       }
       foreach($this->lots as $lot) {
-        $num++;
-        $lot->numero_archive = sprintf("%05d", $num);
-        $lot->numero_dossier = $numeroDossier;
+        if (empty($lot->numero_archive) && empty($lot->numero_dossier)) {
+          $num++;
+          $lot->numero_archive = sprintf("%05d", $num);
+          $lot->numero_dossier = $numeroDossier;
+        }
       }
   }
 

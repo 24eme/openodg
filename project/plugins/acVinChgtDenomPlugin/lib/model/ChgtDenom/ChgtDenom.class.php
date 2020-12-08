@@ -73,6 +73,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->validation);
     }
 
+    public function isValidee() {
+      return $this->isValide();
+    }
+
     public function isApprouve() {
       return ($this->validation_odg);
     }
@@ -95,6 +99,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lots[$key] = $item->value;
       }
       return $lots;
+    }
+
+    public function getLotByNumArchive($numero_archive){
+      foreach ($this->lots as $lot) {
+        if($lot->numero_archive == $numero_archive){
+          return $lot;
+        }
+      }
+      return null;
     }
 
     public function hasLots() {

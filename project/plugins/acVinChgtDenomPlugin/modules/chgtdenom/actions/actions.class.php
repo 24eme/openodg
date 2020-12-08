@@ -13,6 +13,17 @@ class chgtdenomActions extends sfActions {
         return $this->redirect('chgtdenom_lots', $chgtDenom);
     }
 
+    public function executeCreateLot(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        $lot = $request->getParameter('lot');
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
+
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
+        $chgtDenom->save();
+
+        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id, 'key' => $lot));
+    }
+
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
