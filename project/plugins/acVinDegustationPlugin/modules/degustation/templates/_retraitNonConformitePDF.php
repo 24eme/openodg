@@ -33,7 +33,7 @@
 <br/><br/>
 
 <table style="font-size:12px;"><tr><td>Objet : Levée d’un manquement relevé sur le Contrôle organoleptique du produit de l’IGP Pays des Bouches du Rhône, réf. NC Bouches du Rhône - 1416 Aix </td></tr></table>
-<br/><br/><br/><br/>
+<br/><br/><br/>
 
 
 <table style="font-size:12px;">
@@ -44,12 +44,14 @@
 
 <?php foreach($degustation->getLots() as $lot): ?>
   <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant): ?>
+    <?php if(isset($lot_cuve) && if($lot->numero_cuve == $lot_cuve)): ?>
         <?php $Newlot = $lot  ?>
+    <?php endif; ?>
   <?php endif; ?>
 <?php endforeach; ?>
 <p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$Newlot->numero_archive ?></strong></p>
 
-<table border="3" cellpadding=0 cellspacing=0 style="text-align: center;font-size:12px;">
+<table border="1" cellpadding=0 cellspacing=0 style="text-align: center;font-size:12px;">
   <tr>
     <th style="font-weight:bold">N° de lot OPERATEUR</th>
     <th style="font-weight:bold">Logement<br/>(Cuve)</th>

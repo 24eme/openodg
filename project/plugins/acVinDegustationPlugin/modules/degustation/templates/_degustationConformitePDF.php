@@ -29,17 +29,9 @@
 <br/>
 <table style="font-size:12px;"><tr><td style="width: 324px;"><?php echo 'Aix-en-Provence, le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-<!-- Temporaire car fonction non fonctionnel -->
-<?php $Nonconforme = false; ?>
-<?php foreach($degustation->getLots() as $lot):?>
-  <?php if ($lot->statut == "NON_CONFORME"):?>
-    <?php $Nonconforme = true; ?>
-  <?php endif; ?>
-<?php endforeach; ?>
 <table style="font-size:12px;"><tr><td>Objet : Résultats contrôle interne,<strong> lots conformes </strong></td></tr></table>
 <br/><br/>
-<!-- <table style="font-size:12px;"><tr><td>Objet : Résultats contrôle interne,<strong> lots <php if($degustation->getNbLotsNonConformes() > 0): ?> non conformes <php else: ?> conformes <php endif; ?></strong></td></tr></table>
-<br/><br/> -->
+
 
 <table style="font-size:12px;">
   <tr><td>Madame, Monsieur,</td></tr>

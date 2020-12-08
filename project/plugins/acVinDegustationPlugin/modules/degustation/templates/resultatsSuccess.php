@@ -41,7 +41,7 @@
                     <th class="col-xs-10">Échantillons</th>
                     <th class="col-xs-1"></th>
                     <th class="col-xs-1">Conformité</th>
-                    <th class="col-xs-1" style="display:none">Courrier</th>
+                    <th class="col-xs-1">Courrier</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -77,11 +77,11 @@
                             <?php endif; ?>
                           <?php endif; ?>
                         </td>
-                        <td class="text-center" hidden>
+                        <td class="text-center">
                           <?php if(!$lot->isNonConforme()): ?>
                           <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
                           <?php else: ?>
-                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
+                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_cuve' => $lot->numero_cuve)) ?>">PDF</a>
                           <?php endif; ?>
                         </td>
                       </tr>

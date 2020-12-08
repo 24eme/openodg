@@ -106,11 +106,14 @@
 </table>
 
 <?php foreach($degustation->getLots() as $lot): ?>
-  <?php if($lot->statut == "NON_CONFORME"): ?>
+  <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant): ?>
         <?php $Newlot = $lot  ?>
+    <?php if(isset($lot_cuve) && ($lot->numero_cuve == $lot_cuve)): ?>
+        <?php $Newlot = $lot  ?>
+    <?php endif; ?>
   <?php endif; ?>
 <?php endforeach; ?>
-<p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$Newlot->numero_archive ?></strong></p>
+<p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$Newlot->numero_cuve ?></strong></p>
 
 <table border="3" cellpadding=0 cellspacing=0 style="text-align: center;font-size:12px;">
   <tr>
@@ -126,7 +129,7 @@
   <tr>
     <td><?php echo (int)$Newlot->numero_dossier ?></td>
     <td><?php echo (int)$Newlot->numero_archive ?></td>
-    <td><?php echo (int)$Newlot->numero_archive ?></td>
+    <td><?php echo (int)$Newlot->numero_cuve ?></td>
     <td><?php echo $Newlot->produit_libelle ?></td>
     <td><?php echo $Newlot->elevage ?></td>
     <td><?php echo $Newlot->millesime ?></td>

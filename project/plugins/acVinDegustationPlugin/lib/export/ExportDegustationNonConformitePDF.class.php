@@ -4,8 +4,9 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
 
     protected $degustation = null;
     protected $etablissement = null;
+    protected $lot_cuve = null;
 
-    public function __construct($degustation,$etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation,$etablissement,$lot_cuve, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
 
@@ -20,7 +21,7 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement )));
+        $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement,'lot_cuve'=>$this->lot_cuve )));
       }
 
 

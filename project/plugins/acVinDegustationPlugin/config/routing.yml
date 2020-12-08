@@ -244,7 +244,7 @@ degustation_conformite_pdf:
     sf_method: [get,post]
 
 degustation_non_conformite_pdf:
-  url: /degustation/:id/:identifiant/DegustationNonConformite/pdf
+  url: /degustation/:id/:identifiant/:lot_cuve/DegustationNonConformite/pdf
   param: { module: degustation, action: degustationNonConformitePDF }
   class: DegustationRoute
   options:
@@ -253,8 +253,8 @@ degustation_non_conformite_pdf:
   requirements:
     sf_method: [get,post]
 
-degustation_non_conformite_pdf:
-  url: /degustation/:id/:identifiant/RetraitNonConformite/pdf
+retrait_non_conformite_pdf:
+  url: /degustation/:id/:identifiant/:lot_cuve/RetraitNonConformite/pdf
   param: { module: degustation, action: retraitNonConformitePDF }
   class: DegustationRoute
   options:
