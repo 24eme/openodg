@@ -582,8 +582,9 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $lot_dossier = $request['lot_dossier'];
 
-      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {
@@ -602,8 +603,9 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $lot_dossier = $request['lot_dossier'];
 
-      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$lot_dossier,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {
