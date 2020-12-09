@@ -5,6 +5,9 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
     public function configure() {
         $formLots = new BaseForm();
 		foreach ($this->getDocument()->lots as $key => $lot) {
+			if ($lot->isLeurre()) {
+				continue;
+			}
 			$formLots->embedForm($key, new DegustationPreleveLotForm($lot));
 		}
         $this->embedForm('lots', $formLots);
@@ -19,7 +22,9 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
                 $this->getDocument()->lots->get($key)->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
                 continue;
             }
-            $this->getDocument()->lots->get($key)->statut = Lot::STATUT_PRELEVE;
+            if(!$this->getDocument()->lots->get($key)->isPreleve()){
+              $this->getDocument()->lots->get($key)->statut = Lot::STATUT_PRELEVE;
+            }
         }
 
         $this->getDocument()->save();

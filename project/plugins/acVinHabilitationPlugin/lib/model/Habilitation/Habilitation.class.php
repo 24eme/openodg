@@ -69,8 +69,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getProduitsConfig() {
-
-        return $this->getConfiguration()->getProduitsCahierDesCharges();
+      return HabilitationClient::getinstance()->getProduitsConfig($this->getConfiguration());
     }
 
     public function getProduitsHabilites() {
@@ -120,7 +119,8 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
-        $node = $this->getConfiguration()->get('/declaration/'.$hash)->getNodeCahierDesCharges();
+        $prod = $this->getConfiguration()->get('/declaration/'.$hash);
+        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prod);
         $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
         $exist = $this->exist('declaration/'.$hashToAdd);
         $produit = $this->add('declaration')->add($hashToAdd);
@@ -131,8 +131,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
                 $this->addHistoriqueNewProduit($produit_libelle);
             }
             $this->declaration->reorderByConf();
+            $produit = $this->get('declaration')->get($hashToAdd);
         }
-        return $this->get($produit->getHash());
+        return $produit;
     }
 
 
@@ -231,7 +232,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function isExcluExportCsv() {
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement || $etablissement->statut != EtablissementClient::STATUT_ACTIF) {
+        if(!$etablissement || ( isset($etablissement->statut) && $etablissement->statut != EtablissementClient::STATUT_ACTIF) ) {
 
             return true;
         }

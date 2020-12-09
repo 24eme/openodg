@@ -1,8 +1,9 @@
+var configFile = process.argv.slice(2)[0];
 var Nightmare = require('nightmare');
 var fs = require('fs');
-const nightmare = Nightmare({ show: true
+const nightmare = Nightmare({ show: false
 })
-var config = require('./config.json');
+var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 
 
@@ -24,9 +25,12 @@ nightmare
   })
    .click('.cepages')   //pour donner accès au lien sinon site en maintenance
    .goto(config.web_site_produits)
-  .click('#btnCepage')
-  .wait('#ContentPlaceHolder1_gvCepage')
-    .evaluate(()=>{
+   .refresh()
+   .wait(3000)
+   .wait('#btnCepage')
+   .click('#btnCepage')
+   .wait('#ContentPlaceHolder1_gvCepage')
+   .evaluate(()=>{
      var elements = document.querySelector('#ContentPlaceHolder1_gvCepage').innerText
      return elements;
      })

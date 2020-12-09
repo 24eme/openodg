@@ -172,7 +172,7 @@
             var lignes_a_prelever = new Array();
             var nb_a_prelever = $('#nb_a_prelever').val();
 
-            $("#listes_operateurs .list-group-item-item[data-state!=active]").each(function() {
+            $("#listes_operateurs .pre-selected[data-state!=active]").each(function() {
                 lignes_a_prelever.push($(this));
             });
 

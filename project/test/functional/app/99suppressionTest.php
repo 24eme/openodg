@@ -3,7 +3,7 @@
 include dirname(__FILE__).'/../../bootstrap/functional.php';
 
 if (getenv("NODELETE")) {
-    $b = new sfTestFunctional(new sfBrowser());
+    $b = new sfTestFunctional(new Browser());
     exit(0);
 }
 

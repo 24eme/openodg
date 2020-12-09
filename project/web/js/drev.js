@@ -8,10 +8,10 @@
     $.initExploitation = function()
     {
         $('#btn_exploitation_modifier').click(function(e) {
-            $('#btn_exploitation_modifier').addClass("hidden");
-            $('#btn_exploitation_annuler').removeClass("hidden");
-            $('#row_form_exploitation').removeClass("hidden");
-            $('#row_info_exploitation').addClass("hidden");
+            $('#btn_exploitation_modifier').addClass("hidden")
+            $('#btn_exploitation_annuler').removeClass("hidden")
+            $('.row_form_exploitation').removeClass("hidden");
+            $('.row_info_exploitation').addClass("hidden");
         });
         if($('#drevDenominationAuto').length){
             if($('#drevDenominationAuto').data("auto")){
@@ -255,7 +255,7 @@
                         if(libelle) {
                             libelle = libelle + ", ";
                         }
-                        var p = (total)? parseInt((volume/total) * 100) : 0;
+                        var p = (total)? Math.round((volume/total) * 100) : 0;
                         libelle = libelle + cepage + "&nbsp;("+p+"%)";
                         $(this).removeClass('transparence-sm');
                     } else {
@@ -352,6 +352,17 @@
             $(this).parents('.bloc-lot').find('.select2autocomplete').select2('val', "");
             $(this).parents('.bloc-lot').hide();
         })
+    }
+
+    $.calculTotal = function() {
+      var total = 0.0;
+      $("tr.hamzastyle-item:visible").each(function(){
+        total+=parseFloat($(this).find(".lot_volume").html());
+      });
+
+      $("tr .total_lots").html(total.toFixed(2));
+      $(document).scrollTo("#table_igp_title");
+
     }
 
     /* =================================================================================== */

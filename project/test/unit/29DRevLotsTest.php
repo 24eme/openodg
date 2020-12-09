@@ -8,7 +8,7 @@ if ($application != 'loire') {
     return;
 }
 
-$t = new lime_test(49);
+$t = new lime_test(53);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -144,9 +144,9 @@ $values['lots'][2]["millesime"] = ($campagne-2)."";
 $values['lots'][2]["produit_hash"] = $produit2->getConfig()->getHash();
 $values['lots'][2]["destination_type"] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['lots'][2]["numero"] = "A";
-$values['lots'][2]["cepage_0"] = "Melon";
+$values['lots'][2]["cepage_0"] = "MELON B";
 $values['lots'][2]["repartition_0"] = "85";
-$values['lots'][2]["cepage_1"] = "Cabernet";
+$values['lots'][2]["cepage_1"] = "GROLLEAU N";
 $values['lots'][2]["repartition_1"] = "15";
 
 $form->bind($values);
@@ -170,9 +170,9 @@ $t->is($lot->produit_libelle, $produit2->getConfig()->getLibelleComplet(), "Le l
 $t->is($lot->destination_type, DRevClient::LOT_DESTINATION_VRAC_FRANCE, "La destination est ".DRevClient::LOT_DESTINATION_VRAC_FRANCE);
 $t->is($lot->numero, "A", "Le numero est A");
 $t->is(count($lot->cepages->toArray(true, false)), 2, "2 cépages déclarés");
-$t->is($lot->cepages->getFirstKey(), "Melon", "Le cépage est Melon");
+$t->is($lot->cepages->getFirstKey(), "MELON B", "Le cépage est MELON B");
 $t->is($lot->cepages->getFirst(), 85, "La repartition du cépage est de 85");
-$t->is($lot->cepages->getLastKey(), "Cabernet", "Le cépage est Cabernet");
+$t->is($lot->cepages->getLastKey(), "GROLLEAU N", "Le cépage est GROLLEAU N");
 $t->is($lot->cepages->getLast(), 15, "La repartition du cépage est de 15");
 $t->is($drev->get($produit_hash1)->volume_revendique_issu_recolte, 0, "Le volument de revendentication du produit ".$produit1->getConfig()->getLibelleComplet()." a été synchronisé par rapport aux lots");
 $t->is($drev->get($produit_hash2)->volume_revendique_issu_recolte, 5, "Le volument de revendentication du produit ".$produit2->getConfig()->getLibelleComplet()." a été synchronisé par rapport aux lots");
@@ -190,7 +190,63 @@ $form->bind($values);
 
 $t->ok($form->isValid(), "Le formulaire après suppression d'une ligne est valide");
 $form->save();
+$drev->cleanLots();
 
 $t->is(count($drev->lots), 2, "il reste 2 lots dans la Drev");
 $t->is($drev->lots[0]->produit_hash,$produit1->getParent()->getHash(),"Le 1er lot restant est correct");
 $t->is($drev->lots[1]->produit_hash,$produit2->getParent()->getHash(),"Le 2nd lot restant est correct");
+
+
+
+$t->comment("Test de la visu des lots");
+
+$produit1 = $drev->get($produit_hash1);
+$produit2 = $drev->get($produit_hash2);
+
+$produit1->volume_revendique_total = 55;
+$produit2->volume_revendique_total = 10;
+
+$produit1->recolte->recolte_nette = 55;
+$produit2->recolte->recolte_nette = 10;
+
+$produit1->recolte->volume_total = 55;
+$produit2->recolte->volume_total = 10;
+
+$lot3 = $drev->addLot();
+
+$lot3->millesime = $campagne;
+$lot3->numero = "5";
+$lot3->volume = 20;
+$lot3->destination_type = null;
+$lot3->destination_date = ($campagne+1).'-04-15';
+$lot3->produit_hash = $produit1->getConfig()->getHash();
+$lot3->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
+
+$lot4 = $drev->addLot();
+$lot4->millesime = $campagne;
+$lot4->numero = "6";
+$lot4->volume = 30;
+$lot4->destination_type = null;
+$lot4->destination_date = ($campagne+1).'-04-15';
+$lot4->produit_hash = $produit1->getConfig()->getHash();
+$lot4->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
+
+$lot5 = $drev->addLot();
+$lot5->millesime = $campagne;
+$lot5->numero = "7";
+$lot5->volume = 5;
+$lot5->destination_type = null;
+$lot5->destination_date = ($campagne+1).'-04-15';
+$lot5->produit_hash = $produit2->getConfig()->getHash();
+$lot5->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
+
+$drev->save();
+
+$produitLotsByCouleur = $drev->summerizeProduitsLotsByCouleur();
+
+$t->is(count($produitLotsByCouleur),1,"Le recap des lots ne contient qu'un unique total couleur");
+$couleurLibelle = array_shift(array_keys($produitLotsByCouleur));
+$couleurValues = array_shift(array_values($produitLotsByCouleur));
+$t->is($couleurLibelle,$produit1->getLibelleComplet(),"Le libellé de ce total est le même que celui du produit du noeud declaration");
+$t->is($couleurValues["volume_lots"],60,"La somme des volume lot pour ce produit est 60");
+$t->is($couleurValues["volume_restant"],0,"Il ne reste plus de volume à revendiquer");

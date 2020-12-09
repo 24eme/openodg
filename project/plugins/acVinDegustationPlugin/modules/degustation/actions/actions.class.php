@@ -6,7 +6,8 @@ class degustationActions extends sfActions {
         $newDegutation = new Degustation();
         $this->form = new DegustationCreationForm($newDegutation);
         $newDegutation->getMvtLotsPrelevables();
-        $this->lotsPrelevables = $newDegutation->getLotsPrelevables();
+        $this->lotsPrelevables = $newDegutation->getLotsPrelevablesSortByDate();
+        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -90,21 +91,32 @@ class degustationActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if ($this->form->isValid()) {
+                $this->form->save();
+
                 $drev = DRevClient::getInstance()->find($this->lot->id_document);
 
-                $mvmt_degust = $this->degustation->get($this->lot->getGeneratedMvtKey());
+                $mvmt_degust = $this->degustation->mouvements_lots->get($this->lot->declarant_identifiant)->get($this->lot->getGeneratedMvtKey());
 
                 $modificatrice = $drev->generateModificative();
                 $modificatrice->lots->remove($mvmt_degust->origine_hash);
-                $modificatrice->addLotFromDegustation($this->object);
+                $modificatrice->addLotFromDegustation($this->form->getObject());
                 $modificatrice->generateMouvementsLots();
 
-                $mvmt = $this->drev->get($this->lot->origine_mouvement);
+                $mvmt = $drev->get($this->lot->origine_mouvement);
                 $mvmt->prelevable = 0;
 
-                $this->drev->save();
+                $drev->save();
+                $modificatrice->validate();
+                $modificatrice->validateOdg();
                 $modificatrice->save();
+
+                $l = $this->form->getObject();
+                $l->id_document = $modificatrice->_id;
                 $this->form->save();
+
+                $this->degustation->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
+
+                $this->degustation->validate($this->degustation->validation);
 
                 return $this->redirect('degustation_preleve', $this->degustation);
             }
@@ -131,11 +143,25 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
+        $this->colleges = DegustationConfiguration::getInstance()->getColleges();
+        $first_college = array_key_first($this->colleges);
+
+        $this->previous_college = null;
+        if(!$this->college = $request->getParameter('college')) {
+
+            return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id, 'college' => $first_college));
+        }
+
+        $colleges_keys = array_keys($this->colleges);
+        $currentCollegeKey = array_search($this->college, $colleges_keys);
+        $next_college = ($currentCollegeKey+1 >= count($colleges_keys))? null : $colleges_keys[$currentCollegeKey+1];
+        $this->previous_college = ($currentCollegeKey-1 < 0 )? null : $colleges_keys[$currentCollegeKey-1];
+
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
             $this->degustation->save();
         }
 
-        $this->form = new DegustationSelectionDegustateursForm($this->degustation);
+        $this->form = new DegustationSelectionDegustateursForm($this->degustation,array(),array('college' => $this->college));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -143,7 +169,6 @@ class degustationActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -156,7 +181,11 @@ class degustationActions extends sfActions {
           return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
         }
 
-        return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        if(!$next_college){
+          ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        }
+
+        return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id ,'college' => $next_college));
     }
 
     public function executeValidation(sfWebRequest $request) {
@@ -242,11 +271,19 @@ class degustationActions extends sfActions {
 
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
-
         $this->numero_table = $request->getParameter('numero_table');
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTable($this->numero_table);
-        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table);
+
+        if (!$request->getParameter('tri')) {
+            $tri_default = 'Couleur|Genre|Appellation';
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $tri_default));
+        }
+        $this->tri = $request->getParameter('tri');
+        $this->tri_array = explode('|', strtolower($this->tri));
+
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
+        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array, false);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -273,15 +310,20 @@ class degustationActions extends sfActions {
 
         if($this->degustation->hasFreeLots()) {
 
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1));
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1, 'tri' => $this->tri));
         }
 
-        return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id, 'tri' => $this->tri));
     }
 
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->tri = $request->getParameter('tri');
+        $this->tri_array = explode('|', strtolower($this->tri));
+
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
+        $this->triTableForm = new DegustationTriTableForm($this->tri_array, true);
+
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -331,7 +373,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
 
-        $this->tableLots = $this->degustation->getLotsTableOrFreeLots($this->numero_table);
+        $this->tableLots = $this->degustation->getLotsByTable($this->numero_table);
         $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
         $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table);
         $this->form = new DegustationResultatsForm($this->degustation, $options);
@@ -342,19 +384,17 @@ class degustationActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
 
         $this->form->save();
 
-
         if($this->popup_validation){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table));
         }
 
-        if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable()-1)){
+        if($this->numero_table != $this->nb_tables){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
@@ -445,15 +485,234 @@ class degustationActions extends sfActions {
         $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);
         $this->forward404Unless($this->etablissement);
 
-        $this->lots = array();
-        foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement_id)->rows as $item) {
-            $key = Lot::generateMvtKey($item->value);
-            if (!isset($this->lots[$key])) {
-                $this->lots[$key] = $item->value;
-                $this->lots[$key]->steps = array();
-            }
-            $this->lots[$key]->steps[] = $item->value;
+        $this->lots = MouvementLotView::getInstance()->getLotsStepsByDeclarantIdentifiant($etablissement_id);
+
+    }
+
+    public function executeLot(sfWebRequest $request) {
+        $campagne = $request->getParameter('campagne');
+        $lot_id = $request->getParameter('id');
+        $this->lotsStepsHistory = MouvementLotView::getInstance()->getLotStepsByArchive($campagne, $lot_id);
+
+    }
+
+    public function executeManquements(sfWebRequest $request) {
+      $this->chgtDenoms = [];
+      $this->manquements = DegustationClient::getInstance()->getManquements();
+    }
+
+    public function executeElevages(sfWebRequest $request) {
+      $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
+    }
+
+    public function executeEtiquettesPdf(sfWebRequest $request) {
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationEtiquettesPdf($degustation, $this->getRequestParameter('output', 'pdf'), false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+    }
+
+
+    public function executeFicheIndividuellePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheIndividuellePDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeFicheEchantillonsPrelevesPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheEchantillonsPrelevesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+    public function executeDegustationConformitePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+
+      $this->document = new ExportDegustationConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeDegustationNonConformitePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+
+      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeRetraitNonConformitePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+
+      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeFicheRecapTablesPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheRecapTablesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
+    public function executeTriTable(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $numero_table = $request->getParameter('numero_table');
+        $this->triTableForm = new DegustationTriTableForm(array());
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
         }
+
+        $this->triTableForm->bind($request->getParameter($this->triTableForm->getName()));
+        $recap = $this->triTableForm->getValue('recap');
+
+        if (!$this->triTableForm->isValid()) {
+            if($recap) {
+                return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
+            }
+            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
+        }
+
+        $values = $this->triTableForm->getValues();
+        unset($values['recap']);
+
+        if($recap) {
+            return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id, 'tri' => join('|', array_filter(array_values($values)))));
+        }
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
+    }
+
+    public function executeFicheLotsAPreleverPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheLotsAPreleverPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+    }
+
+    public function executeFichePresenceDegustateursPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFichePresenceDegustateursPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+    }
+
+    public function executeProcesVerbalDegustationPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheProcesVerbalDegustationPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
     }
 
 }

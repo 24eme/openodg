@@ -298,8 +298,11 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
 
         if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, $this->drev)) {
-
-            return $this->redirect('drev_vci', $this->drev);
+            if ($request->getParameter('prec')) {
+                return $this->redirect('drev_dr', $this->drev);
+            }else{
+                return $this->redirect('drev_vci', $this->drev);
+            }
         }
 
         if (DrevConfiguration::getInstance()->hasEtapeSuperficie() === false) {
@@ -421,11 +424,11 @@ class drevActions extends sfActions {
             return $this->redirect($this->generateUrl('drev_lots', $this->drev).'#dernier');
         }
 
-        if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && ($this->drev->isModificative() || DrevConfiguration::getInstance()->isDrDouaneRequired())){
+        if($this->drev->isModificative()) {
           return $this->redirect('drev_validation', $this->drev);
         }
 
-        return $this->redirect('drev_validation', $this->drev);
+        return $this->redirect('drev_revendication', $this->drev);
     }
 
     public function executeDeleteLots(sfWebRequest $request){
@@ -454,8 +457,10 @@ class drevActions extends sfActions {
         }
 
         if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $this->drev)) {
-
-            return $this->redirect('drev_lots', $this->drev);
+            if ($request->getParameter('prec')) {
+                return $this->redirect('drev_lots', $this->drev);
+            }
+            return $this->redirect('drev_validation', $this->drev);
         }
 
         if ($this->needDrDouane()) {
@@ -542,7 +547,17 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_VCI, $this->drev)) {
+        if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_VCI, $this->drev) || !count($this->drev->getProduitsVci()) ) {
+
+            if($request->getParameter('prec')) {
+
+                return $this->redirect('drev_revendication_superficie', $this->drev);
+            }
+
+            if(count($this->drev->declaration->getProduitsLots()) > 0 || ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()) {
+
+                return $this->redirect('drev_lots', $this->drev);
+            }
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -550,21 +565,6 @@ class drevActions extends sfActions {
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
-        }
-
-        if(!count($this->drev->getProduitsVci()) && count($this->drev->declaration->getProduitsLots()) > 0) {
-
-            return $this->redirect('drev_lots', $this->drev);
-        }
-
-        if(!count($this->drev->getProduitsVci()) && !$request->getParameter('prec')) {
-
-            return $this->redirect('drev_revendication', $this->drev);
-        }
-
-        if(!count($this->drev->getProduitsVci()) && $request->getParameter('prec')) {
-
-            return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VCI))) {
@@ -601,7 +601,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if(count($this->drev->declaration->getProduitsLots()) > 0){
+        if(count($this->drev->declaration->getProduitsLots()) > 0 || ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
             return $this->redirect('drev_lots', $this->drev);
         }
 
@@ -645,48 +645,98 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
-            $document = $documents->add($engagement->getCode());
-            if ($engagement->getCode() == DRevDocuments::DOC_VCI) {
-            	$document->statut = DRevDocuments::STATUT_RECU;
-            } else {
-            	$document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            if(!$this->form->getValue("engagement_".$engagement->getCode())) {
+                continue;
             }
-        }
-
-        if($this->drev->isPapier()) {
-            $this->drev->validate($this->form->getValue("date"));
-        } else {
-            $this->drev->validate();
+            $document = $documents->add($engagement->getCode());
+            $document->libelle = $engagement->getMessage();
+            if($engagement->getInfo()) {
+                $document->libelle .= " : ".$engagement->getInfo();
+            }
+            $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
         }
 
         if (DrevConfiguration::getInstance()->hasDegustation()) {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
-        if (DrevConfiguration::getInstance()->hasValidationOdgAuto()) {
-            $this->drev->validateOdg();
+        $dateValidation = date('c');
+
+        if($this->form->getValue("date")) {
+            $dt = new DateTime($this->form->getValue("date"));
+            $dateValidation = $dt->modify('+1 minute')->format('c');
         }
-        
+
+        $this->drev->validate($dateValidation);
+        $this->drev->cleanLots();
         $this->drev->save();
 
-        if($this->getUser()->isAdmin() && $this->drev->isPapier()) {
-            Email::getInstance()->sendDrevPapierConfirmee($this->drev);
-            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+        if($this->getUser()->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+            $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée, elle devra être approuvée par l'ensemble des ODG concernées");
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        if(!$this->getUser()->hasDrevAdmin() && !$this->getUser()->isAdmin()) {
-          $this->sendDRevValidation($this->drev);
-          $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
-          return $this->redirect('drev_visualisation', $this->drev);
+        if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
+            $this->drev->validateOdg();
+            $this->drev->cleanLots();  
+            $this->drev->save();
+            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
+
+            return $this->redirect('drev_visualisation', $this->drev);
         }
+
+        if($this->getUser()->hasDrevAdmin()) {
+            $this->drev->validateOdg();
+            $this->drev->save();
+            $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
+
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        if(DrevConfiguration::getInstance()->hasValidationOdgAuto() && !$this->validation->hasPoints()) {
+            $this->drev->validateOdg();
+            $this->drev->save();
+        }
+
+        Email::getInstance()->sendDRevValidation($this->drev);
 
         return $this->redirect('drev_confirmation', $this->drev);
     }
+
+    public function executeValidationAdmin(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
+        $this->regionParam = $request->getParameter('region',null);
+
+        $this->drev->validateOdg(null,$this->regionParam);
+        $this->drev->save();
+
+        $mother = $this->drev->getMother();
+        while ($mother) {
+            $mother->validateOdg(null, $this->regionParam);
+            $mother->save();
+            $mother = $mother->getMother();
+        }
+
+        if($this->drev->validation_odg) {
+            Email::getInstance()->sendDRevValidation($this->drev);
+            $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
+        }
+
+        $service = $request->getParameter("service");
+        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
+        if($this->regionParam){
+          $params = array_merge($params,array('region' => $this->regionParam));
+        }
+        return $this->redirect('drev_visualisation', $params);
+    }
+
+
 
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
@@ -744,38 +794,7 @@ class drevActions extends sfActions {
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
-    public function executeValidationAdmin(sfWebRequest $request) {
-        if(!DrevConfiguration::getInstance()->hasValidationOdgAdminOrRegion()){
-          throw new sfException("Il n'est pas permis de valider par ODG");
-        }
 
-        $this->drev = $this->getRoute()->getDRev();
-        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
-        $this->regionParam = $request->getParameter('region',null);
-
-        $this->drev->validateOdg(null,$this->regionParam);
-        $this->drev->save();
-
-        $mother = $this->drev->getMother();
-        while ($mother) {
-            $mother->validateOdg(null, $this->regionParam);
-            $mother->save();
-            $mother = $mother->getMother();
-        }
-
-        if (!$this->drev->isPapier() && $this->drev->getValidationOdg()) {
-            $this->sendDRevConfirmee($this->drev);
-        }
-
-        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
-
-        $service = $request->getParameter("service");
-        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
-        if($this->regionParam){
-          $params = array_merge($params,array('region' => $this->regionParam));
-        }
-        return $this->redirect('drev_visualisation', $params);
-    }
 
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
@@ -843,38 +862,35 @@ class drevActions extends sfActions {
     	return $this->redirect('drev_visualisation', $drev);
     }
 
-    public function executeDrPdf(sfWebRequest $request) {
+    public function executeDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::VISUALISATION, $drev);
 
-        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+        $fileContent = file_get_contents($drev->getDocumentDouanier('pdf'));
+        $extension = 'pdf';
 
-        if(!$file) {
-
-            $this->forward404();
+        if(!$fileContent) {
+            $fileContent = file_get_contents($drev->getDocumentDouanier('xls'));
+            $extension = 'xls';
         }
 
-        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="DR-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
+        if(!$fileContent) {
+            $fileContent = file_get_contents($drev->getDocumentDouanier('csv'));
+            $extension = 'csv';
+        }
+
+        if(!$fileContent) {
+
+            return $this->forward404();
+        }
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/'.$extension);
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.'.$extension.'"', $drev->identifiant, $drev->campagne));
         $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
         $this->getResponse()->setHttpHeader('Pragma', '');
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');
         $this->getResponse()->setHttpHeader('Expires', '0');
 
-        return $this->renderText($file);
-    }
-
-    public function executeDocumentDouanierPdf(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
-
-        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
-        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
-        $this->getResponse()->setHttpHeader('Pragma', '');
-        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
-        $this->getResponse()->setHttpHeader('Expires', '0');
-
-        return $this->renderText(file_get_contents($drev->getDocumentDouanier('pdf')));
+        return $this->renderText($fileContent);
     }
 
     public function executeMain()

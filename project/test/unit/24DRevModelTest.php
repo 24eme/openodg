@@ -4,6 +4,8 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $t = new lime_test(48);
 
+$igp13 = ($application == 'igp13');
+
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
@@ -33,16 +35,21 @@ $t->comment("Saisie des volumes");
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
     if($produit->getRendement() > 0) {
-        continue;
+        if($igp13 && preg_match("/(APL|MED)/",$produit->getHash())){
+          continue;
+        }
+        $produit_hash1 = $produit->getHash();
+        break;
     }
-    $produit_hash1 = $produit->getHash();
-    break;
 }
 foreach($produits as $produit) {
-    if($produit->getRendement() > 0) {
+    if($produit->getRendement() > 0 && $produit_hash1!=$produit->getHash()) {
+      if($igp13 && preg_match("/(APL|MED)/",$produit->getHash())){
         continue;
+      }
+      $produit_hash2 = $produit->getHash();
+      break;
     }
-    $produit_hash2 = $produit->getHash();
 }
 foreach($produits as $produit) {
     if($produit->getRendement() <= 0 || !$produit->hasMutageAlcoolique()) {
@@ -125,18 +132,19 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume 
 
 $t->comment("Validation");
 
-$drev->validate();
-$drev->validateOdg();
+$date = date('c');
+$drev->validate($date);
+$drev->validateOdg($date);
 $drev->save();
 
 $t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est toujours de 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
-$t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
+$t->is($drev->validation, $date , "La DRev a la date du jour comme date de validation");
 if(DRevConfiguration::getInstance()->hasValidationOdgAuto()) {
-    $t->is($drev->validation_odg, null, "La DRev a la date du jour comme date de validation odg");
+    $t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
 } else {
-    $t->is($drev->validation_odg, date('Y-m-d'), "La date de validation ODG n'est pas mise automatiquement");
+    $t->is($drev->validation_odg, null, "La date de validation ODG n'est pas mise automatiquement");
 }
 
 if(FactureConfiguration::getInstance()->isActive()) {
@@ -155,7 +163,11 @@ $drev->save();
 if(FactureConfiguration::getInstance()->isActive()) {
     $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
     $mouvements = $drev->mouvements->get($viti->identifiant);
-    $t->is(count($mouvements), 4, "La DRev a 4 mouvements");
+    $nbMvtsAttendu = 4;
+    if($igp13){
+      $nbMvtsAttendu = 5;
+    }
+    $t->is(count($mouvements), $nbMvtsAttendu, "La DRev a $nbMvtsAttendu mouvements");
     $mouvement = $mouvements->getFirst();
     $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
     $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
@@ -193,7 +205,7 @@ $drevM1->validate();
 $drevM1->save();
 
 if(FactureConfiguration::getInstance()->isActive()) {
-    $t->is(count($drevM1->mouvements->get($viti->identifiant)), 4, "La DRev modificatrice a 4 mouvements");
+    $t->is(count($drevM1->mouvements->get($viti->identifiant)), $nbMvtsAttendu, "La DRev modificatrice a $nbMvtsAttendu mouvements");
 } else {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
 }

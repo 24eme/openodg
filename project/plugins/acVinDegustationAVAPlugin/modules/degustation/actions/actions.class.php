@@ -17,9 +17,7 @@ class degustationActions extends sfActions {
         if($request->getParameter('appellation')) {
             $this->tournee->appellation = $request->getParameter('appellation');
         }
-        if($request->getParameter('nonterminee')) {
-            $this->nonterminee = true;
-        }
+
         $this->form = new TourneeCreationForm($this->tournee);
 
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
@@ -247,6 +245,7 @@ class degustationActions extends sfActions {
 
         $this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
+        $this->tournee->updateOperateursFromOthers();
 
         $this->form = new TourneeOperateursForm($this->tournee);
 

@@ -13,6 +13,17 @@ class chgtdenomActions extends sfActions {
         return $this->redirect('chgtdenom_lots', $chgtDenom);
     }
 
+    public function executeCreateLot(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        $lot = $request->getParameter('lot');
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
+
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
+        $chgtDenom->save();
+
+        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id, 'key' => $lot));
+    }
+
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
@@ -25,11 +36,13 @@ class chgtdenomActions extends sfActions {
 
     public function executeLots(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->secureIsValide($this->chgtDenom);
         $this->lots = $this->chgtDenom->getMvtLots();
     }
 
     public function executeEdition(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->secureIsValide($this->chgtDenom);
         $this->key = $request->getParameter("key", null);
         $firstEdition = true;
 
@@ -62,9 +75,40 @@ class chgtdenomActions extends sfActions {
         return $this->redirect('chgtdenom_validation', $this->chgtDenom);
     }
 
+    public function executeLogement(sfWebRequest $request) {
+        $chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->secureIsValide($chgtDenom);
+        $key = $request->getParameter("key", null);
+
+        if (!$key) {
+          $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+          return $this->redirect('chgtdenom_validation', $chgtDenom);
+        }
+
+        $key = str_replace('ind', '', $key);
+
+        if (!$chgtDenom->lots->exist($key)) {
+          $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+          return $this->redirect('chgtdenom_validation', $chgtDenom);
+        }
+
+        $form = new ChgtDenomLogementForm($chgtDenom->lots->get($key));
+
+        $form->bind($request->getParameter($form->getName()));
+
+        if (!$form->isValid()) {
+            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            return $this->redirect('chgtdenom_validation', $chgtDenom);
+        }
+
+        $form->save();
+        $this->getUser()->setFlash("notice", 'Le logement a été modifié avec succès.');
+        return $this->redirect('chgtdenom_validation', $chgtDenom);
+    }
+
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
-
+        $this->secureIsValide($this->chgtDenom);
         $this->form = new ChgtDenomValidationForm($this->chgtDenom);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -110,6 +154,7 @@ class chgtdenomActions extends sfActions {
 
     public function executeSuppression(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->secureIsValide($this->chgtDenom);
         $identifiant = $this->chgtDenom->identifiant;
         $this->chgtDenom->delete();
         return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant));
@@ -120,6 +165,12 @@ class chgtdenomActions extends sfActions {
 
             return $this->forwardSecure();
         }
+    }
+
+    protected function secureIsValide($chgtDenom) {
+      if ($chgtDenom->isValide()) {
+        return $this->redirect('chgtdenom_visualisation', $chgtDenom);
+      }
     }
 
     protected function forwardSecure() {

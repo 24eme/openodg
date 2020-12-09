@@ -11,18 +11,12 @@
 
         <?php foreach ($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement): ?>
         <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
-            <div class="checkbox<?php if($engagement->getCode() == DRevDocuments::DOC_DR && $drev->hasDr()): ?> disabled<?php endif; ?>">
+            <div class="checkbox">
                 <label>
-                	<?php
-                		if ($engagement->getCode() == DRevDocuments::DOC_DR && $drev->hasDr()) {
-                			echo $form['engagement_' . $engagement->getCode()]->render(array('checked' => 'checked'));
-                		} else {
-                			echo $form['engagement_' . $engagement->getCode()]->render();
-                		}
-                	?>
-                    <?php echo ($engagement->getRawValue()->getInfo()) ? $engagement->getRawValue()->getInfo()." : " : ''; ?>
+                	<?php echo $form['engagement_' . $engagement->getCode()]->render(); ?>
+
                     <?php echo $engagement->getRawValue()->getMessage() ?>
-                    <?php if ($engagement->getCode() == DRevDocuments::DOC_DR && $drev->hasDr()): ?>- <a href="<?php echo $drev->getAttachmentUri('DR.pdf'); ?>" target="_blank"><small>Télécharger ma DR</small></a><?php endif; ?>
+                    <?php echo ($engagement->getRawValue()->getInfo()) ? " : <strong>".$engagement->getRawValue()->getInfo() : '</strong>'; ?>
                 </label>
             </div>
             </div>

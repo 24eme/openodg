@@ -742,8 +742,24 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement_conseille');
     }
 
-    public function getRendementDR() {
+    public function getRendementDrL5() {
+        if($this->exist('attributs') && $this->attributs->exist('rendement_dr_l5')){
+          return $this->getRendementByKey('rendement_dr_l5');
+        }
+
         return $this->getRendementByKey('rendement_dr');
+    }
+
+    public function getRendementDR() {
+        if($this->exist('attributs') && $this->attributs->exist('rendement_dr')){
+          return $this->getRendementByKey('rendement_dr');
+        }
+        return null;
+    }
+
+    public function getRendementDrL15() {
+
+        return $this->getRendementByKey('rendement_dr_l15');
     }
 
     public function getRendementNoeud() {
@@ -1020,11 +1036,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function hasLieuEditable() {
 
         return $this->getAppellation()->hasLieuEditable();
-    }
-
-    public function getCahierDesCharges() {
-
-        return $this->getAppellation()->getCahierDesCharges();
     }
 
     public function hasManyLieu() {

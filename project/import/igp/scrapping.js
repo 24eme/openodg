@@ -1,16 +1,16 @@
-
+var configFile = process.argv.slice(2)[0];
 var Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
-const nightmare = Nightmare({ show: true
+const nightmare = Nightmare({ show: false
   // ,
  //  waitTimeout: 100000000, // in ms
  //  openDevTools: {
  //   mode: 'detach'
  // }
 })
-var config = require('./config.json');
+var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 
 
@@ -76,7 +76,7 @@ nightmare
   // .wait('#btnExportExcel')
   .wait(3000)
   .click('#btnExportExcel')
-  .download(destination_file+'operateurs_innactifs.xlsx')
+  .download(destination_file+'operateurs_inactifs.xlsx')
   .refresh()
   //fin operateurs innactifs
 
@@ -296,11 +296,28 @@ nightmare
     .select('#ddlCampagne','')
     .wait('#BtnRech')
     .click('#BtnRech')
+    .wait(3000)
     .click('#btnExport')
     .download(destination_file+'gestion_factures.xlsx')
     .refresh()
     //fin gestion facture
 
+
+
+    //list membres
+    .evaluate(()=>{
+      var elements = Array.from(document.querySelectorAll('a'))
+      elements[121].className += "list_membres";
+    })
+    .click('.list_membres')
+    .wait('#Button1')
+    .click('#Button1')
+    .click('#Button2')
+    .download(destination_file+'membres.xlsx')
+    .refresh()
+
+
+    //fin list membres
 
      //produits
      .evaluate(()=>{

@@ -33,12 +33,12 @@
                     </div>
                 </div>
                 <div class="col-sm-3 col-xs-3">
-                    <div class="input-group date-picker-time">
-                        <?php echo $form["time"]->render(array("class" => "form-control")); ?>
-                        <div class="input-group-addon">
-                            <span class="glyphicon-time glyphicon"></span>
-                        </div>
-                    </div>
+                  <div class="input-group" id="time">
+                      <?php echo $form["time"]->render(array("class" => "form-control")); ?>
+                      <div class="input-group-addon">
+                          <span class="glyphicon-time glyphicon"></span>
+                      </div>
+                  </div>
                 </div>
             </div>
             <div class="form-group <?php if($form["lieu"]->getError()): ?>has-error<?php endif; ?> <?php if($form["max_lots"]->getError()): ?>has-error<?php endif; ?>">
@@ -93,4 +93,13 @@
 <tbody>
 </table>
 <?php endif; ?>
+<div class="page-header no-border">
+    <h2>Elevages</h2>
+</div>
+<p><strong><?php echo count($lotsElevages); ?> lots</strong> sont actuellement en élevages : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
+
+<div class="page-header no-border">
+    <h2>Manquements</h2>
+</div>
+<p>Manquements en cours : <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>
 </div>

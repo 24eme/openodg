@@ -21,7 +21,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(30);
+$t = new lime_test(31);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -177,8 +177,6 @@ try {
   $t->fail("Changement de statut de la societe viti");
 }
 
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société pour un degustateur");
-
 $societedegust = SocieteClient::getInstance()->createSociete("SARL JEAN DEGUSTE", SocieteClient::TYPE_AUTRE);
 $societedegust->email = "email@societe.com";
 $societedegust->site_internet = "www.societe.fr";
@@ -192,9 +190,13 @@ $societedegust->code_postal = $codePostalRegion;
 $societedegust->commune = "Neuilly sur seine";
 $societedegust->pays = "FR";
 $societedegust->insee = "94512";
+$societedegust->add('region', "TESTREGION");
 $societedegust->save();
 $id = $societedegust->getidentifiant();
 $t->comment("compte 7 : ".$id);
 
+$t->is($societedegust->getMasterCompte()->region, $societedegust->region, "La region a été copié dans le compte");
+$t->is($societedegust->getMasterCompte()->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création d'une société autre créé un compte du même type");
+
 $compteDegustateur = $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societedegust);
-$t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un compte séparé");
+$t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un interlocuteur séparé");

@@ -1,7 +1,5 @@
 <?php require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-sfContext::createInstance($configuration);
-
 $t = new lime_test(12);
 $t->comment("test Import DR avec denomination automatique à ".DRevConfiguration::getInstance()->hasDenominationAuto());
 
@@ -31,7 +29,7 @@ $drev->save();
 $produits = array();
 foreach ($csv as $line) {
     $key = $line[DouaneCsvFile::CSV_PRODUIT_INAO];
-    if(DRevConfiguration::getInstance()->hasImportWithMentionsComplementaire()) {
+    if(DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire()) {
         $key .= $line[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
     }
     $produits[$key] = $key;

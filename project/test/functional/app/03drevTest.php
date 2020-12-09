@@ -42,7 +42,7 @@ $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../../data/dr_douane
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').'.csv';
 file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($etablissement->cvi, $produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
 
-$b = new sfTestFunctional(new sfBrowser());
+$b = new sfTestFunctional(new Browser());
 $t = $b->test();
 
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(25);
+$t = new lime_test(26);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -17,6 +17,10 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
     $drev->delete(false);
+}
+
+foreach(DegustationClient::getInstance()->getHistory(9999) as $k => $v) {
+    $v->delete(false);
 }
 
 foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
@@ -49,7 +53,7 @@ $i=1;
 foreach($drev->lots as $lot) {
 $lot->id_document = $drev->_id;
 $lot->millesime = $campagne;
-$lot->numero = $i;
+$lot->numero_cuve = $i;
 $lot->volume = rand(10,50);
 $lot->destination_type = null;
 $lot->destination_date = ($campagne+1).'-'.sprintf("%02d", rand(1,12)).'-'.sprintf("%02d", rand(1,28));
@@ -58,11 +62,13 @@ $i++;
 }
 $drev->validate();
 $drev->save();
+
 $t->is(count($drev->lots), 3, "3 lots ont automatiquement été créés");
+
 $nbLotPrelevable=0;
 if ($drev->mouvements_lots->exist($viti->identifiant)) {
   foreach($drev->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if ($mvtLot->prelevable && !$mvtLot->preleve) {
+    if ($mvtLot->statut == Lot::STATUT_PRELEVABLE) {
       $nbLotPrelevable++;
     }
   }
@@ -70,54 +76,63 @@ if ($drev->mouvements_lots->exist($viti->identifiant)) {
 $t->is($nbLotPrelevable, 3, "3 mouvements de lot prelevables ont été générés");
 
 $newDegutation = new Degustation();
+$newDegutation->lieu = "Test — Test";
+$newDegutation->date = date('Y-m-d')." 14:00";
 $t->is(count($newDegutation->getLotsPrelevables()), 3, "3 lots en attentes de dégustation");
+$mvtkeys = array();
+foreach ($newDegutation->getLotsPrelevables() as $key => $value) {
+  $mvtkeys[$key] = 1;
+}
+$newDegutation->setLotsFromMvtKeys($mvtkeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
+$newDegutation->validate();
+$newDegutation->save();
+
+$t->is(count(MouvementLotView::getInstance()->getByStatut($campagne, Lot::STATUT_PRELEVABLE)->rows), 0, "0 lots prelevables");
 
 $chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant);
+$mvtLots = $chgtDenom->getMvtLots();
+
+$t->is(count($mvtLots), 0, "0 mvtlots disponibles au chgt de denom");
+
+$first = true;
+foreach($newDegutation->getLots() as $lot) {
+  $lot->setStatut(($first)? Lot::STATUT_NONCONFORME : Lot::STATUT_CONFORME);
+  $first = false;
+}
+$newDegutation->generateMouvementsLots();
+$newDegutation->save();
+
+$t->is(count(MouvementLotView::getInstance()->getByStatut($campagne, Lot::STATUT_NONCONFORME)->rows), 1, "1 lot non conforme");
+$t->is(count(MouvementLotView::getInstance()->getByStatut($campagne, Lot::STATUT_CONFORME)->rows), 2, "2 lots conformes");
+
 $mvtLots = $chgtDenom->getMvtLots();
 $t->is(count($mvtLots), 3, "3 mvtlots disponibles au chgt de denom");
 
 $mvtLot = current($mvtLots);
 $mvtLotKey = Lot::generateMvtKey($mvtLot);
-$lot = $drev->get($mvtLot->origine_hash);
+$volume = $mvtLot->volume;
 $autreLot = $drev->get(next($mvtLots)->origine_hash);
 
 $t->comment("Création d'un Chgt de Denom Total");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
-$chgtDenom->changement_volume = null;
-$chgtDenom->changement_numero = null;
+$chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 1, "lot prelevable depuis la Drev");
 $chgtDenom->generateMouvementsLots(0);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotNonPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if (!$mvtLot->prelevable && !$mvtLot->preleve && $mvtLot->numero == $lot->numero && $mvtLot->volume == $lot->volume) {
-      $nbLotNonPrelevable++;
-    }
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
   }
+  $postfix++;
 }
-$t->is($nbLotNonPrelevable, 1, "1 mouvement de lot non prelevable généré");
-$chgtDenom->clearMouvementsLots();
-$chgtDenom->generateMouvementsLots(1);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if ($mvtLot->prelevable && !$mvtLot->preleve && $mvtLot->numero == $lot->numero && $mvtLot->volume == $lot->volume) {
-      $nbLotPrelevable++;
-    }
-  }
-}
-$t->is($nbLotPrelevable, 1, "1 mouvement de lot prelevable généré");
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -126,37 +141,23 @@ $t->comment("Création d'un Chgt de Denom Partiel");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
-$chgtDenom->changement_volume = round($lot->volume / 2, 2);
-$chgtDenom->changement_numero = 4;
+$chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
-$chgtDenom->generateMouvementsLots(0);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotNonPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if (!$mvtLot->prelevable && !$mvtLot->preleve && in_array($mvtLot->numero, array($lot->numero, 4)) && $mvtLot->volume == $chgtDenom->changement_volume) {
-      $nbLotNonPrelevable++;
-    }
-  }
-}
-$t->is($nbLotNonPrelevable, 2, "2 mouvements de lot non prelevables générés");
-$chgtDenom->clearMouvementsLots();
 $chgtDenom->generateMouvementsLots(1);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if ($mvtLot->prelevable && !$mvtLot->preleve && in_array($mvtLot->numero, array($lot->numero, 4)) && $mvtLot->volume == $chgtDenom->changement_volume) {
-      $nbLotPrelevable++;
-    }
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
   }
+  $postfix++;
 }
-$t->is($nbLotPrelevable, 2, "2 mouvements de lot prelevables générés");
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_PRELEVABLE, "statut du nouveau lot prelevable");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -165,37 +166,22 @@ $t->comment("Création d'un Declassement Total");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = null;
 $chgtDenom->changement_produit_libelle = null;
-$chgtDenom->changement_volume = null;
-$chgtDenom->changement_numero = null;
+$chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
-$chgtDenom->generateMouvementsLots(0);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotNonPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if (!$mvtLot->prelevable && !$mvtLot->preleve && $mvtLot->numero == $lot->numero && $mvtLot->volume == $lot->volume) {
-      $nbLotNonPrelevable++;
-    }
-  }
-}
-$t->is($nbLotNonPrelevable, 1, "1 mouvement de lot non prelevable généré");
-$chgtDenom->clearMouvementsLots();
 $chgtDenom->generateMouvementsLots(1);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if ($mvtLot->prelevable && !$mvtLot->preleve && $mvtLot->numero == $lot->numero && $mvtLot->volume == $lot->volume) {
-      $nbLotPrelevable++;
-    }
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
   }
+  $postfix++;
 }
-$t->is($nbLotPrelevable, 0, "0 mouvement de lot prelevable généré");
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_DECLASSE, "statut origine déclassé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -204,34 +190,20 @@ $t->comment("Création d'un Declassement Partiel");
 $chgtDenom->changement_origine_mvtkey = $mvtLotKey;
 $chgtDenom->changement_produit = null;
 $chgtDenom->changement_produit_libelle = null;
-$chgtDenom->changement_volume = round($lot->volume / 2, 2);
-$chgtDenom->changement_numero = 4;
+$chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
-$chgtDenom->generateMouvementsLots(0);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotNonPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if (!$mvtLot->prelevable && !$mvtLot->preleve && in_array($mvtLot->numero, array($lot->numero, 4)) && $mvtLot->volume == $chgtDenom->changement_volume) {
-      $nbLotNonPrelevable++;
-    }
-  }
-}
-$t->is($nbLotNonPrelevable, 2, "2 mouvements de lot non prelevables générés");
-$chgtDenom->clearMouvementsLots();
 $chgtDenom->generateMouvementsLots(1);
-$drevMvtLot = $chgtDenom->getOrigineDocumentMvtLot();
-$t->is($drevMvtLot->prelevable, 0, "lot non prelevable depuis la Drev");
-$drevMvtLot->prelevable = 1;
-$nbLotPrelevable=0;
-if ($chgtDenom->mouvements_lots->exist($viti->identifiant)) {
-  foreach($chgtDenom->mouvements_lots->get($viti->identifiant) as $k => $mvtLot) {
-    if ($mvtLot->prelevable && !$mvtLot->preleve && in_array($mvtLot->numero, array($lot->numero, 4)) && $mvtLot->volume == $chgtDenom->changement_volume) {
-      $nbLotPrelevable++;
-    }
+$postfix = 'a';
+$okPostfix = true;
+foreach ($chgtDenom->lots as $lot) {
+  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
+    $okPostfix = false;
+    break;
   }
+  $postfix++;
 }
-$t->is($nbLotPrelevable, 1, "1 mouvement de lot prelevable généré");
+$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_CONFORME, "statut du nouveau lot prelevable");
+$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");

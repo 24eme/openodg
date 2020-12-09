@@ -10,8 +10,7 @@
         	<thead>
             	<tr>
             		<th class="col-xs-4">Collège</th>
-        			<th class="col-xs-6">Membre</th>
-                    <th class="col-xs-2 text-center">Statut présence</th>
+        			<th class="col-xs-8">Membre</th>
 
                 </tr>
         	</thead>
@@ -21,15 +20,7 @@
 	        		<tr>
 								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
 	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
-								<td class="text-center">
-								<?php if(!$degustateur->exist('confirmation')): ?>
-									<p><span class="glyphicon glyphicon-question-sign"></span></p>
-								<?php elseif($degustateur->confirmation): ?>
-									<p class="label label-success"><span class="glyphicon glyphicon-ok"></span></p>
-								<?php else: ?>
-									<p class="label label-danger"><span class="glyphicon glyphicon-remove"></span></p>
-								<?php endif; ?>
-								</td>
+								
 							</tr>
         		<?php endforeach;?>
         		<?php endforeach; ?>
@@ -44,9 +35,16 @@
         <table class="table table-bordered table-condensed table-striped">
         	<thead>
             	<tr>
-                    <th class="col-xs-3">Opérateur</th>
-            		<th class="col-xs-1">Logement</th>
-            		<th class="col-xs-4">Produit (millésime)</th>
+								<?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+									<th class="col-xs-2">Opérateur</th>
+	            		<th class="col-xs-1">Logement</th>
+	            		<th class="col-xs-4">Produit (millésime)</th>
+                	<th class="col-xs-1">Spécificité</th>
+	              <?php else: ?>
+									<th class="col-xs-3">Opérateur</th>
+	            		<th class="col-xs-1">Logement</th>
+	            		<th class="col-xs-4">Produit (millésime)</th>
+	              <?php endif ?>
             		<th class="col-xs-1">Volume</th>
             		<th class="col-xs-3">Statut</th>
 
@@ -56,9 +54,12 @@
             	<?php foreach ($degustation->lots as $lot): ?>
             	<tr>
             		<td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $lot->declarant_identifiant)) ?>" target="_blank"><?php echo $lot->declarant_nom; ?></a></td>
-    				<td><?php echo $lot->numero; ?></td>
+    				<td><?php echo $lot->numero_cuve; ?></td>
     				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
-    				<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+						<?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+		          <td><?php echo $lot->specificite; ?></td>
+		        <?php endif ?>
+						<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
             		<td><?php echo Lot::getLibelleStatut($lot->statut); ?></td>
 
             	</tr>

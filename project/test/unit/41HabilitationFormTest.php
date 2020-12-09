@@ -2,8 +2,6 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-sfContext::createInstance($configuration);
-
 $t = new lime_test(15);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -29,7 +27,7 @@ $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-
 
 $produitConfig_0 = null;
 $produitConfig_1 = null;
-foreach($habilitation->getConfiguration()->getProduitsCahierDesCharges() as $p) {
+foreach($habilitation->getProduitsConfig($configuration) as $p) {
     if(!$produitConfig_0){
       $produitConfig_0 = $p;
       continue;

@@ -26,7 +26,7 @@
   </tr>
 </table>
 </td></tr></table>
-<?php if($drev->isAdresseLogementDifferente()): ?>
+<?php if(DRevConfiguration::getInstance()->hasLogementAdresse() && $drev->isAdresseLogementDifferente()): ?>
     <span class="h3Alt">&nbsp;Logement du vin&nbsp;</span><br/>
     <table class="tableAlt"><tr><td>
     <table border="0" >
@@ -87,20 +87,16 @@
 </table>
 <br /><br />
 Les produits déclarés sont du millésime du VCI
-<?php if($drev->hasVciDetruit()): ?>
-<br /><br />
-<span style="font-family: Dejavusans">☑</span> Je m'engage à transmettre le justificatif de destruction de VCI
-<?php endif; ?>
 <?php else: ?>
 <br />
 <em>Aucun stock VCI déclaré</em>
 <?php endif; ?>
-<br />
 <?php endif; ?>
 
-<?php if($drev->exist('lots') && count($drev->lots)): ?>
+<?php if(count($drev->declaration->getProduitsLots($region))): ?>
 <br />
 <div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
+<?php if (count($drev->getLotsRevendiques())): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 80px">&nbsp;Date</th>
@@ -109,21 +105,23 @@ Les produits déclarés sont du millésime du VCI
         <th class="th" style="text-align: center; width: 150px">Volume</th>
         <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
     </tr>
-<?php foreach($drev->getLots() as $lot): ?>
-<?php   if($lot->hasVolumeAndHashProduit()): ?>
+<?php foreach($drev->getLotsRevendiques() as $lot): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero ?></td>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)<?php if(count($lot->cepages)): echo "&nbsp;<small>".$lot->getCepagesToStr()."</small>"; endif; ?></td>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_cuve ?></td>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)<?php if(count($lot->cepages)): echo "&nbsp;<small>".$lot->getCepagesToStr()."</small>"; endif; ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
         <td class="td" style="text-align: center;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
     </tr>
-    <?php endif; ?>
 <?php endforeach; ?>
 </table>
+<?php else: ?>
+<br />
+<em>Aucun lot déclaré</em>
+<?php endif; ?>
 <?php endif; ?>
 
-<?php if($drev->hasProduitsReserveInterpro()): ?>
+<?php if($drev->hasProduitsReserveInterpro($region)): ?>
 <br />
 <div><span class="h3">&nbsp;Réserve interprofessionnelle&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
@@ -132,7 +130,7 @@ Les produits déclarés sont du millésime du VCI
         <th class="th" style="text-align: center;width: 200px;">&nbsp;Volume mis en réserve</th>
         <th class="th" style="text-align: center;width: 200px;">&nbsp;Volume revendiqué commercialisable</th>
     </tr>
-<?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
+<?php foreach($drev->getProduitsWithReserveInterpro($region) as $p): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $p->getLibelle() ?></td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($p->getVolumeReserveInterpro()) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
@@ -140,4 +138,16 @@ Les produits déclarés sont du millésime du VCI
     </tr>
 <?php endforeach; ?>
 </table>
+<?php endif; ?>
+
+<?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) && DRevConfiguration::getInstance()->hasEngagementsPdf()): ?>
+    <br />
+    <div><span class="h3">&nbsp;Engagement(s)&nbsp;</span></div>
+    <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <?php foreach($drev->documents as $docKey => $doc): ?>
+        <tr>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </table>
 <?php endif; ?>

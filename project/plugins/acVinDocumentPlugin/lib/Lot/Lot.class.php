@@ -6,9 +6,16 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
+    const STATUT_PRELEVABLE = "PRELEVABLE";
+    const STATUT_NONPRELEVABLE = "NON_PRELEVABLE";
     const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
     const STATUT_PRELEVE = "PRELEVE";
     const STATUT_DEGUSTE = "DEGUSTE";
+    const STATUT_CONFORME = "CONFORME";
+    const STATUT_NONCONFORME = "NON_CONFORME";
+    const STATUT_CHANGE = "CHANGE";
+    const STATUT_DECLASSE = "DECLASSE";
+    const STATUT_ELEVAGE = "ELEVAGE";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -16,12 +23,19 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
-
+    const TYPE_ARCHIVE = 'Lot';
 
     public static $libellesStatuts = array(
+        self::STATUT_PRELEVABLE => 'Prélevable',
+        self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
-        self::STATUT_DEGUSTE => 'Dégusté'
+        self::STATUT_DEGUSTE => 'Dégusté',
+        self::STATUT_CONFORME => 'Conforme',
+        self::STATUT_NONCONFORME => 'Non conforme',
+        self::STATUT_CHANGE => 'Changé',
+        self::STATUT_DECLASSE => 'Déclassé',
+        self::STATUT_ELEVAGE => 'En élevage'
     );
 
 
@@ -46,6 +60,15 @@ abstract class Lot extends acCouchdbDocumentTree
         self::CONFORMITE_NONCONFORME_MAJEUR,
         self::CONFORMITE_NONCONFORME_GRAVE,
         self::CONFORMITE_NONTYPICITE_CEPAGE
+    );
+
+    public static $statuts_preleves = array(
+        self::STATUT_CONFORME,
+        self::STATUT_NONCONFORME,
+        self::STATUT_PRELEVE,
+        self::STATUT_DEGUSTE,
+        self::STATUT_CHANGE,
+        self::STATUT_DECLASSE
     );
 
     public static function getLibelleStatut($statut) {
@@ -74,9 +97,6 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($this->produit_hash) {
             return $this->getDocument()->getConfiguration()->get($this->produit_hash);
         }
-    }
-    public function getNumero(){
-        return $this->_get('numero');
     }
 
     public function setProduitHash($hash) {
@@ -107,31 +127,42 @@ abstract class Lot extends acCouchdbDocumentTree
 		return $this->_get('produit_libelle');
 	}
 
+    public function getValueForTri($type) {
+        $type = strtolower($type);
+        $type = str_replace('é', 'e', $type);
+        if ($type == 'millesime') {
+            return ($this->millesime) ? $this->millesime : 'XXXX';
+        }
+        if ($type == 'appellation') {
+            return $this->getConfig()->getAppellation()->getKey();
+        }
+
+        if ($type == 'couleur') {
+            return $this->getConfig()->getCouleur()->getKey();
+        }
+        if ($type == 'genre') {
+            return $this->getConfig()->getGenre()->getKey();
+        }
+        if ($type == 'cepage') {
+            return $this->details;
+        }
+        if ($type == 'produit') {
+            return $this->_get('produit_hash').$this->_get('details');
+        }
+        throw new sfException('unknown type of value : '.$type);
+    }
+
     public function isCleanable() {
 
         if(!$this->exist('produit_hash') || !$this->produit_hash){
           return true;
         }
 
-        foreach($this as $key => $value) {
-            if($key == 'millesime' && $value = $this->getDocument()->getCampagne()) {
-
-                continue;
-            }
-            if($key == 'produit_hash' || $key == "produit_libelle") {
-                continue;
-            }
-
-            if($value instanceof acCouchdbJson && !count($value->toArray(true, false))) {
-                continue;
-            }
-
-            if($value) {
-                return false;
-            }
+        if(!$this->exist('volume') || !$this->volume){
+          return true;
         }
 
-        return true;
+        return false;
     }
 
     public function getDestinationDateFr()
@@ -145,6 +176,11 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDateVersionfr(){
+
+      if($this->date && !preg_match("/\d{4}\-\d{2}-\d{2}$/", $this->date)){
+        return Date::francizeDate(DateTime::createFromFormat('Y-m-d\TH:i:sO', $this->date)->format('Y-m-d'));
+      }
+
       if($this->date){
         return Date::francizeDate($this->date);
       }
@@ -172,7 +208,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
 
     public function getIntitulePartiel(){
-      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero.') de '.$this->produit_libelle;
+      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_cuve.') de '.$this->produit_libelle;
       if ($this->millesime){
         $libelle .= ' ('.$this->millesime.')';
       }
@@ -180,11 +216,49 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isPreleve(){
-      return ($this->statut == Lot::STATUT_PRELEVE || array_key_exists($this->statut, self::$libellesConformites));
+      return in_array($this->statut, self::$statuts_preleves);
     }
 
     public function isLeurre()
     {
         return $this->exist('leurre') && $this->leurre;
+    }
+
+    public function getUnicityKey(){
+        return KeyInflector::slugify($this->produit_hash.'/'.$this->volume.'/'.$this->millesime.'/'.$this->numero_dossier.'/'.$this->numero_archive);
+    }
+
+    public function getTriHash(array $tri = null) {
+        if (!$tri) {
+            return $this->produit_hash;
+        }
+        $hash = '';
+        foreach($tri as $type) {
+            $hash .= $this->getValueForTri($type);
+        }
+        return $hash;
+    }
+    public function getTriLibelle(array $tri = null) {
+        if (!$tri) {
+            return $this->produit_libelle;
+        }
+        $format = '';
+        if (in_array('appellation', $tri)) {
+            $format .= '%a% ';
+        }
+        if (in_array('genre', $tri)) {
+            $format .= '%g% ';
+        }
+        if (in_array('couleur', $tri)) {
+            $format .= '%co% ';
+        }
+        $libelle = $this->getConfig()->getLibelleFormat(null, $format)." ";
+        if (in_array('millesime', $tri)) {
+            $libelle .= $this->millesime.' ';
+        }
+        if (in_array('cépage', $tri)) {
+            $libelle .= "- ".$this->details.' ';
+        }
+        return $libelle;
     }
 }

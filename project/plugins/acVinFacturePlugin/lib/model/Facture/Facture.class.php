@@ -329,7 +329,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public function storeOrigines() {
         foreach ($this->getLignes() as $ligne) {
             foreach ($ligne->origine_mouvements as $idorigine => $null) {
-                if (!array_key_exists($idorigine, $this->origines))
+                if (!array_key_exists($idorigine, $this->origines->toArray(true, false)))
                     $this->origines->add($idorigine, $idorigine);
             }
         }

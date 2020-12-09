@@ -5,6 +5,7 @@ class HabilitationClient extends acCouchdbClient {
     const TYPE_MODEL = "Habilitation";
     const TYPE_COUCHDB = "HABILITATION";
 
+    #La liste les activités actives est définie dans habilitation.yml
     const ACTIVITE_PRODUCTEUR = "PRODUCTEUR";
     const ACTIVITE_VINIFICATEUR = "VINIFICATEUR";
     const ACTIVITE_VRAC = "VRAC";
@@ -14,6 +15,13 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_PRODUCTEUR_MOUTS = "PRODUCTEUR_MOUTS";
     const ACTIVITE_ELEVEUR_DGC = "ELEVEUR_DGC";
     const ACTIVITE_NEGOCIANT = "NEGOCIANT";
+    const ACTIVITE_MARC = "MARC";
+    const ACTIVITE_DISTILLATEUR = "DISTILLATEUR";
+    const ACTIVITE_METTEUR_EN_MARCHE = "METTEUR_EN_MARCHE";
+    const ACTIVITE_ELEVEUR = 'ELEVEUR';
+    const ACTIVITE_PRESTATAIRE_DE_SERVICE = 'PRESTATAIRE_DE_SERVICE';
+
+
 
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
@@ -549,4 +557,16 @@ class HabilitationClient extends acCouchdbClient {
 
             $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), $statutHabilitation, $commentaire);
         }
+
+        public function getProduitsConfig($config) {
+          $produits = array();
+          foreach ($config->declaration->getProduits() as $produit) {
+              $produithab = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit);
+              $produits[$produithab->getHash()] = $produithab;
+          }
+          return $produits;
+        }
+
+
+
     }

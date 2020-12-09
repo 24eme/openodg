@@ -5,6 +5,12 @@ degustation:
     sf_method: [get]
   class: DegustationGeneralRoute
 
+degustation_lot:
+  url: /degustation/lot/:campagne/:id
+  param: { module: degustation, action: lot }
+  requirements:
+    sf_method: [get]
+
 degustation_etablissement_list:
   url: /degustation/etablissement/:id
   param: { module: degustation, action: list }
@@ -24,8 +30,8 @@ degustation_prelevement_lots:
     sf_method: [get, post]
 
 degustation_selection_degustateurs:
-  url: /degustation/:id/selection-degustateurs
-  param: { module: degustation, action: selectionDegustateurs }
+  url: /degustation/:id/selection-degustateurs/:college
+  param: { module: degustation, action: selectionDegustateurs, college: 0 }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -114,8 +120,8 @@ degustation_degustateur_absence:
     sf_method: [get, post]
 
 degustation_organisation_table:
-  url: /degustation/:id/organisation-table/:numero_table
-  param: { module: degustation, action: organisationTable, numero_table: 0 }
+  url: /degustation/:id/organisation-table/:numero_table/:tri
+  param: { module: degustation, action: organisationTable, numero_table: 0, tri: 0}
   class: DegustationRoute
   options:
     model:    Degustation
@@ -123,9 +129,19 @@ degustation_organisation_table:
   requirements:
     sf_method: [get, post]
 
+degustation_tri_table:
+  url: /degustation/:id/tri-table/:numero_table
+  param: { module: degustation, action: triTable}
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [post]
+
 degustation_organisation_table_recap:
-  url: /degustation/:id/organisation-table-recap
-  param: { module: degustation, action: organisationTableRecap }
+  url: /degustation/:id/organisation-table-recap/:tri
+  param: { module: degustation, action: organisationTableRecap, tri: 0 }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -193,3 +209,117 @@ degustation_redirect:
     type:     object
   requirements:
     sf_method: [get]
+
+degustation_manquements:
+  url: /degustation/manquements
+  param: { module: degustation, action: manquements }
+  requirements:
+    sf_method: [get]
+
+degustation_elevages:
+  url: /degustation/elevages
+  param: { module: degustation, action: elevages }
+  requirements:
+    sf_method: [get]
+
+degustation_etiquette_pdf:
+  url: /degustation/:id/etiquettes/pdf
+  param: { module: degustation, action: etiquettesPdf }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
+degustation_fiche_individuelle_pdf:
+    url: /degustation/:id/ficheIndividuelle/pdf
+    param: { module: degustation, action: ficheIndividuellePDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+
+degustation_fiche_echantillons_preleves_pdf:
+    url: /degustation/:id/ficheEchantillonsPreleves/pdf
+    param: { module: degustation, action: ficheEchantillonsPrelevesPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_conformite_pdf:
+  url: /degustation/:id/:identifiant/DegustationConformite/pdf
+  param: { module: degustation, action: degustationConformitePDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+degustation_non_conformite_pdf:
+  url: /degustation/:id/:identifiant/DegustationNonConformite/pdf
+  param: { module: degustation, action: degustationNonConformitePDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+degustation_non_conformite_pdf:
+  url: /degustation/:id/:identifiant/RetraitNonConformite/pdf
+  param: { module: degustation, action: retraitNonConformitePDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+degustation_fiche_recap_tables_pdf:
+    url: /degustation/:id/ficheRecapTables/pdf
+    param: { module: degustation, action: ficheRecapTablesPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_fiche_lots_a_prelever_pdf:
+    url: /degustation/:id/ficheLotsAPrelever/pdf
+    param: { module: degustation, action: ficheLotsAPreleverPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_fiche_presence_degustateurs_pdf:
+    url: /degustation/:id/fichePresenceDegustateurs/pdf
+    param: { module: degustation, action: fichePresenceDegustateursPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_proces_verbal_degustation_pdf:
+    url: /degustation/:id/procesVerbalDegustation/pdf
+    param: { module: degustation, action: procesVerbalDegustationPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
