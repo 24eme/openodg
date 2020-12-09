@@ -9,6 +9,7 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     public function __construct($degustation,$etablissement,$lot_dossier, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
+        $this->lot_dossier = $lot_dossier;
 
         if (!$filename) {
             $filename = $this->getFileName(true);

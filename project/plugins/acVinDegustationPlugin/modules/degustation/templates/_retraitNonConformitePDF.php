@@ -43,7 +43,7 @@
 </table><br/>
 
 <?php foreach($degustation->getLots() as $lot): ?>
-  <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant && lot->numero_dossier == $lot_dossier): ?>
+  <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant && $lot->numero_dossier == $lot_dossier): ?>
         <?php $Newlot = $lot  ?>
   <?php endif; ?>
 <?php endforeach; ?>
