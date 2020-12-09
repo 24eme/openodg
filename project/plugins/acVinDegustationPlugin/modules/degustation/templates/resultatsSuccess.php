@@ -80,7 +80,7 @@
                           <?php if(!$lot->isNonConforme()): ?>
                           <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
                           <?php else: ?>
-                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_cuve' => $lot->numero_cuve)) ?>">PDF</a>
+                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier)) ?>">PDF</a>
                           <?php endif; ?>
                         </td>
                       </tr>

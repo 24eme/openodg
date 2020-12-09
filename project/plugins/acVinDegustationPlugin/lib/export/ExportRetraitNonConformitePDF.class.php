@@ -4,12 +4,12 @@ class ExportRetraitNonConformitePDF extends ExportPDF {
 
     protected $degustation = null;
     protected $etablissement = null;
-    protected $lot_cuve = null;
+    protected $lot_dossier = null;
 
-    public function __construct($degustation,$etablissement,$lot_cuve, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation,$etablissement,$lot_dossier, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
-        $this->lot_cuve = $lot_cuve;
+        $this->lot_dossier = $lot_dossier;
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -22,7 +22,7 @@ class ExportRetraitNonConformitePDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('degustation/retraitNonConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement,'lot_cuve'=>$this->lot_cuve )));
+        $this->printable_document->addPage($this->getPartial('degustation/retraitNonConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement,'lot_dossier'=>$this->lot_dossier )));
       }
 
 

@@ -43,10 +43,8 @@
 </table><br/>
 
 <?php foreach($degustation->getLots() as $lot): ?>
-  <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant): ?>
-    <?php if(isset($lot_cuve) && if($lot->numero_cuve == $lot_cuve)): ?>
+  <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant && lot->numero_dossier == $lot_dossier): ?>
         <?php $Newlot = $lot  ?>
-    <?php endif; ?>
   <?php endif; ?>
 <?php endforeach; ?>
 <p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$Newlot->numero_archive ?></strong></p>
