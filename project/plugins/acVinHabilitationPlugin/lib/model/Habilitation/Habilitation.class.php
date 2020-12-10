@@ -119,6 +119,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
+        if(!$this->getConfiguration()->exist('/declaration/'.$hash)){
+          return null;
+        }
         $prod = $this->getConfiguration()->get('/declaration/'.$hash);
         $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prod);
         $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
@@ -267,6 +270,11 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 	}
 
   public function isHabiliteFor($hash_produit, $activite) {
+
+    if(!$this->addProduit($hash_produit)){
+      return false;
+    }
+
     if (!$this->addProduit($hash_produit)->exist('activites')) {
       return false;
     }
