@@ -232,6 +232,15 @@ degustation_etiquette_pdf:
   requirements:
     sf_method: [get]
 
+degustation_etiquette_anonymes_pdf:
+  url: /degustation/:id/etiquettesAnonymes/pdf
+  param: { module: degustation, action: etiquettesAnonymesPDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
 
 degustation_fiche_individuelle_pdf:
     url: /degustation/:id/ficheIndividuelle/pdf
