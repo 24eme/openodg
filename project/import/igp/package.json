@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "mkdirp": "^0.5.5",
+    "nightmare": "^3.0.2",
+    "nightmare-inline-download": "^0.2.2"
+  }
+}

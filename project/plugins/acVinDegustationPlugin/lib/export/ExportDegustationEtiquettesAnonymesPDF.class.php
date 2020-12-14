@@ -1,15 +1,11 @@
 <?php
 
-class ExportRetraitNonConformitePDF extends ExportPDF {
+class ExportDegustationEtiquettesAnonymesPDF extends ExportPDF {
 
     protected $degustation = null;
-    protected $etablissement = null;
-    protected $lot_dossier = null;
 
-    public function __construct($degustation,$etablissement,$lot_dossier, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
-        $this->etablissement = $etablissement;
-        $this->lot_dossier = $lot_dossier;
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -22,8 +18,10 @@ class ExportRetraitNonConformitePDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('degustation/retraitNonConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement,'lot_dossier'=>$this->lot_dossier )));
+      foreach ($this->degustation->getEtiquettesFromLots() as $plancheLots) {
+        $this->printable_document->addPage($this->getPartial('degustation/etiquettesAnonymesPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
       }
+  }
 
 
     public function output() {
@@ -60,7 +58,7 @@ class ExportRetraitNonConformitePDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportRetraitNonConformitePDFConfig();
+        return new ExportDegustationEtiquettesPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -69,10 +67,13 @@ class ExportRetraitNonConformitePDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("LEVEE_NON_CONFORMITE_%s", $degustation->_id);
+        $filename = sprintf("DEGUSTATION_%s", $degustation->_id);
+
+
         if ($with_rev) {
             $filename .= '_' . $degustation->_rev;
         }
+
 
         return $filename . '.pdf';
     }

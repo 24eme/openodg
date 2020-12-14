@@ -232,6 +232,15 @@ degustation_etiquette_pdf:
   requirements:
     sf_method: [get]
 
+degustation_etiquette_anonymes_pdf:
+  url: /degustation/:id/etiquettesAnonymes/pdf
+  param: { module: degustation, action: etiquettesAnonymesPDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
 
 degustation_fiche_individuelle_pdf:
     url: /degustation/:id/ficheIndividuelle/pdf
@@ -265,7 +274,7 @@ degustation_conformite_pdf:
     sf_method: [get,post]
 
 degustation_non_conformite_pdf:
-  url: /degustation/:id/:identifiant/DegustationNonConformite/pdf
+  url: /degustation/:id/:identifiant/:lot_dossier/DegustationNonConformite/pdf
   param: { module: degustation, action: degustationNonConformitePDF }
   class: DegustationRoute
   options:
@@ -274,8 +283,8 @@ degustation_non_conformite_pdf:
   requirements:
     sf_method: [get,post]
 
-degustation_non_conformite_pdf:
-  url: /degustation/:id/:identifiant/RetraitNonConformite/pdf
+retrait_non_conformite_pdf:
+  url: /degustation/:id/:identifiant/:lot_dossier/RetraitNonConformite/pdf
   param: { module: degustation, action: retraitNonConformitePDF }
   class: DegustationRoute
   options:

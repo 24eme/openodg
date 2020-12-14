@@ -521,6 +521,22 @@ class degustationActions extends sfActions {
 
       return $this->renderText($this->document->output());
     }
+    public function executeEtiquettesAnonymesPDF(sfWebRequest $request) {
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationEtiquettesAnonymesPDF($degustation, $this->getRequestParameter('output', 'pdf'), false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+    }
 
 
     public function executeFicheIndividuellePDF(sfWebRequest $request){
@@ -582,8 +598,9 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $lot_dossier = $request['lot_dossier'];
 
-      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {
@@ -602,8 +619,9 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $lot_dossier = $request['lot_dossier'];
 
-      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$lot_dossier,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {
