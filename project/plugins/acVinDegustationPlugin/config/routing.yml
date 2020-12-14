@@ -313,6 +313,16 @@ degustation_fiche_lots_a_prelever_pdf:
     requirements:
       sf_method: [get]
 
+degustation_fiche_individuelle_lots_a_prelever_pdf:
+    url: /degustation/:id/ficheIndividuelleLotsAPrelever/pdf
+    param: { module: degustation, action: ficheIndividuelleLotsAPreleverPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
 degustation_fiche_presence_degustateurs_pdf:
     url: /degustation/:id/fichePresenceDegustateurs/pdf
     param: { module: degustation, action: fichePresenceDegustateursPDF }
