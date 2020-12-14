@@ -249,26 +249,6 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return false;
     }
 
-    public function reorderByConf() {
-		$children = array();
-
-		foreach($this as $hash => $child) {
-			$children[$hash] = $child->getData();
-		}
-
-		foreach($children as $hash => $child) {
-			$this->remove($hash);
-		}
-
-		foreach($this->getConfig()->getProduits() as $hash => $child) {
-			$hashProduit = str_replace("/declaration/", "", $hash);
-			if(!array_key_exists($hashProduit, $children)) {
-				continue;
-			}
-			$this->add($hashProduit, $children[$hashProduit]);
-		}
-	}
-
   public function isHabiliteFor($hash_produit, $activite) {
 
     if(!$this->addProduit($hash_produit)){

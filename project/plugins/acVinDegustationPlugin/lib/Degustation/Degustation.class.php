@@ -759,4 +759,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 			return $etablissements;
 		}
+
+		public function getLotsDegustesByAppelation(){
+			$degust = array();
+			foreach ($this->getLotsDegustes() as $key => $lot) {
+				$degust[$lot->getConfig()->getAppellation()->getLibelle()][] = $lot;
+			}
+
+			return $degust;
+
+		}
 }

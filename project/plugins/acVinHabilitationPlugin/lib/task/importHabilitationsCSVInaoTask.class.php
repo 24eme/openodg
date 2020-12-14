@@ -54,7 +54,7 @@ class importHabilitationsCSVInaoTask extends sfBaseTask
                             "Coteaux d'Ancenis" => "certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/COA/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT",
                             "Alsace" => "certification/genre/appellation_ALSACE",
                             "Alsace Crémant" => "certification/genre/appellation_CREMANT",
-                            "Alsace Grands crus" => "certification/genre/appellation_GRDCRU",
+                            "Alsace Grand cru" => "certification/genre/appellation_GRDCRU",
                             "Marc d'Alsace Gewurztraminer" => "certification/genre/appellation_MARC",
                           );
 
