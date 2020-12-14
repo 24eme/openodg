@@ -265,16 +265,23 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getCepagesToStr(){
-      $cepages = $this->changement_cepages;
+      $cepages = $this->cepages;
       $str ='';
       $k=0;
       $total = 0.0;
-      foreach ($cepages as $c => $volume){ $total+=$volume; }
+      $tabCepages=array();
       foreach ($cepages as $c => $volume){
-        $k++;
+        $total+=$volume;
+      }
+      foreach ($cepages as $c => $volume){
         $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $str.= $c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ', ' : '';
+        $tabCepages[$c]=$p;
+      }
+      arsort($tabCepages);
+      foreach ($tabCepages as $c => $p) {
+        $k++;
+        $str.=" ".$c." (".$p.'%)';
+        $str.= ($k < count($cepages))? ',' : '';
       }
       return $str;
     }

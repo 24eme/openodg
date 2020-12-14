@@ -1387,8 +1387,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
-        foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc) {
-            $mvt->details .= $cep.' ('.$pc.'%) ';
+
+        $tabCepages=[];
+
+        foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc){
+          $tabCepages[$cep]=$pc;
+        }
+        arsort($tabCepages);
+
+        foreach($tabCepages as $cep => $pc) {
+          if (strlen($mvt->details)==0){
+            $mvt->details .=$cep.' ('.$pc.'%)';
+          }
+            $mvt->details .= ' '.$cep.' ('.$pc.'%)';
         }
         $mvt->region = '';
         $mvt->campagne = $this->campagne;
