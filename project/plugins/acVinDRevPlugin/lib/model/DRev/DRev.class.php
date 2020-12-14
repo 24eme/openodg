@@ -1399,7 +1399,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           if (strlen($mvt->details)==0){
             $mvt->details .=$cep.' ('.$pc.'%)';
           }
+          else{
             $mvt->details .= ' '.$cep.' ('.$pc.'%)';
+          }
         }
         $mvt->region = '';
         $mvt->campagne = $this->campagne;
