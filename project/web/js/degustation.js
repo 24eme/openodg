@@ -61,26 +61,32 @@
       }
     }
 
-    var updateSynthesePrelevementLots = function(){
+    var updateSynthesePrelevementLots = function(object){
+      var listAdherents = {};
+
+      $("[data-adherent]").each(function(){
+        listAdherents[$(this).attr("data-adherent")] = 0;
+      });
 
       $('.degustation.prelevements').each(function(){
         var nbLotsSelectionnes = 0;
-        var adherents = {};
+        var nb = $('tr strong#nbLotsSelectionnes').text();
 
         $(this).find('.bsswitch').each(function () {
            var state = $(this).bootstrapSwitch('state');
            if(state){
-             nbLotsSelectionnes++;
-             adherents[$(this).parents('td').attr("data-hash")]=1;
+              listAdherents[$(this).attr("data-preleve-adherent")]++;
            }
-
       });
-      $('tr strong.nbLotsSelectionnes').html(""+nbLotsSelectionnes);
-      $('tr strong.nbAdherents').html(""+Object.size(adherents));
+      for(let i in listAdherents){
+        if(listAdherents[i] >= 1){
+          nbLotsSelectionnes++;
+        }
+      }
+
+      $('tr strong#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
        });
     }
-
-    updateSynthesePrelevementLots();
 
     var updateSyntheseDegustateurs = function(){
       $('.degustation.degustateurs').each(function(){

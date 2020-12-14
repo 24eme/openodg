@@ -11,7 +11,7 @@
 <?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
 <p>Sélectionner les lots qui ont été prélevés</p>
-<form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="form-horizontal degustation prelevements">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
@@ -36,17 +36,17 @@
             </tr>
         </thead>
 		<tbody>
-		<?php foreach ($form['lots'] as $key => $formLot): ?>
-            <?php $lot = $degustation->lots->get($key); ?>
-			<tr class="vertical-center cursor-pointer">
-                <td><?php echo $lot->declarant_nom; ?></td>
-                <td class="edit"><?= $lot->numero_cuve ?>
-                  <?php if (! $lot->isLeurre()): ?>
-                    <span class="pull-right">
-                      <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
-                    </span>
-                  <?php endif; ?>
-                </td>
+		<?php $adherents = array(); foreach ($form['lots'] as $key => $formLot): ?>
+    <?php $lot = $degustation->lots->get($key); ?>
+       <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
+        <td><?php echo $lot->declarant_nom; ?></td>
+        <td class="edit"><?= $lot->numero_cuve ?>
+          <?php if (! $lot->isLeurre()): ?>
+            <span class="pull-right">
+              <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+            </span>
+          <?php endif; ?>
+        </td>
 				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
         <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
           <td><?php echo $lot->specificite; ?></td>
@@ -55,17 +55,17 @@
           <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>&nbsp;&nbsp;
           <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
         </td>
-            	<td class="text-center">
-                    <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $formLot['preleve']->renderError() ?>
-                        <div class="col-xs-12">
-			            	<?php echo $formLot['preleve']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
-                        </div>
-                    </div>
-            	</td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
+      	<td class="text-center">
+              <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
+              	<?php echo $formLot['preleve']->renderError() ?>
+                  <div class="col-xs-12">
+            	<?php echo $formLot['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                  </div>
+              </div>
+      	</td>
+      </tr>
+    <?php endforeach; ?>
+    </tbody>
 	</table>
 
 	<div class="row row-margin row-button">
