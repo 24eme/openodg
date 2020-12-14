@@ -97,13 +97,10 @@
         $(".collegeCounter li.active span.badge").html(""+college);
 
        });
-
     }
 
     updateSyntheseDegustateurs();
 
-    $('#time').on('click',function(){
-      $(this).clockpicker({placement: 'bottom',align: 'left',autoclose: true});
-    });
+    document.getElementById('degustation_creation_time').style.paddingTop = '0';
 
   });
