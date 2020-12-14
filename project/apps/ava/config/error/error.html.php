@@ -16,14 +16,14 @@
     <meta name="content-language" content="fr-FR" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Plateforme de télédéclaration de l&#039;AVA</title>
-    
+
     <link rel="shortcut icon" type="image/x-icon" href="favico.ico" />
     <link rel="icon" type="image/x-icon" href="favico.ico" />
     <link rel="icon" type="image/png" href="favico.png" />
 
-    <link rel="stylesheet" type="text/css" media="all" href="/css/compile.css?201412041035" />
+    <link rel="stylesheet" type="text/css" media="all" href="/css/compile_ava.css?201412041035" />
     <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
-    
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 
     <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
