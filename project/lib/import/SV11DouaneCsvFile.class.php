@@ -17,7 +17,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $libellesLigne = null;
         $tabValues = array(3,4,9,10,11,12,13);
         $cpt = 1;
-        
+
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
@@ -34,7 +34,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         			$libellesLigne = $values;
         			continue;
         		}
-        		if (preg_match('/^commune de[\s]*(.*)$/i', $values[0], $m)) {
+        		if ((!$values[1]) && preg_match('/^commune de[\s]*(.*)$/i', $values[0], $m)) {
         			$communeTiers = $m[1];
         			continue;
         		}
