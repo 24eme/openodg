@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
+class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -14,25 +14,21 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     }
 
     public function create() {
-      $etablissements = array();
-      $nbLotTotal = 0;
+      $etablissement = null;
+
       foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
-				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
-        $nbLotTotal += count($lotsEtablissement);
-        $etablissements[$numDossier] = $etablissement;
-      }
-      foreach ($this->degustation->getLotsDegustesByAppelation() as $appellation => $lotsDegustes) {
+        $volumeLotTotal = 0;
+        foreach ($lotsEtablissement as $key => $lot) {
+          $volumeLotTotal += $lot->volume;
+        }
+        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
         @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheProcesVerbalDegustationPdf',
+          $this->getPartial('degustation/ficheIndividuelleLotsAPreleverPdf',
           array(
             'degustation' => $this->degustation,
-            'etablissements' => $etablissements,
-            'nbLotTotal' => $nbLotTotal,
-            "appellation" => $appellation,
-            "nbTables" => $this->degustation->getLastNumeroTable(),
-            "nbDegustateurs" => count($this->degustation->getDegustateursConfirmes()),
-            "nbDegustateursPresents" => count($this->degustation->getDegustateursATable()),
-            'lotsDegustes' => $lotsDegustes
+            'etablissement' => $etablissement,
+            'volumeLotTotal' => $volumeLotTotal,
+            'lots' => $lotsEtablissement
           )
         ));
       }
@@ -57,7 +53,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s PROCÈS VERBAL DE DEGUSTATION", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
 
         return $titre;
     }
@@ -78,7 +74,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationFicheProcesVerbalDegustationPDFConfig();
+        return new ExportDegustationFicheIndividuelleLotsAPreleverPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -87,7 +83,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("proces_verbal_global_%s", $degustation->_id);
+        $filename = sprintf("fiche_individuelle_prelevements_%s", $degustation->_id);
 
 
         if ($with_rev) {
