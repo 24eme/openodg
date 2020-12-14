@@ -9,18 +9,17 @@ th {
 </style>
   <table>
     <tr>
-      <td style="width:33%;">
-        <p>Code Commission: _ _ _ _ _ _</p>
-        <p>Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></p>
-        <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
-      </td>
-      <td style="width:33%;">
-        <p>Campagne: <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></p>
-        <p>Millésime: <?php echo $degustation->campagne; ?></p>
+      <td style="width:100%;">
+        <p><small>
+          <span>&nbsp;&nbsp;Code Commission : _ _ _ _ _ _</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Campagne : <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Millésime : <?php echo $degustation->campagne; ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></span>
+          <span>&nbsp;&nbsp;Heure : <?php echo substr($degustation->date, -5); ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Lieu : <?php echo $degustation->lieu; ?> </span>
+        </small>
+        </p>
 
-      </td>
-      <td style="width:33%">
-        <p>Lieu : <?php echo $degustation->lieu; ?> </p>
       </td>
     </tr>
   </table>
