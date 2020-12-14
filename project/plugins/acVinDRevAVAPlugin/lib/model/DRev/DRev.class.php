@@ -736,7 +736,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if (
                     preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_APPELLATION]) ||
                     preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_LIEU]) ||
-                    preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_CEPAGE])
+                    preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_CEPAGE]) ||
+                    preg_match("/TOTAL$/", $line[DRCIVACsvFile::CSV_CEPAGE])
             ) {
 
                 continue;
