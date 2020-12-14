@@ -68,15 +68,15 @@ th {
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <tr style="width:12%">
             <th ><small>Nombre de tables</small></th>
-            <td ><small><?php echo ""; ?></small></td>
+            <td ><small><?php echo $nbTables; ?></small></td>
           </tr>
           <tr style="width:12%">
             <th><small>Nombre de Jurés</small></th>
-            <td style=""><small><?php echo ""; ?></small></td>
+            <td style=""><small><?php echo $nbDegustateurs; ?></small></td>
           </tr>
           <tr style="width:12%">
             <th><small>Nombre de jurés présents</small></th>
-            <td style=""><small><?php echo ""; ?></small></td>
+            <td style=""><small><?php echo $nbDegustateursPresents; ?></small></td>
           </tr>
         </table>
       </td>
@@ -88,7 +88,7 @@ th {
 <div>
   <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
     <tr>
-      <td><div><p>IGP DE RÉGION : </p></div></td>
+      <td><div><p>IGP : <?php echo $appellation ?> </p></div></td>
       <td></td>
       <td>
         <div>
