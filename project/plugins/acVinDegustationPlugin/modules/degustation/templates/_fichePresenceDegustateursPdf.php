@@ -49,7 +49,7 @@
               </td>
               <td><br/><br/><small><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></small></td>
               <td></td>
-              <td><small><?php echo "Présent(e)"  ?></small></td>
+              <td><small><?php echo ($degustateursATable[$id_degustateur]->confirmation) ?"Présent.e" : "Absent.e"  ?></small></td>
             </tr>
           <?php endforeach; ?>
     <?php endforeach; ?>
