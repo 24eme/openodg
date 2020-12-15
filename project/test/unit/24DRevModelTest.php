@@ -2,7 +2,9 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(32);
+$t = new lime_test(48);
+
+$igp13 = ($application == 'igp13');
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -33,16 +35,21 @@ $t->comment("Saisie des volumes");
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
     if($produit->getRendement() > 0) {
-        continue;
+        if($igp13 && preg_match("/(APL|MED)/",$produit->getHash())){
+          continue;
+        }
+        $produit_hash1 = $produit->getHash();
+        break;
     }
-    $produit_hash1 = $produit->getHash();
-    break;
 }
 foreach($produits as $produit) {
-    if($produit->getRendement() > 0) {
+    if($produit->getRendement() > 0 && $produit_hash1!=$produit->getHash()) {
+      if($igp13 && preg_match("/(APL|MED)/",$produit->getHash())){
         continue;
+      }
+      $produit_hash2 = $produit->getHash();
+      break;
     }
-    $produit_hash2 = $produit->getHash();
 }
 foreach($produits as $produit) {
     if($produit->getRendement() <= 0 || !$produit->hasMutageAlcoolique()) {
@@ -125,18 +132,19 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume 
 
 $t->comment("Validation");
 
-$drev->validate();
-$drev->validateOdg();
+$date = date('c');
+$drev->validate($date);
+$drev->validateOdg($date);
 $drev->save();
 
 $t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est toujours de 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
-$t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
+$t->is($drev->validation, $date , "La DRev a la date du jour comme date de validation");
 if(DRevConfiguration::getInstance()->hasValidationOdgAuto()) {
-    $t->is($drev->validation_odg, null, "La DRev a la date du jour comme date de validation odg");
+    $t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
 } else {
-    $t->is($drev->validation_odg, date('Y-m-d'), "La date de validation ODG n'est pas mise automatiquement");
+    $t->is($drev->validation_odg, null, "La date de validation ODG n'est pas mise automatiquement");
 }
 
 if(FactureConfiguration::getInstance()->isActive()) {
@@ -155,7 +163,11 @@ $drev->save();
 if(FactureConfiguration::getInstance()->isActive()) {
     $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
     $mouvements = $drev->mouvements->get($viti->identifiant);
-    $t->is(count($mouvements), 4, "La DRev a 4 mouvements");
+    $nbMvtsAttendu = 4;
+    if($igp13){
+      $nbMvtsAttendu = 5;
+    }
+    $t->is(count($mouvements), $nbMvtsAttendu, "La DRev a $nbMvtsAttendu mouvements");
     $mouvement = $mouvements->getFirst();
     $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
     $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
@@ -193,7 +205,68 @@ $drevM1->validate();
 $drevM1->save();
 
 if(FactureConfiguration::getInstance()->isActive()) {
-    $t->is(count($drevM1->mouvements->get($viti->identifiant)), 4, "La DRev modificatrice a 4 mouvements");
+    $t->is(count($drevM1->mouvements->get($viti->identifiant)), $nbMvtsAttendu, "La DRev modificatrice a $nbMvtsAttendu mouvements");
 } else {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
 }
+
+$t->comment("Test de la réserve interpro");
+
+$rdm_orig = $produit2->getConfig()->getRendementCepage();
+$rdm_ri = $produit2->getConfig()->getRendementReserveInterpro();
+$produit2->getConfig()->add('attributs')->add('rendement', 60);
+$produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro', 50);
+$produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro_min', 10);
+$produit2->getConfig()->clearStorage();
+
+$drevM2 = $drevM1->generateModificative();
+$drevM2->save();
+$produit2M2 = $drevM2->get($produit2->getHash());
+$produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 50 + 5;
+$produit2M2->volume_revendique_issu_recolte = $produit2M2->volume_revendique_total;
+
+$drevM2->save();
+$drevM2->validate();
+$drevM2->save();
+
+$t->is($produit2M2->getConfig()->getRendementReserveInterpro(), 50, "le rendement interpro est bien celui attendu en configuration 2");
+$t->is($produit2M2->getConfig()->getRendementReserveInterproMin(), 10, "le rendement interpro minimal est bien celui attendu en configuration 2");
+$t->ok(!$drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Pas de champ reserve interpro car le volume minimal n'est pas atteint");
+$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), 0, "Le volume dédié à la réserve interpro est à 0 car inférieur au minimal");
+$t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(), $produit2M2->superficie_revendique * 50 + 5, "Le volume commercialisable est le bon");
+
+$drevM2->devalidate();
+$produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 50 + $produit2M2->getConfig()->getRendementReserveInterproMin() + 1;
+$produit2M2->volume_revendique_issu_recolte = $produit2M2->volume_revendique_total;
+$drevM2->save();
+$drevM2->validate();
+$drevM2->save();
+
+$t->ok($drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro est bien présent");
+$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), $produit2M2->getConfig()->getRendementReserveInterproMin() + 1, "Le volume dédié à la réserve interpro est le bon");
+$t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(), $produit2M2->superficie_revendique * 50, "Le volume commercialisable est le bon");
+
+
+$drevM2->devalidate();
+$produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 60 + 1;
+$produit2M2->volume_revendique_issu_recolte = $produit2M2->volume_revendique_total;
+$drevM2->save();
+$drevM2->validate();
+$drevM2->save();
+
+$t->ok($drevM2->get($produit2->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro est bien présent quand le rendement butoir est dépassé");
+$t->is($drevM2->get($produit2->getHash())->getVolumeReserveInterpro(), $produit2M2->superficie_revendique * 10, "Le volume dédié à la réserve interpro est le bon quand le rendement butoir est dépassé");
+$t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(), $produit2M2->superficie_revendique * 50, "Le volume commercialisable est le bon quand le rendement butoir est dépassé");
+
+
+$t->ok(!$drevM2->get($produit1->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro n'est pas présent pour le 1er produit");
+$t->ok($drevM2->hasProduitsReserveInterpro(), "La Drev indique bien qu'il existe des produits en reserve interpro");
+$t->ok(!$drevM1->hasProduitsReserveInterpro(), "La Drev précédente n'a pas de produit en réserve interpro");
+
+$produits = $drevM2->getProduitsWithReserveInterpro();
+$t->is(count($produits), 1, "Il existe bien un produit avec des la réserve interpro");
+$t->is($produits[0]->getHash(), $produit2M2->getHash(), "Le produit avec des la réserve interpro est le bon");
+
+$produit2->getConfig()->add('attributs')->add('rendement', $rdm_orig);
+$produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro', $rdm_ri);
+$produit2->getConfig()->clearStorage();

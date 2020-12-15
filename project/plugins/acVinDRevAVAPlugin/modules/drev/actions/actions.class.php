@@ -140,7 +140,6 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
 
@@ -318,7 +317,7 @@ class drevActions extends sfActions {
     			if ($request->isXmlHttpRequest()) {
     				return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
     			}
-    	
+
     			if ($request->getParameter('redirect', null)) {
     				return $this->redirect('drev_validation', $this->drev);
     			}
@@ -648,7 +647,6 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION))) {
@@ -659,13 +657,12 @@ class drevActions extends sfActions {
         $this->validation = new DRevValidation($this->drev);
 
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
 
-        if (!$this->validation->isValide()) {
+        if (!$this->validation->isValide() && ! $this->getUser()->isAdmin()) {
 
             return sfView::SUCCESS;
         }
@@ -677,11 +674,16 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+
         $documents = $this->drev->getOrAdd('documents');
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
             $document = $documents->add($engagement->getCode());
             $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+        }
+
+        if($this->form->getValue("commentaire")) {
+            $this->drev->commentaire = $this->form->getValue("commentaire");
         }
 
         if($this->drev->isPapier()) {
@@ -860,11 +862,17 @@ class drevActions extends sfActions {
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();
-        Email::getInstance()->sendDRevValidation($drev);
+        $messages = Email::getInstance()->getMessageDRevValidationDeclarant($drev);
+        foreach($messages as $message) {
+            $this->getMailer()->send($message);
+        }
     }
 
     protected function sendDrevConfirmee($drev) {
-        Email::getInstance()->sendDrevConfirmee($drev);
+        $messages = Email::getInstance()->getMessageDRevConfirmee($drev);
+        foreach($messages as $message) {
+            $this->getMailer()->send($message);
+        }
     }
 
 

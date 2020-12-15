@@ -38,9 +38,11 @@
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
-                    <th class="col-xs-10">Échantillons</th>
-                    <th class="col-xs-1"></th>
-                    <th class="col-xs-1">Conformité</th>
+                    <th class="col-xs-1 text-left">Numéro<br/>anonyme</th>
+                    <th class="col-xs-3 text-left">Opérateur</th>
+                    <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
+                    <th class="col-xs-2 text-left">Conformité</th>
+                    <th class="col-xs-2 text-left">Courrier</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -49,13 +51,15 @@
                     $name = $form->getWidgetNameFromLot($lot);
                     if (isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
-                        <td>
-                          <div class="row">
-                            <div class="col-xs-4 text-right"><?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?></div>
-                            <div class="col-xs-4 text-right"><?php echo $lot->produit_libelle;?></div>
-                            <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
-                            <div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
-                          </div>
+                        <td class="text-left"><?php echo $lot->getNumeroAnonymise() ?></td>
+                        <td class="text-left"><?php echo $lot->declarant_nom ?></td>
+                        <td class="text-left">
+                          <?php echo $lot->produit_libelle;?>&nbsp;
+                          <small class="text-muted"><?php echo $lot->details; ?></small>
+                          <?php echo ($lot->millesime)? $lot->millesime : ''; ?>
+                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                            <span class="text-muted">(<?php echo $lot->specificite; ?>)</span>
+                          <?php endif ?>
                         </td>
                         <td class="text-center">
                           <div style="margin-bottom: 0;">
@@ -67,10 +71,19 @@
                           </div>
                         </td>
                         <td class="text-center">
-                          <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
-                            <span class="text-muted glyphicon glyphicon-pencil"></span>
+                          <?php if (!$lot->leurre): ?>
+                            <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
+                              <span class="text-muted glyphicon glyphicon-pencil"></span>
+                            <?php else: ?>
+                              <?php echo $lot->getShortLibelleConformite(); ?>
+                            <?php endif; ?>
+                          <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                          <?php if(!$lot->isNonConforme()): ?>
+                          <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
                           <?php else: ?>
-                            <?php echo $lot->getShortLibelleConformite(); ?>
+                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier)) ?>">PDF</a>
                           <?php endif; ?>
                         </td>
                       </tr>

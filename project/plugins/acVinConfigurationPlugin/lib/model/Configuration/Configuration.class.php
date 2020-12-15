@@ -16,17 +16,6 @@ class Configuration extends BaseConfiguration {
         $this->set('_id', "CONFIGURATION");
     }
 
-    public function getProduitsCahierDesCharges() {
-      $produits = array();
-      foreach ($this->getProduits() as $produit) {
-          if($produit->getNodeCahierDesCharges()){
-            $produitAppellation = $produit->getNodeCahierDesCharges();
-            $produits[$produitAppellation->getHash()] = $produitAppellation;
-          }
-      }
-      return $produits;
-    }
-
     public function getProduits() {
 
         return $this->declaration->getProduits();
@@ -246,8 +235,10 @@ class Configuration extends BaseConfiguration {
 
     public function getLabelsLibelles($labels) {
         $libelles = array();
-        foreach ($labels as $key) {
-            $libelles[$key] = $this->labels[$key];
+        if (is_array($labels)) {
+            foreach ($labels as $key) {
+                $libelles[$key] = $this->labels[$key];
+            }
         }
 
         return $libelles;

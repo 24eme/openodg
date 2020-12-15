@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 
-<?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'numero_table' => $numero_table)); ?>
+<?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'numero_table' => $numero_table, 'tri' => $tri)); ?>
 
 <div class="row row-condensed">
   <div class="col-xs-12">
@@ -12,28 +12,33 @@
           	<table class="table table-condensed">
           			<thead>
           				<tr>
-          					<th class="col-xs-9">Appellation couleur cepage</th>
-          					<th class="col-xs-3">nb échantillons</th>
+          					<th class="col-xs-8"><?php echo $tri; ?> (<a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</th>
+                            <th class="col-xs-1"></th>
+          					<th class="col-xs-2">Nombre d'échantillons</th>
+                            <th class="col-xs-1"></th>
           				</tr>
           			</thead>
           			<tbody id="synthese">
                 <?php $total = 0; ?>
           			<?php foreach ($syntheseLots as $hash => $lotsProduit): ?>
           				<tr class="vertical-center cursor-pointer" data-hash="<?php echo $hash; ?>" >
-          					<td><?php echo $lotsProduit->libelle ?>&nbsp;<small class="text-muted"><?php echo $lotsProduit->details; ?></small><?php echo ($lotsProduit->millesime)? ' ('.$lotsProduit->millesime.')' : ''; ?></td>
-						<td class="nblots"><?php echo count($lotsProduit->lots); $total += count($lotsProduit->lots); ?></td>
+          					<td><?php echo preg_replace('/ -(.*)/', '<span class="text-muted">\1</span>', $lotsProduit->libelle) ?></td>
+                    <td></td>
+                    <td class="nblots text-right"><?php echo count($lotsProduit->lotsTable); $total += count($lotsProduit->lotsTable); ?></td>
+                    <td></td>
           				</tr>
           			<?php endforeach; ?>
                   <tr>
-                    <td class="text-right"><strong>Total</strong></td>
-                    <td class="nblots"><?= $total ?></td>
+                    <td class="text-right"></td>
+                    <td><strong>Total</strong> : </td>
+                    <td class="nblots text-right" ><span data-total="1"><?php echo $total ?></span></td>
+                    <td></td>
                   </tr>
           		</tbody>
           	</table>
           </div>
 
-
-          	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table)) ?>" method="post" class="form-horizontal degustation table">
+          	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri)) ?>" method="post" class="form-horizontal degustation table">
           		<?php echo $form->renderHiddenFields(); ?>
           		<div class="bg-danger">
           			<?php echo $form->renderGlobalErrors(); ?>
@@ -42,8 +47,8 @@
           		<table class="table table-bordered table-condensed table-striped">
           			<thead>
           				<tr>
-          					<th class="col-xs-10">Échantillons</th>
-          					<th class="col-xs-2">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
+          					<th class="col-xs-11">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a> )</span></th>
+          					<th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
           			<tbody>
@@ -55,16 +60,18 @@
           						<tr class="vertical-center cursor-pointer">
           							<td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
           								<div class="row">
-                                              <div class="col-xs-5 text-right">
+                                              <div class="col-xs-4 text-right">
                                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
-                                                  <?php echo $lot->declarant_nom.' ('.$lot->numero.')'; ?>
+                                                  <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?>
                                               </div>
-          									<div class="col-xs-3 text-right"><?php echo $lot->produit_libelle;?></div>
-                            <div class="col-xs-3 text-right"><small class="text-muted"><?php echo $lot->details; ?></small></div>
-          									<div class="col-xs-1 text-right"><?php echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?></div>
+                                              <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
+          									<div class="col-xs-7 text-left">
+                                                <?php echo $lot->produit_libelle;?>
+                                                <small class="text-muted"><?php echo $lot->details; ?></small>
+                                            </div>
           								</div>
           							</td>
-          							<td class="text-center" data-hash="<?php echo $lot->produit_hash; ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
+          							<td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>" data-hash="<?php echo $lot->getTriHash($tri_array->getRawValue()); ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>
           									<div class="col-xs-12">
@@ -81,7 +88,7 @@
           		<div class="row row-margin row-button">
           			<div class="col-xs-4">
                         <?php if($numero_table > 1): ?>
-                        <a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table - 1)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a>
+                        <a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table - 1, 'tri' => $tri)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a>
                         <?php else: ?>
                             <a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
                         <?php endif; ?>
@@ -96,6 +103,7 @@
           	</form>
 
           <?php include_partial('degustation/popupAjoutLeurreForm', array('url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm, 'table' => $numero_table)); ?>
+          <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => $numero_table)), 'form' => $triTableForm, 'table' => $numero_table)); ?>
       </div>
     </div>
   </div>

@@ -4,6 +4,9 @@ config/autoload.yml:
 config/databases.yml:
   class:    sfDatabaseConfigHandler
 
+config/databases.*.yml:
+  class:    sfDatabaseConfigHandler
+
 config/settings.yml:
   class:    sfDefineEnvironmentConfigHandler
   param:

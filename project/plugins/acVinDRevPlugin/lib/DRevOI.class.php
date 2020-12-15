@@ -17,22 +17,25 @@ class DRevOI
 
 	public function send()
 	{
+		$sended = array();
 		if($this->regions){
 			$regionSended = array();
 			foreach ($this->regions as $region => $regionOpt) {
 				if(!count($this->drev->declaration->getProduits($region))){
 					continue;
 				}
-				$regionSended[] = $this->sendXml($region, $regionOpt);
+				$this->sendXml($region, $regionOpt);
+				$sended[] = $region;
 			}
 		}else{
+			$sended[] = null;
 			$this->sendXml();
 		}
-		if(!$this->regions || count($regionSended)){
+		if(count($sended)){
 			 $this->drev->add('envoi_oi', date('c'));
 			 $this->drev->save();
 		}
-		return $this->drev;
+		return $sended;
 	}
 
 	public function sendXml($region = null, $regionOpt = null){

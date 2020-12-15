@@ -12,7 +12,8 @@ class ChgtDenomValidator extends sfValidatorSchema
 
 		public function configure($options = array(), $messages = array()) {
 				parent::configure($options, $messages);
-        $this->addMessage('impossible_volume', "Le volume ne peut excéder ".$this->obj->volume." hl");
+        $this->addMessage('impossible_volume', "Le volume ne peut excéder ".$this->obj->getMvtLot()->volume." hl");
+				$this->addMessage('impossible_numero', "Le numéro du logement ne peut pas être identique à l'original");
     }
 
     protected function doClean($values) {
@@ -29,7 +30,17 @@ class ChgtDenomValidator extends sfValidatorSchema
     	    $hasError = true;
     	}
 
-    	if ($values['changement_quantite'] == 'PART' && $values['changement_volume'] > $this->obj->volume) {
+    	if ($values['changement_quantite'] == 'PART' && !$values['changement_numero']) {
+    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_numero');
+    	    $hasError = true;
+    	}
+
+    	if ($values['changement_quantite'] == 'PART' && $values['changement_numero'] == $this->obj->getMvtLot()->numero) {
+    	    $errorSchema->addError(new sfValidatorError($this, 'impossible_numero'), 'changement_numero');
+    	    $hasError = true;
+    	}
+
+    	if ($values['changement_quantite'] == 'PART' && $values['changement_volume'] > $this->obj->getMvtLot()->volume) {
     	    $errorSchema->addError(new sfValidatorError($this, 'impossible_volume'), 'changement_volume');
     	    $hasError = true;
     	}

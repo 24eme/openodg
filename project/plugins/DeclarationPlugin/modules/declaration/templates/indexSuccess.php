@@ -13,8 +13,6 @@
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'))); ?>
     </div>
 </div>
-
-<p>Dans le cadre de la DRev, vous devez indiquer ici l'utilisation de votre VCI stocké en 2019.</p><p>Les informations présentée ici ont été initialisées depuis votre registre VCI. </p>
 <h3>Liste des déclarations</h3>
 <div class="row">
     <div class="col-sm-9 col-xs-12">
@@ -39,18 +37,16 @@
                     <tr>
 
                       <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
-                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($doc->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
+                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_DATE]); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
-                        <td><a href="<?php echo url_for("declaration_etablissement", array("identifiant" => $doc->key[DeclarationTousView::KEY_IDENTIFIANT], 'region' => $regionParam)); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
                         <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
-                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $doc->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
+                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_INFOS]); ?></small><?php endif; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <p>Pour le VCI constitué cette année pour la récolte 2020, pas d'inquiétude, il est automatiquement repris dans votre registre VCI 2020.</p>
-
         <div class="text-center">
             <ul class="pagination" style="margin-top: 0;">
                 <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>

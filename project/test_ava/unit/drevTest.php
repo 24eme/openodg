@@ -3,10 +3,9 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $routing = clone ProjectConfiguration::getAppRouting();
-$context = sfContext::createInstance($configuration);
 $context->set('routing', $routing);
 
-$t = new lime_test(71);
+$t = new lime_test(70);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -120,7 +119,7 @@ $drev->save();
 
 $t->is(count($drev->prelevements->cuve_ALSACE->lots), 2, "2 cépages intialisés dans le les lots");
 $t->is($drev->prelevements->cuve_ALSACE->total_lots, 0, "Aucun lot déclaré dans les cépages");
-$t->is($drev->declaration->getNbLotsMinimum(), 2, "Au moins un lot est requis");
+$t->is($drev->prelevements->cuve_ALSACE->getNbLotsMinimum(), 2, "Au moins un lot est requis");
 
 $drev->prelevements->cuve_ALSACE->lots->getFirst()->nb_hors_vtsgn = 3;
 $drev->prelevements->cuve_ALSACE->updateTotal();
@@ -128,18 +127,15 @@ $drev->prelevements->cuve_ALSACE->updateTotal();
 $t->is($drev->prelevements->cuve_ALSACE->total_lots, 3, "3 lots déclarés dans les cépages");
 
 $drev->save();
-$produit1CepageA->volume_revendique = 0;
-$produit1CepageA->updateTotal();
 $drev->prelevements->cuve_ALSACE->lots->getFirst()->nb_hors_vtsgn = 1;
 $drev->prelevements->cuve_ALSACE->updateTotal();
 $drev->save();
-$t->is($produit1CepageA->volume_revendique_total, 0, "Le volume revendiqué cépage est de 0 hl");
-$t->is($drev->declaration->getNbLotsMinimum(), 1, "Au moins un lot est requis");
+$t->is($drev->prelevements->cuve_ALSACE->getNbLotsMinimum(), 2, "Au moins 2 lot est requis");
 
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
-$t->ok(isset($erreurs['declaration_lots_inferieur']), "Point blocant : Le nb de lots est inferieur au nb des cepages");
+$t->ok(isset($erreurs['declaration_lots_inferieur']), "Point bloquant : Le nb de lots est inferieur au nb des cepages");
 
 
 $t->comment("Validation");

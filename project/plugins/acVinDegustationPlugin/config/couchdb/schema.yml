@@ -23,9 +23,11 @@ Degustation:
                 fields:
                   date: { }
                   id_document: { }
-                  numero: { }
+                  numero_dossier: { }
+                  numero_archive: { }
+                  numero_cuve: { }
                   millesime: { }
-                  elevage: { }
+                  elevage: { required: false }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -40,6 +42,7 @@ Degustation:
                   leurre: {}
                   conformite: {}
                   motif: {}
+                  specificite: {}
                   observation: {}
       mouvements_lots:
         type: collection
@@ -55,17 +58,17 @@ Degustation:
                     type: collection
                     definition:
                       fields:
-                        prelevable: { type: integer }
-                        preleve: { type: integer }
                         produit_hash: {  }
                         produit_libelle: {  }
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
-                        elevage: { }
+                        elevage: { required: false }
                         millesime: {  }
                         region: {  }
-                        numero: {  }
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        numero_cuve: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -79,6 +82,8 @@ Degustation:
                         region: {}
                         campagne: {}
                         id_document: {  }
+                        statut: {  }
+                        specificite: {}
       degustateurs:
         type: collection
         definition:

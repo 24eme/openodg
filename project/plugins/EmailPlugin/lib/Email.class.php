@@ -18,6 +18,61 @@ class Email {
     }
 
     public function sendDRevValidation($drev) {
+        $messages = $this->getMessagesDRevValidation($drev);
+        foreach($messages as $message) {
+            $this->getMailer()->send($message);
+        }
+    }
+
+    public function getMessagesDRevValidation($drev) {
+        if(!$drev->validation) {
+            return array();
+        }
+
+        if($drev->isPapier() && !$drev->validation_odg) {
+
+            return array();
+        }
+
+        if($drev->isPapier()) {
+
+            return Email::getInstance()->getMessageDrevPapierConfirmee($drev);
+        }
+
+        if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+
+            return Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev);
+        }
+
+        if(!$drev->validation_odg) {
+
+            return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
+        }
+        
+        return Email::getInstance()->getMessageDrevConfirmee($drev);
+    }
+
+    public function getMessageDRevValidationDeclarant($drev) {
+        if (!$drev->declarant->email) {
+
+            return array();
+        }
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($drev->declarant->email);
+        $subject = 'Validation de votre Déclaration de Revendication';
+        $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
+
+        return array($message);
+    }
+
+    public function getMessagesDRevValidationNotificationSyndicats($drev) {
+        $messages = array();
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $odgs = sfConfig::get('drev_configuration_drev', []);
         foreach ($drev->declaration->getSyndicats() as $syndicat) {
@@ -42,15 +97,15 @@ class Email {
                 ->setBody($body)
                 ->setContentType('text/plain');
 
-            $res = $this->getMailer()->send($message) && $res;
+            $messages[] = $message;
         }
-        return $res;
+        return $messages;
     }
 
-    public function sendDRevConfirmee($drev) {
+    public function getMessageDRevConfirmee($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
 
         $pdf = new ExportDRevPdf($drev);
@@ -70,13 +125,13 @@ class Email {
                 ->setContentType('text/plain')
                 ->attach($pdfAttachment);
 
-        return $this->getMailer()->send($message);
+        return array($message);
     }
 
-    public function sendDrevPapierConfirmee($drev) {
+    public function getMessageDrevPapierConfirmee($drev) {
         if (!$drev->declarant->email) {
 
-            return;
+            return array();
         }
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
@@ -90,7 +145,7 @@ class Email {
                 ->setBody($body)
                 ->setContentType('text/plain');
 
-        return $this->getMailer()->send($message);
+        return array($message);
     }
 
     public function sendDRevRappelDocuments($drev) {

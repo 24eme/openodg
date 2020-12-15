@@ -20,8 +20,8 @@ class ChgtDenomApprobationForm extends acCouchdbObjectForm
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
-        if ($values['deguster']) {
-          $this->getObject()->generateMouvementsLots();
-        }
+        $prelevable = (!empty($values['deguster']))? 1 : 0;
+        $this->getObject()->generateMouvementsLots($prelevable);
+        $this->getObject()->generateMouvementsFactures();
     }
 }

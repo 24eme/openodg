@@ -31,4 +31,20 @@ class DegustationClient extends acCouchdbClient {
       $alphas = range('A', 'Z');
       return $alphas[$numero_table-1];
     }
+
+    public function getManquements() {
+        $manquements = array();
+        foreach($this->getHistory() as $degust) {
+            foreach($degust->lots as $lot) {
+                if ($lot->conformite && ($lot->conformite != Lot::CONFORMITE_CONFORME)) {
+                    $keyLot = $lot->id_document . '-'.str_replace(['/', '_'], '-', strtoupper(
+                      substr($lot->origine_mouvement, 1)
+                    ));
+                  $manquements[$keyLot] = $lot;
+                }
+            }
+        }
+        return $manquements;
+    }
+
 }

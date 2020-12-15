@@ -100,7 +100,8 @@ class HabilitationProduit extends BaseHabilitationProduit {
         if (!$this->activites->exist($activite)) {
           throw new sfException('activite '.$activite.' non supportée');
         }
-        return $this->activites[$activite]->updateHabilitation($statut, $commentaire, $date);
+        $a = $this->add('activites')->add($activite);
+        return $this->activites->get($activite)->updateHabilitation($statut, $commentaire, $date);
     }
 
 

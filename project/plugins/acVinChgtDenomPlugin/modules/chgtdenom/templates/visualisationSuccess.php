@@ -4,11 +4,15 @@
 
 
     <div class="page-header no-border">
-      <h2><?php if ($lot->isDeclassement()): ?>Déclassement<?php else: ?>Changement de dénomination<?php endif; ?> <?php if ($lot->isChgtTotal()): ?>Total<?php else: ?>Partiel<?php endif; ?></h2>
-      <h3><small></small></h3>
+      <h2><?php if ($chgtDenom->isDeclassement()): ?>Déclassement<?php else: ?>Changement de dénomination<?php endif; ?> <?php if (!$chgtDenom->isChgtTotal()): ?>partiel<?php endif; ?>
+      <?php if ($chgtDenom->isValide()): ?>
+      <small class="pull-right">Télédéclaration signée le <?php echo format_date($chgtDenom->validation, "dd/MM/yyyy", "fr_FR"); ?><?php if($chgtDenom->isApprouve()): ?> et approuvée le <?php echo format_date($chgtDenom->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?></small>
+      <?php endif; ?>
+      </h2>
     </div>
 
-    <?php include_partial('chgtdenom/recap', array('lot' => $lot)); ?>
+    <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
+
     <?php if (isset($form)): ?>
     <form role="form" action="<?php echo url_for("chgtdenom_visualisation", $chgtDenom) ?>" method="post" class="form-horizontal" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
@@ -28,7 +32,4 @@
           </div>
       </form>
       <?php include_partial('chgtdenom/popupConfirmationApprobation'); ?>
-    <?php endif; ?>
-    <?php if ($chgtDenom->isApprouve()): ?>
-    <p class="text-success text-right"><strong>Modification du lot approuvé par l'ODG le <?php echo format_date($chgtDenom->validation_odg, 'dd/MM/yyyy') ?></strong></p>
     <?php endif; ?>

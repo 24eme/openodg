@@ -3,7 +3,6 @@
 class ChgtDenomForm extends acCouchdbObjectForm
 {
     public static $types = array("CHGT" => "Changement de dénomination", "DCLST" => "Déclassement");
-    public static $quantites = array("TOT" => "Totale", "PART" => "Partielle");
     public $firstEdition;
 
     public function __construct(acCouchdbJson $object, $firstEdition, $options = array(), $CSRFSecret = null) {
@@ -13,18 +12,23 @@ class ChgtDenomForm extends acCouchdbObjectForm
 
     public function configure() {
         $produits = $this->getProduits();
+        $cepages = $this->getCepages();
 
         $this->setWidget('changement_type', new bsWidgetFormChoice(array('choices' => self::$types, 'expanded' => true)));
         $this->setValidator('changement_type', new sfValidatorChoice(array('choices' => array_keys(self::$types), 'required' => true)));
-
-        $this->setWidget('changement_quantite', new bsWidgetFormChoice(array('choices' => self::$quantites, 'expanded' => true)));
-        $this->setValidator('changement_quantite', new sfValidatorChoice(array('choices' => array_keys(self::$quantites), 'required' => true)));
 
         $this->setWidget('changement_volume', new bsWidgetFormInputFloat());
         $this->setValidator('changement_volume', new sfValidatorNumber(array('required' => false)));
 
         $this->setWidget('changement_produit', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('changement_produit', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
+
+        for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
+            $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
+            $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
+            $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
+            $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
+        }
 
         $this->validatorSchema->setPostValidator(new ChgtDenomValidator($this->getObject()));
         $this->widgetSchema->setNameFormat('chgt_denom[%s]');
@@ -35,20 +39,32 @@ class ChgtDenomForm extends acCouchdbObjectForm
         if ($values['changement_type'] == 'DCLST') {
           	$this->getObject()->changement_produit = null;
         }
-        if ($values['changement_quantite'] == 'TOT') {
-          	$this->getObject()->changement_volume = null;
-        }
         if ($values['changement_produit']) {
             $produits = $this->getProduits();
           	$this->getObject()->changement_produit_libelle = (isset($produits[$values['changement_produit']]))? $produits[$values['changement_produit']] : null;
         }
+        $this->getObject()->remove('changement_cepages');
+        $this->getObject()->add('changement_cepages');
+        for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
+            if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
+                continue;
+            }
+            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+        }
+        $this->getObject()->generateLots();
     }
 
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
       $defaults['changement_type'] = (!$this->firstEdition && !$this->getObject()->changement_produit)? 'DCLST' : 'CHGT';
-      $defaults['changement_quantite'] = ($this->getObject()->changement_volume > 0)? 'PART' : 'TOT';
+      $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getMvtLot()->volume;
+      $i=0;
+      foreach($this->getObject()->changement_cepages as $cepage => $repartition) {
+          $defaults['cepage_'.$i] = $cepage;
+          $defaults['repartition_'.$i] = $repartition;
+          $i++;
+      }
       $this->setDefaults($defaults);
     }
 
@@ -62,5 +78,10 @@ class ChgtDenomForm extends acCouchdbObjectForm
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
         return array_merge(array('' => ''), $produits);
+    }
+
+    public function getCepages()
+    {
+        return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
     }
 }

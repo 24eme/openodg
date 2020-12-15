@@ -1,11 +1,11 @@
 Bonjour,
 
 Suite à la validation de votre déclaration vous n'avez pas envoyé tous les documents permettant de compléter votre Déclaration de Revendication.
-<?php if (count($drev->getOrAdd('documents')) > 0): ?>
+<?php if (count($drev->getDocumentsAEnvoyer()) > 0): ?>
 
 Rappel des documents restant à envoyer :
 
-<?php foreach($drev->getOrAdd('documents') as $document): ?><?php if($document->statut != DRevDocuments::STATUT_EN_ATTENTE): continue; endif; ?>
+<?php foreach($drev->getDocumentsAEnvoyer() as $document): ?>
 - <?php echo DRevDocuments::getDocumentLibelle($document->getKey()) ?>
 
 <?php endforeach; ?>

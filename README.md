@@ -13,9 +13,11 @@ Projet déployé
 
 Le projet est actuellement en cours d'utilisation par  : 
 
-* L'Association des Viticulteurs d'Alsace : https://declaration.ava-aoc.fr/ [![Intégration continue](https://declaration.ava-aoc.fr/statuts/tests.svg.php)](https://declaration.ava-aoc.fr/statuts/tests.php)
-* Le Syndicat des Côtes du Rhône : https://declaration.syndicat-cotesdurhone.com/ [![Intégration continue](https://declaration.syndicat-cotesdurhone.com/statuts/tests.svg.php)](https://declaration.syndicat-cotesdurhone.com/statuts/tests.php)
-* Le Syndicat des Côtes de Provence : https://declaration.syndicat-cotesdeprovence.com/ [![Intégration continue](https://declaration.syndicat-cotesdeprovence.com/statuts/tests.svg.php)](https://declaration.syndicat-cotesdeprovence.com/statuts/tests.php)
+* L'Association des Viticulteurs d'Alsace : https://declaration.ava-aoc.fr/
+* Le Syndicat des Côtes du Rhône : https://declaration.syndicat-cotesdurhone.com/
+* Le Syndicat des Côtes de Provence : https://declaration.syndicat-cotesdeprovence.com/
+* Syndicats du Val de Loire : https://teledeclaration.vinsvaldeloire.pro/
+* La Fédération des Vins de Nantes : https://declaration.vinsdenantes.com/
 
 Technologies utilisées
 ----------------------
@@ -35,6 +37,16 @@ Installation
 ------------
 
 [Documentation d'installation](https://github.com/24eme/ava/blob/master/doc/Installation.md "Documentation d'installation")
+
+Tests
+----
+
+Pour lancer les tests :
+
+```
+cd project
+bash bin run_test.sh
+```
 
 Aperçu de l'application pour l'Association des Viticulteurs d'Alsace
 -----------------------

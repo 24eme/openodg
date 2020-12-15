@@ -46,24 +46,24 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         <thead>
             <?php if ($drev->hasDR()): ?>
             <tr>
-                <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>"></th>
-                <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte</th>
+                <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>3<?php else: ?>5<?php endif; ?>"></th>
+                <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte <?php echo $drev->campagne;?></th>
                 <th colspan="3" class="text-center">Revendication des volumes</th>
             </tr>
             <?php endif; ?>
             <tr>
-                <th class="col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>">Appellation revendiquée</th>
+                <th class="col-xs-<?php if ($drev->hasDR()): ?>3<?php else: ?>5<?php endif; ?>">Appellation revendiquée</th>
                 <?php if ($drev->hasDR()): ?>
                 <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                     <?php if($drev->declaration->hasVciRecolteConstitue()): ?>
-                    <th class="col-xs-1 text-center striped-success small">VCI</th>
+                    <th class="col-xs-1 text-center striped-success small">VCI<br/>constit.</th>
                     <?php endif ?>
                 <?php endif; ?>
-                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Issus de la récolte<br/><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels, le VCI constitué et le VCI de l'année passée (le cas échéant) appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Issus du VCI <?php echo $drev->campagne-1; ?><br/><small class="text-muted">(hl)</small><a title="Volume issu du VCI de l'année précédente" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                  <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Volume Total<br/><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-2 text-center">Issus de la récolte<br/><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume vinifié sur place moins le volume à détruire et le VCI constitué" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Issus du <br/>VCI <?php echo $drev->campagne-1; ?><small class="text-muted"> (hl)</small><a title="Volume issu du VCI de l'année précédente" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                  <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Volume<br/>Total<small class="text-muted"> (hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>

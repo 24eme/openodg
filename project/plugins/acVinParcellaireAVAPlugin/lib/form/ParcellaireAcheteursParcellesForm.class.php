@@ -15,7 +15,10 @@ class ParcellaireAcheteursParcellesForm extends ParcellaireAcheteursForm {
             	continue;
             }
 
-            if(!$cepage->hasMultipleAcheteur($lieu_affecte)) {
+            if(count($this->getAcheteurs()) < 2){
+              continue;
+            }
+            if(count($cepage->getProduitsCepageDetails()) < 2) {
                 continue;
             }
 

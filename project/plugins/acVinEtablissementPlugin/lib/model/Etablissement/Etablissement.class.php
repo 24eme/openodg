@@ -522,7 +522,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             foreach ($this->liaisons_operateurs as $k => $o) {
                 if ($o->type_liaison == $type) {
                     $e = EtablissementClient::getInstance()->find($o->id_etablissement);
-                    if ($e && $e->cvi) {
+                    if ($e && ($e->cvi || $e->ppm)) {
                         $etablissements[] = $e;
                     }
                 }

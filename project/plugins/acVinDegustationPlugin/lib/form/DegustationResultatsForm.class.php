@@ -15,6 +15,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
 
     public function configure() {
 
+
       foreach ($this->getTableLots() as $lot) {
 
         $name = $this->getWidgetNameFromLot($lot);
@@ -34,7 +35,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
     }
 
     public function getTableLots(){
-      return $this->getObject()->getLotsWithoutLeurre();
+      return $this->getObject()->getLotsByTable($this->numero_table);
     }
 
     public function getWidgetNameFromLot($lot){
@@ -54,11 +55,12 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
             $lot->setConformite($values['conformite_'.$name]);
             $lot->setMotif($values['motif_'.$name]);
             $lot->setObservation($values['observation_'.$name]);
-            $lot->setStatut(Lot::STATUT_DEGUSTE);
+            $lot->setStatut(($values['conformite_'.$name] == Lot::CONFORMITE_CONFORME)? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME);
           }else {
-            $lot->setStatut(Lot::STATUT_PRELEVE);
+            $lot->setStatut(Lot::STATUT_NONCONFORME);
         }
       }
+      $this->getObject()->generateMouvementsLots();
     }
 
     protected function updateDefaultsFromObject() {
@@ -67,7 +69,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
             $name = $this->getWidgetNameFromLot($lot);
             $defaults['conformite_'.$name] = $lot->getConformite();
             $defaults['motif_'.$name] = $lot->getMotif();
-            $defaults['observation_'.$name] = $lot->getObservation();            
+            $defaults['observation_'.$name] = $lot->getObservation();
         }
         $this->setDefaults($defaults);
     }

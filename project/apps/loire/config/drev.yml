@@ -35,13 +35,13 @@ all:
             - "appellations/SAV/"
             - "appellations/SAVRAM/"
             - "appellations/SAVCDS/"
-          inao: "data/drev/FEDE.csv"
         TOURAINE:
           nom: "Touraine"
           adresse: "ZI 4 rue Gutenberg, 41140 NOYERS SUR CHER"
+          telephone: "%app_drev_TOURAINE_telephone%"
+          email: "%app_drev_TOURAINE_email%"
           produits:
             - "TRANQ/appellations/TOU/"
-            - "TRANQ/appellations/TOUNJO/"
             - "EFF/appellations/TOU"
         CHINON:
           nom: "Syndicat des Vins de Chinon"
@@ -89,7 +89,6 @@ all:
           email_notification: "%app_drev_HAUT_POITOU_email_notification%"
           produits:
             - TRANQ/appellations/HPT
-          inao: "data/drev/HAUT_POITOU.csv"
         VOUVRAY:
           nom: "ODG de l’Aire d’Appellation Vouvray"
           adresse: "Espace du vin - 20 Rue Victor Hugo 37210 Vouvray"

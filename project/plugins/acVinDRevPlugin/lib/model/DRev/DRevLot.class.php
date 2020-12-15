@@ -19,7 +19,7 @@ class DRevLot extends BaseDRevLot
 
             return $this->getDocument()->addProduit($this->produit_hash);
         }
-        
+
         if($this->getConfigProduit() && $this->getConfigProduit()->getParent()->exist('DEFAUT') && $this->getDocument()->exist($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash())) {
 
             return $this->getDocument()->addProduit($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash());
@@ -68,22 +68,24 @@ class DRevLot extends BaseDRevLot
       return parent::getDocOrigine();
     }
 
-    public function getUnicityKey(){
-        return KeyInflector::slugify($this->produit_hash.'/'.$this->millesime.'/'.$this->numero.'/'.$this->volume);
-    }
-
     public function getCepagesToStr(){
       $cepages = $this->cepages;
       $str ='';
       $k=0;
       $total = 0.0;
-      foreach ($cepages as $c => $volume){ $total+=$volume; }
-
+      $tabCepages=array();
       foreach ($cepages as $c => $volume){
-        $k++;
+        $total+=$volume;
+      }
+      foreach ($cepages as $c => $volume){
         $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $str.= $c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ', ' : '';
+        $tabCepages[$c]=$p;
+      }
+      arsort($tabCepages);
+      foreach ($tabCepages as $c => $p) {
+        $k++;
+        $str.=" ".$c." (".$p.'%)';
+        $str.= ($k < count($cepages))? ',' : '';
       }
       return $str;
     }
@@ -101,6 +103,23 @@ class DRevLot extends BaseDRevLot
             $libelle .= $cepage . " (".$repartition."%)";
         }
         return $libelle;
+    }
+
+    public function getNumeroCuve() {
+        if($this->exist('numero_cuve') && $this->get('numero_cuve')) {
+            $this->numero = $this->get('numero_cuve');
+        }
+        if($this->exist('numero_cuve')) {
+            $this->remove('numero_cuve');
+
+            return $this->getNumeroCuve();
+        }
+        return $this->numero;
+    }
+
+    public function setNumeroCuve($numero) {
+
+        return $this->setNumero($numero);
     }
 
 }

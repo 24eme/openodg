@@ -6,7 +6,7 @@ class DegustationCreationForm extends acCouchdbObjectForm
         $this->setWidget('date', new sfWidgetFormInput(array(), array()));
         $this->setValidator('date', new sfValidatorDate(array('datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
-        $this->setWidget('time', new sfWidgetFormInput(array(), array()));
+        $this->setWidget('time', new bsWidgetFormInput(array("type"=>'time'), array()));
         $this->setValidator('time', new sfValidatorTime(array('time_output' => 'H:i', 'time_format' => '~(?<hour>\d{2}):(?P<minute>\d{2})~', 'required' => true)));
 
         $this->setWidget('lieu', new sfWidgetFormChoice(array('choices' => $this->getLieuxChoices())));

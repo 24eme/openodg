@@ -27,7 +27,7 @@ class DRevMarcRevendicationForm extends acCouchdbObjectForm {
 
         $this->setWidget('titre_alcool_vol', new sfWidgetFormInputFloat());
         $this->setValidator('titre_alcool_vol', new sfValidatorNumber(array('required' => true, 'min' => 45)));
-        $this->getWidget('titre_alcool_vol')->setLabel("Titre alcoométrique volumique :");
+        $this->getWidget('titre_alcool_vol')->setLabel("Titre alcoométrique volumique des bonnes chauffes :");
 
         $this->validatorSchema['debut_distillation']->setMessage('invalid', 'La date de début de distillation doit être au format jj/mm/aaaa.');
         $this->validatorSchema['debut_distillation']->setMessage('invalid', 'La date de début de distillation doit être au format jj/mm/aaaa.');

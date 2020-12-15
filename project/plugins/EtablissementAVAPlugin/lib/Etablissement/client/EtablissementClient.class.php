@@ -42,9 +42,30 @@ class EtablissementClient extends acCouchdbClient {
         return $query->execute(acCouchdbClient::HYDRATE_ARRAY);
     }
 
+    public function findByCvi($identifiant) {
+        return $this->findByIdentifiant($identifiant);
+    }
+
     public function findByIdentifiant($identifiant) {
 
         return $this->find('ETABLISSEMENT-'.$identifiant);
+    }
+
+    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
+        $qs = new acElasticaQueryQueryString($cvi_or_accise_or_ppm);
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        $index = acElasticaManager::getType('COMPTE');
+        $resset = $index->search($q);
+        $results = $resset->getResults();
+        foreach ($results as $res) {
+            $data = $res->getData()['doc'];
+            if ($data['type_compte'] != 'ETABLISSEMENT') {
+                continue;
+            }
+            return $this->find($data['etablissement']);
+        }
+        return null;
     }
 
     public function createOrFind($identifiant) {

@@ -8,6 +8,17 @@ chgtdenom_create:
   requirements:
     sf_method: [get]
 
+chgtdenom_create_lot:
+  url: /changement-denomination/creation/:identifiant/lot/:lot
+  param: { module: chgtdenom, action: createLot }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
 chgtdenom_create_papier:
   url: /changement-denomination/creation-papier/:identifiant
   param: { module: chgtdenom, action: createPapier }
@@ -30,7 +41,7 @@ chgtdenom_lots:
 
 chgtdenom_edition:
   url: /changement-denomination/edition/:id/:key
-  param: { module: chgtdenom, action: edition, key: null }
+  param: { module: chgtdenom, action: edition, key: 0 }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -47,6 +58,16 @@ chgtdenom_validation:
     type:     object
   requirements:
     sf_method: [get, post]
+
+chgtdenom_logement:
+  url: /changement-denomination/logement/:id/:key
+  param: { module: chgtdenom, action: logement, key: null }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [post]
 
 chgtdenom_visualisation:
   url: /changement-denomination/visualisation/:id

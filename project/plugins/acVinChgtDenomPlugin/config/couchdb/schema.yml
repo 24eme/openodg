@@ -12,6 +12,15 @@ ChgtDenom:
       validation_odg: {  }
       identifiant: {  }
       papier: { required: false, type: integer }
+      changement_origine_mvtkey: {}
+      changement_produit: {}
+      changement_produit_libelle: { }
+      changement_cepages:
+        type: collection
+        definition:
+          fields:
+            '*': { type: float }
+      changement_volume: { type: float }
       declarant:
         type: collection
         class: ChgtDenomDeclarant
@@ -43,9 +52,11 @@ ChgtDenom:
                 fields:
                   date: { }
                   id_document: { }
-                  numero: { }
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  numero_cuve: { }
                   millesime: { }
-                  elevage: { }
+                  elevage: { required: false }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -55,9 +66,40 @@ ChgtDenom:
                   declarant_nom: { }
                   origine_mouvement: {}
                   details: {}
-                  changement_produit: {}
-                  changement_produit_libelle: { }
-                  changement_volume: { type: float }
+                  statut: {}
+                  specificite: {}
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: ChgtDenomMouvementFactures
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        detail_identifiant: {  }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        unite: { required: false }
+                        taux: { }
+                        tva: { }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
+                        categorie: {  }
       mouvements_lots:
         type: collection
         definition:
@@ -72,15 +114,19 @@ ChgtDenom:
                     type: collection
                     definition:
                       fields:
+                        prelevable: { type: integer }
+                        preleve: { type: integer }
                         produit_hash: {  }
                         produit_libelle: {  }
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
-                        elevage: { }
                         millesime: {  }
+                        elevage: { required: false }
                         region: {  }
-                        numero: {  }
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        numero_cuve: { }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -94,6 +140,8 @@ ChgtDenom:
                         region: {}
                         campagne: {}
                         id_document: {  }
+                        statut: {}
+                        specificite: {}
       pieces:
         type: array_collection
         definition:

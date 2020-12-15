@@ -30,6 +30,7 @@ DRev:
       denomination_auto: { required: false }
       date_degustation_voulue: { required: false }
       version: {  }
+      numero_archive: {  }
       declarant:
         type: collection
         class: DRevDeclarant
@@ -71,6 +72,7 @@ DRev:
                         volume_revendique_issu_vci: { type: float }
                         volume_revendique_issu_mutage: { type: float }
                         volume_revendique_total: { type: float }
+                        dont_volume_revendique_reserve_interpro: { type: float, required: false }
                         validation_odg: { required: false }
                         vci:
                           type: collection
@@ -115,14 +117,19 @@ DRev:
                 fields:
                   date: { }
                   id_document: { }
+                  numero_dossier: {  }
+                  numero_archive: {  }
                   numero: { }
+                  numero_cuve: { required: false } # a supprimer
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
-                  elevage: {}
+                  elevage: { required: false }
+                  statut: {}
+                  specificite: { required: false }
                   cepages:
                     type: collection
                     definition:
@@ -139,6 +146,7 @@ DRev:
               definition:
                 fields:
                   statut: { }
+                  libelle: { }
       documents_rappel: { required: false }
       documents_rappels:
         required: false
@@ -205,17 +213,17 @@ DRev:
                     type: collection
                     definition:
                       fields:
-                        prelevable: { type: integer }
-                        preleve: { type: integer }
                         produit_hash: {  }
                         produit_libelle: {  }
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
                         millesime: {  }
-                        elevage: {  }
+                        elevage: { required: false }
                         region: {  }
-                        numero: {  }
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        numero_cuve: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -229,6 +237,8 @@ DRev:
                         region: {}
                         campagne: {}
                         id_document: {  }
+                        statut: {  }
+                        specificite: { required: false }
       pieces:
         type: array_collection
         definition:

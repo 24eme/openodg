@@ -69,8 +69,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getProduitsConfig() {
-
-        return $this->getConfiguration()->getProduitsCahierDesCharges();
+      return HabilitationClient::getinstance()->getProduitsConfig($this->getConfiguration());
     }
 
     public function getProduitsHabilites() {
@@ -120,7 +119,11 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
-        $node = $this->getConfiguration()->get('/declaration/'.$hash)->getNodeCahierDesCharges();
+        if(!$this->getConfiguration()->exist('/declaration/'.$hash)){
+          return null;
+        }
+        $prod = $this->getConfiguration()->get('/declaration/'.$hash);
+        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prod);
         $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
         $exist = $this->exist('declaration/'.$hashToAdd);
         $produit = $this->add('declaration')->add($hashToAdd);
@@ -131,8 +134,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
                 $this->addHistoriqueNewProduit($produit_libelle);
             }
             $this->declaration->reorderByConf();
+            $produit = $this->get('declaration')->get($hashToAdd);
         }
-        return $this->get($produit->getHash());
+        return $produit;
     }
 
 
@@ -231,7 +235,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function isExcluExportCsv() {
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement || $etablissement->statut != EtablissementClient::STATUT_ACTIF) {
+        if(!$etablissement || ( isset($etablissement->statut) && $etablissement->statut != EtablissementClient::STATUT_ACTIF) ) {
 
             return true;
         }
@@ -245,27 +249,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return false;
     }
 
-    public function reorderByConf() {
-		$children = array();
-
-		foreach($this as $hash => $child) {
-			$children[$hash] = $child->getData();
-		}
-
-		foreach($children as $hash => $child) {
-			$this->remove($hash);
-		}
-
-		foreach($this->getConfig()->getProduits() as $hash => $child) {
-			$hashProduit = str_replace("/declaration/", "", $hash);
-			if(!array_key_exists($hashProduit, $children)) {
-				continue;
-			}
-			$this->add($hashProduit, $children[$hashProduit]);
-		}
-	}
-
   public function isHabiliteFor($hash_produit, $activite) {
+
+    if(!$this->addProduit($hash_produit)){
+      return false;
+    }
+
     if (!$this->addProduit($hash_produit)->exist('activites')) {
       return false;
     }

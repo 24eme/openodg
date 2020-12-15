@@ -24,8 +24,7 @@ class EtablissementForm extends acCouchdbObjectForm
 			"chais_commune" =>  new sfWidgetFormInput(array("label" => "Commune")),
 			"chais_code_postal" =>  new sfWidgetFormInput(array("label" => "Code postal")),
         ));
-
-				$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
+	$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
         $this->setValidators(array(
             //'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
 			'ppm' =>  new sfValidatorRegex(array('required' => false,
@@ -46,6 +45,15 @@ class EtablissementForm extends acCouchdbObjectForm
 			'chais_commune' => new sfValidatorString(array("required" => false)),
 			'chais_code_postal' => new sfValidatorString(array("required" => false)),
         ));
+
+		if(!DRevConfiguration::getInstance()->hasLogementAdresse()) {
+			unset($this->widgetSchema['chais_adresse']);
+			unset($this->validatorSchema['chais_adresse']);
+			unset($this->widgetSchema['chais_commune']);
+			unset($this->validatorSchema['chais_commune']);
+			unset($this->widgetSchema['chais_code_postal']);
+			unset($this->validatorSchema['chais_code_postal']);
+		}
 
         if(!$this->getOption("use_email")) {
             $this->getValidator('email')->setOption('required', false);
@@ -68,7 +76,8 @@ class EtablissementForm extends acCouchdbObjectForm
 	public function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $this->getCoordonneesEtablissement();
-		if($this->getObject()->getDocument()->isAdresseLogementDifferente()) {
+
+		if(DRevConfiguration::getInstance()->hasLogementAdresse() && $this->getObject()->getDocument()->isAdresseLogementDifferente()) {
 			$this->setDefault('chais_adresse', $this->getObject()->getDocument()->chais->adresse);
 			$this->setDefault('chais_commune', $this->getObject()->getDocument()->chais->commune);
 			$this->setDefault('chais_code_postal', $this->getObject()->getDocument()->chais->code_postal);
@@ -89,15 +98,15 @@ class EtablissementForm extends acCouchdbObjectForm
     		}
     	}
 		parent::doUpdateObject($values);
-        if ($this->getObject()->getDocument()->exist('chais')) {
-		$this->getObject()->getDocument()->chais->adresse = $values['chais_adresse'];
-		$this->getObject()->getDocument()->chais->commune = $values['chais_commune'];
-		$this->getObject()->getDocument()->chais->code_postal = $values['chais_code_postal'];
+        if (DRevConfiguration::getInstance()->hasLogementAdresse() && $this->getObject()->getDocument()->exist('chais')) {
+			$this->getObject()->getDocument()->chais->adresse = $values['chais_adresse'];
+			$this->getObject()->getDocument()->chais->commune = $values['chais_commune'];
+			$this->getObject()->getDocument()->chais->code_postal = $values['chais_code_postal'];
 
-		if(!$this->getObject()->getDocument()->isAdresseLogementDifferente()) {
-		    $this->getObject()->getDocument()->remove('chais');
-		    $this->getObject()->getDocument()->add('chais');
-		}
+			if(!$this->getObject()->getDocument()->isAdresseLogementDifferente()) {
+			    $this->getObject()->getDocument()->remove('chais');
+			    $this->getObject()->getDocument()->add('chais');
+			}
         }
 
 	}

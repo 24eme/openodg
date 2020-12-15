@@ -214,8 +214,14 @@
 
         $(this).find('.hamzastyle').each(function () {
             var select2 = $(this);
+            var minInput = 0;
+            if (select2.attr('data-hamzastyle-mininput') !== undefined) {
+              minInput = select2.attr('data-hamzastyle-mininput')
+            }
+
             select2.select2({
                 multiple: true,
+                minimumInputLength: minInput,
                 data: function () {
                     var data = [];
                     element.find('.hamzastyle-item').each(function () {
@@ -334,7 +340,7 @@
 
             return true;
         });
-        
+
         /**
          * Sélection de lignes de tableau
          ******************************************/
@@ -441,6 +447,7 @@
 
                 $(document).find('.hamzastyle-item').each(function () {
                     var words = $(this).attr('data-words');
+                    var callbackfct = $(this).attr('data-callbackfct')
                     var find = true;
                     for (key in filtres) {
                         var word = filtres[key];
@@ -452,6 +459,9 @@
                         $(this).show();
                     } else {
                         $(this).hide();
+                    }
+                    if(callbackfct){
+                      setTimeout(callbackfct, 1);
                     }
                 });
             }

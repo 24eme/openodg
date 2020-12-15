@@ -8,11 +8,6 @@ class DRevValidationForm extends acCouchdbForm
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
                 $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
-                if ($engagement->getCode() == DRevDocuments::DOC_DR && $this->getDocument()->hasDr()) {
-                    $this->setDefault('engagement_'.$engagement->getCode(), 1);
-                    $this->getWidget('engagement_'.$engagement->getCode())->setAttribute('disabled', 'disabled');
-                    $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
-                }
                 if (preg_match('/_OUEX_/', $engagement->getCode())) {
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
@@ -25,7 +20,7 @@ class DRevValidationForm extends acCouchdbForm
                 if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue !== null) {
                     $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
                 } else {
-                    $this->setDefault('date_degustation_voulue', (new DateTime())->modify('+1 month')->format('d/m/Y'));
+                    $this->setDefault('date_degustation_voulue', (new DateTime())->format('d/m/Y'));
                 }
             }
         }

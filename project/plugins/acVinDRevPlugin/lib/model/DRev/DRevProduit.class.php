@@ -107,6 +107,11 @@ class DRevProduit extends BaseDRevProduit
 			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement);
 		}
 		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci + (float) $this->volume_revendique_issu_mutage);
+
+		if ($this->hasReserveInterpro()) {
+			$this->add('dont_volume_revendique_reserve_interpro', $this->getVolumeReserveInterpro());
+		}
+
 	}
 
 	public function isHabilite() {
@@ -192,6 +197,11 @@ class DRevProduit extends BaseDRevProduit
 		return $this->getVolumeRevendiqueRendement() / $this->superficie_revendique;
 	}
 
+	public function isDepassementRendementEffectif(){
+		$rendementLocal = $this->getRendementEffectif();
+		return ($this->getConfig()->getRendement() !== null && (round(($rendementLocal), 2) > round($this->getConfig()->getRendement(), 2)));
+	}
+
 	public function getRendementEffectifHorsVCI(){
 		if(!$this->superficie_revendique) {
 
@@ -202,7 +212,7 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 
-	public function getRendementDR(){
+	public function getRendementDrL5(){
 		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_total')) {
 
 			return null;
@@ -212,7 +222,28 @@ class DRevProduit extends BaseDRevProduit
 		}
 		return 0;
 	}
-	
+
+	public function isDepassementRendementDrL5(){
+		$rendementLocal = $this->getRendementDrL5();
+		return ($this->getConfig()->getRendementDrL5() !== null && (round(($rendementLocal), 2) > round($this->getConfig()->getRendementDrL5(), 2)));
+	}
+
+	public function getRendementDrL15(){
+		if(!$this->exist('recolte') || !$this->recolte->exist('volume_sur_place_revendique') || !$this->recolte->exist('superficie_total')) {
+
+			return null;
+		}
+		if ($this->recolte->superficie_total) {
+			return $this->recolte->volume_sur_place_revendique / $this->recolte->superficie_total;
+		}
+		return 0;
+	}
+
+	public function isDepassementRendementDrL15(){
+		$rendementLocal = $this->getRendementDrL15();
+		return ($this->getConfig()->getRendementDrL15() !== null && (round(($rendementLocal), 2) > round($this->getConfig()->getRendementDrL15(), 2)));
+	}
+
 	public function hasDonneesRecolte() {
 	    if ($this->exist('recolte')) {
 	        foreach ($this->recolte as $k => $v) {
@@ -233,6 +264,37 @@ class DRevProduit extends BaseDRevProduit
 
 	public function isValidateOdg(){
 		return ($this->exist('validation_odg') && $this->validation_odg);
+	}
+
+    public function hasReserveInterpro() {
+        return ($this->getVolumeReserveInterpro());
+    }
+
+	protected function getVolumeReserveInterproAndButoir() {
+		if (!$this->getConfig()->hasRendementReserveInterpro()) {
+			return 0;
+		}
+		$diff = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendementReserveInterpro());
+		if ($diff <= $this->getConfig()->getRendementReserveInterproMin()) {
+			return 0;
+		}
+		return $diff;
+	}
+
+    public function getVolumeReserveInterpro() {
+        if (!$this->getConfig()->hasRendementReserveInterpro()) {
+            return 0;
+        }
+        $diff = $this->getVolumeReserveInterproAndButoir();
+		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
+		if ($diff_butoir > 0) {
+			return $diff - $diff_butoir;
+		}
+		return $diff;
+    }
+
+	public function getVolumeRevendiqueCommecialisable() {
+		return $this->volume_revendique_total - $this->getVolumeReserveInterproAndButoir();
 	}
 
 }
