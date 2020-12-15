@@ -222,6 +222,12 @@ degustation_elevages:
   requirements:
     sf_method: [get]
 
+degustation_elever:
+  url: /degustation/elevages/:id/:index/elever
+  param: { module: degustation, action: elever }
+  requirements:
+    sf_method: [get]
+
 degustation_etiquette_pdf:
   url: /degustation/:id/etiquettes/pdf
   param: { module: degustation, action: etiquettesPdf }

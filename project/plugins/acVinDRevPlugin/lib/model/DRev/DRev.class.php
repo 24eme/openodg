@@ -1403,6 +1403,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
+        $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = $lot->getCouleurLibelle();
