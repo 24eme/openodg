@@ -712,8 +712,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
 				$table = chr($numTab+64);
 				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
-					$numAnonyme = $table.$lot->numero_cuve;
-					$lots[$numAnonyme] = $lot;
+					$lots[$lot->getNumeroAnonymise()] = $lot;
 				}
 			}
 			return $lots;
