@@ -21,16 +21,9 @@
     <table class="table table-bordered table-condensed table-striped">
         <thead>
             <tr>
-              <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
                 <th class="col-xs-3">Opérateur</th>
                 <th class="col-xs-1">Logement</th>
-                <th class="col-xs-3">Produit (millésime)</th>
-                <th class="col-xs-1">Spécificité</th>
-              <?php else: ?>
-                <th class="col-xs-3">Opérateur</th>
-                <th class="col-xs-1">Logement</th>
-                <th class="col-xs-3">Produit (millésime)</th>
-              <?php endif ?>
+                <th class="col-xs-3">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">Prélevé</th>
             </tr>
@@ -47,10 +40,18 @@
             </span>
           <?php endif; ?>
         </td>
-				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
-        <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-          <td><?php echo $lot->specificite; ?></td>
-        <?php endif ?>
+				<td>
+          <?php echo $lot->produit_libelle; ?>
+          &nbsp;
+          <small class="text-muted"><?php echo $lot->details; ?></small>
+          <?php if ($lot->millesime): ?>
+            &nbsp;
+            <?php echo $lot->millesime; ?>
+          <?php endif; ?>
+          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+            <small class="text-muted">(<?php echo $lot->specificite; ?>)</small>
+          <?php endif ?>
+        </td>
         <td class="text-right edit">
           <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>&nbsp;&nbsp;
           <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
