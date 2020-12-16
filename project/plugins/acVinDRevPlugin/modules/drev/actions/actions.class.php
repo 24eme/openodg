@@ -435,11 +435,11 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        if(!isset($this->drev->lots[$request->getParameter('appellation')])){
-          throw new sfException("le lot d'index ".$request->getParameter('appellation')." n'existe pas ");
+        if($this->drev->getLotByNumArchive($request->getParameter('numArchive')) === null){
+          throw new sfException("le lot d'index ".$request->getParameter('numArchive')." n'existe pas ");
         }
 
-        $lot = $this->drev->lots[$request->getParameter('appellation')];
+        $lot = $this->drev->getLotByNumArchive($request->getParameter('numArchive'));
         if($lot){
             $this->drev->remove($lot->getHash());
         }
