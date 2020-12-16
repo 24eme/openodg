@@ -440,6 +440,12 @@ class drevActions extends sfActions {
         }
 
         $lot = $this->drev->getLotByNumArchive($request->getParameter('numArchive'));
+        $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->drev->identifiant, $lot->numero_archive, $this->drev->campagne);
+        if($lotCheck){
+          throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
+          " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
+        }
+
         if($lot){
             $this->drev->remove($lot->getHash());
         }
@@ -683,7 +689,7 @@ class drevActions extends sfActions {
 
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
-            $this->drev->cleanLots();  
+            $this->drev->cleanLots();
             $this->drev->save();
             $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
 

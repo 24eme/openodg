@@ -42,6 +42,17 @@ class MouvementLotView extends acCouchdbView
     ->getView($this->design, $this->view);
   }
 
+  public function getDegustationMouvementLot($declarant_identifiant, $numero_archive, $campagne = null, $statut = null){
+    foreach ($this->getByDeclarantIdentifiant($declarant_identifiant, $campagne, $statut)->rows as $key => $mvt) {
+      if(preg_match("/DEGUSTATION/", $mvt->id) && $mvt->value->numero_archive == $numero_archive){
+        if(!preg_match("/(".Lot::STATUT_NONPRELEVABLE.")/", $mvt->value->statut)){
+          return $mvt->value;
+        }
+      }
+    }
+    return null;
+  }
+
   public function getAllByIdentifiantAndStatuts($declarant_identifiant, $statuts, $campagne = null) {
     $result = array();
     $cStart = ($campagne)? $campagne : "0000";

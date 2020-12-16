@@ -31,7 +31,6 @@ class degustationActions extends sfActions {
     public function executePrelevementLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        //var_dump($this->infosDegustation);exit;
         $this->redirectIfIsValidee();
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
