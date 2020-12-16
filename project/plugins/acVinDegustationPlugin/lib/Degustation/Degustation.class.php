@@ -274,7 +274,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 foreach($keys as $key => $activated) {
 			 $mvt = $mvts[$key];
 			 if ($activated) {
-				 $lot = MouvementLotView::generateLotByMvt($mvt);
+				 $lot = DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mvt));
 				 $lot->statut = $statut;
 				 $this->lots->add(null, $lot);
 			 }
