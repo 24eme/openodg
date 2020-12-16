@@ -70,23 +70,27 @@
 
       $('.degustation.prelevements').each(function(){
         var nbLotsSelectionnes = 0;
+        var nbAdherentsLots = 0;
         var nb = $('tr strong#nbLotsSelectionnes').text();
 
         $(this).find('.bsswitch').each(function () {
            var state = $(this).bootstrapSwitch('state');
            if(state){
               listAdherents[$(this).attr("data-preleve-adherent")]++;
+              nbLotsSelectionnes++;
            }
       });
       for(let i in listAdherents){
         if(listAdherents[i] >= 1){
-          nbLotsSelectionnes++;
+          nbAdherentsLots++;
         }
       }
 
       $('tr strong#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
+      $('tr strong#nbAdherentsAPrelever').html(""+nbAdherentsLots);
        });
     }
+    updateSynthesePrelevementLots();
 
     var updateSyntheseDegustateurs = function(){
       $('.degustation.degustateurs').each(function(){
@@ -106,7 +110,7 @@
     }
 
     updateSyntheseDegustateurs();
-
-    document.getElementById('degustation_creation_time').style.paddingTop = '0';
+    if(document.getElementById('degustation_creation_time'))
+      document.getElementById('degustation_creation_time').style.paddingTop = '0';
 
   });
