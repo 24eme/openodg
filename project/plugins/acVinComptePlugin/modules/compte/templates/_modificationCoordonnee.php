@@ -1,8 +1,8 @@
 <?php
 $isCompteSociete = isset($isCompteSociete) && $isCompteSociete;
 $colClass = ($isCompteSociete) ? 'col-xs-8' : 'col-xs-4';
-$isSameAdresseThanSociete = !$isCompteSociete && $compteForm->getObject()->isSameAdresseThanSociete();
-$isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSameContactThanSociete();
+$isSameAdresseThanSociete = !$isCompteSociete && $compteForm->getObject()->isSameAdresseThanSociete() && !$compteForm->hasErrors();
+$isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSameContactThanSociete() && !$compteForm->hasErrors();
 
 ?>
 <div id="coordonnees_modification">
