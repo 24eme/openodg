@@ -7,7 +7,7 @@ fi
 
 ODG=$1
 
-. bin/config_$ODG.inc
+. bin/config.$ODG.inc
 
 EXPORT=$2
 
@@ -15,7 +15,7 @@ if test "$EXPORT"; then
   if test "$EXPORT" = "-exp"; then
     echo "Export données";
     cd $WORKINGDIR/import/igp/;
-    bash scrapping.sh config_$ODG.json;
+    bash scrapping.sh configs/config.$ODG.json;
     cd $WORKINGDIR;
   fi
 fi
