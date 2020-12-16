@@ -45,7 +45,11 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     public function createDoc($identifiant, $date = null, $papier = false) {
         $chgtdenom = new ChgtDenom();
-        $date = ($date && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $date))? $date : date(self::FORMAT_DATE);
+        if ($date && preg_match('/^\d{4}$/', $date)) {
+          $date = str_replace(date('Y').'-', $date.'-', date(self::FORMAT_DATE));
+        } else {
+          $date = ($date && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $date))? $date : date(self::FORMAT_DATE);
+        }
         $chgtdenom->initDoc($identifiant, $date);
         if($papier) {
             $chgtdenom->add('papier', 1);
