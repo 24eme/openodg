@@ -164,6 +164,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->numero_cuve = $lot->numero_cuve;
 			$mvt->millesime = $lot->millesime;
 			$mvt->volume = $lot->volume;
+			$mvt->elevage = $lot->elevage;
 			$mvt->produit_hash = $lot->produit_hash;
 			$mvt->produit_libelle = $lot->produit_libelle;
 			$mvt->produit_couleur = $lot->getCouleurLibelle();
@@ -273,7 +274,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 foreach($keys as $key => $activated) {
 			 $mvt = $mvts[$key];
 			 if ($activated) {
-				 $lot = MouvementLotView::generateLotByMvt($mvt);
+				 $lot = DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mvt));
 				 $lot->statut = $statut;
 				 $this->lots->add(null, $lot);
 			 }
@@ -712,8 +713,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
 				$table = chr($numTab+64);
 				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
-					$numAnonyme = $table.$lot->numero_cuve;
-					$lots[$numAnonyme] = $lot;
+					$lots[$lot->getNumeroAnonymise()] = $lot;
 				}
 			}
 			return $lots;
@@ -758,5 +758,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $etablissements;
+		}
+
+		public function getLotsDegustesByAppelation(){
+			$degust = array();
+			foreach ($this->getLotsDegustes() as $key => $lot) {
+				$degust[$lot->getConfig()->getAppellation()->getLibelle()][] = $lot;
+			}
+
+			return $degust;
+
 		}
 }

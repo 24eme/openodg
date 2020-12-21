@@ -14,7 +14,5 @@ all:
       engagement_pdf: true
       specificites:
         bio: "bio"
-        effervescent: "effervescent"
-        base_mousseux: "base mousseux"
         HVE: "HVE"
         aucune: "aucune"

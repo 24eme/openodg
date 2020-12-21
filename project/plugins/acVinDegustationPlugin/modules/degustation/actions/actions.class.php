@@ -505,6 +505,22 @@ class degustationActions extends sfActions {
       $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
     }
 
+    public function executeElever(sfWebRequest $request) {
+        $docid = $request->getParameter('id');
+        $ind = $request->getParameter('index');
+        $drev = DRevClient::getInstance()->find($docid);
+        $this->forward404Unless($drev);
+        $lot = null;
+        if ($drev->lots->exist($ind)) {
+          $lot = $drev->lots->get($ind);
+        }
+        $this->forward404Unless($lot);
+        $lot->statut = Lot::STATUT_PRELEVABLE;
+        $drev->generateMouvementsLots();
+        $drev->save();
+        return $this->redirect('degustation_elevages');
+    }
+
     public function executeEtiquettesPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
 
@@ -686,6 +702,23 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
 
       $this->document = new ExportDegustationFicheLotsAPreleverPDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+    }
+
+    public function executeFicheIndividuelleLotsAPreleverPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheIndividuelleLotsAPreleverPDF($degustation,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {

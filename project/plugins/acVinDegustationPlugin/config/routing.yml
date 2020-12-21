@@ -222,6 +222,12 @@ degustation_elevages:
   requirements:
     sf_method: [get]
 
+degustation_elever:
+  url: /degustation/elevages/:id/:index/elever
+  param: { module: degustation, action: elever }
+  requirements:
+    sf_method: [get]
+
 degustation_etiquette_pdf:
   url: /degustation/:id/etiquettes/pdf
   param: { module: degustation, action: etiquettesPdf }
@@ -306,6 +312,16 @@ degustation_fiche_recap_tables_pdf:
 degustation_fiche_lots_a_prelever_pdf:
     url: /degustation/:id/ficheLotsAPrelever/pdf
     param: { module: degustation, action: ficheLotsAPreleverPDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_fiche_individuelle_lots_a_prelever_pdf:
+    url: /degustation/:id/ficheIndividuelleLotsAPrelever/pdf
+    param: { module: degustation, action: ficheIndividuelleLotsAPreleverPDF }
     class: DegustationRoute
     options:
       model:    Degustation

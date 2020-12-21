@@ -30,6 +30,10 @@ class myUser extends sfBasicSecurityUser
 
         if($etablissement) {
 
+            if ($etablissement->getCompte()->statut == CompteClient::STATUT_INACTIF) {
+                throw new sfException("le compte ".$etablissement->getCompte()->_id." est inactif");
+            }
+
             $this->signInEtablissement($etablissement);
 
             return;
@@ -38,6 +42,11 @@ class myUser extends sfBasicSecurityUser
         $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
 
         if($compte) {
+
+            if ($compte->statut == CompteClient::STATUT_INACTIF) {
+                throw new sfException("le compte ".$compte->_id." est inactif");
+            }
+
             $this->signInCompte($compte);
 
             return;

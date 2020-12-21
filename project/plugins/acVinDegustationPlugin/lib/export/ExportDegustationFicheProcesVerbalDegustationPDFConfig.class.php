@@ -7,6 +7,8 @@ class ExportDegustationFicheProcesVerbalDegustationPDFConfig extends ExportPDFCo
         $this->subject = 'Procès verbal global';
         $this->orientation = self::ORIENTATION_LANDSCAPE;
         $this->keywords = 'Degustation';
+        $this->creator = 'IGP';
+        $this->author = 'IGP';
 
         $this->font_name = 'helvetica';
         $this->margin_left = 2;

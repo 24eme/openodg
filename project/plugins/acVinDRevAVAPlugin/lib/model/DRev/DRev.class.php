@@ -617,11 +617,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $config = $this->getConfiguration()->get($hashProduit)->getNodeRelation('revendication');
 
-            if ($config instanceof ConfigurationAppellation && !$config->mention->lieu->hasManyCouleur()) {
+            if ($config instanceof ConfigurationCepage) {
+                continue;
+            }
+
+            if ($config instanceof ConfigurationLieu) {
+                continue;
+            }
+
+            if ($config->mention->lieu->hasManyCouleur() && !$config instanceof ConfigurationCouleur) {
+                continue;
+            }
+
+            if ($config instanceof ConfigurationAppellation) {
                 $config = $config->mention->lieu->couleur;
             }
 
-            if ($config instanceof ConfigurationMention && !$config->lieu->hasManyCouleur()) {
+            if ($config instanceof ConfigurationMention) {
                 $config = $config->lieu->couleur;
             }
 

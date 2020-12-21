@@ -43,9 +43,10 @@
 										<?php echo $form[$name]->renderError() ?>
 										<div class="col-xs-12" >
 											<?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
-                      <a onclick='return confirm("Êtes vous sûr de marquer absent ce dégustateur ?");' class="pull-right" href="<?php echo url_for('degustation_degustateur_absence', array('id' => $degustation->_id, 'college' => $college, 'degustateurId' => $id)); ?>">
-                      <?php if($degustateur->exist('confirmation') && $degustateur->confirmation != false): ?><span style="position:absolute;right:30px;"class="glyphicon glyphicon-remove-sign text-danger"></span><?php endif; ?></a>
-										</div>
+                      <?php if(!$degustateur->exist('confirmation') || ($degustateur->confirmation === true)): ?>
+                      <a onclick='return confirm("Êtes vous sûr de marquer absent ce dégustateur ?");' class="pull-right" href="<?php echo url_for('degustation_degustateur_absence', array('id' => $degustation->_id, 'college' => $college, 'degustateurId' => $id)); ?>"><span class="glyphicon glyphicon-remove-sign text-danger"></span></a>
+                    <?php endif; ?>
+                    </div>
 									</div>
 	  						</td>
 							</tr>
