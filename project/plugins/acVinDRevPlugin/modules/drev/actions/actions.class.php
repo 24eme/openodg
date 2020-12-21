@@ -783,10 +783,9 @@ class drevActions extends sfActions {
         }
 
         $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
-
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
+          return sfView::SUCCESS;
         }
         $this->form->bind($request->getParameter($this->form->getName()));
 
