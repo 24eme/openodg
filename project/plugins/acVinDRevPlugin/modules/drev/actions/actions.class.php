@@ -633,7 +633,7 @@ class drevActions extends sfActions {
         $this->validation = new DRevValidation($this->drev);
 
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
