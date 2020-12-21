@@ -8,7 +8,7 @@ class chgtdenomComponents extends sfComponents {
         if ($this->hasLots) {
             $chgts = ChgtDenomClient::getInstance()->getHistory($this->etablissement->identifiant);
             foreach($chgts as $chgt) {
-                if (!$chgt->isValide()) {
+                if (!$chgt->isValide() && $chgt->campagne == $this->campagne) {
                     $this->enCours = $chgt;
                     break;
                 }
