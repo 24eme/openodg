@@ -1,13 +1,11 @@
 <?php
 
-class ExportDegustationConformitePDF extends ExportPDF {
+class ExportDegustationPresencePDF extends ExportPDF {
 
     protected $degustation = null;
-    protected $etablissement = null;
 
-    public function __construct($degustation,$etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
-        $this->etablissement = $etablissement;
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -20,7 +18,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement )));
+        $this->printable_document->addPage($this->getPartial('degustation/degustationPresencesPDF', array('degustation' => $this->degustation )));
       }
 
 
@@ -43,7 +41,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-      $titre = sprintf("\n\n Syndicat des Vins IGP de %s \n", $this->degustation->getOdg());
+      $titre = sprintf("Syndicat des Vins IGP de Vaucluse");
       return $titre;
     }
 
@@ -59,7 +57,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationConformitePDFConfig();
+        return new ExportDegustationPresencePDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -68,7 +66,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("CONFORMITE_%s", $degustation->_id);
+        $filename = sprintf("PRESENCES_%s", $degustation->_id);
         if ($with_rev) {
             $filename .= '_' . $degustation->_rev;
         }
