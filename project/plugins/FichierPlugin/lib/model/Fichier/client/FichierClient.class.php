@@ -30,13 +30,15 @@ class FichierClient extends acCouchdbClient {
      *
      * @return false|Un document
      */
-    public function scrapeAndSaveFiles($etablissement, $type, $annee)
+    public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true)
     {
         $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
         $fichiers = array();
-        foreach($etablissements as $etblmt) {
-            $this->scrapeFiles($etblmt, $type, $annee);
-            if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
+	foreach($etablissements as $etblmt) {
+		if($scrap) {
+            		$this->scrapeFiles($etblmt, $type, $annee);
+	    	}
+	    if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
                 continue;
             }
             $client = $this->getClientFromType($type);
