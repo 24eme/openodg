@@ -144,8 +144,7 @@
         <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
     <?php endforeach; ?>
-    \textbf{<?php echo $ligne->libelle; ?>} \textbf{Total} & & & \textbf{<?= ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',').' €'; ?> } & \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
-    \hline
+		\hline
   <?php endforeach; ?>
   \end{tabular}
 
