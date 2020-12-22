@@ -21,7 +21,7 @@
         <link rel="icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/png" href="/favico.png" />
 
-        <link rel="stylesheet" type="text/css" media="all" href="/css/compile.css?201706281900" />
+        <link rel="stylesheet" type="text/css" media="all" href="/css/compile_loire.css?201706281900" />
 <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
 <link rel="stylesheet" type="text/css" media="all" href="/css/../components/vins/vins.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />

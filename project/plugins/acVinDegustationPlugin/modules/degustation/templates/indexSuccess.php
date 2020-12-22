@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="col-sm-3 col-xs-3">
-                  <div class="input-group" id="time">
+                  <div class="input-group">
                       <?php echo $form["time"]->render(array("class" => "form-control")); ?>
                       <div class="input-group-addon">
                           <span class="glyphicon-time glyphicon"></span>
@@ -96,7 +96,7 @@
 <div class="page-header no-border">
     <h2>Elevages</h2>
 </div>
-<p><strong><?php echo count($lotsElevages); ?> lots</strong> sont actuellement en élevages : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
+<p><strong><?php echo count($lotsElevages); ?><?php if(count($lotsElevages)>1):?> lots<?php else: ?> lot<?php endif; ?></strong> sont actuellement en élevages : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
 
 <div class="page-header no-border">
     <h2>Manquements</h2>

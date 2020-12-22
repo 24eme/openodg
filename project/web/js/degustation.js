@@ -61,25 +61,35 @@
       }
     }
 
-    var updateSynthesePrelevementLots = function(){
+    var updateSynthesePrelevementLots = function(object){
+      var listAdherents = {};
+
+      $("[data-adherent]").each(function(){
+        listAdherents[$(this).attr("data-adherent")] = 0;
+      });
 
       $('.degustation.prelevements').each(function(){
         var nbLotsSelectionnes = 0;
-        var adherents = {};
+        var nbAdherentsLots = 0;
+        var nb = $('tr strong#nbLotsSelectionnes').text();
 
         $(this).find('.bsswitch').each(function () {
            var state = $(this).bootstrapSwitch('state');
            if(state){
-             nbLotsSelectionnes++;
-             adherents[$(this).parents('td').attr("data-hash")]=1;
+              listAdherents[$(this).attr("data-preleve-adherent")]++;
+              nbLotsSelectionnes++;
            }
-
       });
-      $('tr strong.nbLotsSelectionnes').html(""+nbLotsSelectionnes);
-      $('tr strong.nbAdherents').html(""+Object.size(adherents));
+      for(let i in listAdherents){
+        if(listAdherents[i] >= 1){
+          nbAdherentsLots++;
+        }
+      }
+
+      $('tr strong#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
+      $('tr strong#nbAdherentsAPrelever').html(""+nbAdherentsLots);
        });
     }
-
     updateSynthesePrelevementLots();
 
     var updateSyntheseDegustateurs = function(){
@@ -97,13 +107,10 @@
         $(".collegeCounter li.active span.badge").html(""+college);
 
        });
-
     }
 
     updateSyntheseDegustateurs();
-
-    $('#time').on('click',function(){
-      $(this).clockpicker({placement: 'bottom',align: 'left',autoclose: true});
-    });
+    if(document.getElementById('degustation_creation_time'))
+      document.getElementById('degustation_creation_time').style.paddingTop = '0';
 
   });

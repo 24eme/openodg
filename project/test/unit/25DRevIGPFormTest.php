@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(126);
+$t = new lime_test(128);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -147,9 +147,6 @@ $form = new DRevLotsForm($drev);
 $defaults = $form->getDefaults();
 
 $t->is(count($form['lots']), 2, "autant de lots que de colonnes dans le DR");
-foreach($form['lots'] as $k => $v) {
-    print("k: $k\n");
-}
 $t->is($form['lots']['0']['produit_hash']->getValue(), $produit1->getParent()->getHash(), 'lot 1 : un produit est déjà sélectionné');
 $t->is($form['lots']['0']['millesime']->getValue(), $campagne, 'lot 1 : le millesime est prérempli');
 
@@ -268,10 +265,39 @@ $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifi
 $t->is(count($res->rows), 0, 'on retrouve plus le mouvement prelevé dans la vue MouvementLot');
 
 $t->comment("Modificatrice ".$drev->_id."-M01");
+$drevBackup = $drev;
 $drev_modif = $drev->generateModificative();
 $drev_modif->save();
 $t->is($drev_modif->_id, $drev->_id.'-M01', "La modification a l'identifiant attendu");
 $t->is(count($drev_modif->mouvements_lots), 0, "La Drev modificatrice juste crée a bien aucun mouvement de lots");
+$t->is($drev_modif->lots->get(0)->statut, Lot::STATUT_NONPRELEVABLE, "La Drev modificatrice a repris le lot de la drev parente au statut non prélevable");
+$t->comment("Suppression de lots");
+$lot = $drev_modif->lots->get(0);
+$drev_modif->remove('lots');
+$drev_modif->add('lots');
+$drev_modif->validate();
+$drev = $drev_modif->getMother();
+$t->is(count($drev_modif->lots), 0, "Le Lot de la DRev modificatrice est correctement supprimé");
+$t->is(count($drev_modif->mouvements_lots->get($drev_modif->identifiant)), 0, "Les mvts de lot sont cohérents");
+$t->is($drev->lots->get(0)->statut, Lot::STATUT_NONPRELEVABLE, "Validate : La suppression du lot a été répercutée sur la DRev parente (statut passe de prélévable à non prélevable)");
+$t->is($drev->mouvements_lots->get($drev->identifiant)->get($drev->lots->get(0)->getUnicityKey())->statut, Lot::STATUT_NONPRELEVABLE, "Validate : Les mvts de lot sont cohérents");
+$drev_modif->devalidate();
+$drev = $drev_modif->getMother();
+$t->is($drev->lots->get(0)->statut, Lot::STATUT_PRELEVABLE, "Devalidate : La suppression du lot a été répercutée sur la DRev parente (statut passe de prélévable à non prélevable)");
+$t->is($drev->mouvements_lots->get($drev->identifiant)->get($drev->lots->get(0)->getUnicityKey())->statut, Lot::STATUT_PRELEVABLE, "Devalidate : Les mvts de lot sont cohérents");
+$drev_modif->validate();
+$drev = $drev_modif->getMother();
+$t->is($drev->lots->get(0)->statut, Lot::STATUT_NONPRELEVABLE, "Revalidate : La suppression du lot a été répercutée sur la DRev parente (statut passe de prélévable à non prélevable)");
+$t->is($drev->mouvements_lots->get($drev->identifiant)->get($drev->lots->get(0)->getUnicityKey())->statut, Lot::STATUT_NONPRELEVABLE, "Revalidate : Les mvts de lot sont cohérents");
+$drev_modif->delete();
+$drev = DRevClient::getInstance()->find($drevBackup->_id);
+$t->is($drev->lots->get(0)->statut, Lot::STATUT_PRELEVABLE, "Deleted : La suppression du lot a été répercutée sur la DRev parente (statut passe de prélévable à non prélevable)");
+$t->is($drev->mouvements_lots->get($drev->identifiant)->get($drev->lots->get(0)->getUnicityKey())->statut, Lot::STATUT_PRELEVABLE, "Deleted : Les mvts de lot sont cohérents");
+
+// Reinit
+$drev = $drevBackup;
+$drev_modif = $drev->generateModificative();
+
 $t->comment("Ajout de lots");
 
 if($drev_modif->storeEtape(DrevEtapes::ETAPE_LOTS)) {
@@ -355,13 +381,15 @@ $t->is(count($drev_modif->lots), 3, "Après la validation, le nombre de lots n'a
 $t->is($drev_modif->lots[0]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation, le lot 1 n'a pas changé");
 $t->is($drev_modif->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Après la validation, le lot 2 n'a pas changé");
 $t->is($drev_modif->lots[2]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation, le lot 3 n'a pas changé");
-
-$t->is(count($drev_modif->mouvements_lots->{$drev_modif->identifiant}), 2, "La Drev modificatrice validée a bien généré que 2 mouvements de lots (pour les seuls deux nouveaux lots)");
+$lotsPrelevables = 0;
 foreach($drev_modif->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt) {
-    break;
+  if ($mvt->statut == Lot::STATUT_PRELEVABLE)
+    $lotsPrelevables++;
 }
+$t->is($lotsPrelevables, 2, "La Drev modificatrice validée a bien généré que 2 mouvements de lots prélevables (pour les seuls deux nouveaux lots)");
+
 $t->is($mvt->version, 'M01', 'Le mouvement a le bon numéro de version');
-$t->is($mvt->produit_hash, $produitconfig2->getHash(), 'Le mouvement a le bon hash');
+$t->is($mvt->produit_hash, $produitconfig1->getHash(), 'Le mouvement a le bon hash');
 $t->is($mvt->statut, Lot::STATUT_PRELEVABLE, 'Le mouvement est prelevable');
 $t->is($mvt->declarant_identifiant, $drev_modif->identifiant, 'Le mouvement a le bon identifiant de déclarant');
 $t->is($mvt->declarant_nom, $drev->declarant->raison_sociale, 'Le mouvement a le bon nom de déclarant');
@@ -380,13 +408,15 @@ $drev_modif2->validate();
 $drev_modif2->save();
 $t->is($drev_modif2->lots[0]->produit_libelle, $produitconfig2->getLibelleComplet(), "Après la validation de la suppression du lot 1, le 1er lot est à la bonne place");
 $t->is($drev_modif2->lots[1]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation de la suppression du lot 1, le 2d lot est à la bonne place");
-$t->is(count($drev_modif2->mouvements_lots->{$drev_modif2->identifiant}), 1, "La 2d Drev modificatrice validée a bien généré que 1 mouvement de lots (celui de la suppression)");
-foreach($drev_modif2->mouvements_lots->{$drev_modif->identifiant} as $k => $mvt) {
-    break;
+$lotsPrelevables = 0;
+foreach($drev_modif2->mouvements_lots->{$drev_modif2->identifiant} as $k => $mvt) {
+  if ($mvt->statut == Lot::STATUT_PRELEVABLE)
+    $lotsPrelevables++;
 }
+$t->is($lotsPrelevables, 0, "La 2d Drev modificatrice validée n'a pas généré de mouvement de lots");
 $t->is($mvt->version, 'M02', 'Le mouvement a le bon numéro de version');
 $t->is($mvt->produit_hash, $produitconfig1->getHash(), 'Le mouvement a le bon hash');
-$t->is($mvt->statut, Lot::STATUT_PRELEVABLE, 'Le mouvement est prelevable');
+$t->is($mvt->statut, Lot::STATUT_NONPRELEVABLE, 'Le mouvement est prelevable');
 $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
 $t->is(count($res->rows), 0, 'on ne retrouve pas le mouvement comme prelevable dans la vue MouvementLot');
 $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_NONPRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);

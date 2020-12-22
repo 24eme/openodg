@@ -10,8 +10,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function __construct() {
         parent::__construct();
-		    //TODO : supprimer cette goretterie réalisée pour la démo
-		    $this->campagne = '2019';
         $this->initDocuments();
     }
 
@@ -29,6 +27,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function constructId() {
         $id = 'CHGTDENOM-' . $this->identifiant . '-' . $this->date;
         $this->set('_id', $id);
+        if ($this->date) {
+          $this->set('campagne', explode('-', $this->date)[0]);
+        }
     }
 
     public function getConfiguration() {
@@ -92,9 +93,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function getMvtLots() {
+    public function getMvtLots($validated = false) {
       $lots = array();
-      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME), $this->campagne) as $item) {
+      $statuts = ($validated)? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
+      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, $statuts, $this->campagne) as $item) {
           $key = Lot::generateMvtKey($item->value);
           $lots[$key] = $item->value;
       }
@@ -119,7 +121,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getMvtLot() {
-      $mvts = $this->getMvtLots();
+      $mvts = $this->getMvtLots(true);
       $key = $this->getLotKey();
       return ($mvts && $key && isset($mvts[$key]))? $mvts[$key] : null;
     }
@@ -174,7 +176,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lotBis->volume = $this->changement_volume;
         $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lotBis->statut = Lot::STATUT_CONFORME;
+        $lotBis->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
         $lotBis->details = '';
         foreach($this->getPourcentagesCepages() as $cep => $pc) {
             $lotBis->details .= $cep.' ('.$pc.'%) ';
@@ -184,7 +186,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       } else {
         $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lot->statut = Lot::STATUT_CONFORME;
+        $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
         if (count($this->changement_cepages->toArray(true, false))) {
           $lot->details = '';
           foreach($this->getPourcentagesCepages() as $cep => $pc) {
@@ -207,6 +209,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
   			$mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
+        $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = ($lot->produit_hash)? $lot->getCouleurLibelle() : null;
