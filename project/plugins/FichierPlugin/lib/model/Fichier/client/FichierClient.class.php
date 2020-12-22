@@ -89,6 +89,14 @@ class FichierClient extends acCouchdbClient {
 
         $t = strtolower($type);
         $cvi = $etablissement->cvi;
+
+        $files = $this->getScrapyFiles($etablissement, $t, $annee);
+        foreach($files as $file) {
+            if(!is_writable($file)) {
+                throw new sfException("File ".$file." not writable. Once the new version has been downloaded, it cannot be replaced");
+            }
+        }
+
         exec("bash $scrapybin/download_douane.sh $t $annee $cvi 1>&2");
     }
 
