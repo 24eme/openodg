@@ -50,10 +50,7 @@
 \def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht, ','); ?>}
 \def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe, ','); ?>}
 \def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc, ','); ?>}
-<<<<<<< HEAD
-\def\SIRET{<?php echo(CompteClient::getInstance()->findByIdentifiant($facture->identifiant)->societe_informations->siret); ?>}
-=======
->>>>>>> parent of 3bccfba09... IGP13 : Facturation->pdf : Ajout du SIRET dans PDF
+\def\SIRET{<?php echo(CompteClient::getInstance()->findByIdentifiant($facture->identifiant)->societe_informations->siret); ?>} 
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0cm}
