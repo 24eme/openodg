@@ -50,7 +50,7 @@
 \def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht, ','); ?>}
 \def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe, ','); ?>}
 \def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc, ','); ?>}
-\def\SIRET{<?php echo(CompteClient::getInstance()->findByIdentifiant('006950')->societe_informations->siret); ?>}
+\def\SIRET{<?php echo(CompteClient::getInstance()->findByIdentifiant($facture->identifiant)->societe_informations->siret); ?>}
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0cm}
