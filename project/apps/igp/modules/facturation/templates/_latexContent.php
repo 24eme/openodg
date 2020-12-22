@@ -50,6 +50,7 @@
 \def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht, ','); ?>}
 \def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe, ','); ?>}
 \def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc, ','); ?>}
+\def\SIRET{<?php echo(CompteClient::getInstance()->findByIdentifiant('006950')->societe_informations->siret); ?>}
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0cm}
@@ -95,6 +96,16 @@
 \end{tabular}
 
 \\\vspace{6mm}
+
+\renewcommand{\arraystretch}{1.5}
+\arrayrulecolor{vertclair}
+\begin{tabular}{|>{\raggedleft}m{1.5cm}|>{\raggedright}m{7.0cm}|}
+\hhline{|-|-|}
+\cellcolor{verttresclair} \textbf{SIRET :} & \hspace{0.3cm} \SIRET \tabularnewline
+\hhline{|-|-|}
+\end{tabular}
+
+\\\vspace{2mm}
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
