@@ -49,7 +49,7 @@
                   <?php
                   foreach ($form->getTableLots() as $lot):
                     $name = $form->getWidgetNameFromLot($lot);
-                    if (isset($form["conformite_".$name])): ?>
+                    if (!$lot->leurre && isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                         <td class="text-left"><?php echo $lot->getNumeroAnonymise() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
@@ -71,12 +71,10 @@
                           </div>
                         </td>
                         <td class="text-center">
-                          <?php if (!$lot->leurre): ?>
-                            <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
-                              <span class="text-muted glyphicon glyphicon-pencil"></span>
-                            <?php else: ?>
-                              <?php echo $lot->getShortLibelleConformite(); ?>
-                            <?php endif; ?>
+                          <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
+                            <span class="text-muted glyphicon glyphicon-pencil"></span>
+                          <?php else: ?>
+                            <?php echo $lot->getShortLibelleConformite(); ?>
                           <?php endif; ?>
                         </td>
                         <td class="text-center">
