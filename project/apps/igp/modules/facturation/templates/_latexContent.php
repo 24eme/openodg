@@ -41,6 +41,7 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
+\def\EMETTEURIBAN{<?php echo (sfConfig::get('app_facture_coordonnees_bancaire'))['rib'] ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
@@ -50,7 +51,7 @@
 \def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht, ','); ?>}
 \def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe, ','); ?>}
 \def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc, ','); ?>}
-\def\SIRET{<?php echo(CompteClient::getInstance()->findByIdentifiant($facture->identifiant)->societe_informations->siret); ?>} 
+\def\SIRET{<?php echo(CompteClient::getInstance()->findByIdentifiant($facture->identifiant)->societe_informations->siret); ?>}
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0cm}
@@ -64,7 +65,8 @@
 	\EMETTEURLIBELLE \\
 	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
 	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
-	N°TVA : FR96803741834
+	N°TVA : FR96803741834 \\
+	IBAN : \EMETTEURIBAN \\
 }}
 
 \begin{document}
