@@ -188,6 +188,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         return $couleurs;
     }
+
+    public function getLotsHorsDR(){
+      $lotsDR = $this->summerizeProduitsLotsByCouleur();
+      $lotsHorsDR = array();
+      foreach ($this->getLots() as $key => $lot) {
+
+        if(!isset($lotsDR[$lot->produit_libelle])){
+            $lotsHorsDR[$lot->produit_libelle] = $lot;
+        }
+      }
+      return $lotsHorsDR;
+    }
+
     public function getLots(){
         if(!$this->exist('lots')) {
 
