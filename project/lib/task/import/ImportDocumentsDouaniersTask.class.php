@@ -81,7 +81,7 @@ EOF;
         		}
 
         		try {
-        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee);
+        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, false);
         		} catch (Exception $e) {
         			echo sprintf("ERROR;%s\n", $e->getMessage());
         			continue;

@@ -59,6 +59,7 @@
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <?php
           $lots = $drev->getLotsByCouleur();
+          $lotsHorsDR = $drev->getLotsHorsDR();
           $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
           ?>
           <div class="row">
@@ -159,11 +160,15 @@
                         <?php endif; ?>
                       </td>
                       <td class="text-right"><?php  echo (count($lotsByCouleur))? count($lotsByCouleur) : 'aucun lots'; ?></td>
-                      <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
+                      <td class="text-right">
+                        <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
 
                           <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
-
+                        <?php elseif (isset($lotsHorsDR[$couleur])): ?>
+                          <?php echoFloat($lotsHorsDR[$couleur]->volume); ?><small class="text-muted">&nbsp;hl</small>
                         <?php endif; ?>
+
+
                       </td>
                       <td class="text-right">
                         <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) >= 0): ?><?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?><small>&nbsp;hl</small><?php endif; ?>

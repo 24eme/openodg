@@ -43,8 +43,9 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-      $titre = sprintf("\n\n Syndicat des Vins IGP de %s \n", $this->degustation->getOdg());
-      return $titre;
+      $adresse = sfConfig::get('app_degustation_courrier_adresse');
+      $title = sprintf($adresse['raison_sociale']);
+        return $title;
     }
 
     protected function getFooterText() {
