@@ -2,8 +2,8 @@
 
 class DegustationTriTableForm extends BaseForm
 {
-    private array $tri;
-    private array $elements = array('' => '', 'Appellation' => 'Appellation', 'Genre' => 'Genre', 'Couleur' => 'Couleur', 'Cépage' => 'Cépage', 'Millesime' => 'Millesime');
+    private $tri = array();
+    private $elements = array('' => '', 'Appellation' => 'Appellation', 'Genre' => 'Genre', 'Couleur' => 'Couleur', 'Cépage' => 'Cépage', 'Millesime' => 'Millesime');
 
     public function __construct(array $tri, bool $recap = false, $options = array(), $CSRFSecret = null)
     {
