@@ -3,6 +3,7 @@
 class chgtdenomComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
+        $this->campagne = $request->getParameter('campagne');
         $this->hasLots = (count(MouvementLotView::getInstance()->getByDeclarantIdentifiant($this->etablissement->identifiant)->rows) > 0);
         $this->enCours = null;
         if ($this->hasLots) {
