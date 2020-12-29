@@ -82,6 +82,6 @@ done
 rm -rf cache/* > /dev/null
 php symfony cc > /dev/null
 
-bash -c "APPLICATION=$APPLICATION COUCHURL=$COUCHTEST NODELETE=1 php symfony test:unit --xml=$XMLFILE $APPLICATIONOUTPUT"
+bash -c "APPLICATION=$APPLICATION COUCHURL=$COUCHTEST NODELETE=1 php symfony test:all --xml=$XMLFILE $APPLICATIONOUTPUT"
 
 done
