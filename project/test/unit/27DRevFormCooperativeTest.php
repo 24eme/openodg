@@ -6,9 +6,19 @@ $t = new lime_test(7);
 
 $coop =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_coop')->getEtablissement();
 
+$t->comment("test on ".$coop->identifiant);
+
+$campagne = (date('Y')-1)."";
+
 //Suppression des DRev précédentes
+$ids = array();
 foreach(DRevClient::getInstance()->getHistory($coop->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
-    DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
+    $ids[$k] = $k;
+}
+$ids['DREV-'.$coop->identifiant.'-'.$campagne] = 'DREV-'.$coop->identifiant.'-'.$campagne;
+foreach($ids as $k) {
+    $drev = DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON);
+    if ($drev) { DRevClient::getInstance()->deleteDoc($drev); }
     $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON);
     if($dr) { DRClient::getInstance()->deleteDoc($dr); }
     $sv12 = SV12Client::getInstance()->find(str_replace("DREV-", "SV12-", $k), acCouchdbClient::HYDRATE_JSON);
