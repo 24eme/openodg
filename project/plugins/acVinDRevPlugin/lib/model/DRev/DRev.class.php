@@ -1761,6 +1761,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return boolval($this->getValidationOdg());
     }
 
+    public function isLotsEditable(){
+      return $this->isValideeOdg() && $this->isValidee();
+    }
+
     /**** FIN DE VERSION ****/
 
     public function getDate() {
