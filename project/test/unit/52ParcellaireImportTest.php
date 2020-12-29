@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if (in_array($application, array('nantes', 'loire'))) {
+if (in_array($application, array('nantes', 'loire', 'rhone'))) {
     $t = new lime_test(1);
     $t->ok(true, "pas de parcellaire activé");
     return;
