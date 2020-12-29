@@ -134,18 +134,20 @@ $t->comment("Validation");
 
 $date = date('c');
 $drev->validate($date);
-$drev->validateOdg($date);
+if (DRevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    foreach(DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+        $drev->validateOdg($date, $region);
+    }
+}else {
+    $drev->validateOdg($date);
+}
 $drev->save();
 
 $t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est toujours de 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
 $t->is($drev->validation, $date , "La DRev a la date du jour comme date de validation");
-if(DRevConfiguration::getInstance()->hasValidationOdgAuto()) {
-    $t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
-} else {
-    $t->is($drev->validation_odg, null, "La date de validation ODG n'est pas mise automatiquement");
-}
+$t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
 
 if(FactureConfiguration::getInstance()->isActive()) {
     $t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
@@ -161,11 +163,17 @@ $drev->save();
 
 
 if(FactureConfiguration::getInstance()->isActive()) {
+    $template = $drev->getTemplateFacture();
     $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
     $mouvements = $drev->mouvements->get($viti->identifiant);
-    $nbMvtsAttendu = 4;
-    if($igp13){
-      $nbMvtsAttendu = 5;
+    $nbMvtsAttendu = 0;
+    foreach ($template->cotisations as $type => $cot) {
+        foreach($cot->details as $h => $d) {
+            if (in_array('DRev', $d->docs->toArray())) {
+                $nbMvtsAttendu++;
+                break;
+            }
+        }
     }
     $t->is(count($mouvements), $nbMvtsAttendu, "La DRev a $nbMvtsAttendu mouvements");
     $mouvement = $mouvements->getFirst();
