@@ -11,6 +11,7 @@ class acCouchdbDocumentGetTask extends sfBaseTask
     ));
 
     $this->addOptions(array(
+      new sfCommandOption('hash', null, sfCommandOption::PARAMETER_REQUIRED, 'Hash', null),
       new sfCommandOption('format', null, sfCommandOption::PARAMETER_REQUIRED, 'Format of return (json, php, flatten)', 'json'),
       new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
@@ -35,22 +36,41 @@ EOF;
     $databaseManager = new sfDatabaseManager($this->configuration);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+    $hydrate = acCouchdbClient::HYDRATE_JSON;
+    if(isset($options['hash']) && $options['hash']) {
+        $hydrate = acCouchdbClient::HYDRATE_DOCUMENT;
+    }
+
     if(isset($arguments['doc_revision'])) {
-      $doc = acCouchdbManager::getClient()->rev($arguments['doc_revision'])->find($arguments['doc_id'], acCouchdbClient::HYDRATE_JSON);
+      $doc = acCouchdbManager::getClient()->rev($arguments['doc_revision'])->find($arguments['doc_id'], $hydrate);
     } else {
-      $doc = acCouchdbManager::getClient()->find($arguments['doc_id'], acCouchdbClient::HYDRATE_JSON);
+      $doc = acCouchdbManager::getClient()->find($arguments['doc_id'], $hydrate);
+    }
+
+    if(isset($options['hash']) && $options['hash']) {
+        $hashes = json_decode($options['hash']);
+        if (!$hashes) {
+            $hashes = array($options['hash']);
+        }
+        $values = array();
+        foreach($hashes as $h) {
+            $value = $doc->get($h, acCouchdbClient::HYDRATE_JSON);
+            $values[] = $value;
+        }
+        $doc = $values;
     }
 
     if($options['format'] == "json") {
-      echo json_encode($doc);
+      echo json_encode($doc)."\n";
+      return ;
     }
 
     if($options['format'] == "php") {
-      print_r($doc);
+      return print_r($doc);
     }
 
     if($options['format'] == "flatten") {
-      print_r(acCouchdbToolsJson::json2FlatenArray($doc));
+      return print_r(acCouchdbToolsJson::json2FlatenArray($doc));
     }
   }
-} 
+}

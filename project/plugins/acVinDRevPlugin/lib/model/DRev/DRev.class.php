@@ -968,6 +968,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
       $mother = $this->getMother();
       $updated = false;
+      if ($mother)
       foreach ($mother->getLots() as $lot) {
         if ($validation && $lot->statut == Lot::STATUT_PRELEVABLE && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
           $lot->statut = Lot::STATUT_NONPRELEVABLE;
