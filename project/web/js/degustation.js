@@ -9,6 +9,9 @@
       var state = $(this).bootstrapSwitch('state');
       var form = $(this).parents('form');
       if($(this).hasClass('ajax')){
+        if(form.hasClass('degustateurs-confirmation')){
+          $(this).parents('tr').removeClass("text-muted").removeClass("disabled").removeAttr("disabled").css("text-decoration",'');        
+        }
         $.formPost(form);
       }
     });
