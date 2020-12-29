@@ -165,6 +165,11 @@ abstract class Lot extends acCouchdbDocumentTree
         return false;
     }
 
+    public function isOrigineEditable()
+    {
+      return $this->getDocOrigine()->getMaster()->isLotsEditable();
+    }
+
     public function getDestinationDateFr()
     {
 
