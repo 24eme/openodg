@@ -17,13 +17,37 @@ foreach(DRevClient::getInstance()->getHistory($coop->identifiant, acCouchdbClien
     if($sv11) { SV11Client::getInstance()->deleteDoc($sv11); }
 }
 
-$campagne = (date('Y')-1)."";
+
+
+$csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv11_douane.csv');
+
+$config = ConfigurationClient::getCurrent();
+$produit1 = null;
+$produit2 = null;
+foreach($config->getProduits() as $produit) {
+    if($produit->getRendement() <= 0) {
+        continue;
+    }
+    if(!$produit1) {
+        $produit1 = $produit;
+        continue;
+    } elseif(!$produit2) {
+        $produit2 = $produit;
+        continue;
+    }
+    break;
+}
+$csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($viti->cvi, $produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
+$t->comment("utilise le fichier test/data/sv11_douane.csv");
+$t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
+$t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());
 
 $dr = SV11Client::getInstance()->createDoc($coop->identifiant, $campagne);
 $dr->setLibelle("SV11 $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");
 $dr->save();
-$dr->storeFichier(dirname(__FILE__).'/../data/sv11_douane_'.$application.'.csv');
+$dr->storeFichier($csvTmpFile);
 $dr->save();
 
 $drev = DRevClient::getInstance()->createDoc($coop->identifiant, $campagne);
@@ -33,8 +57,7 @@ $t->is($drev->getDocumentDouanierType(), "SV11", "Le document douanier de la DRe
 
 $drev->importFromDocumentDouanier();
 $drev->save();
-
-$t->is(count($drev->getProduits()), 1, "La DRev a repris 1 produit du csv de la SV11");
+$t->is(count($drev->getProduits()), 2 + DRevConfiguration::getInstance()->hasDenominationAuto(), "La DRev a repris 2 produits du csv de la SV11 (+1 si on prend la mention complémentaire)");
 
 $produits = $drev->getProduits();
 
