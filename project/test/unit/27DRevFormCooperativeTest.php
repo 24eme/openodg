@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(7);
+$t = new lime_test(9);
 
 $coop =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_coop')->getEtablissement();
 
@@ -79,3 +79,11 @@ $t->is($produit1->recolte->volume_total, 53.59, "Le volume total est récupéré
 $t->is($produit1->recolte->recolte_nette, 53.59, "Le volume de récolte net est récupéré du csv");
 $t->is($produit1->recolte->volume_sur_place, 53.59, "Le volume sur place est récupéré du csv");
 $t->is($produit1->superficie_revendique, $produit1->recolte->superficie_total, "La superificie totale est mise automatiquement");
+
+$produit1->vci->stock_precedent = 10;
+$produit1->vci->rafraichi = 1;
+$produit1->vci->complement = 9;
+$produit1->update();
+
+$t->is($produit1->vci->stock_final, 1, "Le stock final de vci est bon");
+$t->is($produit1->getTheoriticalVolumeRevendiqueIssuRecole(), 52.59, "Le volume revendiqué théorique de récolte est le bon");
