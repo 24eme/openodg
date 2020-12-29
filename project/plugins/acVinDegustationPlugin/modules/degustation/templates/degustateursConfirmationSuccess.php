@@ -13,7 +13,7 @@
 	<h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
 <p>Sélectionner les degustateurs qui ont confirmer leur présence à la dégustation</p>
-<form action="<?php echo url_for("degustation_degustateurs_confirmation", $degustation) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_degustateurs_confirmation", $degustation) ?>" method="post" class="form-horizontal degustateurs-confirmation">
 	<?php echo $form->renderHiddenFields(); ?>
 
 		<div class="bg-danger">
@@ -45,7 +45,7 @@
 											<?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                       <?php if(!$degustateur->exist('confirmation') || ($degustateur->confirmation === true)): ?>
                       <a onclick='return confirm("Êtes vous sûr de marquer absent ce dégustateur ?");' class="pull-right" href="<?php echo url_for('degustation_degustateur_absence', array('id' => $degustation->_id, 'college' => $college, 'degustateurId' => $id)); ?>">
-                        <?php if($degustateur->exist('confirmation') && $degustateur->confirmation != false): ?><span style="position:absolute;right:30px;"class="glyphicon glyphicon-remove-sign text-danger"></span><?php endif; ?></a>
+                        <?php if(!$degustateur->exist('confirmation') || $degustateur->confirmation != false): ?><span style="position:absolute;right:30px;"class="glyphicon glyphicon-remove-sign text-danger"></span><?php endif; ?></a>
                     <?php endif; ?>
                     </div>
 									</div>
