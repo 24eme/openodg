@@ -6,18 +6,19 @@
     <?php $etablissement = $route->getEtablissement(); ?>
     <?php $compte = $etablissement->getMasterCompte(); ?>
 <?php endif; ?>
-<?php if($route instanceof CompteRoute): ?>
+<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
-    <?php //$etablissement = $compte->getEtablissementObj(); ?>
+    <?php $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 <?php if($route instanceof SocieteRoute): ?>
+    <?php $societe = $route->getSociete(); ?>
     <?php $etablissement = $route->getEtablissement(); ?>
     <?php $compte = $route->getSociete()->getMasterCompte(); ?>
 <?php endif; ?>
 
 <?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
     <?php $compte = $sf_user->getCompte(); ?>
-    <?php if ($compte->getSociete()) $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
+    <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
     <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 
