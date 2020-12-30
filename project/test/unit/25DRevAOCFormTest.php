@@ -62,9 +62,9 @@ foreach($config->getProduits() as $produit) {
 }
 
 if ($produitConfigMutage) {
-    $t = new lime_test(90 + !$has_habilitation_inao * 2);
+    $t = new lime_test(92 + !$has_habilitation_inao * 2);
 }else {
-    $t = new lime_test(77 + !$has_habilitation_inao * 2);
+    $t = new lime_test(79 + !$has_habilitation_inao * 2);
 }
 
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
@@ -91,6 +91,7 @@ $dr->save();
 
 $drev->importFromDocumentDouanier();
 $drev->save();
+$t->comment($drev->_id);
 $t->is(count($drev->getProduits()), 2 * (1 + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire()), "La DRev a repris les produits du csv de la DR");
 
 $i = 0;
@@ -192,11 +193,11 @@ $t->is($form['produits'][$produit_hash1]['rafraichi']->getValue(), null, "Le VCI
 $valuesVCI = array(
     'produits' => array(
         $produit_hash1 => array(
-            "stock_precedent" => 3,
+            "stock_precedent" => 6,
             "destruction" => 0,
             "substitution" => 0,
             "complement" => 3,
-            "rafraichi" => 0,
+            "rafraichi" => 3,
         ),
     ),
     '_revision' => $drev->_rev,
@@ -209,13 +210,13 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
 $produit1 = $drev->get($produit_hash1);
-$t->is($produit1->vci->stock_precedent, 3, "Le stock VCI avant récolte du produit du doc est de 3");
+$t->is($produit1->vci->stock_precedent, 6, "Le stock VCI avant récolte du produit du doc est de 3");
 $t->is($produit1->vci->destruction, null, "Le VCI en destruction du produit du doc est null");
 $t->is($produit1->vci->complement, 3, "Le VCI en complément de la DR du produit du doc est de 3");
 $t->is($produit1->vci->substitution, 0, "Le VCI en substitution de la DR du produit du doc est de 0");
-$t->is($produit1->vci->rafraichi, 0, "Le VCI rafraichi du produit est de 0");
+$t->is($produit1->vci->rafraichi, 3, "Le VCI rafraichi du produit est de 3");
 $t->is($produit1->volume_revendique_issu_vci, $produit1->vci->complement + $produit1->vci->substitution + $produit1->vci->rafraichi, "Le volume revendiqué issu du vci est calculé à partir de la répartition vci");
-
+$t->is($produit1->getTheoriticalVolumeRevendiqueIssuRecole(), $produit1->recolte->recolte_nette - $produit1->vci->substitution - $produit1->vci->rafraichi, "Le volume issu de la récolte prend en compte les volumes de vci");
 
 $t->comment("Formulaire de revendication");
 
@@ -232,6 +233,7 @@ $t->is($form['produits'][$produit_hash1]['recolte']['volume_total']->getValue(),
 $t->is($form['produits'][$produit_hash1]['recolte']['recolte_nette']->getValue(), $produit1->recolte->recolte_nette, "La récolté nette de la DR sont initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['recolte']['volume_sur_place']->getValue(), $produit1->recolte->volume_sur_place, "Le volume sur place est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['volume_revendique_issu_recolte']->getValue(), $produit1->recolte->recolte_nette - $produit1->vci->rafraichi - $produit1->vci->substitution, "Le volume revendique issu de la DR est bien calculé et initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['volume_revendique_issu_recolte']->getValue(), $produit1->getTheoriticalVolumeRevendiqueIssuRecole(), "Le volume revendique issu de la DR est bien issu to volume théorique issu de la récolte");
 $t->ok(!isset($form['produits'][$produit_hash1]['recolte']['superficie_total']), "La superficie totale de la DR n'est pas proposé dans le formulaire");
 
 
@@ -240,7 +242,7 @@ $valuesRev = array(
     '_revision' => $drev->_rev,
 );
 
-$valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 104.1;
+$valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 101.1;
 
 $form->bind($valuesRev);
 
@@ -259,7 +261,7 @@ if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
     $drev->save();
 }
 
-$t->is($produit1->vci->stock_final, 2, "Le stock VCI après récolte du produit du doc est 4");
+$t->is($produit1->vci->stock_final, 5, "Le stock VCI après récolte du produit du doc est bon");
 $t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->rafraichi, "Le VCI stock après récolte du produit du doc est le même que le calculé");
 
 $drev->cleanDoc();
@@ -287,22 +289,22 @@ $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 $t->is(!isset($erreurs['revendication_incomplete_volume']) ? 0 : count($erreurs['revendication_incomplete_volume']), !DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(),  "Point blocant : tous les volumes de revendication n'ont pas été rempli (que le 1er produit)");
-$t->ok(!isset($erreurs['revendication_incomplete_superficie']), "Pas de point blocant sur le remplissage des superficies de revendication");
-$t->ok(!isset($erreurs['revendication_rendement']), "Pas de point blocant sur le rendement de la revendication");
+$t->is($erreurs['revendication_incomplete_superficie'], null, "Pas de point blocant sur le remplissage des superficies de revendication");
+$t->is($erreurs['revendication_rendement'], null, "Pas de point blocant sur le rendement de la revendication");
 $t->is(!isset($vigilances['revendication_rendement_conseille']) ? 0 : count($vigilances['revendication_rendement_conseille']), 0 + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Point de vigilance sur le dépassement du rendement conseillé de la revendication");
-$t->ok(!isset($erreurs['vci_stock_utilise']), "Pas de point blocant sur la repartition du vci");
-$t->ok(!isset($erreurs['vci_rendement_annee']), "Pas de point blocant sur le rendement à l'année du vci");
-$t->ok(!isset($vigilances['vci_rendement_total']), "Pas de point de vigilance sur le rendement total du vci");
-$t->ok(!isset($erreurs['declaration_volume_l15_complement']), "Pas de point bloquant sur le respect de la ligne l15");
-$t->ok(!isset($erreurs['vci_substitue_rafraichi']), "Pas de point blocant sur la subsitution ni le rafraichissement du volume de VCI");
-$t->ok(!isset($erreurs['revendication_superficie']), "Pas de point blocant sur la superficie declarée sur la DR et la DRev");
+$t->is($erreurs['vci_stock_utilise'], null, "Pas de point blocant sur la repartition du vci");
+$t->is($erreurs['vci_rendement_annee'], null, "Pas de point blocant sur le rendement à l'année du vci");
+$t->is($vigilances['vci_rendement_total'], null, "Pas de point de vigilance sur le rendement total du vci");
+$t->is($erreurs['declaration_volume_l15_complement'], null, "Pas de point bloquant sur le respect de la ligne l15");
+$t->is($erreurs['vci_substitue_rafraichi'], null, "Pas de point blocant sur la subsitution ni le rafraichissement du volume de VCI");
+$t->is($erreurs['revendication_superficie'], null, "Pas de point blocant sur la superficie declarée sur la DR et la DRev");
 $t->is(!isset($vigilances['declaration_habilitation']) ? 0 : count($vigilances['declaration_habilitation']), 0, "Pas de point de vigilance sur l'habilitation du premier produit");
 
 $t->is(!isset($vigilances['declaration_volume_l15']) ? 0 : count($vigilances['declaration_volume_l15']), 1 * !DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Pas de point vigilance sur le respect de la ligne l15");
-$t->ok(!isset($vigilances['declaration_neant']), "Pas de point vigilance sur la declaration neant");
+$t->is($vigilances['declaration_neant'], null, "Pas de point vigilance sur la declaration neant");
 $t->is(!isset($vigilances['declaration_produits_incoherence']) ? 0 : count($vigilances['declaration_produits_incoherence']), 0 + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Point vigilance sur les produits declarés sur la DR et pas dans la DRev");
-$t->ok(!isset($vigilances['declaration_surface_bailleur']), "Pas de point vigilance sur la repartition de la surface avec le bailleur");
-$t->ok(!isset($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
+$t->is($vigilances['declaration_surface_bailleur'], null, "Pas de point vigilance sur la repartition de la surface avec le bailleur");
+$t->is($vigilances['vci_complement'], null, "Pas de point vigilance sur le complement vci");
 
 $drevControle = clone $drev;
 if (!$has_habilitation_inao) {
@@ -344,7 +346,7 @@ $t->is(count($vigilances['declaration_volume_l15']), 1  + 1 * DRevConfiguration:
 $t->is(count($erreurs['declaration_volume_l15_complement']), 1, "Point bloquant sur le respect de la ligne l15");
 $t->is(count($erreurs['revendication_superficie']), 1, "Point bloquant sur la superficie declarée sur la DR et la DRev");
 $t->is(count($erreurs['vci_substitue_rafraichi']), 1, "VCI rafraichi / subsitue non respect de la ligne l15");
-$t->ok(!isset($vigilances['vci_complement']) || !count($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
+$t->isnt($vigilances['vci_complement'], null, "Pas de point vigilance sur le complement vci");
 
 $drevControle->remove($produit1->getHash());
 $validation = new DRevValidation($drevControle);
