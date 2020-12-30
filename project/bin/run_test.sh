@@ -8,8 +8,6 @@ then
     exit;
 fi
 
-TYPE_TEST="unit"
-
 while getopts ":x:t:" flag
 do
     case "${flag}" in
@@ -47,7 +45,10 @@ if test "$APPLICATIONOUTPUT"; then
     APPLICATIONOUTPUT=" | sed 's/^/$APPLICATION : /' | grep -v '\.\.ok'"
 fi
 
-NOM_TEST=$(echo $2 | sed 's/unit\///' | sed 's/Test\.*[a-z]*$//')
+NOM_TEST=$(echo $2 | sed 's/.*\///' | sed 's/Test\.*[a-z]*$//')
+if ! test "$TYPE_TEST" && test "$NOM_TEST"; then
+    TYPE_TEST=$( find test -name "$(basename $NOM_TEST)"* | head -n 1 | awk -F '/' '{print $2}' )
+fi
 
 if [ $NOM_TEST ] && [ $TYPE_TEST == "unit" ]
 then
