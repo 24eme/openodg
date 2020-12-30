@@ -4,10 +4,22 @@ class DegustationClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Degustation";
     const TYPE_COUCHDB = "DEGUSTATION";
+    const SPECIFICITE_PASSAGES = "Xème passage";
 
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Degustation");
+    }
+
+    public static function updatedSpecificite($lot) {
+      $nb = 2;
+      if (preg_match("/.*([0-9]+)".str_replace('X', '', self::SPECIFICITE_PASSAGES).".*/", $lot->specificite, $m)) {
+        $nb = ((int)$m[1]) + 1;
+      }
+      if (preg_match("/^".self::TYPE_COUCHDB."/", $lot->id_document)) {
+        $lot->specificite = ($lot->specificite)? $lot->specificite.', '.str_replace('X', $nb, self::SPECIFICITE_PASSAGES) : str_replace('X', $nb, self::SPECIFICITE_PASSAGES);
+      }
+      return $lot;
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {

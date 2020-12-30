@@ -59,6 +59,7 @@
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <?php
           $lots = $drev->getLotsByCouleur();
+          $lotsHorsDR = $drev->getLotsHorsDR();
           $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
           ?>
           <div class="row">
@@ -126,59 +127,65 @@
               </tbody>
             </table>
             <br/>
-            <h3>Synthèse IGP</h3>
-            <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th class="text-center col-xs-5" style="border-top: hidden; border-left: hidden;"></th>
-                  <th class="text-center col-xs-2" colspan="2">DR</th>
-                  <th class="text-center col-xs-5" colspan="3">DRev</th>
-                </tr>
-              </thead>
-              <thead>
-                <tr>
-                  <th class="text-center col-xs-5">Produit (millesime)</th>
-                  <th class="text-center col-xs-1">Superficie</th>
-                  <th class="text-center col-xs-1">Volume</th>
-                  <th class="text-center col-xs-1">Nb lots</th>
-                  <th class="text-center col-xs-1">Vol. revendiqué</th>
-                  <th class="text-center col-xs-2">Restant à revendiquer</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($lots as $couleur => $lotsByCouleur) : ?>
+            <?php if($dr !== null): ?>
+              <h3>Synthèse IGP</h3>
+              <table class="table table-bordered table-striped">
+                <thead>
                   <tr>
-                    <td><strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($synthese_revendication[$couleur]['volume_total'] / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
-                    <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?></td>
-                    <td class="text-right">
-                      <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_total']): ?>
-
-                        <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small class="text-muted">&nbsp;hl</small>
-
-                      <?php endif; ?>
-                    </td>
-                    <td class="text-right"><?php  echo (count($lotsByCouleur))? count($lotsByCouleur) : 'aucun lots'; ?></td>
-                    <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
-
-                        <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
-
-                      <?php endif; ?>
-                    </td>
-                    <td class="text-right">
-                      <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) >= 0): ?><?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?><small>&nbsp;hl</small><?php endif; ?>
-                      <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese_revendication[$couleur]['volume_restant']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
-                    </td>
+                    <th class="text-center col-xs-5" style="border-top: hidden; border-left: hidden;"></th>
+                    <th class="text-center col-xs-2" colspan="2">DR</th>
+                    <th class="text-center col-xs-5" colspan="3">DRev</th>
                   </tr>
+                </thead>
+                <thead>
+                  <tr>
+                    <th class="text-center col-xs-5">Produit (millesime)</th>
+                    <th class="text-center col-xs-1">Superficie</th>
+                    <th class="text-center col-xs-1">Volume</th>
+                    <th class="text-center col-xs-1">Nb lots</th>
+                    <th class="text-center col-xs-1">Vol. revendiqué</th>
+                    <th class="text-center col-xs-2">Restant à revendiquer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($lots as $couleur => $lotsByCouleur) : ?>
+                    <tr>
+                      <td><strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($synthese_revendication[$couleur]['volume_total'] / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
+                      <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?></td>
+                      <td class="text-right">
+                        <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_total']): ?>
 
-                <?php endforeach; ?>
-              </tbody>
-            </table>
+                          <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small class="text-muted">&nbsp;hl</small>
 
-            <?php
-              if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
-              <div class="col-xs-12" style="margin-bottom: 20px;">
-                <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
-              </div>
+                        <?php endif; ?>
+                      </td>
+                      <td class="text-right"><?php  echo (count($lotsByCouleur))? count($lotsByCouleur) : 'aucun lots'; ?></td>
+                      <td class="text-right">
+                        <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
+
+                          <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
+                        <?php elseif (isset($lotsHorsDR[$couleur])): ?>
+                          <?php echoFloat($lotsHorsDR[$couleur]->volume); ?><small class="text-muted">&nbsp;hl</small>
+                        <?php endif; ?>
+
+
+                      </td>
+                      <td class="text-right">
+                        <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) >= 0): ?><?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?><small>&nbsp;hl</small><?php endif; ?>
+                        <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese_revendication[$couleur]['volume_restant']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                      </td>
+                    </tr>
+
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+
+              <?php
+                if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
+                <div class="col-xs-12" style="margin-bottom: 20px;">
+                  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
+                </div>
+              <?php endif; ?>
             <?php endif; ?>
 
           <?php endif; ?>

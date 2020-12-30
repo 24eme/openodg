@@ -435,11 +435,17 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        if(!isset($this->drev->lots[$request->getParameter('appellation')])){
-          throw new sfException("le lot d'index ".$request->getParameter('appellation')." n'existe pas ");
+        if($this->drev->getLotByNumArchive($request->getParameter('numArchive')) === null){
+          throw new sfException("le lot d'index ".$request->getParameter('numArchive')." n'existe pas ");
         }
 
-        $lot = $this->drev->lots[$request->getParameter('appellation')];
+        $lot = $this->drev->getLotByNumArchive($request->getParameter('numArchive'));
+        $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->drev->identifiant, $lot->numero_archive, $this->drev->campagne);
+        if($lotCheck){
+          throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
+          " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
+        }
+
         if($lot){
             $this->drev->remove($lot->getHash());
         }
@@ -627,7 +633,7 @@ class drevActions extends sfActions {
         $this->validation = new DRevValidation($this->drev);
 
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -683,7 +689,7 @@ class drevActions extends sfActions {
 
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
-            $this->drev->cleanLots();  
+            $this->drev->cleanLots();
             $this->drev->save();
             $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
 
@@ -777,10 +783,9 @@ class drevActions extends sfActions {
         }
 
         $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
-
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
+          return sfView::SUCCESS;
         }
         $this->form->bind($request->getParameter($this->form->getName()));
 

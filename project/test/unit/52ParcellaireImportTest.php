@@ -2,6 +2,12 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if (in_array($application, array('nantes', 'loire'))) {
+    $t = new lime_test(1);
+    $t->ok(true, "pas de parcellaire activé");
+    return;
+}
+
 $t = new lime_test(21);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = date('Y-m-d');
@@ -27,7 +33,7 @@ $array = [
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', '750630000AM0152', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'GRENACHE N','1.1', '1.1', '2001-2002','100','250', '', 'Fermier']
 ];
 
-$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-7 day"),)."-");
+$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-7 day"))."-");
 $handle = fopen($tempfname, 'w');
 foreach ($array as $line) {
     fputcsv($handle, $line, ';');
@@ -78,7 +84,7 @@ $array = [
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0037', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', '', 'Propriétaire'],
 ];
 
-$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-6 day"),)."-");
+$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-6 day"))."-");
 $handle = fopen($tempfname, 'w');
 foreach ($array as $line) {
     fputcsv($handle, $line, ';');
@@ -102,7 +108,7 @@ $t->is(count($parcelles), 2, "Le nouveau parcellaire a deux parcelles");
 
 $t->comment("import d'un fichier sans parcelles $tempfname ");
 
-$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-5 day"),)."-");
+$tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-5 day"))."-");
 $handle = fopen($tempfname, 'w');
 fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut");
 fclose($handle);
