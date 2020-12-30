@@ -17,7 +17,8 @@
 
 <?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
     <?php $compte = $sf_user->getCompte(); ?>
-    <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
+    <?php if ($compte->getSociete()) $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
+    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 
 
@@ -42,7 +43,7 @@
                 <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation'); ?><?php endif; ?>">Habilitations</a></li>
                 <li class="<?php if($route instanceof InterfaceCompteRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
             </ul>
-            <?php elseif($sf_user->isAuthenticated()): ?>
+            <?php elseif($sf_user->isAuthenticated() && $etablissement): ?>
                 <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
                     <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>">Déclarations</a></li>
                     <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('pieces_historique', $etablissement); ?>">Documents</a></li>
