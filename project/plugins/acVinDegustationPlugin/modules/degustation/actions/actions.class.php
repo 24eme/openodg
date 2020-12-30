@@ -484,8 +484,9 @@ class degustationActions extends sfActions {
         $etablissement_id = $request->getParameter('id');
         $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);
         $this->forward404Unless($this->etablissement);
+        $this->campagne = $request->getParameter('campagne',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
 
-        $this->lots = MouvementLotView::getInstance()->getLotsStepsByDeclarantIdentifiant($etablissement_id);
+        $this->lots = MouvementLotView::getInstance()->getLotsStepsByDeclarantIdentifiant($etablissement_id,$this->campagne);
 
     }
 

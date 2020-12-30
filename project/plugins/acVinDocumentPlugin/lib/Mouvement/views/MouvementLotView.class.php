@@ -109,11 +109,11 @@ class MouvementLotView extends acCouchdbView
   }
 
 
-  public function getLotsStepsByDeclarantIdentifiant($identifiant){
+  public function getLotsStepsByDeclarantIdentifiant($identifiant, $campagne){
 
     $lotsSteps = array();
 
-    foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($identifiant)->rows as $item) {
+    foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($identifiant,$campagne)->rows as $item) {
       $key = Lot::generateMvtKey($item->value);
       $key = $item->value->numero_dossier.preg_replace("/[a-z]*$/", "", $item->value->numero_archive);
       if (!isset($lotsSteps[$key])) {
