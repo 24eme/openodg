@@ -11,11 +11,24 @@ if(isset($_GET['format']) && $_GET['format']) {
     $output = $_GET['format'];
 }
 
+if (isset($_GET['limit'])) {
+    $limit = $_GET['limit'];
+}else{
+    $limit = 50;
+}
+if ($limit < 1) {
+    unset($limit);
+}
+
 $tests = array();
 $precs = array();
+$i = 0;
 foreach($files as $file) {
     if(!preg_match('/^(.+)_(.+)_(.+)_(.+)\.xml/', $file, $matches)) {
         continue;
+    }
+    if (isset($limit) && ($i++ > $limit)) {
+        break;
     }
     $xml = new SimpleXMLElement(file_get_contents($directory."/xml/".$file));
 
