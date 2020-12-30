@@ -89,3 +89,7 @@ echo "Lots"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots.csv
 php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
+
+
+# echo "Degustations"
+# php symfony import:degustations-ia $DATA_DIR/lots.csv --application="$ODG" --trace
