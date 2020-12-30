@@ -14,12 +14,13 @@
 <?php if ($route instanceof SocieteRoute): ?>
     <?php $societe = $route->getSociete(); ?>
     <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte =  $societe->getMasterCompte(); ?>
+    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
 <?php endif; ?>
 
 <?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
     <?php $compte = $sf_user->getCompte(); ?>
-    <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
+    <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
+    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 
 
@@ -45,7 +46,7 @@
                 <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php else: ?><?php echo url_for('facturation'); ?><?php endif; ?>">Facturation</a></li>
                 <li class="<?php if($route instanceof InterfaceCompteRoute && !$route instanceof FacturationDeclarantRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
             </ul>
-            <?php elseif($sf_user->isAuthenticated()): ?>
+            <?php elseif($sf_user->isAuthenticated() && $etablissement): ?>
                 <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
                     <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>">Déclarations</a></li>
                     <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('pieces_historique', $etablissement); ?>">Documents</a></li>
