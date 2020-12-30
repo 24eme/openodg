@@ -130,7 +130,7 @@ EOF;
             $degustation_date = $this->formatDate($data[self::CSV_DATE_COMMISSION]);
           }
           else {
-            $degustation_date= "2020-01-01 00:00";
+            $degustation_date= "2020-01-01 01:00";
           }
           if(isset($data[self::CSV_CAMPAGNE])){
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
