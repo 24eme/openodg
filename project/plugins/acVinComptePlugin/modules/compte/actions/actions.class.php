@@ -58,7 +58,7 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
 
             throw new sfError403Exception();
         }
