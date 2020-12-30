@@ -138,6 +138,9 @@ krsort($tests);
                     <td><a href="tests_view.php?file=<?php echo str_replace('.xml', '', $test->file) ?>">Voir</a></td>
                 </tr>
                 <?php endforeach; ?>
+                <?php if (isset($limit)): ?>
+                    <tr><td colspan="9"><center><a href="?limit=-1">Tous les résultats</a></center></td></tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
