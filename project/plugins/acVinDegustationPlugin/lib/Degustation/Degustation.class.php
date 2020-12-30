@@ -767,6 +767,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 
 			return $degust;
-
 		}
+
+		public function addLot() {
+				$lot = $this->add('lots')->add();
+				return $lot;
+		}
+
 }
