@@ -199,6 +199,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasProblemCepageAutorise() {
+      if (!$this->getProduit()->isRealProduit()) {
+          return false;
+      }
       return !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 }
