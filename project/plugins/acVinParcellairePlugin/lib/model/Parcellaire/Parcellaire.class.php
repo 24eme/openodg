@@ -46,13 +46,25 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function addProduit($hash) {
+        $pseudo_produit = false;
+        if (!$hash && !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
+            $hash = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH;
+            $pseudo_produit = true;
+        }
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
 
         $produit = $this->add('declaration')->add($hashToAdd);
         if(!$exist) {
-            $this->declaration->reorderByConf();
-            $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+            $this->declaration->reorderByConf($pseudo_produit);
+            if ($pseudo_produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration())  {
+                throw new sfException("produit $hash non trouvé et ajout de parcelle sans produit non disponible pour cette app");
+            }
+            if (!$pseudo_produit) {
+                $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+            }else{
+                $this->add('declaration')->add($hashToAdd)->libelle = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE;
+            }
           }
 
         return $this->get($produit->getHash());
