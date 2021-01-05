@@ -33,7 +33,7 @@ then
 fi
 
 if test $APPLICATIONS = "all" ; then
-    APPLICATIONS=$(find apps/ -maxdepth 1 -type d | grep -v 'apps/$' | sed 's/apps.//' | tr '\n' ' ')
+    APPLICATIONS=$(find data/configuration/ -maxdepth 1 -type d | grep -v 'configuration/$' | sed 's/data.configuration.//' | tr '\n' ' ')
     NOM_TEST=""
     APPLICATIONOUTPUT=1
 fi
