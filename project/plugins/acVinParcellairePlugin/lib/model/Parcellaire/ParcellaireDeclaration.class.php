@@ -155,7 +155,7 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return false;
     }
 
-    public function reorderByConf() {
+    public function reorderByConf($only_config = true) {
   		$children = array();
 
   		foreach($this as $hash => $child) {
@@ -166,7 +166,11 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
   			$this->remove($hash);
   		}
 
-  		foreach($this->getConfig()->getProduits() as $hash => $child) {
+        $produits = $this->getConfig()->getProduits();
+        if (!$only_config) {
+            $produits[ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH] = null;
+        }
+  		foreach($produits as $hash => $child) {
   			$hashProduit = str_replace("/declaration/", "", $hash);
   			if(!array_key_exists($hashProduit, $children)) {
   				continue;
