@@ -17,6 +17,9 @@ class ChgtDenomApprobationForm extends acCouchdbObjectForm
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
       $defaults['validation_odg'] = date('Y-m-d');
+      if (isset($defaults['deguster'])) {
+        $defaults['deguster'] = 1;
+      }
       $this->setDefaults($defaults);
     }
 
