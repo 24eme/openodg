@@ -9,6 +9,9 @@ class ParcellaireClient extends acCouchdbClient {
     const MODE_SAVOIRFAIRE_PROPRIETAIRE = 'PROPRIETAIRE';
     const MODE_SAVOIRFAIRE_METAYER = 'METAYER';
 
+    const PARCELLAIRE_DEFAUT_PRODUIT_HASH = '/declaration/certifications/DEFAUT/genres/DEFAUT/appellations/DEFAUT/mentions/DEFAUT/lieux/DEFAUT/couleurs/DEFAUT/cepages/DEFAUT';
+    const PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE = 'Pas de produit';
+
     public static $modes_savoirfaire = array(
         self::MODE_SAVOIRFAIRE_FERMIER => "Fermier",
         self::MODE_SAVOIRFAIRE_PROPRIETAIRE => "Propriétaire",

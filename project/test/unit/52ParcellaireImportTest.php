@@ -2,7 +2,15 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(21);
+if (in_array($application, array('nantes', 'loire'))) {
+    $t = new lime_test(1);
+    $t->ok(true, "pas de parcellaire activé");
+    return;
+}
+
+$toutes_les_parcelles = !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration();
+
+$t = new lime_test(21 + $toutes_les_parcelles * 2);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = date('Y-m-d');
 
@@ -24,7 +32,8 @@ $numero_ordre_key = "00";
 $array = [
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0036', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', '', 'Propriétaire'],
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0037', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', '', 'Propriétaire'],
-    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', '750630000AM0152', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'GRENACHE N','1.1', '1.1', '2001-2002','100','250', '', 'Fermier']
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', '750630000AM0152', 'PARIS','MARSEILLE','AM','152', $configProduit[1]->getLibelleFormat(),'GRENACHE N','1.1', '1.1', '2001-2002','100','250', '', 'Fermier'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', '750630000AM0052', 'PARIS','MARSEILLE','AL','52', '','GRENACHE N','1.1', '1.1', '2001-2002','100','250', '', 'Fermier']
 ];
 
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-7 day"),)."-");
@@ -46,11 +55,12 @@ $parcellaire = $parcellaireloader->getParcellaire();
 $parcellaire_id = 'PARCELLAIRE-'.$viti->identifiant.'-'.str_replace("-", "", $date);
 $t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
 $t->is($parcellaire->source, "PRODOUANE", "La source des données est PRODOUANE");
-$t->is(count($parcellaire->declaration), 2, "Le parcellaire à deux produits");
+$t->is(count($parcellaire->declaration), ($toutes_les_parcelles) ? 3 : 2, "Le parcellaire à le bon nombre de produits");
 
 $parcelles = $parcellaire->getParcelles();
 
-$t->is(count($parcelles), 3, "Le parcellaire trois parcelles");
+
+$t->is(count($parcelles), ($toutes_les_parcelles) ? 4 : 3, "Le parcellaire contient les bonnes parcelles");
 
 $parcelle = array_shift($parcelles);
 
@@ -70,6 +80,12 @@ $t->is($parcelle3->getKey(), "GRENACHE-N-2001-2002-PARIS-AM-152-00-MARSEILLE", "
 $t->is($parcelle3->getProduit()->getLibelle(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
+
+if ($toutes_les_parcelles) {
+    $parcelle_sans_produit = array_shift($parcelles);
+    $t->is($parcelle_sans_produit->getKey(), "GRENACHE-N-2001-2002-PARIS-AL-52-00-MARSEILLE", "La clé de la parcelle sans produite est bien construite");
+    $t->is($parcelle_sans_produit->getProduit()->getLibelle(), ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE, "Le libelle du produit est celui de l'absence de produit");
+}
 
 $t->comment("import d'un fichier avec une parcelle en moins $tempfname ");
 
