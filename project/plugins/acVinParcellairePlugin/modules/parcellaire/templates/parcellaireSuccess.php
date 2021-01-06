@@ -68,7 +68,7 @@ $list_idu = [];
     <?php if(!empty($import)): ?>
      <div class="row" id="jump">
             <div class="col-xs-12">
-                <a name="carte"></a><h3>Filtrer</h3>
+                <a name="carte"/><h3>Filtrer</h3>
                 <div class="form-group">
                     <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
                 </div>
@@ -198,12 +198,6 @@ $list_idu = [];
     </div>
 <?php endif; ?>
 
-<?php
-
-    $synthese = $parcellaire->getSyntheseCepages();
-
-    if (count($synthese)): 
-?>
 <h3>Synthèse par cépages</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
@@ -216,6 +210,7 @@ $list_idu = [];
   <tbody>
 <?php
 
+    $synthese = $parcellaire->getSyntheseCepages();
     foreach($synthese as $cepage_libelle => $s): ?>
         <tr>
             <td><?php echo $cepage_libelle ; ?></td>
@@ -225,13 +220,8 @@ $list_idu = [];
 ?>
   </tbody>
 </table>
-<?php endif; ?>
 
-<?php
-    $synthese = $parcellaire->getSyntheseProduitsCepages();
-    if (count($synthese)): 
-?>
-<h3>Synthèse par produits habilités</h3>
+<h3>Synthèse par produits hablités</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -244,6 +234,7 @@ $list_idu = [];
   <tbody>
 <?php
 
+    $synthese = $parcellaire->getSyntheseProduitsCepages();
     foreach($synthese as $produit_libelle => $sous_synthese):
         foreach($sous_synthese as $cepage_libelle => $s): ?>
         <tr>
@@ -271,13 +262,7 @@ $list_idu = [];
 ?>
   </tbody>
 </table>
-<?php endif; ?>
 
-<?php if ($parcellaire->hasParcellairePDF()): ?>
-<div class="text-center">
-<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
-</div>
-<?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
 <div class="row row-margin row-button">

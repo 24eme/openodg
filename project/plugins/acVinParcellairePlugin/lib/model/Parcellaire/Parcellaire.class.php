@@ -184,6 +184,7 @@ class Parcellaire extends BaseParcellaire {
             $cepage = $p->getCepage();
             if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $libelles = array();
+                if(true)
                 foreach($this->getProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
                     $libelles[] = $prod->getLibelleComplet();
                 }
