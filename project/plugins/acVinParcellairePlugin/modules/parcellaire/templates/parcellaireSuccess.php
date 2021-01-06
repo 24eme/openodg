@@ -1,4 +1,5 @@
 <?php use_helper("Date"); ?>
+<?php use_helper('Float') ?>
 <?php
 $parcellaire_client = ParcellaireClient::getInstance();
 $last = null;
@@ -94,7 +95,7 @@ $list_idu = [];
                     <th class="col-xs-1">N° parcelle</th>
                     <th class="col-xs-3">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
-                    <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
+                    <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
                     <?php if(!empty($import)): ?>
@@ -153,7 +154,7 @@ $list_idu = [];
                               $classcepage .= ' text-danger strong';
                             }
                             ?>
-                            <?php 
+                            <?php
                                 $lieu = $detail->lieu;
                                 $compagne = $detail->campagne_plantation;
                                 $section = $detail->section;
@@ -169,7 +170,7 @@ $list_idu = [];
                                 <td class=""><?php echo $num_parcelle; ?></td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
+                                <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie); ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
 
@@ -196,6 +197,72 @@ $list_idu = [];
         </div>
     </div>
 <?php endif; ?>
+
+<h3>Synthèse par cépages</h3>
+
+<table class="table table-bordered table-condensed table-striped tableParcellaire">
+  <thead>
+    <tr>
+        <th class="col-xs-4">Cépage</th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+
+    $synthese = $parcellaire->getSyntheseCepages();
+    foreach($synthese as $cepage_libelle => $s): ?>
+        <tr>
+            <td><?php echo $cepage_libelle ; ?></td>
+            <td class="text-right"><?php echoLongFloat($s['superficie']); ?></td>
+<?php
+    endforeach;
+?>
+  </tbody>
+</table>
+
+<h3>Synthèse par produits hablités</h3>
+
+<table class="table table-bordered table-condensed table-striped tableParcellaire">
+  <thead>
+    <tr>
+        <th class="col-xs-4">Produit</th>
+        <th class="col-xs-4">Cépage</th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+
+    $synthese = $parcellaire->getSyntheseProduitsCepages();
+    foreach($synthese as $produit_libelle => $sous_synthese):
+        foreach($sous_synthese as $cepage_libelle => $s): ?>
+        <tr>
+            <?php if ($cepage_libelle == 'Total'): ?>
+                <th><?php echo $produit_libelle ; ?></th>
+                <th><?php echo $cepage_libelle ; ?></th>
+                <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
+                <th class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></th>
+                <?php else: ?>
+                <th class="text-right"><?php echoLongFloat($s['superficie_min']); ?></th><th class="text-right"><?php echoLongFloat($s['superficie_max']); ?></th>
+                <?php endif; ?>
+            <?php else: ?>
+                <td><?php echo $produit_libelle ; ?></td>
+                <td><?php echo $cepage_libelle ; ?></td>
+                <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
+                <td class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></td>
+                <?php else: ?>
+                <td class="text-right"><?php echoLongFloat($s['superficie_min']); ?></td><td class="text-right"><?php echoLongFloat($s['superficie_max']); ?></td>
+                <?php endif; ?>
+            <?php endif; ?>
+        </tr>
+<?php
+        endforeach;
+    endforeach;
+?>
+  </tbody>
+</table>
+
 
 <?php if($sf_user->hasTeledeclaration()): ?>
 <div class="row row-margin row-button">
