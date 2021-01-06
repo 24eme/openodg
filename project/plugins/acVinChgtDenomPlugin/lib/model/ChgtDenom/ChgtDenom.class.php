@@ -93,9 +93,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function getMvtLots($validated = false) {
+    public function getMvtLots() {
       $lots = array();
-      $statuts = ($validated)? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
+      $statuts = ($this->isValidee()||$this->isApprouve())? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
       foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, $statuts, $this->campagne) as $item) {
           $key = Lot::generateMvtKey($item->value);
           $lots[$key] = $item->value;
@@ -121,7 +121,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getMvtLot() {
-      $mvts = $this->getMvtLots(true);
+      $mvts = $this->getMvtLots();
       $key = $this->getLotKey();
       return ($mvts && $key && isset($mvts[$key]))? $mvts[$key] : null;
     }

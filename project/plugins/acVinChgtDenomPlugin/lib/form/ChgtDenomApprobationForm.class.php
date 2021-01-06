@@ -9,6 +9,7 @@ class ChgtDenomApprobationForm extends acCouchdbObjectForm
         if (!$this->getObject()->isDeclassement()) {
           $this->setWidget('deguster', new sfWidgetFormInputCheckbox());
           $this->setValidator('deguster', new sfValidatorBoolean(['required' => false]));
+          $this->setDefault('deguster', 1);
         }
         $this->widgetSchema->setNameFormat('chgt_denom_approbation[%s]');
     }
@@ -17,9 +18,6 @@ class ChgtDenomApprobationForm extends acCouchdbObjectForm
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
       $defaults['validation_odg'] = date('Y-m-d');
-      if (isset($defaults['deguster'])) {
-        $defaults['deguster'] = 1;
-      }
       $this->setDefaults($defaults);
     }
 
