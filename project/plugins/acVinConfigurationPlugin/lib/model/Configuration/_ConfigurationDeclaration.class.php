@@ -1109,4 +1109,13 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return false;
     }
 
+    public function getCepagesAutorises() {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            $produits = array_merge($produits, $p->getCepage()->getCepagesAutorises()->toArray());
+        }
+        $produits = array_unique($produits);
+        return $produits;
+    }
+
 }
