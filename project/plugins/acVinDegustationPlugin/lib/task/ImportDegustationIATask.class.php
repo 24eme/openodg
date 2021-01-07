@@ -142,22 +142,22 @@ EOF;
             $produitKey=null;
           }
           if (!isset($this->produits[$produitKey])) {
-            if (isset($data[self::CSV_APPELLATION]) && isset($data[self::CSV_COULEUR])){
-              echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR].";pas d'import;$line\n";
-            }
+            echo "WARNING;produit non trouvé;pas d'import;$line\n";
             continue;
           }
           $produit = $this->produits[$produitKey];
 
+          $statut = null;
           if(isset($data[self::CSV_STATUT])){
             $statut = trim($data[self::CSV_STATUT]);
-            $correspondances = self::$correspondancesStatuts;
-            if (!isset($correspondances[$statut])) {
-                echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
-                continue;
-            }
-            $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
-          }
+         }
+
+         if (!isset(self::$correspondancesStatuts[$statut])) {
+            echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+            continue;
+         }
+
+         $statut = (is_array(self::$correspondancesStatuts[$statut]))? self::$correspondancesStatuts[$statut][$preleve] : self::$correspondancesStatuts[$statut];
 
           $etablissement = $this->identifyEtablissement($data);
             if (!$etablissement) {
