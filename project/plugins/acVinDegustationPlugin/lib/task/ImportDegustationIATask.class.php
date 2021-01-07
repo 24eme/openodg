@@ -208,25 +208,25 @@ EOF;
               //créer les lots
               $degustation->campagne=$campagne;
             }
-              $degustation->addLot();
-              $degustation->lots[$nbr_max_lots]->date=$date_validation;
-              $degustation->lots[$nbr_max_lots]->id_document=$id;
-              $degustation->lots[$nbr_max_lots]->numero_dossier=$numero_dossier;
-              $degustation->lots[$nbr_max_lots]->numero_archive=$numero_archive;
-              $degustation->lots[$nbr_max_lots]->numero_cuve=$numero;
-              $degustation->lots[$nbr_max_lots]->millesime=$millesime;
-              $degustation->lots[$nbr_max_lots]->volume=$volume;
-              $degustation->lots[$nbr_max_lots]->destination_type=$destination_type;
-              $degustation->lots[$nbr_max_lots]->destination_date=$destination_date;
-              $degustation->lots[$nbr_max_lots]->produit_hash=$produit->getHash();
-              $degustation->lots[$nbr_max_lots]->produit_libelle=$produit->getLibelleFormat();
+              $lot = $degustation->addLot();
+              $lot->date=$date_validation;
+              $lot->id_document=$id;
+              $lot->numero_dossier=$numero_dossier;
+              $lot->numero_archive=$numero_archive;
+              $lot->numero_cuve=$numero;
+              $lot->millesime=$millesime;
+              $lot->volume=$volume;
+              $lot->destination_type=$destination_type;
+              $lot->destination_date=$destination_date;
+              $lot->produit_hash=$produit->getHash();
+              $lot->produit_libelle=$produit->getLibelleFormat();
               if (isset($data[self::CSV_RAISON_SOCIALE])){
-                $degustation->lots[$nbr_max_lots]->declarant_identifiant=$etablissement->identifiant;
-                $degustation->lots[$nbr_max_lots]->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
+                $lot->declarant_identifiant=$etablissement->identifiant;
+                $lot->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
               }
-              $degustation->lots[$nbr_max_lots]->origine_mouvement=$origine_mouvement;
-              $degustation->lots[$nbr_max_lots]->details=$details;
-              $degustation->lots[$nbr_max_lots]->statut=$statut;
+              $lot->origine_mouvement=$origine_mouvement;
+              $lot->details=$details;
+              $lot->statut=$statut;
               $nbr_max_lots++;
               if (isset($data[self::CSV_DATE_COMMISSION])){
                 $date_degustation_precedente= $this->formatDate($data[self::CSV_DATE_COMMISSION]);
