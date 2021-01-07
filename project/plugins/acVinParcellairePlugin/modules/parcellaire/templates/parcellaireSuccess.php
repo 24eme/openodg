@@ -58,7 +58,7 @@ $list_idu = [];
         <?php if($parcellaire): ?>
             <div class="well">
                 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>            
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -214,7 +214,7 @@ $list_idu = [];
   </tbody>
 </table>
 
-<h3>Synthèse par produits hablités</h3>
+<h3>Synthèse par produits habilités</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -275,4 +275,3 @@ $list_idu = [];
 <script type="text/javascript">
     var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
 </script>
-
