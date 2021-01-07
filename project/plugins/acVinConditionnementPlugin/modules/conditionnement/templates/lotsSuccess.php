@@ -183,11 +183,6 @@
             <a tabindex="-1" href="<?php echo  url_for('conditionnement_exploitation', $conditionnement)  ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-            <?php if ($sf_user->hasConditionnementAdmin()): ?>
-              <a href="<?php echo url_for('conditionnement_document_douanier', $conditionnement); ?>" class="btn btn-default pull-left <?php if(!$conditionnement->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
-                  <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $conditionnement->getDocumentDouanierType() ?>
-              </a>
-            <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
