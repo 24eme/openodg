@@ -194,9 +194,6 @@ EOF;
 
           if ($degustation_date != $date_degustation_precedente){  //si nouvelle date =>nouvelle degustation
               if ($date_degustation_precedente != null){  //vérifier que ce n'est pas le premier
-                $degustation->max_lots=$nbr_max_lots;
-                $degustation->save();
-                echo "SUCCESS;Degustation importée \n";
                 $nbr_max_lots=0;
               }
               $degustation = new Degustation();
@@ -239,12 +236,8 @@ EOF;
                 continue;
               }
 
-          if ( $ligne == count(file($arguments['csv']))){
-           $degustation->max_lots=$nbr_max_lots;
-           $degustation->save();
-           echo "SUCCESS;Degustation importée \n";
-          }
-
+              $degustation->max_lots=$nbr_max_lots;
+              $degustation->save();
         }
       }
 
