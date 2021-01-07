@@ -82,21 +82,21 @@ class ParcellaireClient extends acCouchdbClient {
         $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
         $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
 
-        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
+        $file = $scrapydocs.'/parcellaire-'.$cvi.'.csv';
 
-        if (empty($files)) {
+        if (empty($file)) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
         }
         if ($status != 0) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique");
         }
 
-        if (empty($files) || $status != 0) {
+        if (empty($file) || $status != 0) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
             throw new Exception("Le scraping n'a retourné aucun résultat.");
         }
 
-        return array_pop($files);
+        return $file;
     }
     /**
      * Scrape le site des douanes via le scrapy
@@ -109,12 +109,16 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireJSON($cvi, $contextInstance = null)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
-        $status = ProdouaneScrappyClient::exec("download_parcellaire_geojson.sh", "$cvi", $output);
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapybin = sfConfig::get('app_scrapy_bin');
+
+        $contextInstance->getLogger()->info("scrapeParcellaireJSON:  $scrapybin/download_parcellaire_geojson.sh $cvi");
+        exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
+        $contextInstance->getLogger()->info("scrapeParcellaireJSON: output: ".implode(' - ', $output));
         $file = $scrapydocs.'/cadastre-'.$cvi.'-parcelles.json';
         $message = "";
 
-        if (empty($files)) {
+        if (empty($file)) {
             $message = "Les parcelles n'existent pas dans les fichier du Cadastre. ";
 
             if($status != 0){
@@ -127,7 +131,7 @@ class ParcellaireClient extends acCouchdbClient {
             throw new Exception($message);
         }
 
-        return array_pop($files);
+        return $file;
     }
 
     /**
@@ -182,7 +186,7 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->save();
 
         } catch (Exception $e) {
-            $error = "Une erreur lors du sauvégardage !";
+            $error = "Une erreur lors de la sauvgarde ".$e->getMessage();
             $contextInstance->getLogger()->info("saveParcellaireGeoJson() : exception ".$e->getMessage());
             return false;
         }
