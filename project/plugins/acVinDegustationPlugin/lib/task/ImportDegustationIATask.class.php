@@ -190,47 +190,42 @@ EOF;
               }
           }
 
-          if ($degustation_date != $date_degustation_precedente){  //si nouvelle date =>nouvelle degustation
-              $degustation = new Degustation();
-              $degustation->date=$degustation_date;
-              $degustation->lieu =$commissions[0];   //choisir un lieu car pas dispo dans le csv
-              $degustation->constructId();
-              $id_degustation= $degustation->_id;
-              $doc = acCouchdbManager::getClient()->find($id_degustation);
-              if ($doc) {
-                  $doc->delete();
-              }
-              //créer les lots
-              $degustation->campagne=$campagne;
-            }
-              $lot = $degustation->addLot();
-              $lot->date=$date_validation;
-              $lot->id_document=$id;
-              $lot->numero_dossier=$numero_dossier;
-              $lot->numero_archive=$numero_archive;
-              $lot->numero_cuve=$numero;
-              $lot->millesime=$millesime;
-              $lot->volume=$volume;
-              $lot->destination_type=$destination_type;
-              $lot->destination_date=$destination_date;
-              $lot->produit_hash=$produit->getHash();
-              $lot->produit_libelle=$produit->getLibelleFormat();
-              if (isset($data[self::CSV_RAISON_SOCIALE])){
-                $lot->declarant_identifiant=$etablissement->identifiant;
-                $lot->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
-              }
-              $lot->origine_mouvement=$origine_mouvement;
-              $lot->details=$details;
-              $lot->statut=$statut;
-              if (isset($data[self::CSV_DATE_COMMISSION])){
-                $date_degustation_precedente= $this->formatDate($data[self::CSV_DATE_COMMISSION]);
-              }
-              else{
-                echo "WARNING; Pas de date; pas d'import;$line\n";
-                continue;
-              }
 
-              $degustation->save();
+          $newDegustation = new Degustation();
+          $newDegustation->date=$degustation_date;
+          $newDegustation->lieu =$commissions[0];   //choisir un lieu car pas dispo dans le csv
+          $newDegustation->campagne=$campagne;
+          $newDegustation->constructId();
+
+          if(!$degustation || $newDegustation->_id != $degustation->_id) {
+              $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
+          }
+
+          if(!$degustation) {
+              $degustation = $newDegustation;
+          }
+
+          $lot = $degustation->addLot();
+          $lot->date=$date_validation;
+          $lot->id_document=$id;
+          $lot->numero_dossier=$numero_dossier;
+          $lot->numero_archive=$numero_archive;
+          $lot->numero_cuve=$numero;
+          $lot->millesime=$millesime;
+          $lot->volume=$volume;
+          $lot->destination_type=$destination_type;
+          $lot->destination_date=$destination_date;
+          $lot->produit_hash=$produit->getHash();
+          $lot->produit_libelle=$produit->getLibelleFormat();
+          if (isset($data[self::CSV_RAISON_SOCIALE])){
+            $lot->declarant_identifiant=$etablissement->identifiant;
+            $lot->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
+          }
+          $lot->origine_mouvement=$origine_mouvement;
+          $lot->details=$details;
+          $lot->statut=$statut;
+
+          $degustation->save();
         }
       }
 
