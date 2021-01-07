@@ -61,9 +61,6 @@
     </div>
     <div class="col-xs-4 text-center">
         <div class="btn-group">
-            <a href="<?php echo url_for('conditionnement_document_douanier', $conditionnement); ?>" class="btn btn-default" >
-              <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $conditionnement->getDocumentDouanierType() ?>
-            </a>
             <a href="<?php echo url_for("conditionnement_export_pdf", $conditionnement) ?>" class="btn btn-default">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
             </a>

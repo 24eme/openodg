@@ -86,21 +86,21 @@ class ParcellaireClient extends acCouchdbClient {
         exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
         $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
 
-        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
+        $file = $scrapydocs.'/parcellaire-'.$cvi.'.csv';
 
-        if (empty($files)) {
+        if (empty($file)) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
         }
         if ($status != 0) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique");
         }
 
-        if (empty($files) || $status != 0) {
+        if (empty($file) || $status != 0) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
             throw new Exception("Le scraping n'a retourné aucun résultat.");
         }
 
-        return array_pop($files);
+        return $file;
     }
     /**
      * Scrape le site des douanes via le scrapy
@@ -119,10 +119,10 @@ class ParcellaireClient extends acCouchdbClient {
         $contextInstance->getLogger()->info("scrapeParcellaireJSON:  $scrapybin/download_parcellaire_geojson.sh $cvi");
         exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
         $contextInstance->getLogger()->info("scrapeParcellaireJSON: output: ".implode(' - ', $output));
-        $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
+        $file = $scrapydocs.'/cadastre-'.$cvi.'-parcelles.json';
         $message = "";
 
-        if (empty($files)) {
+        if (empty($file)) {
             $message = "Les parcelles n'existent pas dans les fichier du Cadastre. ";
 
             if($status != 0){
@@ -135,7 +135,7 @@ class ParcellaireClient extends acCouchdbClient {
             throw new Exception($message);
         }
 
-        return array_pop($files);
+        return $file;
     }
 
     /**
@@ -153,6 +153,7 @@ class ParcellaireClient extends acCouchdbClient {
         $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
         $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
+        $return = $this->saveParcellairePDF($etablissement, $fileJson, $errors['pdf']);
         return $return && $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
     }
 
@@ -190,7 +191,7 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->save();
 
         } catch (Exception $e) {
-            $error = "Une erreur lors du sauvégardage !";
+            $error = "Une erreur lors de la sauvgarde ".$e->getMessage();
             $contextInstance->getLogger()->info("saveParcellaireGeoJson() : exception ".$e->getMessage());
             return false;
         }
@@ -213,8 +214,27 @@ class ParcellaireClient extends acCouchdbClient {
         }
 
         $parcellaire->save();
-        
+
         return true;
+    }
+
+    public function saveParcellairePDF(Etablissement $etablissement, $path, &$error, $contextInstance = null) {
+        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
+        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $cvi = $etablissement->getCvi();
+        $file = $scrapydocs.'/parcellaire-'.$cvi.'-parcellaire.pdf';
+        $message = "";
+
+        if (empty($file)) {
+            $message = "Le PDF des parcelles n'existe pas.";
+            $contextInstance->getLogger()->info("saveParcellairePDF: error: ".$message);
+            throw new Exception($message);
+        }
+
+        $this->findOrCreateDocPDF($etablissement->identifiant, date('Y-m-d'), 'PRODOUANE', $file, $cvi);
+
+        return $file;
+
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -239,8 +259,28 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellaire = new Parcellaire();
         $parcellaire->initDoc($identifiant, $date);
         $parcellaire->source = $source;
-       
+
         return $parcellaire;
+    }
+
+    public function findOrCreateDocPDF($identifiant, $date = null, $source = null, $path=null, $cvi, $type = self::TYPE_COUCHDB) {
+        if (! $date) {
+            $date = date('Ymd');
+        }
+        $parcellaire = $this->getLast($identifiant);
+        $declaration = $parcellaire->getDeclaration();
+
+        if ($parcellaire && $parcellaire->date == $date) {
+            if($path){
+                $parcellaire->storeAttachment($path, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
+                $parcellaire->setDeclaration($declaration);
+
+                $parcellaire->save();
+            }
+
+            return $parcellaire;
+        }
+
     }
 
     public function findOrCreateDocJson($identifiant, $date = null, $source = null, $path=null, $cvi, $type = self::TYPE_COUCHDB) {

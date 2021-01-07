@@ -52,7 +52,7 @@ class DRevLotForm extends acCouchdbObjectForm
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if ($cepage && count($cepage)) {
+            if ($cepages && count($cepages)) {
                 $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
                 $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
             }else{
