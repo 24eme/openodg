@@ -190,13 +190,6 @@ $list_idu = [];
     <?php endforeach; ?>
         </div>
     </div>
-<?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
-        </div>
-    </div>
-<?php endif; ?>
 
 <h3>Synthèse par cépages</h3>
 
@@ -263,6 +256,13 @@ $list_idu = [];
   </tbody>
 </table>
 
+<?php else: ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+        </div>
+    </div>
+<?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
 <div class="row row-margin row-button">
