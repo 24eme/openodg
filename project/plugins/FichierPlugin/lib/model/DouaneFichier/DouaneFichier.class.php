@@ -26,6 +26,7 @@ class DouaneFichier extends Fichier {
             return null;
         }
 
+        $this->add('donnees');
         $item = $this->donnees->add();
         $item->produit = $hash;
         $item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
