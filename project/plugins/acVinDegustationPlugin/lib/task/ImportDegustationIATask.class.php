@@ -126,12 +126,13 @@ EOF;
           if (!$data) {
             continue;
           }
-          if (isset($data[self::CSV_DATE_COMMISSION])){
-            $degustation_date = $this->formatDate($data[self::CSV_DATE_COMMISSION]);
+
+          if(!isset($data[self::CSV_DATE_COMMISSION])){
+              continue;
           }
-          else {
-            $degustation_date= "2020-01-01 01:00";
-          }
+
+          $degustation_date = $this->formatDate($data[self::CSV_DATE_COMMISSION]);
+
           if(isset($data[self::CSV_CAMPAGNE])){
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
           }
