@@ -1,18 +1,18 @@
 <?php
 
-class DRevSecurity extends DocumentSecurity implements SecurityInterface {
+class ConditionnementSecurity extends DocumentSecurity implements SecurityInterface {
 
     protected $doc;
     protected $user;
 
     public static function getInstance($user, $doc) {
 
-        return new DRevSecurity($user, $doc);
+        return new ConditionnementSecurity($user, $doc);
     }
 
     public function isAdmin() {
 
-	return $this->user->hasDrevAdmin() || parent::isAdmin();
+	return $this->user->hasConditionnementAdmin() || parent::isAdmin();
     }
 
     public function isAuthorized($droits) {
@@ -20,7 +20,7 @@ class DRevSecurity extends DocumentSecurity implements SecurityInterface {
             $droits = array($droits);
         }
 
-        if(($this->user->isAdmin() || ($this->user->hasDrevAdmin()))){
+        if(($this->user->isAdmin() || ($this->user->hasConditionnementAdmin()))){
             return true;
         }
 
@@ -29,11 +29,6 @@ class DRevSecurity extends DocumentSecurity implements SecurityInterface {
         if(!$authorized) {
 
             return false;
-        }
-
-        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->doc->hasCompleteDocuments()) {
-
-            //return false;
         }
 
         return true;
