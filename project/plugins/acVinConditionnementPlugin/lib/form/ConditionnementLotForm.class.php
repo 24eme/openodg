@@ -1,5 +1,5 @@
 <?php
-class DRevLotForm extends acCouchdbObjectForm
+class ConditionnementLotForm extends acCouchdbObjectForm
 {
     const NBCEPAGES = 5;
 

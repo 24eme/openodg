@@ -109,7 +109,6 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        $nbr_max_lots=0;
 
         $this->initProduitsCepages();
 
@@ -126,38 +125,39 @@ EOF;
           if (!$data) {
             continue;
           }
-          if (isset($data[self::CSV_DATE_COMMISSION])){
-            $degustation_date = $this->formatDate($data[self::CSV_DATE_COMMISSION]);
+
+          if(!isset($data[self::CSV_DATE_COMMISSION])){
+              continue;
           }
-          else {
-            $degustation_date= "2020-01-01 01:00";
-          }
+
+          $degustation_date = $this->formatDate($data[self::CSV_DATE_COMMISSION]);
+
+          $campagne = null;
           if(isset($data[self::CSV_CAMPAGNE])){
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
           }
+          $produitKey=null;
           if (isset($data[self::CSV_APPELLATION])){
             $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
           }
-          else {
-            $produitKey=null;
-          }
+
           if (!isset($this->produits[$produitKey])) {
-            if (isset($data[self::CSV_APPELLATION]) && isset($data[self::CSV_COULEUR])){
-              echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR].";pas d'import;$line\n";
-            }
+            echo "WARNING;produit non trouvé;pas d'import;$line\n";
             continue;
           }
           $produit = $this->produits[$produitKey];
 
+          $statut = null;
           if(isset($data[self::CSV_STATUT])){
             $statut = trim($data[self::CSV_STATUT]);
-            $correspondances = self::$correspondancesStatuts;
-            if (!isset($correspondances[$statut])) {
-                echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
-                continue;
-            }
-            $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
-          }
+         }
+
+         if (!isset(self::$correspondancesStatuts[$statut])) {
+            echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+            continue;
+         }
+
+         $statut = (is_array(self::$correspondancesStatuts[$statut]))? self::$correspondancesStatuts[$statut][$preleve] : self::$correspondancesStatuts[$statut];
 
           $etablissement = $this->identifyEtablissement($data);
             if (!$etablissement) {
@@ -166,112 +166,65 @@ EOF;
             }
           $date_validation = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
+          $numero = null;
           if (isset($data[self::CSV_NUM_LOT_OPERATEUR])){
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
           }
-          else{
-            $numero =null;
-          }
+
           $drevs=MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement->identifiant,$campagne,$statut);
 
           $drevs = json_decode(json_encode($drevs), true);
           foreach ($drevs["rows"] as $drev) {
-            print_r($drev);
-            if ($drev["value"]["numero_cuve"] == $numero){
-              $origine_mouvement=$drev["value"]["origine_mouvement"];
-              $id = $drev["value"]["origine_document_id"];
-              $declarant_identifiant=$drev["value"]["declarant_identifiant"];
-              $volume=$drev["value"]["volume"];
-              $millesime=$drev["value"]["millesime"];
-              $numero_archive=$drev["value"]["numero_archive"];
-              $numero_dossier=$drev["value"]["numero_dossier"];
-              $destination_type=$drev["value"]["destination_type"];
-              $destination_date=$drev["value"]["destination_date"];
-              $details=$drev["value"]["details"];
-              }
-          }
-
-          if ($degustation_date != $date_degustation_precedente){  //si nouvelle date =>nouvelle degustation
-              if ($date_degustation_precedente != null){  //vérifier que ce n'est pas le premier
-                $degustation->max_lots=$nbr_max_lots;
-                $degustation->save();
-                echo "SUCCESS;Degustation importée \n";
-                $nbr_max_lots=0;
-              }
-              $degustation = new Degustation();
-              $degustation->date=$degustation_date;
-              $degustation->lieu =$commissions[0];   //choisir un lieu car pas dispo dans le csv
-              $degustation->constructId();
-              $id_degustation= $degustation->_id;
-              $doc = acCouchdbManager::getClient()->find($id_degustation);
-              if ($doc) {
-                  $doc->delete();
-              }
-              //créer les lots
-              $degustation->campagne=$campagne;
-              $degustation->addLot();
-              $degustation->lots[$nbr_max_lots]->date=$date_validation;
-              $degustation->lots[$nbr_max_lots]->id_document=$id;
-              $degustation->lots[$nbr_max_lots]->numero_dossier=$numero_dossier;
-              $degustation->lots[$nbr_max_lots]->numero_archive=$numero_archive;
-              $degustation->lots[$nbr_max_lots]->numero_cuve=$numero;
-              $degustation->lots[$nbr_max_lots]->millesime=$millesime;
-              $degustation->lots[$nbr_max_lots]->volume=$volume;
-              $degustation->lots[$nbr_max_lots]->destination_type=$destination_type;
-              $degustation->lots[$nbr_max_lots]->destination_date=$destination_date;
-              $degustation->lots[$nbr_max_lots]->produit_hash=$produit->getHash();
-              $degustation->lots[$nbr_max_lots]->produit_libelle=$produit->getLibelleFormat();
-              if (isset($data[self::CSV_RAISON_SOCIALE])){
-                $degustation->lots[$nbr_max_lots]->declarant_identifiant=$etablissement->identifiant;
-                $degustation->lots[$nbr_max_lots]->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
-              }
-              $degustation->lots[$nbr_max_lots]->origine_mouvement=$origine_mouvement;
-              $degustation->lots[$nbr_max_lots]->details=$details;
-              $degustation->lots[$nbr_max_lots]->statut=$statut;
-              $nbr_max_lots++;
-              if (isset($data[self::CSV_DATE_COMMISSION])){
-                $date_degustation_precedente= $this->formatDate($data[self::CSV_DATE_COMMISSION]);
-              }
-              else{
-                echo "WARNING; Pas de date; pas d'import;$line\n";
+            if ($drev["value"]["numero_cuve"] != $numero){
                 continue;
-              }
-          }
-          else{
-            $degustation->addLot();
-            $degustation->lots[$nbr_max_lots]->date=$date_validation;
-            $degustation->lots[$nbr_max_lots]->id_document=$id;
-            $degustation->lots[$nbr_max_lots]->numero_dossier=$numero_dossier;
-            $degustation->lots[$nbr_max_lots]->numero_archive=$numero_archive;
-            $degustation->lots[$nbr_max_lots]->numero_cuve=$numero;
-            $degustation->lots[$nbr_max_lots]->millesime=$millesime;
-            $degustation->lots[$nbr_max_lots]->volume=$volume;
-            $degustation->lots[$nbr_max_lots]->destination_type=$destination_type;
-            $degustation->lots[$nbr_max_lots]->destination_date=$destination_date;
-            $degustation->lots[$nbr_max_lots]->produit_hash=$produit->getHash();
-            $degustation->lots[$nbr_max_lots]->produit_libelle=$produit->getLibelleFormat();
-            if (isset($data[self::CSV_RAISON_SOCIALE])){
-              $degustation->lots[$nbr_max_lots]->declarant_identifiant=$etablissement->identifiant;
-              $degustation->lots[$nbr_max_lots]->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
             }
-            $degustation->lots[$nbr_max_lots]->origine_mouvement=$origine_mouvement;
-            $degustation->lots[$nbr_max_lots]->details=$details;
-            $degustation->lots[$nbr_max_lots]->statut=$statut;
-            $nbr_max_lots++;
-            if (isset($data[self::CSV_DATE_COMMISSION])){
-              $date_degustation_precedente= $this->formatDate($data[self::CSV_DATE_COMMISSION]);
-            }
-            else{
-              echo "WARNING; Pas de date; pas d'import;$line\n";
-              continue;
-            }
+            $origine_mouvement=$drev["value"]["origine_mouvement"];
+            $id = $drev["value"]["origine_document_id"];
+            $declarant_identifiant=$drev["value"]["declarant_identifiant"];
+            $volume=$drev["value"]["volume"];
+            $millesime=$drev["value"]["millesime"];
+            $numero_archive=$drev["value"]["numero_archive"];
+            $numero_dossier=$drev["value"]["numero_dossier"];
+            $destination_type=$drev["value"]["destination_type"];
+            $destination_date=$drev["value"]["destination_date"];
+            $details=$drev["value"]["details"];
           }
 
-          if ( $ligne == count(file($arguments['csv']))){
-           $degustation->max_lots=$nbr_max_lots;
-           $degustation->save();
-           echo "SUCCESS;Degustation importée \n";
+          $newDegustation = new Degustation();
+          $newDegustation->date=$degustation_date;
+          $newDegustation->lieu =$commissions[0];   //choisir un lieu car pas dispo dans le csv
+          $newDegustation->campagne=$campagne;
+          $newDegustation->constructId();
+
+          if(!$degustation || $newDegustation->_id != $degustation->_id) {
+              $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
           }
+
+          if(!$degustation) {
+              $degustation = $newDegustation;
+          }
+
+          $lot = $degustation->addLot();
+          $lot->date=$date_validation;
+          $lot->id_document=$id;
+          $lot->numero_dossier=$numero_dossier;
+          $lot->numero_archive=$numero_archive;
+          $lot->numero_cuve=$numero;
+          $lot->millesime=$millesime;
+          $lot->volume=$volume;
+          $lot->destination_type=$destination_type;
+          $lot->destination_date=$destination_date;
+          $lot->produit_hash=$produit->getHash();
+          $lot->produit_libelle=$produit->getLibelleFormat();
+          if (isset($data[self::CSV_RAISON_SOCIALE])){
+            $lot->declarant_identifiant=$etablissement->identifiant;
+            $lot->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
+          }
+          $lot->origine_mouvement=$origine_mouvement;
+          $lot->details=$details;
+          $lot->statut=$statut;
+
+          $degustation->save();
         }
       }
 
