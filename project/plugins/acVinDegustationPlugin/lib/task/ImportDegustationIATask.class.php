@@ -132,15 +132,15 @@ EOF;
 
           $degustation_date = $this->formatDate($data[self::CSV_DATE_COMMISSION]);
 
+          $campagne = null;
           if(isset($data[self::CSV_CAMPAGNE])){
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
           }
+          $produitKey=null;
           if (isset($data[self::CSV_APPELLATION])){
             $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
           }
-          else {
-            $produitKey=null;
-          }
+
           if (!isset($this->produits[$produitKey])) {
             echo "WARNING;produit non trouvé;pas d'import;$line\n";
             continue;
@@ -166,30 +166,29 @@ EOF;
             }
           $date_validation = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
+          $numero = null;
           if (isset($data[self::CSV_NUM_LOT_OPERATEUR])){
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
           }
-          else{
-            $numero =null;
-          }
+
           $drevs=MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement->identifiant,$campagne,$statut);
 
           $drevs = json_decode(json_encode($drevs), true);
           foreach ($drevs["rows"] as $drev) {
-            if ($drev["value"]["numero_cuve"] == $numero){
-              $origine_mouvement=$drev["value"]["origine_mouvement"];
-              $id = $drev["value"]["origine_document_id"];
-              $declarant_identifiant=$drev["value"]["declarant_identifiant"];
-              $volume=$drev["value"]["volume"];
-              $millesime=$drev["value"]["millesime"];
-              $numero_archive=$drev["value"]["numero_archive"];
-              $numero_dossier=$drev["value"]["numero_dossier"];
-              $destination_type=$drev["value"]["destination_type"];
-              $destination_date=$drev["value"]["destination_date"];
-              $details=$drev["value"]["details"];
-              }
+            if ($drev["value"]["numero_cuve"] != $numero){
+                continue;
+            }
+            $origine_mouvement=$drev["value"]["origine_mouvement"];
+            $id = $drev["value"]["origine_document_id"];
+            $declarant_identifiant=$drev["value"]["declarant_identifiant"];
+            $volume=$drev["value"]["volume"];
+            $millesime=$drev["value"]["millesime"];
+            $numero_archive=$drev["value"]["numero_archive"];
+            $numero_dossier=$drev["value"]["numero_dossier"];
+            $destination_type=$drev["value"]["destination_type"];
+            $destination_date=$drev["value"]["destination_date"];
+            $details=$drev["value"]["details"];
           }
-
 
           $newDegustation = new Degustation();
           $newDegustation->date=$degustation_date;
