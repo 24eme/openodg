@@ -210,6 +210,7 @@ EOF;
               }
               //créer les lots
               $degustation->campagne=$campagne;
+            }
               $degustation->addLot();
               $degustation->lots[$nbr_max_lots]->date=$date_validation;
               $degustation->lots[$nbr_max_lots]->id_document=$id;
@@ -237,42 +238,13 @@ EOF;
                 echo "WARNING; Pas de date; pas d'import;$line\n";
                 continue;
               }
-          }
-          else{
-            $degustation->addLot();
-            $degustation->lots[$nbr_max_lots]->date=$date_validation;
-            $degustation->lots[$nbr_max_lots]->id_document=$id;
-            $degustation->lots[$nbr_max_lots]->numero_dossier=$numero_dossier;
-            $degustation->lots[$nbr_max_lots]->numero_archive=$numero_archive;
-            $degustation->lots[$nbr_max_lots]->numero_cuve=$numero;
-            $degustation->lots[$nbr_max_lots]->millesime=$millesime;
-            $degustation->lots[$nbr_max_lots]->volume=$volume;
-            $degustation->lots[$nbr_max_lots]->destination_type=$destination_type;
-            $degustation->lots[$nbr_max_lots]->destination_date=$destination_date;
-            $degustation->lots[$nbr_max_lots]->produit_hash=$produit->getHash();
-            $degustation->lots[$nbr_max_lots]->produit_libelle=$produit->getLibelleFormat();
-            if (isset($data[self::CSV_RAISON_SOCIALE])){
-              $degustation->lots[$nbr_max_lots]->declarant_identifiant=$etablissement->identifiant;
-              $degustation->lots[$nbr_max_lots]->declarant_nom=$data[self::CSV_RAISON_SOCIALE];
-            }
-            $degustation->lots[$nbr_max_lots]->origine_mouvement=$origine_mouvement;
-            $degustation->lots[$nbr_max_lots]->details=$details;
-            $degustation->lots[$nbr_max_lots]->statut=$statut;
-            $nbr_max_lots++;
-            if (isset($data[self::CSV_DATE_COMMISSION])){
-              $date_degustation_precedente= $this->formatDate($data[self::CSV_DATE_COMMISSION]);
-            }
-            else{
-              echo "WARNING; Pas de date; pas d'import;$line\n";
-              continue;
-            }
-          }
 
           if ( $ligne == count(file($arguments['csv']))){
            $degustation->max_lots=$nbr_max_lots;
            $degustation->save();
            echo "SUCCESS;Degustation importée \n";
           }
+
         }
       }
 
