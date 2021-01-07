@@ -109,7 +109,6 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        $nbr_max_lots=0;
 
         $this->initProduitsCepages();
 
@@ -177,7 +176,6 @@ EOF;
 
           $drevs = json_decode(json_encode($drevs), true);
           foreach ($drevs["rows"] as $drev) {
-            print_r($drev);
             if ($drev["value"]["numero_cuve"] == $numero){
               $origine_mouvement=$drev["value"]["origine_mouvement"];
               $id = $drev["value"]["origine_document_id"];
@@ -193,9 +191,6 @@ EOF;
           }
 
           if ($degustation_date != $date_degustation_precedente){  //si nouvelle date =>nouvelle degustation
-              if ($date_degustation_precedente != null){  //vérifier que ce n'est pas le premier
-                $nbr_max_lots=0;
-              }
               $degustation = new Degustation();
               $degustation->date=$degustation_date;
               $degustation->lieu =$commissions[0];   //choisir un lieu car pas dispo dans le csv
@@ -227,7 +222,6 @@ EOF;
               $lot->origine_mouvement=$origine_mouvement;
               $lot->details=$details;
               $lot->statut=$statut;
-              $nbr_max_lots++;
               if (isset($data[self::CSV_DATE_COMMISSION])){
                 $date_degustation_precedente= $this->formatDate($data[self::CSV_DATE_COMMISSION]);
               }
@@ -236,7 +230,6 @@ EOF;
                 continue;
               }
 
-              $degustation->max_lots=$nbr_max_lots;
               $degustation->save();
         }
       }
