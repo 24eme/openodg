@@ -7,15 +7,25 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     protected $declarant_document = null;
     protected $mouvement_document = null;
     protected $piece_document = null;
+  	protected $cm = null;
 
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
+				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
 
     public function __clone() {
         parent::__clone();
         $this->initDocuments();
+    }
+
+		public function getMaster() {
+			return $this;
+		}
+
+    public function isLotsEditable(){
+      return false;
     }
 
     protected function initDocuments() {
@@ -24,12 +34,18 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->piece_document = new PieceDocument($this);
     }
 
+		public function getDateStdr() {
+			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
+		}
+
+		public function getCampagneByDate() {
+			return $this->cm->getCampagneByDate($this->getDateStdr());
+		}
+
     public function constructId() {
         $id = 'CHGTDENOM-' . $this->identifiant . '-' . $this->date;
         $this->set('_id', $id);
-        if ($this->date) {
-          $this->set('campagne', explode('-', $this->date)[0]);
-        }
+        $this->set('campagne', $this->getCampagneByDate());
     }
 
     public function getConfiguration() {
@@ -96,7 +112,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function getMvtLots() {
       $lots = array();
       $statuts = ($this->isValidee()||$this->isApprouve())? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
-      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, $statuts, $this->campagne) as $item) {
+      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, $statuts) as $item) {
           $key = Lot::generateMvtKey($item->value);
           $lots[$key] = $item->value;
       }

@@ -84,6 +84,8 @@ Degustation:
                         id_document: {  }
                         statut: {  }
                         specificite: {}
+                        conformite: {}
+                        motif: {}
       degustateurs:
         type: collection
         definition:

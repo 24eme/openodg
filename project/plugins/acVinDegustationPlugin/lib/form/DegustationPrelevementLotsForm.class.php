@@ -68,7 +68,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     }
 
     public function getLotsPrelevables() {
-        return $this->getObject()->getLotsPrelevables();
+        return $this->getObject()->getLotsPrelevablesSortByDate();
     }
 
     public function getDateDegustation()
