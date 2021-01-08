@@ -76,14 +76,14 @@ class ImportLotsIATask extends sfBaseTask
     "Vermentino B" => "VERMENT.B"
   );
     public static $correspondancesStatuts = array(
-      "Conforme" => self::STATUT_CONFORME,
-      "Déclassé" => self::STATUT_DECLASSE,
-      "Non Conforme" => self::STATUT_NONCONFORME,
-      "Prélevé A" => self::STATUT_PRELEVE,
-      "Prélevé NA" => self::STATUT_PRELEVE,
-      "Prévu" => self::STATUT_PRELEVE,
-      "Revendiqué C" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE),
-      "Revendiqué NC" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE)
+      "Conforme" => Lot::STATUT_CONFORME,
+      "Déclassé" => Lot::STATUT_DECLASSE,
+      "Non Conforme" => Lot::STATUT_NONCONFORME,
+      "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
+      "Prélevé NA" => Lot::STATUT_PRELEVE,//Prélevé Non Anonimisé
+      "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
+      "Revendiqué C" => Lot::STATUT_PRELEVABLE,
+      "Revendiqué NC" => Lot::STATUT_NONCONFORME
     );
 
     protected function configure()
@@ -183,16 +183,18 @@ EOF;
                   $dt = new DateTime($date);
                   $date = $dt->modify('+1 minute')->format('c');
             }
-            $statut = trim($data[self::CSV_STATUT]);
-            $preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
-            $correspondances = self::$correspondancesStatuts;
+            $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
+            $statut = null;
+            if(isset($data[self::CSV_STATUT])){
+              $statut = trim($data[self::CSV_STATUT]);
+           }
 
-            if (!isset($correspondances[$statut])) {
-                echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
-                continue;
-            }
+           if (!isset(self::$correspondancesStatuts[$statut])) {
+              echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+              continue;
+           }
 
-            $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
+           $statut = self::$correspondancesStatuts[$statut];
 
             $newDrev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
             $newDrev->constructId();
@@ -224,10 +226,13 @@ EOF;
             $lot->destination_type = null;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
-            $lot->statut = $statut;
+            $lot->statut = Lot::STATUT_NONPRELEVABLE;
             if ($statut == self::STATUT_NONCONFORME) {
               $lot->statut = self::STATUT_PRELEVABLE;
               $lot->specificite = '2ème passage';
+            }
+            if($statut == Lot::STATUT_PRELEVABLE && $prelevable) {
+                $lot->statut = Lot::STATUT_PRELEVABLE;
             }
 
             $deleted = array();
