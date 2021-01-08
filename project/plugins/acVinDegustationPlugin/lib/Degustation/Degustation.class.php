@@ -20,6 +20,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
 		}
 
+		public function getMaster() {
+			return $this;
+		}
+
+    public function isLotsEditable(){
+      return false;
+    }
+
 		public function getCampagneByDate() {
 			return $this->cm->getCampagneByDate($this->getDateStdr());
 		}
@@ -179,7 +187,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->version = $this->getVersion();
 			$mvt->origine_hash = $lot->getHash();
 			$mvt->origine_type = 'degustation';
-			$mvt->origine_document_id = $lot->origine_document_id;
+			$mvt->origine_document_id = $this->_id;
 			$mvt->id_document = $this->_id;
 			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
 			$mvt->declarant_identifiant = $lot->declarant_identifiant;
@@ -189,6 +197,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->details = $lot->details;
 			$mvt->campagne = $this->getCampagneByDate();
 			$mvt->specificite = $lot->specificite;
+			$mvt->conformite = $lot->conformite;
+			$mvt->motif = $lot->motif;
 			return $mvt;
 	}
 

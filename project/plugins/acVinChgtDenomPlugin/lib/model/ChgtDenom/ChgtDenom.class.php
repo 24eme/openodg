@@ -20,6 +20,14 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->initDocuments();
     }
 
+		public function getMaster() {
+			return $this;
+		}
+
+    public function isLotsEditable(){
+      return false;
+    }
+
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementFacturesDocument($this);

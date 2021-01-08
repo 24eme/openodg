@@ -219,6 +219,10 @@ EOF;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
             $lot->statut = $statut;
+            if ($statut == self::STATUT_NONCONFORME) {
+              $lot->statut = self::STATUT_PRELEVABLE;
+              $lot->specificite = '2ème passage';
+            }
 
             $deleted = array();
             foreach($drev->lots as $k => $l) {
