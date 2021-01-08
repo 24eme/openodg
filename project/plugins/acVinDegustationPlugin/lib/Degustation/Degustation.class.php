@@ -8,13 +8,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	protected $piece_document = null;
 	protected $tri = null;
+	protected $cm = null;
 
     public function __construct() {
         parent::__construct();
-		//TODO : supprimer cette goretterie réalisée pour la démo
-		$this->campagne = '2019';
         $this->initDocuments();
+				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
+
+		public function getDateStdr() {
+			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
+		}
+
+		public function getCampagneByDate() {
+			return $this->cm->getCampagneByDate($this->getDateStdr());
+		}
 
     public function __clone() {
         parent::__clone();
@@ -26,8 +34,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function getConfiguration() {
-
-        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+        return ConfigurationClient::getInstance()->getConfiguration($this->getDateStdr());
     }
 
     public function constructId() {
@@ -180,7 +187,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->destination_type = $lot->destination_type;
 			$mvt->destination_date = $lot->destination_date;
 			$mvt->details = $lot->details;
-			$mvt->campagne = $this->campagne;
+			$mvt->campagne = $this->getCampagneByDate();
 			$mvt->specificite = $lot->specificite;
 			return $mvt;
 	}
@@ -238,7 +245,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function getMvtLotsPrelevables() {
          $mvt = array();
-         foreach (MouvementLotView::getInstance()->getByStatut($this->campagne, Lot::STATUT_PRELEVABLE)->rows as $item) {
+         foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_PRELEVABLE)->rows as $item) {
              $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
