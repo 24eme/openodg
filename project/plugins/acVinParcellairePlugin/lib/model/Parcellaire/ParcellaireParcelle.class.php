@@ -204,4 +204,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       }
       return !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
+
+    public function hasTroisiemeFeuille() {
+        $year = date('Y', strtotime('1st november')) - 2;
+        $campagne_troisieme_feuille = ($year - 1).'-'.$year;
+        return ($this->campagne_plantation < $campagne_troisieme_feuille);
+    }
 }
