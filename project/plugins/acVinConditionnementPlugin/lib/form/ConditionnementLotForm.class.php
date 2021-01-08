@@ -44,9 +44,6 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
-        $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
-        $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
-
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
@@ -63,9 +60,6 @@ class ConditionnementLotForm extends acCouchdbObjectForm
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
 
-        $this->setWidget('elevage', new sfWidgetFormInputCheckbox());
-        $this->setValidator('elevage', new sfValidatorBoolean(['required' => false]));
-
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
@@ -74,6 +68,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
+        $this->getObject()->destination_type = DRevClient::LOT_DESTINATION_CONDITIONNEMENT;
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
                 continue;
@@ -81,14 +76,6 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
-        if (!empty($values['elevage'])) {
-          $this->getObject()->statut = Lot::STATUT_ELEVAGE;
-        }
-    }
-
-    public function getDestinationsType()
-    {
-        return array_merge(array("" => ""), DRevClient::$lotDestinationsType);
     }
 
     public function getSpecificites()
