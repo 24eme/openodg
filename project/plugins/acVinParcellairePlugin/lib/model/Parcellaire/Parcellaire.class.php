@@ -165,6 +165,9 @@ class Parcellaire extends BaseParcellaire {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
             $cepage = $p->getCepage();
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+                $cepage .= ' - jeunes feuilles';
+            }
             if (!isset($synthese[$cepage])) {
                 $synthese[$cepage] = array();
                 $synthese[$cepage]['superficie'] = 0;
@@ -181,12 +184,14 @@ class Parcellaire extends BaseParcellaire {
             $cepage = $p->getCepage();
             if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $libelles = array();
-                if(true)
                 foreach($this->getProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
                     $libelles[] = $prod->getLibelleComplet();
                 }
                 if (!count($libelles)) {
                     $libelles[] = '';
+                }
+                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+                    $libelles = array('jeunes feuilles');
                 }
             }
             foreach($libelles as $libelle) {
@@ -210,6 +215,26 @@ class Parcellaire extends BaseParcellaire {
             }
         }
         return $synthese;
+    }
+
+    public function getParcellairePDFUri() {
+        foreach ($this->_attachments as $key => $attachement) {
+            if ($attachement->content_type == 'application/pdf') {
+                return $this->getAttachmentUri($key);
+            }
+        }
+        return '';
+    }
+
+    public function hasParcellairePDF() {
+        return ($this->getParcellairePDFUri());
+    }
+
+    public function getParcellairePDF() {
+        if ($this->hasParcellairePDF()) {
+            return file_get_contents($this->getParcellairePDFUri());
+        }
+        return null;
     }
 
 }

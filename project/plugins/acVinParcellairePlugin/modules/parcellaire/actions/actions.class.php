@@ -98,4 +98,19 @@ class parcellaireActions extends sfActions {
 
         throw new sfStopException();
     }
+
+    public function executeParcellairePDF(sfWebRequest $request) {
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: application/pdf");
+        header("Content-disposition: ".sprintf('attachment; filename="PARCELLAIRE-%s-%s.pdf"', $parcellaire->identifiant, $parcellaire->date));
+        header("Content-Transfer-Encoding: binary");
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+        $this->content = $parcellaire->getParcellairePDF();
+        echo $this->content;
+        exit;
+    }
 }
