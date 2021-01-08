@@ -9,18 +9,17 @@ th {
 </style>
   <table>
     <tr>
-      <td style="width:33%;">
-        <p>Code Commission: _ _ _ _ _ _</p>
-        <p>Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></p>
-        <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
-      </td>
-      <td style="width:33%;">
-        <p>Campagne: <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></p>
-        <p>Millésime: <?php echo $degustation->campagne; ?></p>
+      <td style="width:100%;">
+        <p><small>
+          <span>&nbsp;&nbsp;Code Commission : _ _ _ _ _ _</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Campagne : <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Millésime : <?php echo $degustation->campagne; ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></span>
+          <span>&nbsp;&nbsp;Heure : <?php echo substr($degustation->date, -5); ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;Lieu : <?php echo $degustation->lieu; ?> </span>
+        </small>
+        </p>
 
-      </td>
-      <td style="width:33%">
-        <p>Lieu : <?php echo $degustation->lieu; ?> </p>
       </td>
     </tr>
   </table>
@@ -69,15 +68,15 @@ th {
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <tr style="width:12%">
             <th ><small>Nombre de tables</small></th>
-            <td ><small><?php echo ""; ?></small></td>
+            <td ><small><?php echo $nbTables; ?></small></td>
           </tr>
           <tr style="width:12%">
             <th><small>Nombre de Jurés</small></th>
-            <td style=""><small><?php echo ""; ?></small></td>
+            <td style=""><small><?php echo $nbDegustateurs; ?></small></td>
           </tr>
           <tr style="width:12%">
             <th><small>Nombre de jurés présents</small></th>
-            <td style=""><small><?php echo ""; ?></small></td>
+            <td style=""><small><?php echo $nbDegustateursPresents; ?></small></td>
           </tr>
         </table>
       </td>
@@ -89,7 +88,7 @@ th {
 <div>
   <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
     <tr>
-      <td><div><p>IGP DE RÉGION : </p></div></td>
+      <td><div><p>IGP : <?php echo $appellation ?> </p></div></td>
       <td></td>
       <td>
         <div>

@@ -5,6 +5,9 @@
 <div class="page-header">
     <h2>Changement de dénomination / Déclassement</h2>
     <p>Selectionnez, ci-dessous, le logement que vous souhaitez modifier</p>
+    <?php if(!count($lots)): ?>
+    <p>Aucun lot pour la campagne <?php echo $chgtDenom->campagne ?></p>
+    <?php else: ?>
     <div class="row">
       <table class="table table-condensed table-striped">
         <thead>
@@ -32,5 +35,11 @@
         <?php endforeach; ?>
         </tbody>
       </table>
+    </div>
+  <?php endif; ?>
+    <div style="margin-top: 20px;" class="row row-margin row-button">
+        <div class="col-xs-6">
+            <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
+        </div>
     </div>
 </div>

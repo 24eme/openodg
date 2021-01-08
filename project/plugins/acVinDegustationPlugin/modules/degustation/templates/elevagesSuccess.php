@@ -20,12 +20,15 @@
                 <th class="col-xs-5">Produit (millésime)</th>
               <?php endif ?>
                 <th class="col-xs-1">Volume</th>
+                <th class="col-xs-1">Actions</th>
             </tr>
         </thead>
 		<tbody>
 		<?php
 			foreach ($lotsElevages as $lot):
         $lot = $lot->value;
+        $doc = $lot->origine_document_id;
+        $ind = str_replace('/lots/', '', $lot->origine_hash);
 		?>
 			<tr class="vertical-center cursor-pointer" >
         <td><?php echo $lot->declarant_nom; ?></td>
@@ -35,6 +38,14 @@
           <td><?php echo (isset($lot->specificite))? $lot->specificite : null; ?></td>
         <?php endif ?>
         <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
+        <td class="text-center">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a href="<?php echo url_for('degustation_elever', array('id' => $doc, 'index' => $ind)) ?>" onclick="return confirm('Confirmez vous la fin d\'élevage du lot le rendant dégustable ?')">Elever / Déguster</a></li>
+            </ul>
+          </div>
+        </td>
       </tr>
         <?php  endforeach; ?>
         </tbody>

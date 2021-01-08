@@ -7,12 +7,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     protected $declarant_document = null;
     protected $mouvement_document = null;
     protected $piece_document = null;
+  	protected $cm = null;
 
     public function __construct() {
         parent::__construct();
-		    //TODO : supprimer cette goretterie réalisée pour la démo
-		    $this->campagne = '2019';
         $this->initDocuments();
+				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
 
     public function __clone() {
@@ -26,9 +26,18 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->piece_document = new PieceDocument($this);
     }
 
+		public function getDateStdr() {
+			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
+		}
+
+		public function getCampagneByDate() {
+			return $this->cm->getCampagneByDate($this->getDateStdr());
+		}
+
     public function constructId() {
         $id = 'CHGTDENOM-' . $this->identifiant . '-' . $this->date;
         $this->set('_id', $id);
+        $this->set('campagne', $this->getCampagneByDate());
     }
 
     public function getConfiguration() {
@@ -94,7 +103,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getMvtLots() {
       $lots = array();
-      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME), $this->campagne) as $item) {
+      $statuts = ($this->isValidee()||$this->isApprouve())? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
+      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, $statuts) as $item) {
           $key = Lot::generateMvtKey($item->value);
           $lots[$key] = $item->value;
       }
@@ -174,7 +184,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lotBis->volume = $this->changement_volume;
         $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lotBis->statut = Lot::STATUT_CONFORME;
+        $lotBis->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
         $lotBis->details = '';
         foreach($this->getPourcentagesCepages() as $cep => $pc) {
             $lotBis->details .= $cep.' ('.$pc.'%) ';
@@ -184,7 +194,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       } else {
         $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lot->statut = Lot::STATUT_CONFORME;
+        $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
         if (count($this->changement_cepages->toArray(true, false))) {
           $lot->details = '';
           foreach($this->getPourcentagesCepages() as $cep => $pc) {
@@ -207,6 +217,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
   			$mvt->numero_cuve = $lot->numero_cuve;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
+        $mvt->elevage = $lot->elevage;
         $mvt->produit_hash = $lot->produit_hash;
         $mvt->produit_libelle = $lot->produit_libelle;
         $mvt->produit_couleur = ($lot->produit_hash)? $lot->getCouleurLibelle() : null;
@@ -265,16 +276,23 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getCepagesToStr(){
-      $cepages = $this->changement_cepages;
+      $cepages = $this->cepages;
       $str ='';
       $k=0;
       $total = 0.0;
-      foreach ($cepages as $c => $volume){ $total+=$volume; }
+      $tabCepages=array();
       foreach ($cepages as $c => $volume){
-        $k++;
+        $total+=$volume;
+      }
+      foreach ($cepages as $c => $volume){
         $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $str.= $c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ', ' : '';
+        $tabCepages[$c]=$p;
+      }
+      arsort($tabCepages);
+      foreach ($tabCepages as $c => $p) {
+        $k++;
+        $str.=" ".$c." (".$p.'%)';
+        $str.= ($k < count($cepages))? ',' : '';
       }
       return $str;
     }

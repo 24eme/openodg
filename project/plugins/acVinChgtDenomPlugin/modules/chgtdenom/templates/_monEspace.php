@@ -18,9 +18,9 @@
             <?php else: ?>
             <p>Espace permettant le changement de dénomination ou déclassement de vos logements.</p>
             <div style="margin-top: 50px;">
-                <a class="btn btn-block btn-default" href="<?php echo url_for('chgtdenom_create', array('sf_subject' => $etablissement)) ?>">Démarrer la télédéclaration</a>
+                <a class="btn btn-block btn-default" href="<?php echo url_for('chgtdenom_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
                 <?php if ($sf_user->isAdmin()): ?>
-                <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('chgtdenom_create_papier', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir le changement papier</a>
+                <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('chgtdenom_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir le changement papier</a>
                 <?php endif; ?>
             </div>
             <?php endif; ?>

@@ -1,12 +1,11 @@
 <?php
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
-sfContext::createInstance($configuration);
 
-$t = new lime_test(42);
+$t = new lime_test(43);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
-$vitiCompte = $viti->getCompte();
+$t->ok($viti, "L'etablissement 7523700100 existe");
 $campagne = (date("Y") - 1)."";
 
 foreach(TravauxMarcClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {

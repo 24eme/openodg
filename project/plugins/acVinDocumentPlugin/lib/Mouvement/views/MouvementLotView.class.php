@@ -42,6 +42,17 @@ class MouvementLotView extends acCouchdbView
     ->getView($this->design, $this->view);
   }
 
+  public function getDegustationMouvementLot($declarant_identifiant, $numero_archive, $campagne = null, $statut = null){
+    foreach ($this->getByDeclarantIdentifiant($declarant_identifiant, $campagne, $statut)->rows as $key => $mvt) {
+      if(preg_match("/DEGUSTATION/", $mvt->id) && $mvt->value->numero_archive == $numero_archive){
+        if(!preg_match("/(".Lot::STATUT_NONPRELEVABLE.")/", $mvt->value->statut)){
+          return $mvt->value;
+        }
+      }
+    }
+    return null;
+  }
+
   public function getAllByIdentifiantAndStatuts($declarant_identifiant, $statuts, $campagne = null) {
     $result = array();
     $cStart = ($campagne)? $campagne : "0000";
@@ -76,6 +87,7 @@ class MouvementLotView extends acCouchdbView
     $lot->declarant_identifiant = $mvt->declarant_identifiant;
     $lot->origine_mouvement = $mvt->origine_mouvement;
     $lot->details = $mvt->details;
+    $lot->elevage = (isset($mvt->elevage))? $mvt->elevage : null;
     $lot->statut = $mvt->statut;
     $lot->specificite = (isset($mvt->specificite))? $mvt->specificite : null;
     return $lot;
@@ -97,11 +109,11 @@ class MouvementLotView extends acCouchdbView
   }
 
 
-  public function getLotsStepsByDeclarantIdentifiant($identifiant){
+  public function getLotsStepsByDeclarantIdentifiant($identifiant, $campagne){
 
     $lotsSteps = array();
 
-    foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($identifiant)->rows as $item) {
+    foreach (MouvementLotView::getInstance()->getByDeclarantIdentifiant($identifiant,$campagne)->rows as $item) {
       $key = Lot::generateMvtKey($item->value);
       $key = $item->value->numero_dossier.preg_replace("/[a-z]*$/", "", $item->value->numero_archive);
       if (!isset($lotsSteps[$key])) {

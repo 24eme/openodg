@@ -8,13 +8,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	protected $piece_document = null;
 	protected $tri = null;
+	protected $cm = null;
 
     public function __construct() {
         parent::__construct();
-		//TODO : supprimer cette goretterie réalisée pour la démo
-		$this->campagne = '2019';
         $this->initDocuments();
+				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
+
+		public function getDateStdr() {
+			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
+		}
+
+		public function getCampagneByDate() {
+			return $this->cm->getCampagneByDate($this->getDateStdr());
+		}
 
     public function __clone() {
         parent::__clone();
@@ -26,8 +34,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function getConfiguration() {
-
-        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+        return ConfigurationClient::getInstance()->getConfiguration($this->getDateStdr());
     }
 
     public function constructId() {
@@ -164,6 +171,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->numero_cuve = $lot->numero_cuve;
 			$mvt->millesime = $lot->millesime;
 			$mvt->volume = $lot->volume;
+			$mvt->elevage = $lot->elevage;
 			$mvt->produit_hash = $lot->produit_hash;
 			$mvt->produit_libelle = $lot->produit_libelle;
 			$mvt->produit_couleur = $lot->getCouleurLibelle();
@@ -179,7 +187,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->destination_type = $lot->destination_type;
 			$mvt->destination_date = $lot->destination_date;
 			$mvt->details = $lot->details;
-			$mvt->campagne = $this->campagne;
+			$mvt->campagne = $this->getCampagneByDate();
 			$mvt->specificite = $lot->specificite;
 			return $mvt;
 	}
@@ -237,7 +245,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function getMvtLotsPrelevables() {
          $mvt = array();
-         foreach (MouvementLotView::getInstance()->getByStatut($this->campagne, Lot::STATUT_PRELEVABLE)->rows as $item) {
+         foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_PRELEVABLE)->rows as $item) {
              $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
@@ -273,7 +281,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 foreach($keys as $key => $activated) {
 			 $mvt = $mvts[$key];
 			 if ($activated) {
-				 $lot = MouvementLotView::generateLotByMvt($mvt);
+				 $lot = DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mvt));
 				 $lot->statut = $statut;
 				 $this->lots->add(null, $lot);
 			 }
@@ -712,8 +720,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
 				$table = chr($numTab+64);
 				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
-					$numAnonyme = $table.$lot->numero_cuve;
-					$lots[$numAnonyme] = $lot;
+					$lots[$lot->getNumeroAnonymise()] = $lot;
 				}
 			}
 			return $lots;
@@ -759,4 +766,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 			return $etablissements;
 		}
+
+		public function getLotsDegustesByAppelation(){
+			$degust = array();
+			foreach ($this->getLotsDegustes() as $key => $lot) {
+				$degust[$lot->getConfig()->getAppellation()->getLibelle()][] = $lot;
+			}
+
+			return $degust;
+		}
+
+		public function addLot() {
+				$lot = $this->add('lots')->add();
+				return $lot;
+		}
+
 }

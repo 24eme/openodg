@@ -2,6 +2,12 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if (in_array($application, array('nantes', 'loire'))) {
+    $t = new lime_test(1);
+    $t->ok(true, "pas de parcellaire activé");
+    return;
+}
+
 $t = new lime_test(17);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = (date('Y') - 1).date('-m-d');

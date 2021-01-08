@@ -48,7 +48,7 @@
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
 
-<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
 <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>

@@ -46,13 +46,25 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function addProduit($hash) {
+        $pseudo_produit = false;
+        if (!$hash && !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
+            $hash = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH;
+            $pseudo_produit = true;
+        }
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
 
         $produit = $this->add('declaration')->add($hashToAdd);
         if(!$exist) {
-            $this->declaration->reorderByConf();
-            $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+            $this->declaration->reorderByConf($pseudo_produit);
+            if ($pseudo_produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration())  {
+                throw new sfException("produit $hash non trouvé et ajout de parcelle sans produit non disponible pour cette app");
+            }
+            if (!$pseudo_produit) {
+                $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+            }else{
+                $this->add('declaration')->add($hashToAdd)->libelle = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE;
+            }
           }
 
         return $this->get($produit->getHash());
@@ -141,6 +153,63 @@ class Parcellaire extends BaseParcellaire {
         return false;
     }
 
-    /*** FIN PIECE DOCUMENT ***/
+    public function getProduitsByCepageFromHabilitationOrConfiguration($cepage) {
+        $hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
+        if (!$hab) {
+            return $this->getConfiguration()->getProduitsByCepage($cepage);
+        }
+        return $hab->getProduitsByCepage($cepage);
+    }
+
+    public function getSyntheseCepages() {
+        $synthese = array();
+        foreach($this->getParcelles() as $p) {
+            $cepage = $p->getCepage();
+            if (!isset($synthese[$cepage])) {
+                $synthese[$cepage] = array();
+                $synthese[$cepage]['superficie'] = 0;
+            }
+            $synthese[$cepage]['superficie'] = round($synthese[$cepage]['superficie'] + $p->superficie, 6);
+        }
+        return $synthese;
+    }
+
+    public function getSyntheseProduitsCepages() {
+        $synthese = array();
+        foreach($this->getParcelles() as $p) {
+            $libelles = array($p->getProduitLibelle());
+            $cepage = $p->getCepage();
+            if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
+                $libelles = array();
+                if(true)
+                foreach($this->getProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                    $libelles[] = $prod->getLibelleComplet();
+                }
+                if (!count($libelles)) {
+                    $libelles[] = '';
+                }
+            }
+            foreach($libelles as $libelle) {
+                if (!isset($synthese[$libelle])) {
+                    $synthese[$libelle] = array();
+                    $synthese[$libelle]['Total'] = array();
+                    $synthese[$libelle]['Total']['superficie_min'] = 0;
+                    $synthese[$libelle]['Total']['superficie_max'] = 0;
+                }
+                if (!isset($synthese[$libelle][$cepage])) {
+                    $synthese[$libelle][$cepage] = array();
+                    $synthese[$libelle][$cepage]['superficie_min'] = 0;
+                    $synthese[$libelle][$cepage]['superficie_max'] = 0;
+                }
+                if (count($libelles) == 1) {
+                    $synthese[$libelle][$cepage]['superficie_min'] = round($synthese[$libelle][$cepage]['superficie_min'] + $p->superficie, 6);
+                    $synthese[$libelle]['Total']['superficie_min'] = round($synthese[$libelle]['Total']['superficie_min'] + $p->superficie, 6);
+                }
+                $synthese[$libelle][$cepage]['superficie_max'] = round($synthese[$libelle][$cepage]['superficie_max'] + $p->superficie, 6);
+                $synthese[$libelle]['Total']['superficie_max'] = round($synthese[$libelle]['Total']['superficie_max'] + $p->superficie, 6);
+            }
+        }
+        return $synthese;
+    }
 
 }

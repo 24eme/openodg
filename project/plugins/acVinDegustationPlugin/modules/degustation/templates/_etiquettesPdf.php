@@ -6,52 +6,43 @@
         <tr>
           <?php for($i=0; $i <3 ; $i++): ?>
             <td style="text-align: left;">
-                <table cellspacing=0 cellpadding=0 >
-                  <tr style="line-height:7px;">
-                    <td colspan="2"  >
+                <table cellspacing=0 cellpadding=0 style="font-size:8px;padding:0px;">
+                  <tr style="line-height:4px;">
+                    <td style="overflow-wrap:break-word;">
+                      <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
+                    </td>
+                    <td style="overflow-wrap:break-word;">
+                      <?php echo tdStart() ?>&nbsp;N°&nbsp;Lot&nbsp;ODG:<strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
+                    </td>
+                  </tr>
+                  <tr style="line-height:4px;">
+                    <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
                       <?php echo tdStart() ?>&nbsp;<strong><?php echo ($lotInfo->lot->declarant_nom)? $lotInfo->lot->declarant_nom : "Leurre";  ?></strong>
                     </td>
                   </tr>
-                  <tr style="line-height:7px;">
+                  <tr style="line-height:4px;">
                     <td colspan="2">
                       <?php echo tdStart() ?>&nbsp;Ville&nbsp;:&nbsp;<strong><?php echo ($lotInfo->etablissement)? $lotInfo->etablissement->commune : '';  ?></strong>
                     </td>
                   </tr>
-                  <tr style="line-height:7px;">
-                    <td>
-                      <?php echo tdStart() ?>&nbsp;N°&nbsp;Dos&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_dossier;  ?></strong>
-                    </td>
-                    <td>
-                      <?php echo tdStart() ?>&nbsp;N° Lot ODG&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_archive;  ?></strong>
+                  <tr style="line-height:4px;">
+                    <td colspan="2" style="overflow-wrap:break-word;">
+                      <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo $lotInfo->lot->produit_libelle .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
-                  <tr style="line-height:7px;">
-                    <td>
-                      <?php echo tdStart() ?>&nbsp;IGP&nbsp;:&nbsp;<strong><?php echo sfConfig::get('sf_app');  ?></strong>
-                    </td>
-                    <td>
-                      <?php echo tdStart() ?>&nbsp;Vol. (hl)&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->volume;  ?></strong>
-                    </td>
-                  </tr>
-                  <tr style="line-height:7px;">
-                    <td>
-                      <?php echo tdStart() ?>&nbsp;N° Lot Op&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve;  ?></strong>
-                    </td>
-                    <td>
+                  <tr>
+                    <td colspan="2" style="overflow-wrap:break-word;">
                       <?php echo tdStart() ?>&nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve;  ?></strong>
                     </td>
                   </tr>
-                  <tr style="line-height:7px;">
-                    <td>
-                      <?php echo tdStart() ?>&nbsp;Millesime&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->millesime;  ?></strong>
-                    </td>
-                    <td>
-                      <?php echo tdStart() ?>&nbsp;Couleur&nbsp;:&nbsp;<strong><?php echo $lotInfo->couleur;  ?></strong>
+                  <tr style="line-height:4px;">
+                    <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:6px;">
+                      <?php echo tdStart() ?>&nbsp;Cépages&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->details;  ?></strong>
                     </td>
                   </tr>
-                  <tr style="line-height:7px;">
-                    <td colspan="2">
-                      <?php echo tdStart() ?>&nbsp;Cépages&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->details;  ?></strong>
+                  <tr>
+                    <td>
+                      <?php echo tdStart() ?>&nbsp;Volume&nbsp;:&nbsp;<strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
                 </table>
