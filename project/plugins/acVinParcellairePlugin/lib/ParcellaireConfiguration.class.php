@@ -20,12 +20,24 @@ class ParcellaireConfiguration {
         $this->configuration = sfConfig::get('parcellaire_configuration_parcellaire', array());
     }
 
+    /*
+     * On limite les produits du parcellaire aux seuls produits du catalogue produit.
+     * les autres sont ignorés
+     */
     public function getLimitProduitsConfiguration() {
         if(!isset($this->configuration['limit_produits_configuration'])) {
             return false;
         }
 
         return $this->configuration['limit_produits_configuration'];
+    }
+
+    /*
+     * Seules les parcelles ayant au moins une troisième feuille sont prises
+     * en compte dans les synthèse
+     */
+    public function isTroisiemeFeuille() {
+        return !$this->getLimitProduitsConfiguration();
     }
 
 }
