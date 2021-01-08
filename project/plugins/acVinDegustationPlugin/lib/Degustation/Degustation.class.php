@@ -203,11 +203,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
 	public function generateAndAddMouvementLotsFromLot($lot, $key) {
-			$mvt = $this->generateMouvementLotsFromLot($lot, $key);
-			if(!$this->add('mouvements_lots')->exist($lot->declarant_identifiant)) {
-					$this->add('mouvements_lots')->add($lot->declarant_identifiant);
-			}
-			return $this->add('mouvements_lots')->get($lot->declarant_identifiant)->add($key, $mvt);
+
+			return $this->add('mouvements_lots')->add($lot->declarant_identifiant)->add($key, $this->generateMouvementLotsFromLot($lot, $key));
 	}
 
 	public function generateMouvementsLots() {
