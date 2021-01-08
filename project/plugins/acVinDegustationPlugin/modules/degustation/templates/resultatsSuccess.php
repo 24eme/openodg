@@ -51,7 +51,7 @@
                   foreach ($form->getTableLots() as $lot):
                     $name = $form->getWidgetNameFromLot($lot);
                     if (!$lot->leurre && isset($form["conformite_".$name])): ?>
-                      <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
+                      <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
                         <td class="text-left"><?php echo $lot->getNumeroAnonymise() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td class="text-left">
@@ -62,7 +62,7 @@
                             <span class="text-muted">(<?php echo $lot->specificite; ?>)</span>
                           <?php endif ?>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <div style="margin-bottom: 0;">
                             <div class="col-xs-12">
                               <a
@@ -71,7 +71,7 @@
                             </div>
                           </div>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
                             <span class="text-muted glyphicon glyphicon-pencil"></span>
                           <?php else: ?>
