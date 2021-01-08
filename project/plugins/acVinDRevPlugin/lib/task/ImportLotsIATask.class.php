@@ -113,6 +113,7 @@ EOF;
         $this->initProduitsCepages();
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        $drev = null;
         $ligne = 0;
         foreach(file($arguments['csv']) as $line) {
             $ligne++;
@@ -193,15 +194,20 @@ EOF;
 
             $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
 
-            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
+            $newDrev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
+            $newDrev->constructId();
+            $newDrev->storeDeclarant();
+            $newDrev->validation = $date;
+            $newDrev->validation_odg = $date;
+            $newDrev->numero_archive = $numeroDossier;
 
-            if (!$drev) {
-              $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-              $drev->constructId();
-              $drev->storeDeclarant();
-              $drev->validation = $date;
-              $drev->validation_odg = $date;
-              $drev->numero_archive = $numeroDossier;
+            if(!$drev || $newDrev->_id != $drev->_id) {
+              $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
+              if($drev) { $drev->delete(); $drev = null; }
+            }
+
+            if(!$drev) {
+                $drev = $newDrev;
             }
 
             $lot = $drev->addLot();
@@ -235,7 +241,11 @@ EOF;
             }
 
             $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
+            try {
             $drev->save();
+        } catch(Exception $e) {
+            echo "ERROR;".$e->getMessage().";".$line."\n";
+        }
             echo "SUCCESS;Lot importé;".$drev->_id.";\n";
         }
     }
