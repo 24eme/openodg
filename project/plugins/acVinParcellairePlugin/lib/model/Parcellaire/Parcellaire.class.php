@@ -165,6 +165,9 @@ class Parcellaire extends BaseParcellaire {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
             $cepage = $p->getCepage();
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+                $cepage .= ' - jeunes feuilles';
+            }
             if (!isset($synthese[$cepage])) {
                 $synthese[$cepage] = array();
                 $synthese[$cepage]['superficie'] = 0;
@@ -181,12 +184,14 @@ class Parcellaire extends BaseParcellaire {
             $cepage = $p->getCepage();
             if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $libelles = array();
-                if(true)
                 foreach($this->getProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
                     $libelles[] = $prod->getLibelleComplet();
                 }
                 if (!count($libelles)) {
                     $libelles[] = '';
+                }
+                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+                    $libelles = array('jeunes feuilles');
                 }
             }
             foreach($libelles as $libelle) {
