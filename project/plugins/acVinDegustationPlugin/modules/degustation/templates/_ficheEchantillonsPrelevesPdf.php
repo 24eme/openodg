@@ -36,7 +36,7 @@
               <p>Campagne: <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></p>
             </td>
             <td style="width:33%;">
-              <p>Millésine: <?php echo $degustation->campagne; ?></p>
+              <p>Millésime: <?php echo $degustation->campagne; ?></p>
             </td>
             <td style="width:33%">
             </td>

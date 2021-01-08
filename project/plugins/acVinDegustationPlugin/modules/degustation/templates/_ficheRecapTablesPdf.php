@@ -32,7 +32,7 @@ th {
       <table>
         <tr style="line-height:20em;">
           <td style="width:80%"></td>
-          <td style="width:10%">Jury N°:</td>
+          <td style="width:10%">Jury :</td>
           <td border="1px" style="width:10%; border-style: solid;">
           </td>
         </tr>

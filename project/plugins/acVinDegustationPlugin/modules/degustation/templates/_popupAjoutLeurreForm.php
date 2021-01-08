@@ -15,12 +15,6 @@
 						<?php echo $form['hashref']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
-					<span class="error"><?php echo $form['numero_lot']->renderError() ?></span>
-					<div class="form-group row">
-						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['numero_lot']->render(array("placeholder" => "Numero lot", "class" => "form-control", "required" => false)) ?>
-						</div>
-					</div>
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
