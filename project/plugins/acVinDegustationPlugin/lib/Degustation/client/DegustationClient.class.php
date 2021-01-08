@@ -31,12 +31,8 @@ class DegustationClient extends acCouchdbClient {
     }
 
     public function getHistory($limit = 10, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $res = $this->getAllDocsByType(self::TYPE_COUCHDB, $limit);
-        $objects = array();
-        foreach($res->rows as $row) {
-            $objects[] = $this->find($row->id, $hydrate);
-        }
-        return $objects;
+
+        return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
     }
 
     public static function getNumeroTableStr($numero_table){

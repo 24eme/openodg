@@ -289,12 +289,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 		 $mvts = $this->getMvtLotsPrelevables();
 		 foreach($keys as $key => $activated) {
-			 $mvt = $mvts[$key];
-			 if ($activated) {
-				 $lot = DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mvt));
-				 $lot->statut = $statut;
-				 $this->lots->add(null, $lot);
+			 if (!$activated) {
+				continue;
 			 }
+			 $lot = $this->addLot($mvts[$key]);
+			 $lot->statut = $statut;
 		 }
 	 }
 
@@ -784,9 +783,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function addLot() {
-				$lot = $this->add('lots')->add();
-				return $lot;
+		public function addLot($mouvement) {
+
+			return $this->lots->add(null, DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mouvement)));
 		}
 
 }
