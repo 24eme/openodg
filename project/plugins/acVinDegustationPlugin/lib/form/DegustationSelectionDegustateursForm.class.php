@@ -51,7 +51,8 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
             if (isset($val['selectionne']) && !empty($val['selectionne'])) {
                 $compte = $this->getCompteByIdentifiant($compteId);
                 $degustateur = $doc->degustateurs->getOrAdd($college)->getOrAdd($compteId);
-                $degustateur->getOrAdd('libelle',$compte->getLibelleWithAdresse());
+		$degustateur->getOrAdd('libelle');
+		$degustateur->libelle = $compte->getLibelleWithAdresse();
             }
         }
     }
