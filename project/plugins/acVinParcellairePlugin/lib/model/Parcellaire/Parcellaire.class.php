@@ -155,4 +155,24 @@ class Parcellaire extends BaseParcellaire {
 
     /*** FIN PIECE DOCUMENT ***/
 
+    public function getParcellairePDFUri() {
+        foreach ($this->_attachments as $key => $attachement) {
+            if ($attachement->content_type == 'application/pdf') {
+                return $this->getAttachmentUri($key);
+            }
+        }
+        return '';
+    }
+
+    public function hasParcellairePDF() {
+        return ($this->getParcellairePDFUri());
+    }
+
+    public function getParcellairePDF() {
+        if ($this->hasParcellairePDF()) {
+            return file_get_contents($this->getParcellairePDFUri());
+        }
+        return null;
+    }
+
 }
