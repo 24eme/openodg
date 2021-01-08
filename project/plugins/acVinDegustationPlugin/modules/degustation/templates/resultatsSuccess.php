@@ -42,8 +42,7 @@
                     <th class="col-xs-3 text-left">Opérateur</th>
                     <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
                     <th class="col-xs-1 text-left">Conformité</th>
-                    <th class="col-xs-1 text-left">Courrier</th>
-                    <th class="col-xs-1">PDF</th>
+                    <th colspan=2 class="col-xs-2 text-left">Courrier</th>
                   </tr>
                 </thead>
                 <tbody>
