@@ -142,7 +142,7 @@ EOF;
               $lot->conformite = Lot::CONFORMITE_CONFORME;
           }
 
-          //$degustation->generateMouvementsLots();
+          $degustation->generateMouvementsLots();
           $degustation->save();
         }
       }
