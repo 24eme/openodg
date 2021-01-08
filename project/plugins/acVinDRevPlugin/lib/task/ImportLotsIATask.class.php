@@ -76,14 +76,14 @@ class ImportLotsIATask extends sfBaseTask
     "Vermentino B" => "VERMENT.B"
   );
     public static $correspondancesStatuts = array(
-      "Conforme" => self::STATUT_CONFORME,
-      "Déclassé" => self::STATUT_DECLASSE,
-      "Non Conforme" => self::STATUT_NONCONFORME,
-      "Prélevé A" => self::STATUT_PRELEVE,
-      "Prélevé NA" => self::STATUT_PRELEVE,
-      "Prévu" => self::STATUT_PRELEVE,
-      "Revendiqué C" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE),
-      "Revendiqué NC" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE)
+      "Conforme" => Lot::STATUT_CONFORME,
+      "Déclassé" => Lot::STATUT_DECLASSE,
+      "Non Conforme" => Lot::STATUT_NONCONFORME,
+      "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
+      "Prélevé NA" => Lot::STATUT_PRELEVE,//Prélevé Non Anonimisé
+      "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
+      "Revendiqué C" => Lot::STATUT_PRELEVABLE,
+      "Revendiqué NC" => Lot::STATUT_NONCONFORME
     );
 
     protected function configure()
@@ -113,6 +113,7 @@ EOF;
         $this->initProduitsCepages();
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        $drev = null;
         $ligne = 0;
         foreach(file($arguments['csv']) as $line) {
             $ligne++;
@@ -182,26 +183,33 @@ EOF;
                   $dt = new DateTime($date);
                   $date = $dt->modify('+1 minute')->format('c');
             }
-            $statut = trim($data[self::CSV_STATUT]);
-            $preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
-            $correspondances = self::$correspondancesStatuts;
+            $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
+            $statut = null;
+            if(isset($data[self::CSV_STATUT])){
+              $statut = trim($data[self::CSV_STATUT]);
+           }
 
-            if (!isset($correspondances[$statut])) {
-                echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
-                continue;
+           if (!isset(self::$correspondancesStatuts[$statut])) {
+              echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+              continue;
+           }
+
+           $statut = self::$correspondancesStatuts[$statut];
+
+            $newDrev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
+            $newDrev->constructId();
+            $newDrev->storeDeclarant();
+            $newDrev->validation = $date;
+            $newDrev->validation_odg = $date;
+            $newDrev->numero_archive = $numeroDossier;
+
+            if(!$drev || $newDrev->_id != $drev->_id) {
+              $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
+              if($drev) { $drev->delete(); $drev = null; }
             }
 
-            $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
-
-            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
-
-            if (!$drev) {
-              $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-              $drev->constructId();
-              $drev->storeDeclarant();
-              $drev->validation = $date;
-              $drev->validation_odg = $date;
-              $drev->numero_archive = $numeroDossier;
+            if(!$drev) {
+                $drev = $newDrev;
             }
 
             $lot = $drev->addLot();
@@ -218,10 +226,13 @@ EOF;
             $lot->destination_type = null;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
-            $lot->statut = $statut;
+            $lot->statut = Lot::STATUT_NONPRELEVABLE;
             if ($statut == self::STATUT_NONCONFORME) {
               $lot->statut = self::STATUT_PRELEVABLE;
               $lot->specificite = '2ème passage';
+            }
+            if($statut == Lot::STATUT_PRELEVABLE && $prelevable) {
+                $lot->statut = Lot::STATUT_PRELEVABLE;
             }
 
             $deleted = array();
@@ -235,7 +246,11 @@ EOF;
             }
 
             $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
+            try {
             $drev->save();
+        } catch(Exception $e) {
+            echo "ERROR;".$e->getMessage().";".$line."\n";
+        }
             echo "SUCCESS;Lot importé;".$drev->_id.";\n";
         }
     }
