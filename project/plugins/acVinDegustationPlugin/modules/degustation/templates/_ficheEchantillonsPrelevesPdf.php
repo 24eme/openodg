@@ -45,18 +45,12 @@
     </div>
 
     <p style="margin-left:0;">
-      <?php echo "Nombre total de lots : ".count($lots)."  dont : ";?>
-      <?php $i = 0; foreach ($lots as $key => $l): ?>
+      <?php echo "Nombre total de lots : ".count($lots)."<br/> dont :";?>
+      <?php $i = 0; foreach ($lots as $key => $l):  ?>
         <?php foreach ($l as $key => $value): ?>
-          <?php echo count($l)." éch. ".$value->declarant_nom; break;?>
+          <?php echo ($value->declarant_nom) ? $value->declarant_nom : 'leurre';  echo " : ".count($l); break;?>
         <?php endforeach; ?>
-        <?php $i++; if(count($lots)-1 == $i ): ?>
-          <?php echo " et "; ?>
-        <?php elseif(count($lots) == $i ): ?>
-          <?php echo "."; ?>
-        <?php else: ?>
-          <?php echo ", "; ?>
-        <?php endif ?>
+        <?php echo " -  "; ?>
       <?php endforeach; ?>
     </p>
 
@@ -69,20 +63,20 @@
       </tr>
       <tr style="line-height:13px;">
         <th class="bg-white" style="width:7%;"><?php echo tdStart() ?><strong><small>N°Lot ODG</small></strong></th>
-        <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>N°Anonyme</small></strong></th>
-        <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>N°Lot Opérateur</small></strong></th>
-        <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>Volume (hl)</small></strong></th>
+        <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N°Anon</small></strong></th>
+        <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
+        <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><strong><small>Vol (hl)</small></strong></th>
         <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>IGP/Couleur</small></strong></th>
         <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>Cepage</small></strong></th>
       </tr>
     <?php $i=1;?>
-     <?php  foreach($lots as $numero_dossier => $lotInfo): ?>
+     <?php  foreach($lots as $numero_dossier => $lotInfo):  ?>
        <?php $firstDisplay = true; ?>
 
         <?php foreach ($lotInfo as $numAnonyme => $lot): ?>
           <tr>
             <?php if($firstDisplay == true): ?>
-              <td rowspan="<?php echo count($lotInfo); ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo $lot->numero_dossier ?></small></td>
+              <td rowspan="<?php echo count($lotInfo); ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
               <td rowspan="<?php echo count($lotInfo); ?>" style="vertical-align: middle;"><small><?php echo $lot->declarant_nom."<br>".$lot->declarant_identifiant;?></small></td>
             <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
