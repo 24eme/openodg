@@ -35,11 +35,13 @@
                       <?php echo tdStart() ?>&nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve;  ?></strong>
                     </td>
                   </tr>
+                  <?php if ($lotInfo->lot->details): ?>
                   <tr style="line-height:4px;">
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:6px;">
                       <?php echo tdStart() ?>&nbsp;Cépages&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->details;  ?></strong>
                     </td>
                   </tr>
+                  <?php endif; ?>
                   <tr>
                     <td>
                       <?php echo tdStart() ?>&nbsp;Volume&nbsp;:&nbsp;<strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
