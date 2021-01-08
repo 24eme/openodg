@@ -56,12 +56,13 @@
         <?php endif; ?>
         <?php if($drev->exist('lots')): ?>
 
-            <?php if($dr): ?>
+
             <?php
                 $lots = $drev->getLotsByCouleur();
                 $lotsHorsDR = $drev->getLotsHorsDR();
                 $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
                 ?>
+              <?php if($dr): ?>
               <h3>Synthèse IGP</h3>
               <table class="table table-bordered table-striped">
                 <thead>
