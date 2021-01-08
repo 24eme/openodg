@@ -260,7 +260,6 @@ $list_idu = [];
 <a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
 </div>
 <?php endif; ?>
-
 <?php else: ?>
     <div class="row">
         <div class="col-xs-12">
