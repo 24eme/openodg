@@ -54,8 +54,8 @@ th {
            </td>
            <td><?php echo tdStart() ?>
              <small>
-             <?php echo ($etablissement->telephone_bureau) ? 'Tel: '.$etablissement->telephone_bureau : '' ?><br/>
-             <?php echo ($etablissement->telephone_perso) ? 'Port: '.$etablissement->telephone_perso : '' ?><br/>
+             <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?><br/>
+             <?php echo ($etablissement->telephone_perso) ? $etablissement->telephone_perso : '' ?><br/>
              <?php echo ($etablissement->fax) ? 'Fax: '.$etablissement->fax : '' ?>
             </small>
           </td>
