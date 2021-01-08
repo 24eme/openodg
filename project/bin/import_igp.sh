@@ -7,7 +7,7 @@ fi
 
 ODG=$1
 
-. bin/config.$ODG.inc
+. bin/config_$ODG.inc
 
 EXPORT=$2
 
