@@ -45,7 +45,9 @@ th {
           <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
           <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Date<br/> commission</strong></th>
         </tr>
-        <?php  foreach($etablissements as $numDossier => $etablissement): ?>
+        <?php
+    $nbLotTotal = 0;
+    foreach($etablissements as $numDossier => $etablissement): ?>
          <tr style="line-height:17px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale ?></small></strong></td>
            <td><?php echo tdStart() ?>
@@ -63,6 +65,7 @@ th {
           <td><?php echo tdStart() ?>
             <small>n°&nbsp;<?php echo $numDossier; ?></small><br/>
             <small><?php echo count($lots[$numDossier]); ?>&nbsp;lot(s)</small>
+            <?php $nbLotTotal += count($lots[$numDossier]); ?>
           </td>
           <td><?php echo tdStart() ?>
             <small><?php //echo $degustation->laboratoire; ?></small>
@@ -74,7 +77,7 @@ th {
             <small> <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></small>
           </td>
          </tr>
-       <?php endforeach; ?>
+      <?php endforeach; ?>
       </table>
       <table>
         <tr style="line-height: 25em; height:25em;">

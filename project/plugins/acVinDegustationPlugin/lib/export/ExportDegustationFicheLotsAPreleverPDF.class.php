@@ -15,10 +15,11 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
 
     public function create() {
       $etablissements = array();
-      $nbLotTotal = 0;
       foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
-				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
-        $nbLotTotal += count($lotsEtablissement);
+        if (!$numDossier) {
+            continue;
+        }
+		$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
         $etablissements[$numDossier] = $etablissement;
       }
         @$this->printable_document->addPage(
@@ -27,7 +28,6 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
             'degustation' => $this->degustation,
             'etablissements' => $etablissements,
             "date_edition" => date("d/m/Y"),
-            'nbLotTotal' => $nbLotTotal,
             'lots' => $this->degustation->getLotsByNumDossierNumCuve()
           )
         ));
