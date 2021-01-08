@@ -24,7 +24,7 @@ th {
           <td style="width:20%;">
           </td>
           <td style="width:30%;">
-            <p>Préveleur :</p>
+            <p>Préleveur :</p>
           </td>
           <td style="width:30%">
             <p>Date d'édition : <?php echo $date_edition;?></p>
@@ -37,35 +37,30 @@ th {
     <div>
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
-          <th class="topempty bg-white"style="width:15%; "><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:15%; "><?php echo tdStart() ?><strong>Adresse prélèvement</strong></th>
-          <th class="topempty bg-white"style="width:10%; "><?php echo tdStart() ?><strong>CP / Ville</strong></th>
-          <th class="topempty bg-white"style="width:10%; "><?php echo tdStart() ?><strong>Tel / Port / Fix</strong></th>
-          <th class="topempty bg-white"style="width:5%; "><?php echo tdStart() ?><strong>N° Dos</strong></th>
-          <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Nb Lots</strong></th>
-          <th class="topempty bg-white"style="width:15%; "><?php echo tdStart() ?><strong>Laboratoire</strong></th>
-          <th class="topempty bg-white"style="width:10%; "><?php echo tdStart() ?><strong>Date / Heure</strong></th>
-          <th class="topempty bg-white"style="width:11%; "><?php echo tdStart() ?><strong>Date commission</strong></th>
-
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse prélèvement</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Tel / Port / Fix</strong></th>
+          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>N° Dos / Nb Lots</strong></th>
+          <th class="topempty bg-white"style="width:16%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
+          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date / Heure</strong></th>
+          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Date<br/> commission</strong></th>
         </tr>
         <?php  foreach($etablissements as $numDossier => $etablissement): ?>
          <tr style="line-height:17px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale ?></small></strong></td>
-           <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->adresse  ?></small></strong></td>
            <td><?php echo tdStart() ?>
-             <small><?php echo $etablissement->code_postal. ' '.$etablissement->commune; ?></small>
+              <strong><small><?php echo $etablissement->adresse ?></small></strong><br/>
+              <small><?php echo $etablissement->code_postal. ' '.$etablissement->commune; ?></small>
            </td>
            <td><?php echo tdStart() ?>
              <small>
-             <?php echo $etablissement->telephone_bureau;?><br/>
-             <?php echo $etablissement->telephone_perso;?><br/>
-             <?php echo $etablissement->fax;?>
+             <?php echo ($etablissement->telephone_bureau) ? 'Tel: '.$etablissement->telephone_bureau : '' ?><br/>
+             <?php echo ($etablissement->telephone_perso) ? 'Port: '.$etablissement->telephone_perso : '' ?><br/>
+             <?php echo ($etablissement->fax) ? 'Fax: '.$etablissement->fax : '' ?>
             </small>
           </td>
           <td><?php echo tdStart() ?>
-            <small><?php echo $numero_dossier; ?></small>
-          </td>
-          <td><?php echo tdStart() ?>
+            <small><?php echo $numero_dossier; ?></small> /
             <small><?php echo count($lots[$numDossier]); ?></small>
           </td>
           <td><?php echo tdStart() ?>
