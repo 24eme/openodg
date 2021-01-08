@@ -112,6 +112,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    $this->updateOrigineLots(Lot::STATUT_PRELEVABLE);
 	}
 
+	public function findLot($origineMouvement) {
+		foreach($this->lots as $lot) {
+			if($lot->origine_mouvement != $origineMouvement) {
+				continue;
+			}
+
+			return $lot;
+		}
+
+		return null;
+	}
+
 	public function updateOrigineLots($statut) {
 	    foreach ($this->lots as $lot) {
           if ($lot->leurre === true) {
