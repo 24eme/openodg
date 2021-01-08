@@ -40,17 +40,18 @@ th {
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse prélèvement</strong></th>
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Tel / Port / Fix</strong></th>
-          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>N° Dos / Nb Lots</strong></th>
+          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Dosssier /<br/> Nb Lots</strong></th>
           <th class="topempty bg-white"style="width:16%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
-          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date / Heure</strong></th>
+          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
           <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Date<br/> commission</strong></th>
         </tr>
         <?php  foreach($etablissements as $numDossier => $etablissement): ?>
          <tr style="line-height:17px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale ?></small></strong></td>
            <td><?php echo tdStart() ?>
-              <strong><small><?php echo $etablissement->adresse ?></small></strong><br/>
-              <small><?php echo $etablissement->code_postal. ' '.$etablissement->commune; ?></small>
+              <small><?php echo $etablissement->adresse ?></small>
+              <br/>
+              <strong><small><?php echo $etablissement->code_postal. ' '.$etablissement->commune; ?></small></strong>
            </td>
            <td><?php echo tdStart() ?>
              <small>
@@ -60,11 +61,11 @@ th {
             </small>
           </td>
           <td><?php echo tdStart() ?>
-            <small><?php echo $numero_dossier; ?></small> /
-            <small><?php echo count($lots[$numDossier]); ?></small>
+            <small>n°&nbsp;<?php echo $numDossier; ?></small><br/>
+            <small><?php echo count($lots[$numDossier]); ?>&nbsp;lot(s)</small>
           </td>
           <td><?php echo tdStart() ?>
-            <small><?php echo $degustation->lieu; ?></small>
+            <small><?php //echo $degustation->laboratoire; ?></small>
           </td>
           <td><?php echo tdStart() ?>
 
