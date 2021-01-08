@@ -8,6 +8,7 @@ class degustationActions extends sfActions {
         $newDegutation->getMvtLotsPrelevables();
         $this->lotsPrelevables = $newDegutation->getLotsPrelevablesSortByDate();
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
+        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_NONCONFORME)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
