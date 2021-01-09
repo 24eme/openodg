@@ -59,7 +59,6 @@ class ImportLotsIATask extends sfBaseTask
   protected $produits;
   protected $cepages;
 
-  public static $types = array('B' => DRevClient::LOT_DESTINATION_CONDITIONNEMENT, 'VF' => DRevClient::LOT_DESTINATION_VRAC_FRANCE, 'VHF' => DRevClient::LOT_DESTINATION_VRAC_EXPORT);
   public static $correspondancesCepages = array(
     "Cabernet sauvignon N" => "CAB-SAUV-N",
     "Chardonnay B" => "CHARDONN.B",
@@ -224,6 +223,22 @@ EOF;
             $lot->numero_cuve = $numero;
             $lot->volume = $volume;
             $lot->destination_type = null;
+            $lot->elevage = false;
+            if(preg_match('/VF/', $data[self::CSV_DESTINATION])) {
+                $lot->destination_type .= DRevClient::LOT_DESTINATION_VRAC_FRANCE."_";
+            }
+            if(preg_match('/VHF/', $data[self::CSV_DESTINATION])) {
+                $lot->destination_type .= DRevClient::LOT_DESTINATION_VRAC_EXPORT."_";
+            }
+            if(preg_match('/B/', $data[self::CSV_DESTINATION])) {
+                $lot->destination_type .= DRevClient::LOT_DESTINATION_CONDITIONNEMENT."_";
+            }
+            if($lot->destination_type) {
+                $lot->destination_type = preg_replace('/_$/', "", $lot->destination_type);
+            }
+            if(preg_match('/E/', $data[self::CSV_DESTINATION])) {
+                $lot->elevage = true;
+            }
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
             $lot->statut = Lot::STATUT_NONPRELEVABLE;
@@ -233,6 +248,9 @@ EOF;
             }
             if($statut == Lot::STATUT_PRELEVABLE && $prelevable) {
                 $lot->statut = Lot::STATUT_PRELEVABLE;
+            }
+            if($lot->elevage) {
+                $lot->statut = Lot::STATUT_ELEVAGE;
             }
 
             $deleted = array();
