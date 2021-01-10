@@ -145,31 +145,31 @@ EOF;
               $cep1 = $this->identifyCepage($data[self::CSV_CEPAGE_1]);
               if (!$cep1) {
                 echo "WARNING;cepage_1 non trouvé ".$data[self::CSV_CEPAGE_1].";pas d'import;$line\n";
-                continue;
+              } else {
+                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_1]) * 1;
+                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
+                  $cepages[$cep1] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
-              $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_1]) * 1;
-              $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$cep1] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             if (trim($data[self::CSV_CEPAGE_2])) {
               $cep2 = $this->identifyCepage($data[self::CSV_CEPAGE_2]);
               if (!$cep2) {
                 echo "WARNING;cepage_2 non trouvé ".$data[self::CSV_CEPAGE_2].";pas d'import;$line\n";
-                continue;
+              } else {
+                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_2]) * 1;
+                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
+                  $cepages[$cep2] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
-              $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_2]) * 1;
-              $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$cep2] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             if (trim($data[self::CSV_CEPAGE_3])) {
               $cep3 = $this->identifyCepage($data[self::CSV_CEPAGE_3]);
               if (!$cep3) {
                 echo "WARNING;cepage_3 non trouvé ".$data[self::CSV_CEPAGE_3].";pas d'import;$line\n";
-                continue;
+              } else {
+                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_3]) * 1;
+                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
+                  $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
-              $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_3]) * 1;
-              $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
             $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
