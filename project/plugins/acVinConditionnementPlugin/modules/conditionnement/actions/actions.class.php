@@ -211,7 +211,7 @@ class conditionnementActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
+        $this->form->save();
         $dateValidation = date('c');
 
         if($this->form->getValue("date")) {

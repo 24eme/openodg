@@ -50,7 +50,7 @@
 
 <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->exist('date_degustation_voulue')) ? $conditionnement->get('date_degustation_voulue') : null; ?></p>
+    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->exist('date_degustation_voulue')) ? date_format(date_create($conditionnement->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
 <?php endif ?>
 
 <div class="row row-margin row-button">

@@ -34,4 +34,11 @@ class ConditionnementValidationForm extends acCouchdbForm
 
         $this->widgetSchema->setNameFormat('validation[%s]');
     }
+
+    public function save() {
+  		$values = $this->getValues();
+  	   $this->getDocument()->getOrAdd("date_degustation_voulue");
+       $this->getDocument()->date_degustation_voulue = $values["date_degustation_voulue"];
+       $this->getDocument()->save();
+  	}
 }
