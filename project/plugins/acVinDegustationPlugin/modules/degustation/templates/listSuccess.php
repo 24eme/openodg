@@ -56,7 +56,7 @@
                     <a class="btn btn-xs btn-<?php echo $lot->numero_table_color?>"
                       href="<?php echo ($lot->numero_table)? url_for($lot->numero_table_step_route , array('id' => $lot->degustation->_id, 'numero_table' => $lot->numero_table))
                       : url_for($lot->numero_table_step_route, array('id' => $lot->degustation->_id)); ?>">
-                      <?php echo ($lot->numero_table)? "Table ".$lot->numero_table : "Choisir"; ?>
+                      <?php echo ($lot->numero_table)? "Table ".DegustationClient::getNumeroTableStr($lot->numero_table) : "Choisir"; ?>
                     </a>
                   <?php endif; ?>
 
