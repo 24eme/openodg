@@ -155,10 +155,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getInfosDegustation(){
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
+		$infos["nbLotsLeurre"] = count($this->getLots()) - count($this->getLotsWithoutLeurre());;
 		$infos["nbLotsSansLeurre"] = count($this->getLotsWithoutLeurre());
 		$infos['nbLotsPrelevable'] = count($this->getLotsPrelevables());
 		$infos['nbLotsRestantAPrelever'] = $this->getNbLotsRestantAPreleve();
 		$infos['nbLotsPreleves'] = $this->getNbLotsPreleves();
+		$infos['nbLotsPrelevesSansLeurre'] = $this->getNbLotsPreleves() - $infos["nbLotsLeurre"];
 		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
   	$infos["nbAdherentsLotsRestantAPrelever"] = count($this->getAdherentsByLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT));
 		$infos["nbAdherentsPreleves"] = count($this->getAdherentsPreleves());
