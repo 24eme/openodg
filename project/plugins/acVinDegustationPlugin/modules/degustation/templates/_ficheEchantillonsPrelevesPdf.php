@@ -44,16 +44,7 @@
       </table>
     </div>
 
-    <p style="margin-left:0;">
-      <?php echo "Nombre total de lots : ".count($lots)."<br/> dont :";?>
-      <?php $i = 0; foreach ($lots as $key => $l):  ?>
-        <?php foreach ($l as $key => $value): ?>
-          <?php echo ($value->declarant_nom) ? $value->declarant_nom : 'leurre';  echo " : ".count($l); break;?>
-        <?php endforeach; ?>
-        <?php echo " -  "; ?>
-      <?php endforeach; ?>
-    </p>
-
+    <p style="margin-left:0;">Nombre total de lots : <?php echo count($lots);?></p>
 
     <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
       <tr style="line-height:20px;">

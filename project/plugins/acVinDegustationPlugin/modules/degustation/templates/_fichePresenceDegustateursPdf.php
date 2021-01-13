@@ -35,7 +35,7 @@
 
     <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
       <tr>
-        <td style="width:40%;">Nom et prénom<br/>Téléphone / protable</td>
+        <td style="width:40%;">Nom et prénom<br/>Téléphone / portable</td>
         <td style="width:20%;">Collège</td>
         <td style="width:20%;">Jury</td>
         <td style="width:20%;">Signature</td>

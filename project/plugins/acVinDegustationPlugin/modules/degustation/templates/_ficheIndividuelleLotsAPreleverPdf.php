@@ -55,10 +55,7 @@ p, div {
         </p>
         <p>
           <span><strong>Téléphone :</strong> <?php echo $etablissement->telephone_bureau ?></span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Fax :</strong> <?php echo $etablissement->fax ?></span>
-        </p>
-        <p>
-          <span><strong>Portable :</strong> <?php echo $etablissement->telephone_mobile ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Portable :</strong> <?php echo $etablissement->telephone_mobile ?></span>
         </p>
         <br/>
     </td>
@@ -75,7 +72,6 @@ p, div {
         </p>
         <p>
           <span><strong>Téléphone :</strong> <?php echo $etablissement->telephone_bureau ?></span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Fax :</strong> <?php echo $etablissement->fax ?></span>
         </p>
     </td>
   </tr>
@@ -112,8 +108,8 @@ p, div {
       <th style="width: 10%"><?php echo tdStart() ?><small>Cépage</small></th>
       <th style="width: 7%"><?php echo tdStart() ?><small>Millésime</small></th>
       <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
-      <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
-      <th style="width: 6%"><?php echo tdStart() ?><small>Passage</small></th>
+      <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
+      <th style="width: 7%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
       <th style="width: 6%"><?php echo tdStart() ?><small>Type de lot (1)</small></th>
       <th style="width: 10%"><?php echo tdStart() ?><small>Contenant<br/>Logement</small></th>
       <th style="width: 25%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
@@ -140,7 +136,7 @@ p, div {
         <small><?php echo $lot->numero_cuve ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo "" ?></small>
+        <small><?php echo strpos($lot->specificite, "2ème") !== false ? $lot->specificite : "1er passage $lot->specificite"; ?></small>
       </td>
       <td><?php echo tdStart() ?>
         <small><?php echo $lot->numero_cuve ?></small>

@@ -244,7 +244,7 @@ EOF;
             $lot->statut = Lot::STATUT_NONPRELEVABLE;
             if ($statut == self::STATUT_NONCONFORME) {
               $lot->statut = self::STATUT_PRELEVABLE;
-              $lot->specificite = '2ème passage';
+              $lot->specificite = "2ème passage $lot->specificite";
             }
             if($statut == Lot::STATUT_PRELEVABLE && $prelevable) {
                 $lot->statut = Lot::STATUT_PRELEVABLE;
