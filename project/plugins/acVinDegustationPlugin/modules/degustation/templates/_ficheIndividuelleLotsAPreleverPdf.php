@@ -57,7 +57,7 @@ p, div {
           <span><strong>Téléphone :</strong> <?php echo $etablissement->telephone_bureau ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Portable :</strong> <?php echo $etablissement->telephone_mobile ?></span>
         </p>
-        <br/>
+        <p></p>
     </td>
     <td border="1px" class="border">
         <p>
@@ -114,7 +114,28 @@ p, div {
       <th style="width: 10%"><?php echo tdStart() ?><small>Contenant<br/>Logement</small></th>
       <th style="width: 25%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
     </tr>
-    <?php  foreach($lots as $numAnonyme => $lot): ?>
+    <?php $i = 0;  foreach($lots as $numAnonyme => $lot): ?>
+     <?php if($i == 2 || $i == 12): ?>
+       </table>
+       <br pagebreak="true" />
+       <p>Suite des lots<p/>
+       <br/>
+       <p><strong>(1)</strong> Type de lot : <strong>R</strong> = Revendication, <strong>VF</strong> = Transaction vrac France, <strong>VHF</strong> = Transaction Vrac Hors France, <strong>B</strong> = Conditionnement, <strong>E</strong> = Élevage</p>
+       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
+         <tr style="line-height:20px;">
+           <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier ODG</small></th>
+           <th style="width: 7%"><?php echo tdStart() ?><small>N° Lot ODG</small></th>
+           <th style="width: 6%"><?php echo tdStart() ?><small>Couleur</small></th>
+           <th style="width: 10%"><?php echo tdStart() ?><small>Cépage</small></th>
+           <th style="width: 7%"><?php echo tdStart() ?><small>Millésime</small></th>
+           <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
+           <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
+           <th style="width: 7%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
+           <th style="width: 6%"><?php echo tdStart() ?><small>Type de lot (1)</small></th>
+           <th style="width: 10%"><?php echo tdStart() ?><small>Contenant<br/>Logement</small></th>
+           <th style="width: 25%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
+         </tr>
+     <?php endif;?>
      <tr style="line-height:17px;">
        <td><?php echo tdStart() ?><small><?php echo $lot->numero_dossier ?></small></td>
        <td><?php echo tdStart() ?><small><?php echo $lot->numero_archive  ?></small></td>
@@ -148,6 +169,7 @@ p, div {
 
       </td>
      </tr>
+     <?php $i++; ?>
    <?php endforeach; ?>
   </table>
 </div>
