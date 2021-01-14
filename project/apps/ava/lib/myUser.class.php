@@ -120,6 +120,7 @@ class myUser extends sfBasicSecurityUser
     public function getTeledeclarationDrevRegion()
     {
         return null;
+    }
 
     public function getTeledeclarationConditionnementRegion()
     {
