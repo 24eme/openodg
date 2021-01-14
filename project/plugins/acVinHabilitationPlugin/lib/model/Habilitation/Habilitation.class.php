@@ -131,6 +131,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
                 $this->addHistoriqueNewProduit($produit_libelle);
             }
             $this->declaration->reorderByConf();
+            $produit = $this->get('declaration')->get($hashToAdd);
         }
         return $produit;
     }
