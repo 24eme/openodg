@@ -1189,14 +1189,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function canHaveSuperficieVinifiee()
     {
-    	$can = false;
     	foreach ($this->declaration->getProduits() as $produit) {
     		if ($produit->exist('superficie_vinifiee') || $produit->exist('superficie_vinifiee_vtsgn')) {
-    			$can = true;
-    			break;
+    			return true;
     		}
     	}
-    	return $can;
+    	return false;
     }
 
     public function isAdresseLogementDifferente() {
