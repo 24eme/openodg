@@ -9,6 +9,9 @@
       var state = $(this).bootstrapSwitch('state');
       var form = $(this).parents('form');
       if($(this).hasClass('ajax')){
+        if(form.hasClass('degustateurs-confirmation')){
+          $(this).parents('tr').removeClass("text-muted").removeClass("disabled").removeAttr("disabled").css("text-decoration",'');        
+        }
         $.formPost(form);
       }
     });
@@ -71,18 +74,18 @@
       $('.degustation.prelevements').each(function(){
         var nbLotsSelectionnes = 0;
         var nbAdherentsLots = 0;
-        var nb = $('tr strong#nbLotsSelectionnes').text();
 
         $(this).find('.bsswitch').each(function () {
            var state = $(this).bootstrapSwitch('state');
            if(state){
               listAdherents[$(this).attr("data-preleve-adherent")]++;
-              nbLotsSelectionnes++;
+              nbLotsSelectionnes++
            }
       });
+      nbAdherentsLots = Object.keys(listAdherents).length;
       for(let i in listAdherents){
-        if(listAdherents[i] >= 1){
-          nbAdherentsLots++;
+        if(listAdherents[i] == 0){
+          nbAdherentsLots--;
         }
       }
 

@@ -1,0 +1,139 @@
+conditionnement_create:
+  url: /conditionnement/creation/:identifiant
+  param: { module: conditionnement, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+conditionnement_create_papier:
+  url: /conditionnement/creation-papier/:identifiant
+  param: { module: conditionnement, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+conditionnement_edit:
+  url: /conditionnement/edition/:id
+  param: { module: conditionnement, action: edit }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+conditionnement_delete:
+  url: /conditionnement/suppression/:id
+  param: { module: conditionnement, action: delete }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+conditionnement_devalidation:
+  url: /conditionnement/devalidation/:id
+  param: { module: conditionnement, action: devalidation }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+conditionnement_exploitation:
+  url: /conditionnement/exploitation/:id
+  param: { module: conditionnement, action: exploitation }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+conditionnement_lots:
+  url: /conditionnement/lots/:id/:appellation
+  param: { module: conditionnement, action: lots, appellation: 0 }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+conditionnement_lots_delete:
+  url: /conditionnement/lots/:id/:numArchive/supprimer
+  param: { module: conditionnement, action: deleteLots, numArchive: 0 }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+conditionnement_validation:
+  url: /conditionnement/validation/:id
+  param: { module: conditionnement, action: validation }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+conditionnement_modificative:
+  url: /conditionnement/modificative/:id
+  param: { module: conditionnement, action: modificative }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+conditionnement_validation_admin:
+  url: /conditionnement/validation_admin/:id
+  param: { module: conditionnement, action: validationAdmin }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+conditionnement_confirmation:
+  url: /conditionnement/confirmation/:id
+  param: { module: conditionnement, action: confirmation }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+conditionnement_visualisation:
+  url: /conditionnement/visualisation/:id
+  param: { module: conditionnement, action: visualisation }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+conditionnement_export_pdf:
+  url: /conditionnement/pdf/:id
+  param: { module: conditionnement, action: PDF }
+  class: ConditionnementRoute
+  options:
+    model:    Conditionnement
+    type:     object
+  requirements:
+    sf_method: [get]

@@ -8,13 +8,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	protected $piece_document = null;
 	protected $tri = null;
+	protected $cm = null;
 
     public function __construct() {
         parent::__construct();
-		//TODO : supprimer cette goretterie réalisée pour la démo
-		$this->campagne = '2019';
         $this->initDocuments();
+				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
+
+		public function getDateStdr() {
+			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
+		}
+
+		public function getMaster() {
+			return $this;
+		}
+
+    public function isLotsEditable(){
+      return false;
+    }
+
+		public function getCampagneByDate() {
+			return $this->cm->getCampagneByDate($this->getDateStdr());
+		}
 
     public function __clone() {
         parent::__clone();
@@ -26,8 +42,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function getConfiguration() {
-
-        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+        return ConfigurationClient::getInstance()->getConfiguration($this->getDateStdr());
     }
 
     public function constructId() {
@@ -97,6 +112,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    $this->updateOrigineLots(Lot::STATUT_PRELEVABLE);
 	}
 
+	public function findLot($origineMouvement) {
+		foreach($this->lots as $lot) {
+			if($lot->origine_mouvement != $origineMouvement) {
+				continue;
+			}
+
+			return $lot;
+		}
+
+		return null;
+	}
+
 	public function updateOrigineLots($statut) {
 	    foreach ($this->lots as $lot) {
           if ($lot->leurre === true) {
@@ -128,9 +155,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getInfosDegustation(){
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
+		$infos["nbLotsLeurre"] = count($this->getLots()) - count($this->getLotsWithoutLeurre());;
+		$infos["nbLotsSansLeurre"] = count($this->getLotsWithoutLeurre());
 		$infos['nbLotsPrelevable'] = count($this->getLotsPrelevables());
 		$infos['nbLotsRestantAPrelever'] = $this->getNbLotsRestantAPreleve();
 		$infos['nbLotsPreleves'] = $this->getNbLotsPreleves();
+		$infos['nbLotsPrelevesSansLeurre'] = $this->getNbLotsPreleves() - $infos["nbLotsLeurre"];
 		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
   	$infos["nbAdherentsLotsRestantAPrelever"] = count($this->getAdherentsByLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT));
 		$infos["nbAdherentsPreleves"] = count($this->getAdherentsPreleves());
@@ -172,7 +202,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->version = $this->getVersion();
 			$mvt->origine_hash = $lot->getHash();
 			$mvt->origine_type = 'degustation';
-			$mvt->origine_document_id = $lot->origine_document_id;
+			$mvt->origine_document_id = $this->_id;
 			$mvt->id_document = $this->_id;
 			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
 			$mvt->declarant_identifiant = $lot->declarant_identifiant;
@@ -180,17 +210,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->destination_type = $lot->destination_type;
 			$mvt->destination_date = $lot->destination_date;
 			$mvt->details = $lot->details;
-			$mvt->campagne = $this->campagne;
+			$mvt->campagne = $this->getCampagneByDate();
 			$mvt->specificite = $lot->specificite;
+			$mvt->conformite = $lot->conformite;
+			$mvt->motif = $lot->motif;
 			return $mvt;
 	}
 
 	public function generateAndAddMouvementLotsFromLot($lot, $key) {
-			$mvt = $this->generateMouvementLotsFromLot($lot, $key);
-			if(!$this->add('mouvements_lots')->exist($lot->declarant_identifiant)) {
-					$this->add('mouvements_lots')->add($lot->declarant_identifiant);
-			}
-			return $this->add('mouvements_lots')->get($lot->declarant_identifiant)->add($key, $mvt);
+
+			return $this->add('mouvements_lots')->add($lot->declarant_identifiant)->add($key, $this->generateMouvementLotsFromLot($lot, $key));
 	}
 
 	public function generateMouvementsLots() {
@@ -238,7 +267,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function getMvtLotsPrelevables() {
          $mvt = array();
-         foreach (MouvementLotView::getInstance()->getByStatut($this->campagne, Lot::STATUT_PRELEVABLE)->rows as $item) {
+         foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_PRELEVABLE)->rows as $item) {
              $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
@@ -272,12 +301,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 		 $mvts = $this->getMvtLotsPrelevables();
 		 foreach($keys as $key => $activated) {
-			 $mvt = $mvts[$key];
-			 if ($activated) {
-				 $lot = DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mvt));
-				 $lot->statut = $statut;
-				 $this->lots->add(null, $lot);
+			 if (!$activated) {
+				continue;
 			 }
+			 $lot = $this->addLot($mvts[$key]);
+			 $lot->statut = $statut;
 		 }
 	 }
 
@@ -544,7 +572,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return 0;
         }
 
-    public function addLeurre($hash, $numero_lot, $numero_table)
+    public function addLeurre($hash, $numero_table)
         {
             if (! $this->exist('lots')) {
                 $this->add('lots');
@@ -554,9 +582,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $leurre->leurre = true;
             $leurre->numero_table = $numero_table;
             $leurre->setProduitHash($hash);
-            if ($numero_lot) {
-                $leurre->numero_cuve = $numero_lot;
-            }
+
 						$leurre->statut = Lot::STATUT_NONPRELEVABLE;
 
             return $leurre;
@@ -767,6 +793,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 
 			return $degust;
-
 		}
+
+		public function addLot($mouvement) {
+
+			return $this->lots->add(null, DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mouvement)));
+		}
+
 }

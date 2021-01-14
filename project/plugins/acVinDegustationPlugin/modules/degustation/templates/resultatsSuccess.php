@@ -41,16 +41,16 @@
                     <th class="col-xs-1 text-left">Numéro<br/>anonyme</th>
                     <th class="col-xs-3 text-left">Opérateur</th>
                     <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
-                    <th class="col-xs-2 text-left">Conformité</th>
-                    <th class="col-xs-2 text-left">Courrier</th>
+                    <th class="col-xs-1 text-left">Conformité</th>
+                    <th colspan=2 class="col-xs-2 text-left">Courrier</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
                   foreach ($form->getTableLots() as $lot):
                     $name = $form->getWidgetNameFromLot($lot);
-                    if (isset($form["conformite_".$name])): ?>
-                      <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
+                    if (!$lot->leurre && isset($form["conformite_".$name])): ?>
+                      <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
                         <td class="text-left"><?php echo $lot->getNumeroAnonymise() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td class="text-left">
@@ -61,7 +61,7 @@
                             <span class="text-muted">(<?php echo $lot->specificite; ?>)</span>
                           <?php endif ?>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <div style="margin-bottom: 0;">
                             <div class="col-xs-12">
                               <a
@@ -70,13 +70,11 @@
                             </div>
                           </div>
                         </td>
-                        <td class="text-center">
-                          <?php if (!$lot->leurre): ?>
-                            <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
-                              <span class="text-muted glyphicon glyphicon-pencil"></span>
-                            <?php else: ?>
-                              <?php echo $lot->getShortLibelleConformite(); ?>
-                            <?php endif; ?>
+                        <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
+                          <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
+                            <span class="text-muted glyphicon glyphicon-pencil"></span>
+                          <?php else: ?>
+                            <?php echo $lot->getShortLibelleConformite(); ?>
                           <?php endif; ?>
                         </td>
                         <td class="text-center">

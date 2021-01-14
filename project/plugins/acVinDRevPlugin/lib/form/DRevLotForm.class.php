@@ -51,10 +51,14 @@ class DRevLotForm extends acCouchdbObjectForm
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
-
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
-            $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
+            if ($cepages && count($cepages)) {
+                $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
+                $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
+            }else{
+                $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
+                $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
+            }
             $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }

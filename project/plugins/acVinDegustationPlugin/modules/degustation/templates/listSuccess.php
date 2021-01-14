@@ -5,7 +5,22 @@
 <?php use_helper('Float') ?>
 
 <div class="page-header no-border">
-  <h2>Les lots de <?php echo $etablissement->getNom(); ?></h2>
+  <div class="pull-right">
+      <?php if ($sf_user->hasDrevAdmin()): ?>
+      <form method="GET" class="form-inline" action="">
+          Campagne :
+          <select class="select2SubmitOnChange form-control" name="campagne">
+              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+                  <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+              <?php endfor; ?>
+          </select>
+          <button type="submit" class="btn btn-default">Changer</button>
+      </form>
+      <?php else: ?>
+          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne ?>-<?php echo $campagne + 1 ?></span>
+      <?php endif; ?>
+  </div>
+  <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
 <?php if (count($lots)): ?>
   <div class="row">
@@ -41,7 +56,7 @@
                     <a class="btn btn-xs btn-<?php echo $lot->numero_table_color?>"
                       href="<?php echo ($lot->numero_table)? url_for($lot->numero_table_step_route , array('id' => $lot->degustation->_id, 'numero_table' => $lot->numero_table))
                       : url_for($lot->numero_table_step_route, array('id' => $lot->degustation->_id)); ?>">
-                      <?php echo ($lot->numero_table)? "Table ".$lot->numero_table : "Choisir"; ?>
+                      <?php echo ($lot->numero_table)? "Table ".DegustationClient::getNumeroTableStr($lot->numero_table) : "Choisir"; ?>
                     </a>
                   <?php endif; ?>
 

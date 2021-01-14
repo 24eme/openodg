@@ -222,9 +222,9 @@ degustation_elevages:
   requirements:
     sf_method: [get]
 
-degustation_elever:
-  url: /degustation/elevages/:id/:index/elever
-  param: { module: degustation, action: elever }
+degustation_prelevable:
+  url: /degustation/lots/:id/:index/prelevable
+  param: { module: degustation, action: prelevable }
   requirements:
     sf_method: [get]
 

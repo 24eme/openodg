@@ -625,7 +625,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-            if ($config->mention->lieu->hasManyCouleur() && !$config instanceof ConfigurationCouleur) {
+            if ($config->getLieu()->hasManyCouleur() && !$config instanceof ConfigurationCouleur) {
                 continue;
             }
 

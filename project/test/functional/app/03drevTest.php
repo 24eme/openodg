@@ -76,6 +76,9 @@ $b->isForwardedTo('drev', 'vci');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape vci");
 
 $b->click('button[type="submit"]')->followRedirect();
+if ($b->getResponse()->getStatuscode() == 302) {
+    $b->followRedirect();
+}
 $b->isForwardedTo('drev', 'revendication');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape volume");
 

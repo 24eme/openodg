@@ -8,6 +8,7 @@ class degustationActions extends sfActions {
         $newDegutation->getMvtLotsPrelevables();
         $this->lotsPrelevables = $newDegutation->getLotsPrelevablesSortByDate();
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
+        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_NONCONFORME)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -484,8 +485,9 @@ class degustationActions extends sfActions {
         $etablissement_id = $request->getParameter('id');
         $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);
         $this->forward404Unless($this->etablissement);
+        $this->campagne = $request->getParameter('campagne',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
 
-        $this->lots = MouvementLotView::getInstance()->getLotsStepsByDeclarantIdentifiant($etablissement_id);
+        $this->lots = MouvementLotView::getInstance()->getLotsStepsByDeclarantIdentifiant($etablissement_id,$this->campagne);
 
     }
 
@@ -505,20 +507,22 @@ class degustationActions extends sfActions {
       $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
     }
 
-    public function executeElever(sfWebRequest $request) {
+    public function executePrelevable(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $ind = $request->getParameter('index');
-        $drev = DRevClient::getInstance()->find($docid);
-        $this->forward404Unless($drev);
+        $back = $request->getParameter('back');
+        $this->forward404Unless($back);
+        $doc = acCouchdbManager::getClient()->find($docid);
+        $this->forward404Unless($doc);
         $lot = null;
-        if ($drev->lots->exist($ind)) {
-          $lot = $drev->lots->get($ind);
+        if ($doc->lots->exist($ind)) {
+          $lot = $doc->lots->get($ind);
         }
         $this->forward404Unless($lot);
         $lot->statut = Lot::STATUT_PRELEVABLE;
-        $drev->generateMouvementsLots();
-        $drev->save();
-        return $this->redirect('degustation_elevages');
+        $doc->generateMouvementsLots();
+        $doc->save();
+        return $this->redirect($back);
     }
 
     public function executeEtiquettesPdf(sfWebRequest $request) {

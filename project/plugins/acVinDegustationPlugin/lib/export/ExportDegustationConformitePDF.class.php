@@ -20,7 +20,13 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement )));
+        $lots = array();
+        foreach ($this->degustation->getLots() as $lot) {
+            if ($lot->declarant_identifiant == $this->etablissement->identifiant && ($lot->conformite == Lot::CONFORMITE_CONFORME || !$lot->conformite) && ($lot->statut == Lot::STATUT_PRELEVE || $lot->statut == Lot::STATUT_CONFORME) ) {
+                $lots[] = $lot;
+            }
+        }
+        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots )));
       }
 
 

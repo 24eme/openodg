@@ -38,7 +38,7 @@
           <div class="col-xs-8">
             <div class="row">
               <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLots"]; ?></strong> <strong>lots au total</strong> prévus dans la dégustation<br/>
+                <strong class="lead"><?php echo $infosDegustation["nbLotsSansLeurre"]; ?></strong> <strong>lots au total</strong> prévus dans la dégustation<br/>
               </div>
               <div class="col-xs-6">
               </div>
@@ -53,7 +53,7 @@
             </div>
             <div class="row">
               <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsPreleves"]; ?></strong> <strong>lots</strong> déjà prélevés chez
+                <strong class="lead"><?php echo $infosDegustation["nbLotsPrelevesSansLeurre"]; ?></strong> <strong>lots</strong> déjà prélevés chez
               </div>
               <div class="col-xs-6">
                 <strong><span class="lead"><?php echo $infosDegustation["nbAdherentsPreleves"]; ?></span> adhérents</strong>

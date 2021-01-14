@@ -86,7 +86,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public static function generateMvtKey($lot) {
-        return KeyInflector::slugify($lot->origine_document_id.'/'.$lot->origine_mouvement);
+        return KeyInflector::slugify($lot->id_document.'/'.$lot->origine_mouvement);
     }
 
     public function getConfigProduit() {
@@ -163,6 +163,11 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         return false;
+    }
+
+    public function isOrigineEditable()
+    {
+      return $this->getDocOrigine()->getMaster()->isLotsEditable();
     }
 
     public function getDestinationDateFr()
