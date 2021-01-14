@@ -1,3 +1,4 @@
+<?php use_helper('Float'); ?>
 <?php include_partial('degustation/breadcrumb'); ?>
 
 <div class="page-header no-border">
@@ -7,24 +8,21 @@
 <table class="table table-condensed table-striped">
 <thead>
     <th>Déclarant</th>
-    <th>Numéro de dossier</th>
+    <th class="text-center">Numéro de dossier</th>
     <th>Appellation</th>
     <th>Volume</th>
-    <th>type de manquement</th>
-    <th>Motif</th>
-    <th>Observation</th>
+    <th>Manquement</th>
     <th>Action</th>
 </thead>
 <tbody>
 <?php foreach($manquements as $keyLot => $m): ?>
     <tr>
         <td><?php echo $m->declarant_nom; ?></td>
-        <td></td>
+        <td class="text-center"><?php echo $m->numero_dossier; ?></td>
         <td><?php echo $m->produit_libelle." ".$m->millesime; ?></td>
-        <td><?php echo $m->volume; ?></td>
-        <td><?php echo Lot::$libellesConformites[$m->conformite]; ?></td>
-        <td><?php echo $m->motif; ?></td>
-        <td><?php echo $m->observation; ?></td>
+        <td class="text-right"><?php echo formatFloat($m->volume); ?>&nbsp;hl</td>
+
+        <td><?php echo $m->conformite?Lot::$libellesConformites[$m->conformite]: null; ?> <span class="text-muted"><?php echo $m->motif; ?></span></td>
         <td>
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -32,10 +30,8 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <li><a class="dropdown-item" href="#">Redéguster</a></li>
-                <?php if($chgtDenoms != null && isset($chgtDenoms[$keyLot])): ?>
-                <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_edition', array("sf_subject" => $chgtDenoms[$keyLot], 'key' => $keyLot)) ?>">Déclassement</a></li>
-              <?php endif; ?>
+                <li><a class="dropdown-item" href="<?php echo url_for('degustation_prelevable', array('id' => $m->id_document, 'index' => str_replace('/lots/', '', $m->origine_hash), 'back' => 'degustation_manquements')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
+                <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_lot', array('identifiant' => $m->declarant_identifiant, 'lot' => $keyLot)) ?>">Déclassement / Chgmt denom.</a></li>
                 <li><a class="dropdown-item" href="<?php echo url_for('degustation_etablissement_list', array('id' => $m->declarant_identifiant)) ?>">Voir l'historique</a></li>
                 <li><a class="dropdown-item" href="#">Clore</a></li>
             </ul>

@@ -127,7 +127,7 @@ DRev:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
-                  elevage: {}
+                  elevage: { }
                   statut: {}
                   specificite: { required: false }
                   cepages:
@@ -219,7 +219,7 @@ DRev:
                         volume: { type: float }
                         date: {  }
                         millesime: {  }
-                        elevage: {  }
+                        elevage: { }
                         region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }

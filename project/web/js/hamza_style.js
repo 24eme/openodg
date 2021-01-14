@@ -340,7 +340,7 @@
 
             return true;
         });
-        
+
         /**
          * Sélection de lignes de tableau
          ******************************************/
@@ -447,6 +447,7 @@
 
                 $(document).find('.hamzastyle-item').each(function () {
                     var words = $(this).attr('data-words');
+                    var callbackfct = $(this).attr('data-callbackfct')
                     var find = true;
                     for (key in filtres) {
                         var word = filtres[key];
@@ -458,6 +459,9 @@
                         $(this).show();
                     } else {
                         $(this).hide();
+                    }
+                    if(callbackfct){
+                      setTimeout(callbackfct, 1);
                     }
                 });
             }

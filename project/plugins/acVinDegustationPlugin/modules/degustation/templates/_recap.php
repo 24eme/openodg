@@ -10,8 +10,7 @@
         	<thead>
             	<tr>
             		<th class="col-xs-4">Collège</th>
-        			<th class="col-xs-6">Membre</th>
-                    <th class="col-xs-2 text-center">Statut présence</th>
+        			<th class="col-xs-8">Membre</th>
 
                 </tr>
         	</thead>
@@ -21,15 +20,7 @@
 	        		<tr>
 								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
 	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
-								<td class="text-center">
-								<?php if(!$degustateur->exist('confirmation')): ?>
-									<p><span class="glyphicon glyphicon-question-sign"></span></p>
-								<?php elseif($degustateur->confirmation): ?>
-									<p class="label label-success"><span class="glyphicon glyphicon-ok"></span></p>
-								<?php else: ?>
-									<p class="label label-danger"><span class="glyphicon glyphicon-remove"></span></p>
-								<?php endif; ?>
-								</td>
+								
 							</tr>
         		<?php endforeach;?>
         		<?php endforeach; ?>

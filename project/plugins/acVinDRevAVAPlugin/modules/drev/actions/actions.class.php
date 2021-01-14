@@ -662,7 +662,7 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        if (!$this->validation->isValide()) {
+        if (!$this->validation->isValide() && ! $this->getUser()->isAdmin()) {
 
             return sfView::SUCCESS;
         }

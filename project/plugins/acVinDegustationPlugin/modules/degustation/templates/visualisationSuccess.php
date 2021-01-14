@@ -25,7 +25,8 @@
                 <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>">Étiquettes</a></li>
-                  <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>">Fiche tournée prélevement</a></li>
+                  <li><a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>">Fiche tournée prélevement</a></li>
+                  <li><a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>">Fiche individuelle de tournée (Lot à prélever)</a></li>
                 </ul>
               </div>
             </div>
@@ -37,7 +38,7 @@
           <div class="col-xs-8">
             <div class="row">
               <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLots"]; ?></strong> <strong>lots au total</strong> prévus dans la dégustation<br/>
+                <strong class="lead"><?php echo $infosDegustation["nbLotsSansLeurre"]; ?></strong> <strong>lots au total</strong> prévus dans la dégustation<br/>
               </div>
               <div class="col-xs-6">
               </div>
@@ -52,7 +53,7 @@
             </div>
             <div class="row">
               <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsPreleves"]; ?></strong> <strong>lots</strong> déjà prélevés chez
+                <strong class="lead"><?php echo $infosDegustation["nbLotsPrelevesSansLeurre"]; ?></strong> <strong>lots</strong> déjà prélevés chez
               </div>
               <div class="col-xs-6">
                 <strong><span class="lead"><?php echo $infosDegustation["nbAdherentsPreleves"]; ?></span> adhérents</strong>
@@ -71,7 +72,21 @@
 <div class="col-xs-6">
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h2 class="panel-title">Tables des échantillons</h2>
+    <h2 class="panel-title">
+      <div class="row">
+        <div class="col-xs-8">Tables des échantillons</div>
+        <div class="col-xs-4 text-right">
+          <?php if($degustation->getLastNumeroTable()): ?>
+          <div class="dropdown btn-group">
+            <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>">Fiche lots ventilés (Anonymisés)</a></li>
+            </ul>
+          </div>
+          <?php endif; ?>
+        </div>
+      </div>
+    </h2>
   </div>
   <div class="panel-body">
     <div class="row">
@@ -150,7 +165,19 @@
   <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2 class="panel-title">Présence des dégustateurs</h2>
+        <h2 class="panel-title">
+          <div class="row">
+            <div class="col-xs-4">Présence des dégustateurs</div>
+            <div class="col-xs-8 text-right">
+              <div class="dropdown btn-group">
+                <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>">Feuille de présence</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </h2>
       </div>
       <div class="panel-body">
         <div class="row">

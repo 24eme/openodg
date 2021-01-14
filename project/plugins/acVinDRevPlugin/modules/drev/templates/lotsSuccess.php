@@ -20,26 +20,26 @@
           <div class="panel-body panel-body-success">
             <div class="row">
               <div class="col-md-2"><?php echo Date::francizeDate($lot->date); ?></div>
-              <div class="col-md-3"><strong><?php echo $lot->produit_libelle; ?></strong></div>
-              <div class="col-md-3">
+              <div class="col-md-6"><strong><?php echo $lot->produit_libelle; ?></strong>
                 <?php if(count($lot->cepages)): ?>
-                  <small>
+                  &nbsp;<small>
                     <?php echo $lot->getCepagesToStr(); ?>
                   </small>
                 <?php endif; ?>
               </div>
-              <div class="col-md-3"><strong><?php echo $lot->millesime; ?></strong></div>
-              <div class="col-md-1"></div>
+              <div class="col-md-3"><?php echo $lot->millesime; ?></div>
+              <div class="col-md-1 text-right">
+                <?php if($isAdmin): ?>
+                  <a href="<?php echo url_for("drev_lots_delete", array('id' => $drev->_id, 'numArchive' => $lot->numero_archive)) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
+                <?php endif; ?>
+              </div>
             </div>
             <div class="row">
               <div class="col-md-2"></div>
               <div class="col-md-3">Numéro cuve : <?php echo $lot->numero_cuve; ?></div>
-              <div class="col-md-3">Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></div>
-              <div class="col-md-3"><?php echo $lot->destination_type; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
-              <div class="col-md-1 text-right">
-                <?php if($isAdmin): ?>
-                  <a href="<?php echo url_for("drev_lots_delete", $drev) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
-                <?php endif; ?>
+              <div class="col-md-3"><strong>Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></strong></div>
+              <div class="col-md-3"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
+              <div class="col-md-1" >
               </div>
             </div>
           </div>
@@ -56,6 +56,7 @@
               <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+
                             <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-3 control-label")); ?>
                             <div class="col-sm-9">
                                   <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
@@ -63,6 +64,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
+                      <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
                           <div class="col-sm-7">
                             <div class="checkbox checkboxlots">
@@ -90,7 +92,6 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
                             <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
@@ -123,8 +124,8 @@
                         </div>
                     </div>
                 </div>
-                <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
                 <div class="row">
+                  <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
@@ -133,15 +134,13 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php endif ?>
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-6">
-                      <label>
-                        <?php echo $lot['elevage']->render() ?>
-                        <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
-                      </label>
-                    </div>
+                  <?php endif ?>
+                  <div class="col-md-6 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
+                    <label>
+                      <?php echo $lot['elevage']->render() ?>
+                      <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
+                    </label>
+                  </div>
                 </div>
             </div>
         </div>
@@ -181,7 +180,7 @@
     </div>
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-4">
-            <a tabindex="-1" href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+            <a tabindex="-1" href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
             <?php if ($sf_user->hasDrevAdmin()): ?>

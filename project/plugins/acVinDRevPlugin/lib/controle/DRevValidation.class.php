@@ -67,6 +67,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
+        $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->campagne-1));
 
         /*
          * Engagement
@@ -334,6 +335,8 @@ class DRevValidation extends DocumentValidation
           $volume = sprintf("%01.02f",$lot->getVolume());
           if(!$lot->exist('millesime') || !$lot->millesime){
               $this->addPoint(self::TYPE_ERROR, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }elseif($lot->millesime < ($this->document->campagne - 1)){
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
           if(!$lot->exist('destination_type') || !$lot->destination_type){
               $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
@@ -364,7 +367,7 @@ class DRevValidation extends DocumentValidation
             }
           }
 
-          if ($lot->elevage) {
+          if ($lot->statut == Lot::STATUT_ELEVAGE) {
               $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, "$lot->produit_libelle ( $lot->volume hl )");
           }
       }

@@ -8,7 +8,7 @@
           <td><?php echo tdStart() ?><br>
               <strong>Date : <?php echo substr($degustation->date,0,10); ?></strong><br>
               <strong>Heure : <?php echo substr($degustation->date,11,16); ?></strong><br>
-              <strong>Commission: <?php  ?></strong><br>
+              <strong>Commission: <?php echo $lots[0]->getNumeroTableStr(); ?></strong><br>
           </td>
           <td><?php echo tdStart() ?><br>
               <strong>Campagne : <?php echo $degustation->campagne ?></strong><br>
@@ -28,9 +28,7 @@
           <strong>Signature : &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
-          <strong>Jury n° : &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+          <strong>Table : &nbsp;<?php echo $lots[0]->getNumeroTableStr(); ?></strong>
       </p>
     </table>
 
@@ -63,7 +61,7 @@
     <?php $i=1;?>
      <?php  foreach($lots as $lotInfo): ?>
       <tr style="line-height:17px;">
-        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $i ?></strong></td>
+        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymise() ?></strong></td>
         <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
         <td><?php echo tdStart() ?>
           &nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?>

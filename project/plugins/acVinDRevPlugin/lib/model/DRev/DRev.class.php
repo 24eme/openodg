@@ -157,6 +157,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
        return $lots;
     }
 
+    public function getLotByNumArchive($numero_archive){
+      foreach ($this->lots as $lot) {
+        if($lot->numero_archive == $numero_archive){
+          return $lot;
+        }
+      }
+      return null;
+    }
+
     public function getLotsByCouleur($visualisation = true) {
         $couleurs = array();
 
@@ -179,6 +188,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         return $couleurs;
     }
+
+    public function getLotsHorsDR(){
+      $lotsDR = $this->summerizeProduitsLotsByCouleur();
+      $lotsHorsDR = array();
+      foreach ($this->getLots() as $key => $lot) {
+
+        if(!isset($lotsDR[$lot->produit_libelle])){
+            $lotsHorsDR[$lot->produit_libelle] = $lot;
+        }
+      }
+      return $lotsHorsDR;
+    }
+
     public function getLots(){
         if(!$this->exist('lots')) {
 
@@ -508,6 +530,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($csv as $k => $line) {
             $is_bailleur = false;
 
+            $produitConfig = null;
+            $produitConfigAlt = null;
+
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_ACHAT_TOLERANCE) {
                 $this->add('achat_tolerance', 1);
                 continue;
@@ -553,7 +578,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 ) {
               $has_bio = true;
               $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
-            } elseif (DRevConfiguration::getInstance()->hasImportWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+          } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
                 $complement = $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT];
             }
 
@@ -829,6 +854,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot = $this->add('lots')->add();
         $lot->millesime = $this->campagne;
         $lot->statut = Lot::STATUT_PRELEVABLE;
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+          $lot->add('specificite','aucune');
+        }
         return $lot;
     }
 
@@ -898,12 +926,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->archiver();
         $this->generateMouvementsFactures();
         $this->generateMouvementsLots();
+        $this->updateStatutsLotsSupprimes();
 
         if(!count($this->getLotsRevendiques())) {
             foreach($this->getProduitsLots() as $produit) {
                 $produit->validateOdg($date);
             }
         }
+    }
+
+
+
+    public function delete() {
+        $this->updateStatutsLotsSupprimes(false);
+        return parent::delete();
     }
 
     public function devalidate($reinit_version_lot = true) {
@@ -923,6 +959,30 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
               }
           }
         }
+        $this->updateStatutsLotsSupprimes(false);
+    }
+
+    public function updateStatutsLotsSupprimes($validation = true) {
+      if (!$this->hasVersion()) {
+        return;
+      }
+      $mother = $this->getMother();
+      $updated = false;
+      if ($mother)
+      foreach ($mother->getLots() as $lot) {
+        if ($validation && in_array($lot->statut, array(Lot::STATUT_PRELEVABLE, Lot::STATUT_ELEVAGE)) && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
+          $lot->statut = Lot::STATUT_NONPRELEVABLE;
+          $updated = true;
+        }
+        if (!$validation && $lot->statut == Lot::STATUT_NONPRELEVABLE && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
+          $lot->statut = Lot::STATUT_PRELEVABLE;
+          $updated = true;
+        }
+      }
+      if ($updated) {
+        $mother->generateMouvementsLots();
+        $mother->save();
+      }
     }
 
     public function validateOdg($date = null, $region = null) {
@@ -1190,13 +1250,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
   public function archiverLot($numeroDossier) {
       $lastNum = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne(Lot::TYPE_ARCHIVE, $this->archivage_document->getCampagne());
       $num = 0;
-      if (preg_match("/[0-9]+/", $lastNum, $m)) {
+      if (preg_match("/^([0-9]+).*/", $lastNum, $m)) {
         $num = $m[1];
       }
       foreach($this->lots as $lot) {
-        $num++;
-        $lot->numero_archive = sprintf("%05d", $num);
-        $lot->numero_dossier = $numeroDossier;
+        if (!$lot->numero_archive && !$lot->numero_dossier) {
+          $num++;
+          $lot->numero_archive = sprintf("%05d", $num);
+          $lot->numero_dossier = $numeroDossier;
+        }
       }
   }
 
@@ -1369,8 +1431,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
-        foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc) {
-            $mvt->details .= $cep.' ('.$pc.'%) ';
+
+        $tabCepages=[];
+
+        foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc){
+          $tabCepages[$cep]=$pc;
+        }
+        arsort($tabCepages);
+
+        foreach($tabCepages as $cep => $pc) {
+          if (strlen($mvt->details)==0){
+            $mvt->details .=$cep.' ('.$pc.'%)';
+          }
+          else{
+            $mvt->details .= ' '.$cep.' ('.$pc.'%)';
+          }
         }
         $mvt->region = '';
         $mvt->campagne = $this->campagne;
@@ -1382,13 +1457,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function generateAndAddMouvementLotsFromLot($lot, $key) {
         $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-        if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
-            $this->add('mouvements_lots')->add($this->identifiant);
-        }
-        return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
+        return $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
     }
 
     public function generateMouvementsLots() {
+        if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
+            $this->add('mouvements_lots')->add($this->identifiant);
+        }
         foreach($this->lots as $k => $lot) {
             $key = $lot->getUnicityKey();
             $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
@@ -1682,6 +1757,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function isValideeOdg() {
 
         return boolval($this->getValidationOdg());
+    }
+
+    public function isLotsEditable(){
+      return $this->isValideeOdg() && $this->isValidee();
     }
 
     /**** FIN DE VERSION ****/

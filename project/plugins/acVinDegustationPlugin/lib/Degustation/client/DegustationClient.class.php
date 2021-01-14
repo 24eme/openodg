@@ -4,10 +4,22 @@ class DegustationClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Degustation";
     const TYPE_COUCHDB = "DEGUSTATION";
+    const SPECIFICITE_PASSAGES = "Xème passage";
 
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Degustation");
+    }
+
+    public static function updatedSpecificite($lot) {
+      $nb = 2;
+      if (preg_match("/.*([0-9]+)".str_replace('X', '', self::SPECIFICITE_PASSAGES).".*/", $lot->specificite, $m)) {
+        $nb = ((int)$m[1]) + 1;
+      }
+      if (preg_match("/^".self::TYPE_COUCHDB."/", $lot->id_document)) {
+        $lot->specificite = ($lot->specificite)? $lot->specificite.', '.str_replace('X', $nb, self::SPECIFICITE_PASSAGES) : str_replace('X', $nb, self::SPECIFICITE_PASSAGES);
+      }
+      return $lot;
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -19,12 +31,8 @@ class DegustationClient extends acCouchdbClient {
     }
 
     public function getHistory($limit = 10, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $res = $this->getAllDocsByType(self::TYPE_COUCHDB, $limit);
-        $objects = array();
-        foreach($res->rows as $row) {
-            $objects[] = $this->find($row->id, $hydrate);
-        }
-        return $objects;
+
+        return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
     }
 
     public static function getNumeroTableStr($numero_table){
@@ -34,15 +42,8 @@ class DegustationClient extends acCouchdbClient {
 
     public function getManquements() {
         $manquements = array();
-        foreach($this->getHistory() as $degust) {
-            foreach($degust->lots as $lot) {
-                if ($lot->conformite && ($lot->conformite != Lot::CONFORMITE_CONFORME)) {
-                    $keyLot = $lot->id_document . '-'.str_replace(['/', '_'], '-', mb_strtoupper(
-                      substr($lot->origine_mouvement, 1)
-                    ));
-                  $manquements[$keyLot] = $lot;
-                }
-            }
+        foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_NONCONFORME)->rows as $item) {
+            $manquements[Lot::generateMvtKey($item->value)] = $item->value;
         }
         return $manquements;
     }

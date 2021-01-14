@@ -6,15 +6,10 @@
 
 <br/><br/>
 <table style="width:1100px;font-size:13px;padding-left:400px;" >
-  <tr>
-    <td><?php echo $etablissement->raison_sociale ?></td>
-  </tr>
-  <tr>
-    <td><?php echo $etablissement->adresse ?></td>
-  </tr>
-  <tr>
-    <td><?php echo $etablissement->code_postal .' '.$etablissement->commune ?></td>
-  </tr>
+  <tr><td><?php echo $etablissement->raison_sociale ?></td></tr>
+  <tr><td><?php echo $etablissement->adresse ?></td></tr>
+  <tr><td><?php echo $etablissement->adresse_complementaire ?></td></tr>
+  <tr><td><?php echo $etablissement->code_postal .' '.$etablissement->commune ?></td></tr>
 </table>
 <br/>
 
@@ -32,25 +27,17 @@
 </table>
 <br/>
 <br/>
-<table style="font-size:12px;"><tr><td style="width: 324px;"><?php echo 'Aix-en-Provence, le ' . format_date($degustation->date, "P", "fr_FR"); ?></td></tr></table>
+<table style="font-size:12px;"><tr><td style="width: 324px;"><?php echo 'Aix-en-Provence, le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-<!-- Temporaire car fonction non fonctionnel -->
-<?php $Nonconforme = false; ?>
-<?php foreach($degustation->getLots() as $lot):?>
-  <?php if ($lot->statut == "NON_CONFORME"):?>
-    <?php $Nonconforme = true; ?>
-  <?php endif; ?>
-<?php endforeach; ?>
-<table style="font-size:12px;"><tr><td>Objet : Résultats contrôle interne,<strong> lots <?php if($Nonconforme): ?> non conformes <?php else: ?> conformes <?php endif; ?></strong></td></tr></table>
+<table style="font-size:12px;"><tr><td>Objet : Résultats contrôle interne,<strong> lots conformes </strong></td></tr></table>
 <br/><br/>
-<!-- <table style="font-size:12px;"><tr><td>Objet : Résultats contrôle interne,<strong> lots <php if($degustation->getNbLotsNonConformes() > 0): ?> non conformes <php else: ?> conformes <php endif; ?></strong></td></tr></table>
-<br/><br/> -->
+
 
 <table style="font-size:12px;">
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
   <tr><td>Nous  vous  prions  de  bien  vouloir  trouver  ci-dessous  extrait  du  procès  verbal  de  la  séance  de  dégustation  du  :<br/><strong><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?></strong></td></tr><br/>
-  <tr><td>Au vu des documents fournis, et des résultats du contrôle documentaire, analytique et organoleptique, nous vous confirmons que <strong>LES LOTS</strong> listés dans le tableau suivant <strong><?php if($Nonconforme): ?>SONT NON CONFORMES<?php else: ?>SONT CONFORMES <?php endif; ?></strong> et aptes à la commercialisation</td></tr>
+  <tr><td>Au vu des documents fournis, et des résultats du contrôle documentaire, analytique et organoleptique, nous vous confirmons que <strong>LES LOTS</strong> listés dans le tableau suivant <strong> SONT CONFORMES </strong> et aptes à la commercialisation</td></tr>
 </table><br/><br/>
 
 <table border="0.5" class="" cellspacing=0 cellpadding=0 style="text-align:center;font-size:12px;">
@@ -64,7 +51,7 @@
     <th style="font-weight:bold;"><?php echo tdStart() ?>&nbsp;Observation&nbsp;</th>
   </tr>
     <?php $totalVolume = 0 ?>
-    <?php foreach($degustation->getLots() as $lot): ?>
+    <?php foreach($lots as $lot): ?>
     <tr>
       <td><?php echo (int)$lot->numero_dossier ?></td>
       <td><?php echo (int)$lot->numero_archive ?></td>
@@ -72,11 +59,7 @@
       <td><?php echo $lot->numero_cuve ?></td>
       <td><?php echo $lot->produit_libelle ."<br>". $lot->millesime ?></td>
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lot->volume); ?></td>
-      <?php if(isset($lot->observation)): ?>
       <td><?php echo $lot->observation ?></td>
-      <?php else: ?>
-      <td><?php echo '' ?></td>
-      <?php endif; ?>
     </tr>
     <?php $totalVolume = $totalVolume + $lot->volume; ?>
     <?php endforeach; ?>
@@ -87,7 +70,7 @@
 
 <table class="" border="0.5" cellspacing=1 cellpadding=0 style="">
   <tr>
-    <td>&nbsp;Nombre de lots Total : <?php echo count($degustation->lots) ?> </td>
+    <td>&nbsp;Nombre de lots Total : <?php echo count($lots) ?> </td>
     <td>&nbsp;Volume Total (HI) : <?php echo sprintf("%.2f", $totalVolume) ?> </td>
   </tr>
 </table>
@@ -116,8 +99,6 @@
 <br/>
 <br/>
 <br/>
-<br/>
-<br/> 
 
 <table style="text-align:center;font-size:10px;">
   <tr>

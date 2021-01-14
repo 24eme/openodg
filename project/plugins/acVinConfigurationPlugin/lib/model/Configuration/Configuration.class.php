@@ -21,6 +21,17 @@ class Configuration extends BaseConfiguration {
         return $this->declaration->getProduits();
     }
 
+    public function getProduitsByCepage($cepage) {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if (in_array($cepage, $p->getCepagesAutorises()->toArray())) {
+                $produits[] = $p;
+                continue;
+            }
+        }
+        return $produits;
+    }
+
     public function getLieux(){
       $lieux = [];
       foreach ($this->getProduits() as $p) {
@@ -235,8 +246,10 @@ class Configuration extends BaseConfiguration {
 
     public function getLabelsLibelles($labels) {
         $libelles = array();
-        foreach ($labels as $key) {
-            $libelles[$key] = $this->labels[$key];
+        if (is_array($labels)) {
+            foreach ($labels as $key) {
+                $libelles[$key] = $this->labels[$key];
+            }
         }
 
         return $libelles;
