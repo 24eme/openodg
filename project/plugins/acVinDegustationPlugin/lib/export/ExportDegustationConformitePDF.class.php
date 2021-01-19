@@ -4,10 +4,12 @@ class ExportDegustationConformitePDF extends ExportPDF {
 
     protected $degustation = null;
     protected $etablissement = null;
+    protected $adresse;
 
     public function __construct($degustation,$etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
+        $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -49,13 +51,12 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-      $adresse = sfConfig::get('app_degustation_courrier_adresse');
-      $title = sprintf($adresse['raison_sociale']);
+      $title = sprintf($this->adresse['raison_sociale']);
         return $title;
     }
 
     protected function getFooterText() {
-        return "";
+        return sprintf("%s     %s - %s  %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone']);
     }
 
     protected function getHeaderSubtitle() {
