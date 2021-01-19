@@ -49,7 +49,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)." \nFICHE DE SYNTHÈSE";
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE DE SYNTHÈSE";
 
         return $header_subtitle;
     }

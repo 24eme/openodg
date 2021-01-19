@@ -51,7 +51,7 @@ class ExportDegustationFichePresenceDegustateursPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."\nFeuille de présence";
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."Feuille de présence";
         return $header_subtitle;
     }
 

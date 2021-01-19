@@ -45,7 +45,7 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."\nFICHE INDIVIDUELLE DE DEGUSTATION";
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE INDIVIDUELLE DE DEGUSTATION";
 
         return $header_subtitle;
     }
