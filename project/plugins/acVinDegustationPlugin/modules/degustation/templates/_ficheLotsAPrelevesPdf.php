@@ -46,8 +46,24 @@ th {
           <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Date<br/> commission</strong></th>
         </tr>
         <?php
-    $nbLotTotal = 0;
+    $nbLotTotal = 0; $i=0;
     foreach($etablissements as $numDossier => $etablissement): ?>
+    <?php if($i == 12 || ($i - 12) % 17 > 16): //display 12 Lots on the first page and below 17 Lots all others pages?>
+      </table>
+      <br pagebreak="true" />
+      <p>Suite des lots<p/>
+      <br/>
+      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
+        <tr style="line-height:20px;">
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse prélèvement</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Tel / Fix / Port </strong></th>
+          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Dosssier /<br/> Nb Lots</strong></th>
+          <th class="topempty bg-white"style="width:16%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
+          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
+          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Date<br/> commission</strong></th>
+        </tr>
+      <?php endif;?>
          <tr style="line-height:17px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale ?></small></strong></td>
            <td><?php echo tdStart() ?>
@@ -76,6 +92,7 @@ th {
             <small> <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></small>
           </td>
          </tr>
+         <?php $i++; ?>
       <?php endforeach; ?>
       </table>
       <table>
