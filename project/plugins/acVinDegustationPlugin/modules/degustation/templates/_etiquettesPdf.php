@@ -9,10 +9,10 @@
                 <table cellspacing=0 cellpadding=0 style="font-size:8px;padding:0px;">
                   <tr style="line-height:4px;">
                     <td style="overflow-wrap:break-word;">
-                      <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
+                      <?php echo tdStart() ?>&nbsp;N°&nbsp;Lot&nbsp;ODG:<strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
                     </td>
                     <td style="overflow-wrap:break-word;text-align: right;">
-                      <?php echo tdStart() ?>&nbsp;N°&nbsp;Lot&nbsp;ODG:<strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
+                      <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
                     </td>
                   </tr>
                   <tr style="line-height:4px;">
