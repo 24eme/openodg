@@ -31,16 +31,17 @@
                     </td>
                   </tr>
                   <tr style="line-height:7px;">
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: left;">
+                    <td style="overflow-wrap:break-word;text-align: left;">
                       <?php echo tdStart() ?>&nbsp;Millésime&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->millesime;;  ?></strong>
                     </td>
+                    <td style="overflow-wrap:break-word;text-align: left;">
+                    <?php echo tdStart() ?>&nbsp;<strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
+                    </td>
+
                   </tr>
                   <tr style="line-height:7px;">
-                    <td style="overflow-wrap:break-word;">
+                    <td colspan="2" style="overflow-wrap:break-word;">
                       <?php echo tdStart() ?>&nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve;  ?></strong>
-                    </td>
-                    <td style="line-height:7px;">
-                    <?php echo tdStart() ?>&nbsp;<strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
                   <tr style="line-height:7px;">
