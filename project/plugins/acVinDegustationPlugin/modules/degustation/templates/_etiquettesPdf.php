@@ -9,10 +9,10 @@
                 <table cellspacing=0 cellpadding=0 style="font-size:8px;padding:0px;">
                   <tr style="line-height:4px;">
                     <td style="overflow-wrap:break-word;">
-                      <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
+                      <?php echo tdStart() ?>&nbsp;N°&nbsp;Lot&nbsp;ODG:<strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
                     </td>
                     <td style="overflow-wrap:break-word;text-align: right;">
-                      <?php echo tdStart() ?>&nbsp;N°&nbsp;Lot&nbsp;ODG:<strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
+                      <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
                     </td>
                   </tr>
                   <tr style="line-height:4px;">
@@ -44,7 +44,7 @@
                       &nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve;  ?></strong>
                     </td>
                     <td style="text-align: right;">
-                      &nbsp;Volume&nbsp;:&nbsp;<strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
+                    <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
                 </table>
