@@ -39,7 +39,7 @@ th {
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse prélèvement</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Tel / Port / Fix</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Tel / Fix / Port </strong></th>
           <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Dosssier /<br/> Nb Lots</strong></th>
           <th class="topempty bg-white"style="width:16%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
           <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
@@ -57,9 +57,8 @@ th {
            </td>
            <td><?php echo tdStart() ?>
              <small>
-             <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?><br/>
-             <?php echo ($etablissement->telephone_perso) ? $etablissement->telephone_perso : '' ?><br/>
-             <?php echo ($etablissement->fax) ? 'Fax: '.$etablissement->fax : '' ?>
+             <?php echo ($etablissement->telephone_bureau) ? 'Fix: '.$etablissement->telephone_bureau : '' ?><br/>
+             <?php echo ($etablissement->telephone_perso) ? 'Port: '.$etablissement->telephone_perso : '' ?><br/>
             </small>
           </td>
           <td><?php echo tdStart() ?>
