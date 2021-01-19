@@ -144,7 +144,7 @@ EOF;
             if (trim($data[self::CSV_CEPAGE_1])) {
               $cep1 = $this->identifyCepage($data[self::CSV_CEPAGE_1]);
               if (!$cep1) {
-                echo "WARNING;cepage_1 non trouvé ".$data[self::CSV_CEPAGE_1].";pas d'import;$line\n";
+                echo "WARNING;cepage_1 non trouvé ".$data[self::CSV_CEPAGE_1].";$line\n";
               } else {
                   $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_1]) * 1;
                   $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
@@ -154,7 +154,7 @@ EOF;
             if (trim($data[self::CSV_CEPAGE_2])) {
               $cep2 = $this->identifyCepage($data[self::CSV_CEPAGE_2]);
               if (!$cep2) {
-                echo "WARNING;cepage_2 non trouvé ".$data[self::CSV_CEPAGE_2].";pas d'import;$line\n";
+                echo "WARNING;cepage_2 non trouvé ".$data[self::CSV_CEPAGE_2].";$line\n";
               } else {
                   $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_2]) * 1;
                   $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
@@ -164,7 +164,7 @@ EOF;
             if (trim($data[self::CSV_CEPAGE_3])) {
               $cep3 = $this->identifyCepage($data[self::CSV_CEPAGE_3]);
               if (!$cep3) {
-                echo "WARNING;cepage_3 non trouvé ".$data[self::CSV_CEPAGE_3].";pas d'import;$line\n";
+                echo "WARNING;cepage_3 non trouvé ".$data[self::CSV_CEPAGE_3].";$line\n";
               } else {
                   $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_3]) * 1;
                   $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
@@ -262,6 +262,10 @@ EOF;
             foreach($deleted as $d) {
               $d->delete();
             }
+
+            $lots = array_values($drev->lots->toArray(true, false));
+            $drev->remove('lots');
+            $drev->add('lots', $lots);
 
             $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             try {
