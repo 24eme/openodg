@@ -11,15 +11,7 @@ th {
 </style>
     <div>
       <table>
-        <tr>
-          <td style="width:20%;"></td>
-          <td style="width: 50%">
-            <div border="1px" style="border-style: solid; background-color: #E0E0E0;">
-              <p style="margin: 2em; padding-left: 2em;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fiche de tournée (Liste des lots à prélever)</p>
-            </div>
-          </td>
-          <td style="width:20%;"></td>
-        </tr>
+        <?php echo tdStart() ?>
         <tr>
           <td style="width:20%;">
           </td>

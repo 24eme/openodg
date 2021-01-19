@@ -19,22 +19,7 @@ p, div {
 
 </style>
 <table class="table" cellspacing=0 cellpadding=0 style="border-collapse:collapse;" scope="colgroup">
-  <tr>
-    <td style="width:20%;"></td>
-    <td style="width: 50%">
-      <div border="1px" style="border-style: solid; background-color: #E0E0E0;">
-        <p style="margin: 2em; padding-left: 2em; line-height: 1">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          Fiche de prélèvement (Liste des lots à prélever)
-        </p>
-        <p style="line-height: 1">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          Date de commission prévu : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?>
-        </p>
-      </div>
-    </td>
-    <td style="width:20%;"></td>
-  </tr>
+  <?php echo tdStart() ?>
   <tr>
       <th border="1px" class="border" style="width:50%; text-align: center;"><strong>Opérateur</strong></th>
       <th border="1px" class="border" style="width:50%; text-align: center;"><strong>Lieu entreposage et prélèvement</strong></th>
