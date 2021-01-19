@@ -47,7 +47,7 @@ th {
         </tr>
         <?php $i=0;
     foreach($etablissements as $numDossier => $etablissement): ?>
-    <?php if($i == 12 || ($i - 12) % 17 > 16): //display 12 Lots on the first page and below 17 Lots all others pages?>
+    <?php if($i == 14 || ($i - 14) % 17 > 16): //display 14 Lots on the first page and below 17 Lots all others pages?>
       </table>
       <br pagebreak="true" />
       <p>Suite des lots<p/>
@@ -60,7 +60,6 @@ th {
           <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Dosssier /<br/> Nb Lots</strong></th>
           <th class="topempty bg-white"style="width:16%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
           <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
-          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Date<br/> commission</strong></th>
         </tr>
       <?php endif;?>
          <tr style="line-height:17px;">
