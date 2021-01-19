@@ -38,15 +38,14 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s FICHE INDIVIDUELLE DE DEGUSTATION", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
 
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."\nFICHE INDIVIDUELLE DE DEGUSTATION";
 
         return $header_subtitle;
     }
