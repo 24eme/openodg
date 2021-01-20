@@ -970,7 +970,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $updated = false;
       if ($mother)
       foreach ($mother->getLots() as $lot) {
-        if ($validation && $lot->statut == Lot::STATUT_PRELEVABLE && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
+        if ($validation && in_array($lot->statut, array(Lot::STATUT_PRELEVABLE, Lot::STATUT_ELEVAGE)) && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
           $lot->statut = Lot::STATUT_NONPRELEVABLE;
           $updated = true;
         }
@@ -1203,14 +1203,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function canHaveSuperficieVinifiee()
     {
-    	$can = false;
     	foreach ($this->declaration->getProduits() as $produit) {
     		if ($produit->exist('superficie_vinifiee') || $produit->exist('superficie_vinifiee_vtsgn')) {
-    			$can = true;
-    			break;
+    			return true;
     		}
     	}
-    	return $can;
+    	return false;
     }
 
     public function isAdresseLogementDifferente() {
@@ -1256,7 +1254,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $num = $m[1];
       }
       foreach($this->lots as $lot) {
-        if (empty($lot->numero_archive) && empty($lot->numero_dossier)) {
+        if (!$lot->numero_archive && !$lot->numero_dossier) {
           $num++;
           $lot->numero_archive = sprintf("%05d", $num);
           $lot->numero_dossier = $numeroDossier;

@@ -211,7 +211,7 @@ class conditionnementActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
+        $this->form->save();
         $dateValidation = date('c');
 
         if($this->form->getValue("date")) {
@@ -297,7 +297,6 @@ class conditionnementActions extends sfActions {
 
         $this->service = $request->getParameter('service');
 
-        $documents = $this->conditionnement->getOrAdd('documents');
         $this->regionParam = $request->getParameter('region',null);
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
@@ -307,7 +306,7 @@ class conditionnementActions extends sfActions {
             $this->validation = new ConditionnementValidation($this->conditionnement);
         }
 
-        $this->form = (count($documents->toArray()) && !$this->conditionnement->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->conditionnement->validation && !$this->conditionnement->validation_odg) ? new ConditionnementDocumentsForm($documents) : null;
+        $this->form = null;
         $this->dr = DRClient::getInstance()->findByArgs($this->conditionnement->identifiant, $this->conditionnement->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;

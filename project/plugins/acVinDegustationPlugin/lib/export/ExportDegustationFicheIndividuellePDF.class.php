@@ -15,7 +15,7 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
 
     public function create() {
       for($nbtable=1 ;$nbtable <= $this->degustation->getLastNumeroTable(); $nbtable++){
-        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable))));
+        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('table' => $nbtable, 'degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable))));
       }
     }
 
@@ -38,15 +38,14 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s FICHE INDIVIDUELLE DE DEGUSTATION", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
 
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE INDIVIDUELLE DE DEGUSTATION";
 
         return $header_subtitle;
     }

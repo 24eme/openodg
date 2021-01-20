@@ -21,7 +21,8 @@
         <td class="text-center"><?php echo $m->numero_dossier; ?></td>
         <td><?php echo $m->produit_libelle." ".$m->millesime; ?></td>
         <td class="text-right"><?php echo formatFloat($m->volume); ?>&nbsp;hl</td>
-        <td><?php echo Lot::$libellesConformites[$m->conformite]; ?> <span class="text-muted"><?php echo $m->motif; ?></span></td>
+
+        <td><?php echo $m->conformite?Lot::$libellesConformites[$m->conformite]: null; ?> <span class="text-muted"><?php echo $m->motif; ?></span></td>
         <td>
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

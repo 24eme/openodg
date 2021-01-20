@@ -15,8 +15,6 @@
     <?php elseif($conditionnement->validation): ?>
     <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> signée le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($conditionnement->validation_odg): ?> et approuvée le <?php echo format_date($conditionnement->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
-    <?php if ($sf_user->hasConditionnementAdmin() && $conditionnement->exist('envoi_oi') && $conditionnement->envoi_oi) { echo ", envoyée à l'InnovAgro le ".format_date($conditionnement->envoi_oi, 'dd/MM') ; } ?>
-    <?php if ($sf_user->isAdmin() && $conditionnement->validation_odg): ?><a href="<?php echo url_for('conditionnement_send_oi', $conditionnement); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la Conditionnement à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a><?php endif; ?>
   </small>
     </h2>
 </div>
@@ -52,7 +50,7 @@
 
 <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->exist('date_degustation_voulue')) ? $conditionnement->get('date_degustation_voulue') : null; ?></p>
+    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->exist('date_degustation_voulue')) ? date_format(date_create($conditionnement->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
 <?php endif ?>
 
 <div class="row row-margin row-button">
@@ -72,10 +70,6 @@
         <?php if ($conditionnement->validation && ConditionnementSecurity::getInstance($sf_user, $conditionnement->getRawValue())->isAuthorized(ConditionnementSecurity::DEVALIDATION)):
                 if (!$conditionnement->validation_odg): ?>
                     <a class="btn btn-default" href="<?php echo url_for('conditionnement_devalidation', $conditionnement) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette Conditionnement ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-            <?php elseif (!$conditionnement->isFactures() && !$conditionnement->isLectureSeule() && $sf_user->isAdmin()): ?>
-                    <a class="btn btn-warning" href="<?php echo url_for('conditionnement_devalidation', $conditionnement) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette Conditionnement ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-            <?php elseif ($conditionnement->isFactures()): ?>
-                <span class="text-muted">Conditionnement facturée</span>
             <?php endif; ?>
         <?php endif; ?>
         <?php if(!$conditionnement->validation): ?>

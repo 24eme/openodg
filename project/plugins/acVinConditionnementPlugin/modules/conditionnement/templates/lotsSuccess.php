@@ -4,7 +4,7 @@
 <?php include_partial('conditionnement/breadcrumb', array('conditionnement' => $conditionnement )); ?>
 <?php include_partial('conditionnement/step', array('step' => ConditionnementEtapes::ETAPE_LOTS, 'conditionnement' => $conditionnement, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Revendication des Lots IGP</h2></div>
+    <div class="page-header"><h2>Conditionnement des Lots IGP</h2></div>
 
 
 
@@ -104,14 +104,16 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $lot['destination_type']->renderLabel("Destination", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-9">
-                                  <?php echo $lot['destination_type']->render(); ?>
-                            </div>
-                        </div>
-                    </div>
+                    <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
+                              <div class="col-sm-9">
+                                    <?php echo $lot['specificite']->render(); ?>
+                              </div>
+                          </div>
+                      </div>
+                    <?php endif ?>
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
@@ -123,24 +125,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                  <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-9">
-                                  <?php echo $lot['specificite']->render(); ?>
-                            </div>
-                        </div>
-                    </div>
-                  <?php endif ?>
-                  <div class="col-md-6 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
-                    <label>
-                      <?php echo $lot['elevage']->render() ?>
-                      <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
-                    </label>
-                  </div>
                 </div>
             </div>
         </div>

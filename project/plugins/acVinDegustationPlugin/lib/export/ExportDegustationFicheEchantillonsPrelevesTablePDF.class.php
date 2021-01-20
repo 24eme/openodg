@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
+class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -14,11 +14,22 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public function create() {
+      $lots = [];
+      $nbLots = 0;
+      foreach ($this->degustation->getLotsByNumDossier() as $numero_dossier => $lotInfo) {
+        foreach ($lotInfo as $ano => $lot) {
+          $lots[$lot->numero_table][$numero_dossier][$ano] = $lot;
+          $nbLots++;
+
+        }
+      }
+      ksort($lots);
         @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheRecapTablesPdf',
+          $this->getPartial('degustation/ficheEchantillonsPrelevesTablePdf',
           array(
             'degustation' => $this->degustation,
-            'lots' => $this->degustation->getLotsTablesByNumAnonyme()
+            'nbLots' => $nbLots,
+            'lots' => $lots
           )
         ));
     }
@@ -49,7 +60,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE DE SYNTHÈSE";
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."LISTE DES LOTS VENTILES";
 
         return $header_subtitle;
     }
@@ -62,7 +73,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationFicheRecapTablesPDFConfig();
+        return new ExportDegustationFicheEchantillonsPrelevesTablePDFConf();
     }
 
     public function getFileName($with_rev = false) {
@@ -71,7 +82,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_synthese_recap_tables_%s", $degustation->_id);
+        $filename = sprintf("fiche_echantillons_preleves_table_%s", $degustation->_id);
 
 
         if ($with_rev) {

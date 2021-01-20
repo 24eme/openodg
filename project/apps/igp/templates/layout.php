@@ -52,7 +52,7 @@
                         <?php echo $sf_content ?>
                 </section>
 
-                <footer id="footer" class="container hidden-xs hidden-sm text-center" role="contentinfo">
+                <footer id="footer" class="container hidden-xs hidden-sm text-center mt-5 mb-5" role="contentinfo">
                     <nav role="navigation">
                         <ul class="list-inline" style="font-size: 13px;">
                             <li><a href="<?php echo url_for('contact') ?>">Contact</a></li>

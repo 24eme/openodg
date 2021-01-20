@@ -39,7 +39,7 @@ th {
       <table>
         <tr style="line-height:20em;">
           <td style="width:80%"></td>
-          <td style="width:10%">Jury :</td>
+          <td style="width:10%">Table :</td>
           <td border="1px" style="width:10%; border-style: solid;text-align:right;">
               <?php echo $lotInfo->getNumeroTableStr(); ?> &nbsp;  &nbsp; 
           </td>
@@ -73,7 +73,7 @@ th {
         <tr style="line-height:20px;">
            <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
            <th class="topempty bg-white" style="width:10%; "><?php echo tdStart() ?><strong>Couleur</strong></th>
-           <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>IGP</strong></th>
+           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>IGP</strong></th>
            <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Cépage</strong></th>
            <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
            <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>

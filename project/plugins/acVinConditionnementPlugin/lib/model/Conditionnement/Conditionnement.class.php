@@ -4,12 +4,13 @@
  * Model for Conditionnement
  *
  */
-class Conditionnement extends BaseConditionnement implements InterfaceVersionDocument, InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument {
+class Conditionnement extends BaseConditionnement implements InterfaceVersionDocument, InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument {
 
 
     protected $declarant_document = null;
     protected $version_document = null;
     protected $piece_document = null;
+    protected $archivage_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -25,6 +26,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $this->declarant_document = new DeclarantDocument($this);
         $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
+        $this->archivage_document = new ArchivageDocument($this);
     }
 
     public function constructId() {
@@ -217,15 +219,8 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $this->cleanDoc();
         $this->validation = $date;
         $this->archiver();
-        $this->generateMouvementsFactures();
         $this->generateMouvementsLots();
         $this->updateStatutsLotsSupprimes();
-
-        if(!count($this->getLotsRevendiques())) {
-            foreach($this->getProduitsLots() as $produit) {
-                $produit->validateOdg($date);
-            }
-        }
     }
 
 
@@ -455,7 +450,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $mvt->region = '';
         $mvt->version = $this->getVersion();
         $mvt->origine_hash = $lot->getHash();
-        $mvt->origine_type = 'drev';
+        $mvt->origine_type = 'conditionnement';
         $mvt->origine_document_id = $this->_id;
         $mvt->id_document = $this->_id;
         $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;

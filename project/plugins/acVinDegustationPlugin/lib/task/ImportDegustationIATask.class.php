@@ -3,6 +3,16 @@
 class ImportDegustationIATask extends ImportLotsIATask
 {
 
+    public static $correspondancesStatuts = array(
+      "Conforme" => Lot::STATUT_CONFORME,
+      "Déclassé" => Lot::STATUT_NONCONFORME,
+      "Non Conforme" => Lot::STATUT_NONCONFORME,
+      "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
+      "Prélevé NA" => Lot::STATUT_PRELEVE, //Prélevé Non Anonimisé
+      "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
+      "Revendiqué NC" => Lot::STATUT_NONCONFORME
+    );
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -73,6 +83,17 @@ EOF;
 
           $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
           $numeroLot = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
+          $statut = null;
+          if(isset($data[self::CSV_STATUT])){
+            $statut = trim($data[self::CSV_STATUT]);
+         }
+         if (!isset(self::$correspondancesStatuts[$statut])) {
+            echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+            continue;
+         }
+         $statut = self::$correspondancesStatuts[$statut];
+
+         if($statut)
 
           $mouvements = MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement->identifiant, $campagne);
 
@@ -114,14 +135,14 @@ EOF;
           }
 
           $lot = $degustation->addLot($mouvement->value);
+          $lot->numero_table = 1; // Car on ne l'a pas
+          $lot->statut = $statut;
 
           if($lot->statut == Lot::STATUT_CONFORME) {
               $lot->conformite = Lot::CONFORMITE_CONFORME;
           }
 
-
           $degustation->generateMouvementsLots();
-          $degustation->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
           $degustation->save();
         }
       }

@@ -1,7 +1,22 @@
 OpenODG
 ===
 
-Projet de dématérialisation informatique des activités d'un syndicat viticole.
+Projet de dématérialisation informatique des activités d'un syndicat viticole (AOC, IGP).
+
+Principales fonctionnalités
+---------------
+
+- Déclaration de revendication
+- Récupération de la DR, SV11, SV12 à partir de prodouane
+- Récupération du parcellaire à partir du CVI
+- Déclaration d'irrigabilité
+- Affectation et identification parcellaire
+- Facturation
+- Organisation de dégustations
+- Gestion des habilitations
+- Gestion de documents
+- Gestion des opérateurs
+- Gestion de contacts
 
 License utilisée
 ----------------
