@@ -16,12 +16,20 @@ class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
     }
 
     public function create() {
+      $lots = [];
+      foreach ($this->degustation->getLotsByNumDossier() as $numero_dossier => $lotInfo) {
+        foreach ($lotInfo as $ano => $lot) {
+          if($lot->numero_table == $this->table){
+            $lots[$numero_dossier][$ano] = $lot;
+          }
+        }
+      }
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheEchantillonsPrelevesTablePdf',
           array(
             'degustation' => $this->degustation,
             'table' => $this->table,
-            'lots' => $this->degustation->getLotsByNumDossier()
+            'lots' => $lots
           )
         ));
     }
