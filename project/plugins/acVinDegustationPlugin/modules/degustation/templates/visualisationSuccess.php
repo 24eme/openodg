@@ -143,6 +143,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>">Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a></li>
                   <li><a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>">Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a></li>
+                  <li><a href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>">Fiche de procès verbal</a></li>
                 </ul>
               </div>
             </div>
