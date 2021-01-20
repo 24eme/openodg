@@ -81,6 +81,7 @@
             <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
             <ul class="dropdown-menu">
               <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>">Fiche lots ventilés (Anonymisés)</a></li>
+              <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>">Fiche lots ventilés (Anonymisés par table)</a></li>
             </ul>
           </div>
           <?php endif; ?>

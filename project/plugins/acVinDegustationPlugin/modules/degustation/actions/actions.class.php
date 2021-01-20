@@ -596,10 +596,9 @@ class degustationActions extends sfActions {
     }
 
     public function executeFicheEchantillonsPrelevesTablePDF(sfWebRequest $request){
-      $degustation = DegustationClient::getInstance()->find($request->getParameter('id'));
-      $table = $request->getParameter('table');
+      $degustation = $this->getRoute()->getDegustation();
 
-      $this->document = new ExportDegustationFicheEchantillonsPrelevesTablePDF($degustation,$this->getRequestParameter('output','pdf'),false, $table);
+      $this->document = new ExportDegustationFicheEchantillonsPrelevesTablePDF($degustation,$this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {

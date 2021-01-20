@@ -270,7 +270,7 @@ degustation_fiche_echantillons_preleves_pdf:
       sf_method: [get]
 
 degustation_fiche_echantillons_preleves_table_pdf:
-    url: /degustation/:id/ficheEchantillonsPrelevesTable/:table/pdf
+    url: /degustation/:id/ficheEchantillonsPrelevesTable/pdf
     param: { module: degustation, action: ficheEchantillonsPrelevesTablePDF }
     class: DegustationRoute
     options:

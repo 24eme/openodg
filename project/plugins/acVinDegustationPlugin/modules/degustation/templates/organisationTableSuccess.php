@@ -8,17 +8,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
           <div class="alert alert-info" role="alert">
-          	<h3>Synthèse table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></h3>
-            <div class="col-xs text-right">
-              <?php if($degustation->getLastNumeroTable()): ?>
-              <div class="dropdown btn-group">
-                <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                  <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', array('id' => $degustation->_id, 'table' => $numero_table)) ?>">Fiche lots ventilés (Anonymisés)</a></li>
-                </ul>
-              </div>
-              <?php endif; ?>
-            </div>
+          	<h3>Synthèse table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></h3>            
           	<table class="table table-condensed">
           			<thead>
           				<tr>
