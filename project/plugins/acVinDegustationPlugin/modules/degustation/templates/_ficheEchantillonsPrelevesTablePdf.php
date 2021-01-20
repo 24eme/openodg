@@ -74,10 +74,11 @@
         <?php foreach ($lotTable as $numero_dossier => $lotInfo): ?>
           <?php $firstDisplay = true; ?>
           <?php foreach ($lotInfo as $numAnonyme => $lot): ?>
+            
             <tr class="<?php echo $class; ?>" >
-              <td><small><?php echo DegustationClient::getNumeroTableStr($numTab) ?></small></td>
               <?php if($firstDisplay == true ): ?>
-                <td rowspan="<?php echo count($lotInfo); ?>" ><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
+                <td rowspan="<?php echo count($lotInfo); ?>" ><small><?php echo DegustationClient::getNumeroTableStr($numTab) ?></small></td>
+                <td ><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
                 <td rowspan="<?php echo count($lotInfo); ?>" ><small><?php echo $lot->declarant_nom."<br>".$lot->declarant_identifiant;?></small></td>
               <?php $firstDisplay= false; endif; ?>
 
