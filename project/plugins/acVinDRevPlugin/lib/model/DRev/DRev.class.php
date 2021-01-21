@@ -626,10 +626,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
-              if(!$this->hasAcheteurForProduit($csv,$k)){
                 $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
-              }
-
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
 
@@ -658,6 +655,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
+            if(!$p->recolte->volume_sur_place) {
+                $p->recolte->vci_constitue = null;
+                $p->vci->constitue = null;
+            }
             if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
     		   $todelete[$hash] = $hash;
                continue;
@@ -728,22 +729,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         $this->updateFromPrecedente();
-    }
-
-    public function hasAcheteurForProduit($csv,$k){
-      $l = $csv[$k];
-      $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-      $codePrev = $code * 2;
-      while(($k > 0) && ($code < $codePrev)){
-         $codePrev = $code;
-         $k--;
-         $l = $csv[$k];
-         $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-         if($code == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR){
-           return boolval($l [DRCsvFile::CSV_VALEUR]);
-         }
-       }
-      return false;
     }
 
     public function updateFromPrecedente()
