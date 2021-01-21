@@ -31,8 +31,10 @@ abstract class DocumentSecurity implements SecurityInterface {
             return true;
         }
 
-        if($this->user->getCompte()->getSociete() && preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
-            return true;
+        if (in_array(self::EDITION, $droits) || in_array(self::VISUALISATION, $droits)) {
+            if($this->user->getCompte()->getSociete() && preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
+                return true;
+            }
         }
 
         if(!$this->isAdmin() && !preg_match("/^".$this->user->getCompte()->identifiant."/", $this->doc->identifiant)) {

@@ -20,6 +20,14 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->initDocuments();
     }
 
+		public function getMaster() {
+			return $this;
+		}
+
+    public function isLotsEditable(){
+      return false;
+    }
+
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementFacturesDocument($this);
@@ -103,7 +111,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getMvtLots() {
       $lots = array();
-      $statuts = ($this->isValidee()||$this->isApprouve())? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
+      $statuts = ($this->isValidee() && $this->isApprouve())? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
       foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, $statuts) as $item) {
           $key = Lot::generateMvtKey($item->value);
           $lots[$key] = $item->value;

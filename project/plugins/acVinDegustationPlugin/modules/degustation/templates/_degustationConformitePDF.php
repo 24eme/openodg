@@ -51,7 +51,7 @@
     <th style="font-weight:bold;"><?php echo tdStart() ?>&nbsp;Observation&nbsp;</th>
   </tr>
     <?php $totalVolume = 0 ?>
-    <?php foreach($degustation->getLots() as $lot): ?>
+    <?php foreach($lots as $lot): ?>
     <tr>
       <td><?php echo (int)$lot->numero_dossier ?></td>
       <td><?php echo (int)$lot->numero_archive ?></td>
@@ -70,7 +70,7 @@
 
 <table class="" border="0.5" cellspacing=1 cellpadding=0 style="">
   <tr>
-    <td>&nbsp;Nombre de lots Total : <?php echo count($degustation->lots) ?> </td>
+    <td>&nbsp;Nombre de lots Total : <?php echo count($lots) ?> </td>
     <td>&nbsp;Volume Total (HI) : <?php echo sprintf("%.2f", $totalVolume) ?> </td>
   </tr>
 </table>
@@ -85,29 +85,5 @@
   <br/>
   <tr>
     <td>Veuillez accepter, Madame, Monsieur, nos plus sincères et cordiales salutations.</td>
-  </tr>
-</table>
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-<table style="text-align:center;font-size:10px;">
-  <tr>
-    <td><?php echo $adresse['raison_sociale'] ?></td>
-  </tr>
-  <tr>
-    <td><?php echo $adresse['adresse'].' - '. $adresse['cp_ville'] ?> </td>
-  </tr>
-  <tr>
-    <td><?php echo $adresse['telephone'] ?></td>
   </tr>
 </table>

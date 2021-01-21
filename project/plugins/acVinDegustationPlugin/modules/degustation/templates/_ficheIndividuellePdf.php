@@ -8,7 +8,7 @@
           <td><?php echo tdStart() ?><br>
               <strong>Date : <?php echo substr($degustation->date,0,10); ?></strong><br>
               <strong>Heure : <?php echo substr($degustation->date,11,16); ?></strong><br>
-              <strong>Commission: <?php  ?></strong><br>
+              <strong>Commission: <?php echo $lots[0]->getNumeroTableStr(); ?></strong><br>
           </td>
           <td><?php echo tdStart() ?><br>
               <strong>Campagne : <?php echo $degustation->campagne ?></strong><br>
@@ -28,14 +28,12 @@
           <strong>Signature : &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
-          <strong>Jury n° : &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+          <strong>Table : &nbsp;<?php echo $lots[0]->getNumeroTableStr(); ?></strong>
       </p>
     </table>
 
     <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
-      <tr style="line-height:20px;">
+      <tr style="line-height:15px;">
          <th class="topempty"style="width:50px; "><?php echo tdStart() ?><strong>N°Ano</strong></th>
          <th class="topempty" style="width:70px; "><?php echo tdStart() ?><strong>Couleur</strong></th>
          <th class="topempty"style="width:150px;"><?php echo tdStart() ?><strong>IGP</strong></th>
@@ -45,7 +43,7 @@
          <th colspan="2"style="width:60px;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
          <th class="topempty" style="width:300px;"><strong>Motifs (si non conforme)</strong></th>
       </tr>
-      <tr style="line-height:13px;">
+      <tr style="line-height:10px;">
         <th class="empty"></th>
         <th class="empty"></th>
         <th class="empty"></th>
@@ -62,7 +60,7 @@
       </tr>
     <?php $i=1;?>
      <?php  foreach($lots as $lotInfo): ?>
-      <tr style="line-height:17px;">
+      <tr style="line-height:9.8px;">
         <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymise() ?></strong></td>
         <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
         <td><?php echo tdStart() ?>

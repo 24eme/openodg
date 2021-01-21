@@ -27,7 +27,7 @@
 		<?php
 			foreach ($lotsElevages as $lot):
         $lot = $lot->value;
-        $doc = $lot->origine_document_id;
+        $doc = $lot->id_document;
         $ind = str_replace('/lots/', '', $lot->origine_hash);
 		?>
 			<tr class="vertical-center cursor-pointer" >
@@ -42,7 +42,7 @@
           <div class="btn-group">
             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><a href="<?php echo url_for('degustation_elever', array('id' => $doc, 'index' => $ind)) ?>" onclick="return confirm('Confirmez vous la fin d\'élevage du lot le rendant dégustable ?')">Elever / Déguster</a></li>
+              <li><a href="<?php echo url_for('degustation_prelevable', array('id' => $doc, 'index' => $ind, 'back' => 'degustation_elevages')) ?>" onclick="return confirm('Confirmez vous la fin d\'élevage du lot le rendant dégustable ?')">Elever / Déguster</a></li>
             </ul>
           </div>
         </td>

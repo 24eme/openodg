@@ -20,13 +20,21 @@ class DegustationLot extends BaseDegustationLot {
         return ($this->exist('conformite') && isset($libelles[$this->conformite]))? $libelles[$this->conformite] : $conformite;
   }
 
+  public function getNumeroTableStr() {
+      if (!$this->numero_table) {
+          return '';
+      }
+      return DegustationClient::getNumeroTableStr($this->numero_table);
+  }
+
   public function getNumeroAnonymise() {
-    if ($this->numero_table) {
-      $table = DegustationClient::getNumeroTableStr($this->numero_table);
-      foreach($this->getDocument()->getLotsByTable($this->numero_table) as $k => $v) {
-        if ($v->getUnicityKey() == $this->getUnicityKey()) {
-          return $table.($k+1);
-        }
+    if (!$this->numero_table) {
+        return '';
+    }
+    $table = $this->getNumeroTableStr();
+    foreach($this->getDocument()->getLotsByTable($this->numero_table) as $k => $v) {
+      if ($v->getUnicityKey() == $this->getUnicityKey()) {
+        return $table.($k+1);
       }
     }
     return '';

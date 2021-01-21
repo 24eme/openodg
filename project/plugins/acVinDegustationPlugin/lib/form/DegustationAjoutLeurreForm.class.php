@@ -33,10 +33,6 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
             'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie."))
         ));
 
-        $this->widgetSchema['numero_lot'] = new sfWidgetFormInput();
-        $this->widgetSchema['numero_lot']->setLabel("");
-        $this->validatorSchema['numero_lot'] = new sfValidatorString(array('required' => false));
-
         $this->widgetSchema['table'] = new sfWidgetFormInputHidden();
         $this->validatorSchema['table'] = new sfValidatorInteger(['required' => true, 'min' => 0]);
 
@@ -69,7 +65,7 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $hash = ($values['hashref']) ?: null;
 
         if (isset($hash) && !empty($hash) && array_key_exists($hash, $this->getProduits())) {
-            $degust->addLeurre($hash, $values['numero_lot'], $values['table']);
+            $degust->addLeurre($hash, $values['table']);
         }
     }
 
