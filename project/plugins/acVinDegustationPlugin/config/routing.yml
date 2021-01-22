@@ -368,3 +368,13 @@ degustation_anonymize:
         type:     object
     requirements:
     sf_method: [get]
+
+degustation_desanonymize:
+    url: /degustation/:id/desanonymize
+    param: {module : degustation, action: desanonymize }
+    class: DegustationRoute
+    options:
+        model:    Degustation
+        type:     object
+    requirements:
+    sf_method: [get]
