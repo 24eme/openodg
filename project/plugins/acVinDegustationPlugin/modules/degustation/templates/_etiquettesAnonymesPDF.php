@@ -7,14 +7,7 @@
           <?php for($i=0; $i <3 ; $i++): ?>
             <td style="text-align: left;">
                 <table cellspacing=0 cellpadding=0 style="font-size:8px;padding:0px;">
-                  <tr style="line-height:4px;">
-                    <td style="overflow-wrap:break-word;">
-                      <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
-                    </td>
-                    <td style="overflow-wrap:break-word;text-align: right;">
-                      <?php echo tdStart() ?>&nbsp;N°&nbsp;Lot&nbsp;ODG:<strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
-                    </td>
-                  </tr>
+                  <?php echo tdStart() ?>
                   <tr style="line-height:4px;">
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
                       <?php echo tdStart() ?>&nbsp;<h1><strong><?php echo $lotInfo->lot->getNumeroAnonymat(); ?></strong></h1>
