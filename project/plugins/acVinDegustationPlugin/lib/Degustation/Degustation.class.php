@@ -618,24 +618,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
       return 0;
       }
-
-			// public function sortLotsByThisTriInt($a, $b){
-			// 	$a_data = '';
-			// 	$b_data = '';
-			// 	foreach($this->tri as $t) {
-			// 		$a_data .= $a->getValueForTri($t);
-			// 		$b_data .= $b->getValueForTri($t);
-			// 		if ($this->tri == ['numero_anonymat']){
-			// 		$cmp = $a_data-$b_data;
-			// 		if ($cmp !=0) {
-			// 			return $cmp;
-			// 		}
-			// 	}
-			// 	}
-			// 	return 0;
-			// 	}
-
-
     public function addLeurre($hash, $numero_table)
         {
             if (! $this->exist('lots')) {
