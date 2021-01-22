@@ -17,7 +17,7 @@
                   </tr>
                   <tr style="line-height:4px;">
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
-                      <?php echo tdStart() ?>&nbsp;<h1><strong><?php echo $lotInfo->lot->getNumeroAnonymise(); ?></strong></h1>
+                      <?php echo tdStart() ?>&nbsp;<h1><strong><?php echo $lotInfo->lot->getNumeroAnonymat(); ?></strong></h1>
                     </td>
                   </tr>
                   <tr style="line-height:4px;">

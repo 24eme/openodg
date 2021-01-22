@@ -59,9 +59,13 @@
         <th class="empty"></th>
       </tr>
     <?php $i=1;?>
-     <?php  foreach($lots as $lotInfo): ?>
+
+
+     <?php
+       foreach($lots as $lotInfo):
+     ?>
       <tr style="line-height:9.8px;">
-        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymise() ?></strong></td>
+        <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
         <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
         <td><?php echo tdStart() ?>
           &nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?>

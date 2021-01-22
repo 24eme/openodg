@@ -525,6 +525,14 @@ class degustationActions extends sfActions {
         return $this->redirect($back);
     }
 
+    public function executeAnonymize(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $degustation->anonymize();
+      $degustation->save();
+      return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
+
     public function executeEtiquettesPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
 

@@ -348,3 +348,13 @@ degustation_proces_verbal_degustation_pdf:
       type:     object
     requirements:
       sf_method: [get]
+
+degustation_anonymize:
+    url: /degustation/:id/anonymize
+    param: {module : degustation, action: anonymize }
+    class: DegustationRoute
+    options:
+        model:    Degustation
+        type:     object
+    requirements:
+    sf_method: [get]

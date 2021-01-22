@@ -474,7 +474,30 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-			return $lots;
+			$this->tri = ['numero_anonymat'];
+			usort($lots, array($this, "sortLotsByThisTri"));
+			// print_r($lots);
+ 		 	return $lots;
+		}
+
+
+		public function anonymize(){
+			$this->tri = ['couleur','appellation','cépage'];
+			for($table = 1; true ; $table++) {
+				$lots = $this->getLotsByTable($table);
+				if (!count($lots)) {
+					echo "plus de lots $table ";
+					break;
+				}
+				usort($lots, array($this, 'sortLotsByThisTri'));
+				foreach ($lots as $k => $lot){
+					if ($lot->numero_anonymat) {
+						throw new sfException("L'anonymat a déjà été réalisé");
+					}
+					$lot->numero_anonymat = $lot->getNumeroTableStr().($k+1);
+					echo $lot->numero_anonymat." ";
+				}
+			}
 		}
 
 		public function getLotsTableOrFreeLots($numero_table, $free = true){
@@ -558,19 +581,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return max($tables);
 		}
 
-        public function sortLotsByThisTri($a, $b){
+    public function sortLotsByThisTri($a, $b){
 			$a_data = '';
 			$b_data = '';
 			foreach($this->tri as $t) {
 				$a_data .= $a->getValueForTri($t);
 				$b_data .= $b->getValueForTri($t);
+				if ($this->tri == ['numero_anonymat']){
+						$cmp = $a_data-$b_data;
+						if ($cmp !=0) {
+							return $cmp;
+						}
+				}
 				$cmp = strcmp($a_data, $b_data);
 				if ($cmp) {
 					return $cmp;
 				}
 			}
-            return 0;
-        }
+      return 0;
+      }
 
     public function addLeurre($hash, $numero_table)
         {
@@ -739,7 +768,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
 				$table = chr($numTab+64);
 				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
-					$lots[$lot->getNumeroAnonymise()] = $lot;
+					$lots[$lot->getNumeroAnonymat()] = $lot;
 				}
 			}
 			return $lots;

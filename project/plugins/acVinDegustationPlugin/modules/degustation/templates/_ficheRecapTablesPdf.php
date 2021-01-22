@@ -94,7 +94,7 @@ th {
         </tr>
 <?php endif; //if ($previouslottable != $lotInfo->getNumeroTableStr()): ?>
          <tr style="line-height:17px;">
-           <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymise() ?></small></strong></td>
+           <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></small></strong></td>
            <td><?php echo tdStart() ?>
              <small>&nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?></small>

@@ -26,6 +26,7 @@ Degustation:
                   numero_dossier: { }
                   numero_archive: { }
                   numero_cuve: { }
+                  numero_anonymat: { }
                   millesime: { }
                   elevage: { }
                   volume: { type: float }
