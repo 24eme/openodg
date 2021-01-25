@@ -652,8 +652,9 @@ class degustationActions extends sfActions {
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
       $lot_dossier = $request['lot_dossier'];
+      $lot_num_anon = $request['lot_num_anon'];
 
-      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier, $lot_num_anon, $this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {
