@@ -116,7 +116,7 @@
                     <?php endif ?>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['destination_date']->renderLabel("Date de conditionnement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
                                 <div class="input-group date-picker">
                                     <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
