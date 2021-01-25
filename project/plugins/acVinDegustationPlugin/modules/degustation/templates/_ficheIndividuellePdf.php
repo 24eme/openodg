@@ -36,17 +36,22 @@
   <tr style="line-height:20px;">
      <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
      <th class="topempty bg-white" style="width:10%; "><?php echo tdStart() ?><strong>Couleur</strong></th>
-     <th class="topempty bg-white"style="width:19%;"><?php echo tdStart() ?><strong>IGP</strong></th>
+     <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>IGP</strong></th>
      <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>Cépage</strong></th>
+    <th colspan="4"style="width:16%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
      <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
      <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-     <th class="topempty bg-white" style="width:33%;"><strong>Motifs (si non conforme)</strong></th>
+     <th class="topempty bg-white" style="width:22%;"><strong>Motifs (si non conforme)</strong></th>
   </tr>
   <tr style="line-height:13px;">
     <th class="empty bg-white"></th>
     <th class="empty bg-white"></th>
     <th class="empty bg-white"></th>
     <th class="empty bg-white"></th>
+    <th style="width:4%;"><?php echo tdStart() ?><strong><small>Visuel <br>/12</small></strong></th>
+    <th style="width:4%;"><?php echo tdStart() ?><strong><small>Oifactif <br>/12</small></strong></th>
+    <th style="width:4%;"><?php echo tdStart() ?><strong><small>Gustatif  <br> /24</small></strong></th>
+    <th style="width:4%;"><?php echo tdStart() ?><strong><small>NOTE TOTALE /48</small></strong></th>
     <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
     <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
     <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
@@ -62,26 +67,31 @@
      <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?><p/>
      <br/>
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
-     <tr style="line-height:20px;">
-        <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-        <th class="topempty bg-white" style="width:10%; "><?php echo tdStart() ?><strong>Couleur</strong></th>
-        <th class="topempty bg-white"style="width:19%;"><?php echo tdStart() ?><strong>IGP</strong></th>
-        <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>Cépage</strong></th>
-        <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
-        <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-        <th class="topempty bg-white" style="width:33%;"><strong>Motifs (si non conforme)</strong></th>
-     </tr>
-     <tr style="line-height:13px;">
-       <th class="empty bg-white"></th>
-       <th class="empty bg-white"></th>
-       <th class="empty bg-white"></th>
-       <th class="empty bg-white"></th>
-       <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
-       <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
-       <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
-       <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
-       <th class="empty bg-white"></th>
-     </tr>
+       <tr style="line-height:20px;">
+          <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
+          <th class="topempty bg-white" style="width:10%; "><?php echo tdStart() ?><strong>Couleur</strong></th>
+          <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>IGP</strong></th>
+          <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>Cépage</strong></th>
+         <th colspan="4"style="width:16%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
+          <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
+          <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
+          <th class="topempty bg-white" style="width:22%;"><strong>Motifs (si non conforme)</strong></th>
+       </tr>
+       <tr style="line-height:13px;">
+         <th class="empty bg-white"></th>
+         <th class="empty bg-white"></th>
+         <th class="empty bg-white"></th>
+         <th class="empty bg-white"></th>
+         <th style="width:4%;"><?php echo tdStart() ?><strong><small>Visuel <br>/12</small></strong></th>
+         <th style="width:4%;"><?php echo tdStart() ?><strong><small>Oifactif <br>/12</small></strong></th>
+         <th style="width:4%;"><?php echo tdStart() ?><strong><small>Gustatif  <br> /24</small></strong></th>
+         <th style="width:4%;"><?php echo tdStart() ?><strong><small>NOTE TOTALE /48</small></strong></th>
+         <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+         <th class="empty bg-white"></th>
+       </tr>
    <?php endif;?>
 
     <tr style="line-height:11px;">
@@ -94,6 +104,10 @@
       <?php endif ?>
       </td>
       <td><?php echo tdStart() ?>&nbsp;<small><?php echo $lotInfo->details;?></small></td>
+      <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
