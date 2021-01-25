@@ -8,13 +8,27 @@
             <td style="text-align: left;">
                 <table cellspacing=0 cellpadding=0 style="font-size:10px;">
                   <tr style="line-height:4px;">
-                    <td colspan="2" style="overflow-wrap:break-word;text-align:left;line-height:8px;" >
-                      <?php echo tdStart() ?>&nbsp;<strong><?php echo ($lotInfo->lot->declarant_nom)? $lotInfo->lot->declarant_nom : "Leurre";  ?></strong>
+                    <td colspan="2" style="text-align:left;line-height:8px;" >
+                      <?php echo tdStart() ?><strong>
+                      <?php if(strlen($lotInfo->lot->declarant_nom)>29 && $lotInfo->lot->declarant_nom){
+                              echo (substr($lotInfo->lot->declarant_nom, 0, 25)."...");
+                            }
+                            else{
+                              echo ($lotInfo->lot->declarant_nom)? $lotInfo->lot->declarant_nom : "Leurre";
+                            }?>
+                      </strong>
                     </td>
                   </tr>
                   <tr style="line-height:7px;">
                     <td colspan="2" style="text-align: left;">
-                      <?php echo tdStart() ?>&nbsp;Ville&nbsp;:&nbsp;<strong><?php echo ($lotInfo->etablissement)? $lotInfo->etablissement->commune : '';  ?></strong>
+                      <?php echo tdStart() ?>&nbsp;Ville&nbsp;:&nbsp;<strong>
+                      <?php if(strlen($lotInfo->etablissement)>20 && $lotInfo->etablissement){
+                              echo (substr($lotInfo->etablissement, 0, 22)."...");
+                            }
+                            else{
+                              echo ($lotInfo->etablissement)? $lotInfo->etablissement->commune : '';
+                            }?>
+                            </strong>
                     </td>
                   </tr>
                   <tr style="line-height:7px;">
