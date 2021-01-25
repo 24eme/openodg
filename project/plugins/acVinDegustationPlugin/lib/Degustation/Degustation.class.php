@@ -723,10 +723,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Gestion PDF ****/
 
-		public function getEtiquettesFromLots(){
+		public function getEtiquettesFromLots($maxLotsParPlanche){
 			$nbLots = 0;
 			$planche = 0;
-			$maxLotsParPlanche = 7;
 			$etiquettesPlanches = array();
 			$etablissements = array();
 			$produits = array();
