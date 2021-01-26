@@ -84,12 +84,6 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $lot['numero_archive']->renderLabel("Numéro de lot", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-6">
-                                  <?php echo $lot['numero_archive']->render(); ?>
-                            </div>
-                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
