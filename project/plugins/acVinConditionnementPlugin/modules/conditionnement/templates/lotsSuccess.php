@@ -1,5 +1,6 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('PointsAides');?>
+<?php use_javascript("conditionnement.js", "last") ?>
 
 <?php include_partial('conditionnement/breadcrumb', array('conditionnement' => $conditionnement )); ?>
 <?php include_partial('conditionnement/step', array('step' => ConditionnementEtapes::ETAPE_LOTS, 'conditionnement' => $conditionnement, 'ajax' => true)) ?>
