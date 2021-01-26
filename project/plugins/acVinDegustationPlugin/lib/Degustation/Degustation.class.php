@@ -274,16 +274,28 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 return $mvt;
 	 }
 
-    public function getLotsPrelevables() {
-        $lots = array();
-        foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
-            $lot = MouvementLotView::generateLotByMvt($mvt);
-            $lots[$key] = $lot;
-        }
-		return $lots;
+	public function getLotsPrelevables() {
+	    $lots = array();
+	    foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
+	        $lot = MouvementLotView::generateLotByMvt($mvt);
+	        $lots[$key] = $lot;
+	    }
+			return $lots;
 	}
-	public function getLotsPrelevablesSortByDate() {
-		$lots = $this->getLotsPrelevables();
+
+	public function getLotsPrelevablesByProvenance($provenance) {
+			$lots = array();
+			foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
+					$lot = MouvementLotView::generateLotByMvt($mvt);
+					if(preg_match("/$provenance/", $lot->id_document) == 1){
+						$lots[$key] = $lot;
+					}
+			}
+			return $lots;
+	}
+
+	public function getLotsPrelevablesSortByDate($provenance = false) {
+		$lots = $provenance != false ? $this->getLotsPrelevablesByProvenance($provenance) : $this->getLotsPrelevables();
         uasort($lots, function ($lot1, $lot2) {
             $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
             $date2 = DateTime::createFromFormat('Y-m-d', $lot2->date);
