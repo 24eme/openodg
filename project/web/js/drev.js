@@ -269,7 +269,7 @@
                     });
                 });
                 if(!libelle) {
-                    libelle = "Cépage(s) revendiqué(s)";
+                    libelle = "Vin de cépage(s)";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
                 }else{
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");
