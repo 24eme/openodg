@@ -15,7 +15,7 @@
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
-                <th class="col-xs-1">Lot</th>
+                <th class="col-xs-1"> Numéro Lot</th>
                 <th class="text-center col-xs-6">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
