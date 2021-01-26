@@ -20,7 +20,6 @@ class degustationActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
 
