@@ -58,8 +58,7 @@ EOF;
           $line = rtrim($line);
           $csv = explode(';', $line);
 
-
-          if ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace') {
+          if (($csv[self::DRCIVA_APPELLATION] != 'AOC Alsace blanc') && ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace')) {
             continue;
           }
           if ($csv[self::DRCIVA_VTSGN]) {
