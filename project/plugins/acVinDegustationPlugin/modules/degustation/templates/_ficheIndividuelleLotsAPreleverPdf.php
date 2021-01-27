@@ -147,9 +147,7 @@ p, div {
       <td><?php echo tdStart() ?>
         <small><?php echo $lot->numero_cuve ?></small>
       </td>
-      <td><?php echo tdStart() ?>
-
-      </td>
+      <td><small><?php echo $lot->isConditionnement() ? $lot->centilisation : null; ?><?php echo tdStart() ?></small></td>
       <td><?php echo tdStart() ?>
 
       </td>

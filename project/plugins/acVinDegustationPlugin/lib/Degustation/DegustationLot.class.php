@@ -37,4 +37,8 @@ class DegustationLot extends BaseDegustationLot {
     return $this->isSecondPassage() ? "2nd" : "1er";
   }
 
+  public function isConditionnement(){
+    return $this->destination_type == DRevClient::LOT_DESTINATION_CONDITIONNEMENT;
+  }
+
 }

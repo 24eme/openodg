@@ -129,6 +129,7 @@ Conditionnement:
                         id_document: {  }
                         statut: {  }
                         specificite: { required: false }
+                        centilisation: { }
       pieces:
         type: array_collection
         definition:

@@ -45,6 +45,7 @@ Degustation:
                   conformite: {}
                   motif: {}
                   specificite: {}
+                  centilisation: { }
                   observation: {}
       mouvements_lots:
         type: collection
@@ -86,6 +87,7 @@ Degustation:
                         id_document: {  }
                         statut: {  }
                         specificite: {}
+                        centilisation: { }
                         conformite: {}
                         motif: {}
       degustateurs:

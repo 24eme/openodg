@@ -459,6 +459,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
+        $mvt->centilisation = $lot->centilisation;
 
         $tabCepages=[];
 

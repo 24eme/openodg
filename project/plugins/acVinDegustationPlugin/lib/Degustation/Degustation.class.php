@@ -212,6 +212,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->details = $lot->details;
 			$mvt->campagne = $this->getCampagneByDate();
 			$mvt->specificite = $lot->specificite;
+			$mvt->centilisation = $lot->centilisation;
 			$mvt->conformite = $lot->conformite;
 			$mvt->motif = $lot->motif;
 			return $mvt;
@@ -782,7 +783,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsByNumDossierNumCuve(){
 			$lots = array();
 			foreach ($this->getLots() as  $lot) {
+				if($lot->numero_cuve)
 					$lots[$lot->numero_dossier][$lot->numero_cuve] = $lot;
+				else
+					$lots[$lot->numero_dossier][$lot->numero_archive] = $lot;
 			}
 
 			return $lots;
