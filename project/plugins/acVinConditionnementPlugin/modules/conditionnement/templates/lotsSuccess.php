@@ -84,8 +84,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
-                    </div>
+                  <div class="col-md-6">
+                      <div class="form-group">
+                          <?php echo $lot['centilisation']->renderLabel("Centilisation", array('class' => "col-sm-3 control-label")); ?>
+                          <div class="col-sm-9">
+                                <?php echo $lot['centilisation']->render(); ?>
+                          </div>
+                      </div>
+                  </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>

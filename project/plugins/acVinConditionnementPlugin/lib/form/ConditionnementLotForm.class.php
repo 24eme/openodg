@@ -22,6 +22,13 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         }
     }
 
+    protected function getContenances(){
+      $contenances = ConditionnementConfiguration::getInstance()->getContenances();
+      $contenances_merged = array_keys(array_merge(array(" " => false), $contenances["bouteille"], $contenances["bib"]));
+      $contnenance_displaying = array_combine($contenances_merged, $contenances_merged);
+      return $contnenance_displaying;
+    }
+
     public function configure() {
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
@@ -44,6 +51,13 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
+        }
+
+        if(ConditionnementConfiguration::getInstance()->hasContenances()){
+          $this->setWidget('centilisation', new bsWidgetFormChoice(array('choices' => $this->getContenances())));
+          $contenances_valid = $this->getContenances();
+          array_shift($contenances_valid);
+          $this->setValidator('centilisation', new sfValidatorChoice(array('choices' => array_keys($contenances_valid))));
         }
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             if ($cepages && count($cepages)) {

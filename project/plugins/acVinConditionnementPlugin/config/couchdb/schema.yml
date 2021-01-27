@@ -76,6 +76,7 @@ Conditionnement:
                   elevage: { }
                   statut: {}
                   specificite: { required: false }
+                  centilisation: { }
                   cepages:
                     type: collection
                     definition:

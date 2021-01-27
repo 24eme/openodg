@@ -92,4 +92,13 @@ class ConditionnementConfiguration {
         return isset($this->configuration['degustation']) && boolval($this->configuration['degustation']);
     }
 
+    public function hasContenances() {
+        return isset($this->configuration['contenances']) && boolval($this->configuration['contenances']);
+    }
+
+    public function getContenances(){
+      if($this->hasContenances()){
+        return $this->configuration['contenances'];
+      }
+    }
 }

@@ -16,7 +16,8 @@
             <thead>
               <tr>
                 <th class="col-xs-1"> Numéro Lot</th>
-                <th class="text-center col-xs-6">Produit (millesime)</th>
+                <th class="text-center col-xs-5">Produit (millesime)</th>
+                <th class="text-center col-xs-2">Centilisation</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
               </tr>
@@ -47,6 +48,7 @@
                             </small>
                           <?php endif; ?>
                         </td>
+                        <td class="text-right"><?php echo $lot->centilisation; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                       </tr>
@@ -56,6 +58,7 @@
                   endif; ?>
                 <?php endforeach; ?>
                 <tr>
+                  <td></td>
                   <td></td>
                   <td class="text-right">Total : </td>
                   <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
