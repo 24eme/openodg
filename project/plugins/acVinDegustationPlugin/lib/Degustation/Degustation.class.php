@@ -862,4 +862,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $this->lots->add(null, DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mouvement)));
 		}
 
+		public function getNbLotByTypeForNumDossier($numDossier){
+			$lots = array();
+			foreach ($this->getLotsByNumDossierNumCuve()[$numDossier] as $numCuve => $lot) {
+				$lots[$lot->getTypeLot()] +=1;
+			}
+			return $lots;
+		}
+
 }

@@ -38,7 +38,17 @@ class DegustationLot extends BaseDegustationLot {
   }
 
   public function isConditionnement(){
-    return $this->destination_type == DRevClient::LOT_DESTINATION_CONDITIONNEMENT;
+    return preg_match('/'.ConditionnementClient::TYPE_COUCHDB.'/', $this->id_document);
+  }
+
+  public function getTypeLot(){
+    if(preg_match('/'.ConditionnementClient::TYPE_COUCHDB.'/', $this->id_document)){
+      return 'Cond';
+    }
+
+    if(preg_match('/'.DRevClient::TYPE_COUCHDB.'/', $this->id_document)){
+      return 'DRev';
+    }
   }
 
 }
