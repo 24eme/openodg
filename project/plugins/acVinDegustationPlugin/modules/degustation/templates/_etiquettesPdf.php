@@ -43,10 +43,11 @@
                     </td>
                   </tr>
                   <tr>
-                    <td style="overflow-wrap:break-word;"style="line-height:12px;">
-                      &nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve;  ?></strong>
+                    <td style="overflow-wrap:break-word;line-height:12px; width:75%;">
+                      <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
+                      &nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve.$centilisation;  ?></strong>
                     </td>
-                    <td style="text-align: right;">
+                    <td style="text-align: right; width:25%;">
                       <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
