@@ -27,6 +27,7 @@
                   <li><a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>">Étiquettes</a></li>
                   <li><a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>">Fiche tournée prélevement</a></li>
                   <li><a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>">Fiche individuelle de tournée (Lot à prélever)</a></li>
+                  <li><a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>">Tableau des étiquettes</a></li>
                 </ul>
               </div>
             </div>
@@ -82,6 +83,7 @@
             <ul class="dropdown-menu">
               <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>">Fiche lots ventilés (Anonymisés)</a></li>
               <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>">Fiche lots ventilés (Anonymisés par table)</a></li>
+              <li><a href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>">Tableau des étiquettes (Anonymisés)</a></li>
             </ul>
           </div>
           <?php endif; ?>
