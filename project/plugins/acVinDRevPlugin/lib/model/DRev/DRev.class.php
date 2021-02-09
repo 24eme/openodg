@@ -906,11 +906,54 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             throw new sfException("La validation nécessite une région");
         }
 
+        $this->setStatutOdgByRegion(null, $region);
+
         if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
 
         $this->validation_odg = $date;
+    }
+
+    public function setStatutOdgByRegion($statut, $region = null) {
+        if($region) {
+            foreach ($this->getProduits($region) as $hash => $produit) {
+                $produit->setStatutOdg($statut);
+            }
+        } else {
+            $hasRegion = false;
+            foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                $hasRegion = true;
+                $this->setStatutOdgByRegion($statut, $region);
+            }
+            if (!$hasRegion) {
+                foreach ($this->getProduits($region) as $hash => $produit) {
+                    $produit->setStatutOdg($statut);
+                }
+            }
+        }
+        $allStatut = true;
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            if($produit->getStatutOdg() == $statut){
+               continue;
+            }
+            $allStatut = false;
+            break;
+        }
+        if(!$allStatut) {
+            return;
+        }
+        if (!$this->exist('statut_odg')) {
+            return $this->add('statut_odg', $statut);
+        }
+        return $this->_set('statut_odg', $statut);
+    }
+
+    public function getStatutOdg() {
+        if (!$this->exist('statut_odg')) {
+            return null;
+        }
+        return $this->_get('statut_odg');
     }
 
     protected function validateOdgByRegion($date = null, $region = null) {

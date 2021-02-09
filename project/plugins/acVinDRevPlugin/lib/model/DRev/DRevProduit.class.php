@@ -236,6 +236,21 @@ class DRevProduit extends BaseDRevProduit
 		$this->add('validation_odg',$date);
 	}
 
+
+	public function setStatutOdg($statut) {
+		if (!$this->exist('statut_odg')) {
+			$this->add('statut_odg');
+		}
+		return $this->_set('statut_odg', $statut);
+	}
+
+	public function getStatutOdg() {
+		if (!$this->exist('statut_odg')) {
+			return null;
+		}
+		return $this->_get('statut_odg');
+	}
+
 	public function isValidateOdg(){
 		return ($this->exist('validation_odg') && $this->validation_odg);
 	}
