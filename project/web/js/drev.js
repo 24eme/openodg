@@ -288,7 +288,6 @@
               div.querySelector('input.input-hl').value = null
 
             }else{
-              var total = 0.0
               var modal = event.target.parentElement
               while (! modal.classList.contains('modal')) {
                   modal = modal.parentElement
@@ -298,31 +297,14 @@
 
               inputs = modal.querySelectorAll('input.input-hl')
               if (item.textContent != "Séléctionnez un cépage"){
-                inputs.forEach(function (input, i) {
-                  if (item.textContent != "Séléctionnez un cépage" && ! isNaN(parseFloat(input.value))) {
-                    total += parseFloat(input.value)
-                  }
-                })
-
-                var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
-                vol_total.value = parseFloat(total)
-
-                $('#drev_lots_lots_'+lot+'_volume').blur()
-
-                vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+                updateInputVolume(inputs, item, lot)
               }
             }
-
-
           });
         });
 
-
-
-
         inputs_hl.forEach(function (input, index) {
             input.addEventListener('change', function (event) {
-                var total = 0.0
 
                 var modal = event.target.parentElement
                 while (! modal.classList.contains('modal')) {
@@ -333,22 +315,25 @@
 
                 inputs = modal.querySelectorAll('input.input-hl')
                 selects = modal.querySelectorAll('.select2-chosen')
-
-                inputs.forEach(function (input, i) {
-                    if (selects[i].textContent != "Séléctionnez un cépage" && ! isNaN(parseFloat(input.value))) {
-                        total += parseFloat(input.value)
-                    }
-                })
-
-
-                var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
-                vol_total.value = parseFloat(total)
-
-                $('#drev_lots_lots_'+lot+'_volume').blur()
-
-                vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+                updateInputVolume(inputs, selects[index], lot)
             })
         })
+
+        function updateInputVolume(inputs, select, lot){
+          var total = 0.0
+          inputs.forEach(function (input, i) {
+              if (select.textContent != "Séléctionnez un cépage" && ! isNaN(parseFloat(input.value))) {
+                  total += parseFloat(input.value)
+              }
+          })
+
+          var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
+          vol_total.value = parseFloat(total)
+
+          $('#drev_lots_lots_'+lot+'_volume').blur()
+
+          vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+        }
 
         function precision(f) {
             if (!isFinite(f)) { return 2 }
