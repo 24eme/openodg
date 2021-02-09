@@ -751,9 +751,7 @@ class drevActions extends sfActions {
           $params = array_merge($params,array('region' => $this->regionParam));
         }
         return $this->redirect('drev_visualisation', $params);
-
     }
-
 
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
