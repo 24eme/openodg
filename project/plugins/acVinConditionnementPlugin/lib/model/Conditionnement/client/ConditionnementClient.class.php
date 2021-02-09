@@ -103,4 +103,15 @@ class ConditionnementClient extends acCouchdbClient {
                     ->execute($hydrate);
     }
 
+    public function findConditionnementsByCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+      $allConditionnement = ConditionnementClient::getInstance()->getHistory($identifiant);
+      $conditionnements = array();
+      foreach ($allConditionnement as $key => $conditionnement) {
+        if($conditionnement->campagne == $campagne){
+          $conditionnements[] = $conditionnement;
+        }
+      }
+      return $conditionnements;
+    }
+
 }

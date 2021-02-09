@@ -77,16 +77,17 @@
                               </div>
 
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-2" data-toggle = "tooltip" title = "Vous pouvez laisser à vide ce champs millésime.">
                                   <?php echo $lot['millesime']->render(array('data-default-value' => $conditionnement->getCampagne())); ?>
                             </div>
                         </div>
+                        <p>Vous pouvez laisser à vide le champs millésime.</p>
                     </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
                       <div class="form-group">
-                          <?php echo $lot['centilisation']->renderLabel("Centilisation", array('class' => "col-sm-3 control-label")); ?>
+                          <?php echo $lot['centilisation']->renderLabel("Conditionnement Centilisation", array('class' => "col-sm-3 control-label")); ?>
                           <div class="col-sm-9">
                                 <?php echo $lot['centilisation']->render(); ?>
                           </div>
