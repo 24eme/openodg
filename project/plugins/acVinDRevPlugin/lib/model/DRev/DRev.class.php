@@ -913,6 +913,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->generateMouvementsLots();
         $this->updateStatutsLotsSupprimes();
 
+        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
+
         if(!count($this->getLotsRevendiques())) {
             foreach($this->getProduitsLots() as $produit) {
                 $produit->validateOdg($date);
@@ -945,6 +947,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           }
         }
         $this->updateStatutsLotsSupprimes(false);
+        $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
     }
 
     public function updateStatutsLotsSupprimes($validation = true) {
@@ -979,7 +982,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             throw new sfException("La validation nécessite une région");
         }
 
-        $this->setStatutOdgByRegion(null, $region);
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
 
         if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
