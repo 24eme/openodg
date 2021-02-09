@@ -734,14 +734,37 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
         }
 
-        $service = $request->getParameter("service");
-        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
         if($this->regionParam){
           $params = array_merge($params,array('region' => $this->regionParam));
         }
         return $this->redirect('drev_visualisation', $params);
     }
 
+    public function executeEnattenteAdmin(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
+        $this->regionParam = $request->getParameter('region',null);
+
+        if (!$this->drev->isValidee()) {
+            throw sfException("Une DREV non validée ne peut être mise en attente");
+        }
+
+        if ($this->drev->isValideeOdg($this->regionParam)) {
+            throw sfException("Une DREV validée par une région ne peut être mise en attente par celle-ci");
+        }
+
+        $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
+        if($this->regionParam){
+          $params = array_merge($params,array('region' => $this->regionParam));
+        }
+        return $this->redirect('drev_visualisation', $params);
+
+    }
 
 
     public function executeConfirmation(sfWebRequest $request) {

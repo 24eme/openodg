@@ -2,15 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 24;
+$nb_test = 27;
 $has_lot = false;
-if ($application == 'loire') {
+if ($application == 'loire' || $application == 'igp13') {
     $has_lot = true;
     $nb_test += 3;
-}
-if ($application == 'igp13') {
-    $has_lot = true;
-    $nb_test += 1;
 }
 $t = new lime_test($nb_test);
 
@@ -59,7 +55,10 @@ foreach($produits as $produit) {
 }
 
 $produit2 = $drev->addProduit($produit_hash2);
-$produit_aoc = $drev->addProduit($produit_hash_aoc);
+$produit_aoc = null;
+if ($produit_hash_aoc) {
+    $produit_aoc = $drev->addProduit($produit_hash_aoc);
+}
 
 $produit_hash1 = $produit1->getHash();
 $produit_hash2 = $produit2->getHash();
@@ -93,6 +92,12 @@ $drev->save();
 $t->is($drev->isValidee(),true,"La Drev est validée");
 $t->is($drev->getValidation(),$date_validation_1,"La date de validation est ".$date_validation_1);
 $t->is($drev->isValideeOdg(),false,"La Drev n'est pas encore validée par l'odg");
+
+$t->is($drev->getStatutOdg(), DRevClient::STATUT_SIGNE, "La DREV est bien mise au statut signé");
+
+$drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE);
+$t->is($drev->getStatutOdg(), DRevClient::STATUT_EN_ATTENTE, "La DREV est bien mise au statut mise en attente");
+
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
         $drev->validateOdg($date_validation_odg_1, $region);
@@ -105,6 +110,7 @@ $drev->save();
 $t->is($drev->isValidee(),true,"La Drev est validée");
 $t->is($drev->isValideeOdg(),true,"La Drev est validée par l'odg");
 $t->is($drev->getValidationOdg(),$date_validation_odg_1,"La date de validation de l'odg est ".$date_validation_odg_1);
+$t->is($drev->getStatutOdg(), DRevClient::STATUT_VALIDATION_ODG, "La validation ODG fait sauter le statut mise en attente");
 
 if ($application == 'loire') {
     $t->is($drev->lots[0]->date,$date_validation_1,"La date de version du lot est celle de la validation ODG");
