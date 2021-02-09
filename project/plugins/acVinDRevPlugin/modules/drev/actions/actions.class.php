@@ -734,8 +734,8 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
         }
 
-        $service = $request->getParameter("service");
-        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
         if($this->regionParam){
           $params = array_merge($params,array('region' => $this->regionParam));
         }
