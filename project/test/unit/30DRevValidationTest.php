@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 26;
+$nb_test = 27;
 $has_lot = false;
 if ($application == 'loire' || $application == 'igp13') {
     $has_lot = true;
@@ -74,6 +74,8 @@ $t->is($drev->isValidee(),true,"La Drev est validée");
 $t->is($drev->getValidation(),$date_validation_1,"La date de validation est ".$date_validation_1);
 $t->is($drev->isValideeOdg(),false,"La Drev n'est pas encore validée par l'odg");
 
+$t->is($drev->getStatutOdg(), DRevClient::STATUT_SIGNE, "La DREV est bien mise au statut signé");
+
 $drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE);
 $t->is($drev->getStatutOdg(), DRevClient::STATUT_EN_ATTENTE, "La DREV est bien mise au statut mise en attente");
 
@@ -89,7 +91,7 @@ $drev->save();
 $t->is($drev->isValidee(),true,"La Drev est validée");
 $t->is($drev->isValideeOdg(),true,"La Drev est validée par l'odg");
 $t->is($drev->getValidationOdg(),$date_validation_odg_1,"La date de validation de l'odg est ".$date_validation_odg_1);
-$t->isnt($drev->getStatutOdg(), DRevClient::STATUT_EN_ATTENTE, "La validation ODG fait sauter le statut mise en attente");
+$t->is($drev->getStatutOdg(), DRevClient::STATUT_VALIDATION_ODG, "La validation ODG fait sauter le statut mise en attente");
 
 if ($application == 'loire') {
     $t->is($drev->lots[0]->date,$date_validation_1,"La date de version du lot est celle de la validation ODG");

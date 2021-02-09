@@ -15,7 +15,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT = "VRAC_EXPORT_ET_CONDITIONNEMENT";
     const LOT_DESTINATION_VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT = "VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT";
 
-    const STATUT_EN_ATTENTE = "DREV_STATUT_EN_ATTENTE";
+    const STATUT_EN_ATTENTE = "En attente";
+    const STATUT_SIGNE = "À approuver";
+    const STATUT_VALIDATION_ODG = "Approuvé";
+    const STATUT_BROUILLON = null;
 
     public static $denominationsAuto = array(
         self::DENOMINATION_BIO_PARTIEL => "Une partie de mes volumes sont certifiés en Bio",

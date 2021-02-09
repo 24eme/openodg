@@ -871,6 +871,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->generateMouvementsFactures();
         $this->generateMouvementsLots();
 
+        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
+
         if(!count($this->getLotsRevendiques())) {
             foreach($this->getProduitsLots() as $produit) {
                 $produit->validateOdg($date);
@@ -895,6 +897,31 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
               }
           }
         }
+        $this->updateStatutsLotsSupprimes(false);
+        $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
+    }
+
+    public function updateStatutsLotsSupprimes($validation = true) {
+      if (!$this->hasVersion()) {
+        return;
+      }
+      $mother = $this->getMother();
+      $updated = false;
+      if ($mother)
+      foreach ($mother->getLots() as $lot) {
+        if ($validation && in_array($lot->statut, array(Lot::STATUT_PRELEVABLE, Lot::STATUT_ELEVAGE)) && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
+          $lot->statut = Lot::STATUT_NONPRELEVABLE;
+          $updated = true;
+        }
+        if (!$validation && $lot->statut == Lot::STATUT_NONPRELEVABLE && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
+          $lot->statut = Lot::STATUT_PRELEVABLE;
+          $updated = true;
+        }
+      }
+      if ($updated) {
+        $mother->generateMouvementsLots();
+        $mother->save();
+      }
     }
 
     public function validateOdg($date = null, $region = null) {
@@ -906,7 +933,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             throw new sfException("La validation nécessite une région");
         }
 
-        $this->setStatutOdgByRegion(null, $region);
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
 
         if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
