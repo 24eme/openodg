@@ -295,6 +295,16 @@ drev_validation_admin:
   requirements:
     sf_method: [get]
 
+drev_enattente_admin:
+  url: /drev/enattente/:id
+  param: { module: drev, action: enattenteAdmin }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_confirmation:
   url: /drev/confirmation/:id
   param: { module: drev, action: confirmation }
