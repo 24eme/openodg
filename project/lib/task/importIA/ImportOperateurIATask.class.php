@@ -101,7 +101,7 @@ EOF;
                 continue;
             }
 
-            if($data[self::CSV_CAVE_COOPERATIVE] == "Oui") {
+            if(isset($data[self::CSV_CAVE_COOPERATIVE]) && $data[self::CSV_CAVE_COOPERATIVE] == "Oui") {
               $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
             } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
               $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
