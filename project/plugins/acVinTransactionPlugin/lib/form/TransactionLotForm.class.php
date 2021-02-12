@@ -1,5 +1,5 @@
 <?php
-class ConditionnementLotForm extends acCouchdbObjectForm
+class TransactionLotForm extends acCouchdbObjectForm
 {
     const NBCEPAGES = 5;
 
@@ -22,11 +22,15 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         }
     }
 
-    protected function getContenances(){
-      $contenances = ConditionnementConfiguration::getInstance()->getContenances();
-      $contenances_merged = array_keys(array_merge(array(" " => false), $contenances["bouteille"], $contenances["bib"]));
-      $contnenance_displaying = array_combine($contenances_merged, $contenances_merged);
-      return $contnenance_displaying;
+    public function getCountryList() {
+        $destinationChoicesWidget = new bsWidgetFormI18nChoiceCountry(array('culture' => 'fr', 'add_empty' => true));
+        $destinationChoices = array(null=>null,'France'=>'France');
+        $choices = $destinationChoicesWidget->getChoices();
+        unset($choices[null], $choices['France']);
+        foreach($destinationChoicesWidget->getChoices() as $choice) {
+          $destinationChoices[$choice] = $choice;
+        }
+        return $destinationChoices;
     }
 
     public function configure() {
@@ -53,12 +57,9 @@ class ConditionnementLotForm extends acCouchdbObjectForm
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
 
-        if(ConditionnementConfiguration::getInstance()->hasContenances()){
-          $this->setWidget('centilisation', new bsWidgetFormChoice(array('choices' => $this->getContenances())));
-          $contenances_valid = $this->getContenances();
-          array_shift($contenances_valid);
-          $this->setValidator('centilisation', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($contenances_valid))));
-        }
+        $this->setWidget('pays', new bsWidgetFormChoice(array('choices' => $this->getCountryList()), array("class"=>"select2 form-control")));
+        $this->setValidator('pays', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getCountryList()))));
+
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             if ($cepages && count($cepages)) {
                 $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
@@ -79,7 +80,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
-        $this->getObject()->destination_type = DRevClient::LOT_DESTINATION_CONDITIONNEMENT;
+        $this->getObject()->destination_type = DRevClient::LOT_DESTINATION_TRANSACTION;
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
                 continue;

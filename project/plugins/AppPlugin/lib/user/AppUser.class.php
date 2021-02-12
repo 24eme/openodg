@@ -10,6 +10,7 @@ class AppUser extends sfBasicSecurityUser {
     const CREDENTIAL_ADMIN = "ADMIN";
     const CREDENTIAL_DREV_ADMIN = 'teledeclaration_drev_admin';
     const CREDENTIAL_CONDITIONNEMENT_ADMIN = 'teledeclaration_conditionnement_admin';
+    const CREDENTIAL_TRANSACTION_ADMIN = 'teledeclaration_transaction_admin';
     const CREDENTIAL_STALKER = 'stalker';
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
@@ -159,6 +160,11 @@ class AppUser extends sfBasicSecurityUser {
         return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->isAdmin();
     }
 
+
+    public function hasTransactionAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->isAdmin();
+    }
+
     public function isStalker() {
         return $this->hasCredential(self::CREDENTIAL_STALKER);
     }
@@ -177,6 +183,16 @@ class AppUser extends sfBasicSecurityUser {
       $condConf = ConditionnementConfiguration::getInstance();
       if($this->hasConditionnementAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
         if(in_array($region, $condConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
+    }
+
+    public function getTeledeclarationTransactionRegion() {
+      $transConf = TransactionConfiguration::getInstance();
+      if($this->hasTransactionAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
+        if(in_array($region, $transConf->getOdgRegions())){
                     return $region;
         }
       }

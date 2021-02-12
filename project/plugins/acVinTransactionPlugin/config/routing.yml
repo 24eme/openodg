@@ -1,0 +1,139 @@
+transaction_create:
+  url: /transaction/creation/:identifiant
+  param: { module: transaction, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+transaction_create_papier:
+  url: /transaction/creation-papier/:identifiant
+  param: { module: transaction, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+transaction_edit:
+  url: /transaction/edition/:id
+  param: { module: transaction, action: edit }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get]
+
+transaction_delete:
+  url: /transaction/suppression/:id
+  param: { module: transaction, action: delete }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get]
+
+transaction_devalidation:
+  url: /transaction/devalidation/:id
+  param: { module: transaction, action: devalidation }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get]
+
+transaction_exploitation:
+  url: /transaction/exploitation/:id
+  param: { module: transaction, action: exploitation }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+transaction_lots:
+  url: /transaction/lots/:id/:appellation
+  param: { module: transaction, action: lots, appellation: 0 }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+transaction_lots_delete:
+  url: /transaction/lots/:id/:numArchive/supprimer
+  param: { module: transaction, action: deleteLots, numArchive: 0 }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+transaction_validation:
+  url: /transaction/validation/:id
+  param: { module: transaction, action: validation }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+transaction_modificative:
+  url: /transaction/modificative/:id
+  param: { module: transaction, action: modificative }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get]
+
+transaction_validation_admin:
+  url: /transaction/validation_admin/:id
+  param: { module: transaction, action: validationAdmin }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get]
+
+transaction_confirmation:
+  url: /transaction/confirmation/:id
+  param: { module: transaction, action: confirmation }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+transaction_visualisation:
+  url: /transaction/visualisation/:id
+  param: { module: transaction, action: visualisation }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+transaction_export_pdf:
+  url: /transaction/pdf/:id
+  param: { module: transaction, action: PDF }
+  class: transactionRoute
+  options:
+    model:    transaction
+    type:     object
+  requirements:
+    sf_method: [get]
