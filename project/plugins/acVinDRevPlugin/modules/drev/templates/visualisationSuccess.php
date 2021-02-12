@@ -44,6 +44,12 @@
     </div>
 <?php endif; ?>
 
+<?php if ($sf_user->isAdmin() && $drev->isMiseEnAttenteOdg()): ?>
+    <div class="alert alert-info">
+        Cette déclaration a été <strong>mise en attente</strong> par l'ODG
+    </div>
+<?php endif; ?>
+
 <?php if(isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
