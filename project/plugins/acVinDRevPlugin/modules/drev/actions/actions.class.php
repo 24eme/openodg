@@ -744,6 +744,7 @@ class drevActions extends sfActions {
         }
 
         $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        $this->drev->save();
 
         $service = $request->getParameter("service", null);
         $params = array('sf_subject' => $this->drev, 'service' => $service);
