@@ -38,14 +38,10 @@
 
     <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
         <h3>Dégustation</h3>
-        <?php echo $form["date_degustation_voulue"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
             Les vins seront prêt à être dégustés à partir du :
             <div class="input-group date-picker-week">
-            <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "Date souhaitée")); ?>
-            <div class="input-group-addon">
-                <span class="glyphicon-calendar glyphicon"></span>
-            </div>
+            <?php echo date("d/m/y"); ?>
             </div>
         </div>
     <?php endif ?>

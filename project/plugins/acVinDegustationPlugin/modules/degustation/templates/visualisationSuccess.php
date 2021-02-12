@@ -27,6 +27,7 @@
                   <li><a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>">Étiquettes</a></li>
                   <li><a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>">Fiche tournée prélevement</a></li>
                   <li><a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>">Fiche individuelle de tournée (Lot à prélever)</a></li>
+                  <li><a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>">Tableau des étiquettes</a></li>
                 </ul>
               </div>
             </div>
@@ -81,6 +82,8 @@
             <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">PDF&nbsp;&nbsp;<span class="caret"></span></button>
             <ul class="dropdown-menu">
               <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>">Fiche lots ventilés (Anonymisés)</a></li>
+              <li><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>">Fiche lots ventilés (Anonymisés par table)</a></li>
+              <li><a href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>">Tableau des étiquettes (Anonymisés)</a></li>
             </ul>
           </div>
           <?php endif; ?>
@@ -143,6 +146,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>">Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a></li>
                   <li><a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>">Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a></li>
+                  <li><a href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>">Fiche de procès verbal</a></li>
                 </ul>
               </div>
             </div>

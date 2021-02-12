@@ -51,7 +51,7 @@
                     $name = $form->getWidgetNameFromLot($lot);
                     if (!$lot->leurre && isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
-                        <td class="text-left"><?php echo $lot->getNumeroAnonymise() ?></td>
+                        <td class="text-left"><?php echo $lot->getNumeroAnonymat() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td class="text-left">
                           <?php echo $lot->produit_libelle;?>&nbsp;
@@ -81,7 +81,7 @@
                           <?php if(!$lot->isNonConforme()): ?>
                           <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
                           <?php else: ?>
-                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier)) ?>">PDF</a>
+                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier, 'lot_num_anon' => $lot->getNumeroAnonymat())) ?>">PDF</a>
                           <?php endif; ?>
                         </td>
                       </tr>

@@ -149,6 +149,10 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == 'produit') {
             return $this->_get('produit_hash').$this->_get('details');
         }
+        if ($type == 'numero_anonymat'){
+          $numero= intval(substr($this->numero_anonymat, 1));
+          return $numero;
+        }
         throw new sfException('unknown type of value : '.$type);
     }
 

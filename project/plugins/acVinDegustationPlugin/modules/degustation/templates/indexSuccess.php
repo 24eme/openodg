@@ -1,5 +1,12 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
+<style>
+  ul{
+    list-style: none;
+    display: flex;
+  }
+</style>
+
 <div class="page-header no-border">
     <h2>Création d'une dégustation</h2>
 </div>
@@ -51,6 +58,13 @@
                 <div class="col-sm-3 col-xs-3">
                   	<?php echo $form["max_lots"]->render(array("class" => "form-control", "placeholder" => 'Nombre max de lots')); ?>
                 </div>
+            </div>
+            <div class="form-group">
+              <?php echo $form["provenance"]->renderError(); ?>
+              <?php echo $form["lieu"]->renderLabel("Provenance", array("class" => "col-xs-4 control-label")); ?>
+              <div class="col-sm-5 col-xs-5">
+                <?php echo $form["provenance"]->render(); ?>
+              </div>
             </div>
             <div class="form-group text-right">
                 <div class="col-sm-4 col-sm-offset-8 col-xs-12">

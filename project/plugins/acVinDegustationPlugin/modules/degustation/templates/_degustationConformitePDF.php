@@ -87,27 +87,3 @@
     <td>Veuillez accepter, Madame, Monsieur, nos plus sincères et cordiales salutations.</td>
   </tr>
 </table>
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-<table style="text-align:center;font-size:10px;">
-  <tr>
-    <td><?php echo $adresse['raison_sociale'] ?></td>
-  </tr>
-  <tr>
-    <td><?php echo $adresse['adresse'].' - '. $adresse['cp_ville'] ?> </td>
-  </tr>
-  <tr>
-    <td><?php echo $adresse['telephone'] ?></td>
-  </tr>
-</table>

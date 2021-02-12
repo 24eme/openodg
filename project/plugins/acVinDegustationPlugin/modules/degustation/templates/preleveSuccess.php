@@ -32,7 +32,7 @@
 		<?php $adherents = array(); foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
        <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
-        <td><?php echo $lot->declarant_nom; ?></td>
+        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo(substr($lot->id_document,0,4))?></span> </td>
         <td class="edit"><?= $lot->numero_cuve ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">

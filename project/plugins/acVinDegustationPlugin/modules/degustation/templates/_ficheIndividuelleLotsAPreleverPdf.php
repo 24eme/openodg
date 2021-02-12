@@ -142,16 +142,13 @@ p, div {
         <small><?php echo $lot->numero_cuve ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo strpos($lot->specificite, "2ème") !== false ? $lot->specificite : "1er passage $lot->specificite"; ?></small>
+        <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false)." passage" : $lot->getTextPassage(false)." passage $lot->specificite"; ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->numero_cuve ?></small>
+        <small><?php echo $lot->getTypeLot(); ?><?php echo tdStart() ?></small>
       </td>
+      <td><small><?php echo $lot->numero_cuve ?></small></td>
       <td><?php echo tdStart() ?>
-
-      </td>
-      <td><?php echo tdStart() ?>
-
       </td>
      </tr>
      <?php $i++; ?>

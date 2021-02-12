@@ -20,7 +20,6 @@ class degustationActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
 
@@ -525,6 +524,20 @@ class degustationActions extends sfActions {
         return $this->redirect($back);
     }
 
+    public function executeAnonymize(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $degustation->anonymize();
+      $degustation->save();
+      return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
+    public function executeDesanonymize(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $degustation->desanonymize();
+      $degustation->save();
+      return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
     public function executeEtiquettesPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
 
@@ -594,6 +607,25 @@ class degustationActions extends sfActions {
       return $this->renderText($this->document->output());
 
     }
+
+    public function executeFicheEchantillonsPrelevesTablePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+
+      $this->document = new ExportDegustationFicheEchantillonsPrelevesTablePDF($degustation,$this->getRequestParameter('output','pdf'),false);
+      $this->document->setPartialFunction(array($this, 'getPartial'));
+
+      if ($request->getParameter('force')) {
+          $this->document->removeCache();
+      }
+
+      $this->document->generate();
+
+      $this->document->addHeaders($this->getResponse());
+
+      return $this->renderText($this->document->output());
+
+    }
+
     public function executeDegustationConformitePDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
 
@@ -619,8 +651,9 @@ class degustationActions extends sfActions {
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
       $lot_dossier = $request['lot_dossier'];
+      $lot_num_anon = $request['lot_num_anon'];
 
-      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier,$this->getRequestParameter('output','pdf'),false);
+      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier, $lot_num_anon, $this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {

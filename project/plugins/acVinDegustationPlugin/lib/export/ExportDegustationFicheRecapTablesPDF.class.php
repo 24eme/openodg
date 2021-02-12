@@ -14,13 +14,16 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public function create() {
+      foreach ($this->degustation->getLotsTablesByNumAnonyme() as $numTab => $lotsAnom) {
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheRecapTablesPdf',
           array(
             'degustation' => $this->degustation,
-            'lots' => $this->degustation->getLotsTablesByNumAnonyme()
+            'lots' => $lotsAnom,
+            'numTab' => $numTab
           )
         ));
+      }
     }
 
 
@@ -49,7 +52,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)." \nFICHE DE SYNTHÈSE";
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE DE SYNTHÈSE";
 
         return $header_subtitle;
     }

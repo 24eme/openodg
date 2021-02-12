@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Revendication <?php echo $conditionnement->campagne ?>
+    <h2>Déclaration de Conditionnement <?php echo $conditionnement->campagne ?>
     <?php if($conditionnement->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> reçue le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
       <?php if($conditionnement->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
@@ -17,6 +17,7 @@
     <?php endif; ?>
   </small>
     </h2>
+    <h4 class="mt-5 mb-0"><?php echo $conditionnement->declarant->nom; ?><span class="text-muted"> (<?php echo $conditionnement->declarant->famille; ?>)</span></h4>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -50,9 +51,8 @@
 
 <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->exist('date_degustation_voulue')) ? date_format(date_create($conditionnement->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
+    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->date_degustation_voulue)     ? date_format(date_create($conditionnement->validation), 'd/m/Y') : null;?></p>
 <?php endif ?>
-
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $conditionnement->identifiant, 'campagne' => $conditionnement->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
