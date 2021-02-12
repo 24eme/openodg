@@ -56,7 +56,7 @@
 <?php endif ?>
 
 <div class="row row-margin row-button">
-    <div class="col-xs-4">
+    <div class="col-xs-3">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $drev->identifiant, 'campagne' => $drev->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
     <div class="col-xs-4 text-center">
@@ -70,7 +70,7 @@
         </div>
     </div>
 
-    <div class="col-xs-4 text-right">
+    <div class="col-xs-5 text-right">
         <div class="btn-group">
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)):
                 if (!$drev->validation_odg): ?>
@@ -87,6 +87,9 @@
                                                  ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))
                                                )): ?>
         <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
+        <?php if (!$drev->isMiseEnAttenteOdg()): ?>
+                <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
+        <?php endif; ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
         <?php endif; ?>
         </div>

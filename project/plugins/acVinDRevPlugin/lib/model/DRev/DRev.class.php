@@ -976,6 +976,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_set('statut_odg', $statut);
     }
 
+    public function isMiseEnAttenteOdg() {
+        return ($this->getStatutOdg() == DRevClient::STATUT_EN_ATTENTE);
+    }
+
     public function getStatutOdg() {
         if (!$this->exist('statut_odg')) {
             return null;
