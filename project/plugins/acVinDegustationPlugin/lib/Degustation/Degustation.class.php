@@ -837,12 +837,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$etablissements = array();
 
 			foreach ($this->getLotsDegustes() as $lot) {
-				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
+				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
 				if($conforme && $lot->exist('conformite') && $lot->conformite == Lot::CONFORMITE_CONFORME){
-					$etablissements[] = $etablissement;
+					$etablissements[$lot->declarant_identifiant] = $etablissement;
 				}
 				if(!$conforme && $lot->isNonConforme()){
-					$etablissements[] = $etablissement;
+					$etablissements[$lot->declarant_identifiant] = $etablissement;
 				}
 			}
 			return $etablissements;
