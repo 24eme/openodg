@@ -432,7 +432,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
     public function executePresences(sfWebRequest $request) {
@@ -470,7 +470,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_presences', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
