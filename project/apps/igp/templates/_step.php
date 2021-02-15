@@ -10,9 +10,6 @@ $stepNum = $etapes->getEtapeNum($etapeMax);
         <?php $actif = ($step == $k); ?>
         <?php $past = ($etapes->isGt($etapeMax, $k)); ?>
         <?php $disabled = ($etapes->isEtapeDisabled($k, $object)); ?>
-        <?php if(($docValidated && !DegustationEtapes::$etapesAfterValidation[$k]) || (!$docValidated && DegustationEtapes::$etapesAfterValidation[$k])): ?>
-          <?php continue; ?>
-        <?php endif; ?>
         <li style="<?php if($disabled): ?>opacity: 0.7;<?php endif; ?>" class="<?php if($actif): ?>active<?php endif; ?> <?php if ((!$past && !$actif) || $disabled): ?>disabled<?php endif; ?> <?php if ($past && !$actif): ?>visited<?php endif; ?>">
                 <a href="<?php
     if (isset($routeparams) && isset($routeparams[$etapes->getRouteLink($k)])) {
