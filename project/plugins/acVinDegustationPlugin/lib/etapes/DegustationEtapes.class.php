@@ -6,6 +6,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_DEGUSTATEURS = 'DEGUSTATEURS';
     const ETAPE_VALIDATION = 'VALIDATION';
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
+    const ETAPE_ANONYMATS = 'ANONYMATS';
     const ETAPE_TABLES = 'TABLES';
 
     private static $_instance = null;
@@ -15,7 +16,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 2,
         self::ETAPE_VALIDATION => 3,
         self::ETAPE_PRELEVEMENTS => 4,
-        self::ETAPE_TABLES => 5
+        self::ETAPE_ANONYMATS => 5,
+        self::ETAPE_TABLES => 6
     );
 
     public static $libelles = array(
@@ -23,6 +25,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_VALIDATION => 'Validation',
         self::ETAPE_PRELEVEMENTS => 'Prélévements / Convocations',
+        self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_TABLES => 'Organisation tables',
     );
 
@@ -31,6 +34,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'degustation_selection_degustateurs',
         self::ETAPE_VALIDATION => 'degustation_validation',
         self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_etape',
+        self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
     );
 
@@ -39,6 +43,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 0,
         self::ETAPE_VALIDATION => 0,
         self::ETAPE_PRELEVEMENTS => 1,
+        self::ETAPE_ANONYMATS => 1,
         self::ETAPE_TABLES => 1
     );
 
