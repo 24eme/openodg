@@ -45,7 +45,7 @@ class TransactionValidation extends DocumentValidation
             continue;
           }
           $volume = sprintf("%01.02f",$lot->getVolume());
-          if($lot->millesime < ($this->document->campagne - 1)){
+          if($lot->millesime && $lot->millesime < ($this->document->campagne - 1)){
             $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
           if(!$lot->exist('destination_type') || !$lot->destination_type){
