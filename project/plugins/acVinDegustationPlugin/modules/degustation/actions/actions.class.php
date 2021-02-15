@@ -222,7 +222,6 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
             $this->degustation->save();
         }
-
     }
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
@@ -230,10 +229,16 @@ class degustationActions extends sfActions {
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ANONYMATS))) {
             $this->degustation->save();
-        }
-
+          }
     }
 
+    public function executeTablesEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
+            $this->degustation->save();
+        }
+    }
 
     public function executeConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
