@@ -363,7 +363,7 @@ class degustationActions extends sfActions {
         }
         $this->form->save();
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_tables_etape', $this->degustation);
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
