@@ -76,7 +76,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 
     public function executeUpdateLot(sfWebRequest $request)
@@ -212,7 +212,17 @@ class degustationActions extends sfActions {
 
          $this->form->save();
 
-        return $this->redirect('degustation_visualisation', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation_prelevements_etape', array('id' => $this->degustation->_id));
+    }
+
+
+    public function executePrelevementsEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
+            $this->degustation->save();
+        }
+
     }
 
 
@@ -247,7 +257,7 @@ class degustationActions extends sfActions {
         return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
       }
 
-      return $this->redirect('degustation_visualisation', $this->degustation);
+      return $this->redirect('degustation_prelevements_etape', $this->degustation);
 
     }
 
