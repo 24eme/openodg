@@ -8,7 +8,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
           <div class="alert alert-info" role="alert">
-          	<h3>Synthèse table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></h3>            
+          	<h3>Synthèse table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></h3>
           	<table class="table table-condensed">
           			<thead>
           				<tr>
@@ -90,7 +90,7 @@
                         <?php if($numero_table > 1): ?>
                         <a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table - 1, 'tri' => $tri)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a>
                         <?php else: ?>
-                            <a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+                            <a href="<?php echo url_for("degustation_tables_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
                         <?php endif; ?>
                     </div>
           			<div class="col-xs-4 text-center">
