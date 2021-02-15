@@ -2,6 +2,7 @@
 <?php use_helper('Float') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
 
 <?php if ($sf_user->hasFlash('notice')): ?>

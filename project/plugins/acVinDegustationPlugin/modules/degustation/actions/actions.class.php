@@ -248,6 +248,13 @@ class degustationActions extends sfActions {
         }
     }
 
+    public function executeNotificationsEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
+            $this->degustation->save();
+        }
+    }
+
     public function executeConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
     }
@@ -485,7 +492,7 @@ class degustationActions extends sfActions {
 
     public function executeRedirect(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->redirectIfIsValidee();
+        //$this->redirectIfIsValidee();
         return ($next = $this->getRouteNextEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
 

@@ -1,12 +1,12 @@
 <?php
 $etapeMax = ($object->exist('etape') && $object->etape)? $object->etape : null;
-$docValidated = ($object->exist('validation') && $object->validation);
 $stepNum = $etapes->getEtapeNum($etapeMax);
 ?>
 <nav class="navbar navbar-default nav-step">
     <ul class="nav navbar-nav">
     <?php foreach ($etapes->getEtapesHash() as $k => $num):
       ?>
+        <?php if($etapes->isHiddenAfterValidation($object,$k)){ continue; } ?>
         <?php $actif = ($step == $k); ?>
         <?php $past = ($etapes->isGt($etapeMax, $k)); ?>
         <?php $disabled = ($etapes->isEtapeDisabled($k, $object)); ?>

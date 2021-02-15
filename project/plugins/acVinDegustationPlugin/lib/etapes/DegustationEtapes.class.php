@@ -9,6 +9,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
     const ETAPE_RESULTATS = 'RESULTATS';
+    const ETAPE_NOTIFICATIONS = 'NOTIFICATIONS';
 
     private static $_instance = null;
 
@@ -20,6 +21,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_TABLES => 5,
         self::ETAPE_ANONYMATS => 6,
         self::ETAPE_RESULTATS => 7,
+        self::ETAPE_NOTIFICATIONS => 8,
     );
 
     public static $libelles = array(
@@ -30,6 +32,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_TABLES => 'Organisation tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_RESULTATS => 'Résultats / Présences',
+        self::ETAPE_NOTIFICATIONS => 'Notifications'
     );
 
     public static $links = array(
@@ -40,6 +43,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_TABLES => 'degustation_tables_etape',
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
         self::ETAPE_RESULTATS => 'degustation_resultats_etape',
+        self::ETAPE_NOTIFICATIONS => 'degustation_notifications_etape'
     );
 
     public static $etapesAfterValidation = array(
@@ -50,6 +54,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_TABLES => 1,
         self::ETAPE_ANONYMATS => 1,
         self::ETAPE_RESULTATS => 1,
+        self::ETAPE_NOTIFICATIONS => 1,
 
     );
 
@@ -66,8 +71,15 @@ class DegustationEtapes extends Etapes {
     public function getRouteLinksHash() {
         return self::$links;
     }
+
     public function getLibellesHash() {
         return self::$libelles;
+    }
+
+    public function isHiddenAfterValidation($doc, $k) {      
+      $docValidated = ($doc->exist('validation') && $doc->validation);
+
+      return ($docValidated && !DegustationEtapes::$etapesAfterValidation[$k]) || (!$docValidated && DegustationEtapes::$etapesAfterValidation[$k]);
     }
 
 
