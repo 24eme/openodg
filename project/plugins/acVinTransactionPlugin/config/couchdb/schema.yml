@@ -1,0 +1,153 @@
+#TRANSACTION
+Transaction:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      _attachments:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
+      type: { }
+      campagne: { }
+      etape: { required: false }
+      achat_tolerance: { required: false }
+      identifiant: { }
+      validation: { }
+      validation_odg: { }
+      envoi_oi: { required: false}
+      non_recoltant: { required: false, type: integer }
+      non_conditionneur: { required: false, type: integer }
+      non_vinificateur: { required: false, type: integer }
+      papier: { required: false, type: integer }
+      automatique: { required: false, type: integer }
+      lecture_seule: { required: false }
+      denomination_auto: { required: false }
+      date_degustation_voulue: { required: false }
+      version: {  }
+      numero_archive: {  }
+      declarant:
+        type: collection
+        class: TransactionDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+            famille: { }
+      lots:
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: TransactionLot
+              inheritance: Lot
+              definition:
+                fields:
+                  date: { }
+                  id_document: { }
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  numero: { }
+                  numero_cuve: { required: false } # a supprimer
+                  millesime: { }
+                  volume: { type: float }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
+                  elevage: { }
+                  statut: {}
+                  specificite: { required: false }
+                  pays: { }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
+      chais:
+        type: collection
+        definition:
+          fields:
+            adresse: { }
+            commune: { }
+            code_postal: { }
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: TransactionMouvementLots
+                    inheritance: MouvementLots
+                    type: collection
+                    definition:
+                      fields:
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        produit_couleur: { }
+                        volume: { type: float }
+                        date: {  }
+                        millesime: {  }
+                        elevage: { }
+                        region: {  }
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        numero_cuve: {  }
+                        version: {  }
+                        origine_hash: {  }
+                        origine_type: {  }
+                        origine_document_id: {  }
+                        origine_mouvement: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
+                        destination_type: { }
+                        destination_date: { }
+                        details: {}
+                        region: {}
+                        campagne: {}
+                        id_document: {  }
+                        statut: {  }
+                        specificite: { required: false }
+                        centilisation: { }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: TransactionPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }
