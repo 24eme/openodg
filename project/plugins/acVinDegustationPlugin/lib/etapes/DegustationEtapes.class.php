@@ -8,6 +8,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
+    const ETAPE_RESULTATS = 'RESULTATS';
 
     private static $_instance = null;
 
@@ -18,6 +19,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 4,
         self::ETAPE_TABLES => 5,
         self::ETAPE_ANONYMATS => 6,
+        self::ETAPE_RESULTATS => 7,
     );
 
     public static $libelles = array(
@@ -27,6 +29,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 'Prélévements / Convocations',
         self::ETAPE_TABLES => 'Organisation tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
+        self::ETAPE_RESULTATS => 'Résultats / Présences',
     );
 
     public static $links = array(
@@ -36,6 +39,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
+        self::ETAPE_RESULTATS => 'degustation_resultats_etape',
     );
 
     public static $etapesAfterValidation = array(
@@ -45,6 +49,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 1,
         self::ETAPE_TABLES => 1,
         self::ETAPE_ANONYMATS => 1,
+        self::ETAPE_RESULTATS => 1,
+
     );
 
     public static function getInstance() {
