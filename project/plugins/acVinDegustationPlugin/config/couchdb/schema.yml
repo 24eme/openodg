@@ -10,6 +10,7 @@ Degustation:
       lieu: {  }
       max_lots: {  }
       etape: {  }
+      provenance: { }
       validation: {  }
       lots:
         type: array_collection
@@ -26,8 +27,9 @@ Degustation:
                   numero_dossier: { }
                   numero_archive: { }
                   numero_cuve: { }
+                  numero_anonymat: { }
                   millesime: { }
-                  elevage: { required: false }
+                  elevage: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -43,6 +45,7 @@ Degustation:
                   conformite: {}
                   motif: {}
                   specificite: {}
+                  centilisation: { }
                   observation: {}
       mouvements_lots:
         type: collection
@@ -63,7 +66,7 @@ Degustation:
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
-                        elevage: { required: false }
+                        elevage: { }
                         millesime: {  }
                         region: {  }
                         numero_dossier: {  }
@@ -84,6 +87,9 @@ Degustation:
                         id_document: {  }
                         statut: {  }
                         specificite: {}
+                        centilisation: { }
+                        conformite: {}
+                        motif: {}
       degustateurs:
         type: collection
         definition:

@@ -3,6 +3,8 @@
 class EtablissementSecurity implements SecurityInterface {
 
     const DECLARANT_DREV = 'DECLARANT_DREV';
+    const DECLARANT_CONDITIONNEMENT = 'DECLARANT_CONDITIONNEMENT';
+    const DECLARANT_TRANSACTION = 'DECLARANT_TRANSACTION';
     const DECLARANT_PARCELLAIRE = 'DECLARANT_PARCELLAIRE';
 
     protected $user;
@@ -30,6 +32,16 @@ class EtablissementSecurity implements SecurityInterface {
         }
 
         if(in_array(self::DECLARANT_DREV, $droits) && !$this->etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
+
+            return false;
+        }
+
+        if(in_array(self::DECLARANT_CONDITIONNEMENT, $droits) && !$this->etablissement->hasFamille(EtablissementFamilles::FAMILLE_NEGOCIANT)) {
+
+            return false;
+        }
+
+        if(in_array(self::DECLARANT_TRANSACTION, $droits) && !$this->etablissement->hasFamille(EtablissementFamilles::FAMILLE_NEGOCIANT)) {
 
             return false;
         }

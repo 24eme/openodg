@@ -14,13 +14,16 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public function create() {
+      foreach ($this->degustation->getLotsTablesByNumAnonyme() as $numTab => $lotsAnom) {
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheRecapTablesPdf',
           array(
             'degustation' => $this->degustation,
-            'lots' => $this->degustation->getLotsTablesByNumAnonyme()
+            'lots' => $lotsAnom,
+            'numTab' => $numTab
           )
         ));
+      }
     }
 
 
@@ -42,15 +45,14 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s \n\n\n FICHE DE SYNTHÈSE", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
 
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE DE SYNTHÈSE";
 
         return $header_subtitle;
     }

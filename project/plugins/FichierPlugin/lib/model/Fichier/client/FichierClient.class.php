@@ -30,13 +30,15 @@ class FichierClient extends acCouchdbClient {
      *
      * @return false|Un document
      */
-    public function scrapeAndSaveFiles($etablissement, $type, $annee)
+    public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true)
     {
         $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
         $fichiers = array();
-        foreach($etablissements as $etblmt) {
-            $this->scrapeFiles($etblmt, $type, $annee);
-            if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
+	foreach($etablissements as $etblmt) {
+		if($scrap) {
+            		$this->scrapeFiles($etblmt, $type, $annee);
+	    	}
+	    if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
                 continue;
             }
             $client = $this->getClientFromType($type);
@@ -87,6 +89,14 @@ class FichierClient extends acCouchdbClient {
 
         $t = strtolower($type);
         $cvi = $etablissement->cvi;
+
+        $files = $this->getScrapyFiles($etablissement, $t, $annee);
+        foreach($files as $file) {
+            if(!is_writable($file)) {
+                throw new sfException("File ".$file." not writable. Once the new version has been downloaded, it cannot be replaced");
+            }
+        }
+
         exec("bash $scrapybin/download_douane.sh $t $annee $cvi 1>&2");
     }
 

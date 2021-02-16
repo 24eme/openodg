@@ -7,13 +7,19 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
     const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
     const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
-    const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_ET_CONDITIONNEMENT';
+    const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_CONDITIONNEMENT';
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
     const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
     const LOT_DESTINATION_CONDITIONNEMENT = 'CONDITIONNEMENT';
-    const LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT = "VRAC_FRANCE_ET_VRAC_EXPORT";
-    const LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT = "VRAC_EXPORT_ET_CONDITIONNEMENT";
-    const LOT_DESTINATION_VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT = "VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT";
+    const LOT_DESTINATION_TRANSACTION = 'VRAC';
+    const LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT = "VRAC_FRANCE_VRAC_EXPORT";
+    const LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT = "VRAC_EXPORT_CONDITIONNEMENT";
+    const LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT = "VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT";
+
+    const STATUT_EN_ATTENTE = "En attente";
+    const STATUT_SIGNE = "À approuver";
+    const STATUT_VALIDATION_ODG = "Approuvé";
+    const STATUT_BROUILLON = null;
 
     public static $denominationsAuto = array(
         self::DENOMINATION_BIO_PARTIEL => "Une partie de mes volumes sont certifiés en Bio",
@@ -22,12 +28,13 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
+        DRevClient::LOT_DESTINATION_TRANSACTION => "Vrac",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT => "Vrac France et Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT => "Vrac Export et Conditionnement",
-        DRevClient::LOT_DESTINATION_VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement"
+        DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement"
     );
 
     public static function getInstance()

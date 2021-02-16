@@ -9,6 +9,9 @@
       var state = $(this).bootstrapSwitch('state');
       var form = $(this).parents('form');
       if($(this).hasClass('ajax')){
+        if(form.hasClass('degustateurs-confirmation')){
+          $(this).parents('tr').removeClass("text-muted").removeClass("disabled").removeAttr("disabled").css("text-decoration",'');        
+        }
         $.formPost(form);
       }
     });
@@ -70,23 +73,27 @@
 
       $('.degustation.prelevements').each(function(){
         var nbLotsSelectionnes = 0;
-        var nb = $('tr strong#nbLotsSelectionnes').text();
+        var nbAdherentsLots = 0;
 
         $(this).find('.bsswitch').each(function () {
            var state = $(this).bootstrapSwitch('state');
            if(state){
               listAdherents[$(this).attr("data-preleve-adherent")]++;
+              nbLotsSelectionnes++
            }
       });
+      nbAdherentsLots = Object.keys(listAdherents).length;
       for(let i in listAdherents){
-        if(listAdherents[i] >= 1){
-          nbLotsSelectionnes++;
+        if(listAdherents[i] == 0){
+          nbAdherentsLots--;
         }
       }
 
       $('tr strong#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
+      $('tr strong#nbAdherentsAPrelever').html(""+nbAdherentsLots);
        });
     }
+    updateSynthesePrelevementLots();
 
     var updateSyntheseDegustateurs = function(){
       $('.degustation.degustateurs').each(function(){
@@ -106,7 +113,7 @@
     }
 
     updateSyntheseDegustateurs();
-
-    document.getElementById('degustation_creation_time').style.paddingTop = '0';
+    if(document.getElementById('degustation_creation_time'))
+      document.getElementById('degustation_creation_time').style.paddingTop = '0';
 
   });

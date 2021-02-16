@@ -21,6 +21,17 @@ class Configuration extends BaseConfiguration {
         return $this->declaration->getProduits();
     }
 
+    public function getProduitsByCepage($cepage) {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if (in_array($cepage, $p->getCepagesAutorises()->toArray())) {
+                $produits[] = $p;
+                continue;
+            }
+        }
+        return $produits;
+    }
+
     public function getLieux(){
       $lieux = [];
       foreach ($this->getProduits() as $p) {

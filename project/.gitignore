@@ -4,7 +4,6 @@ config/app.yml
 config/databases.yml
 config/databases.*.yml
 config/properties.ini
-apps/*/config/factories.yml
 web/declaration_dev.php
 web/*_*.php
 !web/*_dev.php

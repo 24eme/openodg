@@ -21,7 +21,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
 
     public function getProduitsDetails($onlyVtSgn = false, $active = false) {
 
-    	if ($onlyVtSgn && !$this->getConfig()->hasVtsgn()) {
+    	if ($onlyVtSgn && (!$this->getConfig()->hasVtsgn() || !$this->isRealProduit())) {
     		return array();
     	}
 
@@ -104,7 +104,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
 
     public function getLieuKeyFromHash($hash) {
         $lieu_key = null;
-        if($this->getConfig()->hasLieuEditable()) {
+        if($this->isRealProduit() && $this->getConfig()->hasLieuEditable()) {
             $lieu_key = preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash);
         }
 
@@ -184,6 +184,10 @@ class ParcellaireProduit extends BaseParcellaireProduit {
             $key.= '-' . $lieu;
         }
         return KeyInflector::slugify($key);
+    }
+
+    public function isRealProduit() {
+        return $this->getHash() != ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH;
     }
 
 }

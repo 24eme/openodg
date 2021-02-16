@@ -250,7 +250,7 @@ class DRevCouleur extends BaseDRevCouleur
 
 	public function canHaveSuperficieVinifiee() {
 
-		return $this->exist('superficie_vinifiee');
+		return $this->exist('superficie_vinifiee') || $this->exist('superficie_vinifiee_vtsgn') ;
 	}
 
 	public function hasVciRecolteConstitue() {

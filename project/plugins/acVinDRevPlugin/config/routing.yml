@@ -236,8 +236,8 @@ drev_lots:
     sf_method: [get, post]
 
 drev_lots_delete:
-  url: /drev/lots/:id/:appellation/supprimer
-  param: { module: drev, action: deleteLots, appellation: 0 }
+  url: /drev/lots/:id/:numArchive/supprimer
+  param: { module: drev, action: deleteLots, numArchive: 0 }
   class: DRevRoute
   options:
     model:    DRev
@@ -278,6 +278,16 @@ drev_modificative:
 drev_validation_admin:
   url: /drev/validation_admin/:id
   param: { module: drev, action: validationAdmin }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_enattente_admin:
+  url: /drev/enattente/:id
+  param: { module: drev, action: enattenteAdmin }
   class: DRevRoute
   options:
     model:    DRev

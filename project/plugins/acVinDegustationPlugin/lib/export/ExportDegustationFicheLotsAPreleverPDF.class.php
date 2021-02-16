@@ -15,10 +15,11 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
 
     public function create() {
       $etablissements = array();
-      $nbLotTotal = 0;
       foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
-				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
-        $nbLotTotal += count($lotsEtablissement);
+        if (!$numDossier) {
+            continue;
+        }
+	      $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
         $etablissements[$numDossier] = $etablissement;
       }
         @$this->printable_document->addPage(
@@ -27,7 +28,7 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
             'degustation' => $this->degustation,
             'etablissements' => $etablissements,
             "date_edition" => date("d/m/Y"),
-            'nbLotTotal' => $nbLotTotal,
+            "nbLotTotal" => count($this->degustation->getLots()),
             'lots' => $this->degustation->getLotsByNumDossierNumCuve()
           )
         ));
@@ -53,15 +54,13 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
 
     protected function getHeaderTitle() {
         $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
-
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
-
+        $date = substr($this->degustation->date,0,10);
+        $date = $date[8].$date[9].'/'.$date[5].$date[6].'/'.$date[0].$date[1].$date[2].$date[3];
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)." \nFiche de tournée (Liste des lots à prélever) Date de commission : ".$date;
         return $header_subtitle;
     }
 

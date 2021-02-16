@@ -92,7 +92,7 @@
 
 <table border="1" style="text-align:center;padding:10px;">
   <tr><td>FICHE DE NON CONFORMIT&Eacute;</td></tr>
-  <tr><td>Lot non conforme à la dégustation <strong>Second</strong> passage</td></tr>
+  <tr><td>Lot non conforme à la dégustation, <strong><?php echo $lot->getTextPassage(); ?></strong> passage</td></tr>
   <tr><td>N° : NC - Bouches du Rhône - AIX 1312</td></tr>
 </table>
 
@@ -105,12 +105,7 @@
   <tr><td>Commission de Dégustation réunie le : <?php echo date('d/m/Y',strtotime($degustation->date)) .' '. $degustation->lieu ?></td></tr>
 </table>
 
-<?php foreach($degustation->getLots() as $lot): ?>
-  <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant && $lot->numero_dossier == $lot_dossier): ?>
-        <?php $Newlot = $lot  ?>
-  <?php endif; ?>
-<?php endforeach; ?>
-<p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$Newlot->numero_cuve ?></strong></p>
+<p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$lot->numero_cuve ?></strong></p>
 
 <table border="3" cellpadding=0 cellspacing=0 style="text-align: center;font-size:12px;">
   <tr>
@@ -124,21 +119,21 @@
     <th style="font-weight:bold">Décision/<br/>Observation</th>
   </tr>
   <tr>
-    <td><?php echo (int)$Newlot->numero_dossier ?></td>
-    <td><?php echo (int)$Newlot->numero_archive ?></td>
-    <td><?php echo (int)$Newlot->numero_cuve ?></td>
-    <td><?php echo $Newlot->produit_libelle ?></td>
-    <td><?php echo $Newlot->details ?></td>
-    <td><?php echo $Newlot->millesime ?></td>
-    <td><?php echo sprintf("%.2f", $Newlot->volume) ?></td>
-    <td><?php echo $Newlot->observation ?></td>
+    <td><?php echo (int)$lot->numero_dossier ?></td>
+    <td><?php echo (int)$lot->numero_archive ?></td>
+    <td><?php echo (int)$lot->numero_cuve ?></td>
+    <td><?php echo $lot->produit_libelle ?></td>
+    <td><?php echo $lot->details ?></td>
+    <td><?php echo $lot->millesime ?></td>
+    <td><?php echo sprintf("%.2f", $lot->volume) ?></td>
+    <td><?php echo $lot->observation ?></td>
   </tr>
 </table>
 
 <table border="2">
   <tr>
     <td>
-      <span>Description de l'anomalie (1er passage)</span><br/><br/>
+      <span>Description de l'anomalie (<?php echo $lot->getTextPassage(); ?> passage)</span><br/><br/>
       <strong><span>Gravité : <?php echo $lot->conformite ?></span></strong><br/>
       <strong><span>Vin <?php echo $lot->statut ?> en IGP. Défauts constatés : <?php $lot->observation ?></span></strong>
     </td>

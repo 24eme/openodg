@@ -146,6 +146,11 @@ class ParcellaireCsvFile
         $configuration = ConfigurationClient::getInstance()->getCurrent();
 
         foreach ($this->file->getLignes() as $parcelle) {
+
+            if (!is_numeric($parcelle[self::CSV_FORMAT_CVI]) && !is_numeric($parcelle[self::CSV_FORMAT_SIRET]) && !is_numeric($parcelle[self::CSV_FORMAT_CP]) && !is_numeric($parcelle[self::CSV_FORMAT_IDU]) && !is_numeric($parcelle[self::CSV_FORMAT_SUPERFICIE])) {
+                continue;
+            }
+
             if ($parcelle[self::CSV_FORMAT_PRODUIT] === null) {
                 $this->contextInstance->getLogger()->info("Parcelle sans produit : ".implode(',', $parcelle));
                 continue;
@@ -153,11 +158,11 @@ class ParcellaireCsvFile
 
             $produit = $configuration->identifyProductByLibelle($parcelle[self::CSV_FORMAT_PRODUIT]);
 
-            if (!$produit) {
+            if (!$produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $this->contextInstance->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT] );
                 continue;
             }
-            $hash = $produit->getHash();
+            $hash = ($produit) ? $produit->getHash() : null ;
             $new_parcelle = $this->parcellaire->addParcelle(
                 $hash,
                 $parcelle[self::CSV_FORMAT_CEPAGE],

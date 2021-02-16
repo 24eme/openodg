@@ -30,7 +30,7 @@ class myUser extends sfBasicSecurityUser
 
         if($etablissement) {
 
-            if ($etablissement->getCompte()->statut != CompteClient::STATUT_ACTIF) {
+            if ($etablissement->getCompte()->statut == CompteClient::STATUT_INACTIF) {
                 throw new sfException("le compte ".$etablissement->getCompte()->_id." est inactif");
             }
 
@@ -43,7 +43,7 @@ class myUser extends sfBasicSecurityUser
 
         if($compte) {
 
-            if ($compte->statut != CompteClient::STATUT_ACTIF) {
+            if ($compte->statut == CompteClient::STATUT_INACTIF) {
                 throw new sfException("le compte ".$compte->_id." est inactif");
             }
 
@@ -118,6 +118,11 @@ class myUser extends sfBasicSecurityUser
     }
 
     public function getTeledeclarationDrevRegion()
+    {
+        return null;
+    }
+
+    public function getTeledeclarationConditionnementRegion()
     {
         return null;
     }

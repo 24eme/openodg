@@ -54,15 +54,13 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
     protected function getHeaderTitle() {
         $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
-
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
-
+        $date = substr($this->degustation->date,0,10);
+        $date = $date[8].$date[9].'/'.$date[5].$date[6].'/'.$date[0].$date[1].$date[2].$date[3];
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu) . "Fiche de prélèvement (Liste des lots à prélever)  Date de commission prévu : ".$date;
         return $header_subtitle;
     }
 

@@ -86,7 +86,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public static function generateMvtKey($lot) {
-        return KeyInflector::slugify($lot->origine_document_id.'/'.$lot->origine_mouvement);
+        return KeyInflector::slugify($lot->id_document.'/'.$lot->origine_mouvement);
     }
 
     public function getConfigProduit() {
@@ -149,6 +149,10 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == 'produit') {
             return $this->_get('produit_hash').$this->_get('details');
         }
+        if ($type == 'numero_anonymat'){
+          $numero= intval(substr($this->numero_anonymat, 1));
+          return $numero;
+        }
         throw new sfException('unknown type of value : '.$type);
     }
 
@@ -163,6 +167,11 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         return false;
+    }
+
+    public function isOrigineEditable()
+    {
+      return $this->getDocOrigine()->getMaster()->isLotsEditable();
     }
 
     public function getDestinationDateFr()

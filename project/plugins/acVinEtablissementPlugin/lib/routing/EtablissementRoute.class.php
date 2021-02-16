@@ -3,6 +3,7 @@
 class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissementRoute {
 
     protected $etablissement = null;
+    protected $campagne = null;
 
     protected function getObjectForParameters($parameters = null) {
         $this->etablissement = EtablissementClient::getInstance()->find($parameters['identifiant']);
@@ -20,8 +21,11 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
                 throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
             }
         }
-
         $module = sfContext::getInstance()->getRequest()->getParameterHolder()->get('module');
+
+        if($campagne = sfContext::getInstance()->getRequest()->getParameterHolder()->get('campagne',null)){
+          $this->campagne = $campagne;
+        }
         sfContext::getInstance()->getResponse()->setTitle(strtoupper($module).' - '.$this->etablissement->nom);
         return $this->etablissement;
     }
@@ -38,5 +42,9 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
       	}
 
 	    return $this->etablissement;
+    }
+
+    public function getCampagne(){
+      return $this->campagne;
     }
 }

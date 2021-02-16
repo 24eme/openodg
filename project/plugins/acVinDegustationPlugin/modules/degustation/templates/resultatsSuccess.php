@@ -3,6 +3,7 @@
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
   <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -40,18 +41,18 @@
                   <tr>
                     <th class="col-xs-1 text-left">Numéro<br/>anonyme</th>
                     <th class="col-xs-3 text-left">Opérateur</th>
-                    <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
-                    <th class="col-xs-2 text-left">Conformité</th>
-                    <th class="col-xs-2 text-left">Courrier</th>
+                    <th class="col-xs-3 text-left">Produit (millésime, spécificité)</th>
+                    <th class="col-xs-1 text-left">Conformité</th>
+                    <th colspan=3 class="col-xs-3 text-left">Courrier</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
                   foreach ($form->getTableLots() as $lot):
                     $name = $form->getWidgetNameFromLot($lot);
-                    if (isset($form["conformite_".$name])): ?>
-                      <tr class="vertical-center cursor-pointer <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
-                        <td class="text-left"><?php echo $lot->getNumeroAnonymise() ?></td>
+                    if (!$lot->leurre && isset($form["conformite_".$name])): ?>
+                      <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
+                        <td class="text-left"><?php echo $lot->getNumeroAnonymat() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td class="text-left">
                           <?php echo $lot->produit_libelle;?>&nbsp;
@@ -61,7 +62,7 @@
                             <span class="text-muted">(<?php echo $lot->specificite; ?>)</span>
                           <?php endif ?>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <div style="margin-bottom: 0;">
                             <div class="col-xs-12">
                               <a
@@ -70,21 +71,34 @@
                             </div>
                           </div>
                         </td>
-                        <td class="text-center">
-                          <?php if (!$lot->leurre): ?>
-                            <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
-                              <span class="text-muted glyphicon glyphicon-pencil"></span>
-                            <?php else: ?>
-                              <?php echo $lot->getShortLibelleConformite(); ?>
-                            <?php endif; ?>
+                        <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
+                          <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
+                            <span class="text-muted glyphicon glyphicon-pencil"></span>
+                          <?php else: ?>
+                            <?php echo $lot->getShortLibelleConformite(); ?>
                           <?php endif; ?>
                         </td>
                         <td class="text-center">
                           <?php if(!$lot->isNonConforme()): ?>
-                          <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
+                            <?php
+                            $email = $etablissementsLotsConforme[$lot->declarant_identifiant]->email;
+                            $subject = DegustationClient::SUBJECT_NON_CONFORME;
+                            $uri = url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant));
+                            ?>
+                          <a class="btn" href="<?php echo $uri ?>">PDF</a>
                           <?php else: ?>
-                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier)) ?>">PDF</a>
+                            <?php
+                            $email = $etablissementsLotsNonConforme[$lot->declarant_identifiant]->email;
+                            $subject = DegustationClient::SUBJECT_NON_CONFORME;
+                            $uri = url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier, 'lot_num_anon' => $lot->getNumeroAnonymat()));
+                            ?>
+                            <a class="btn" href="<?php echo $uri ?>">PDF</a>
                           <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                          <?php $urlBase = $sf_request->getUriPrefix().$sf_request->getRelativeUrlRoot().$sf_request->getPathInfoPrefix();
+                          $body = DegustationClient::BODY ."%0D%0A%0D%0A".$urlBase.$uri; ?>
+                          <a href="mailto:<?php echo $email."?subject=$subject&body=$body"; ?>"><i class="glyphicon glyphicon-envelope"></i></a>
                         </td>
                       </tr>
                     <?php  endif; ?>
@@ -92,7 +106,7 @@
                 </tbody>
               </table>
               <div class="row row-margin row-button">
-                <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+                <div class="col-xs-4"><a href="<?php echo url_for("degustation_resultats_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">
