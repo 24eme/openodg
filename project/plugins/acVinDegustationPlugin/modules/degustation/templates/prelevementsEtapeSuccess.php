@@ -26,7 +26,6 @@
             <br/>
         </div>
           <div class="col-xs-12">
-              <a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes</a>
               <a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a>
               <a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle de tournée (Lot à prélever)</a>
               <a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Tableau des étiquettes</a>
