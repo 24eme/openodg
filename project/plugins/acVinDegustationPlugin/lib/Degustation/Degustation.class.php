@@ -529,6 +529,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 		}
 
+		public function isAnonymized(){
+			for($table = 1; true ; $table++) {
+				$lots = $this->getLotsByTable($table);
+				if (!count($lots)) {
+					return true;
+				}
+				foreach ($lots as $k => $lot){
+					if (!$lot->numero_anonymat) {
+					return false;
+					}
+				}
+			}
+		}
+
 		public function getLotsTableOrFreeLots($numero_table, $free = true){
 			$lots = array();
 			foreach ($this->getLotsPreleves() as $lot) {

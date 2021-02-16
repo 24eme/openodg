@@ -97,7 +97,7 @@
         </td>
         <td class="col-sm-2 text-right">
             <?php if ($d->isValidee()): ?>
-              <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-success" >Visualisation</a>
+              <a href="<?php echo url_for('degustation_redirect', $d)?>"class="btn btn-success" >Organisation / Suivi</a>
           <?php else: ?>
             <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la saisie</a>
           <?php endif; ?>

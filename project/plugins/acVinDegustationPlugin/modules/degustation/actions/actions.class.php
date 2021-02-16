@@ -232,10 +232,25 @@ class degustationActions extends sfActions {
           }
     }
 
+    public function executeResultatsEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_RESULTATS))) {
+            $this->degustation->save();
+          }
+    }
+
     public function executeTablesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
+            $this->degustation->save();
+        }
+    }
+
+    public function executeNotificationsEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
     }
@@ -363,7 +378,7 @@ class degustationActions extends sfActions {
         }
         $this->form->save();
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_tables_etape', $this->degustation);
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
@@ -424,7 +439,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
     public function executePresences(sfWebRequest $request) {
@@ -462,7 +477,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_presences', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -477,7 +492,7 @@ class degustationActions extends sfActions {
 
     public function executeRedirect(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->redirectIfIsValidee();
+        //$this->redirectIfIsValidee();
         return ($next = $this->getRouteNextEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
 
@@ -561,7 +576,7 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
       $degustation->desanonymize();
       $degustation->save();
-      return $this->redirect('degustation_visualisation', $this->degustation);
+      return $this->redirect('degustation_anonymats_etape', $degustation);
     }
 
     public function executeEtiquettesPdf(sfWebRequest $request) {

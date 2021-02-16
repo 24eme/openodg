@@ -58,7 +58,7 @@ abstract class Etapes
 		}
 		$etapes = $this->getEtapes();
 		if (!in_array($etape, $etapes)) {
-			throw new sfException('Etape inconnu');
+			throw new sfException('Etape inconnue');
 		}
 		$find = false;
 		$next = self::ETAPE_VALIDATION;
@@ -102,5 +102,9 @@ abstract class Etapes
     public function isEtapeDisabled($etape, $doc) {
 
         return false;
+    }
+
+    public function isHiddenAfterValidation($doc, $k){
+      return false;
     }
 }

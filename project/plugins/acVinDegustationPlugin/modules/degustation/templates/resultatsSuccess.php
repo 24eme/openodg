@@ -3,6 +3,7 @@
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
   <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -105,7 +106,7 @@
                 </tbody>
               </table>
               <div class="row row-margin row-button">
-                <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+                <div class="col-xs-4"><a href="<?php echo url_for("degustation_resultats_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">
