@@ -22,15 +22,18 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $this->setDefault('table', $this->table);
 
         $this->setWidgets(array(
-            'hashref' => new sfWidgetFormChoice(array('choices' => $produits))
+            'hashref' => new sfWidgetFormChoice(array('choices' => $produits)),
+            'cepages' => new sfWidgetFormTextarea()
         ));
 
         $this->widgetSchema->setLabels(array(
-            'hashref' => 'Appellation: '
+            'hashref' => 'Appellation: ',
+            'cepages' => 'Cépages: '
         ));
 
         $this->setValidators(array(
-            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie."))
+            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie.")),
+            'cepages' => new sfValidatorString(array('required' => false))
         ));
 
         $this->widgetSchema['table'] = new sfWidgetFormInputHidden();
