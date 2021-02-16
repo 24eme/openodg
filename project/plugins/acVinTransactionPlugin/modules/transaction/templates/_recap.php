@@ -15,6 +15,7 @@
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
+                <th class="col-xs-1"> Numéro Lot ODG</th>
                 <th class="col-xs-1"> Numéro Lot</th>
                 <th class="text-center col-xs-5">Produit (millesime)</th>
                 <th class="text-center col-xs-2">Pays</th>
@@ -34,6 +35,7 @@
                     ?>
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
                         <td><?php echo $lot->numero_archive; ?></td>
+                        <td><?php echo $lot->numero; ?></td>
                         <td>
                           <?php echo $lot->produit_libelle; ?>
                           <small >
