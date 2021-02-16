@@ -2,7 +2,7 @@
 abstract class Etapes
 {
     const ETAPE_VALIDATION = 'VALIDATION';
-    
+
     abstract public function getEtapesHash() ;
     abstract public function getRouteLinksHash() ;
     abstract public function getLibellesHash() ;
@@ -61,7 +61,7 @@ abstract class Etapes
 			throw new sfException('Etape inconnue');
 		}
 		$find = false;
-		$next = self::ETAPE_VALIDATION;
+		$next = $this->getDefaultStep();
 		foreach ($etapes as $e) {
 			if ($find) {
 				$next = $e;
@@ -107,4 +107,9 @@ abstract class Etapes
     public function isHiddenAfterValidation($doc, $k){
       return false;
     }
+
+    public function getDefaultStep(){
+      return self::ETAPE_VALIDATION;
+    }
+
 }
