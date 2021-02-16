@@ -81,8 +81,27 @@
                                   <?php echo $lot['millesime']->render(array('data-default-value' => $transaction->getCampagne())); ?>
                             </div>
                         </div>
-                        <p>Vous pouvez laisser à vide le champs millésime.</p>
                     </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <?php echo $lot['numero']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                      <div class="col-sm-3">
+                            <?php echo $lot['numero']->render(); ?>
+                      </div>
+                      <div class="col-sm-6 text-danger">
+                            <?php echo $lot['numero']->renderError(); ?>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <p>Vous pouvez laisser à vide le champs millésime.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
