@@ -62,7 +62,7 @@ class TransactionLotForm extends acCouchdbObjectForm
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
 
-        $this->setWidget('pays', new bsWidgetFormChoice(array('choices' => $this->getCountryList()), array("class"=>"select2 form-control")));
+        $this->setWidget('pays', new bsWidgetFormChoice(array('choices' => $this->getCountryList())));
         $this->setValidator('pays', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getCountryList()))));
 
         for($i = 0; $i < self::NBCEPAGES; $i++) {
