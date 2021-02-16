@@ -105,12 +105,12 @@
                 </div>
                 <div class="row">
                   <div class="col-md-6">
-                      <div class="form-group">
-                          <?php echo $lot['pays']->renderLabel("Destination", array('class' => "col-sm-3 control-label")); ?>
-                          <div class="col-sm-9">
-                                <?php echo $lot['pays']->render(); ?>
-                          </div>
-                      </div>
+                    <div class="form-group">
+                        <?php echo $lot['pays']->renderLabel("Destination", array('class' => "col-sm-3 control-label")); ?>
+                        <div class="col-sm-9">
+                              <?php echo $lot['pays']->render(array("data-placeholder" => "Sélectionnez un pays", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                        </div>
+                    </div>
                   </div>
                     <div class="col-md-6">
                         <div class="form-group">
