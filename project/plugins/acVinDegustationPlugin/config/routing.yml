@@ -19,6 +19,56 @@ degustation_etablissement_list:
     model:    Etablissement
     type:     object
 
+degustation_prelevements_etape:
+  url: /degustation/:id/prelevements-etapes
+  param: { module: degustation, action: prelevementsEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_anonymats_etape:
+  url: /degustation/:id/anonymats-etapes
+  param: { module: degustation, action: anonymatsEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_tables_etape:
+  url: /degustation/:id/tables-etapes
+  param: { module: degustation, action: tablesEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_resultats_etape:
+  url: /degustation/:id/resultats-etapes
+  param: { module: degustation, action: resultatsEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_notifications_etape:
+  url: /degustation/:id/notifications-etapes
+  param: { module: degustation, action: notificationsEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_prelevement_lots:
   url: /degustation/:id/prelevement-lots
   param: { module: degustation, action: prelevementLots }

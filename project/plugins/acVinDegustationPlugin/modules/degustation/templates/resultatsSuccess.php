@@ -3,6 +3,7 @@
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
   <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -40,9 +41,9 @@
                   <tr>
                     <th class="col-xs-1 text-left">Numéro<br/>anonyme</th>
                     <th class="col-xs-3 text-left">Opérateur</th>
-                    <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
+                    <th class="col-xs-3 text-left">Produit (millésime, spécificité)</th>
                     <th class="col-xs-1 text-left">Conformité</th>
-                    <th colspan=2 class="col-xs-2 text-left">Courrier</th>
+                    <th colspan=3 class="col-xs-3 text-left">Courrier</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -79,10 +80,25 @@
                         </td>
                         <td class="text-center">
                           <?php if(!$lot->isNonConforme()): ?>
-                          <a class="btn" href="<?php echo url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)) ?>">PDF</a>
+                            <?php
+                            $email = $etablissementsLotsConforme[$lot->declarant_identifiant]->email;
+                            $subject = DegustationClient::SUBJECT_NON_CONFORME;
+                            $uri = url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant));
+                            ?>
+                          <a class="btn" href="<?php echo $uri ?>">PDF</a>
                           <?php else: ?>
-                            <a class="btn" href="<?php echo url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier, 'lot_num_anon' => $lot->getNumeroAnonymat())) ?>">PDF</a>
+                            <?php
+                            $email = $etablissementsLotsNonConforme[$lot->declarant_identifiant]->email;
+                            $subject = DegustationClient::SUBJECT_NON_CONFORME;
+                            $uri = url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier, 'lot_num_anon' => $lot->getNumeroAnonymat()));
+                            ?>
+                            <a class="btn" href="<?php echo $uri ?>">PDF</a>
                           <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                          <?php $urlBase = $sf_request->getUriPrefix().$sf_request->getRelativeUrlRoot().$sf_request->getPathInfoPrefix();
+                          $body = DegustationClient::BODY ."%0D%0A%0D%0A".$urlBase.$uri; ?>
+                          <a href="mailto:<?php echo $email."?subject=$subject&body=$body"; ?>"><i class="glyphicon glyphicon-envelope"></i></a>
                         </td>
                       </tr>
                     <?php  endif; ?>
@@ -90,7 +106,7 @@
                 </tbody>
               </table>
               <div class="row row-margin row-button">
-                <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+                <div class="col-xs-4"><a href="<?php echo url_for("degustation_resultats_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">

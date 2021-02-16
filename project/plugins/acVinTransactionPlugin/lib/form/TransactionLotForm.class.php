@@ -52,12 +52,17 @@ class TransactionLotForm extends acCouchdbObjectForm
         $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
+        $this->setWidget('numero', new bsWidgetFormInput());
+        $this->setValidator('numero', new sfValidatorString(array('required' => false)));
+
+
+
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
 
-        $this->setWidget('pays', new bsWidgetFormChoice(array('choices' => $this->getCountryList()), array("class"=>"select2 form-control")));
+        $this->setWidget('pays', new bsWidgetFormChoice(array('choices' => $this->getCountryList())));
         $this->setValidator('pays', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getCountryList()))));
 
         for($i = 0; $i < self::NBCEPAGES; $i++) {
