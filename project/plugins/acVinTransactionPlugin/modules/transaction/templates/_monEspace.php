@@ -12,7 +12,7 @@
             <div class="panel-body">
                 <p>Votre déclaration de transaction a été validée pour cette année.</p>
                 <div style="margin-top: 76px;">
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_visualisation', $transaction) ?>">Voir le Conditonnement</a>
+                    <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_visualisation', $transaction) ?>">Voir la Transaction</a>
                 </div>
             </div>
         <?php elseif ($transaction && (TransactionClient::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasDrevAdmin())): ?>
