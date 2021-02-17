@@ -81,8 +81,27 @@
                                   <?php echo $lot['millesime']->render(array('data-default-value' => $conditionnement->getCampagne())); ?>
                             </div>
                         </div>
-                        <p>Vous pouvez laisser à vide le champs millésime.</p>
                     </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <?php echo $lot['numero']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                      <div class="col-sm-3">
+                            <?php echo $lot['numero']->render(); ?>
+                      </div>
+                      <div class="col-sm-6 text-danger">
+                            <?php echo $lot['numero']->renderError(); ?>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <p>Vous pouvez laisser à vide le champs millésime.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
@@ -90,6 +109,9 @@
                           <?php echo $lot['centilisation']->renderLabel("Conditionnement Centilisation", array('class' => "col-sm-3 control-label")); ?>
                           <div class="col-sm-9">
                                 <?php echo $lot['centilisation']->render(); ?>
+                          </div>
+                          <div class="col-sm-6 text-danger">
+                                <?php echo $lot['centilisation']->renderError(); ?>
                           </div>
                       </div>
                   </div>
@@ -102,6 +124,9 @@
                                     <div class="input-group-addon">hl</div>
                                 </div>
                             </div>
+                            <div class="col-sm-6 text-danger">
+                                  <?php echo $lot['volume']->renderError(); ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -112,6 +137,9 @@
                               <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
                               <div class="col-sm-9">
                                     <?php echo $lot['specificite']->render(); ?>
+                              </div>
+                              <div class="col-sm-6 text-danger">
+                                    <?php echo $lot['specificite']->renderError(); ?>
                               </div>
                           </div>
                       </div>
