@@ -108,7 +108,7 @@
                       <div class="form-group">
                           <?php echo $lot['centilisation']->renderLabel("Conditionnement Centilisation", array('class' => "col-sm-3 control-label")); ?>
                           <div class="col-sm-9">
-                                <?php echo $lot['centilisation']->render(); ?>
+                                <?php echo $lot['centilisation']->render(array("data-placeholder" => "Sélectionnez une centilisation", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                           </div>
                           <div class="col-sm-6 text-danger">
                                 <?php echo $lot['centilisation']->renderError(); ?>
