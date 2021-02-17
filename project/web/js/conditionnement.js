@@ -142,6 +142,19 @@
             $('#conditionnement_lots_lots_'+id+'_cepages').modal('toggle')
         })
 
+        $('#form_conditionnement_lots .lot-delete').on('click', function() {
+            if(!confirm("Étes vous sûr de vouloir supprimer ce lot ?")) {
+
+                return;
+            }
+
+            $(this).parents('.bloc-lot').find('input, select').each(function() {
+                $(this).val("");
+            });
+            $(this).parents('.bloc-lot').find('.select2autocomplete').select2('val', "");
+            $(this).parents('.bloc-lot').hide();
+        })
+
     }
 
     _doc.ready(function()
