@@ -66,9 +66,10 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
     {
         $degust = $this->getObject();
         $hash = ($values['hashref']) ?: null;
+        $cepages = ($values['cepages']) ?: null;
 
         if (isset($hash) && !empty($hash) && array_key_exists($hash, $this->getProduits())) {
-            $degust->addLeurre($hash, $values['table']);
+            $degust->addLeurre($hash, $cepages, $values['table']);
         }
     }
 
