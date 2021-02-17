@@ -1,5 +1,16 @@
 
   $(document).ready(function(){
+
+    $('#popupLeurreForm').each(function(){
+      $('#vin_sans_cepage').click(function(){
+        if($(this).is(':checked')){
+          $('#cepages_choice').hide();
+        }else{
+          $('#cepages_choice').show();
+        }
+      });
+    });
+
     $('.degustation li.ajax a').on('click',function(){
       var form = $('form.degustation');
       form.post();
@@ -10,7 +21,7 @@
       var form = $(this).parents('form');
       if($(this).hasClass('ajax')){
         if(form.hasClass('degustateurs-confirmation')){
-          $(this).parents('tr').removeClass("text-muted").removeClass("disabled").removeAttr("disabled").css("text-decoration",'');        
+          $(this).parents('tr').removeClass("text-muted").removeClass("disabled").removeAttr("disabled").css("text-decoration",'');
         }
         $.formPost(form);
       }

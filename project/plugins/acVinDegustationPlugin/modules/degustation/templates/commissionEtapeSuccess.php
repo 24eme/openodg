@@ -53,6 +53,7 @@
           <div class="col-xs-12">
             <br/>
             <ul class="list-group">
+              <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Feuille de présence des dégustateurs</a></li>
               <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a></li>
               <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a></li>
               <li class="list-group-item"><a href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a></li>

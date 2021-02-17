@@ -41,13 +41,6 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-xs-7">
-            <a href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Feuille de présence</a>
-            <br/>
-            <br/>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-7">
             <strong class="lead"><?php echo $infosDegustation["nbDegustateursATable"]; ?></strong> / <?php echo $infosDegustation["nbDegustateursConfirmes"]; ?> <strong>présent<?php echo ($infosDegustation["nbDegustateursATable"]>1)? 's' : '' ?></strong> à une table<br/>
             <strong class="lead"><?php echo $infosDegustation["nbDegustateursSansTable"]; ?></strong> / <?php echo $infosDegustation["nbDegustateursConfirmes"]; ?> <strong>non attablé<?php echo ($infosDegustation["nbDegustateursSansTable"]>1)? 's' : '' ?></strong>
           </div>

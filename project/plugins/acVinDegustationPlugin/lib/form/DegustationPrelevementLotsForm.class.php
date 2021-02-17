@@ -24,7 +24,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
             if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
                 $obj = acCouchdbManager::getClient()->find($item->id_document);
-                $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('d/m/Y', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
+                $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
             }
         }
         $this->embedForm('lots', $formLots);
