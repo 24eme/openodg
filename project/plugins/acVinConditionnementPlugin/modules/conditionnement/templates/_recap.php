@@ -68,6 +68,9 @@
                   endif; ?>
                 <?php endforeach; ?>
                 <tr>
+                <?php if($conditionnement->isValidee()): ?>
+                  <td></td>
+                <?php endif; ?>
                   <td></td>
                   <td></td>
                   <td class="text-right">Total : </td>
