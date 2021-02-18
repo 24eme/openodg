@@ -39,11 +39,10 @@
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
-                    <th class="col-xs-1 text-left">Numéro<br/>anonyme</th>
-                    <th class="col-xs-3 text-left">Opérateur</th>
-                    <th class="col-xs-3 text-left">Produit (millésime, spécificité)</th>
-                    <th class="col-xs-1 text-left">Conformité</th>
-                    <th colspan=3 class="col-xs-3 text-left">Courrier</th>
+                    <th class="col-xs-2 text-left">Numéro<br/>anonyme</th>
+                    <th class="col-xs-4 text-left">Opérateur</th>
+                    <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
+                    <th class="col-xs-2 text-left" colspan="2" >Conformité</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -77,28 +76,6 @@
                           <?php else: ?>
                             <?php echo $lot->getShortLibelleConformite(); ?>
                           <?php endif; ?>
-                        </td>
-                        <td class="text-center">
-                          <?php if(!$lot->isNonConforme()): ?>
-                            <?php
-                            $email = $etablissementsLotsConforme[$lot->declarant_identifiant]->email;
-                            $subject = DegustationClient::SUBJECT_NON_CONFORME;
-                            $uri = url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant));
-                            ?>
-                          <a class="btn" href="<?php echo $uri ?>">PDF</a>
-                          <?php else: ?>
-                            <?php
-                            $email = $etablissementsLotsNonConforme[$lot->declarant_identifiant]->email;
-                            $subject = DegustationClient::SUBJECT_NON_CONFORME;
-                            $uri = url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier, 'lot_num_anon' => $lot->getNumeroAnonymat()));
-                            ?>
-                            <a class="btn" href="<?php echo $uri ?>">PDF</a>
-                          <?php endif; ?>
-                        </td>
-                        <td class="text-center">
-                          <?php $urlBase = $sf_request->getUriPrefix().$sf_request->getRelativeUrlRoot().$sf_request->getPathInfoPrefix();
-                          $body = DegustationClient::BODY ."%0D%0A%0D%0A".$urlBase.$uri; ?>
-                          <a href="mailto:<?php echo $email."?subject=$subject&body=$body"; ?>"><i class="glyphicon glyphicon-envelope"></i></a>
                         </td>
                       </tr>
                     <?php  endif; ?>

@@ -20,10 +20,11 @@
       </div>
       <div class="panel-body">
         <div class="row">
-              <div class="col-xs-12">
-
-                <br/>
-            </div>
+              <div class="col-xs-7">
+              </div>
+                <div class="col-xs-12 text-right">
+                  <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_notifications', $degustation) ?>" >&nbsp;Notifications des résultats&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+                </div>
           </div>
 
         </div>

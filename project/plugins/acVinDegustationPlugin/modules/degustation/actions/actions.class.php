@@ -445,6 +445,14 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
+    public function executeNotifications(sfWebRequest $request) {
+      $this->degustation = $this->getRoute()->getDegustation();
+
+      $this->etablissementsLotsConforme = $this->degustation->getEtablissementLotsConformesOrNot();
+      $this->etablissementsLotsNonConforme = $this->degustation->getEtablissementLotsConformesOrNot(false);
+
+  }
+
     public function executePresences(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->numero_table = $request->getParameter('numero_table',0);
@@ -710,6 +718,30 @@ class degustationActions extends sfActions {
 
       return $this->renderText($this->document->output());
 
+    }
+
+
+    public function executeEnvoiMail(sfWebRequest $request){
+      $this->degustation = $this->getRoute()->getDegustation();
+
+      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $this->setTemplate('notifications');
+
+      $urlBack = $this->generateUrl('degustation_notifications',$this->degustation, true);
+      $debug = false;
+
+      $this->etablissementsLotsConforme = $this->degustation->getEtablissementLotsConformesOrNot();
+      $this->etablissementsLotsNonConforme = $this->degustation->getEtablissementLotsConformesOrNot(false);
+
+      $urlBase = $request->getUriPrefix().$request->getRelativeUrlRoot().$request->getPathInfoPrefix();
+      $uri = $this->generateUrl('degustation_conformite_pdf',array('id' => $this->degustation->_id, 'identifiant' => $etablissement->identifiant));
+
+      $email = $etablissement->email;
+      $body = DegustationClient::BODY ."%0D%0A%0D%0A".$urlBase.$uri;
+      $subject = DegustationClient::SUBJECT_NON_CONFORME;
+
+      echo '<a href="mailto:'.$email."?subject=$subject&body=$body".'" id="link-mail-auto" data-retour='.$urlBack.' ';
+      echo ($debug)? '>Ouverture Mailer</a>' : '/>';
     }
 
     public function executeRetraitNonConformitePDF(sfWebRequest $request){
