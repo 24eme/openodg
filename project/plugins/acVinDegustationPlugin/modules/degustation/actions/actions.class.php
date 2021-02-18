@@ -212,7 +212,7 @@ class degustationActions extends sfActions {
 
          $this->form->save();
 
-        return $this->redirect('degustation_prelevements_etape', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation');
     }
 
 
@@ -226,8 +226,15 @@ class degustationActions extends sfActions {
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ANONYMATS))) {
+            $this->degustation->save();
+          }
+    }
+
+    public function executeCommissionEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_COMMISSION))) {
             $this->degustation->save();
           }
     }
@@ -259,10 +266,6 @@ class degustationActions extends sfActions {
       $this->degustation = $this->getRoute()->getDegustation();
     }
 
-    public function executeVisualisation(sfWebRequest $request) {
-      $this->degustation = $this->getRoute()->getDegustation();
-      $this->infosDegustation = $this->degustation->getInfosDegustation();
-    }
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();

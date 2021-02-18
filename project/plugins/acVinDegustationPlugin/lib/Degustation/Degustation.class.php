@@ -645,7 +645,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
       return 0;
       }
-    public function addLeurre($hash, $numero_table)
+    public function addLeurre($hash, $cepages, $numero_table)
         {
             if (! $this->exist('lots')) {
                 $this->add('lots');
@@ -654,6 +654,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $leurre->leurre = true;
             $leurre->numero_table = $numero_table;
             $leurre->setProduitHash($hash);
+						$leurre->details = $cepages;
 
 						$leurre->statut = Lot::STATUT_NONPRELEVABLE;
 

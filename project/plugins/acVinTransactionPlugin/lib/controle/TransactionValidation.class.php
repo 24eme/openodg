@@ -17,6 +17,7 @@ class TransactionValidation extends DocumentValidation
 
     public function configure()
     {
+        $this->addControle(self::TYPE_ERROR, 'lot_produit_non_saisie', "Aucun produit n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
@@ -30,7 +31,17 @@ class TransactionValidation extends DocumentValidation
 
     public function controle()
     {
+        $this->controleProduits();
         $this->controleLots();
+    }
+
+    protected function controleProduits(){
+        $produits = [];
+        if($this->document->exist('lots')){
+          if(!count($this->document->lots)){
+            $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisie', "", $this->generateUrl('transaction_lots', array("id" => $this->document->_id)));
+          }
+        }
     }
 
     protected function controleLots(){

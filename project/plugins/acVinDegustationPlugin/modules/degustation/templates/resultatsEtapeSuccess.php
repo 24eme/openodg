@@ -5,7 +5,7 @@
 
 
 <div class="page-header no-border">
-  <h2>Conformité des échantillons / Commission / Présence des dégustateurs</h2>
+  <h2>Conformité des échantillons / Présence des dégustateurs</h2>
 </div>
 
 <div class="row">
@@ -14,25 +14,11 @@
       <div class="panel-heading">
         <h2 class="panel-title">
           <div class="row">
-            <div class="col-xs-12">Conformité des échantillons / Commission</div>
+            <div class="col-xs-12">Conformité des échantillons</div>
           </div>
         </h2>
       </div>
       <div class="panel-body">
-        <div class="row">
-          <div class="col-xs-12">
-            <strong>Conformité des échantillons</strong>
-            <br/>
-            <br/>
-        </div>
-          <div class="col-xs-12">
-            <a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a>
-            <a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a>
-            <a href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a>
-            <br/>
-            <br/>
-          </div>
-        </div>
         <div class="row">
           <div class="col-xs-7">
             <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong> / <?php echo $infosDegustation["nbLotsDegustes"]; ?> <?php echo ($infosDegustation["nbLotsConformes"]>1)? 'échantillons <strong>conformes</strong>' : 'échantillon <strong>conforme</strong>' ?><br/>
@@ -53,13 +39,6 @@
         <h2 class="panel-title">Présence des dégustateurs</h2>
       </div>
       <div class="panel-body">
-        <div class="row">
-          <div class="col-xs-7">
-            <a href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Feuille de présence</a>
-            <br/>
-            <br/>
-          </div>
-        </div>
         <div class="row">
           <div class="col-xs-7">
             <strong class="lead"><?php echo $infosDegustation["nbDegustateursATable"]; ?></strong> / <?php echo $infosDegustation["nbDegustateursConfirmes"]; ?> <strong>présent<?php echo ($infosDegustation["nbDegustateursATable"]>1)? 's' : '' ?></strong> à une table<br/>
