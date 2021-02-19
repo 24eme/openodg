@@ -27,8 +27,7 @@ class DRevPrelevement extends BaseDRevPrelevement {
     }
 
     public function getChai() {
-
-        return $this->getDocument()->chais->get($this->getKeyType());
+        return $this->getDocument()->chais->getOrAdd($this->getKeyType());
     }
 
     public function hasLots($vtsgn = false, $horsvtsgn = false) {

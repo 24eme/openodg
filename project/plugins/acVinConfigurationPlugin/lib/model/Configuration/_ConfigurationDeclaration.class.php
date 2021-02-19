@@ -293,7 +293,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
             $format_libelle = $this->getFormatLibelleCalcule();
             $formatResolu = str_replace("%format_libelle%", $format_libelle, $format);
             $libelle = $this->formatProduitLibelle($formatResolu);
-          //  var_dump($this->getDocument()->isEffervescentVindebaseActivate()); exit;
             if($this->getDocument()->isEffervescentVindebaseActivate() && $this->isEffervescentNode()){
                   $libelle= "Vin de base ".$libelle;
             }
