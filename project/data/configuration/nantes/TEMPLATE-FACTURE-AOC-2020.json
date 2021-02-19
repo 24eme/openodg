@@ -82,7 +82,7 @@
         "covid": {
           "modele": "CotisationVariable",
           "prix": -10,
-          "tva": 0.2,
+          "tva": 0,
           "libelle": "Remise exceptionnelle Covid",
           "complement_libelle": "",
           "unite": "ha",
