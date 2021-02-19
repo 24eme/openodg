@@ -150,13 +150,14 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
+                        <h5>Déclarer seulement les cépages qui figureront sur l'étiquette </h5>
                     </div>
                     <div class="modal-body">
                         <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-7">
-                                    <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                                    <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="input-group">

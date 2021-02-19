@@ -58,6 +58,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinDegustationPlugin');
         $this->enablePlugins('acVinChgtDenomPlugin');
         $this->enablePlugins('acVinConditionnementPlugin');
+        $this->enablePlugins('acVinTransactionPlugin');
     }
 
     public function setRootDir($rootDir)

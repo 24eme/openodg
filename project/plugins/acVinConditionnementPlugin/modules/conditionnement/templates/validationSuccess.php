@@ -38,30 +38,19 @@
 
     <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
         <h3>Dégustation</h3>
-        <?php echo $form["date_degustation_voulue"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
             Les vins seront prêt à être dégustés à partir du :
-            <div class="input-group date-picker-week">
-            <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "Date souhaitée")); ?>
-            <div class="input-group-addon">
-                <span class="glyphicon-calendar glyphicon"></span>
-            </div>
+            <div class="input-group">
+            <?php echo date("d/m/y"); ?>
             </div>
         </div>
     <?php endif ?>
 
     <div style="padding-top: 10px;" class="row row-margin row-button">
-        <div class="col-xs-4">
+        <div class="col-xs-6">
             <a href="<?php echo url_for("conditionnement_lots", $conditionnement); ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
-        <div class="col-xs-4 text-center">
-            <div class="btn-group">
-                <a href="<?php echo url_for("conditionnement_export_pdf", $conditionnement) ?>" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
-                </a>
-            </div>
-        </div>
-        <div class="col-xs-4 text-right">
+        <div class="col-xs-6 text-right">
             <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#conditionnement-confirmation-validation" <?php if($validation->hasErreurs() && $conditionnement->isTeledeclare() && !$sf_user->hasConditionnementAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>

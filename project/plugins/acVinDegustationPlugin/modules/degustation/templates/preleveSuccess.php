@@ -2,6 +2,7 @@
 <?php use_helper('Float') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
 
 <div class="page-header no-border">
   <h2>Échantillons prélevés</h2>
@@ -32,7 +33,7 @@
 		<?php $adherents = array(); foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
        <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
-        <td><?php echo $lot->declarant_nom; ?></td>
+        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo(substr($lot->id_document,0,4))?></span> </td>
         <td class="edit"><?= $lot->numero_cuve ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
@@ -77,10 +78,10 @@
 	</table>
 
 	<div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
-        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
     </div>
 </form>
 </div>

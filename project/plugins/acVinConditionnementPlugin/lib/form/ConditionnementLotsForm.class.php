@@ -25,7 +25,7 @@ class ConditionnementLotsForm extends acCouchdbForm
 
         $this->embedForm('lots', $formLots);
 
-        $this->widgetSchema->setNameFormat('drev_lots[%s]');
+        $this->widgetSchema->setNameFormat('conditionnement_lots[%s]');
     }
 
 	public function save() {

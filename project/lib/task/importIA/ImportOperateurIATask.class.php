@@ -101,22 +101,20 @@ EOF;
                 continue;
             }
 
-
-            if (isset($data[self::CSV_ACTIVITE])){
-              if(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-                  $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-              } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE])) {
-                  $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-              } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-                  $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-              } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE])) {
-                  $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
-              } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-                  $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
-              } else {
-                  $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
-              }
+            if(isset($data[self::CSV_CAVE_COOPERATIVE]) && $data[self::CSV_CAVE_COOPERATIVE] == "Oui") {
+              $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+              $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+            } elseif(preg_match("/Producteur de raisin/", $data[self::CSV_ACTIVITE])) {
+              $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+            } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+              $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
+-              $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            } else {
+              $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
             }
+
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $etablissement->statut = EtablissementClient::STATUT_SUSPENDU;

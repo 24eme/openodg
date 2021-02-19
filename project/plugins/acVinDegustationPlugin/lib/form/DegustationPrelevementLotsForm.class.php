@@ -5,9 +5,11 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     private $lotsPrelevables = null;
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
+    protected $object = null;
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         $id = $object->_id;
+        $this->object = $object;
         strtok($id, '-');
         $this->date_degustation = DateTime::createFromFormat('YmdHi', strtok('-'))->format('Ymd');
 
@@ -68,7 +70,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     }
 
     public function getLotsPrelevables() {
-        return $this->getObject()->getLotsPrelevablesSortByDate();
+        return $this->getObject()->getLotsPrelevablesSortByDate($this->object->provenance);
     }
 
     public function getDateDegustation()

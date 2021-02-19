@@ -65,7 +65,7 @@ Conditionnement:
                   id_document: { }
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero: { }
+                  numero: { required: false }
                   numero_cuve: { required: false } # a supprimer
                   millesime: { }
                   volume: { type: float }
@@ -76,6 +76,7 @@ Conditionnement:
                   elevage: { }
                   statut: {}
                   specificite: { required: false }
+                  centilisation: { required: false }
                   cepages:
                     type: collection
                     definition:
@@ -128,6 +129,7 @@ Conditionnement:
                         id_document: {  }
                         statut: {  }
                         specificite: { required: false }
+                        centilisation: { }
       pieces:
         type: array_collection
         definition:

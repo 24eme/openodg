@@ -269,7 +269,7 @@
                     });
                 });
                 if(!libelle) {
-                    libelle = "Cépage(s) revendiqué(s)";
+                    libelle = "Vin de cépage(s)";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
                 }else{
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");
@@ -280,9 +280,31 @@
 
         var inputs_hl = document.querySelectorAll('.modal input.input-hl')
 
+        document.querySelectorAll(".modal .selectCepage").forEach((item, i) => {
+          item.addEventListener('click', function(event) {
+            if(item.nodeName == "SELECT" && item.value == ""){
+              var div = event.target.parentElement.parentElement;
+              var input = div.querySelector('input.input-hl');
+              div.querySelector('input.input-hl').value = null
+
+            }else{
+              var modal = event.target.parentElement
+              while (! modal.classList.contains('modal')) {
+                  modal = modal.parentElement
+              }
+
+              var lot = modal.dataset.lot
+
+              inputs = modal.querySelectorAll('input.input-hl')
+              if (item.textContent != "Séléctionnez un cépage"){
+                updateInputVolume(inputs, item, lot)
+              }
+            }
+          });
+        });
+
         inputs_hl.forEach(function (input, index) {
             input.addEventListener('change', function (event) {
-                var total = 0.0
 
                 var modal = event.target.parentElement
                 while (! modal.classList.contains('modal')) {
@@ -292,20 +314,26 @@
                 var lot = modal.dataset.lot
 
                 inputs = modal.querySelectorAll('input.input-hl')
-                inputs.forEach(function (input) {
-                    if (! isNaN(parseFloat(input.value))) {
-                        total += parseFloat(input.value)
-                    }
-                })
-
-                var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
-                vol_total.value = parseFloat(total)
-
-                $('#drev_lots_lots_'+lot+'_volume').blur()
-
-                vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+                selects = modal.querySelectorAll('.select2-chosen')
+                updateInputVolume(inputs, selects[index], lot)
             })
         })
+
+        function updateInputVolume(inputs, select, lot){
+          var total = 0.0
+          inputs.forEach(function (input, i) {
+              if (select.textContent != "Séléctionnez un cépage" && ! isNaN(parseFloat(input.value))) {
+                  total += parseFloat(input.value)
+              }
+          })
+
+          var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
+          vol_total.value = parseFloat(total)
+
+          $('#drev_lots_lots_'+lot+'_volume').blur()
+
+          vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+        }
 
         function precision(f) {
             if (!isFinite(f)) { return 2 }
