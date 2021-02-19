@@ -229,16 +229,6 @@ degustation_resultats:
   requirements:
     sf_method: [get, post]
 
-degustation_notifications:
-  url: /degustation/:id/notifications
-  param: { module: degustation, action: notifications }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
 degustation_degustateurs_presences:
   url: /degustation/:id/degustateurs-presence/:numero_table
   param: { module: degustation, action: resultats }

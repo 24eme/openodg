@@ -260,6 +260,8 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
+        $this->etablissementsLotsConforme = $this->degustation->getEtablissementLotsConformesOrNot();
+        $this->etablissementsLotsNonConforme = $this->degustation->getEtablissementLotsConformesOrNot(false);
     }
 
     public function executeConfirmation(sfWebRequest $request) {
@@ -445,13 +447,6 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
-    public function executeNotifications(sfWebRequest $request) {
-      $this->degustation = $this->getRoute()->getDegustation();
-
-      $this->etablissementsLotsConforme = $this->degustation->getEtablissementLotsConformesOrNot();
-      $this->etablissementsLotsNonConforme = $this->degustation->getEtablissementLotsConformesOrNot(false);
-
-  }
 
     public function executePresences(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
@@ -725,7 +720,7 @@ class degustationActions extends sfActions {
       $this->degustation = $this->getRoute()->getDegustation();
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
-      $this->setTemplate('notifications');
+      $this->setTemplate('notificationsEtape');
       $emailLinkManager = new DegustationEmailManager();
 
       echo $emailLinkManager->getMailerLink($this->degustation,$etablissement);

@@ -22,7 +22,7 @@ class DegustationEmailManager extends Email
       $cc = sfConfig::get('app_email_plugin_from_adresse');
       $to = array($etablissement->email);
 
-      $urlBack = sfContext::getInstance()->getRouting()->generate('degustation_notifications',$degustation, true);
+      $urlBack = sfContext::getInstance()->getRouting()->generate('degustation_notifications_etape',$degustation, true);
       $debug = false;
 
       $this->etablissementsLotsConforme = $degustation->getEtablissementLotsConformesOrNot();
