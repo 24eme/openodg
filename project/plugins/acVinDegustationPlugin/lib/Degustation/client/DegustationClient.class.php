@@ -5,9 +5,6 @@ class DegustationClient extends acCouchdbClient {
     const TYPE_MODEL = "Degustation";
     const TYPE_COUCHDB = "DEGUSTATION";
     const SPECIFICITE_PASSAGES = "Xème passage";
-    const SUBJECT_CONFORME = "Courrier de conformité de Lots";
-    const SUBJECT_NON_CONFORME = "Courrier de non conformité de Lots";
-    const BODY = "Bonjour\nVeuillez cliquer sur le lien suivant pour avoir le détail de vos lots dégustés: ";
 
     public static function getInstance()
     {

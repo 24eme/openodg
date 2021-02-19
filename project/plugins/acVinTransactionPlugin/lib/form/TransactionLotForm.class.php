@@ -24,9 +24,7 @@ class TransactionLotForm extends acCouchdbObjectForm
 
     public function getCountryList() {
         $destinationChoicesWidget = new bsWidgetFormI18nChoiceCountry(array('culture' => 'fr', 'add_empty' => true));
-        $destinationChoices = array(null=>null,'France'=>'France');
         $choices = $destinationChoicesWidget->getChoices();
-        unset($choices[null], $choices['France']);
         foreach($destinationChoicesWidget->getChoices() as $choice) {
           $destinationChoices[$choice] = $choice;
         }

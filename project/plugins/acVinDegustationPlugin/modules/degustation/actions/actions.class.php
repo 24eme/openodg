@@ -212,7 +212,7 @@ class degustationActions extends sfActions {
 
          $this->form->save();
 
-        return $this->redirect('degustation_prelevements_etape', array('id' => $this->degustation->_id));
+        return $this->redirect('degustation');
     }
 
 
@@ -260,16 +260,14 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
+        $this->etablissementsLotsConforme = $this->degustation->getEtablissementLotsConformesOrNot();
+        $this->etablissementsLotsNonConforme = $this->degustation->getEtablissementLotsConformesOrNot(false);
     }
 
     public function executeConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
     }
 
-    public function executeVisualisation(sfWebRequest $request) {
-      $this->degustation = $this->getRoute()->getDegustation();
-      $this->infosDegustation = $this->degustation->getInfosDegustation();
-    }
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
@@ -448,6 +446,7 @@ class degustationActions extends sfActions {
 
         return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
+
 
     public function executePresences(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
@@ -713,6 +712,18 @@ class degustationActions extends sfActions {
       $this->document->addHeaders($this->getResponse());
 
       return $this->renderText($this->document->output());
+
+    }
+
+
+    public function executeEnvoiMail(sfWebRequest $request){
+      $this->degustation = $this->getRoute()->getDegustation();
+
+      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $this->setTemplate('notificationsEtape');
+      $emailLinkManager = new DegustationEmailManager();
+
+      echo $emailLinkManager->getMailerLink($this->degustation,$etablissement);
 
     }
 

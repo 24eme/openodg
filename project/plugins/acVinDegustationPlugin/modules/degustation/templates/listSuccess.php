@@ -44,7 +44,7 @@
                 <td><?php echo $lot->numero_dossier;  ?></td>
                 <td ><strong><?php echo Date::francizeDate($lot->date); ?></strong></td>
                 <td><strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?><strong class="pull-right">&nbsp;<?php echo echoFloat($lot->volume); ?>&nbsp;hl</strong></small></td>
-                <td class="text-center"><a class="btn btn-xs btn-success" href="<?php echo url_for($lot->dossier_type.'_visualisation',$lot->dossier_origine)?>"><?php echo $lot->dossier_libelle; ?></a></td>
+                <td class="text-center"><a class="btn btn-xs btn-success" href="<?php echo url_for($lot->dossier_type.'_redirect',$lot->dossier_origine)?>"><?php echo $lot->dossier_libelle; ?></a></td>
                 <td class="text-center" >
                   <?php if($lot->degustation): ?>
                     <a class="btn btn-xs btn-<?php echo $lot->degustation_color?>" href="<?php echo url_for($lot->degustation_step_route,$lot->degustation)?>"><?php echo $lot->degustation_libelle; ?></a>

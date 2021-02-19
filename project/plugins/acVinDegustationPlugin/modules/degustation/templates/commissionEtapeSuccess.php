@@ -19,13 +19,21 @@
         </h2>
       </div>
       <div class="panel-body">
-        <div class="row">
+          <div class="row">
+            <div class="col-xs-12">
+              <strong>Pdf des étiquettes pour l'organisation des tables</strong>
+              <br/>
+            </div>
+          </div>
+          <div class="row">
             <?php if($degustation->isAnonymized()): ?>
               <div class="col-xs-12">
                 <br/>
-                <a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés)</a>
-                <a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés par table)</a>
-                <a href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Tableau des étiquettes (Anonymisés)</a>
+                <ul class="list-group">
+                  <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>" ><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés)</a></li>
+                  <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés par table)</a></li>
+                  <li class="list-group-item"><a href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Tableau des étiquettes (Anonymisés)</a></li>
+                </ul>
                 <br/>
             </div>
           <?php else: ?>
@@ -33,10 +41,23 @@
               La dégustation n'est <strong>pas encore anonymisée</strong> actuellement.<br/>
             </div>
           <?php endif; ?>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <br/>
+              <strong>Pdf des présences et notations de la commissions</strong>
+              <br/>
+            </div>
+          </div>
+          <div class="row">
           <div class="col-xs-12">
-            <a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a>
-            <a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a>
-            <a href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a>
+            <br/>
+            <ul class="list-group">
+              <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Feuille de présence des dégustateurs</a></li>
+              <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a></li>
+              <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a></li>
+              <li class="list-group-item"><a href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a></li>
+            </ul>
             <br/>
           </div>
         </div>

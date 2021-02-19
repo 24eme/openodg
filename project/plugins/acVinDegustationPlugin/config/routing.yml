@@ -29,16 +29,6 @@ degustation_prelevements_etape:
   requirements:
     sf_method: [get]
 
-degustation_anonymats_etape:
-  url: /degustation/:id/anonymats-etapes
-  param: { module: degustation, action: anonymatsEtape }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get]
-
 degustation_tables_etape:
   url: /degustation/:id/tables-etapes
   param: { module: degustation, action: tablesEtape }
@@ -48,6 +38,26 @@ degustation_tables_etape:
     type:     object
   requirements:
     sf_method: [get]
+
+degustation_anonymats_etape:
+  url: /degustation/:id/anonymats-etapes
+  param: { module: degustation, action: anonymatsEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+    requirements:
+      sf_method: [get]
+
+degustation_commission_etape:
+  url: /degustation/:id/commission-etapes
+  param: { module: degustation, action: commissionEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+    requirements:
+      sf_method: [get]
 
 degustation_resultats_etape:
   url: /degustation/:id/resultats-etapes
@@ -102,16 +112,6 @@ degustation_validation:
 degustation_confirmation:
   url: /degustation/:id/confirmation
   param: { module: degustation, action: confirmation }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get]
-
-degustation_visualisation:
-  url: /degustation/:id/visualisation
-  param: { module: degustation, action: visualisation }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -342,6 +342,16 @@ degustation_conformite_pdf:
 degustation_non_conformite_pdf:
   url: /degustation/:id/:identifiant/:lot_dossier/:lot_num_anon/DegustationNonConformite/pdf
   param: { module: degustation, action: degustationNonConformitePDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+degustation_envoi_mail_resultats:
+  url: /degustation/:id/:identifiant/envoi-mail
+  param: { module: degustation, action: envoiMail }
   class: DegustationRoute
   options:
     model:    Degustation
