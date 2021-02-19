@@ -365,6 +365,28 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 	 }
 
+	 public function getLotsByOperateursAndConformites(){
+		 $lotsByAdherents = array();
+		 $conformiteArray = array(Lot::STATUT_CONFORME,Lot::STATUT_NONCONFORME);
+		 foreach ($conformiteArray as $bool => $conformite) {
+			 foreach ($this->getLotsConformesOrNot(!$bool) as $lot) {
+				 if($lot->isLeurre()){
+					 continue;
+				 }
+				 if(!array_key_exists($lot->getDeclarantIdentifiant(),$lotsByAdherents)){
+					 $lotsByAdherents[$lot->getDeclarantIdentifiant()] = new stdClass();
+					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->declarant_nom = $lot->declarant_nom;
+					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots = array();
+					}
+					if(!array_key_exists($conformite,$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots)){
+						$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite] = array();
+ 					}
+				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite][] = $lot;
+			 }
+		 }
+		return $lotsByAdherents;
+	 }
+
 	 public function getLotByNumArchive($numero_archive){
 		 foreach ($this->lots as $lot) {
 			 if($lot->numero_archive == $numero_archive){
@@ -522,9 +544,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					if ($lot->numero_anonymat){
 						$lot->numero_anonymat = null;
 					}
-					else {
-						throw new sfException("L'anonymat n'est pas encore réalisé");
-					}
 				}
 			}
 		}
@@ -533,14 +552,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			for($table = 1; true ; $table++) {
 				$lots = $this->getLotsByTable($table);
 				if (!count($lots)) {
-					return true;
+					return false;
 				}
 				foreach ($lots as $k => $lot){
-					if (!$lot->numero_anonymat) {
-					return false;
+					if ($lot->numero_anonymat) {
+					return true;
 					}
 				}
 			}
+			return false;
 		}
 
 		public function getLotsTableOrFreeLots($numero_table, $free = true){

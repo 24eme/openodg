@@ -726,22 +726,10 @@ class degustationActions extends sfActions {
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
       $this->setTemplate('notifications');
+      $emailLinkManager = new DegustationEmailManager();
 
-      $urlBack = $this->generateUrl('degustation_notifications',$this->degustation, true);
-      $debug = false;
+      echo $emailLinkManager->getMailerLink($this->degustation,$etablissement);
 
-      $this->etablissementsLotsConforme = $this->degustation->getEtablissementLotsConformesOrNot();
-      $this->etablissementsLotsNonConforme = $this->degustation->getEtablissementLotsConformesOrNot(false);
-
-      $urlBase = $request->getUriPrefix().$request->getRelativeUrlRoot().$request->getPathInfoPrefix();
-      $uri = $this->generateUrl('degustation_conformite_pdf',array('id' => $this->degustation->_id, 'identifiant' => $etablissement->identifiant));
-
-      $email = $etablissement->email;
-      $body = DegustationClient::BODY ."%0D%0A%0D%0A".$urlBase.$uri;
-      $subject = DegustationClient::SUBJECT_NON_CONFORME;
-
-      echo '<a href="mailto:'.$email."?subject=$subject&body=$body".'" id="link-mail-auto" data-retour='.$urlBack.' ';
-      echo ($debug)? '>Ouverture Mailer</a>' : '/>';
     }
 
     public function executeRetraitNonConformitePDF(sfWebRequest $request){
