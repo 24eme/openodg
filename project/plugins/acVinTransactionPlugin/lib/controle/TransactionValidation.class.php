@@ -39,13 +39,15 @@ class TransactionValidation extends DocumentValidation
     protected function controleProduits(){
         $produits = [];
         foreach ($this->document->lots as $key => $lot) {
+          if((!$lot->exist('produit_hash') || !$lot->produit_hash) && (!$lot->exist('volume') || !$lot->volume)){
+            continue;
+          }
           if(!$lot->exist('produit_hash') || !$lot->produit_hash){
             $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisi', "Lot n° ".($key+1), $this->generateUrl('transaction_lots', array("id" => $this->document->_id)));
           }
           if(!$lot->exist('volume') || !$lot->volume){
             $this->addPoint(self::TYPE_ERROR, 'lot_volume_non_saisi', "Lot n° ".($key+1), $this->generateUrl('transaction_lots', array("id" => $this->document->_id)));
-          }
-
+          }          
         }
     }
 
