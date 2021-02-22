@@ -189,6 +189,7 @@ class conditionnementActions extends sfActions {
             $this->conditionnement->save();
         }
 
+        $this->conditionnement->cleanDoc();
 
         $this->validation = new ConditionnementValidation($this->conditionnement);
 

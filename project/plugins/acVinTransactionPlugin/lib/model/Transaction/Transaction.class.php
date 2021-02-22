@@ -168,11 +168,8 @@ class Transaction extends BaseTransaction implements InterfaceVersionDocument, I
 
     public function addLot() {
         $lot = $this->add('lots')->add();
-        $lot->millesime = $this->campagne;
-        $lot->statut = Lot::STATUT_PRELEVABLE;
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
-          $lot->add('specificite','aucune');
-        }
+        $lot->initDefault();
+
         return $lot;
     }
 

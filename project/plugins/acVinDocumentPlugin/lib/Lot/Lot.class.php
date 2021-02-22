@@ -99,6 +99,38 @@ abstract class Lot extends acCouchdbDocumentTree
         }
     }
 
+    public function getDefaults() {
+        $defaults = array();
+        $defaults['millesime'] = $this->getDocument()->campagne;
+        $defaults['statut'] = Lot::STATUT_PRELEVABLE;
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+          $defaults['specificite'] = "aucune";
+        }
+
+        return $defaults;
+    }
+
+    public function initDefault() {
+        foreach($this->getDefaults() as $defaultKey => $defaultValue) {
+            $this->add($defaultKey, $defaultValue);
+        }
+    }
+
+    public function isEmpty() {
+      $fieldsToFill = array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'produit_hash', 'elevage', 'specificite', 'centilisation');
+      $defaults = $this->getDefaults();
+      foreach($fieldsToFill as $field) {
+        if($this->exist($field) && $this->get($field) && !isset($defaults[$field])) {
+            return false;
+        }
+        if($this->exist($field) && $this->get($field) && isset($defaults[$field]) && $defaults[$field] != $this->get($field)) {
+            return false;
+        }
+      }
+
+      return true;
+    }
+
     public function setProduitHash($hash) {
         if($hash != $this->_get('produit_hash')) {
             $this->produit_libelle = null;

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(2);
+$t = new lime_test(4);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -34,7 +34,15 @@ foreach ($produits as $key => $produit) {
   break;
 }
 $lot = $conditionnement->addLot();
+
+$t->ok($lot->millesime, $conditionnement->campagne, "Le millésime est intialisé");
+
+$t->ok($lot->isEmpty(), "Le lot est vide");
+$lot->add('numero', "1");
+$t->ok(!$lot->isEmpty(), "Le lot n'est plus vide");
+
 $lot->volume = 12;
+
 $lot = $conditionnement->addLot();
 $lot->produit_hash = $produit->getHash();
 $conditionnement->save();
@@ -43,3 +51,8 @@ $validation = new ConditionnementValidation($conditionnement);
 
 $t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_ERROR, "lot_produit_non_saisi")), 1, "Point bloquant:Aucun produit saisi lors de l'etape Lot");
 $t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_ERROR, "lot_volume_non_saisi")), 1, "Point bloquant:Aucun volume saisi lors de l'etape Lot");
+
+$lot = $conditionnement->addLot();
+
+$t->is(count($conditionnement->lots), 3, "3 lots avant la validation");
+//$conditionnement->validate();
