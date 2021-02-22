@@ -1,5 +1,6 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
+<?php use_helper('Lot') ?>
 
 
 
@@ -45,18 +46,7 @@
                         <td><?php echo $lot->numero; ?></td>
                       <?php endif; ?>
                         <td>
-                          <?php echo $lot->produit_libelle; ?>
-                          <small >
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <?php echo ($lot->specificite && $lot->specificite != "aucune")? $lot->specificite : ""; ?>
-                          <?php endif ?>
-                          <?php echo ($lot->millesime)? " ".$lot->millesime."" : ""; ?></small>
-                          <?php if(count($lot->cepages)): ?>
-                            <br/>
-                            <small class="text-muted">
-                              <?php echo $lot->getCepagesToStr(); ?>
-                            </small>
-                          <?php endif; ?>
+                          <?php echo showProduitLot($lot) ?>
                         </td>
                         <td class="text-right"><?php echo $lot->centilisation; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
