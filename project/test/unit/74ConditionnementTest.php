@@ -54,5 +54,8 @@ $t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_ERROR,
 
 $lot = $conditionnement->addLot();
 
-$t->is(count($conditionnement->lots), 3, "3 lots avant la validation");
-//$conditionnement->validate();
+$t->is(count($conditionnement->lots), 3, "3 lots avant le clean");
+$conditionnement->cleanLots();
+$t->is(count($conditionnement->lots), 2, "2 lots après le clean");
+
+$conditionnement->validate();
