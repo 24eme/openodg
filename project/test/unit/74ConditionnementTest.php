@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(1);
+$t = new lime_test(2);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -24,13 +24,22 @@ $campagne = (date('Y')-1)."";
 $t->comment("Création d'un Conditionnement");
 
 $conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne);
+
 $conditionnement->storeDeclarant();
 $conditionnement->save();
 
+$produits = $conditionnement->getConfigProduits();
+
+foreach ($produits as $key => $produit) {
+  break;
+}
 $lot = $conditionnement->addLot();
 $lot->volume = 12;
+$lot = $conditionnement->addLot();
+$lot->produit_hash = $produit->getHash();
 $conditionnement->save();
 
 $validation = new ConditionnementValidation($conditionnement);
 
 $t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_ERROR, "lot_produit_non_saisi")), 1, "Point bloquant:Aucun produit saisi lors de l'etape Lot");
+$t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_ERROR, "lot_volume_non_saisi")), 1, "Point bloquant:Aucun volume saisi lors de l'etape Lot");

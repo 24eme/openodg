@@ -18,6 +18,7 @@ class ConditionnementValidation extends DocumentValidation
     public function configure()
     {
         $this->addControle(self::TYPE_ERROR, 'lot_produit_non_saisi', "Aucun produit n'a été saisi");
+        $this->addControle(self::TYPE_ERROR, 'lot_volume_non_saisi', "Aucun volume n'a été saisi");
         $this->addControle(self::TYPE_ERROR, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_ERROR, 'lot_centilisation_non_saisie', "La centilisation du lot n'a pas été renseignée");
@@ -41,8 +42,12 @@ class ConditionnementValidation extends DocumentValidation
 
       foreach ($this->document->lots as $key => $lot) {
         if(!$lot->exist('produit_hash') || !$lot->produit_hash){
-          $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisi', "Lot n° $key", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+          $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisi', "Lot n° ".($key+1), $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
         }
+        if(!$lot->exist('volume') || !$lot->volume){
+          $this->addPoint(self::TYPE_ERROR, 'lot_volume_non_saisi', "Lot n° ".($key+1), $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+        }
+
       }
 
     }
