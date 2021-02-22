@@ -158,15 +158,14 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isCleanable() {
 
-        if(!$this->exist('produit_hash') || !$this->produit_hash){
-          return true;
+        if($this->exist('produit_hash') && $this->produit_hash){
+          return false;
+        }
+        if($this->exist('volume') && $this->volume){
+          return false;
         }
 
-        if(!$this->exist('volume') || !$this->volume){
-          return true;
-        }
-
-        return false;
+        return true;
     }
 
     public function isOrigineEditable()

@@ -38,11 +38,13 @@ class ConditionnementValidation extends DocumentValidation
 
     protected function controleProduits(){
         $produits = [];
-        if($this->document->exist('lots')){
-          if(!count($this->document->lots)){
-            $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisi', "", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
-          }
+
+      foreach ($this->document->lots as $key => $lot) {
+        if(!$lot->exist('produit_hash') || !$lot->produit_hash){
+          $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisi', "Lot n° $key", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
         }
+      }
+
     }
 
     protected function controleLots(){
