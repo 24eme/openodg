@@ -17,6 +17,7 @@ class ConditionnementValidation extends DocumentValidation
 
     public function configure()
     {
+        $this->addControle(self::TYPE_ERROR, 'lot_produit_non_saisi', "Aucun produit n'a été saisi");
         $this->addControle(self::TYPE_ERROR, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_ERROR, 'lot_centilisation_non_saisie', "La centilisation du lot n'a pas été renseignée");
@@ -31,7 +32,17 @@ class ConditionnementValidation extends DocumentValidation
 
     public function controle()
     {
+        $this->controleProduits();
         $this->controleLots();
+    }
+
+    protected function controleProduits(){
+        $produits = [];
+        if($this->document->exist('lots')){
+          if(!count($this->document->lots)){
+            $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisi', "", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+          }
+        }
     }
 
     protected function controleLots(){
