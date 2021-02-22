@@ -23,6 +23,8 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
+    const SPECIFITE_UNDEFINED = "UNDEFINED";
+
     const TYPE_ARCHIVE = 'Lot';
 
     public static $libellesStatuts = array(
@@ -104,7 +106,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $defaults['millesime'] = $this->getDocument()->campagne;
         $defaults['statut'] = Lot::STATUT_PRELEVABLE;
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
-          $defaults['specificite'] = null;
+          $defaults['specificite'] = self::SPECIFITE_UNDEFINED;
         }
 
         return $defaults;

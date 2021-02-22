@@ -38,7 +38,7 @@ foreach ($produits as $key => $produit) {
 $lot = $conditionnement->addLot();
 
 $t->is($lot->millesime, $conditionnement->campagne, "Le millésime est intialisé");
-$t->is($lot->specificite, null, "La spécificité est nul à la création du lot");
+$t->is($lot->specificite, Lot::SPECIFITE_UNDEFINED, "La spécificité est nul à la création du lot");
 
 $t->ok($lot->isEmpty(), "Le lot est vide");
 $lot->add('numero', "1");
@@ -57,7 +57,7 @@ $lot = $conditionnement->addLot();
 $lot->produit_hash = $produit->getHash();
 $lot->volume = 15;
 $lot->add('numero', 'C12');
-$lot->add('specificite', 'aucune');
+$lot->add('specificite', "");
 $lot->add('centilisation', $centilisations_bib_key);
 
 $validation = new ConditionnementValidation($conditionnement);
