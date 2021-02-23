@@ -147,6 +147,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                  <div class="col-md-6 col-md-offset-6">
+                    <label>
+                      <?php echo $lot['degustable']->render() ?>
+                      <?php echo $lot['degustable']->renderLabel('Lot prévu pour la dégustation') ?>
+                    </label>
+                  </div>
+                </div>
             </div>
         </div>
         <div class="modal fade modal_lot_cepages" data-lot=<?php echo $key ?> id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
