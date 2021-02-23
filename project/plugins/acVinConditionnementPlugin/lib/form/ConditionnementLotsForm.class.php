@@ -16,16 +16,13 @@ class ConditionnementLotsForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								if(DRevConfiguration::getInstance()->hasSpecificiteLot() && (!$lot->exist('specificite') || !$lot->specificite)){
-									$lot->add('specificite', DRevConfiguration::getInstance()->getSpecificites()['aucune']);
-								}
                 $formLots->embedForm($lot->getKey(), new ConditionnementLotForm($lot));
             }
         }
 
         $this->embedForm('lots', $formLots);
 
-        $this->widgetSchema->setNameFormat('drev_lots[%s]');
+        $this->widgetSchema->setNameFormat('conditionnement_lots[%s]');
     }
 
 	public function save() {

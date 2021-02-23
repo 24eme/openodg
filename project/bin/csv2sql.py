@@ -13,6 +13,11 @@ if os.path.exists(sys.argv[2]+"/chais.csv"):
     csv = pd.read_csv(sys.argv[2]+"/chais.csv", encoding='iso-8859-1', delimiter=";", index_col=False)
     csv.to_sql('chai', con=engine, if_exists='replace')
 
+if os.path.exists(sys.argv[2]+"/societe.csv"):
+    sys.stderr.write(sys.argv[2]+"/societe.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/societe.csv", encoding='iso-8859-1', delimiter=";", index_col=False)
+    csv.to_sql('societe', con=engine, if_exists='replace')
+
 if os.path.exists(sys.argv[2]+"/habilitation.csv"):
     sys.stderr.write(sys.argv[2]+"/habilitation.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/habilitation.csv", encoding='iso-8859-1', delimiter=";", index_col=False)
@@ -58,6 +63,26 @@ if os.path.exists(sys.argv[2]+"/parcellaire.csv"):
     csv = pd.read_csv(sys.argv[2]+"/parcellaire.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
     csv.to_sql('parcellaire', con=engine, if_exists='replace')
 
+if os.path.exists(sys.argv[2]+"/parcellaireirrigable.csv"):
+    sys.stderr.write(sys.argv[2]+"/parcellaireirrigable.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/parcellaireirrigable.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('parcellaireirrigable', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/parcellaireirrigue.csv"):
+    sys.stderr.write(sys.argv[2]+"/parcellaireirrigue.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/parcellaireirrigue.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('parcellaireirrigue', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/parcellaireintentionaffectation.csv"):
+    sys.stderr.write(sys.argv[2]+"/parcellaireintentionaffectation.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/parcellaireintentionaffectation.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('parcellaireintentionaffectation', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/parcellaireaffectation.csv"):
+    sys.stderr.write(sys.argv[2]+"/parcellaireaffectation.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/parcellaireaffectation.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('parcellaireaffectation', con=engine, if_exists='replace')
+
 if os.path.exists(sys.argv[2]+"/travaux_marc.csv"):
     sys.stderr.write(sys.argv[2]+"/travaux_marc.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/travaux_marc.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
@@ -87,3 +112,23 @@ if os.path.exists(sys.argv[2]+"/bilan_vci.csv"):
     sys.stderr.write(sys.argv[2]+"/bilan_vci.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/bilan_vci.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
     csv.to_sql('bilan_vci', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/pieces.csv"):
+    sys.stderr.write(sys.argv[2]+"/pieces.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/pieces.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('pieces', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/liaisons.csv"):
+    sys.stderr.write(sys.argv[2]+"/liaisons.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/liaisons.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('liaisons', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/comptes.csv"):
+    sys.stderr.write(sys.argv[2]+"/comptes.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/comptes.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('comptes', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/lots.csv"):
+    sys.stderr.write(sys.argv[2]+"/lots.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('lots', con=engine, if_exists='replace')

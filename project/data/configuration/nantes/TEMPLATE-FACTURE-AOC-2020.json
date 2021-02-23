@@ -18,13 +18,15 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "callback" : null,
+          "callback": null,
           "prix": 170,
           "tva": 0,
           "unite": "",
           "libelle": "",
           "complement_libelle": "",
-          "docs": ["DR"]
+          "docs": [
+            "DR"
+          ]
         }
       }
     },
@@ -76,6 +78,21 @@
             "DRev"
           ],
           "callback": "getTotalVolumeRevendiqueVCI"
+        },
+        "covid": {
+          "modele": "CotisationVariable",
+          "prix": -10,
+          "tva": 0,
+          "libelle": "Remise exceptionnelle Covid",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
         }
       }
     },
@@ -143,6 +160,21 @@
             "DRev"
           ],
           "callback": "getTotalVolumeRevendiqueVCI"
+        },
+        "covid": {
+          "modele": "CotisationVariable",
+          "prix": -10,
+          "tva": 0.2,
+          "libelle": "Remise exceptionnelle Covid",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
         }
       }
     },

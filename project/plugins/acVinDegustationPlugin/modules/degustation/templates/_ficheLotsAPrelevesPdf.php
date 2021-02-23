@@ -28,9 +28,6 @@ th {
     </div>
     <div>
       <table>
-        <?php foreach($etablissements as $numDossier => $etablissement): ?>
-          <?php $nbLotTotal += count($lots[$numDossier]); ?>
-        <?php endforeach; ?>
         <tr style="line-height: 25em; height:25em;">
           <td style="width:20%;"></td>
           <td style="width:80%;"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
@@ -46,7 +43,8 @@ th {
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
         </tr>
         <?php $i=0;
-    foreach($etablissements as $numDossier => $etablissement): ?>
+    foreach($lots as $numDossier => $lotsCuves): ?>
+    <?php $etablissement = $etablissements[$numDossier]; ?>
     <?php if($i == 14 || ($i - 14) % 17 > 16): //display 14 Lots on the first page and below 17 Lots all others pages?>
       </table>
       <br pagebreak="true" />
@@ -76,8 +74,9 @@ th {
             </small>
           </td>
           <td><?php echo tdStart() ?>
+            <?php $lotTypesNb = $degustation->getNbLotByTypeForNumDossier($numDossier); ?>
             <small>n°&nbsp;<?php echo $numDossier; ?></small><br/>
-            <small><?php echo count($lots[$numDossier]); ?>&nbsp;lot(s)</small>
+            <small><?php echo count($lots[$numDossier]); ?>&nbsp;lot(s) <?php echo $lotTypesNb['Cond'] > 0 ? $lotTypesNb['Cond'].' Cond' : null  ?><?php echo $lotTypesNb['DRev'] > 0 ? $lotTypesNb['DRev'].' DRev' : null;  ?></small>
           </td>
           <td><?php echo tdStart() ?>
             <small><?php //echo $degustation->laboratoire; ?></small>

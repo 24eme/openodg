@@ -30,7 +30,8 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     }
 
     public function constructId() {
-        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $this->campagne;
+        $date = date("Ymd");        
+        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $date;
         if($this->version) {
             $id .= "-".$this->version;
         }
@@ -167,11 +168,8 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
 
     public function addLot() {
         $lot = $this->add('lots')->add();
-        $lot->millesime = $this->campagne;
-        $lot->statut = Lot::STATUT_PRELEVABLE;
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
-          $lot->add('specificite','aucune');
-        }
+        $lot->initDefault();
+        
         return $lot;
     }
 
@@ -459,6 +457,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
+        $mvt->centilisation = $lot->centilisation;
 
         $tabCepages=[];
 

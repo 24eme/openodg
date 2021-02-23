@@ -224,7 +224,7 @@ class conditionnementActions extends sfActions {
         $this->conditionnement->save();
 
         if($this->getUser()->hasConditionnementAdmin() && ConditionnementConfiguration::getInstance()->hasValidationOdgRegion()) {
-            $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée, elle devra être approuvée par l'ensemble des ODG concernées");
+            $this->getUser()->setFlash("notice", "La déclaration de conditionnement a été validée, elle devra être approuvée par l'ensemble des ODG concernées");
 
             return $this->redirect('conditionnement_visualisation', $this->conditionnement);
         }
@@ -233,7 +233,7 @@ class conditionnementActions extends sfActions {
             $this->conditionnement->validateOdg();
             $this->conditionnement->cleanLots();
             $this->conditionnement->save();
-            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
+            $this->getUser()->setFlash("notice", "La déclaration de conditionnement papier a été validée et approuvée, un email a été envoyé au déclarant");
 
             return $this->redirect('conditionnement_visualisation', $this->conditionnement);
         }
@@ -241,7 +241,7 @@ class conditionnementActions extends sfActions {
         if($this->getUser()->hasConditionnementAdmin()) {
             $this->conditionnement->validateOdg();
             $this->conditionnement->save();
-            $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
+            $this->getUser()->setFlash("notice", "La déclaration de conditionnement a été validée et approuvée");
 
             return $this->redirect('conditionnement_visualisation', $this->conditionnement);
         }

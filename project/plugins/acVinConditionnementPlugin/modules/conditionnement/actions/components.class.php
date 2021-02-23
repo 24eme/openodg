@@ -12,7 +12,7 @@ class conditionnementComponents extends sfComponents {
         }
         $this->conditionnement = ConditionnementClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
 
-        $this->conditonnementsHistory = ConditionnementClient::getInstance()->getHistory($this->etablissement->identifiant);
+        $this->conditionnementsHistory = ConditionnementClient::getInstance()->getHistory($this->etablissement->identifiant);
     }
 
 }

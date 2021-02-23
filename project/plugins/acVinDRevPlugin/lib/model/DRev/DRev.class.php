@@ -626,10 +626,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
-              if(!$this->hasAcheteurForProduit($csv,$k)){
                 $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
-              }
-
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
 
@@ -658,6 +655,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
+            if(!$p->recolte->volume_sur_place) {
+                $p->recolte->vci_constitue = null;
+                $p->vci->constitue = null;
+            }
             if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
     		   $todelete[$hash] = $hash;
                continue;
@@ -728,22 +729,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         $this->updateFromPrecedente();
-    }
-
-    public function hasAcheteurForProduit($csv,$k){
-      $l = $csv[$k];
-      $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-      $codePrev = $code * 2;
-      while(($k > 0) && ($code < $codePrev)){
-         $codePrev = $code;
-         $k--;
-         $l = $csv[$k];
-         $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-         if($code == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR){
-           return boolval($l [DRCsvFile::CSV_VALEUR]);
-         }
-       }
-      return false;
     }
 
     public function updateFromPrecedente()
@@ -852,11 +837,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function addLot() {
         $lot = $this->add('lots')->add();
-        $lot->millesime = $this->campagne;
-        $lot->statut = Lot::STATUT_PRELEVABLE;
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
-          $lot->add('specificite','aucune');
-        }
+        $lot->initDefault();
         return $lot;
     }
 
@@ -928,6 +909,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->generateMouvementsLots();
         $this->updateStatutsLotsSupprimes();
 
+        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
+
         if(!count($this->getLotsRevendiques())) {
             foreach($this->getProduitsLots() as $produit) {
                 $produit->validateOdg($date);
@@ -960,6 +943,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           }
         }
         $this->updateStatutsLotsSupprimes(false);
+        $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
     }
 
     public function updateStatutsLotsSupprimes($validation = true) {
@@ -994,11 +978,58 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             throw new sfException("La validation nécessite une région");
         }
 
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
+
         if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
 
         $this->validation_odg = $date;
+    }
+
+    public function setStatutOdgByRegion($statut, $region = null) {
+        if($region) {
+            foreach ($this->getProduits($region) as $hash => $produit) {
+                $produit->setStatutOdg($statut);
+            }
+        } else {
+            $hasRegion = false;
+            foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                $hasRegion = true;
+                $this->setStatutOdgByRegion($statut, $region);
+            }
+            if (!$hasRegion) {
+                foreach ($this->getProduits($region) as $hash => $produit) {
+                    $produit->setStatutOdg($statut);
+                }
+            }
+        }
+        $allStatut = true;
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            if($produit->getStatutOdg() == $statut){
+               continue;
+            }
+            $allStatut = false;
+            break;
+        }
+        if(!$allStatut) {
+            return;
+        }
+        if (!$this->exist('statut_odg')) {
+            return $this->add('statut_odg', $statut);
+        }
+        return $this->_set('statut_odg', $statut);
+    }
+
+    public function isMiseEnAttenteOdg() {
+        return ($this->getStatutOdg() == DRevClient::STATUT_EN_ATTENTE);
+    }
+
+    public function getStatutOdg() {
+        if (!$this->exist('statut_odg')) {
+            return null;
+        }
+        return $this->_get('statut_odg');
     }
 
     protected function validateOdgByRegion($date = null, $region = null) {

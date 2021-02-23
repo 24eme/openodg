@@ -105,7 +105,31 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           }else{
             $mvt->date = ($this->campagne + 1).'-12-31';
           }
+      	  $this->reorderProduits();
       }
+
+            protected function reorderProduits() {
+		              $produits = $this->getProduits();
+
+			                $this->remove('declaration');
+			                $this->add('declaration');
+
+					          foreach($this->getConfigProduits() as $config) {
+							              foreach($produits as $hash => $produit) {
+									                      if(!preg_match("|".$produit->getHash()."|", $config->getHash())) {
+												                          continue;
+															                  }
+		$this->declaration->add(str_replace("/declaration/", "", $produit->getHash()), $produit);
+											                      unset($produits[$hash]);
+													                  }
+								                }
+
+					          foreach($produits as $produit) {
+							                $this->declaration->add(str_replace("/declaration/", "", $produit->getHash()), $produit->getData());
+									          }
+
+					          return $this->declaration;
+					      }
 
       public function clear() {
         $this->remove('declaration');

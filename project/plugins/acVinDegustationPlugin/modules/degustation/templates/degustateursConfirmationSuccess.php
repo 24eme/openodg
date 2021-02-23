@@ -2,7 +2,7 @@
 <?php use_helper("Date") ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_degustateurs_confirmation', 'nom' => 'Convocation des dégustateurs'))); ?>
-
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
   <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -58,9 +58,9 @@
 	</div>
 </div>
 	<div class="row row-button">
-				<div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+				<div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
 				<div class="col-xs-4 text-center">
 				</div>
-				<div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+				<div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
 		</div>
 </form>

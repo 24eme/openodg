@@ -98,6 +98,7 @@ class MouvementLotView extends acCouchdbView
     $lot->elevage = (isset($mvt->elevage))? $mvt->elevage : null;
     $lot->statut = $mvt->statut;
     $lot->specificite = (isset($mvt->specificite))? $mvt->specificite : null;
+    $lot->centilisation = isset($mvt->centilisation) ? $mvt->centilisation : null;
     return $lot;
   }
 

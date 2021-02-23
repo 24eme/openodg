@@ -23,6 +23,8 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
+    const SPECIFITE_UNDEFINED = "UNDEFINED";
+
     const TYPE_ARCHIVE = 'Lot';
 
     public static $libellesStatuts = array(
@@ -99,6 +101,38 @@ abstract class Lot extends acCouchdbDocumentTree
         }
     }
 
+    public function getDefaults() {
+        $defaults = array();
+        $defaults['millesime'] = $this->getDocument()->campagne;
+        $defaults['statut'] = Lot::STATUT_PRELEVABLE;
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+          $defaults['specificite'] = self::SPECIFITE_UNDEFINED;
+        }
+
+        return $defaults;
+    }
+
+    public function initDefault() {
+        foreach($this->getDefaults() as $defaultKey => $defaultValue) {
+            $this->add($defaultKey, $defaultValue);
+        }
+    }
+
+    public function isEmpty() {
+      $fieldsToFill = array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'produit_hash', 'elevage', 'specificite', 'centilisation');
+      $defaults = $this->getDefaults();
+      foreach($fieldsToFill as $field) {
+        if($this->exist($field) && $this->get($field) && !isset($defaults[$field])) {
+            return false;
+        }
+        if($this->exist($field) && $this->get($field) && isset($defaults[$field]) && $defaults[$field] != $this->get($field)) {
+            return false;
+        }
+      }
+
+      return true;
+    }
+
     public function setProduitHash($hash) {
         if($hash != $this->_get('produit_hash')) {
             $this->produit_libelle = null;
@@ -149,20 +183,16 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == 'produit') {
             return $this->_get('produit_hash').$this->_get('details');
         }
+        if ($type == 'numero_anonymat'){
+          $numero= intval(substr($this->numero_anonymat, 1));
+          return $numero;
+        }
         throw new sfException('unknown type of value : '.$type);
     }
 
     public function isCleanable() {
 
-        if(!$this->exist('produit_hash') || !$this->produit_hash){
-          return true;
-        }
-
-        if(!$this->exist('volume') || !$this->volume){
-          return true;
-        }
-
-        return false;
+        return $this->isEmpty();
     }
 
     public function isOrigineEditable()
