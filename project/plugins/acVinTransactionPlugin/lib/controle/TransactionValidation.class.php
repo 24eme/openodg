@@ -47,7 +47,7 @@ class TransactionValidation extends DocumentValidation
           }
           if(!$lot->exist('volume') || !$lot->volume){
             $this->addPoint(self::TYPE_ERROR, 'lot_volume_non_saisi', "Lot n° ".($key+1), $this->generateUrl('transaction_lots', array("id" => $this->document->_id)));
-          }          
+          }
         }
     }
 
@@ -64,13 +64,13 @@ class TransactionValidation extends DocumentValidation
           }
           $volume = sprintf("%01.02f",$lot->getVolume());
           if($lot->millesime && $lot->millesime < ($this->document->campagne - 1)){
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
           if(!$lot->exist('destination_type') || !$lot->destination_type){
-              $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
           if(!$lot->exist('destination_date') || !$lot->destination_date){
-            $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
 
 
@@ -80,7 +80,7 @@ class TransactionValidation extends DocumentValidation
               $somme+=$v;
             }
             if($somme != $lot->volume){
-              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }
           }
 

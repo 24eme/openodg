@@ -67,7 +67,7 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("DEGUSTATION_%s", $degustation->_id);
+        $filename = sprintf("table_des_etiquettes_des_lots_preleves_%s", $degustation->_id);
 
 
         if ($with_rev) {

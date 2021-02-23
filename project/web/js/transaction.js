@@ -107,10 +107,10 @@
                     }
                 })
 
-                var vol_total = document.getElementById('conditionnement_lots_lots_'+lot+'_volume')
+                var vol_total = document.getElementById('transaction_lots_lots_'+lot+'_volume')
                 vol_total.value = parseFloat(total)
 
-                $('#conditionnement_lots_lots_'+lot+'_volume').blur()
+                $('#transaction_lots_lots_'+lot+'_volume').blur()
 
                 vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
             })
