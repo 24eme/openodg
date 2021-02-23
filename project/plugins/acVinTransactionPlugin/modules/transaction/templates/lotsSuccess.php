@@ -151,7 +151,7 @@
                   <div class="col-md-6 col-md-offset-6">
                     <label>
                       <?php echo $lot['degustable']->render() ?>
-                      <?php echo $lot['degustable']->renderLabel('Lot prévu pour la dégustation') ?>
+                      <?php echo $lot['degustable']->renderLabel('Dégustable') ?>
                     </label>
                   </div>
                 </div>
