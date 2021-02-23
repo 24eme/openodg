@@ -804,6 +804,37 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $etiquettesPlanches;
 		}
 
+		public function getAllLotsTables(){
+			$tables = $this->getTablesWithFreeLots();
+      $allTablesLots = array();
+      foreach ($tables as $key => $value) {
+        foreach ($value as $lot) {
+          if(!$lot)
+            continue;
+          $allTablesLots = array_merge($allTablesLots, $lot);
+        }
+
+      }
+			return $allTablesLots;
+		}
+
+		public function getLotTableBySlice($slice){
+			$allTablesLots = $this->getAllLotsTables();
+			$lotsBySlice = array();
+			$cpt = 0;
+			$n = intval(count($allTablesLots)/$slice);			
+			foreach ($allTablesLots as $key => $lot) {
+				if($cpt < $slice){
+					$cpt++;
+				}else {
+					$n--;
+					$cpt = 1;
+				}
+				$lotsBySlice[$n][] = $lot;
+			}
+			return $lotsBySlice;
+		}
+
 		public function getLotsByNumDossier(){
 			$lots = array();
 			foreach ($this->getLotsTablesByNumAnonyme() as $numTab => $lotTable) {
