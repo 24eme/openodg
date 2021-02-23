@@ -69,5 +69,3 @@ $lot = $conditionnement->addLot();
 $t->is(count($conditionnement->lots), 4, "4 lots avant le clean");
 $conditionnement->cleanLots();
 $t->is(count($conditionnement->lots), 3, "3 lots après le clean");
-
-$conditionnement->validate();
