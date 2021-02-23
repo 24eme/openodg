@@ -1,7 +1,7 @@
 <?php use_helper('TemplatingPDF'); ?>
 
 <?php $i=0; ?>
-<table border="1" class="" cellspacing=0 cellpadding=0 style="text-align: right;">
+<table border="0" class="" cellspacing=0 cellpadding=0 style="text-align: right;">
 <?php foreach($plancheLots as $key => $lotInfo): ?>
   <?php  if (!($key%3)){echo("<tr>");}?>
         <?php $i++; ?>
