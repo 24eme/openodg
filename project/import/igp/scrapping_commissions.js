@@ -1,10 +1,12 @@
 var configFile = process.argv.slice(2)[0];
 var Nightmare = require('nightmare');
 var fs = require('fs');
-const nightmare = Nightmare({ show: true});
+const path = require('path');
+const nightmare = Nightmare({ show: true, webPreferences: {
+    preload: path.resolve("pre.js")
+  }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
-
 
 nightmare
 
@@ -28,13 +30,11 @@ nightmare
     .click('#BntTermine')
     .html(destination_file + "commissions_terminees.html", "HTMLOnly")
 
-    for (var i = 35; i < 999; i++) {
+    for (var i = 1; i < 200; i++) {
         nightmare
-            .on('page', function(type="alert", message) {  })
-            .goto("commission/VisuCommission.aspx?IdCommission="+i)
-            .wait('#gvPrelev')
+            .goto(config.web_site_produits.replace("/odg/LstAOC.aspx", "")+"/commission/VisuCommission.aspx?IdCommission="+i)
+            .wait('body')
             .html(destination_file + "commission_"+i+".html", "HTMLOnly");
-        console.log(i);
     }
 
 nightmare
