@@ -16,9 +16,6 @@ class TransactionLotsForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								if(DRevConfiguration::getInstance()->hasSpecificiteLot() && (!$lot->exist('specificite') || !$lot->specificite)){
-									$lot->add('specificite', DRevConfiguration::getInstance()->getSpecificites()['aucune']);
-								}
                 $formLots->embedForm($lot->getKey(), new TransactionLotForm($lot));
             }
         }

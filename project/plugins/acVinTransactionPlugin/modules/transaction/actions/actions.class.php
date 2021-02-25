@@ -189,8 +189,6 @@ class transactionActions extends sfActions {
             $this->transaction->save();
         }
 
-        $this->transaction->cleanDoc();
-
         $this->validation = new TransactionValidation($this->transaction);
 
         $this->form = new TransactionValidationForm($this->transaction, array(), array('engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));

@@ -93,7 +93,7 @@ class DRevLotForm extends acCouchdbObjectForm
 
     public function getSpecificites()
     {
-        return array_merge(array("" => ""), DRevConfiguration::getInstance()->getSpecificites());
+        return array_merge(array(Lot::SPECIFITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
     }
 
     public function getProduits()

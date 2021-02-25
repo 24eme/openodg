@@ -24,7 +24,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
     protected function getContenances(){
       $contenances = ConditionnementConfiguration::getInstance()->getContenances();
-      $contenances_merged = array_keys(array_merge(array(" " => false), $contenances["bouteille"], $contenances["bib"]));
+      $contenances_merged = array_keys(array_merge(array("" => ""), $contenances["bouteille"], $contenances["bib"]));
       $contnenance_displaying = array_combine($contenances_merged, $contenances_merged);
       return $contnenance_displaying;
     }
@@ -58,10 +58,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
         if(ConditionnementConfiguration::getInstance()->hasContenances()){
           $this->setWidget('centilisation', new bsWidgetFormChoice(array('choices' => $this->getContenances())));
-          $contenances_valid = $this->getContenances();
-          array_shift($contenances_valid);
-          $contenances_valid = array_merge(array(" " => false),$contenances_valid);
-          $this->setValidator('centilisation', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($contenances_valid))));
+          $this->setValidator('centilisation', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getContenances()))));
         }
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             if ($cepages && count($cepages)) {
@@ -83,7 +80,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
-        $this->getObject()->destination_type = DRevClient::LOT_DESTINATION_CONDITIONNEMENT;
+
         for($i = 0; $i < self::NBCEPAGES; $i++) {
             if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
                 continue;
@@ -95,7 +92,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
     public function getSpecificites()
     {
-        return array_merge(array("" => ""), DRevConfiguration::getInstance()->getSpecificites());
+        return array_merge(array(Lot::SPECIFITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
     }
 
     public function getProduits()

@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
@@ -40,10 +41,7 @@
                     <?php foreach ($conformitesLots->lots as $conformite => $lots): ?>
                       <?php foreach ($lots as $lot): ?>
                         <a data-toggle="tooltip" title='<?php echo $lot->produit_libelle;?>&nbsp;
-                          <?php echo $lot->details; echo ($lot->millesime)? '&nbsp;'.$lot->millesime : ''; ?>
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <?php echo '('.$lot->specificite.')'; ?>
-                          <?php endif ?>
+                          <?php echo showProduitLot($lot) ?>
                           <?php if($lot->isNonConforme() || $lot->isConformeObs()): ?>
                             <?php echo "&nbsp;&nbsp;".$lot->getShortLibelleConformite(); ?>
                           <?php endif; ?>

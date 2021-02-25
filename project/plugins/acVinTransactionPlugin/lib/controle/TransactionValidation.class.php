@@ -17,7 +17,8 @@ class TransactionValidation extends DocumentValidation
 
     public function configure()
     {
-        $this->addControle(self::TYPE_ERROR, 'lot_produit_non_saisie', "Aucun produit n'a pas été saisie");
+        $this->addControle(self::TYPE_ERROR, 'lot_produit_non_saisi', "Aucun produit n'a été saisi");
+        $this->addControle(self::TYPE_ERROR, 'lot_volume_non_saisi', "Aucun volume n'a été saisi");
         $this->addControle(self::TYPE_ERROR, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
@@ -37,9 +38,15 @@ class TransactionValidation extends DocumentValidation
 
     protected function controleProduits(){
         $produits = [];
-        if($this->document->exist('lots')){
-          if(!count($this->document->lots)){
-            $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisie', "", $this->generateUrl('transaction_lots', array("id" => $this->document->_id)));
+        foreach ($this->document->lots as $key => $lot) {
+          if((!$lot->exist('produit_hash') || !$lot->produit_hash) && (!$lot->exist('volume') || !$lot->volume)){
+            continue;
+          }
+          if(!$lot->exist('produit_hash') || !$lot->produit_hash){
+            $this->addPoint(self::TYPE_ERROR, 'lot_produit_non_saisi', "Lot n° ".($key+1), $this->generateUrl('transaction_lots', array("id" => $this->document->_id)));
+          }
+          if(!$lot->exist('volume') || !$lot->volume){
+            $this->addPoint(self::TYPE_ERROR, 'lot_volume_non_saisi', "Lot n° ".($key+1), $this->generateUrl('transaction_lots', array("id" => $this->document->_id)));
           }
         }
     }
@@ -57,13 +64,13 @@ class TransactionValidation extends DocumentValidation
           }
           $volume = sprintf("%01.02f",$lot->getVolume());
           if($lot->millesime && $lot->millesime < ($this->document->campagne - 1)){
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
           if(!$lot->exist('destination_type') || !$lot->destination_type){
-              $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
           if(!$lot->exist('destination_date') || !$lot->destination_date){
-            $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
 
 
@@ -73,7 +80,7 @@ class TransactionValidation extends DocumentValidation
               $somme+=$v;
             }
             if($somme != $lot->volume){
-              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }
           }
 

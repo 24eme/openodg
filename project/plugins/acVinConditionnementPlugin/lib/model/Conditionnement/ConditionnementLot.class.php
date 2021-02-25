@@ -56,6 +56,13 @@ class ConditionnementLot extends BaseConditionnementLot
       return parent::getDocOrigine();
     }
 
+    public function getDefaults() {
+        $defaults = parent::getDefaults();
+        $defaults['destination_type'] = DRevClient::LOT_DESTINATION_CONDITIONNEMENT;
+
+        return $defaults;
+    }
+
     public function getCepagesToStr(){
       $cepages = $this->cepages;
       $str ='';
