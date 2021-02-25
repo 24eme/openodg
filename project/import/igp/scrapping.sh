@@ -20,9 +20,9 @@ if test "$DISPLAY"; then
   node scrapping_membres_innactifs.js $CONFIGFILE
 
 else
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js $CONFIGFILE
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_cepages.js $CONFIGFILE
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_membres_innactifs.js $CONFIGFILE
+  xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js $CONFIGFILE
+  xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_cepages.js $CONFIGFILE
+  xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_membres_innactifs.js $CONFIGFILE
 fi
 
 bash script_verify.sh
