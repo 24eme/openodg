@@ -321,6 +321,7 @@ nightmare
           .wait('#btnExport')
           .click('#btnExport')
           .download(exportFilename)
+          .refresh()
       }
   })
   .then(function() {
@@ -341,6 +342,7 @@ nightmare
           .wait('#Button1')
           .click('#Button1')
           .download(exportFilename)
+          .refresh()
       }
 
       return nightmare;
@@ -376,7 +378,7 @@ nightmare
                .wait('#btnExportExcel')
                .click('#btnExportExcel')
                .download(exportFilename)
-               .catch(error => {console.error('Search failed:', error)})
+               .refresh()
             }
         });
 
