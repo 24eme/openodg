@@ -8,6 +8,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
+    const ETAPE_COMMISSION = 'COMMISSION';
     const ETAPE_RESULTATS = 'RESULTATS';
     const ETAPE_NOTIFICATIONS = 'NOTIFICATIONS';
 
@@ -20,8 +21,9 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 4,
         self::ETAPE_TABLES => 5,
         self::ETAPE_ANONYMATS => 6,
-        self::ETAPE_RESULTATS => 7,
-        self::ETAPE_NOTIFICATIONS => 8,
+        self::ETAPE_COMMISSION => 7,
+        self::ETAPE_RESULTATS => 8,
+        self::ETAPE_NOTIFICATIONS => 9,
     );
 
     public static $libelles = array(
@@ -31,6 +33,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 'Prélévements / Convocations',
         self::ETAPE_TABLES => 'Organisation tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
+        self::ETAPE_COMMISSION => 'Commission',
         self::ETAPE_RESULTATS => 'Résultats / Présences',
         self::ETAPE_NOTIFICATIONS => 'Notifications'
     );
@@ -42,6 +45,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
+        self::ETAPE_COMMISSION => 'degustation_commission_etape',
         self::ETAPE_RESULTATS => 'degustation_resultats_etape',
         self::ETAPE_NOTIFICATIONS => 'degustation_notifications_etape'
     );
@@ -53,6 +57,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_PRELEVEMENTS => 1,
         self::ETAPE_TABLES => 1,
         self::ETAPE_ANONYMATS => 1,
+        self::ETAPE_COMMISSION => 1,
         self::ETAPE_RESULTATS => 1,
         self::ETAPE_NOTIFICATIONS => 1,
 
@@ -76,11 +81,14 @@ class DegustationEtapes extends Etapes {
         return self::$libelles;
     }
 
-    public function isHiddenAfterValidation($doc, $k) {      
+    public function isHiddenAfterValidation($doc, $k) {
       $docValidated = ($doc->exist('validation') && $doc->validation);
 
       return ($docValidated && !DegustationEtapes::$etapesAfterValidation[$k]) || (!$docValidated && DegustationEtapes::$etapesAfterValidation[$k]);
     }
 
+    public function getDefaultStep(){
+      return self::ETAPE_NOTIFICATIONS;
+    }
 
 }

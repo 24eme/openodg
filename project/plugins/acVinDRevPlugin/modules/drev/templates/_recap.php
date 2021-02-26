@@ -1,5 +1,6 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
+<?php use_helper('Lot') ?>
 
 <?php if ($drev->exist('achat_tolerance') && $drev->get('achat_tolerance')): ?>
   <div class="alert alert-info" role="alert">
@@ -150,18 +151,7 @@
                         </td>
                         <td><?php echo $lot->numero_cuve; ?></td>
                         <td>
-                          <?php echo $lot->produit_libelle; ?>
-                          <small >
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <?php echo ($lot->specificite && $lot->specificite != "aucune")? $lot->specificite : ""; ?>
-                          <?php endif ?>
-                          <?php echo ($lot->millesime)? " ".$lot->millesime."" : ""; ?></small>
-                          <?php if(count($lot->cepages)): ?>
-                            <br/>
-                            <small class="text-muted">
-                              <?php echo $lot->getCepagesToStr(); ?>
-                            </small>
-                          <?php endif; ?>
+                          <?php echo showProduitLot($lot) ?>
                           <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>

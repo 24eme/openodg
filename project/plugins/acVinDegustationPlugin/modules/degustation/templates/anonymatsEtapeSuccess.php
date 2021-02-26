@@ -23,13 +23,7 @@
             <?php if($degustation->isAnonymized()): ?>
               <div class="col-xs-12">
 
-                La dégustation est actuellement <strong>anonymisée</strong>.
-                <br/>
-                <br/>
-                <a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés)</a>
-                <a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés par table)</a>
-                <a href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Tableau des étiquettes (Anonymisés)</a>
-                <br/>
+                La dégustation est actuellement <strong>anonymisée</strong>.                
                 <br/>
             </div>
 
@@ -62,5 +56,5 @@
   <div class="col-xs-4"><a href="<?php echo url_for('degustation_tables_etape', $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
   <div class="col-xs-4 text-center">
   </div>
-  <div class="col-xs-4 text-right"><a class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_resultats_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
+  <div class="col-xs-4 text-right"><a class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_commission_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
 </div>

@@ -1,6 +1,6 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
-
+<?php use_helper('Lot') ?>
 
 
         <?php if($transaction->exist('lots')): ?>
@@ -15,8 +15,13 @@
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
-                <th class="col-xs-1"> Numéro Lot</th>
-                <th class="text-center col-xs-5">Produit (millesime)</th>
+              <?php if($transaction->isValidee()): ?>
+                <th class="col-xs-1"> Numéro Lot ODG</th>
+                <th class="col-xs-1"> Numéro Lot Opérateur</th>
+              <?php else: ?>
+                <th class="col-xs-1"> Numéro Lot Opérateur</th>
+              <?php endif; ?>
+                <th class="text-center col-xs-3">Produit (millesime)</th>
                 <th class="text-center col-xs-2">Pays</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
@@ -33,20 +38,14 @@
                     $totalVolume+=$lot->volume;
                     ?>
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
+                      <?php if($transaction->isValidee()): ?>
                         <td><?php echo $lot->numero_archive; ?></td>
+                        <td><?php echo $lot->numero; ?></td>
+                      <?php else: ?>
+                        <td><?php echo $lot->numero; ?></td>
+                      <?php endif; ?>
                         <td>
-                          <?php echo $lot->produit_libelle; ?>
-                          <small >
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <?php echo ($lot->specificite && $lot->specificite != "aucune")? $lot->specificite : ""; ?>
-                          <?php endif ?>
-                          <?php echo ($lot->millesime)? " ".$lot->millesime."" : ""; ?></small>
-                          <?php if(count($lot->cepages)): ?>
-                            <br/>
-                            <small class="text-muted">
-                              <?php echo $lot->getCepagesToStr(); ?>
-                            </small>
-                          <?php endif; ?>
+                        <?php echo showProduitLot($lot) ?>
                         </td>
                         <td class="text-right"><?php echo $lot->pays; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
@@ -58,6 +57,9 @@
                   endif; ?>
                 <?php endforeach; ?>
                 <tr>
+                  <?php if($transaction->isValidee()): ?>
+                    <td></td>
+                  <?php endif; ?>
                   <td></td>
                   <td></td>
                   <td class="text-right">Total : </td>

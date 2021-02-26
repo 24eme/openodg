@@ -15,4 +15,3 @@ all:
       specificites:
         bio: "bio"
         HVE: "HVE"
-        aucune: "aucune"

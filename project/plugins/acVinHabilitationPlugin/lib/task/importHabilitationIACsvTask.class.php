@@ -53,6 +53,10 @@ EOF;
 
         $this->convert_products = array();
         $this->convert_products['Alpilles'] = 'certifications/IGP/genres/TRANQ/appellations/APL';
+        $this->convert_products['Ardèche'] = 'certifications/IGP/genres/TRANQ/appellations/ARD';
+        $this->convert_products['Collines Rhodaniennes'] = 'certifications/IGP/genres/TRANQ/appellations/CLR';
+        $this->convert_products['Comtés Rhodaniens'] = 'certifications/IGP/genres/TRANQ/appellations/CDR';
+        $this->convert_products["Ardèche - Coteaux de l'Ardèche"] = 'certifications/IGP/genres/TRANQ/appellations/ARD/mentions/DEFAUT/lieux/CDA';
         $this->convert_products['Mediterranee'] = 'certifications/IGP/genres/TRANQ/appellations/MED';
         $this->convert_products['Pays des Bouches du Rhône'] = 'certifications/IGP/genres/TRANQ/appellations/D13';
         $this->convert_products['Var'] = 'certifications/IGP/genres/TRANQ/appellations/VAR';
