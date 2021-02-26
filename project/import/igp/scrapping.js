@@ -166,7 +166,7 @@ function() {
 });
 //fin download inline plugin
 
-var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 5000 })
+var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 6000 })
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
@@ -343,6 +343,7 @@ nightmare
           .click('#Button1')
           .download(exportFilename)
           .refresh()
+          .catch(error => {console.error('Search failed:', error)})
       }
 
       return nightmare;
@@ -378,7 +379,7 @@ nightmare
                .wait('#btnExportExcel')
                .click('#btnExportExcel')
                .download(exportFilename)
-               .refresh()
+               .catch(error => {console.error('Search failed:', error)})
             }
         });
 
@@ -391,17 +392,20 @@ nightmare
 
       return nightmare
       .goto(uri)
+      .wait('#ddlCampagne')
       .select('#ddlCampagne','')
       .wait('#BtnRech')
       .click('#BtnRech')
       .wait("#btnExport")
       .click('#btnExport')
       .download(exportFilename)
+      .catch(error => {console.error('Search failed:', error)})
   })
   .then(function() {
       var uri = baseUri+"/commission/LstMembre.aspx";
       var exportFilename = destination_file+'membres.xlsx';
       console.log("export " + uri + ": " + exportFilename);
+
       return nightmare
       .goto(uri)
       .wait('#Button1')
@@ -409,6 +413,38 @@ nightmare
       .click('#Button2')
       .wait('#Button2')
       .download(destination_file+'membres.xlsx')
+      .catch(error => {console.error('Search failed:', error)});
+  })
+  .then(function() {
+      var uri = baseUri+"/commission/LstNonMembre.aspx";
+      var exportFilename = destination_file+'membres_inactifs.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait('#Button1')
+      .click('#Button1')
+      .wait('#gvMembre')
+      .html(exportFilename, "MHTML")
+      .catch(error => {console.error('Search failed:', error)});
+  })
+  .then(function() {
+       var uri = baseUri+"/odg/LstAOC.aspx";
+       var exportFilename = destination_file+'cepages.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+       return nightmare
+      .goto(uri)
+      .wait('body')
+      .exists("#btnCepage")
+      .then(function (result) {
+          if (result) {
+              nightmare
+              .click('#btnCepage')
+              .wait('#ContentPlaceHolder1_gvCepage')
+              .html(exportFilename, "MHTML");
+          }
+      });
   })
   .then(function() {
       return nightmare.end()
