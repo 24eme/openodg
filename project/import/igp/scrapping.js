@@ -4,7 +4,7 @@ require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 
-var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 6000 })
+var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 6000, maxDownloadRequestWait: 8000 })
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
@@ -142,18 +142,14 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstLotRecolte.aspx";
-      var exportFilename = destination_file+'details_recoltes_2020.xlsx';
-
-      nightmare
-      .goto(uri)
-      .wait('#ddlAnnee');
 
       for(var i = 2020; i >= 2016; i--) {
           var exportFilename = destination_file+'details_recoltes_'+i+'.xlsx';
           console.log("export " + uri + ": " + exportFilename);
-
           nightmare
-          .select('#ddlAnnee',i)
+          .goto(uri)
+          .wait('#ddlAnnee')
+          .select('#ddlAnnee',i+"")
           .wait('#Button1')
           .click('#Button1')
           .wait('#btnExport')
@@ -161,19 +157,19 @@ nightmare
           .download(exportFilename)
           .refresh()
       }
+
+      return nightmare;
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstChangDenNT.aspx";
-
-      nightmare
-      .goto(uri)
-      .wait('#btnRech')
 
       for(var i = 2021; i >= 2017; i--) {
           var exportFilename = destination_file+'changement_denomination_declaration_electronique_'+(i-1)+'_'+i+'.xlsx';
           console.log("export " + uri + ": " + exportFilename);
 
           nightmare
+          .goto(uri)
+          .wait('#ddlAnnee')
           .select('#ddlAnnee',(i-1)+""+"/"+""+i)
           .wait('#btnRech')
           .click('#btnRech')
@@ -181,7 +177,6 @@ nightmare
           .click('#Button1')
           .download(exportFilename)
           .refresh()
-          .catch(error => {console.error('Search failed:', error)})
       }
 
       return nightmare;
@@ -193,9 +188,12 @@ nightmare
 
       return nightmare
       .goto(uri)
+      .wait('#Button1')
+      .click('#Button1')
       .wait('#btnE')
       .click('#btnE')
-      .download(exportFilename);
+      .download(exportFilename)
+      .catch(error => {console.error('Search failed:', error)});
   })
   .then(function() {
       var uri = baseUri+"/commission/JuresConv.aspx";
@@ -217,7 +215,6 @@ nightmare
                .wait('#btnExportExcel')
                .click('#btnExportExcel')
                .download(exportFilename)
-               .catch(error => {console.error('Search failed:', error)})
             }
         });
 
@@ -232,12 +229,12 @@ nightmare
       .goto(uri)
       .wait('#ddlCampagne')
       .select('#ddlCampagne','')
-      .wait('#BtnRech')
+      .wait(3000)
       .click('#BtnRech')
-      .wait("#btnExport")
+      .wait("#gvFactureAExporter")
       .click('#btnExport')
       .download(exportFilename)
-      .catch(error => {console.error('Search failed:', error)})
+      .refresh()
   })
   .then(function() {
       var uri = baseUri+"/commission/LstMembre.aspx";
@@ -251,7 +248,6 @@ nightmare
       .click('#Button2')
       .wait('#Button2')
       .download(destination_file+'membres.xlsx')
-      .catch(error => {console.error('Search failed:', error)});
   })
   .then(function() {
       var uri = baseUri+"/commission/LstNonMembre.aspx";
@@ -264,7 +260,6 @@ nightmare
       .click('#Button1')
       .wait('#gvMembre')
       .html(exportFilename, "MHTML")
-      .catch(error => {console.error('Search failed:', error)});
   })
   .then(function() {
        var uri = baseUri+"/odg/LstAOC.aspx";
