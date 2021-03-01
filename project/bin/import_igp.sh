@@ -90,6 +90,11 @@ echo "Lots"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 24 > $DATA_DIR/lots.csv
 php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
+echo "Changement de denom"
+
+xls2ods $DATA_DIR/changement_denom.xls
+ods2tsv $DATA_DIR/changement_denom.ods | sed 's/\t/;/g' > $DATA_DIR/changement_denom.csv
+
 echo "Degustations"
 # trie des lots par date de commission pour dire qu'une date correspond à une degustation.
 sort -t";" -k32.7,32.10 -k32.4,32.5 -k32.1,32.2 $DATA_DIR/lots.csv  > $DATA_DIR/lots_sort_by_date.csv
