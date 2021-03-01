@@ -191,7 +191,7 @@
             <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button id="lots_continue" type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>
     </div>
 </form>

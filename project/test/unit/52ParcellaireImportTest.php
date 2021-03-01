@@ -106,7 +106,7 @@ if ($toutes_les_parcelles) {
 $synthese = $parcellaire->getSyntheseCepages();
 $t->is(count(array_keys($synthese)), 2, "La synthese produits a le bon nombre de cepages");
 $synthese_cepage_1_key = array_shift(array_keys($synthese));
-$t->is($synthese[$synthese_cepage_1_key]['superficie'], 1.2, "La synthese cepage du premier cépage (".$synthese_cepage_1_key.") a la bonne superficie");
+$t->is($synthese[$synthese_cepage_1_key]['superficie'], ($toutes_les_parcelles) ? 1.2 : 0.1, "La synthese cepage du premier cépage (".$synthese_cepage_1_key.") a la bonne superficie");
 
 
 
