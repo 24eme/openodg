@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(26);
+$t = new lime_test(27);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -114,13 +114,14 @@ $volume = $mvtLot->volume;
 $autreLot = $drev->get(next($mvtLots)->origine_hash);
 
 $t->comment("Création d'un Chgt de Denom Total");
-$chgtDenom->changement_origine_mvtkey = $mvtLotKey;
+$chgtDenom->setMouvementLotOrigine($mvtLot);
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
 $chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
-$chgtDenom->generateMouvementsLots(0);
+$chgtDenom->generateMouvementsLots(1);
+$chgtDenom->save();
 $postfix = 'a';
 $okPostfix = true;
 foreach ($chgtDenom->lots as $lot) {
@@ -130,15 +131,18 @@ foreach ($chgtDenom->lots as $lot) {
   }
   $postfix++;
 }
+
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
-$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");
+$t->ok($chgtDenom->getMvtLot(), "récupération du mouvement de lot ");
+$t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_CHANGE, "statut origine changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 
 $t->comment("Création d'un Chgt de Denom Partiel");
-$chgtDenom->changement_origine_mvtkey = $mvtLotKey;
+$chgtDenom->changement_origine_document_id = $mvtLotKey;
+$chgtDenom->changement_origine_mouvement = $mvtLotKey;
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
 $chgtDenom->changement_volume = round($volume / 2, 2);
@@ -157,13 +161,13 @@ foreach ($chgtDenom->lots as $lot) {
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
 $t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_PRELEVABLE, "statut du nouveau lot prelevable");
-$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");
+$t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_CHANGE, "statut origine changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 
 $t->comment("Création d'un Declassement Total");
-$chgtDenom->changement_origine_mvtkey = $mvtLotKey;
+$chgtDenom->setMouvementLotOrigine($mvtLot);
 $chgtDenom->changement_produit = null;
 $chgtDenom->changement_produit_libelle = null;
 $chgtDenom->changement_volume = $volume;
@@ -181,13 +185,13 @@ foreach ($chgtDenom->lots as $lot) {
 }
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
-$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_DECLASSE, "statut origine déclassé");
+$t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_DECLASSE, "statut origine déclassé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 
 $t->comment("Création d'un Declassement Partiel");
-$chgtDenom->changement_origine_mvtkey = $mvtLotKey;
+$chgtDenom->setMouvementLotOrigine($mvtLot);
 $chgtDenom->changement_produit = null;
 $chgtDenom->changement_produit_libelle = null;
 $chgtDenom->changement_volume = round($volume / 2, 2);
@@ -206,4 +210,4 @@ foreach ($chgtDenom->lots as $lot) {
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
 $t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_CONFORME, "statut du nouveau lot prelevable");
-$t->is($chgtDenom->getOrigineDocumentMvtLot()->statut, Lot::STATUT_CHANGE, "statut origine changé");
+$t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_CHANGE, "statut origine changé");

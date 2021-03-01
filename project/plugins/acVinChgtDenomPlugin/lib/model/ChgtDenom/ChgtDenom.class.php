@@ -116,7 +116,33 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $key = Lot::generateMvtKey($item->value);
           $lots[$key] = $item->value;
       }
+
       return $lots;
+    }
+
+    public function setMouvementLotOrigine($mouvement) {
+        $this->changement_origine_document_id = $mouvement->id_document;
+        $this->changement_origine_mouvement = $mouvement->origine_mouvement;
+    }
+
+    public function getMouvementLotOrigine() {
+        if(!$this->changement_origine_document_id) {
+            return null;
+        }
+
+      $doc = acCouchdbManager::getClient()->find($this->changement_origine_document_id);
+
+      if(!$doc) {
+
+          return null;
+      }
+
+      if (!$doc->exist($this->changement_origine_mouvement)) {
+
+          return null;
+      }
+
+      return $doc->get($this->changement_origine_mouvement);
     }
 
     public function getLotByNumArchive($numero_archive){
@@ -133,13 +159,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getLotKey() {
-      return ($this->hasLots())? $this->changement_origine_mvtkey : null;
+
+      return $this->changement_origine_document_id.":".$this->changement_origine_mouvement;
     }
 
     public function getMvtLot() {
-      $mvts = $this->getMvtLots();
-      $key = $this->getLotKey();
-      return ($mvts && $key && isset($mvts[$key]))? $mvts[$key] : null;
+
+      return $this->getMouvementLotOrigine();
     }
 
 	  protected function doSave() {
@@ -266,21 +292,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     private function updateMouvementOrigineDocument() {
-      if ($doc = $this->getOrigineDocumentMvtLot()) {
+      if ($doc = $this->getMouvementLotOrigine()) {
           $doc->statut = ($this->isChgtTotal() && $this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CHANGE;
           $doc->getDocument()->get($doc->origine_hash)->statut = $doc->statut;
           $doc->getDocument()->save();
       }
-    }
-
-    public function getOrigineDocumentMvtLot() {
-      $mvtLot = $this->getMvtLot();
-      if ($doc = acCouchdbManager::getClient()->find($mvtLot->origine_document_id)) {
-        if ($doc->exist($mvtLot->origine_mouvement)) {
-          return $doc->get($mvtLot->origine_mouvement);
-        }
-      }
-      return null;
     }
 
     public function getCepagesToStr(){
@@ -331,7 +347,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $mvtLot = $this->getMvtLot();
       $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
       $libelle .= ($this->isChgtTotal())? '' : ' partiel';
-      $libelle .= ' du logement n°'.$mvtLot->numero;
+      $libelle .= ' du logement n°'.$mvtLot->numero_cuve;
       $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),

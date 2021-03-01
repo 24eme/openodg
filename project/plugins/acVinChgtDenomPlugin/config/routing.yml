@@ -40,8 +40,8 @@ chgtdenom_lots:
     sf_method: [get, post]
 
 chgtdenom_edition:
-  url: /changement-denomination/edition/:id/:key
-  param: { module: chgtdenom, action: edition, key: 0 }
+  url: /changement-denomination/edition/:id
+  param: { module: chgtdenom, action: edition }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
