@@ -32,7 +32,7 @@ BRANCH=$(cat ../.git/HEAD | sed -r 's|^ref: refs/heads/||')
 LASTCOMMIT=$(cat $WORKINGDIR"/../.git/refs/heads/"$BRANCH)
 DATE=$(date +%Y%m%d%H%M%S)
 BRANCH=$(echo $BRANCH | tr '/' '-')
-AUTHOR=$(git show $LASTCOMMIT | grep "Author:" | sed 's/.*: //' | sed 's/ <.*//' | sed 's/[^a-z]//ig')
+AUTHOR=$(git show $LASTCOMMIT | head -n 5 | grep "^Author:" | sed 's/.*: //' | sed 's/ <.*//' | sed 's/[^a-z]//ig')
 
 if [ "$( ls $XMLTESTDIR | grep $LASTCOMMIT | grep $APPLICATION"" )" != "" ] && [ "$FORCE" = "" ]
 then
