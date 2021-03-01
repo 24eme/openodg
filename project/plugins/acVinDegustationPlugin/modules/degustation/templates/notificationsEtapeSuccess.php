@@ -41,7 +41,7 @@
                     <?php foreach ($conformitesLots->lots as $conformite => $lots): ?>
                       <?php foreach ($lots as $lot): ?>
                         <a data-toggle="tooltip" title='<?php echo $lot->produit_libelle;?>&nbsp;
-                          <?php echo showProduitLot($lot) ?>
+                          <?php echo showProduitLot($lot); ?>
                           <?php if($lot->isNonConforme() || $lot->isConformeObs()): ?>
                             <?php echo "&nbsp;&nbsp;".$lot->getShortLibelleConformite(); ?>
                           <?php endif; ?>
@@ -51,17 +51,7 @@
                         <?php endforeach; ?>
                       </td>
                       <td class="text-center">
-                        <?php
-                        if(!$lot->isNonConforme()):
-                          $uri = url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant));
-                        else:
-                          $uri = url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier, 'lot_num_anon' => $lot->getNumeroAnonymat()));
-                        endif;
-                        $urlBase = $sf_request->getUriPrefix().$sf_request->getRelativeUrlRoot().$sf_request->getPathInfoPrefix();
-                        ?>
-                        <a class="btn" href="<?php echo $uri ?>">PDF conforme</a>
-
-                        <a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><i class="glyphicon glyphicon-envelope"></i></a>
+                        <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-envelope"></i></a>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -81,3 +71,8 @@
       </div>
     </div>
   </div>
+  <?php
+  if(isset($emailLinkManager)):
+    include_partial('degustation/previewMailPopup', array('emailLinkManager' => $emailLinkManager, 'degustation' => $degustation));
+ endif;
+  ?>
