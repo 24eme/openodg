@@ -36,7 +36,7 @@
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
-    <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
+    <?php if (DrevConfiguration::getInstance()->hasDegustation() && isset($form["date_degustation_voulue"])): ?>
         <h3>Dégustation</h3>
         <?php echo $form["date_degustation_voulue"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
