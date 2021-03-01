@@ -109,9 +109,11 @@ if ($has_vci) {
     $b->followRedirect();
 }
 
-$b->click('button[type="submit"]')->followRedirect();
-$b->isForwardedTo('drev', 'vci');
-$t->is($b->getResponse()->getStatuscode(), 200, "Étape vci");
+if($has_lot) {
+    $b->isForwardedTo('drev', 'lots');
+    $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
+    $b->click('button[id="lots_continue"]')->followRedirect();
+}
 
 if($has_aoc) {
     $b->isForwardedTo('drev', 'revendication');
