@@ -943,20 +943,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function setStatutOdgByRegion($statut, $region = null) {
-        if($region) {
-            foreach ($this->getProduits($region) as $hash => $produit) {
-                $produit->setStatutOdg($statut);
-            }
-        } else {
-            $hasRegion = false;
-            foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
-                $hasRegion = true;
-                $this->setStatutOdgByRegion($statut, $region);
-            }
-            if (!$hasRegion) {
+        if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+            if($region) {
                 foreach ($this->getProduits($region) as $hash => $produit) {
                     $produit->setStatutOdg($statut);
                 }
+            } else {
+                foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                    $this->setStatutOdgByRegion($statut, $region);
+                }
+            }
+        }else{
+            foreach ($this->getProduits($region) as $hash => $produit) {
+                $produit->setStatutOdg($statut);
             }
         }
         $allStatut = true;
