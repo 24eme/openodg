@@ -14,9 +14,10 @@ $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
 $degust_date_fr = '01/09/'.$campagne;
 $degust_time_fr = '12:45';
+$provenance = 'DREV';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
-var_dump($degust->_id);
+
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
@@ -62,10 +63,10 @@ $t->is(count($res_mvt->rows), 2, 'on a au moins un mouvement de lot prélevable'
 
 $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
-
 $degustation = new Degustation();
 $form = new DegustationCreationForm($degustation);
-$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0]);
+$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0], 'provenance' => $provenance);
+
 $form->bind($values);
 $t->ok($form->isValid(), "Le formulaire de création est valide");
 $degustation = $form->save();
@@ -77,13 +78,7 @@ $t->is($degustation->date, $degust_date, "La date de la degustation est la bonne
 $t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
 $t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);
-$defaults = $form->getDefaults();
 
-$checked = true;
-foreach ($defaults['lots'] as $lot) {
-    $checked = $checked && (bool) $lot['preleve'];
-}
-$t->is($checked, true, 'Les lots sont bien cochés par défaut');
 
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),
@@ -129,7 +124,7 @@ $degustation->generateMouvementsLots();
 $t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 1, 'le lot est reproduit dans mvt lot');
 foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) { break; }
 $t->is($mvt->id_document, $degustation->_id, 'le mvt lot permet de retrouver la degustation via id_document');
-$t->is($mvt->origine_document_id, $drev->_id, 'le mvt lot reproduit bien l\'id de la drev');
+$t->is($mvt->origine_document_id, $degustation->_id, 'le mvt lot issu de la degustation est bien l\'id de la degustation');
 $t->is($mvt->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "le mvt lot du lot n'est pas prélevable");
 
 $t->comment("Prélévé");

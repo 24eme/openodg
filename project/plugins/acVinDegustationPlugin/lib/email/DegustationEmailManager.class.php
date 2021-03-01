@@ -2,43 +2,84 @@
 
 class DegustationEmailManager extends Email
 {
-    private static $_instance = null;
+  private static $_instance = null;
 
-    public static function getInstance($context = null) {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new DegustationEmailManager($context);
-        }
-        return self::$_instance;
+  protected $degustation = null;
+  protected $etablissement = null;
+
+  public $etablissementLotsConformes = null;
+  public $etablissementLotsNonConformes = null;
+
+  protected $subject = null;
+
+  public function __construct(Degustation $degustation, Etablissement $etablissement, $context = null) {
+    $this->degustation = $degustation;
+    $this->etablissement = $etablissement;
+    $lots = $degustation->getLotsByOperateursAndConformites();
+    $lotsEtablissement = $lots[$etablissement->identifiant]->lots;
+    $this->etablissementLotsConformes = (isset($lotsEtablissement[Lot::STATUT_CONFORME]))? $lotsEtablissement[Lot::STATUT_CONFORME] : array();
+    $this->etablissementLotsNonConformes = (isset($lotsEtablissement[Lot::STATUT_NONCONFORME]))? $lotsEtablissement[Lot::STATUT_NONCONFORME] : array();
+
+    parent::__construct($context);
+  }
+
+  public static function getInstance($context = null) {
+    if (is_null(self::$_instance)) {
+      self::$_instance = new DegustationEmailManager($context);
     }
+    return self::$_instance;
+  }
 
-    protected function getBodyFromPartial($partial, $vars = null) {
+  protected function getBodyFromPartial($partial, $vars = null) {
+    return $this->getAction()->getPartial($partial, $vars);
+  }
 
-        return $this->getAction()->getPartial($partial, $vars);
+  public function getMailerLink() {
+
+    $email = $this->etablissement->email;
+    $cc = sfConfig::get('app_email_plugin_from_adresse');
+
+    $subject = $this->getSubject();
+    $body = $this->getBody(true);
+
+    $link = "mailto:$email?cc=$cc&subject=$subject&body=$body";
+    return $link;
+
+  }
+
+
+  public function getSubject(){
+    if(!$this->subject){
+      $this->subject = "[".sfConfig::get('app_organisme_nom')."] Résultat de dégustation du ".ucfirst(format_date($this->degustation->date, "P", "fr_FR"));
     }
+    return $this->subject;
+  }
 
-    public function getMailerLink(Degustation $degustation, Etablissement $etablissement) {
-
-      $organisme = sfConfig::get('app_organisme_nom');
-      $cc = sfConfig::get('app_email_plugin_from_adresse');
-      $to = array($etablissement->email);
-
-      $urlBack = sfContext::getInstance()->getRouting()->generate('degustation_notifications_etape',$degustation, true);
-      $debug = false;
-
-      $this->etablissementsLotsConforme = $degustation->getEtablissementLotsConformesOrNot();
-      $this->etablissementsLotsNonConforme = $degustation->getEtablissementLotsConformesOrNot(false);
-
-      $uri = sfContext::getInstance()->getRouting()->generate('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $etablissement->identifiant),true);
-
-      $email = $etablissement->email;
-      $subject = "[".$organisme."] Résultat de dégustation du ".ucfirst(format_date($degustation->date, "P", "fr_FR"));
-      $body = "Bonjour%0D%0A%0D%0AVeuillez cliquer sur le lien suivant pour avoir le détail de vos lots dégustés: $uri";
-      //$body = self::BODY ."%0D%0A%0D%0A".$urlBase.$uri;
-      $link = '<a href="mailto:'.$email."?cc=$cc&subject=$subject&body=$body".'" id="link-mail-auto" data-retour='.$urlBack.' ';
-      $link .= ($debug)? '>Ouverture Mailer</a>' : '/>';
-
-      return $link;
-        $body = $this->getBodyFromPartial('facturation/email', array('factures' => $facturesToSend));
-
+  public function getBody($forMailLink = false){
+    $body = $this->getBodyFromPartial('degustation/notificationEmail', array('degustation' => $this->degustation , 'etablissement' => $this->etablissement, 'mailManager' => $this));
+    if($forMailLink){
+      return rawurlencode(htmlspecialchars_decode($body));
     }
+    return $body;
+
+  }
+
+  public function hasConformes()
+  {
+    return count($this->etablissementLotsConformes);
+  }
+
+  public function hasNonConformes()
+  {
+    return count($this->etablissementLotsNonConformes);
+  }
+
+  public function hasConformesNonConformes()
+  {
+    return $this->hasConformes() && $this->hasNonConformes();
+  }
+
+  public function getEtablissement(){
+    return $this->etablissement;
+  }
 }

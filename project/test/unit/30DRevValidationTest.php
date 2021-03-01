@@ -23,6 +23,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
+$t->comment($drev->_id);
 
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {

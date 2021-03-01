@@ -715,15 +715,22 @@ class degustationActions extends sfActions {
 
     }
 
+    public function executeMailPrevisualisation(sfWebRequest $request){
+      $this->degustation = $this->getRoute()->getDegustation();
 
-    public function executeEnvoiMail(sfWebRequest $request){
+      $this->etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $this->emailLinkManager = new DegustationEmailManager($this->degustation,$this->etablissement);
+
+      $this->setTemplate('notificationsEtape');
+
+    }
+
+    public function executeSetEnvoiMail(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
 
       $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
       $this->setTemplate('notificationsEtape');
-      $emailLinkManager = new DegustationEmailManager();
-
-      echo $emailLinkManager->getMailerLink($this->degustation,$etablissement);
+      $this->degustation->setSendMailEtablissement($etablissement);
 
     }
 

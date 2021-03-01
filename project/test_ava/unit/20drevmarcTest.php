@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(20);
+$t = new lime_test(21);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -10,6 +10,7 @@ $campagne = (date('Y')-2)."";
 $dateFacturation = date('Y-m-d');
 
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-MARC-".$campagne);
+$t->ok($templateFacture, "On a bien un template facture pour le MARC $campagne");
 $templateCotisationCollection = $templateFacture->cotisations->getFirst();
 $templateCotisation = $templateCotisationCollection->details->getFirst();
 
