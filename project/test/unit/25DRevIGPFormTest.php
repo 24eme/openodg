@@ -313,7 +313,7 @@ $valuesRev['lots']['1']['volume'] = 1;
 $valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['1']['destination_date'] = '30/11/'.$campagne;
 $valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
-$valuesRev['lots']['1']['millesime'] = '2010';
+$valuesRev['lots']['1']['millesime'] = date('Y') - 1;
 
 $valuesRev['lots']['2'] = $valuesRev['lots']['1'];
 $valuesRev['lots']['2']['numero'] = "Cuve C";
