@@ -53,9 +53,6 @@ class TransactionLotForm extends acCouchdbObjectForm
         $this->setWidget('numero', new bsWidgetFormInput());
         $this->setValidator('numero', new sfValidatorString(array('required' => false)));
 
-        $this->setWidget('degustable', new sfWidgetFormInputCheckbox());
-        $this->setValidator('degustable', new sfValidatorBoolean(['required' => false]));
-
 
 
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
@@ -93,11 +90,6 @@ class TransactionLotForm extends acCouchdbObjectForm
             }
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
-        }
-        if (!empty($values['degustable'])) {
-          $this->getObject()->statut = Lot::STATUT_PRELEVABLE;
-        }else{
-          $this->getObject()->statut = Lot::STATUT_NONPRELEVABLE;
         }
     }
 
