@@ -143,11 +143,11 @@ nightmare
   .then(function() {
       var uri = baseUri+"/Declaration/LstLotRecolte.aspx";
 
-      for(var i = 2020; i >= 2016; i--) {
+      for(var i = 2016; i <= 2020; i++) {
           var exportFilename = destination_file+'details_recoltes_'+i+'.xlsx';
           console.log("export " + uri + ": " + exportFilename);
           nightmare
-          .goto(uri)
+          .goto(uri+"?annee="+i)
           .wait('#ddlAnnee')
           .select('#ddlAnnee',i+"")
           .wait('#Button1')
@@ -163,17 +163,16 @@ nightmare
   .then(function() {
       var uri = baseUri+"/Declaration/LstChangDenNT.aspx";
 
-      for(var i = 2021; i >= 2017; i--) {
+      for(var i = 2017; i <= 2020; i++) {
           var exportFilename = destination_file+'changement_denomination_declaration_electronique_'+(i-1)+'_'+i+'.xlsx';
           console.log("export " + uri + ": " + exportFilename);
 
           nightmare
-          .goto(uri)
+          .goto(uri+"?campagne="+i)
           .wait('#ddlAnnee')
           .select('#ddlAnnee',(i-1)+""+"/"+""+i)
-          .wait('#btnRech')
           .click('#btnRech')
-          .wait('#Button1')
+          .wait("#Button1")
           .click('#Button1')
           .download(exportFilename)
           .refresh()
@@ -234,7 +233,6 @@ nightmare
       .wait("#gvFactureAExporter")
       .click('#btnExport')
       .download(exportFilename)
-      .refresh()
   })
   .then(function() {
       var uri = baseUri+"/commission/LstMembre.aspx";
