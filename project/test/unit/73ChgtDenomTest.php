@@ -19,8 +19,9 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-foreach(DegustationClient::getInstance()->getHistory(9999) as $k => $v) {
-    $v->delete(false);
+foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $degustation = DegustationClient::getInstance()->find($k);
+    $degustation->delete(false);
 }
 
 foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
