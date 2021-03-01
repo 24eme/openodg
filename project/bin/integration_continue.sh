@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Migration des auteurs :
+#     ls web/statuts/xml/* | grep -v '\-' | while read file ; do LASTCOMMIT=$(echo $file | awk -F '_' '{print $3}') ; AUTHOR=$(git show $LASTCOMMIT | head -n 5 | grep "^Author:" | sed 's/.*: //' | sed 's/ <.*//' | sed 's/[^a-z]//ig') ; if test "$AUTHOR" ; then mv $file $(echo $file | awk -F '_' '{print $1"_"$2"_"$3"-'$AUTHOR'_"$4}' ); fi ; done
 
 . $(echo $0 | sed 's/[^\/]*$//')config.inc
 
