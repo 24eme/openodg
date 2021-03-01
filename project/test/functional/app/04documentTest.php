@@ -18,7 +18,6 @@ foreach(DRevClient::getInstance()->getHistory($etablissement->identifiant, acCou
     $drev = DRevClient::getInstance()->find($k);
     $drev->validate();
     $drev->validation_odg = date('c');
-    $drev->update();
     $drev->save();
 }
 

@@ -7,19 +7,20 @@ $societe = $etablissement->getSociete();
 
 $application = getenv('APPLICATION');
 
-$has_lot = false;
+$has_etape_lot = false;
+$has_produit_lot = false;
 $has_vci = true;
 $has_aoc = true;
 
 if ($application == 'igp13') {
-    $has_lot = true;
+    $has_etape_lot = true;
+    $has_produit_lot = true;
     $has_vci = false;
     $has_aoc = false;
 }
 if ($application == 'loire') {
-    $has_lot = true;
-    $has_vci = true;
-    $has_aoc = true;
+    $has_etape_lot = true;
+    $has_produit_lot = false;
 }
 
 
@@ -109,10 +110,15 @@ if ($has_vci) {
     $b->followRedirect();
 }
 
-if($has_lot) {
+if($has_etape_lot) {
     $b->isForwardedTo('drev', 'lots');
-    $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
-    $b->click('button[id="lots_continue"]')->followRedirect();
+    if ($has_produit_lot) {
+        $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
+        $b->click('button[id="lots_continue"]')->followRedirect();
+    }else{
+        $t->is($b->getResponse()->getStatuscode(), 302, "Étape lot sans produit");
+        $b->followRedirect();
+    }
 }
 
 if($has_aoc) {
