@@ -30,6 +30,7 @@ $t->is($drev->identifiant, $viti->identifiant, "L'identifiant est celui du viti 
 $t->is($drev->campagne, $campagne, "La campagne est ".$campagne);
 $drev->storeDeclarant();
 $drev->save();
+$t->comment($drev->_id);
 
 $t->comment("Initialisation des produits");
 
