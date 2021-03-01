@@ -288,15 +288,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $key = $lot->getUnicityKey();
           $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
         }
-        $this->updateMouvementOrigineDocument();
+        $this->updateMouvementOrigineDocumentAndSave();
     }
 
-    private function updateMouvementOrigineDocument() {
-      if ($doc = $this->getMouvementLotOrigine()) {
-          $doc->statut = ($this->isChgtTotal() && $this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CHANGE;
-          $doc->getDocument()->get($doc->origine_hash)->statut = $doc->statut;
-          $doc->getDocument()->save();
-      }
+    private function updateMouvementOrigineDocumentAndSave() {
+        $doc = $this->getMouvementLotOrigine();
+        if (!$doc) {
+            return;
+        }
+        $doc->statut = ($this->isChgtTotal() && $this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CHANGE;
+        $doc->getDocument()->get($doc->origine_hash)->statut = $doc->statut;
+        $doc->getDocument()->save();
     }
 
     public function getCepagesToStr(){
