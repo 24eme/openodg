@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(128);
+$t = new lime_test(127);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -132,12 +132,8 @@ $t->is($produit1->superficie_revendique, $valuesRev['produits'][$produit_hash1][
 $t->comment("Étape lots");
 $t->comment("Vérifier la spécificité");
 $drevConfig = DRevConfiguration::getInstance();
-if($drevConfig->hasSpecificiteLot()){
-  $t->is(true, $drevConfig->hasSpecificiteLot(), "Il y a une configuration de spécificité des Lots");
-  $t->is(5, count($drevConfig->getSpecificites()), "5 spécificités");
-}else{
-  $t->is(true, $drevConfig->hasSpecificiteLot(), "Il n'y a pas une configuration de spécificité des Lots");
-}
+$t->is($drevConfig->hasSpecificiteLot(), true, "La configuration a des spécificités de Lots");
+$t->ok(count($drevConfig->getSpecificites()), "La configuration retourne bien des spécificités");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_LOTS)) {
     $drev->save();
@@ -159,9 +155,8 @@ $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$campagne;
 if($drevConfig->hasSpecificiteLot()){
-  $t->is($drevConfig->getSpecificites()['aucune'], $valuesRev['lots']['0']['specificite'], "Pas de spécificité choisie donc par defaut aucune");
+  $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
   $valuesRev['lots']['0']['specificite'] = $drevConfig->getSpecificites()['bio'];
-  $t->is($drevConfig->getSpecificites()['bio'], $valuesRev['lots']['0']['specificite'], "La spécificité de Lot est choisie");
 }
 
 $form->bind($valuesRev);
