@@ -32,6 +32,7 @@ BRANCH=$(cat ../.git/HEAD | sed -r 's|^ref: refs/heads/||')
 LASTCOMMIT=$(cat $WORKINGDIR"/../.git/refs/heads/"$BRANCH)
 DATE=$(date +%Y%m%d%H%M%S)
 BRANCH=$(echo $BRANCH | tr '/' '-')
+AUTHOR=$(git show $LASTCOMMIT | grep "Author:" | sed 's/.*: //' | sed 's/ <.*//' | sed 's/[^a-z]//ig')
 
 if [ "$( ls $XMLTESTDIR | grep $LASTCOMMIT | grep $APPLICATION"" )" != "" ] && [ "$FORCE" = "" ]
 then
@@ -40,7 +41,7 @@ then
     exit;
 fi
 
-XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"_"$BRANCH".xml
+XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"-"$AUTHOR"_"$BRANCH".xml
 
 bash $(dirname $0)/run_test.sh -x $XMLFILE $APPLICATION
 
