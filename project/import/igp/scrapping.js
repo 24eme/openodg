@@ -161,26 +161,6 @@ nightmare
       return nightmare;
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/LstChangDenNT.aspx";
-
-      for(var i = 2017; i <= 2020; i++) {
-          var exportFilename = destination_file+'changement_denomination_declaration_electronique_'+(i-1)+'_'+i+'.xlsx';
-          console.log("export " + uri + ": " + exportFilename);
-
-          nightmare
-          .goto(uri+"?campagne="+i)
-          .wait('#ddlAnnee')
-          .select('#ddlAnnee',(i-1)+""+"/"+""+i)
-          .click('#btnRech')
-          .wait("#Button1")
-          .click('#Button1')
-          .download(exportFilename)
-          .refresh()
-      }
-
-      return nightmare;
-  })
-  .then(function() {
       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
       var exportFilename = destination_file+'gestion_nc.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -205,12 +185,13 @@ nightmare
                 return nightmare;
             }
 
-            for(var i = 2021; i >= 2017; i--) {
-               var exportFilename = destination_file+'jures_convoque_'+(i-1)+'_'+i+'.xlsx';
+            for(var i = 2016; i <= 2020; i++) {
+               var exportFilename = destination_file+'jures_convoque_'+i+'.xlsx';
                console.log("export " + uri + ": " + exportFilename);
 
                nightmare
-               .select('#ddlCampagne',(i-1)+""+"/"+""+i)
+               .goto(uri+"?campagne="+i)
+               .select('#ddlCampagne',i+"")
                .wait('#btnExportExcel')
                .click('#btnExportExcel')
                .download(exportFilename)
@@ -228,7 +209,7 @@ nightmare
       .goto(uri)
       .wait('#ddlCampagne')
       .select('#ddlCampagne','')
-      .wait(3000)
+      .wait("#BtnRech")
       .click('#BtnRech')
       .wait("#gvFactureAExporter")
       .click('#btnExport')
