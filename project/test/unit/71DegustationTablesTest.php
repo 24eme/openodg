@@ -51,11 +51,11 @@ $doc->lots[2]->numero_table = 2;
 $t->is($doc->getLastNumeroTable(), 2, 'La dernière table est la 2');
 
 $t->comment('On ajoute un leurre à la table 2');
-$leurreTable2 = $doc->addLeurre($produitLeurreHash, '888', 2);
+$leurreTable2 = $doc->addLeurre($produitLeurreHash, 'Cepage leurre', 2);
 $t->is($leurreTable2->leurre, true, 'C\'est un leurre');
 $t->is($leurreTable2->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
 $t->is($leurreTable2->numero_table, 2, 'Le numéro de table est le 2');
-$t->is($leurreTable2->numero_cuve, '888', 'Le numéro de lot est le 888');
+$t->is($leurreTable2->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
 $doc->lots->remove(3);
 
 $t->comment('puis on la retire');
