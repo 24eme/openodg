@@ -94,6 +94,7 @@ echo "Changement de denom"
 
 xls2ods $DATA_DIR/changement_denom.xls
 ods2tsv $DATA_DIR/changement_denom.ods | sed 's/\t/;/g' > $DATA_DIR/changement_denom.csv
+php symfony import:chgt-denom-ia $DATA_DIR/changement_denom.csv --application="$ODG" --trace
 
 echo "Degustations"
 # trie des lots par date de commission pour dire qu'une date correspond à une degustation.
