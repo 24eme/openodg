@@ -15,6 +15,7 @@ ChgtDenom:
       changement_origine_mvtkey: { required: false} # À supprimer
       changement_origine_document_id: {}
       changement_origine_mouvement: {}
+      changement_type: {}
       changement_produit: {}
       changement_produit_libelle: { }
       changement_cepages:
