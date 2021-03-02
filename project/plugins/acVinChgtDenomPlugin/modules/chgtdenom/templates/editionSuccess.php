@@ -11,7 +11,7 @@
 
     <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getMvtLot())); ?>
 
-    <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom, 'key' => $key)) ?>" method="post" class="form-horizontal" id="form_drev_lots">
+    <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom, 'key' => $chgtDenom->getLotKey())) ?>" method="post" class="form-horizontal" id="form_drev_lots">
 
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
