@@ -727,11 +727,11 @@ class degustationActions extends sfActions {
 
     public function executeSetEnvoiMail(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-
-      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $envoye = $request->getParameter('envoye',true);
       $this->setTemplate('notificationsEtape');
-      $this->degustation->setSendMailEtablissement($etablissement);
-
+      $this->degustation->setMailEnvoyeEtablissement($request['identifiant'],boolval($envoye));
+      $this->degustation->save();
+      return $this->redirect('degustation_notifications_etape', $this->degustation);
     }
 
     public function executeRetraitNonConformitePDF(sfWebRequest $request){

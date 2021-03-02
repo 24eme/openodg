@@ -32,7 +32,7 @@
               </thead>
               <tbody>
                 <?php
-                foreach ($degustation->getLotsByOperateursAndConformites() as $conformitesLots): ?>
+                foreach ($degustation->getLotsByOperateursAndConformites() as $idenfiant => $conformitesLots): ?>
                 <tr class="vertical-center">
                   <td class="text-left">
                     <?php echo $conformitesLots->declarant_nom; ?>
@@ -51,7 +51,10 @@
                         <?php endforeach; ?>
                       </td>
                       <td class="text-center">
-                        <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-envelope"></i></a>
+                        <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm <?php if($conformitesLots->email_envoye): ?>disabled<?php endif;?>"><i class="glyphicon glyphicon-envelope"></i>&nbsp;Prévisualiser</a>
+                        <?php if($conformitesLots->email_envoye): ?>
+                          <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
+                        <?php endif;?>
                       </td>
                     </tr>
                   <?php endforeach; ?>
