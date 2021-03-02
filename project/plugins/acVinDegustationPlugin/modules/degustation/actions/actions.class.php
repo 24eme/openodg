@@ -553,7 +553,7 @@ class degustationActions extends sfActions {
       $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
     }
 
-    public function executePrelevable(sfWebRequest $request) {
+    public function executeRedeguster(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $ind = $request->getParameter('index');
         $back = $request->getParameter('back');
@@ -566,6 +566,7 @@ class degustationActions extends sfActions {
         }
         $this->forward404Unless($lot);
         $lot->statut = Lot::STATUT_PRELEVABLE;
+        DegustationClient::updatedSpecificite($lot);
         $doc->generateMouvementsLots();
         $doc->save();
         return $this->redirect($back);
