@@ -43,7 +43,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 		}
 
     public function constructId() {
-        $id = 'CHGTDENOM-' . $this->identifiant . '-' . $this->date;
+        $date = new DateTime($this->date);
+        
+        $id = 'CHGTDENOM-' . $this->identifiant . '-' . $date->format('YmdHis');
         $this->set('_id', $id);
         $this->set('campagne', $this->getCampagneByDate());
     }
@@ -54,12 +56,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getConfigProduits() {
         return $this->getConfiguration()->declaration->getProduits();
-    }
-
-    public function initDoc($identifiant, $date) {
-        $this->identifiant = $identifiant;
-        $this->date = $date;
-        $etablissement = $this->getEtablissementObject();
     }
 
     public function storeDeclarant() {
