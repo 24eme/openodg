@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(3);
+$t = new lime_test(5);
 
 //Début des tests
 $t->comment("Création d'un second passage");
