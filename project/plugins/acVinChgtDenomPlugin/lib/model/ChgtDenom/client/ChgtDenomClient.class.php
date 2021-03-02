@@ -5,6 +5,8 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     const TYPE_MODEL = "ChgtDenom";
     const TYPE_COUCHDB = "CHGTDENOM";
     const ORIGINE_LOT = "DREV";
+    const CHANGEMENT_TYPE_CHANGEMENT = "CHANGEMENT";
+    const CHANGEMENT_TYPE_DECLASSEMENT = "DECLASSEMENT";
 
     const FORMAT_DATE = 'Y-m-d\THis';
 
@@ -55,6 +57,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         if($papier) {
             $chgtdenom->add('papier', 1);
         }
+        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_CHANGEMENT;
         $chgtdenom->storeDeclarant();
         return $chgtdenom;
     }

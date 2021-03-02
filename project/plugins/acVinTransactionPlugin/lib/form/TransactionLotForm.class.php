@@ -53,6 +53,9 @@ class TransactionLotForm extends acCouchdbObjectForm
         $this->setWidget('numero', new bsWidgetFormInput());
         $this->setValidator('numero', new sfValidatorString(array('required' => false)));
 
+        $this->setWidget('degustable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('degustable', new sfValidatorBoolean(['required' => false]));
+
 
 
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
