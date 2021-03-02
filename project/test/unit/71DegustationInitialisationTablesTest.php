@@ -57,6 +57,7 @@ $t->is($leurreTable2->getProduitHash(), $produitLeurreHash, 'Le hash est le mêm
 $t->is($leurreTable2->numero_table, 2, 'Le numéro de table est le 2');
 $t->is($leurreTable2->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
 $doc->lots->remove(3);
+$doc->save();
 
 $t->comment('puis on la retire');
 $doc->lots->remove(2);
