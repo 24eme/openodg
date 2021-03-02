@@ -78,6 +78,9 @@
                   <td class="text-right">Total : </td>
                   <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                   <td></td>
+                  <?php if ($sf_user->isAdmin() && $transaction->isValideeOdg()): ?>
+                    <td></td>
+                  <?php endif; ?>
                 </tr>
               </tbody>
             </table>
