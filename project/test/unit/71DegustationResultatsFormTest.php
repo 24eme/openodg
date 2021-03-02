@@ -16,6 +16,17 @@ $docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $doc = acCouchdbManager::getClient()->find($docid);
 
+$t->comment('On ajoute un lot à la dégustation');
+
+$doc->lots[2] = clone $doc->lots[0];
+$doc->lots[2]->numero_cuve = $doc->lots[0]->numero_cuve + 1;
+$doc->lots[2]->numero_table = 1;
+$doc->save();
+$doc = acCouchdbManager::getClient()->find($docid);
+
+$t->comment('On a 2 lots normaux / 1 Leurre');
+$t->comment('Tout les lots sont sur la table A');
+
 $t->comment('Apposement de l\'anonymat');
 $isAnonymized = $doc->isAnonymized();
 $t->ok(!$isAnonymized, 'La dégustation n\'est pas "anonymisée"');
@@ -25,7 +36,7 @@ $isAnonymized = $doc->isAnonymized();
 $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
 
 $numero_anonymats = array();
-$numero_anonymats_attendu = array("A1","A2");
+$numero_anonymats_attendu = array("A1","A2","A3");
 
 foreach ($doc->getLotsByTable(1) as $lot) {
   $numero_anonymats[] = $lot->numero_anonymat;
@@ -51,14 +62,15 @@ $defaults = $form->getDefaults();
 $valuesRev = array(
     '_revision' => $doc->_rev,
     'conformite_0' => "CONFORME",
-    'conformite_1' => "CONFORME"
+    'conformite_1' => "CONFORME",
+    'conformite_2' => "CONFORME"
 );
 
 $form->bind($valuesRev);
 $form->save();
 
 $lotConformes = $doc->getLotsConformesOrNot();
-$t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES"');
+$t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
 
 $doc = acCouchdbManager::getClient()->find($docid);
 $form = new DegustationResultatsForm($doc, $options);
@@ -69,9 +81,10 @@ $obs = "A requalifier";
 $valuesRev = array(
     '_revision' => $doc->_rev,
     'conformite_0' => "CONFORME",
-    'conformite_1' => "NONCONFORME_MAJEUR",
-    'motif_1' => $motif,
-    'observation_1' => $obs
+    'conformite_1' => "CONFORME",
+    'conformite_2' => "NONCONFORME_MAJEUR",
+    'motif_2' => $motif,
+    'observation_2' => $obs
 );
 
 $form->bind($valuesRev);
@@ -80,7 +93,7 @@ $form->save();
 $lotConformes = $doc->getLotsConformesOrNot();
 $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
-$t->is(count($lotConformes), 1, 'Un lot est considéré comme "CONFORME"');
+$t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
 
 foreach ($lotNonConformes as $lot) {
