@@ -3,7 +3,7 @@
 $directory = dirname(__FILE__);
 $files = scandir($directory."/xml");
 
-sort($files);
+rsort($files);
 
 $output = 'html';
 

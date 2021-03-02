@@ -119,7 +119,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isEmpty() {
-      $fieldsToFill = array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'produit_hash', 'elevage', 'specificite', 'centilisation');
+      $fieldsToFill = array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'elevage', 'specificite', 'centilisation');
       $defaults = $this->getDefaults();
       foreach($fieldsToFill as $field) {
         if($this->exist($field) && $this->get($field) && !isset($defaults[$field])) {

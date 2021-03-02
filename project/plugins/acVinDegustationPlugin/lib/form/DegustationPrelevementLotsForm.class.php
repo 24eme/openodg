@@ -24,7 +24,11 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
             if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
                 $obj = acCouchdbManager::getClient()->find($item->id_document);
-                $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
+                $this->dates_degust_drevs[$item->id_document] = date('Ymd');
+                if(($obj->exist("date_degustation_voulue")) && DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue))
+                {
+                 $this->dates_degust_drevs[$item->id_document] = DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd');
+                }
             }
         }
         $this->embedForm('lots', $formLots);
@@ -54,7 +58,10 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
             foreach ($this->lotsPrelevables as $key => $item) {
                 if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
                     $obj = acCouchdbManager::getClient()->find($item->id_document);
-                    $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
+                    $this->dates_degust_drevs[$item->id_document] = date('Ymd');
+                    if($obj->exist("date_degustation_voulue") && DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)){
+                      $this->dates_degust_drevs[$item->id_document] = DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd');
+                    }
                 }
 
                 $preleve = ($this->dates_degust_drevs[$item->id_document] > $this->getDateDegustation()) ? 0 : 1;
