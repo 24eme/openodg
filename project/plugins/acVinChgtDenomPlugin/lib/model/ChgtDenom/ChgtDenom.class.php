@@ -200,7 +200,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function isDeclassement() {
-      return (!$this->changement_produit);
+      return $this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
     }
     public function isChgtTotal() {
       return ($this->changement_volume == $this->getMvtLot()->volume);
