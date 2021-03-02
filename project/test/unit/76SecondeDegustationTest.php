@@ -26,3 +26,9 @@ $t->is($lot_a_redeguster->specificite, $specificite_originale.', 2ème passage',
 
 DegustationClient::updatedSpecificite($lot_a_redeguster);
 $t->is($lot_a_redeguster->specificite, $specificite_originale.', 3ème passage', "Il s'agit d'un troisième passage");
+
+$lot_a_redeguster->specificite = null;
+$t->is($lot_a_redeguster->specificite, null, 'On reset la spécificité');
+
+DegustationClient::updatedSpecificite($lot_a_redeguster);
+$t->is($lot_a_redeguster->specificite, '2ème passage', 'Il s\'agit d\'un second passage');
