@@ -47,20 +47,21 @@ class chgtdenomActions extends sfActions {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
         $this->key = $request->getParameter("key");
-        $firstEdition = true;
 
-        if (!$this->key) {
-          $this->key = $this->chgtDenom->getLotKey();
-          $firstEdition = false;
+        if(!$this->key && $this->chgtDenom->getMouvementLotOrigine()) {
+
+            return $this->redirect('chgtdenom_edition', array('sf_subject' => $this->chgtDenom, 'key' => $this->chgtDenom->getLotKey()));
         }
 
-        if (!$this->key) {
-          return $this->redirect('chgtdenom_lots', $this->chgtDenom);
+        if(!$this->key) {
+
+            throw new sfError404Exception("Aucun lot spécifié");
         }
+
         $this->chgtDenom->changement_origine_document_id = preg_replace("/:.+/", "", $this->key);
         $this->chgtDenom->changement_origine_mouvement = preg_replace("/.+:/", "", $this->key);
 
-        $this->form = new ChgtDenomForm($this->chgtDenom, $firstEdition);
+        $this->form = new ChgtDenomForm($this->chgtDenom);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
