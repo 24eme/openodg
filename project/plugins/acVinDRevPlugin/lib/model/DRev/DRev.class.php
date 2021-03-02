@@ -763,6 +763,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot_degustation->remove('declarant_nom');
         $lot_degustation->remove('declarant_identifiant');
         $lot_degustation->remove('origine_mouvement');
+        $lot_degustation->remove('numero_anonymat');
+        $lot_degustation->remove('centilisation');
+        $lot_degustation->remove('email_envoye');
+
         $lot_degustation->statut = Lot::STATUT_PRELEVABLE;
 
         $lots = [];

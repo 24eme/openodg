@@ -213,7 +213,3 @@ $t->comment('On confirme le dernier degustateur');
 $degustation->degustateurs->degustateur_porteur_de_memoire->get($degust->_id)->add('confirmation', 1);
 
 $t->is($degustation->hasAllDegustateursConfirmation(), true, "Les dégustateurs ont tous signalé leurs présence");
-
-if (!getenv("NODELETE")) {
-    $degustation->delete();
-}

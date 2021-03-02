@@ -53,6 +53,9 @@ class TransactionLotForm extends acCouchdbObjectForm
         $this->setWidget('numero', new bsWidgetFormInput());
         $this->setValidator('numero', new sfValidatorString(array('required' => false)));
 
+        $this->setWidget('degustable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('degustable', new sfValidatorBoolean(['required' => false]));
+
 
 
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
@@ -95,7 +98,7 @@ class TransactionLotForm extends acCouchdbObjectForm
 
     public function getSpecificites()
     {
-        return array_merge(array(Lot::SPECIFITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
+        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
     }
 
     public function getProduits()

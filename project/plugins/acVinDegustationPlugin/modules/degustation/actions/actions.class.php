@@ -421,7 +421,7 @@ class degustationActions extends sfActions {
 
         $this->tableLots = $this->degustation->getLotsByTable($this->numero_table);
         $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
-        $options = array('tableLots' => $this->tableLots, 'numero_table' => $this->numero_table);
+        $options = array('numero_table' => $this->numero_table);
         $this->form = new DegustationResultatsForm($this->degustation, $options);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -553,7 +553,7 @@ class degustationActions extends sfActions {
       $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
     }
 
-    public function executePrelevable(sfWebRequest $request) {
+    public function executeRedeguster(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $ind = $request->getParameter('index');
         $back = $request->getParameter('back');
@@ -566,6 +566,7 @@ class degustationActions extends sfActions {
         }
         $this->forward404Unless($lot);
         $lot->statut = Lot::STATUT_PRELEVABLE;
+        DegustationClient::updatedSpecificite($lot);
         $doc->generateMouvementsLots();
         $doc->save();
         return $this->redirect($back);
@@ -727,11 +728,11 @@ class degustationActions extends sfActions {
 
     public function executeSetEnvoiMail(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-
-      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
+      $envoye = $request->getParameter('envoye',true);
       $this->setTemplate('notificationsEtape');
-      $this->degustation->setSendMailEtablissement($etablissement);
-
+      $this->degustation->setMailEnvoyeEtablissement($request['identifiant'],boolval($envoye));
+      $this->degustation->save();
+      return $this->redirect('degustation_notifications_etape', $this->degustation);
     }
 
     public function executeRetraitNonConformitePDF(sfWebRequest $request){

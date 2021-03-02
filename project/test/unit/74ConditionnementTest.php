@@ -38,7 +38,7 @@ foreach ($produits as $key => $produit) {
 $lot = $conditionnement->addLot();
 
 $t->is($lot->millesime, $conditionnement->campagne, "Le millésime est intialisé");
-$t->is($lot->specificite, Lot::SPECIFITE_UNDEFINED, "La spécificité est nul à la création du lot");
+$t->is($lot->specificite, Lot::SPECIFICITE_UNDEFINED, "La spécificité est nul à la création du lot");
 
 $t->ok($lot->isEmpty(), "Le lot est vide");
 $lot->add('numero', "1");
