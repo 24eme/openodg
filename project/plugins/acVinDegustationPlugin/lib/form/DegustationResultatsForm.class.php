@@ -2,12 +2,10 @@
 
 class DegustationResultatsForm extends acCouchdbObjectForm {
 
-  private $tableLots = null;
   private $numero_table = null;
 
   public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null)
   {
-    $this->tableLots = $options['tableLots'];
     $this->numero_table = $options['numero_table'];
 
     parent::__construct($object, $options, $CSRFSecret);
