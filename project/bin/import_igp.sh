@@ -90,7 +90,7 @@ echo "Lots"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 24 > $DATA_DIR/lots.csv
 php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
-echo "Changement de denom"
+echo "Changement de denomination"
 
 xls2ods $DATA_DIR/changement_denom.xls
 ods2tsv $DATA_DIR/changement_denom.ods | sed 's/\t/;/g' > $DATA_DIR/changement_denom.csv
