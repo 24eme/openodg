@@ -47,6 +47,7 @@ Degustation:
                   specificite: {}
                   centilisation: { }
                   observation: {}
+                  email_envoye: { }
       mouvements_lots:
         type: collection
         definition:

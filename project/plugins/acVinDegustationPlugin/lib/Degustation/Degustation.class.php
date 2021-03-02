@@ -390,6 +390,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		return $lotsByAdherents;
 	 }
 
+	 public function getLotsConformitesOperateur($identifiant){
+		$lotsByAdherents = $this->getLotsByOperateursAndConformites();
+	 return $lotsByAdherents[$identifiant];
+	}
+
 	 public function getLotByNumArchive($numero_archive){
 		 foreach ($this->lots as $lot) {
 			 if($lot->numero_archive == $numero_archive){
@@ -521,7 +526,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			for($table = 1; true ; $table++) {
 				$lots = $this->getLotsByTable($table);
 				if (!count($lots)) {
-					echo "plus de lots $table ";
 					break;
 				}
 				$this->tri = ['couleur','appellation','cépage'];
@@ -531,7 +535,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 						throw new sfException("L'anonymat a déjà été réalisé");
 					}
 					$lot->numero_anonymat = $lot->getNumeroTableStr().($k+1);
-					echo $lot->numero_anonymat." ";
 				}
 			}
 		}
@@ -540,7 +543,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			for($table = 1; true ; $table++) {
 				$lots = $this->getLotsByTable($table);
 				if (!count($lots)) {
-					echo "plus de lots $table ";
 					break;
 				}
 				foreach ($lots as $k => $lot){
@@ -841,7 +843,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$allTablesLots = $this->getAllLotsTables();
 			$lotsBySlice = array();
 			$cpt = 0;
-			$n = intval(count($allTablesLots)/$slice);			
+			$n = intval(count($allTablesLots)/$slice);
 			foreach ($allTablesLots as $key => $lot) {
 				if($cpt < $slice){
 					$cpt++;
@@ -931,6 +933,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $etablissements;
+		}
+
+		public function isMailEnvoyeEtablissement($identifiant){
+				foreach ($this->getLotsConformitesOperateur($identifiant)->lots as $conformite => $lots) {
+					foreach ($lots as $lot) {
+						if(!$lot->email_envoye){
+							return false;
+						}
+					}
+				}
+				return true;
+		}
+
+		public function setMailEnvoyeEtablissement($identifiant,$envoye = 1){
+				foreach ($this->getLotsConformitesOperateur($identifiant)->lots as $conformite => $lots) {
+					foreach ($lots as $lot) {
+						$lot->email_envoye = $envoye;
+					}
+				}
 		}
 
 		public function getLotsDegustesByAppelation(){
