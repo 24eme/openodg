@@ -46,8 +46,13 @@
 <?php if(isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('transaction/pointsAttentions', array('transaction' => $transaction, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
+<?php if ($sf_user->isAdmin() && $transaction->isValidee()): ?>
+  <?php include_partial('transaction/recapVisualisationAdmin', array('transaction' => $transaction, 'form' => $form, 'dr' => $dr)); ?>
+<?php else: ?>
+  <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form, 'dr' => $dr)); ?>
+<?php endif;?>
 
-<?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form, 'dr' => $dr)); ?>
+
 
 <?php if (TransactionConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>

@@ -3,10 +3,8 @@
 class ChgtDenomForm extends acCouchdbObjectForm
 {
     public static $types = array("CHGT" => "Changement de dénomination", "DCLST" => "Déclassement");
-    public $firstEdition;
 
-    public function __construct(acCouchdbJson $object, $firstEdition, $options = array(), $CSRFSecret = null) {
-        $this->firstEdition = $firstEdition;
+    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -57,7 +55,7 @@ class ChgtDenomForm extends acCouchdbObjectForm
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
-      $defaults['changement_type'] = (!$this->firstEdition && !$this->getObject()->changement_produit)? 'DCLST' : 'CHGT';
+      $defaults['changement_type'] = (!$this->getObject()->changement_produit)? 'CHGT' : 'CHGT';
       $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getMvtLot()->volume;
       $i=0;
       foreach($this->getObject()->changement_cepages as $cepage => $repartition) {
