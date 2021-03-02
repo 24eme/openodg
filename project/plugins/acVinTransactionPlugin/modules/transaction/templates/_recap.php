@@ -25,6 +25,9 @@
                 <th class="text-center col-xs-2">Pays</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
+                <?php if ($sf_user->isAdmin() && $transaction->isValideeOdg()): ?>
+                  <th class="text-center col-xs-3">Dégustable</th>
+                <?php endif;?>
               </tr>
             </thead>
             <tbody>
@@ -50,6 +53,16 @@
                         <td class="text-right"><?php echo $lot->pays; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <?php if ($sf_user->isAdmin() && $transaction->isValideeOdg()): ?>
+                        <td class="text-center">
+                          <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
+                          	<?php echo $form['lots'][$lot->getKey()]['degustable']->renderError() ?>
+                              <div class="col-xs-12">
+                        	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                              </div>
+                          </div>
+                      	</td>
+                      <?php endif; ?>
                       </tr>
                       <?php
                       $firstRow=false;
@@ -68,7 +81,12 @@
                 </tr>
               </tbody>
             </table>
-            <br/>
+
+            <?php if ($sf_user->isAdmin() && $transaction->isValideeOdg()): ?>
+            <div class="row row-margin row-button">
+                  <div class="col-xs-12 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
+            </div>
+          <?php endif; ?>
 
           <?php endif; ?>
 <?php use_javascript('hamza_style.js'); ?>

@@ -15,11 +15,7 @@ class TransactionLotsForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								if($this->getDocument()->validation_odg){
-										$formLots->embedForm($lot->getKey(), new TransactionLotVisuForm($lot));
-								}else{
-										$formLots->embedForm($lot->getKey(), new TransactionLotForm($lot));
-								}
+								$formLots->embedForm($lot->getKey(), new TransactionLotForm($lot));
             }
         }
 
@@ -30,9 +26,21 @@ class TransactionLotsForm extends acCouchdbForm
 
 	public function save() {
 		$values = $this->getValues();
-		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-			$embedForm->doUpdateObject($values['lots'][$key]);
-    }
+
+			foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+				if(!$this->getDocument()->isValideeOdg()){
+					$embedForm->doUpdateObject($values['lots'][$key]);
+				}
+				$this->getDocument()->lots[$key]->getOrAdd("degustable");
+				$this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
+
+				if ($values['lots'][$key]['degustable']) {
+					$this->getDocument()->lots[$key]->statut = Lot::STATUT_PRELEVABLE;
+				}else{
+					$this->getDocument()->lots[$key]->statut = Lot::STATUT_NONPRELEVABLE;
+				}
+			}
+
 
 		$this->getDocument()->save();
 	}
