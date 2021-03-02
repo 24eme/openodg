@@ -120,6 +120,23 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $lots;
     }
 
+    public function setChangementType($type) {
+        if($type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+            $this->changement_produit = null;
+        }
+
+        return $this->_set('changement_type', $type);
+    }
+
+    public function setChangementProduit($hash) {
+        $this->changement_produit_libelle = null;
+        if($hash) {
+            $this->changement_produit_libelle = $this->getConfiguration()->get($hash)->getLibelleComplet();
+        }
+
+        return $this->_set('changement_produit', $hash);
+    }
+
     public function setMouvementLotOrigine($mouvement) {
         $this->changement_origine_document_id = $mouvement->id_document;
         $this->changement_origine_mouvement = $mouvement->origine_mouvement;

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(27);
+$t = new lime_test(37);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -115,9 +115,9 @@ $volume = $mvtLot->volume;
 $autreLot = $drev->get(next($mvtLots)->origine_hash);
 
 $t->comment("Création d'un Chgt de Denom Total");
+
 $chgtDenom->setMouvementLotOrigine($mvtLot);
 $chgtDenom->changement_produit = $autreLot->produit_hash;
-$chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
 $chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
@@ -134,6 +134,8 @@ foreach ($chgtDenom->lots as $lot) {
 }
 
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit");
+$t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
 $t->ok($chgtDenom->getMvtLot(), "récupération du mouvement de lot ");
 $t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_CHANGE, "statut origine changé");
@@ -142,10 +144,8 @@ $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 
 $t->comment("Création d'un Chgt de Denom Partiel");
-$chgtDenom->changement_origine_document_id = $mvtLotKey;
-$chgtDenom->changement_origine_mouvement = $mvtLotKey;
+$chgtDenom->setMouvementLotOrigine($mvtLot);
 $chgtDenom->changement_produit = $autreLot->produit_hash;
-$chgtDenom->changement_produit_libelle = $autreLot->produit_libelle;
 $chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
@@ -160,6 +160,8 @@ foreach ($chgtDenom->lots as $lot) {
   $postfix++;
 }
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit");
+$t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
 $t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_PRELEVABLE, "statut du nouveau lot prelevable");
 $t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_CHANGE, "statut origine changé");
@@ -169,8 +171,7 @@ $chgtDenom->clearLots();
 
 $t->comment("Création d'un Declassement Total");
 $chgtDenom->setMouvementLotOrigine($mvtLot);
-$chgtDenom->changement_produit = null;
-$chgtDenom->changement_produit_libelle = null;
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
@@ -185,6 +186,9 @@ foreach ($chgtDenom->lots as $lot) {
   $postfix++;
 }
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->changement_produit, null, "Pas de produit");
+$t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
+$t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
 $t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_DECLASSE, "statut origine déclassé");
 
@@ -193,8 +197,7 @@ $chgtDenom->clearLots();
 
 $t->comment("Création d'un Declassement Partiel");
 $chgtDenom->setMouvementLotOrigine($mvtLot);
-$chgtDenom->changement_produit = null;
-$chgtDenom->changement_produit_libelle = null;
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
@@ -209,6 +212,9 @@ foreach ($chgtDenom->lots as $lot) {
   $postfix++;
 }
 $t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->changement_produit, null, "Pas de produit");
+$t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
+$t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
 $t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_CONFORME, "statut du nouveau lot prelevable");
 $t->is($chgtDenom->getMouvementLotOrigine()->statut, Lot::STATUT_CHANGE, "statut origine changé");
