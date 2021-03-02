@@ -304,7 +304,7 @@ class transactionActions extends sfActions {
             $this->validation = new TransactionValidation($this->transaction);
         }
 
-        $this->form = null;
+        $this->form = new TransactionLotsForm($this->transaction);
         $this->dr = DRClient::getInstance()->findByArgs($this->transaction->identifiant, $this->transaction->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
