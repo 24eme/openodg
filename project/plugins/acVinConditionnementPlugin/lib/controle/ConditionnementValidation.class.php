@@ -47,16 +47,16 @@ class ConditionnementValidation extends DocumentValidation
           }
 
           if(!$lot->exist('produit_hash') || !$lot->produit_hash){
-            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1), $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." : il manque le produit", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
             continue;
           }
           if(!$lot->exist('volume') || !$lot->volume){
-            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1), $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." : il manque le volume", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
             continue;
           }
 
           if(!$lot->exist('numero') || !$lot->numero){
-            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1), $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." : il manque le numéro de logement", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
             continue;
           }
 
