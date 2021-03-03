@@ -86,7 +86,7 @@
               </tbody>
             </table>
 
-            <?php if ($sf_user->isAdmin() && $transaction->isValidee()): ?>
+            <?php if ($sf_user->isAdmin() && $transaction->isValideeODG()): ?>
             <div class="row row-margin row-button">
                   <div class="col-xs-12 text-right"><button type="submit" name="btn-valider-degustable" class="btn btn-primary btn-upper">Valider</button></div>
             </div>

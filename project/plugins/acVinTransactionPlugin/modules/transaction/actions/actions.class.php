@@ -291,6 +291,7 @@ class transactionActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::VISUALISATION, $this->transaction);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         $this->service = $request->getParameter('service');
 
@@ -316,6 +317,10 @@ class transactionActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin && $this->transaction->isValidee() && $this->transaction->isValideeODG() === false){
+          return $this->redirect('transaction_validation_admin', $this->transaction);
+        }
 
         return $this->redirect('transaction_visualisation', $this->transaction);
     }
