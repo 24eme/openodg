@@ -48,6 +48,10 @@ class ImportLotsIATask extends sfBaseTask
   const TYPE_TRANSACTION_VRAC_HORS_FRANCE = 'VHF';
   const TYPE_CHANGEMENT_DE_DENOMINATION_NEGOCIANT = 'BN';
 
+  public static $typeAllowed = array (
+      self::TYPE_REVENDIQUE,
+  );
+
   const STATUT_PRELEVE = "PRELEVE";
   const STATUT_PRELEVABLE = "PRELEVE";
   const STATUT_DEGUSTE = "DEGUSTE";
@@ -127,7 +131,7 @@ EOF;
             }
 
             $type = trim($data[self::CSV_TYPE]);
-            if ($type != self::TYPE_REVENDIQUE) {
+            if (!in_array($type, self::$typeAllowed)) {
                 echo "SQUEEZE;lot non issu de la revendication, type : ".$type.";pas d'import;$line\n";
                 continue;
             }
@@ -199,7 +203,7 @@ EOF;
 
            $statut = self::$correspondancesStatuts[$statut];
 
-           $document = $this->getDocument($document, $etablissement, $campagne, $date, $numeroDossier);
+           $document = $this->getDocument($type, $document, $etablissement, $campagne, $date, $numeroDossier);
 
             $lot = $document->addLot();
 
@@ -321,7 +325,13 @@ EOF;
       }
     }
 
-    public function getDocument($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+    public function getDocument($type, $previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        if ($type == self::TYPE_REVENDIQUE) {
+            return $this->getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
+    }
+
+    public function getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
         $drev = $previousdoc;
 
         $newDrev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
