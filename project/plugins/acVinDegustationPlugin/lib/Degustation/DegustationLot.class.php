@@ -51,4 +51,24 @@ class DegustationLot extends BaseDegustationLot {
     }
   }
 
+  public function redegustation($degustation_originale)
+    {
+        // Duplique le mouvement
+        // nouveau mouvement -> prélevable
+        // nouveau mouvement -> specificité Xeme passage
+        // on espere que le nouveau mvmt est listé dans les 'a prelever'
+        // on créé le nouveau lot à partir de ce mouvement
+        // on le rentre dans la dégust
+
+        $mvmt_lot = $degustation_originale->mouvements_lots
+                                          ->get($this->declarant_identifiant)
+                                          ->get($this->getUnicityKey());
+
+        $newmvmt = clone $mvmt_lot;
+        $newmvmt->statut = Lot::STATUT_PRELEVABLE;
+        $newmvmt->updatePassage();
+
+        return $newmvmt;
+    }
+
 }
