@@ -31,7 +31,12 @@
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('transaction/pointsAttentions', array('transaction' => $transaction, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form['lots'])); ?>
+
+    <?php if($sf_user->isAdmin()): ?>
+      <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form['lots'])); ?>
+    <?php else:?>
+      <?php include_partial('transaction/recap', array('transaction' => $transaction)); ?>
+    <?php endif; ?>
 	<?php  if (!$transaction->isPapier() && count($validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('transaction/engagements', array('transaction' => $transaction, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
