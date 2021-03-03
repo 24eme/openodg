@@ -31,7 +31,7 @@
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('transaction/pointsAttentions', array('transaction' => $transaction, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('transaction/recap', array('transaction' => $transaction)); ?>
+    <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form['lots'])); ?>
 	<?php  if (!$transaction->isPapier() && count($validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('transaction/engagements', array('transaction' => $transaction, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
@@ -51,7 +51,7 @@
             <a href="<?php echo url_for("transaction_lots", $transaction); ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && !$sf_user->hasTransactionAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && !$sf_user->hasTransactionAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>

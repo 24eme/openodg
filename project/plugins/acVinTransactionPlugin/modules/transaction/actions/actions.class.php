@@ -184,32 +184,31 @@ class transactionActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::EDITION, $this->transaction);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if($this->transaction->storeEtape($this->getEtape($this->transaction, TransactionEtapes::ETAPE_VALIDATION))) {
             $this->transaction->save();
         }
 
         $this->validation = new TransactionValidation($this->transaction);
-
-        $this->form = new TransactionValidationForm($this->transaction, array(), array('engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
+        $this->form = new TransactionValidationForm($this->transaction, $this->isAdmin, array(), array('engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
+          return sfView::SUCCESS;
         }
 
-        if (!$this->validation->isValide() && $this->transaction->isTeledeclare() && !$this->getUser()->hasTransactionAdmin()) {
-
-            return sfView::SUCCESS;
+        if(!$this->validation->isValide() && $this->transaction->isTeledeclare() && !$this->getUser()->hasTransactionAdmin()){
+          return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
+
         $this->form->save();
+
         $dateValidation = date('c');
 
         if($this->form->getValue("date")) {
