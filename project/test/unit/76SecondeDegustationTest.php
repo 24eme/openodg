@@ -8,6 +8,17 @@ if ($application != 'igp13') {
     return;
 }
 
+function countMouvements($degustation) {
+    $nb_mvmts = 0;
+
+    foreach ($degustation->mouvements_lots as $ope) {
+        foreach ($ope as $m) {
+            $nb_mvmts++;
+        }
+    }
+
+    return $nb_mvmts;
+}
 
 $t = new lime_test(2);
 
@@ -21,24 +32,20 @@ foreach (DegustationClient::getInstance()->getHistory(1) as $d) {
 $lot = $degustation->lots[0];
 $new_mvmt = $lot->redegustation($degustation);
 
-$nb_mvmts = 0;
-foreach ($degustation->mouvements_lots as $ope) {
-    foreach ($ope as $m) {
-        $nb_mvmts++;
-    }
-}
-
-$t->is($nb_mvmts, 3, "Le nombre de mouvement n'a pas bougé");
-
 $t->is($new_mvmt->statut, Lot::STATUT_PRELEVABLE, 'Le status est changé');
 $t->is($new_mvmt->id_document, $degustation->_id, "L'id du doc est la même degustation");
 $t->is($new_mvmt->numero_archive, $lot->numero_archive, "Le numero archive n'a pas changé");
 $t->is($new_mvmt->numero_dossier, $lot->numero_dossier, "Le numero dossier n'a pas changé");
 
 $t->is($lot->statut, Lot::STATUT_NONCONFORME, "Le statut n'as pas bougé pour le lot originel");
+$t->is(countMouvements($degustation), 3, "Le nombre de mouvement de la dégustation originale n'a pas bougé");
 
+$t->comment("Nouvelle dégustation avec le nouveau mouvement");
 $new_Degustation = new Degustation();
 $new_Degustation->addLot($new_mvmt);
+
+$t->is(countMouvements($new_Degustation), 0, "L'ajout de lot n'a pas généré de mouvements de lots");
+
 $new_Degustation->generateMouvementsLots();
 
 $lots = $new_Degustation->getLots();
