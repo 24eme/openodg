@@ -116,7 +116,7 @@ EOF;
         $this->initProduitsCepages();
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
-        $drev = null;
+        $document = null;
         $ligne = 0;
         foreach(file($arguments['csv']) as $line) {
             $ligne++;
@@ -199,28 +199,14 @@ EOF;
 
            $statut = self::$correspondancesStatuts[$statut];
 
-            $newDrev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
-            $newDrev->constructId();
-            $newDrev->storeDeclarant();
-            $newDrev->validation = $date;
-            $newDrev->validation_odg = $date;
-            $newDrev->numero_archive = $numeroDossier;
+           $document = $this->getDocument($document, $etablissement, $campagne, $date, $numeroDossier);
 
-            if(!$drev || $newDrev->_id != $drev->_id) {
-              $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
-              if($drev) { $drev->delete(); $drev = null; }
-            }
-
-            if(!$drev) {
-                $drev = $newDrev;
-            }
-
-            $lot = $drev->addLot();
+            $lot = $document->addLot();
 
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
             $lot->cepages = $cepages;
-            $lot->id_document = $drev->_id;
+            $lot->id_document = $document->_id;
             $lot->millesime = $millesime;
             $lot->numero_dossier = $numeroDossier;
             $lot->numero_archive = $numeroLot;
@@ -258,7 +244,7 @@ EOF;
             }
 
             $deleted = array();
-            foreach($drev->lots as $k => $l) {
+            foreach($document->lots as $k => $l) {
               if ($lot->getUnicityKey() == $l->getUnicityKey() && $lot->getKey() != $k) {
                 $deleted[] = $l;
               }
@@ -267,17 +253,17 @@ EOF;
               $d->delete();
             }
 
-            $lots = array_values($drev->lots->toArray(true, false));
-            $drev->remove('lots');
-            $drev->add('lots', $lots);
+            $lots = array_values($document->lots->toArray(true, false));
+            $document->remove('lots');
+            $document->add('lots', $lots);
 
-            $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
+            $document->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             try {
-            $drev->save();
+            $document->save();
         } catch(Exception $e) {
             echo "ERROR;".$e->getMessage().";".$line."\n";
         }
-            echo "SUCCESS;Lot importé;".$drev->_id.";\n";
+            echo "SUCCESS;Lot importé;".$document->_id.";\n";
         }
     }
 
@@ -333,5 +319,26 @@ EOF;
           $this->cepages[KeyInflector::slugify($ca)] = $ca;
         }
       }
+    }
+
+    public function getDocument($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        $drev = $previousdoc;
+
+        $newDrev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
+        $newDrev->constructId();
+        $newDrev->storeDeclarant();
+        $newDrev->validation = $date;
+        $newDrev->validation_odg = $date;
+        $newDrev->numero_archive = $numeroDossier;
+
+        if(!$previousdoc || $newDrev->_id != $drev->_id) {
+          $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
+          if($drev) { $drev->delete(); $drev = null; }
+        }
+
+        if(!$drev) {
+            $drev = $newDrev;
+        }
+        return $drev;
     }
 }
