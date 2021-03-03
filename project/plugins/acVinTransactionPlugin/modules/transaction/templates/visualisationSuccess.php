@@ -83,4 +83,4 @@
 <?php if (isset($form)): ?>
 </form>
 <?php endif; ?>
-<?php include_partial('transaction/popupConfirmationValidation'); ?>
+<?php include_partial('transaction/popupConfirmationValidation', array('approuver' => false)); ?>

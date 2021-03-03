@@ -55,4 +55,4 @@
         </div>
     </div>
 </form>
-<?php include_partial('transaction/popupConfirmationValidation'); ?>
+<?php include_partial('transaction/popupConfirmationValidation', array('approuver' => true)); ?>
