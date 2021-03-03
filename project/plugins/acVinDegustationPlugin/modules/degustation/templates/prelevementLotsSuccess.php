@@ -47,7 +47,6 @@
             $dates = $form->getDateDegustParDrev();
 			foreach ($form->getLotsPrelevables() as $key => $lot):
 			if (isset($form['lots'][$key])):
-      $lot = DegustationClient::updatedSpecificite($lot);
 		?>
 			<tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
         <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
