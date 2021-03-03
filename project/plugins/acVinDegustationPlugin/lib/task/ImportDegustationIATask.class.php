@@ -93,8 +93,6 @@ EOF;
          }
          $statut = self::$correspondancesStatuts[$statut];
 
-         if($statut)
-
           $mouvements = MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement->identifiant, $campagne);
 
           $mouvement = null;

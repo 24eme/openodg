@@ -92,7 +92,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
     public function getSpecificites()
     {
-        return array_merge(array(Lot::SPECIFITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
+        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
     }
 
     public function getProduits()
