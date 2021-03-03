@@ -61,7 +61,7 @@
                                   <?php if ($sf_user->isAdmin() && !$transaction->validation_odg): ?>
                                   	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
-                                      <?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('disabled' => 'disabled', 'class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                      <span class="<?php if($lot->statut == Lot::STATUT_PRELEVABLE):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
                                   <?php endif; ?>
                                 </div>
                             </div>
@@ -88,12 +88,6 @@
                 </tr>
               </tbody>
             </table>
-
-            <?php if ($sf_user->isAdmin() && $transaction->isValideeODG()): ?>
-            <div class="row row-margin row-button">
-                  <div class="col-xs-12 text-right"><button type="submit" name="btn-valider-degustable" class="btn btn-primary btn-upper">Valider</button></div>
-            </div>
-          <?php endif; ?>
 
           <?php endif; ?>
 <?php use_javascript('hamza_style.js'); ?>
