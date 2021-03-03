@@ -30,8 +30,10 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     }
 
     public function constructId() {
-        $date = date("Ymd");        
-        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $date;
+        if (!$this->date) {
+            $this->date = date("Y-m-d");
+        }
+        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . str_replace('-', '', $this->date);
         if($this->version) {
             $id .= "-".$this->version;
         }
@@ -71,9 +73,13 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         return $this->_get('validation_odg');
     }
 
-    public function initDoc($identifiant, $campagne) {
+    public function initDoc($identifiant, $campagne, $date = null) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
+        $this->date = $date;
+        if (!$this->date) {
+            $this->date = date("Y-m-d");
+        }
         $etablissement = $this->getEtablissementObject();
     }
 
@@ -759,7 +765,4 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
 
     /**** FIN DE VERSION ****/
 
-    public function getDate() {
-      return $this->campagne.'-12-10';
-    }
 }
