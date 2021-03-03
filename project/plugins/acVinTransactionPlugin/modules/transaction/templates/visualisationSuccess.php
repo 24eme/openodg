@@ -2,7 +2,8 @@
 
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php if (isset($form)): ?>
-    <form action="<?php echo url_for('transaction_visualisation', $transaction) ?>" method="post">
+
+    <form role="form" class="form-inline" action="<?php echo url_for('transaction_visualisation', $transaction) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
@@ -71,7 +72,10 @@
                                                  ($sf_user->hasTransactionAdmin() && TransactionConfiguration::getInstance()->hasValidationOdgRegion() && !$transaction->isValidateOdgByRegion($regionParam))
                                                )): ?>
         <?php $params = array("sf_subject" => $transaction, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
-                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("transaction_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+        <div class="col-xs-6 text-right">
+            <button type="button" name="validateOdg" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && !$sf_user->hasTransactionAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+        </div>
+
         <?php endif; ?>
         </div>
     </div>
@@ -79,3 +83,4 @@
 <?php if (isset($form)): ?>
 </form>
 <?php endif; ?>
+<?php include_partial('transaction/popupConfirmationValidation', array('approuver' => false)); ?>
