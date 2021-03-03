@@ -3,6 +3,10 @@
 
 class ConditionnementLot extends BaseConditionnementLot
 {
+    public function getFieldsToFill() {
+        return array('numero', 'millesime', 'volume', 'produit_hash', 'destination_date', 'elevage', 'specificite', 'centilisation');
+    }
+
     public function getProduitRevendiqueLibelleComplet() {
         $p = $this->getProduitRevendique();
         if ($p) {
