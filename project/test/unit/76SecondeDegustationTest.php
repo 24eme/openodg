@@ -21,8 +21,15 @@ foreach (DegustationClient::getInstance()->getHistory(1) as $d) {
 $lot = $degustation->lots[0];
 $new_mvmt = $lot->redegustation($degustation);
 
-$t->is(count($degustation->mouvements_lots), 3, "Le nombre de mouvement n'a pas bougé");
-//$t->is($new_mvmt->isSecondPassage(), true, "C'est le deuxième passage du lot");
+$nb_mvmts = 0;
+foreach ($degustation->mouvements_lots as $ope) {
+    foreach ($ope as $m) {
+        $nb_mvmts++;
+    }
+}
+
+$t->is($nb_mvmts, 3, "Le nombre de mouvement n'a pas bougé");
+
 $t->is($new_mvmt->statut, Lot::STATUT_PRELEVABLE, 'Le status est changé');
 $t->is($new_mvmt->id_document, $degustation->_id, "L'id du doc est la même degustation");
 $t->is($new_mvmt->numero_archive, $lot->numero_archive, "Le numero archive n'a pas changé");
