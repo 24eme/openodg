@@ -768,6 +768,11 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
       return $this->isValideeOdg() && $this->isValidee();
     }
 
+    public function isLectureSeule() {
+
+        return $this->exist('lecture_seule') && $this->get('lecture_seule');
+    }
+
     /**** FIN DE VERSION ****/
 
 }
