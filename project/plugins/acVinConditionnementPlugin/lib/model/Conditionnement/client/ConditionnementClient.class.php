@@ -21,6 +21,15 @@ class ConditionnementClient extends acCouchdbClient {
         return $doc;
     }
 
+
+    public function findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $docs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
+        foreach ($docs as $id => $doc) {
+            return $this->find($id, $hydrate);
+        }
+        return null;
+    }
+
     public function findByIdentifiantAndCampagneAndDate($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
         $doc = $this->find($docid);
