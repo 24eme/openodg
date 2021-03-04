@@ -492,7 +492,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
 
     public function generateAndAddMouvementLotsFromLot($lot, $key) {
         $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-        return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
+        return $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
     }
 
     public function generateMouvementsLots() {
