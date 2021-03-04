@@ -21,14 +21,19 @@ class ConditionnementClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $drevs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
-        foreach ($drevs as $id => $drev) {
+    public function findByIdentifiantAndCampagneAndDate($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
+        $doc = $this->find($docid);
+        return $doc;
+    }
 
-            return $this->find($id, $hydrate);
+
+    public function findByIdentifiantAndCampagneAndDateOrCreateIt($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $doc = $this->findByIdentifiantAndCampagneAndDate($identifiant, $campagne, $date);
+        if (!$doc) {
+            $doc = $this->createDoc($identifiant, $campagne, $date);
         }
-
-        return null;
+        return $doc;
     }
 
     public function createDoc($identifiant, $campagne, $date = null, $papier = false)
