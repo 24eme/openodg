@@ -45,7 +45,12 @@ $t->is(countMouvements($degustation), 4, "Il y a un mouvement de plus dans la d�
 $t->is(count($degustation->getMvtLotsPrelevables()), 2, "Un deuxième mouvement a été créé");
 
 $mvts_prelevables = $degustation->getMvtLotsPrelevables();
-$mvt = array_shift($mvts_prelevables);
+foreach ($mvts_prelevables as $key => $m) {
+    if (strpos($key, 'DEGUST') === 0) {
+        $mvt = $m;
+        continue;
+    }
+}
 
 $t->is($mvt->statut, Lot::STATUT_PRELEVABLE, "Le mouvement est prélevable");
 $t->ok($mvt->nombre_degustation, "Le mouvement est taggué en redégustation");
