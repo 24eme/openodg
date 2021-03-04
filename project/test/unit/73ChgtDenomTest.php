@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(37);
+$t = new lime_test(38);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -90,9 +90,13 @@ $newDegutation->save();
 
 $t->is(count(MouvementLotView::getInstance()->getByStatut($campagne, Lot::STATUT_PRELEVABLE)->rows), 0, "0 lots prelevables");
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant);
+$date = date('Y-m-d H:i:s');
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
+$chgtDenom->constructId();
 $mvtLots = $chgtDenom->getMvtLots();
 
+$t->is($chgtDenom->_id, "CHGTDENOM-".$viti->identifiant."-".preg_replace("/[-\ :]+/", "", $date), "id du document");
 $t->is(count($mvtLots), 0, "0 mvtlots disponibles au chgt de denom");
 
 $first = true;

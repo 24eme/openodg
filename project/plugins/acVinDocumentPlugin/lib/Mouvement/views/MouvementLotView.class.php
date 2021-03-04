@@ -40,6 +40,29 @@ class MouvementLotView extends acCouchdbView
     ->endkey(array_merge($query, array(array())))
     ->getView($this->design, $this->view);
   }
+  
+    public function find($etablissementIdentifiant, $campagne, $query) {
+        $mouvements = MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissementIdentifiant, $campagne);
+
+        $mouvement = null;
+        foreach ($mouvements->rows as $mouvement) {
+            $match = true;
+            foreach($query as $key => $value) {
+                if($mouvement->value->{ $key } != $value) {
+                    $match = false;
+                    break;
+                }
+            }
+
+            if(!$match) {
+                continue;
+            }
+
+            return $mouvement->value;
+        }
+
+        return null;
+    }
 
   public function getDegustationMouvementLot($declarant_identifiant, $numero_archive, $campagne = null, $statut = null){
     foreach ($this->getByDeclarantIdentifiant($declarant_identifiant, $campagne, $statut)->rows as $key => $mvt) {

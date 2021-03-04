@@ -31,10 +31,10 @@ class ConditionnementClient extends acCouchdbClient {
         return null;
     }
 
-    public function createDoc($identifiant, $campagne, $papier = false)
+    public function createDoc($identifiant, $campagne, $date = null, $papier = false)
     {
         $doc = new Conditionnement();
-        $doc->initDoc($identifiant, $campagne);
+        $doc->initDoc($identifiant, $campagne, $date);
 
         $doc->storeDeclarant();
 

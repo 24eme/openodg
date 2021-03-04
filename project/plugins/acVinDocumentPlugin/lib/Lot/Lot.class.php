@@ -118,10 +118,13 @@ abstract class Lot extends acCouchdbDocumentTree
         }
     }
 
+    protected function getFieldsToFill() {
+        return  array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'elevage', 'specificite', 'centilisation');
+    }
+
     public function isEmpty() {
-      $fieldsToFill = array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'elevage', 'specificite', 'centilisation');
       $defaults = $this->getDefaults();
-      foreach($fieldsToFill as $field) {
+      foreach($this->getFieldsToFill() as $field) {
         if($this->exist($field) && $this->get($field) && !isset($defaults[$field])) {
             return false;
         }
