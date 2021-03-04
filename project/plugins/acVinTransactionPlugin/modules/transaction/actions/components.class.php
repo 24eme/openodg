@@ -11,7 +11,9 @@ class transactionComponents extends sfComponents {
             }
         }
         $this->transaction = TransactionClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
-        $this->transactionsHistory = TransactionClient::getInstance()->getHistory($this->etablissement->identifiant);
+        if ($this->transaction->isValidee()) {
+          $this->transaction = null;
+        }
     }
 
 }

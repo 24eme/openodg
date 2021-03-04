@@ -46,7 +46,7 @@
         <div class="form-group" style="margin-bottom: 20px;">
             Les vins seront prêt à être dégustés à partir du :
             <div class="input-group">
-            <?php echo date("d/m/y"); ?>
+            <?php echo date("d/m/Y"); ?>
             </div>
         </div>
     <?php endif ?>

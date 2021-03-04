@@ -22,8 +22,8 @@ class TransactionClient extends acCouchdbClient {
     }
 
     public function findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $drevs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
-        foreach ($drevs as $id => $drev) {
+        $docs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
+        foreach ($docs as $id => $doc) {
 
             return $this->find($id, $hydrate);
         }
