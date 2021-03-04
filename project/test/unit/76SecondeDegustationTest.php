@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(14);
+$t = new lime_test(16);
 
 //Début des tests
 $t->comment("Création d'un second passage");
@@ -63,6 +63,13 @@ $degustation->generateMouvementsLots();
 $degustation->save();
 
 $t->is(countMouvements($degustation), 4, "Regénérer les mouvements n'en rajoute pas");
+
+$t->comment("Nouvelle dégustation");
+$nouvelle_degustation = new Degustation();
+$lot_2passage = $nouvelle_degustation->addLot($mvt, Lot::STATUT_ATTENTE_PRELEVEMENT);
+
+$t->is($lot_2passage->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le nouveau lot est en attente de prélèvement");
+$t->is($lot_2passage->nombre_degustation, 2, "Il s'agit de la deuxième dégustation");
 
 if (getenv('NODELETE')) {
     exit;
