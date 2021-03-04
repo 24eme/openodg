@@ -48,8 +48,8 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
-        $this->setWidget('numero', new bsWidgetFormInput());
-        $this->setValidator('numero', new sfValidatorString(array('required' => false)));
+        $this->setWidget('numero_cuve', new bsWidgetFormInput());
+        $this->setValidator('numero_cuve', new sfValidatorString(array('required' => false)));
 
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
