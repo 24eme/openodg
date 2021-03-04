@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(2);
+$t = new lime_test(13);
 
 //Début des tests
 $t->comment("Création d'un second passage");
