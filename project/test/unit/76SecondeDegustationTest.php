@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(13);
+$t = new lime_test(14);
 
 //Début des tests
 $t->comment("Création d'un second passage");
@@ -53,6 +53,11 @@ $t->is($mvt->nombre_degustation, 2, "C'est le deuxième passage du mouvement");
 $t->is($mvt->id_document, $degustation->_id, "L'id du doc du mouvement est la même degustation");
 $t->is($mvt->numero_archive, $lot->numero_archive, "Le numero archive n'a pas changé");
 $t->is($mvt->numero_dossier, $lot->numero_dossier, "Le numero dossier n'a pas changé");
+
+$degustation->generateMouvementsLots();
+$degustation->save();
+
+$t->is(countMouvements($degustation), 4, "Regénérer les mouvements n'en rajoute pas");
 
 if (getenv('NODELETE')) {
     exit;
