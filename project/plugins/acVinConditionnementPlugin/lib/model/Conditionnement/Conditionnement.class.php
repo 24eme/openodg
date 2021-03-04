@@ -33,7 +33,8 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         if (!$this->date) {
             $this->date = date("Y-m-d");
         }
-        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . str_replace('-', '', $this->date);
+        $idDate = str_replace('-', '', $this->date).date('Hi');
+        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $idDate;
         if($this->version) {
             $id .= "-".$this->version;
         }
@@ -659,7 +660,11 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     }
 
     public function findDocumentByVersion($version) {
-        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $this->campagne;
+        $tabId = explode('-', $this->_id);
+        if (count($tabId) < 3) {
+          throw new sfException("Doc id incoherent");
+        }
+        $id = $tabId[0].'-'.$tabId[1].'-'.$tabId[2];
         if($version) {
             $id .= "-".$version;
         }
