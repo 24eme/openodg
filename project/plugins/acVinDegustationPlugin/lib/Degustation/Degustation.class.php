@@ -326,8 +326,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			 if (!$activated) {
 				continue;
 			 }
-			 $lot = $this->addLot($mvts[$key]);
-			 $lot->statut = $statut;
+			 $lot = $this->addLot($mvts[$key], $statut);
 		 }
 	 }
 
@@ -965,9 +964,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function addLot($mouvement) {
+		public function addLot($mouvement, $statut) {
 
-			return $this->lots->add(null, MouvementLotView::generateLotByMvt($mouvement));
+			$lot = $this->lots->add(null, MouvementLotView::generateLotByMvt($mouvement));
+            $lot->statut = $statut;
+            return $lot;
 		}
 
 		public function getNbLotByTypeForNumDossier($numDossier){

@@ -122,9 +122,8 @@ EOF;
               $degustation = $newDegustation;
           }
 
-          $lot = $degustation->addLot($mouvement->value);
+          $lot = $degustation->addLot($mouvement->value, $statut);
           $lot->numero_table = 1; // Car on ne l'a pas
-          $lot->statut = $statut;
 
           if($lot->statut == Lot::STATUT_CONFORME) {
               $lot->conformite = Lot::CONFORMITE_CONFORME;

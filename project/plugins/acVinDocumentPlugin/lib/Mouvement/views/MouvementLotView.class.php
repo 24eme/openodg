@@ -124,6 +124,9 @@ class MouvementLotView extends acCouchdbView
     if(isset($mvt->centilisation)) {
         $lot->centilisation = isset($mvt->centilisation) ? $mvt->centilisation : null;
     }
+    if (isset($mvt->nombre_degustation)) {
+        $lot->nombre_degustation = $mvt->nombre_degustation;
+    }
     return $lot;
   }
 

@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(14);
+$t = new lime_test(16);
 
 //Début des tests
 $t->comment("Création d'un second passage");
@@ -45,7 +45,12 @@ $t->is(countMouvements($degustation), 4, "Il y a un mouvement de plus dans la d�
 $t->is(count($degustation->getMvtLotsPrelevables()), 2, "Un deuxième mouvement a été créé");
 
 $mvts_prelevables = $degustation->getMvtLotsPrelevables();
-$mvt = array_shift($mvts_prelevables);
+foreach ($mvts_prelevables as $key => $m) {
+    if (strpos($key, 'DEGUST') === 0) {
+        $mvt = $m;
+        continue;
+    }
+}
 
 $t->is($mvt->statut, Lot::STATUT_PRELEVABLE, "Le mouvement est prélevable");
 $t->ok($mvt->nombre_degustation, "Le mouvement est taggué en redégustation");
@@ -58,6 +63,13 @@ $degustation->generateMouvementsLots();
 $degustation->save();
 
 $t->is(countMouvements($degustation), 4, "Regénérer les mouvements n'en rajoute pas");
+
+$t->comment("Nouvelle dégustation");
+$nouvelle_degustation = new Degustation();
+$lot_2passage = $nouvelle_degustation->addLot($mvt, Lot::STATUT_ATTENTE_PRELEVEMENT);
+
+$t->is($lot_2passage->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le nouveau lot est en attente de prélèvement");
+$t->is($lot_2passage->nombre_degustation, 2, "Il s'agit de la deuxième dégustation");
 
 if (getenv('NODELETE')) {
     exit;
