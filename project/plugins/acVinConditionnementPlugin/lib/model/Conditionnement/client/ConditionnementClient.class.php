@@ -30,7 +30,7 @@ class ConditionnementClient extends acCouchdbClient {
         return null;
     }
 
-    public function findByIdentifiantAndCampagneAndDate($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
         $doc = $this->find($docid);
         return $doc;
@@ -38,7 +38,7 @@ class ConditionnementClient extends acCouchdbClient {
 
 
     public function findByIdentifiantAndCampagneAndDateOrCreateIt($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $doc = $this->findByIdentifiantAndCampagneAndDate($identifiant, $campagne, $date);
+        $doc = $this->findByIdentifiantAndDate($identifiant, $date);
         if (!$doc) {
             $doc = $this->createDoc($identifiant, $campagne, $date);
         }
