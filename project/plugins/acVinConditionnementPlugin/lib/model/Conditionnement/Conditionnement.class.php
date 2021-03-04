@@ -523,7 +523,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $date,
-    		'libelle' => 'Déclaration de conditionnement '.$this->campagne.' '.$complement,
+    		'libelle' => 'Déclaration de conditionnement '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null

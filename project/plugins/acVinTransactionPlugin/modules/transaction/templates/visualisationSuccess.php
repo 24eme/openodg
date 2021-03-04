@@ -9,7 +9,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Transaction <?php echo $transaction->campagne ?>
+    <h2>Déclaration de Vrac export <small>du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?></small>
     <?php if($transaction->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($transaction->validation && $transaction->validation !== true): ?> reçue le <?php echo format_date($transaction->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
       <?php if($transaction->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
@@ -63,7 +63,7 @@
         <div class="btn-group">
         <?php if ($transaction->validation && TransactionSecurity::getInstance($sf_user, $transaction->getRawValue())->isAuthorized(TransactionSecurity::DEVALIDATION)):
                 if (!$transaction->validation_odg): ?>
-                    <a class="btn btn-default" href="<?php echo url_for('transaction_devalidation', $transaction) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette Transaction ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+                    <a class="btn btn-default" href="<?php echo url_for('transaction_devalidation', $transaction) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir ce vrac export ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
             <?php endif; ?>
         <?php endif; ?>
         <?php if(!$transaction->validation): ?>

@@ -530,7 +530,7 @@ class Transaction extends BaseTransaction implements InterfaceVersionDocument, I
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $date,
-    		'libelle' => 'Déclaration de transaction '.$this->campagne.' '.$complement,
+    		'libelle' => 'Déclaration de vrac export '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null

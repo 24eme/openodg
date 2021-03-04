@@ -7,7 +7,7 @@
 					<h4 class="modal-title" id="myModalLabel">Validation de votre déclaration</h4>
 				</div>
 				<div class="modal-body">
-					<p>Confirmez-vous la validation de votre Déclaration de Transaction ?</p>
+					<p>Confirmez-vous la validation de votre Déclaration de vrac export ?</p>
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
