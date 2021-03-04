@@ -535,7 +535,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     }
 
     public function generateUrlPiece($source = null) {
-    	return sfContext::getInstance()->getRouting()->generate('conditionnement_export_pdf', $this);
+    	return null;
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
