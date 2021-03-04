@@ -27,8 +27,6 @@ $mydate = $campagne.'-'.date('m-d');
 $t->comment("Création d'un Conditionnement");
 
 $conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne, $mydate);
-
-$conditionnement->storeDeclarant();
 $conditionnement->save();
 
 $t->comment($conditionnement->_id);
