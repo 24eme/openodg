@@ -281,6 +281,13 @@ class Transaction extends BaseTransaction implements InterfaceVersionDocument, I
             return $this->validateOdgByRegion($date, $region);
         }
 
+        $this->storeLotsDateVersion($date);
+        $this->cleanDoc();
+
+        $this->archiver();
+        $this->generateMouvementsLots();
+        $this->updateStatutsLotsSupprimes();
+
         $this->validation_odg = $date;
     }
 

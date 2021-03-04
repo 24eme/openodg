@@ -50,5 +50,4 @@ class DegustationLot extends BaseDegustationLot {
       return 'DRev';
     }
   }
-
 }

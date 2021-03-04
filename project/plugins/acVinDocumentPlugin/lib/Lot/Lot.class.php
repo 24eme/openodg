@@ -299,4 +299,18 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         return $libelle;
     }
+
+    public function redegustation()
+    {
+        // Tagguer le lot avec un flag special
+        // Regenerer les mouvements
+
+        if (! $this->exist('nombre_degustation')) {
+            $this->add('nombre_degustation', 1);
+        }
+
+        $this->nombre_degustation++;
+
+        $this->getDocument()->generateMouvementsLots();
+    }
 }

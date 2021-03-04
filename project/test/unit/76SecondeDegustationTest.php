@@ -8,27 +8,65 @@ if ($application != 'igp13') {
     return;
 }
 
+function countMouvements($degustation) {
+    $nb_mvmts = 0;
 
-$t = new lime_test(3);
+    foreach ($degustation->mouvements_lots as $ope) {
+        foreach ($ope as $m) {
+            $nb_mvmts++;
+        }
+    }
+
+    return $nb_mvmts;
+}
+
+$t = new lime_test(14);
 
 //Début des tests
 $t->comment("Création d'un second passage");
 
-$lots_a_redeguster = DegustationClient::getInstance()->getManquements();
-$lot_a_redeguster = array_pop($lots_a_redeguster);
-$specificite_originale = $lot_a_redeguster->specificite;
+foreach (DegustationClient::getInstance()->getHistory(1) as $d) {
+    $degustation = $d;
+}
 
-$lot_a_redeguster->prelevable = Lot::STATUT_PRELEVABLE;
-$t->is($lot_a_redeguster->prelevable, Lot::STATUT_PRELEVABLE, 'Le statut est à prélevable');
+$t->is(countMouvements($degustation), 3, "Il y a 3 mouvements originaux dans la dégustation");
+$t->is(count($degustation->getMvtLotsPrelevables()), 1, "Il y a un seul mouvement prélevable");
 
-DegustationClient::updatedSpecificite($lot_a_redeguster);
-$t->is($lot_a_redeguster->specificite, $specificite_originale.', 2ème passage', 'Il s\'agit d\'un second passage');
+$lot = $degustation->lots[0];
+$lot->remove('nombre_degustation');
+$lot->redegustation();
+$degustation->save();
 
-DegustationClient::updatedSpecificite($lot_a_redeguster);
-$t->is($lot_a_redeguster->specificite, $specificite_originale.', 3ème passage', "Il s'agit d'un troisième passage");
+$t->is($lot->statut, Lot::STATUT_NONCONFORME, "Le lot n'a pas bougé");
+$t->ok($lot->nombre_degustation, "Le lot est taggué en redegustation");
+$t->is($lot->nombre_degustation, 2, "C'est le deuxième passage du lot");
 
-$lot_a_redeguster->specificite = null;
-$t->is($lot_a_redeguster->specificite, null, 'On reset la spécificité');
+$t->is(countMouvements($degustation), 4, "Il y a un mouvement de plus dans la dégustation");
+$t->is(count($degustation->getMvtLotsPrelevables()), 2, "Un deuxième mouvement a été créé");
 
-DegustationClient::updatedSpecificite($lot_a_redeguster);
-$t->is($lot_a_redeguster->specificite, '2ème passage', 'Il s\'agit d\'un second passage');
+$mvts_prelevables = $degustation->getMvtLotsPrelevables();
+$mvt = array_shift($mvts_prelevables);
+
+$t->is($mvt->statut, Lot::STATUT_PRELEVABLE, "Le mouvement est prélevable");
+$t->ok($mvt->nombre_degustation, "Le mouvement est taggué en redégustation");
+$t->is($mvt->nombre_degustation, 2, "C'est le deuxième passage du mouvement");
+$t->is($mvt->id_document, $degustation->_id, "L'id du doc du mouvement est la même degustation");
+$t->is($mvt->numero_archive, $lot->numero_archive, "Le numero archive n'a pas changé");
+$t->is($mvt->numero_dossier, $lot->numero_dossier, "Le numero dossier n'a pas changé");
+
+$degustation->generateMouvementsLots();
+$degustation->save();
+
+$t->is(countMouvements($degustation), 4, "Regénérer les mouvements n'en rajoute pas");
+
+if (getenv('NODELETE')) {
+    exit;
+}
+
+$mvmts_prelevables = $degustation->getMvtLotsPrelevables();
+foreach($mvmts_prelevables as $m) {
+    if ($m->nombre_degustation) {
+        $degustation->remove($m->origine_mouvement);
+    }
+}
+$degustation->save();

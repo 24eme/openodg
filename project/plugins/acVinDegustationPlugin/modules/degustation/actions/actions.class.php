@@ -565,7 +565,6 @@ class degustationActions extends sfActions {
           $lot = $doc->lots->get($ind);
         }
         $this->forward404Unless($lot);
-        $lot->statut = Lot::STATUT_PRELEVABLE;
         DegustationClient::updatedSpecificite($lot);
         $doc->generateMouvementsLots();
         $doc->save();
