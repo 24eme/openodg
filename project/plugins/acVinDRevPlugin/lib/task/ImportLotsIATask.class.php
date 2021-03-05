@@ -239,6 +239,7 @@ EOF;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
             $lot->statut = Lot::STATUT_NONPRELEVABLE;
+            $lot->specificite = null;
             if ($statut == self::STATUT_NONCONFORME) {
               $lot->statut = self::STATUT_PRELEVABLE;
               $lot->specificite = "2ème passage $lot->specificite";
@@ -248,6 +249,9 @@ EOF;
             }
             if($lot->elevage) {
                 $lot->statut = Lot::STATUT_ELEVAGE;
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {
+                $lot->centilisation = "donnée non présente dans l'import";
             }
 
             $deleted = array();
@@ -266,11 +270,11 @@ EOF;
 
             $document->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             try {
-            $document->save();
-            echo "SUCCESS;Lot importé;".$document->_id.";\n";
-        } catch(Exception $e) {
-            echo "ERROR;".$e->getMessage().";".$line."\n";
-        }
+                $document->save();
+                echo "SUCCESS;Lot importé;".$document->_id.";\n";
+            } catch(Exception $e) {
+                echo "ERROR;".$e->getMessage().";".$document->_id.";".$line."\n";
+            }
         }
     }
 
@@ -367,10 +371,9 @@ EOF;
         $newCond->validation_odg = $date;
         $newCond->numero_archive = $numeroDossier;
         $newCond->add('date_degustation_voulue', $date);
-        if (!$cond || $cond->_id != $newCond->_id) {
-            $cond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDate($etablissement->identifiant, $campagne, $date);
-            if ($cond) { $cond->delete(); $cond = null;}
-
+        if (!$previousdoc || $cond->_id != $newCond->_id) {
+            $newCond->remove('lots');
+            $newCond->add('lots');
         }
         if (!$cond) {
             $cond = $newCond;
