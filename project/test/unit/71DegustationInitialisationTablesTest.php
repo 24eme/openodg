@@ -25,7 +25,7 @@ $t->is(count($doc->getLotsTableOrFreeLots(1)), 1, 'La table 1 à un lot');
 $t->is($doc->hasFreeLots(), false, "Il n'y a plus de lot non assigné");
 
 $doc->generateMouvementsLots();
-$t->is(count($doc->mouvements_lots->{$lot1->declarant_identifiant}), 5, 'La génération de mouvement a généré 5 lots');
+$t->is(count($doc->mouvements_lots->{$lot1->declarant_identifiant}), 4, 'La génération de mouvement a généré 4 lots');
 
 $t->comment('On créé un leurre');
 $produitLeurreHash = $lot1->getProduitHash();

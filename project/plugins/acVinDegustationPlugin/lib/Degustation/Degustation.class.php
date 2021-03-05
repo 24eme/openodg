@@ -277,12 +277,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $lot->statut = Lot::STATUT_DEGUSTE;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
 
-            case Lot::STATUT_ATTABLE:
-                $lot->statut = Lot::STATUT_ATTABLE;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
             case Lot::STATUT_ANONYMISE:
                 $lot->statut = Lot::STATUT_ANONYMISE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_ATTABLE:
+                $lot->statut = Lot::STATUT_ATTABLE;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
 
             case Lot::STATUT_PRELEVE:
