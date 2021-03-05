@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(14);
+$t = new lime_test(15);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -70,6 +70,7 @@ $t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_WARNIN
 
 $t->is($conditionnement->lots[0]->specificite, "UNDEFINED", "L'absence de spécificité crée une spécificité UNDEFINED temporaire");
 $t->ok(!$conditionnement->lots[2]->specificite, "Une spécificité vide ne crée pas de valeur de spécificité");
+$t->is($lot3->getCentilisation(), $centilisations_bib_key, "la centilisation est accessible via le getCentilisation");
 
 $t->comment("création du lot 4");
 $lot4 = $conditionnement->addLot();
