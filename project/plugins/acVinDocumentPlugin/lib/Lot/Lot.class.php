@@ -99,6 +99,7 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($this->produit_hash) {
             return $this->getDocument()->getConfiguration()->get($this->produit_hash);
         }
+        return null;
     }
 
     public function getDefaults() {
@@ -170,6 +171,10 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == 'millesime') {
             return ($this->millesime) ? $this->millesime : 'XXXX';
         }
+        if (!$this->getConfig()||$type == 'numero_anonymat') {
+          $numero= intval(substr($this->numero_anonymat, 1));
+          return $numero;
+        }
         if ($type == 'appellation') {
             return $this->getConfig()->getAppellation()->getKey();
         }
@@ -185,10 +190,6 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         if ($type == 'produit') {
             return $this->_get('produit_hash').$this->_get('details');
-        }
-        if ($type == 'numero_anonymat'){
-          $numero= intval(substr($this->numero_anonymat, 1));
-          return $numero;
         }
         throw new sfException('unknown type of value : '.$type);
     }
@@ -277,7 +278,7 @@ abstract class Lot extends acCouchdbDocumentTree
         return $hash;
     }
     public function getTriLibelle(array $tri = null) {
-        if (!$tri) {
+        if (!$tri||!$this->getConfig()) {
             return $this->produit_libelle;
         }
         $format = '';
