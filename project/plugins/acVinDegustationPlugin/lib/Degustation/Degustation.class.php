@@ -239,6 +239,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $mvts = [];
 
         foreach ($this->lots as $lot) {
+            if ($lot->isLeurre()) {
+                continue;
+            }
+
             $mvts[$lot->declarant_identifiant] = $this->generateMouvementsLot($lot);
         }
 
