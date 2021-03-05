@@ -40,4 +40,10 @@ class DegustationLot extends BaseDegustationLot {
       return 'DRev';
     }
   }
+
+    public function attributionTable($table)
+    {
+        $this->numero_table = $table;
+        $this->statut = Lot::STATUT_ATTABLE;
+    }
 }
