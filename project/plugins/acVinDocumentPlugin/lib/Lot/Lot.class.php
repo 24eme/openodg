@@ -314,4 +314,97 @@ abstract class Lot extends acCouchdbDocumentTree
 
         $this->getDocument()->generateMouvementsLots();
     }
+
+    public function setNumeroTable($numero) {
+        $lastLot = $this->getLotInLastPosition($numero);
+        if ($lastLot) {
+          $this->position = $lastLot->getPosition() + 1;
+        }
+        return $this->_set('numero_table', $numero);
+    }
+
+    public function getPosition()
+    {
+      if (!$this->_get('position')) {
+        $recalcul = true;
+      } elseif(!$this->numero_table||substr($this->_get('position'), 0, 2) == '99') {
+        $recalcul = true;
+      } else {
+        $recalcul = false;
+      }
+      if ($recalcul) {
+          $table = ($this->numero_table) ? $this->numero_table : 99;
+          $this->position =  sprintf("%02d%03d", $table, $this->getKey());
+      }
+      return $this->_get('position');
+    }
+
+    public function getLotInPrevPosition() {
+      $lots = $this->getDocument()->lots;
+      $lot = null;
+      foreach($lots as $l) {
+        if ($l->numero_table == $this->numero_table) {
+          if ($l->getPosition() < $this->getPosition()) {
+            if ($lot && $l->getPosition() < $lot->getPosition()) {
+              continue;
+            } else {
+              $lot = $l;
+            }
+          }
+        }
+      }
+      return $lot;
+    }
+
+    public function getLotInNextPosition() {
+      $lots = $this->getDocument()->lots;
+      $lot = null;
+      foreach($lots as $l) {
+        if ($l->numero_table == $this->numero_table) {
+          if ($l->getPosition() > $this->getPosition()) {
+            if ($lot && $l->getPosition() > $lot->getPosition()) {
+              continue;
+            } else {
+              $lot = $l;
+            }
+          }
+        }
+      }
+      return $lot;
+    }
+
+    public function switchPosition($toLot, $fromLot) {
+        if (!$toLot||!$fromLot) {
+          return false;
+        }
+        $toPos = $toLot->getPosition();
+        $toLot->position =  $fromLot->getPosition();
+        $fromLot->position = $toPos;
+        return true;
+    }
+
+    public function upPosition()
+    {
+      return $this->switchPosition($this, $this->getLotInPrevPosition());
+    }
+
+    public function downPosition()
+    {
+      return $this->switchPosition($this->getLotInNextPosition(), $this);
+    }
+
+    public function getLotInLastPosition($numeroTable) {
+        $lots = $this->getDocument()->lots;
+        $lot = null;
+        foreach($lots as $l) {
+          if ($l->numero_table == $numeroTable) {
+            if (!$lot||$l->getPosition() > $lot->getPosition()) {
+                $lot = $l;
+            }
+          }
+        }
+        return $lot;
+    }
+
+
 }
