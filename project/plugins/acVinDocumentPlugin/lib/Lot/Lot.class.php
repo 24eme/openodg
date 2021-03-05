@@ -300,6 +300,17 @@ abstract class Lot extends acCouchdbDocumentTree
         return $libelle;
     }
 
+    public function isSecondPassage()
+    {
+        return $this->exist('nombre_degustation') && $this->nombre_degustation > 1;
+    }
+
+    public function getTextPassage()
+    {
+        $nb = $this->isSecondPassage() ? $this->nombre_degustation.'ème' : '1er';
+        return $nb." passage";
+    }
+
     public function redegustation()
     {
         // Tagguer le lot avec un flag special
