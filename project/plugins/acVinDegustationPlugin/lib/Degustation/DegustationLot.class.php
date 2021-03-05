@@ -46,4 +46,10 @@ class DegustationLot extends BaseDegustationLot {
         $this->numero_table = $table;
         $this->statut = Lot::STATUT_ATTABLE;
     }
+
+    public function anonymize($index)
+    {
+        $this->numero_anonymat = $this->getNumeroTableStr().($index+1);
+        $this->statut = Lot::STATUT_ANONYMISE;
+    }
 }

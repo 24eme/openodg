@@ -612,9 +612,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					if ($lot->numero_anonymat) {
 						throw new sfException("L'anonymat a déjà été réalisé");
 					}
-					$lot->numero_anonymat = $lot->getNumeroTableStr().($k+1);
+
+                    $lot->anonymize($k);
 				}
 			}
+
+            $this->generateMouvementsLots();
 		}
 
 		public function desanonymize(){
