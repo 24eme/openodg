@@ -11,7 +11,11 @@ class transactionComponents extends sfComponents {
             }
         }
         $this->transaction = TransactionClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
-        if ($this->transaction && $this->transaction->isValidee()) {
+        if ($this->transaction && $this->transaction->isAutoReouvrable()) {
+          $this->transaction->devalidate();
+          $this->transaction->etape = ConditionnementEtapes::ETAPE_LOTS;
+          $this->transaction->save();
+        } else {
           $this->transaction = null;
         }
     }
