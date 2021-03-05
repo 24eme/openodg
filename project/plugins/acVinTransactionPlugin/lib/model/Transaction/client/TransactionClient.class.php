@@ -31,10 +31,26 @@ class TransactionClient extends acCouchdbClient {
         return null;
     }
 
-    public function createDoc($identifiant, $campagne, $papier = false)
+    public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
+        echo "docid: $docid\n";
+        $doc = $this->find($docid);
+        return $doc;
+    }
+
+
+    public function findByIdentifiantAndCampagneAndDateOrCreateIt($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $doc = $this->findByIdentifiantAndDate($identifiant, $date, $hydrate);
+        if (!$doc) {
+            $doc = $this->createDoc($identifiant, $campagne, $date);
+        }
+        return $doc;
+    }
+
+    public function createDoc($identifiant, $campagne, $date = null, $papier = false)
     {
         $doc = new Transaction();
-        $doc->initDoc($identifiant, $campagne);
+        $doc->initDoc($identifiant, $campagne, $date);
 
         $doc->storeDeclarant();
 

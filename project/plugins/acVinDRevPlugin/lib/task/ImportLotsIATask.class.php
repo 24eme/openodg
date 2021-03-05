@@ -51,6 +51,8 @@ class ImportLotsIATask extends sfBaseTask
   public static $typeAllowed = array (
       self::TYPE_REVENDIQUE,
       self::TYPE_CONDITIONNEMENT,
+      self::TYPE_TRANSACTION_VRAC_FRANCE,
+      self::TYPE_TRANSACTION_VRAC_HORS_FRANCE,
   );
 
   const STATUT_PRELEVE = "PRELEVE";
@@ -253,6 +255,12 @@ EOF;
             if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {
                 $lot->centilisation = "donnée non présente dans l'import";
             }
+            if ($data[self::CSV_TYPE] == self::TYPE_TRANSACTION_VRAC_FRANCE) {
+                $lot->pays = "France";
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
+                $lot->pays = "Export : données du pays non importée";
+            }
 
             $deleted = array();
             foreach($document->lots as $k => $l) {
@@ -339,6 +347,12 @@ EOF;
         if ($type == self::TYPE_CONDITIONNEMENT) {
             return $this->getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
         }
+        if ($type == self::TYPE_TRANSACTION_VRAC_FRANCE) {
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
+        if ($type == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
     }
 
     public function getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
@@ -363,7 +377,6 @@ EOF;
     }
 
     public function getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
-        $cond = $previousdoc;
         $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
         $newCond->constructId();
         $newCond->storeDeclarant();
@@ -371,14 +384,27 @@ EOF;
         $newCond->validation_odg = $date;
         $newCond->numero_archive = $numeroDossier;
         $newCond->add('date_degustation_voulue', $date);
-        if (!$previousdoc || $cond->_id != $newCond->_id) {
+        if (!$previousdoc || $previousdoc->_id != $newCond->_id) {
             $newCond->remove('lots');
             $newCond->add('lots');
         }
-        if (!$cond) {
-            $cond = $newCond;
-        }
-        return $cond;
+        return $newCond;
     }
+
+    public function getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
+        $newTrans->constructId();
+        $newTrans->storeDeclarant();
+        $newTrans->validation = $date;
+        $newTrans->validation_odg = $date;
+        $newTrans->numero_archive = $numeroDossier;
+        $newTrans->add('date_degustation_voulue', $date);
+        if (!$previousdoc || $previousdoc->_id != $newTrans->_id) {
+            $newTrans->remove('lots');
+            $newTrans->add('lots');
+        }
+        return $newTrans;
+    }
+
 
 }
