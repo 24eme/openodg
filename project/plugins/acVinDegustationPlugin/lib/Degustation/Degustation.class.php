@@ -249,17 +249,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $this->addMouvementsLots($mvts);
 
         return $mvts;
-
-			foreach($this->lots as $k => $lot) {
-					$key = $lot->getUnicityKey();
-					$mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
-
-                    if ($lot->exist('nombre_degustation')) {
-                        $mvt_redegustation = $this->generateAndAddMouvementLotsFromLot($lot, $key.'-'.$lot->nombre_degustation);
-                        $mvt_redegustation->statut = Lot::STATUT_PRELEVABLE;
-                        $mvt_redegustation->add('nombre_degustation', $lot->nombre_degustation);
-                    }
-			}
 	}
 
     public function generateMouvementsLot($lot)
