@@ -464,7 +464,9 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
-        $mvt->centilisation = $lot->centilisation;
+        if ($lot->exist('centilisation')) {
+            $mvt->centilisation = $lot->centilisation;
+        }
 
         $tabCepages=[];
 
@@ -491,7 +493,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
 
     public function generateAndAddMouvementLotsFromLot($lot, $key) {
         $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-        return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
+        return $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
     }
 
     public function generateMouvementsLots() {

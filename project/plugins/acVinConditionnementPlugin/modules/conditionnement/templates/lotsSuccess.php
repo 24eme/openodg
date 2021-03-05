@@ -86,12 +86,12 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <?php echo $lot['numero']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                      <?php echo $lot['numero_cuve']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
                       <div class="col-sm-3">
-                            <?php echo $lot['numero']->render(); ?>
+                            <?php echo $lot['numero_cuve']->render(); ?>
                       </div>
                       <div class="col-sm-6 text-danger">
-                            <?php echo $lot['numero']->renderError(); ?>
+                            <?php echo $lot['numero_cuve']->renderError(); ?>
                       </div>
                     </div>
                   </div>

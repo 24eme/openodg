@@ -41,9 +41,9 @@
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
                       <?php if($conditionnement->isValidee()): ?>
                         <td><?php echo $lot->numero_archive; ?></td>
-                        <td><?php echo $lot->numero; ?></td>
+                        <td><?php echo $lot->numero_cuve; ?></td>
                       <?php else: ?>
-                        <td><?php echo $lot->numero; ?></td>
+                        <td><?php echo $lot->numero_cuve; ?></td>
                       <?php endif; ?>
                         <td>
                           <?php echo showProduitLot($lot) ?>

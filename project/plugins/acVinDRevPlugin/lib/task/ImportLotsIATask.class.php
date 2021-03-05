@@ -50,6 +50,7 @@ class ImportLotsIATask extends sfBaseTask
 
   public static $typeAllowed = array (
       self::TYPE_REVENDIQUE,
+      self::TYPE_CONDITIONNEMENT,
   );
 
   const STATUT_PRELEVE = "PRELEVE";
@@ -189,6 +190,7 @@ EOF;
             if ($date) {
                   $dt = new DateTime($date);
                   $date = $dt->modify('+1 minute')->format('c');
+                  $date = preg_replace('/T.*/', '', $date);
             }
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
             $statut = null;
@@ -218,6 +220,11 @@ EOF;
             $lot->volume = $volume;
             $lot->destination_type = null;
             $lot->elevage = false;
+
+            if (!$data[self::CSV_DESTINATION]) {
+                $data[self::CSV_DESTINATION] = $data[self::CSV_TYPE];
+            }
+
             if(preg_match('/VF/', $data[self::CSV_DESTINATION])) {
                 $lot->destination_type .= DRevClient::LOT_DESTINATION_VRAC_FRANCE."_";
             }
@@ -264,10 +271,10 @@ EOF;
             $document->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             try {
             $document->save();
+            echo "SUCCESS;Lot importé;".$document->_id.";\n";
         } catch(Exception $e) {
             echo "ERROR;".$e->getMessage().";".$line."\n";
         }
-            echo "SUCCESS;Lot importé;".$document->_id.";\n";
         }
     }
 
@@ -329,6 +336,9 @@ EOF;
         if ($type == self::TYPE_REVENDIQUE) {
             return $this->getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
         }
+        if ($type == self::TYPE_CONDITIONNEMENT) {
+            return $this->getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
     }
 
     public function getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
@@ -351,4 +361,25 @@ EOF;
         }
         return $drev;
     }
+
+    public function getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        $cond = $previousdoc;
+        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
+        $newCond->constructId();
+        $newCond->storeDeclarant();
+        $newCond->validation = $date;
+        $newCond->validation_odg = $date;
+        $newCond->numero_archive = $numeroDossier;
+        $newCond->add('date_degustation_voulue', $date);
+        if (!$cond || $cond->_id != $newCond->_id) {
+            $cond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDate($etablissement->identifiant, $campagne, $date);
+            if ($cond) { $cond->delete(); $cond = null;}
+
+        }
+        if (!$cond) {
+            $cond = $newCond;
+        }
+        return $cond;
+    }
+
 }
