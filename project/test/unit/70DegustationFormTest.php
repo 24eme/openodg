@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(33);
+$t = new lime_test(35);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -111,7 +111,7 @@ $form->bind($valuesRev);
 $form->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
-$t->is(count($degustation->lots), 1, 'un lot est bien mis comme prélevé dans la degustation');
+$t->is(count($degustation->lots), 1, 'Il y a un lot dans la dégustation');
 $t->ok($degustation->lots[0], 'Le lot indiqué comme prelevé est bien celui qui est enregistré');
 $t->is($degustation->lots[0]->volume, $lot_mvt2->volume, 'Le lot a le bon volume');
 $t->is($degustation->lots[0]->numero_cuve, $lot_mvt2->numero_cuve, 'Le lot a le bon numero de cuve');
@@ -121,11 +121,14 @@ $t->is($degustation->lots[0]->declarant_identifiant, $drev->identifiant, 'Le lot
 $t->is($degustation->lots[0]->declarant_nom, $drev->declarant->raison_sociale, 'Le lot a le bon nom de declarant');
 $t->is($degustation->lots[0]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, 'Le lot a le bon statut');
 $degustation->generateMouvementsLots();
-$t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 1, 'le lot est reproduit dans mvt lot');
-foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) { break; }
-$t->is($mvt->id_document, $degustation->_id, 'le mvt lot permet de retrouver la degustation via id_document');
-$t->is($mvt->origine_document_id, $degustation->_id, 'le mvt lot issu de la degustation est bien l\'id de la degustation');
-$t->is($mvt->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "le mvt lot du lot n'est pas prélevable");
+$t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 2, 'La génération de mouvement à produit deux mouvements');
+foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) {
+    $mouvement[$mvt->statut] = $mvt;
+}
+$t->is($mouvement[Lot::STATUT_ATTENTE_PRELEVEMENT]->id_document, $degustation->_id, 'le mvt lot permet de retrouver la degustation via id_document');
+$t->is($mouvement[Lot::STATUT_ATTENTE_PRELEVEMENT]->origine_document_id, $degustation->_id, 'le mvt lot issu de la degustation est bien l\'id de la degustation');
+$t->is($mouvement[Lot::STATUT_ATTENTE_PRELEVEMENT]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "le mvt lot du lot est en attente de prélèvement");
+$t->is($mouvement[Lot::STATUT_AFFECTE_DEST]->statut, Lot::STATUT_AFFECTE_DEST, "le deuxième mvt lot du lot est affecté destination");
 
 $t->comment("Prélévé");
 
@@ -144,6 +147,9 @@ $form->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->lots[0]->statut, Lot::STATUT_PRELEVE, 'Le lot est marqué comme prélevé');
 
+$degustation->generateMouvementsLots();
+$t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 3, 'La génération a généré 3 mouvements');
+
 $form = new DegustationPreleveLotsForm($degustation);
 $defaults = $form->getDefaults();
 
@@ -151,7 +157,7 @@ $t->is($defaults['lots'][0]['preleve'], true, "Le lot est marqué comme prélev�
 
 $t->comment('Changement de logement');
 $degustation->updateLotLogement($degustation->lots[0], $degustation->lots[0]->numero_cuve + 1);
-$t->is($degustation->lots[0]->numero_cuve, $lot_mvt2->numero_cuve + 1);
+$t->is($degustation->lots[0]->numero_cuve, $lot_mvt2->numero_cuve + 1, "Le changement de logement est effectif dans la dégustation");
 
 $t->comment("Dégustateurs");
 $formPorteurDeMemoire = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_porteur_de_memoire'));

@@ -6,12 +6,16 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
+    const STATUT_AFFECTE_DEST = "AFFECTE_DEST";
     const STATUT_PRELEVABLE = "PRELEVABLE";
     const STATUT_NONPRELEVABLE = "NON_PRELEVABLE";
     const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
     const STATUT_PRELEVE = "PRELEVE";
+    const STATUT_ATTABLE = "ATTABLE";
+    const STATUT_ANONYMISE = "ANONYMISE";
     const STATUT_DEGUSTE = "DEGUSTE";
     const STATUT_CONFORME = "CONFORME";
+    const STATUT_AFFECTE_SRC = "AFFECTE_SRC";
     const STATUT_NONCONFORME = "NON_CONFORME";
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
@@ -28,13 +32,17 @@ abstract class Lot extends acCouchdbDocumentTree
     const TYPE_ARCHIVE = 'Lot';
 
     public static $libellesStatuts = array(
+        self::STATUT_AFFECTE_DEST => 'Affecte dest',
         self::STATUT_PRELEVABLE => 'Prélevable',
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
+        self::STATUT_ATTABLE => 'Attablé',
+        self::STATUT_ANONYMISE => 'Anonymisé',
         self::STATUT_DEGUSTE => 'Dégusté',
         self::STATUT_CONFORME => 'Conforme',
         self::STATUT_NONCONFORME => 'Non conforme',
+        self::STATUT_AFFECTE_SRC => 'Affecte src',
         self::STATUT_CHANGE => 'Changé',
         self::STATUT_DECLASSE => 'Déclassé',
         self::STATUT_ELEVAGE => 'En élevage'

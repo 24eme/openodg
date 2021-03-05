@@ -226,7 +226,26 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $this->add('mouvements_lots')->add($lot->declarant_identifiant)->add($key, $this->generateMouvementLotsFromLot($lot, $key));
 	}
 
-	public function generateMouvementsLots() {
+    public function addMouvementsLots($mvts)
+    {
+        foreach ($mvts as $declarant => $lots) {
+            foreach ($lots as $key => $lot) {
+                $this->add('mouvements_lots')->add($declarant)->add($key, $lot);
+            }
+        }
+    }
+
+    public function generateMouvementsLots() {
+        $mvts = [];
+
+        foreach ($this->lots as $lot) {
+            $mvts[$lot->declarant_identifiant] = $this->generateMouvementsLot($lot);
+        }
+
+        $this->addMouvementsLots($mvts);
+
+        return $mvts;
+
 			foreach($this->lots as $k => $lot) {
 					$key = $lot->getUnicityKey();
 					$mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
@@ -238,6 +257,54 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     }
 			}
 	}
+
+    public function generateMouvementsLot($lot)
+    {
+        $mvts = [];
+        $key = $lot->getUnicityKey();
+        $statut_originel = $lot->statut;
+
+        switch($lot->statut) {
+            case Lot::STATUT_CONFORME:
+                $lot->statut = Lot::STATUT_CONFORME;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_AFFECTE_SRC:
+                $lot->statut = Lot::STATUT_AFFECTE_SRC;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_DEGUSTE:
+                $lot->statut = Lot::STATUT_DEGUSTE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_ATTABLE:
+                $lot->statut = Lot::STATUT_ATTABLE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_ANONYMISE:
+                $lot->statut = Lot::STATUT_ANONYMISE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_PRELEVE:
+                $lot->statut = Lot::STATUT_PRELEVE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_ATTENTE_PRELEVEMENT:
+                $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_AFFECTE_DEST:
+                $lot->statut = Lot::STATUT_AFFECTE_DEST;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            default:
+                break;
+        }
+
+        $lot->statut = $statut_originel;
+
+        return $mvts;
+    }
 
 	public function isValidee() {
 
