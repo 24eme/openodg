@@ -11,8 +11,12 @@ class conditionnementComponents extends sfComponents {
             }
         }
         $this->conditionnement = ConditionnementClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
-        if ($this->conditionnement->isValidee()) {
-          $this->conditionnement = null;
+        if ($this->conditionnement && $this->conditionnement->isAutoReouvrable()) {
+          $this->conditionnement->devalidate();
+          $this->conditionnement->etape = ConditionnementEtapes::ETAPE_LOTS;
+          $this->conditionnement->save();
+        } else {
+          $this->transaction = null;
         }
     }
 

@@ -10,9 +10,9 @@
         </div>
         <?php if ($conditionnement && (ConditionnementClient::getInstance()->isOpen() || $sf_user->isAdmin())): ?>
             <div class="panel-body">
-                <p>Une déclaration de conditionnement a été débutée sans avoir été validée.</p>
+                <p>Reprendre la déclaration de conditionnement du <?php echo format_date($conditionnement->getDate(), 'dd/MM/yyyy'); ?>.</p>
                 <div style="margin-top: 50px;">
-                    <a class="btn btn-block btn-primary" href="<?php echo url_for('conditionnement_edit', $conditionnement) ?>"><?php if($conditionnement->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer le conditionnement papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
+                    <a class="btn btn-block btn-primary" href="<?php echo url_for('conditionnement_edit', $conditionnement) ?>"><?php if($conditionnement->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Reprendre le conditionnement papier<?php else: ?>Reprendre la télédéclaration<?php endif; ?></a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('conditionnement_delete', $conditionnement) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </div>
             </div>
