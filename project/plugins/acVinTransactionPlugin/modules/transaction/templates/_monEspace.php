@@ -10,9 +10,9 @@
         </div>
         <?php if ($transaction && (TransactionClient::getInstance()->isOpen() || $sf_user->isAdmin())): ?>
             <div class="panel-body">
-                <p>Une déclaration de vrac export a été débutée sans avoir été validée.</p>
+                <p>Reprendre la déclaration de vrac export du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?>.</p>
                 <div style="margin-top: 50px;">
-                    <a class="btn btn-block btn-primary" href="<?php echo url_for('transaction_edit', $transaction) ?>"><?php if($transaction->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer le vrac export papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
+                    <a class="btn btn-block btn-primary" href="<?php echo url_for('transaction_edit', $transaction) ?>"><?php if($transaction->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Reprendre le vrac export papier<?php else: ?>Reprendre la télédéclaration<?php endif; ?></a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('transaction_delete', $transaction) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </div>
             </div>
