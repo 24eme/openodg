@@ -33,7 +33,7 @@ class Transaction extends BaseTransaction implements InterfaceVersionDocument, I
         if (!$this->date) {
             $this->date = date("Y-m-d");
         }
-        $idDate = str_replace('-', '', $this->date).date('Hi');
+        $idDate = str_replace('-', '', $this->date);
         $id = 'TRANSACTION-' . $this->identifiant . '-' . $idDate;
         if($this->version) {
             $id .= "-".$this->version;

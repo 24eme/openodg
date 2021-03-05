@@ -33,7 +33,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         if (!$this->date) {
             $this->date = date("Y-m-d");
         }
-        $idDate = str_replace('-', '', $this->date).date('Hi');
+        $idDate = str_replace('-', '', $this->date);
         $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $idDate;
         if($this->version) {
             $id .= "-".$this->version;
@@ -176,7 +176,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     public function addLot() {
         $lot = $this->add('lots')->add();
         $lot->initDefault();
-        
+
         return $lot;
     }
 
