@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(13);
+$t = new lime_test(14);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -32,6 +32,7 @@ $conditionnement->save();
 $t->comment($conditionnement->_id);
 $t->is($conditionnement->date, $mydate, "La date est bien la date fournie ($mydate)");
 $t->is($conditionnement->_id, "CONDITIONNEMENT-".$viti->identifiant."-".preg_replace('/-/', '', $mydate), "L'identifiant est bien constituté de la date");
+$t->is($conditionnement->_id, ConditionnementClient::getInstance()->findByIdentifiantAndDate($viti->identifiant, $mydate)->_id, "On retrouve bien le conditionnement à partir de l'identifiant and la date");
 
 $produits = $conditionnement->getConfigProduits();
 
