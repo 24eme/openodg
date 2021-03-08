@@ -106,8 +106,8 @@ class DRevLot extends BaseDRevLot
     }
 
     public function getNumeroCuve() {
-        if($this->exist('numero_cuve') && $this->get('numero_cuve')) {
-            $this->numero = $this->get('numero_cuve');
+        if($this->exist('numero_cuve') && $this->_get('numero_cuve')) {
+            $this->numero = $this->_get('numero_cuve');
         }
         if($this->exist('numero_cuve')) {
             $this->remove('numero_cuve');

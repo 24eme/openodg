@@ -51,6 +51,8 @@ class ImportLotsIATask extends sfBaseTask
   public static $typeAllowed = array (
       self::TYPE_REVENDIQUE,
       self::TYPE_CONDITIONNEMENT,
+      self::TYPE_TRANSACTION_VRAC_FRANCE,
+      self::TYPE_TRANSACTION_VRAC_HORS_FRANCE,
   );
 
   const STATUT_PRELEVE = "PRELEVE";
@@ -187,11 +189,7 @@ EOF;
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
             $destinationDate = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_TRANSACTION_DATE]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-            if ($date) {
-                  $dt = new DateTime($date);
-                  $date = $dt->modify('+1 minute')->format('c');
-                  $date = preg_replace('/T.*/', '', $date);
-            }
+
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
             $statut = null;
             if(isset($data[self::CSV_STATUT])){
@@ -243,6 +241,7 @@ EOF;
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
             $lot->statut = Lot::STATUT_NONPRELEVABLE;
+            $lot->specificite = null;
             if ($statut == self::STATUT_NONCONFORME) {
               $lot->statut = self::STATUT_PRELEVABLE;
               $lot->specificite = "2ème passage $lot->specificite";
@@ -252,6 +251,15 @@ EOF;
             }
             if($lot->elevage) {
                 $lot->statut = Lot::STATUT_ELEVAGE;
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {
+                $lot->centilisation = "donnée non présente dans l'import";
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_TRANSACTION_VRAC_FRANCE) {
+                $lot->pays = "France";
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
+                $lot->pays = "Export : données du pays non importée";
             }
 
             $deleted = array();
@@ -270,11 +278,11 @@ EOF;
 
             $document->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             try {
-            $document->save();
-            echo "SUCCESS;Lot importé;".$document->_id.";\n";
-        } catch(Exception $e) {
-            echo "ERROR;".$e->getMessage().";".$line."\n";
-        }
+                $document->save();
+                echo "SUCCESS;Lot importé;".$document->_id.";\n";
+            } catch(Exception $e) {
+                echo "ERROR;".$e->getMessage().";".$document->_id.";".$line."\n";
+            }
         }
     }
 
@@ -339,6 +347,12 @@ EOF;
         if ($type == self::TYPE_CONDITIONNEMENT) {
             return $this->getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
         }
+        if ($type == self::TYPE_TRANSACTION_VRAC_FRANCE) {
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
+        if ($type == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
     }
 
     public function getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
@@ -363,7 +377,6 @@ EOF;
     }
 
     public function getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
-        $cond = $previousdoc;
         $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
         $newCond->constructId();
         $newCond->storeDeclarant();
@@ -371,15 +384,27 @@ EOF;
         $newCond->validation_odg = $date;
         $newCond->numero_archive = $numeroDossier;
         $newCond->add('date_degustation_voulue', $date);
-        if (!$cond || $cond->_id != $newCond->_id) {
-            $cond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDate($etablissement->identifiant, $campagne, $date);
-            if ($cond) { $cond->delete(); $cond = null;}
-
+        if (!$previousdoc || $previousdoc->_id != $newCond->_id) {
+            $newCond->remove('lots');
+            $newCond->add('lots');
         }
-        if (!$cond) {
-            $cond = $newCond;
-        }
-        return $cond;
+        return $newCond;
     }
+
+    public function getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
+        $newTrans->constructId();
+        $newTrans->storeDeclarant();
+        $newTrans->validation = $date;
+        $newTrans->validation_odg = $date;
+        $newTrans->numero_archive = $numeroDossier;
+        $newTrans->add('date_degustation_voulue', $date);
+        if (!$previousdoc || $previousdoc->_id != $newTrans->_id) {
+            $newTrans->remove('lots');
+            $newTrans->add('lots');
+        }
+        return $newTrans;
+    }
+
 
 }

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(11);
+$t = new lime_test(15);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -32,6 +32,7 @@ $conditionnement->save();
 $t->comment($conditionnement->_id);
 $t->is($conditionnement->date, $mydate, "La date est bien la date fournie ($mydate)");
 $t->is($conditionnement->_id, "CONDITIONNEMENT-".$viti->identifiant."-".preg_replace('/-/', '', $mydate), "L'identifiant est bien constituté de la date");
+$t->is($conditionnement->_id, ConditionnementClient::getInstance()->findByIdentifiantAndDate($viti->identifiant, $mydate)->_id, "On retrouve bien le conditionnement à partir de l'identifiant and la date");
 
 $produits = $conditionnement->getConfigProduits();
 
@@ -59,14 +60,17 @@ $t->comment("création du lot 3");
 $lot3 = $conditionnement->addLot();
 $lot3->produit_hash = $produit->getHash();
 $lot3->volume = 15;
-$lot3->add('numero_cuve', 'C12');
-$lot3->add('specificite', "");
-$lot3->add('centilisation', $centilisations_bib_key);
+$lot3->numero_cuve = 'C12';
+$lot3->specificite =  null;
+$lot3->centilisation = $centilisations_bib_key;
 $conditionnement->save();
 
 $validation = new ConditionnementValidation($conditionnement);
 $t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_WARNING, "lot_a_completer")), 1, "Point vigilance: la date de destinantion n'a pas été saisie");
 
+$t->is($conditionnement->lots[0]->specificite, "UNDEFINED", "L'absence de spécificité crée une spécificité UNDEFINED temporaire");
+$t->ok(!$conditionnement->lots[2]->specificite, "Une spécificité vide ne crée pas de valeur de spécificité");
+$t->is($lot3->getCentilisation(), $centilisations_bib_key, "la centilisation est accessible via le getCentilisation");
 
 $t->comment("création du lot 4");
 $lot4 = $conditionnement->addLot();
@@ -75,3 +79,4 @@ $conditionnement->save();
 $t->is(count($conditionnement->lots), 4, "4 lots avant le clean");
 $conditionnement->cleanLots();
 $t->is(count($conditionnement->lots), 3, "3 lots après le clean");
+$conditionnement->save();

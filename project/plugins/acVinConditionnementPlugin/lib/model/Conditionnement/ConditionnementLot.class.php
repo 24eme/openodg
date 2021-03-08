@@ -105,12 +105,17 @@ class ConditionnementLot extends BaseConditionnementLot
     }
 
     public function setNumeroCuve($numero) {
-        $ret = true;
         if (!$this->exist('numero_cuve')) {
-            $ret = $this->add('numero_cuve');
+            $this->add('numero_cuve');
         }
-        $ret = $ret && $this->_set('numero_cuve', $numero);
-        return $ret;
+        return $this->_set('numero_cuve', $numero);
+    }
+
+    public function setCentilisation($centilisation) {
+        if (!$this->exist('centilisation')) {
+            $this->add('centilisation');
+        }
+        return $this->_set('centilisation', $centilisation);
     }
 
     public function getCentilisation() {
