@@ -121,7 +121,7 @@ $t->is($degustation->lots[0]->declarant_identifiant, $drev->identifiant, 'Le lot
 $t->is($degustation->lots[0]->declarant_nom, $drev->declarant->raison_sociale, 'Le lot a le bon nom de declarant');
 $t->is($degustation->lots[0]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, 'Le lot a le bon statut');
 $degustation->generateMouvementsLots();
-$t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 2, 'La génération de mouvement à produit deux mouvements');
+$t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 2, 'La génération de mouvement a produit deux mouvements');
 foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) {
     $mouvement[$mvt->statut] = $mvt;
 }
