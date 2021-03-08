@@ -27,9 +27,20 @@ class ConditionnementLotsForm extends acCouchdbForm
 
 	public function save() {
 		$values = $this->getValues();
+
 		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-			$embedForm->doUpdateObject($values['lots'][$key]);
-        }
+			$this->getDocument()->lots[$key]->getOrAdd("degustable");
+
+			if(($this->getDocument()->etape == ConditionnementEtapes::ETAPE_VALIDATION || $this->getDocument()->etape == ConditionnementEtapes::ETAPE_LOTS)
+			 && $values['lots'][$key]['produit_hash']){
+					$embedForm->doUpdateObject($values['lots'][$key]);
+					continue;
+			}else{
+				$this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
+				ConditionnementLotForm::setLotStatut($this->getDocument()->lots[$key], $values['lots'][$key]);
+			}
+		}
+
 		$this->getDocument()->save();
 	}
 

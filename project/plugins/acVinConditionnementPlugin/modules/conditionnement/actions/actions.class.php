@@ -184,6 +184,7 @@ class conditionnementActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if($this->conditionnement->storeEtape($this->getEtape($this->conditionnement, ConditionnementEtapes::ETAPE_VALIDATION))) {
             $this->conditionnement->save();
@@ -193,7 +194,7 @@ class conditionnementActions extends sfActions {
 
         $this->validation = new ConditionnementValidation($this->conditionnement);
 
-        $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
+        $this->form = new ConditionnementValidationForm($this->conditionnement, $this->isAdmin, array(), array('engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -294,6 +295,7 @@ class conditionnementActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::VISUALISATION, $this->conditionnement);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         $this->service = $request->getParameter('service');
 
@@ -306,7 +308,7 @@ class conditionnementActions extends sfActions {
             $this->validation = new ConditionnementValidation($this->conditionnement);
         }
 
-        $this->form = null;
+        $this->form = new ConditionnementLotsForm($this->conditionnement);
         $this->dr = DRClient::getInstance()->findByArgs($this->conditionnement->identifiant, $this->conditionnement->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
@@ -319,6 +321,10 @@ class conditionnementActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin && $this->conditionnement->isValidee() && $this->conditionnement->isValideeODG() === false){
+          return $this->redirect('conditionnement_validation_admin', $this->conditionnement);
+        }
 
         return $this->redirect('conditionnement_visualisation', $this->conditionnement);
     }
