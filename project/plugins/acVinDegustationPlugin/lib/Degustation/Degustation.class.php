@@ -258,8 +258,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $statut_originel = $lot->statut;
 
         switch($lot->statut) {
-            case Lot::STATUT_CONFORME || Lot::STATUT_NONCONFORME:
-                $lot->statut = Lot::STATUT_CONFORME;
+            case Lot::STATUT_CONFORME:
+            case Lot::STATUT_NONCONFORME:
+                $lot->statut = ($lot->statut === Lot::STATUT_CONFORME) ? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
 
             case Lot::STATUT_AFFECTE_SRC:
