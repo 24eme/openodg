@@ -41,6 +41,7 @@ Degustation:
                   details: {}
                   statut: {}
                   numero_table: {}
+                  position: {}
                   leurre: {}
                   conformite: {}
                   motif: {}

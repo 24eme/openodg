@@ -27,16 +27,6 @@ class DegustationLot extends BaseDegustationLot {
       return DegustationClient::getNumeroTableStr($this->numero_table);
   }
 
-  public function isSecondPassage(){
-    return strpos($this->specificite, "2ème") !== false ? true : false;
-  }
-
-  public function getTextPassage($enLettre = true){
-    if($enLettre)
-      return $this->isSecondPassage() ? "second" : "premier";
-    return $this->isSecondPassage() ? "2nd" : "1er";
-  }
-
   public function isConditionnement(){
     return preg_match('/'.ConditionnementClient::TYPE_COUCHDB.'/', $this->id_document);
   }
@@ -50,4 +40,16 @@ class DegustationLot extends BaseDegustationLot {
       return 'DRev';
     }
   }
+
+    public function attributionTable($table)
+    {
+        $this->numero_table = $table;
+        $this->statut = Lot::STATUT_ATTABLE;
+    }
+
+    public function anonymize($index)
+    {
+        $this->numero_anonymat = $this->getNumeroTableStr().($index+1);
+        $this->statut = Lot::STATUT_ANONYMISE;
+    }
 }

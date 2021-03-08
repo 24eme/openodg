@@ -21,6 +21,7 @@ $t->comment('On ajoute un lot à la dégustation');
 $doc->lots[2] = clone $doc->lots[0];
 $doc->lots[2]->numero_cuve = $doc->lots[0]->numero_cuve + 1;
 $doc->lots[2]->numero_table = 1;
+$doc->lots[2]->numero_dossier = "99999";
 $doc->save();
 $doc = acCouchdbManager::getClient()->find($docid);
 
@@ -34,6 +35,7 @@ $t->ok(!$isAnonymized, 'La dégustation n\'est pas "anonymisée"');
 $doc->anonymize();
 $isAnonymized = $doc->isAnonymized();
 $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
+$t->is(count($doc->mouvements_lots->{$doc->lots[2]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
 
 $numero_anonymats = array();
 $numero_anonymats_attendu = array("A1","A2","A3");
@@ -46,7 +48,7 @@ $doc->desanonymize();
 $isAnonymized = $doc->isAnonymized();
 $t->ok(!$isAnonymized, 'La dégustation n\'est plus "anonymisée"');
 
-$doc->anonymize();
+//$doc->anonymize();
 
 $t->comment('Résultat de conformité / non conformité');
 $lotConformes = $doc->getLotsConformesOrNot();
@@ -71,6 +73,7 @@ $form->save();
 
 $lotConformes = $doc->getLotsConformesOrNot();
 $t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a 16 mouvements de lot');
 
 $doc = acCouchdbManager::getClient()->find($docid);
 $form = new DegustationResultatsForm($doc, $options);
