@@ -94,21 +94,9 @@ class TransactionLotForm extends acCouchdbObjectForm
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
-
-        $this->setLotStatut($this->getObject(), $values);
-
-    }
-
-    public function setLotStatut($lot, $values){
-      if(($lot->statut == Lot::STATUT_PRELEVABLE && $values['produit_hash']) || $values['degustable']){
-        $lot->set("degustable", true);
-
-        $lot->statut = Lot::STATUT_PRELEVABLE;
-      }else{
-        $lot->set("degustable", false);
-
-        $lot->statut = Lot::STATUT_NONPRELEVABLE;
-      }
+        $this->getObject()->getOrAdd("degustable");
+        $this->getObject()->set("degustable",true);
+        $this->getObject()->statut = Lot::STATUT_PRELEVABLE;
 
     }
 

@@ -33,7 +33,7 @@
     <?php endif; ?>
 
     <?php if($sf_user->isAdmin()): ?>
-      <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form['lots'])); ?>
+      <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form)); ?>
     <?php else:?>
       <?php include_partial('transaction/recap', array('transaction' => $transaction)); ?>
     <?php endif; ?>

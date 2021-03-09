@@ -55,6 +55,7 @@
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
+                            <?php if(isset($form['lots'])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['degustable']->renderError() ?>
                                 <div class="col-xs-12">
@@ -65,6 +66,13 @@
                                   <?php endif; ?>
                                 </div>
                             </div>
+                          <?php else: ?>
+                            <div style="margin-bottom: 0;" class="">
+                              <div class="col-xs-12">
+                                <span class="<?php if($lot->statut == Lot::STATUT_PRELEVABLE):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
+                              </div>
+                            </div>
+                          <?php endif; ?>
                         	</td>
                         <?php endif; ?>
                       </tr>
