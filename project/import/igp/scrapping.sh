@@ -17,7 +17,7 @@ fi
 if [ -d $DATADIR ]; then
   rm -r $DATADIR;
 fi
-mkdir -p imports/$DATADIR
+mkdir -p $DATADIR
 
 
 if test "$DISPLAY"; then
@@ -26,4 +26,4 @@ else
   xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js $CONFIGFILE
 fi
 
-bash script_verify.sh
+#bash script_verify.sh $CONFIGFILE
