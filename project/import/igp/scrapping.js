@@ -245,6 +245,7 @@ nightmare
       .click('#Button1')
       .wait('#gvMembre')
       .html(exportFilename, "MHTML")
+      .catch(error => {console.error('Search failed:', error)});
   })
   .then(function() {
        var uri = baseUri+"/odg/LstAOC.aspx";
