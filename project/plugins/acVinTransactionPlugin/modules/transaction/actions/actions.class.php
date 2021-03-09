@@ -303,7 +303,7 @@ class transactionActions extends sfActions {
         $this->form = null;
         if($this->getUser()->hasTransactionAdmin() || $this->transaction->validation) {
             $this->validation = new TransactionValidation($this->transaction);
-            $this->form = new TransactionValidationForm($this->transaction, array(), array('engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
+            $this->form = new TransactionValidationForm($this->transaction, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
         }
 
 
