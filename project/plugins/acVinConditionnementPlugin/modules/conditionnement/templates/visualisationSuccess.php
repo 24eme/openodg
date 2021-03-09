@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Conditionnement <?php echo $conditionnement->campagne ?>
+    <h2>Déclaration de Conditionnement du <?php echo format_date( $conditionnement->date); ?>
     <?php if($conditionnement->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> reçue le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
       <?php if($conditionnement->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
