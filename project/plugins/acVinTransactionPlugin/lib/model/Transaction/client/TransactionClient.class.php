@@ -33,7 +33,6 @@ class TransactionClient extends acCouchdbClient {
 
     public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
-        echo "docid: $docid\n";
         $doc = $this->find($docid);
         return $doc;
     }

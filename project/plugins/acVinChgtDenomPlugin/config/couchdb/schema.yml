@@ -57,7 +57,7 @@ ChgtDenom:
                   id_document: { }
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero_cuve: { }
+                  numero_logement_operateur: { }
                   millesime: { }
                   elevage: { }
                   volume: { type: float }
@@ -129,7 +129,7 @@ ChgtDenom:
                         region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: { }
+                        numero_logement_operateur: { }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }

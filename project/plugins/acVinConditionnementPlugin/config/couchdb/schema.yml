@@ -66,7 +66,7 @@ Conditionnement:
                   id_document: { }
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero_cuve: { required: false } # a supprimer
+                  numero_logement_operateur: { required: false } # a supprimer
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }
@@ -114,7 +114,7 @@ Conditionnement:
                         region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: {  }
+                        numero_logement_operateur: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }

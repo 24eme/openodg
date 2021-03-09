@@ -105,7 +105,7 @@
   <tr><td>Commission de Dégustation réunie le : <?php echo date('d/m/Y',strtotime($degustation->date)) .' '. $degustation->lieu ?></td></tr>
 </table>
 
-<p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$lot->numero_cuve ?></strong></p>
+<p><strong>Lot Concerné par la Non-Conformité : <?php echo (int)$lot->numero_logement_operateur ?></strong></p>
 
 <table border="3" cellpadding=0 cellspacing=0 style="text-align: center;font-size:12px;">
   <tr>
@@ -121,7 +121,7 @@
   <tr>
     <td><?php echo (int)$lot->numero_dossier ?></td>
     <td><?php echo (int)$lot->numero_archive ?></td>
-    <td><?php echo (int)$lot->numero_cuve ?></td>
+    <td><?php echo (int)$lot->numero_logement_operateur ?></td>
     <td><?php echo $lot->produit_libelle ?></td>
     <td><?php echo $lot->details ?></td>
     <td><?php echo $lot->millesime ?></td>

@@ -4,7 +4,7 @@
 class ConditionnementLot extends BaseConditionnementLot
 {
     public function getFieldsToFill() {
-        return array('numero_cuve', 'millesime', 'volume', 'produit_hash', 'destination_date', 'elevage', 'specificite', 'centilisation');
+        return array('numero_logement_operateur', 'millesime', 'volume', 'produit_hash', 'destination_date', 'elevage', 'specificite', 'centilisation');
     }
 
     public function getProduitRevendiqueLibelleComplet() {
@@ -104,13 +104,6 @@ class ConditionnementLot extends BaseConditionnementLot
         return $libelle;
     }
 
-    public function setNumeroCuve($numero) {
-        if (!$this->exist('numero_cuve')) {
-            $this->add('numero_cuve');
-        }
-        return $this->_set('numero_cuve', $numero);
-    }
-
     public function setCentilisation($centilisation) {
         if (!$this->exist('centilisation')) {
             $this->add('centilisation');
@@ -125,5 +118,18 @@ class ConditionnementLot extends BaseConditionnementLot
         }
         return $c;
     }
+    
+    public function getNumeroLogementOperateur() {
+        if(!$this->exist('numero_logement_operateur')) {
+            return null;
+        }
+        return $this->_get('numero_logement_operateur');
+    }
 
+    public function setNumeroLogementOperateur($numero) {
+        if(!$this->exist('numero_logement_operateur')) {
+            $this->add('numero_logement_operateur');
+        }
+        return $this->_set('numero_logement_operateur', $numero);
+    }
 }

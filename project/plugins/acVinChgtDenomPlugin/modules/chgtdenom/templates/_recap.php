@@ -15,7 +15,7 @@
     <table class="table table-condensed" style="margin: 0;">
       <tbody>
         <tr>
-          <td style="border: none;">Logement : <?php if(!$chgtDenom->isValide()): ?><a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>"><strong><?php echo $lot->numero_cuve; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span></a><?php else: ?><strong><?php echo $lot->numero_cuve; ?></strong><?php endif; ?></td>
+          <td style="border: none;">Logement : <?php if(!$chgtDenom->isValide()): ?><a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>"><strong><?php echo $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span></a><?php else: ?><strong><?php echo $lot->numero_logement_operateur; ?></strong><?php endif; ?></td>
         </tr>
         <tr>
           <td style="border: none;">Produit : <strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
@@ -37,15 +37,15 @@
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $lot->numero_cuve ?></strong></h4>
+              <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $lot->numero_logement_operateur ?></strong></h4>
             </div>
             <div class="modal-body">
               <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <?php echo $form['numero_cuve']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $form['numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-8">
-                                  <?php echo $form['numero_cuve']->render(); ?>
+                                  <?php echo $form['numero_logement_operateur']->render(); ?>
                             </div>
                         </div>
                     </div>

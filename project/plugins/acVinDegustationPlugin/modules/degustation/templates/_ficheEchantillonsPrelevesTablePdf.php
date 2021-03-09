@@ -86,7 +86,7 @@
 
               <td><small><?php echo $lot->numero_archive ?></small></td>
               <td><small><?php echo $numAnonyme ?></small></td>
-              <td><small><?php echo $lot->numero_cuve ?></small></td>
+              <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
               <td style="text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
               <td><small><?php echo $lot->produit_libelle ?></small></td>
               <td><small><?php echo $lot->details ?></small></td>

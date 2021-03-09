@@ -28,7 +28,7 @@
 		?>
 			<tr class="vertical-center cursor-pointer" >
         <td><?php echo $lot->declarant_nom; ?></td>
-				<td><?php echo $lot->numero_cuve; ?></td>
+				<td><?php echo $lot->numero_logement_operateur; ?></td>
 				<td>
           <?php echo showProduitLot($lot) ?>
         </td>

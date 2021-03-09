@@ -19,7 +19,7 @@ $doc = acCouchdbManager::getClient()->find($docid);
 $t->comment('On ajoute un lot à la dégustation');
 
 $doc->lots[2] = clone $doc->lots[0];
-$doc->lots[2]->numero_cuve = $doc->lots[0]->numero_cuve + 1;
+$doc->lots[2]->numero_logement_operateur = $doc->lots[0]->numero_logement_operateur + 1;
 $doc->lots[2]->numero_table = 1;
 $doc->lots[2]->numero_dossier = "99999";
 $doc->save();

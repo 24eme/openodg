@@ -19,7 +19,7 @@
       <div class="col-xs-5">
         <div class="form-group">
           <label for="oldLogement">Logement actuel</label>
-          <input type="text" disabled class="form-control" id="oldLogement" value="<?= $degustation->lots[$lot]->numero_cuve ?>">
+          <input type="text" disabled class="form-control" id="oldLogement" value="<?= $degustation->lots[$lot]->numero_logement_operateur ?>">
         </div>
       </div>
 

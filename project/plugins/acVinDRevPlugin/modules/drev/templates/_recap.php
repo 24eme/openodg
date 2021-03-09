@@ -149,7 +149,7 @@
                           <?php echo $lot->getDateVersionfr(); ?>
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
-                        <td><?php echo $lot->numero_cuve; ?></td>
+                        <td><?php echo $lot->numero_logement_operateur; ?></td>
                         <td>
                           <?php echo showProduitLot($lot) ?>
                           <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>

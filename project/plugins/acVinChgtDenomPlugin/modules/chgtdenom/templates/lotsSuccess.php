@@ -25,7 +25,7 @@
         <tr>
             <td class="text-right"><strong><?php echo $lot->numero_dossier; ?></strong></td>
             <td class="text-right"><strong><?php echo $lot->numero_archive; ?></strong></td>
-            <td class="text-right"><?php echo $lot->numero_cuve; ?></td>
+            <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>
             <td class="text-center"><?php echo format_date($lot->date, 'dd/MM/yyyy'); ?></td>
             <td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>

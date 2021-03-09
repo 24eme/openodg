@@ -2,13 +2,11 @@
 
 class ConditionnementValidationForm extends acCouchdbForm
 {
-    public $admin;
-
-    public function __construct(acCouchdbDocument $doc, $admin, $defaults = array(), $options = array(), $CSRFSecret = null) {
-      $this->admin = $admin;
-      parent::__construct($doc, $defaults, $options, $CSRFSecret);
-
-    }
+  public $isAdmin = null;
+  public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+    parent::__construct($doc, $defaults, $options, $CSRFSecret);
+    $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
+  }
 
     public function configure() {
         if(!$this->getDocument()->isPapier()) {
@@ -22,10 +20,17 @@ class ConditionnementValidationForm extends acCouchdbForm
             }
         }
 
-        if($this->admin){
-          $formLots = new ConditionnementLotsForm($this->getDocument());
-          $this->embedForm('lots', $formLots);
+        $formDegustable = new BaseForm();
+        foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
+            foreach ($lots as $lot) {
+                if($lot->hasBeenEdited()){
+                    continue;
+                }
+								$formDegustable->embedForm($lot->getKey(), new ConditionnementLotDegustableForm($lot));
+            }
         }
+
+        $this->embedForm('lots', $formDegustable);
 
         if($this->getDocument()->isPapier()) {
             $this->setWidget('date', new sfWidgetFormInput());
@@ -42,14 +47,15 @@ class ConditionnementValidationForm extends acCouchdbForm
   	   $this->getDocument()->getOrAdd("date_degustation_voulue");
        $this->getDocument()->date_degustation_voulue = date("d/m/y");
 
-       if($this->admin){
-        foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $k => $embedForms) {
-          foreach ($embedForms as $key => $embedForm) {
+       if($this->isAdmin){
+         foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+           $this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
 
-            $this->getDocument()->lots[$key]->set("degustable", $values['lots']['lots'][$key]['degustable']);
-
-            ConditionnementLotForm::setLotStatut($this->getDocument()->lots[$key], $values['lots']['lots'][$key]);
-          }
+           if($values['lots'][$key]['degustable']){
+             $this->getDocument()->lots[$key]->statut = Lot::STATUT_PRELEVABLE;
+           }else{
+             $this->getDocument()->lots[$key]->statut = Lot::STATUT_NONPRELEVABLE;
+           }
         }
        }
 
