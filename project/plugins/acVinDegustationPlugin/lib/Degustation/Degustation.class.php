@@ -1036,4 +1036,39 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		/** Mis à jour par la degustation du volume d'un lot de DRev **/
+		public function modifyVolumeLotAndCreateDRevModificatrice($hash_lot,$volume){
+
+			$lot = $this->get($hash_lot);
+
+			// Drev => modificatrice + changement dans Drev
+			$drevOriginal = DRevClient::getInstance()->find($lot->id_document);
+			$mvtLotDrevOriginal = $drevOriginal->get($lot->origine_mouvement);
+			$hashOriginalLot = $mvtLotDrevOriginal->origine_hash;
+			$lotDrevOriginal = $drevOriginal->get($hashOriginalLot);
+            $lotDrevOriginalToSave = clone $lotDrevOriginal;
+
+			// $modificatrice
+			$modificatrice = $drevOriginal->generateModificative();
+			$modificatrice->save();
+
+			$modificatrice = DRevClient::getInstance()->find($modificatrice->_id);
+
+
+		    $newLot = $modificatrice->addLot();
+            $lotDrevOriginalToSave->volume = $volume;
+            $newLot = $lotDrevOriginalToSave;
+
+            $modificatrice->remove($hashOriginalLot);
+            $modificatrice->validate();
+			$modificatrice->validateOdg();
+			$modificatrice->generateMouvementsLots();
+			$modificatrice->save();
+
+			$lot->volume = $volume;
+            $lot->id_document = $modificatrice->_id;
+			$lot->origine_mouvement = $newLot->getHash();
+
+		}
+
 }

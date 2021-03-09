@@ -751,6 +751,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
+    public function updatePrecedente(){
+      if(!$this->version){
+        return;
+      }
+      $this->updateStatutNonPrelevableForModificatrice();
+    }
+
+    public function updateStatutNonPrelevableForModificatrice(){
+      foreach ($this->getDiffWithMother() as $diffKey => $diffValue) {
+        $match = array();
+        if(preg_match('/\/lots\/([0-9]+)\/volume/',$diffKey,$match)){
+          $mother = $this->getMother();
+          $lots = $mother->get("lots");
+          $lot = $lots[intval($match[1])];
+          $lot->statut = Lot::STATUT_NONPRELEVABLE;
+          $mother->getMouvementLotFromLot($lot)->statut = Lot::STATUT_NONPRELEVABLE;
+          $mother->save();
+        }
+      }
+    }
+
     public function addLotFromDegustation($lot) {
         $lot_degustation = clone $lot;
 
@@ -890,8 +911,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
               }
               foreach ($lot as $key => $field) {
                 if($lot->hasVolumeAndHashProduit() && $this->getDocument()->isModifiedMother($lot->getHash(), $key)){
-                  $lot->date = $date;
-                  $lot->id_document = $this->_id;
+                  $lot->add('id_document',$this->_id);
+                  $lot->add('date',$date);
                   break;
                 }
               }
@@ -906,6 +927,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->storeLotsDateVersion($date);
+        //assigné le doc_id dans lots
         $this->cleanDoc();
         $this->validation = $date;
         $this->archiver();
@@ -977,6 +999,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(is_null($date)) {
             $date = date('c');
         }
+
+    //    $this->updatePrecedente();
 
         if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
             throw new sfException("La validation nécessite une région");
@@ -1441,6 +1465,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     private function generateMouvementLotsFromLot($lot, $key) {
+
         $mvt = new stdClass();
         $mvt->date = $lot->date;
         $mvt->statut = $lot->statut;
@@ -1502,6 +1527,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $key = $lot->getUnicityKey();
             $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
         }
+    }
+
+    public function getMouvementLotFromLot($lot){
+      if(!$this->exist('mouvements_lots')){
+        return;
+      }
+      foreach ($this->get('mouvements_lots') as $identifiant => $mvtLots) {
+        foreach ($mvtLots as $mvtLot) {
+          if($mvtLot->origine_hash == $lot->getHash()){
+
+            return $mvtLot;
+          }
+        }
+      }
     }
 
     public function findMouvementFactures($cle, $id = null){
