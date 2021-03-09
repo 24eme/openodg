@@ -1,19 +1,25 @@
+#!/bin/bash
 
-if ! test "$1"; then
+if ! test -f "$1"; then
     echo "Fichier config requis";
     exit 1;
 fi
 
 CONFIGFILE=$1
+ODG=$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+DATADIR="imports/$ODG"
 
-mkdir -p imports
-if [ -d "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)" ]; then
-  rm -r "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)";
+if ! test "$ODG"; then
+    echo "Nom du dossier de l'ODG non trouvé";
+    exit 1;
 fi
 
-FILE_NAME=$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+if [ -d $DATADIR ]; then
+  rm -r $DATADIR;
+fi
+mkdir -p imports/$DATADIR
 
-mkdir -p imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+
 if test "$DISPLAY"; then
   node scrapping.js $CONFIGFILE
 else
