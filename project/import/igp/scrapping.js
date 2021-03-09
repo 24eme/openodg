@@ -153,9 +153,12 @@ nightmare
           .wait('#Button1')
           .click('#Button1')
           .wait('#btnExport')
+          .wait(2000)
           .click('#btnExport')
+          .wait(2000)
           .download(exportFilename)
           .refresh()
+          .wait(2000)
       }
 
       return nightmare;
@@ -193,8 +196,12 @@ nightmare
                .goto(uri+"?campagne="+i)
                .select('#ddlCampagne',i+"")
                .wait('#btnExportExcel')
+               .wait(2000)
                .click('#btnExportExcel')
+               .wait(2000)
                .download(exportFilename)
+               .refresh()
+               .wait(2000)
             }
         });
 
