@@ -99,6 +99,8 @@ $lotNonConformes = $doc->getLotsConformesOrNot(false);
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
 
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a toujours 16 mouvements de lot');
+
 foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');
   $t->is($lot->observation, $obs, 'L\'observation de non conformité est "'.$obs.'"');
