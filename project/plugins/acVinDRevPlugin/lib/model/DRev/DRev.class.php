@@ -751,27 +751,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function updatePrecedente(){
-      if(!$this->version){
-        return;
-      }
-      $this->updateStatutNonPrelevableForModificatrice();
-    }
-
-    public function updateStatutNonPrelevableForModificatrice(){
-      foreach ($this->getDiffWithMother() as $diffKey => $diffValue) {
-        $match = array();
-        if(preg_match('/\/lots\/([0-9]+)\/volume/',$diffKey,$match)){
-          $mother = $this->getMother();
-          $lots = $mother->get("lots");
-          $lot = $lots[intval($match[1])];
-          $lot->statut = Lot::STATUT_NONPRELEVABLE;
-          $mother->getMouvementLotFromLot($lot)->statut = Lot::STATUT_NONPRELEVABLE;
-          $mother->save();
-        }
-      }
-    }
-
     public function addLotFromDegustation($lot) {
         $lot_degustation = clone $lot;
 
@@ -999,8 +978,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(is_null($date)) {
             $date = date('c');
         }
-
-    //    $this->updatePrecedente();
 
         if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
             throw new sfException("La validation nécessite une région");

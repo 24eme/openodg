@@ -1055,11 +1055,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$modificatrice = DRevClient::getInstance()->find($modificatrice->_id);
 
 
-		    $newLot = $modificatrice->addLot();
-            $lotDrevOriginalToSave->volume = $volume;
-            $newLot = $lotDrevOriginalToSave;
+		    $lotModificatrice = $modificatrice->get($hashOriginalLot);
+            $lotModificatrice->volume = $volume;
+            $lotModificatrice->statut = Lot::STATUT_PRELEVABLE;
 
-            $modificatrice->remove($hashOriginalLot);
             $modificatrice->validate();
 			$modificatrice->validateOdg();
 			$modificatrice->generateMouvementsLots();
@@ -1067,7 +1066,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 			$lot->volume = $volume;
             $lot->id_document = $modificatrice->_id;
-			$lot->origine_mouvement = $newLot->getHash();
+			$lot->origine_mouvement = $lotModificatrice->getHash();
 
 		}
 
