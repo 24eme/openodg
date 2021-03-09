@@ -3,13 +3,6 @@
 class transactionComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $this->date_ouverture_transaction = sfConfig::get('app_date_ouverture_transaction');
-        $this->transaction_non_ouverte = false;
-        if (null !== $this->date_ouverture_transaction) {
-            if (str_replace('-', '', $this->date_ouverture_transaction) > date('Ymd')) {
-                $this->transaction_non_ouverte = true;
-            }
-        }
         $this->transaction = TransactionClient::getInstance()->findByIdentifiantAndDate($this->etablissement->identifiant, date('Ymd'));
         if ($this->transaction && $this->transaction->isAutoReouvrable()) {
           $this->transaction->devalidate();
