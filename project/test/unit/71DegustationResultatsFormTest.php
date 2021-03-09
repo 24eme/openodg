@@ -111,7 +111,8 @@ $t->comment('Envoie de mail de notification à '.$etbIdentifiant);
 $mailEnvoye = $doc->isMailEnvoyeEtablissement($etbIdentifiant);
 $t->ok(!$mailEnvoye, 'Le mail de resultats n\'a pas été envoyé');
 
-$doc->setMailEnvoyeEtablissement($etbIdentifiant);
+$date_envoie = date('Y-m-d H:i:s');
+$doc->setMailEnvoyeEtablissement($etbIdentifiant,$date_envoie);
 $mailEnvoye = $doc->isMailEnvoyeEtablissement($etbIdentifiant);
 $t->ok($mailEnvoye, 'Le mail de resultats a été envoyé');
 
