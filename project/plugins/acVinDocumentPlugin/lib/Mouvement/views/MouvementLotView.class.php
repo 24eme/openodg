@@ -107,7 +107,7 @@ class MouvementLotView extends acCouchdbView
     $lot->id_document = $mvt->origine_document_id;
     $lot->numero_dossier = $mvt->numero_dossier;
     $lot->numero_archive = $mvt->numero_archive;
-    $lot->numero_cuve = $mvt->numero_cuve;
+    $lot->numero_logement_operateur = $mvt->numero_logement_operateur;
     $lot->millesime = $mvt->millesime;
     $lot->volume = $mvt->volume;
     $lot->destination_type = $mvt->destination_type;

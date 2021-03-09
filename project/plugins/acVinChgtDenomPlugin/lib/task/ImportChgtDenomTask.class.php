@@ -77,7 +77,7 @@ EOF;
             if (!$data) {
               continue;
             }
-            
+
             $etablissement = $this->identifyEtablissement($data);
             if (!$etablissement) {
                echo "ERROR;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
@@ -109,14 +109,14 @@ EOF;
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroArchive = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
-            
-            $mouvementLot = MouvementLotView::getInstance()->find($etablissement->identifiant, null, array('volume' => $volumeInitial, 'numero_cuve' => $numeroCuve, 'produit_hash' => $produitInitial->getHash()));
-            
+
+            $mouvementLot = MouvementLotView::getInstance()->find($etablissement->identifiant, null, array('volume' => $volumeInitial, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produitInitial->getHash()));
+
             if(!$mouvementLot) {
                 echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
                 continue;
             }
-            
+
             $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
             $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration, true);
@@ -125,11 +125,11 @@ EOF;
             $chgtDenom->changement_produit = $produitFinal->getHash();
             $chgtDenom->changement_volume = $volumeConcerne;
             $chgtDenom->generateLots();
-            if (!$chgtDenom->isChgtTotal()) { 
+            if (!$chgtDenom->isChgtTotal()) {
                 $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[1]->numero_archive = $numeroArchive;
             }
-            
+
             $chgtDenom->generateMouvementsLots(false);
             $chgtDenom->validate($dateDeclaration);
             $chgtDenom->validateOdg($dateDeclaration);

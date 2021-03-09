@@ -214,7 +214,7 @@ EOF;
             $lot->millesime = $millesime;
             $lot->numero_dossier = $numeroDossier;
             $lot->numero_archive = $numeroLot;
-            $lot->numero_cuve = $numero;
+            $lot->numero_logement_operateur = $numero;
             $lot->volume = $volume;
             $lot->destination_type = null;
             $lot->elevage = false;

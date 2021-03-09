@@ -43,9 +43,9 @@
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
                       <?php if($transaction->isValidee()): ?>
                         <td><?php echo $lot->numero_archive; ?></td>
-                        <td><?php echo $lot->numero; ?></td>
+                        <td><?php echo $lot->numero_logement_operateur; ?></td>
                       <?php else: ?>
-                        <td><?php echo $lot->numero; ?></td>
+                        <td><?php echo $lot->numero_logement_operateur; ?></td>
                       <?php endif; ?>
                         <td>
                         <?php echo showProduitLot($lot) ?>
@@ -60,7 +60,7 @@
                               <?php echo $form['lots'][$lot->getKey()]['degustable']->renderError() ?>
                                 <div class="col-xs-12">
                                   <?php if ($sf_user->isAdmin() && !$transaction->validation_odg): ?>
-                                  	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                  	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
                                       <span class="<?php if($lot->statut == Lot::STATUT_PRELEVABLE):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
                                   <?php endif; ?>

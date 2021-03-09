@@ -89,7 +89,7 @@ EOF;
                   unset($mouvements->rows[$key]);
                   continue;
               }
-              if($mvt->value->volume != $volume && $mvt->value->numero_cuve != $numero) {
+              if($mvt->value->volume != $volume && $mvt->value->numero_logement_operateur != $numero) {
                   continue;
               }
 

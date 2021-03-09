@@ -139,7 +139,7 @@ p, div {
         <small><?php echo $lot->volume; ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->numero_cuve ?></small>
+        <small><?php echo $lot->numero_logement_operateur ?></small>
       </td>
       <td><?php echo tdStart() ?>
         <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false)." passage" : $lot->getTextPassage(false)." passage $lot->specificite"; ?></small>
@@ -147,7 +147,7 @@ p, div {
       <td><?php echo tdStart() ?>
         <small><?php echo $lot->getTypeLot(); ?><?php echo tdStart() ?></small>
       </td>
-      <td><small><?php echo $lot->numero_cuve ?></small></td>
+      <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
       <td><?php echo tdStart() ?>
       </td>
      </tr>

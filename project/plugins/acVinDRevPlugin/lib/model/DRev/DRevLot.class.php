@@ -105,21 +105,18 @@ class DRevLot extends BaseDRevLot
         return $libelle;
     }
 
-    public function getNumeroCuve() {
-        if($this->exist('numero_cuve') && $this->_get('numero_cuve')) {
-            $this->numero = $this->_get('numero_cuve');
+    public function getNumeroLogementOperateur() {
+        if(!$this->exist('numero_logement_operateur')) {
+            return null;
         }
-        if($this->exist('numero_cuve')) {
-            $this->remove('numero_cuve');
-
-            return $this->getNumeroCuve();
-        }
-        return $this->numero;
+        return $this->_get('numero_logement_operateur');
     }
 
-    public function setNumeroCuve($numero) {
-
-        return $this->setNumero($numero);
+    public function setNumeroLogementOperateur($numero) {
+        if(!$this->exist('numero_logement_operateur')) {
+            $this->add('numero_logement_operateur');
+        }
+        return $this->_set('numero_logement_operateur', $numero);
     }
 
 }

@@ -62,7 +62,7 @@
           								<div class="row">
                                               <div class="col-xs-4 text-right">
                                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
-                                                  <?php echo $lot->declarant_nom; echo (!$lot->leurre)? ' ('.$lot->numero_cuve.')' : ''; ?>
+                                                  <?php echo $lot->declarant_nom; echo (!$lot->leurre)? ' ('.$lot->numero_logement_operateur.')' : ''; ?>
                                               </div>
                                               <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
           									<div class="col-xs-7 text-left">

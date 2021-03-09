@@ -146,7 +146,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function updateLotLogement($lot, $logement)
     {
         $lots = $this->getLots();
-        $lots[$lot->getKey()]->numero_cuve = $logement;
+        $lots[$lot->getKey()]->numero_logement_operateur = $logement;
         // TODO: voir pour les mouvements
     }
 
@@ -194,7 +194,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->statut = $lot->statut;
 			$mvt->numero_dossier = $lot->numero_dossier;
 			$mvt->numero_archive = $lot->numero_archive;
-			$mvt->numero_cuve = $lot->numero_cuve;
+			$mvt->numero_logement_operateur = $lot->numero_logement_operateur;
 			$mvt->millesime = $lot->millesime;
 			$mvt->volume = $lot->volume;
 			$mvt->elevage = $lot->elevage;
@@ -935,8 +935,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsByNumDossierNumCuve(){
 			$lots = array();
 			foreach ($this->getLots() as  $lot) {
-				if($lot->numero_cuve)
-					$lots[$lot->numero_dossier][$lot->numero_cuve] = $lot;
+				if($lot->numero_logement_operateur)
+					$lots[$lot->numero_dossier][$lot->numero_logement_operateur] = $lot;
 				else
 					$lots[$lot->numero_dossier][$lot->numero_archive] = $lot;
 			}

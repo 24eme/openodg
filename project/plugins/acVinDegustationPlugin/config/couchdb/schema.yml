@@ -26,7 +26,7 @@ Degustation:
                   id_document: { }
                   numero_dossier: { }
                   numero_archive: { }
-                  numero_cuve: { }
+                  numero_logement_operateur: { }
                   numero_anonymat: { }
                   millesime: { }
                   elevage: { }
@@ -74,7 +74,7 @@ Degustation:
                         region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: {  }
+                        numero_logement_operateur: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }

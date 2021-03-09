@@ -33,7 +33,7 @@ $produitLeurre = $doc->lots->add();
 $produitLeurre->setProduitHash($produitLeurreHash);
 $produitLeurre->leurre = true;
 $produitLeurre->declarant_nom = 'SARL Leurre';
-$produitLeurre->numero_cuve = '999';
+$produitLeurre->numero_logement_operateur = '999';
 
 $t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
 $t->is($produitLeurre->produit_hash, $produitLeurreHash, "Le hash produit est $produitLeurreHash");
@@ -50,7 +50,7 @@ $t->comment('On ajoute une table');
 $t->is($doc->getLastNumeroTable(), 1, 'La table courante est la 1');
 $doc->lots->add();
 $doc->lots[2] = clone $lot1;
-$doc->lots[2]->numero_cuve = $lot1->numero_cuve + 1;
+$doc->lots[2]->numero_logement_operateur = $lot1->numero_logement_operateur + 1;
 $doc->lots[2]->attributionTable(2);
 $t->is($doc->getLastNumeroTable(), 2, 'La dernière table est la 2');
 

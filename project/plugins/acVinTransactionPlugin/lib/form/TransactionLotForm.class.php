@@ -50,8 +50,8 @@ class TransactionLotForm extends acCouchdbObjectForm
         $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
-        $this->setWidget('numero', new bsWidgetFormInput());
-        $this->setValidator('numero', new sfValidatorString(array('required' => false)));
+        $this->setWidget('numero_logement_operateur', new bsWidgetFormInput());
+        $this->setValidator('numero_logement_operateur', new sfValidatorString(array('required' => false)));
 
         $this->setWidget('degustable', new sfWidgetFormInputCheckbox());
         $this->setValidator('degustable', new sfValidatorBoolean(['required' => false]));

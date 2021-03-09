@@ -255,7 +255,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
 
     public function getIntitulePartiel(){
-      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_cuve.') de '.$this->produit_libelle;
+      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_logement_operateur.') de '.$this->produit_libelle;
       if ($this->millesime){
         $libelle .= ' ('.$this->millesime.')';
       }

@@ -55,7 +55,7 @@ class ConditionnementValidation extends DocumentValidation
             continue;
           }
 
-          if(!$lot->exist('numero_cuve') || !$lot->numero_cuve){
+          if(!$lot->exist('numero_logement_operateur') || !$lot->numero_logement_operateur){
             $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." : il manque le numéro de logement", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
             continue;
           }

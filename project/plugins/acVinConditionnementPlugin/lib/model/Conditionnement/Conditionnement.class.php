@@ -458,7 +458,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $mvt->statut = $lot->statut;
         $mvt->numero_dossier = $lot->numero_dossier;
         $mvt->numero_archive = $lot->numero_archive;
-        $mvt->numero_cuve = $lot->numero_cuve;
+        $mvt->numero_logement_operateur = $lot->numero_logement_operateur;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
         $mvt->elevage = $lot->elevage;
