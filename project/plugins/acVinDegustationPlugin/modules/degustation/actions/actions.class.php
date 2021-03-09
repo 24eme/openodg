@@ -727,10 +727,13 @@ class degustationActions extends sfActions {
 
     public function executeSetEnvoiMail(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-      $envoye = $request->getParameter('envoye',true);
+      $date = $request->getParameter('envoye',date('Y-m-d H:i:s'));
+      if(!boolval($date)){ $date = null; }
+
       $this->setTemplate('notificationsEtape');
-      $this->degustation->setMailEnvoyeEtablissement($request['identifiant'],boolval($envoye));
+      $this->degustation->setMailEnvoyeEtablissement($request['identifiant'],$date);
       $this->degustation->save();
+
       return $this->redirect('degustation_notifications_etape', $this->degustation);
     }
 
