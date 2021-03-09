@@ -1,3 +1,4 @@
 config.json
 imports/
 node_modules
+config_*.json
