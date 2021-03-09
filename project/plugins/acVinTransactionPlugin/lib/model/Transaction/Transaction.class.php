@@ -252,19 +252,6 @@ class Transaction extends BaseTransaction implements InterfaceVersionDocument, I
         $this->updateStatutsLotsSupprimes(false);
     }
 
-    public function isAutoReouvrable() {
-      if ($this->isNew()||$this->isValidee()) {
-        return false;
-      }
-      $now = date('Ymd');
-      $docDate = explode('-', $this->_id);
-      $docDate = $docDate[2];
-      if ($docDate == $now) {
-        return true;
-      }
-      return false;
-    }
-
     public function updateStatutsLotsSupprimes($validation = true) {
       if (!$this->hasVersion()) {
         return;
