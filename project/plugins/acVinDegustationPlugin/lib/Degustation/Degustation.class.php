@@ -221,37 +221,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $mvt;
 	}
 
-	public function generateAndAddMouvementLotsFromLot($lot, $key) {
-
-			return $this->add('mouvements_lots')->add($lot->declarant_identifiant)->add($key, $this->generateMouvementLotsFromLot($lot, $key));
-	}
-
-    public function addMouvementsLots($mvts)
+    public function generateMouvementsLots()
     {
-        foreach ($mvts as $declarant => $lots) {
-            foreach ($lots as $key => $lot) {
-                $this->add('mouvements_lots')->add($declarant)->add($key, $lot);
-            }
-        }
-    }
-
-    public function generateMouvementsLots() {
-        $mvts = [];
+        $this->remove('mouvements_lots');
 
         foreach ($this->lots as $lot) {
             if ($lot->isLeurre()) {
                 continue;
             }
 
-            $mvts[$lot->declarant_identifiant] = $this->generateMouvementsLot($lot);
+            $mouvements = $this->buildMouvementsLot($lot);
+
+            foreach ($mouvements as $key => $mouvement) {
+                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add($key, $mouvement);
+            }
         }
+    }
 
-        $this->addMouvementsLots($mvts);
-
-        return $mvts;
-	}
-
-    public function generateMouvementsLot($lot)
+    public function buildMouvementsLot($lot)
     {
         $mvts = [];
         $key = $lot->getUnicityKey();
@@ -627,6 +614,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					}
 				}
 			}
+
+            $this->generateMouvementsLots();
 		}
 
 		public function isAnonymized(){
