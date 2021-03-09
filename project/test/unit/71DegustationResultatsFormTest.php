@@ -35,7 +35,7 @@ $t->ok(!$isAnonymized, 'La dégustation n\'est pas "anonymisée"');
 $doc->anonymize();
 $isAnonymized = $doc->isAnonymized();
 $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
-$t->is(count($doc->mouvements_lots->{$doc->lots[2]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
 
 $numero_anonymats = array();
 $numero_anonymats_attendu = array("A1","A2","A3");
@@ -48,7 +48,7 @@ $doc->desanonymize();
 $isAnonymized = $doc->isAnonymized();
 $t->ok(!$isAnonymized, 'La dégustation n\'est plus "anonymisée"');
 
-//$doc->anonymize();
+$doc->anonymize();
 
 $t->comment('Résultat de conformité / non conformité');
 $lotConformes = $doc->getLotsConformesOrNot();
