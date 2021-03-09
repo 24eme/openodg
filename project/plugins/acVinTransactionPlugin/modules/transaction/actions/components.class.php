@@ -10,7 +10,7 @@ class transactionComponents extends sfComponents {
                 $this->transaction_non_ouverte = true;
             }
         }
-        $this->transaction = TransactionClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
+        $this->transaction = TransactionClient::getInstance()->findByIdentifiantAndDate($this->etablissement->identifiant, date('Ymd'));
         if ($this->transaction && $this->transaction->isAutoReouvrable()) {
           $this->transaction->devalidate();
           $this->transaction->etape = ConditionnementEtapes::ETAPE_LOTS;

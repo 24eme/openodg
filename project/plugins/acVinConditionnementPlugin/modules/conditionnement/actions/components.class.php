@@ -10,7 +10,7 @@ class conditionnementComponents extends sfComponents {
                 $this->conditionnement_non_ouverte = true;
             }
         }
-        $this->conditionnement = ConditionnementClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
+        $this->conditionnement = ConditionnementClient::getInstance()->findByIdentifiantAndDate($this->etablissement->identifiant, date('Ymd'));
         if ($this->conditionnement && $this->conditionnement->isAutoReouvrable()) {
           $this->conditionnement->devalidate();
           $this->conditionnement->etape = ConditionnementEtapes::ETAPE_LOTS;
