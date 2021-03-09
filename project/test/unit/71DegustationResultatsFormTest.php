@@ -35,7 +35,7 @@ $t->ok(!$isAnonymized, 'La dégustation n\'est pas "anonymisée"');
 $doc->anonymize();
 $isAnonymized = $doc->isAnonymized();
 $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
-$t->is(count($doc->mouvements_lots->{$doc->lots[2]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
 
 $numero_anonymats = array();
 $numero_anonymats_attendu = array("A1","A2","A3");
@@ -48,7 +48,7 @@ $doc->desanonymize();
 $isAnonymized = $doc->isAnonymized();
 $t->ok(!$isAnonymized, 'La dégustation n\'est plus "anonymisée"');
 
-//$doc->anonymize();
+$doc->anonymize();
 
 $t->comment('Résultat de conformité / non conformité');
 $lotConformes = $doc->getLotsConformesOrNot();
@@ -99,6 +99,8 @@ $lotNonConformes = $doc->getLotsConformesOrNot(false);
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
 
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a toujours 16 mouvements de lot');
+
 foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');
   $t->is($lot->observation, $obs, 'L\'observation de non conformité est "'.$obs.'"');
@@ -109,7 +111,8 @@ $t->comment('Envoie de mail de notification à '.$etbIdentifiant);
 $mailEnvoye = $doc->isMailEnvoyeEtablissement($etbIdentifiant);
 $t->ok(!$mailEnvoye, 'Le mail de resultats n\'a pas été envoyé');
 
-$doc->setMailEnvoyeEtablissement($etbIdentifiant);
+$date_envoie = date('Y-m-d H:i:s');
+$doc->setMailEnvoyeEtablissement($etbIdentifiant,$date_envoie);
 $mailEnvoye = $doc->isMailEnvoyeEtablissement($etbIdentifiant);
 $t->ok($mailEnvoye, 'Le mail de resultats a été envoyé');
 

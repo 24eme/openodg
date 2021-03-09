@@ -221,45 +221,33 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $mvt;
 	}
 
-	public function generateAndAddMouvementLotsFromLot($lot, $key) {
-
-			return $this->add('mouvements_lots')->add($lot->declarant_identifiant)->add($key, $this->generateMouvementLotsFromLot($lot, $key));
-	}
-
-    public function addMouvementsLots($mvts)
+    public function generateMouvementsLots()
     {
-        foreach ($mvts as $declarant => $lots) {
-            foreach ($lots as $key => $lot) {
-                $this->add('mouvements_lots')->add($declarant)->add($key, $lot);
-            }
-        }
-    }
-
-    public function generateMouvementsLots() {
-        $mvts = [];
+        $this->remove('mouvements_lots');
 
         foreach ($this->lots as $lot) {
             if ($lot->isLeurre()) {
                 continue;
             }
 
-            $mvts[$lot->declarant_identifiant] = $this->generateMouvementsLot($lot);
+            $mouvements = $this->buildMouvementsLot($lot);
+
+            foreach ($mouvements as $key => $mouvement) {
+                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add($key, $mouvement);
+            }
         }
+    }
 
-        $this->addMouvementsLots($mvts);
-
-        return $mvts;
-	}
-
-    public function generateMouvementsLot($lot)
+    public function buildMouvementsLot($lot)
     {
         $mvts = [];
         $key = $lot->getUnicityKey();
         $statut_originel = $lot->statut;
 
         switch($lot->statut) {
-            case Lot::STATUT_CONFORME || Lot::STATUT_NONCONFORME:
-                $lot->statut = Lot::STATUT_CONFORME;
+            case Lot::STATUT_CONFORME:
+            case Lot::STATUT_NONCONFORME:
+                $lot->statut = ($lot->statut === Lot::STATUT_CONFORME) ? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
 
             case Lot::STATUT_AFFECTE_SRC:
@@ -444,14 +432,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				 if(!array_key_exists($lot->getDeclarantIdentifiant(),$lotsByAdherents)){
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()] = new stdClass();
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->declarant_nom = $lot->declarant_nom;
-					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = true;
+                     $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = $lot->email_envoye;
+                     if(!$lot->email_envoye){
+                         $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = false;
+                     }
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots = array();
 					}
 					if(!array_key_exists($conformite,$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots)){
 						$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite] = array();
  					}
 				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite][] = $lot;
-				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye &= $lot->email_envoye;
+				 if($lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye === false){
+                     $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = false;
+                 }
 			 }
 		 }
 		return $lotsByAdherents;
@@ -621,6 +614,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					}
 				}
 			}
+
+            $this->generateMouvementsLots();
 		}
 
 		public function isAnonymized(){
@@ -1006,14 +1001,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function isMailEnvoyeEtablissement($identifiant){
-
-				return $this->getLotsConformitesOperateur($identifiant)->email_envoye;
+				return boolval($this->getLotsConformitesOperateur($identifiant)->email_envoye);
 		}
 
-		public function setMailEnvoyeEtablissement($identifiant, $envoye = true){
+		public function setMailEnvoyeEtablissement($identifiant, $date){
 				foreach ($this->getLotsConformitesOperateur($identifiant)->lots as $conformite => $lots) {
 					foreach ($lots as $lot) {
-						$lot->email_envoye = $envoye;
+						$lot->email_envoye = $date;
 					}
 				}
 		}
