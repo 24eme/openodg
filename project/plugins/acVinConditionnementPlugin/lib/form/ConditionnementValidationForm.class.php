@@ -2,6 +2,14 @@
 
 class ConditionnementValidationForm extends acCouchdbForm
 {
+    public $admin;
+
+    public function __construct(acCouchdbDocument $doc, $admin, $defaults = array(), $options = array(), $CSRFSecret = null) {
+      $this->admin = $admin;
+      parent::__construct($doc, $defaults, $options, $CSRFSecret);
+
+    }
+
     public function configure() {
         if(!$this->getDocument()->isPapier()) {
             $engagements = $this->getOption('engagements');
@@ -12,6 +20,11 @@ class ConditionnementValidationForm extends acCouchdbForm
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
             }
+        }
+
+        if($this->admin){
+          $formLots = new ConditionnementLotsForm($this->getDocument());
+          $this->embedForm('lots', $formLots);
         }
 
         if($this->getDocument()->isPapier()) {
@@ -25,8 +38,21 @@ class ConditionnementValidationForm extends acCouchdbForm
     }
 
     public function save() {
+       $values = $this->getValues();
   	   $this->getDocument()->getOrAdd("date_degustation_voulue");
        $this->getDocument()->date_degustation_voulue = date("d/m/y");
+
+       if($this->admin){
+        foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $k => $embedForms) {
+          foreach ($embedForms as $key => $embedForm) {
+
+            $this->getDocument()->lots[$key]->set("degustable", $values['lots']['lots'][$key]['degustable']);
+
+            ConditionnementLotForm::setLotStatut($this->getDocument()->lots[$key], $values['lots']['lots'][$key]);
+          }
+        }
+       }
+
        $this->getDocument()->save();
   	}
 }

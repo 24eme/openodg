@@ -4,6 +4,6 @@
  *
  */
 
-class DegustationMouvementLots extends BaseDegustationMouvementLots {
-
+class DegustationMouvementLots extends BaseDegustationMouvementLots
+{
 }

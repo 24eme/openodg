@@ -94,6 +94,10 @@ class TransactionLotForm extends acCouchdbObjectForm
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
+        $this->getObject()->getOrAdd("degustable");
+        $this->getObject()->set("degustable",true);
+        $this->getObject()->statut = Lot::STATUT_PRELEVABLE;
+
     }
 
     public function getSpecificites()

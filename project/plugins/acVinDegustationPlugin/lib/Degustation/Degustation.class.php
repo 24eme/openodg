@@ -221,17 +221,71 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $mvt;
 	}
 
-	public function generateAndAddMouvementLotsFromLot($lot, $key) {
+    public function generateMouvementsLots()
+    {
+        $this->remove('mouvements_lots');
 
-			return $this->add('mouvements_lots')->add($lot->declarant_identifiant)->add($key, $this->generateMouvementLotsFromLot($lot, $key));
-	}
+        foreach ($this->lots as $lot) {
+            if ($lot->isLeurre()) {
+                continue;
+            }
 
-	public function generateMouvementsLots() {
-			foreach($this->lots as $k => $lot) {
-					$key = $lot->getUnicityKey();
-					$mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
-			}
-	}
+            $mouvements = $this->buildMouvementsLot($lot);
+
+            foreach ($mouvements as $key => $mouvement) {
+                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add($key, $mouvement);
+            }
+        }
+    }
+
+    public function buildMouvementsLot($lot)
+    {
+        $mvts = [];
+        $key = $lot->getUnicityKey();
+        $statut_originel = $lot->statut;
+
+        switch($lot->statut) {
+            case Lot::STATUT_CONFORME:
+            case Lot::STATUT_NONCONFORME:
+                $lot->statut = ($lot->statut === Lot::STATUT_CONFORME) ? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_AFFECTE_SRC:
+                $lot->statut = Lot::STATUT_AFFECTE_SRC;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_DEGUSTE:
+                $lot->statut = Lot::STATUT_DEGUSTE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_ANONYMISE:
+                $lot->statut = Lot::STATUT_ANONYMISE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_ATTABLE:
+                $lot->statut = Lot::STATUT_ATTABLE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_PRELEVE:
+                $lot->statut = Lot::STATUT_PRELEVE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_ATTENTE_PRELEVEMENT:
+                $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_AFFECTE_DEST:
+                $lot->statut = Lot::STATUT_AFFECTE_DEST;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            default:
+                break;
+        }
+
+        $lot->statut = $statut_originel;
+
+        return $mvts;
+    }
 
 	public function isValidee() {
 
@@ -320,8 +374,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			 if (!$activated) {
 				continue;
 			 }
-			 $lot = $this->addLot($mvts[$key]);
-			 $lot->statut = $statut;
+			 $lot = $this->addLot($mvts[$key], $statut);
 		 }
 	 }
 
@@ -379,14 +432,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				 if(!array_key_exists($lot->getDeclarantIdentifiant(),$lotsByAdherents)){
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()] = new stdClass();
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->declarant_nom = $lot->declarant_nom;
-					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = true;
+                     $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = $lot->email_envoye;
+                     if(!$lot->email_envoye){
+                         $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = false;
+                     }
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots = array();
 					}
 					if(!array_key_exists($conformite,$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots)){
 						$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite] = array();
  					}
 				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite][] = $lot;
-				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye &= $lot->email_envoye;
+				 if($lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye === false){
+                     $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = false;
+                 }
 			 }
 		 }
 		return $lotsByAdherents;
@@ -536,9 +594,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					if ($lot->numero_anonymat) {
 						throw new sfException("L'anonymat a déjà été réalisé");
 					}
-					$lot->numero_anonymat = $lot->getNumeroTableStr().($k+1);
+
+                    $lot->anonymize($k);
 				}
 			}
+
+            $this->generateMouvementsLots();
 		}
 
 		public function desanonymize(){
@@ -553,6 +614,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					}
 				}
 			}
+
+            $this->generateMouvementsLots();
 		}
 
 		public function isAnonymized(){
@@ -938,14 +1001,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function isMailEnvoyeEtablissement($identifiant){
-
-				return $this->getLotsConformitesOperateur($identifiant)->email_envoye;
+				return boolval($this->getLotsConformitesOperateur($identifiant)->email_envoye);
 		}
 
-		public function setMailEnvoyeEtablissement($identifiant, $envoye = true){
+		public function setMailEnvoyeEtablissement($identifiant, $date){
 				foreach ($this->getLotsConformitesOperateur($identifiant)->lots as $conformite => $lots) {
 					foreach ($lots as $lot) {
-						$lot->email_envoye = $envoye;
+						$lot->email_envoye = $date;
 					}
 				}
 		}
@@ -959,9 +1021,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function addLot($mouvement) {
+		public function addLot($mouvement, $statut) {
 
-			return $this->lots->add(null, DegustationClient::updatedSpecificite(MouvementLotView::generateLotByMvt($mouvement)));
+			$lot = $this->lots->add(null, MouvementLotView::generateLotByMvt($mouvement));
+            $lot->statut = $statut;
+            return $lot;
 		}
 
 		public function getNbLotByTypeForNumDossier($numDossier){
@@ -970,6 +1034,40 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$lots[$lot->getTypeLot()] +=1;
 			}
 			return $lots;
+		}
+
+		/** Mis à jour par la degustation du volume d'un lot de DRev **/
+		public function modifyVolumeLotAndCreateDRevModificatrice($hash_lot,$volume){
+
+			$lot = $this->get($hash_lot);
+
+			// Drev => modificatrice + changement dans Drev
+			$drevOriginal = DRevClient::getInstance()->find($lot->id_document);
+			$mvtLotDrevOriginal = $drevOriginal->get($lot->origine_mouvement);
+			$hashOriginalLot = $mvtLotDrevOriginal->origine_hash;
+			$lotDrevOriginal = $drevOriginal->get($hashOriginalLot);
+            $lotDrevOriginalToSave = clone $lotDrevOriginal;
+
+			// $modificatrice
+			$modificatrice = $drevOriginal->generateModificative();
+			$modificatrice->save();
+
+			$modificatrice = DRevClient::getInstance()->find($modificatrice->_id);
+
+
+		    $lotModificatrice = $modificatrice->get($hashOriginalLot);
+            $lotModificatrice->volume = $volume;
+            $lotModificatrice->statut = Lot::STATUT_PRELEVABLE;
+
+            $modificatrice->validate();
+			$modificatrice->validateOdg();
+			$modificatrice->generateMouvementsLots();
+			$modificatrice->save();
+
+			$lot->volume = $volume;
+            $lot->id_document = $modificatrice->_id;
+			$lot->origine_mouvement = $lotModificatrice->getHash();
+
 		}
 
 }

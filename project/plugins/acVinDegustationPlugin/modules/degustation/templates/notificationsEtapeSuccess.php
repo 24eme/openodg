@@ -51,7 +51,11 @@
                         <?php endforeach; ?>
                       </td>
                       <td class="text-center">
-                        <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm <?php if($conformitesLots->email_envoye): ?>disabled<?php endif;?>"><i class="glyphicon glyphicon-envelope"></i>&nbsp;Prévisualiser</a>
+                        <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm <?php if($conformitesLots->email_envoye): ?>disabled<?php endif;?>">
+                            <?php if(!$conformitesLots->email_envoye): ?><i class="glyphicon glyphicon-envelope"></i>&nbsp;Prévisualiser<?php else: ?>
+                                <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($conformitesLots->email_envoye, "dd/MM/yyyy")." à ".format_date($conformitesLots->email_envoye, "H")."h".format_date($conformitesLots->email_envoye, "mm"); ?>
+                            <?php endif; ?>
+                        </a>
                         <?php if($conformitesLots->email_envoye): ?>
                           <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
                         <?php endif;?>

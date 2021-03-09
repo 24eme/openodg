@@ -16,15 +16,16 @@ class DegustationClient extends acCouchdbClient {
       if (preg_match("/.*([0-9]+)".str_replace('X', '', self::SPECIFICITE_PASSAGES).".*/", $lot->specificite, $m)) {
         $nb = ((int)$m[1]) + 1;
       }
-      if (strpos($lot->id_document, self::TYPE_COUCHDB) === 0) {
-          if ($lot->specificite === null) {
-              $lot->specificite = str_replace('X', $nb, self::SPECIFICITE_PASSAGES);
-          } else {
-              $lot->specificite = (strpos($lot->specificite, str_replace('X', '', self::SPECIFICITE_PASSAGES)) !== false)
-                  ? str_replace($nb - 1, $nb, $lot->specificite)                              // il y a déjà un X passage
-                  : $lot->specificite.', '.str_replace('X', $nb, self::SPECIFICITE_PASSAGES); // il n'y a pas de passage
-          }
+
+      if ($lot->specificite === null) {
+          $lot->specificite = str_replace('X', $nb, self::SPECIFICITE_PASSAGES);
+      } else {
+          $lot->specificite = (strpos($lot->specificite, str_replace('X', '', self::SPECIFICITE_PASSAGES)) !== false)
+              ? str_replace($nb - 1, $nb, $lot->specificite)                              // il y a déjà un X passage
+              : $lot->specificite.', '.str_replace('X', $nb, self::SPECIFICITE_PASSAGES); // il n'y a pas de passage
       }
+
+      $lot->statut = Lot::STATUT_PRELEVABLE;
       return $lot;
     }
 

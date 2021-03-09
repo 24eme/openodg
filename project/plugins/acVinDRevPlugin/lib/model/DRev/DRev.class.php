@@ -890,8 +890,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
               }
               foreach ($lot as $key => $field) {
                 if($lot->hasVolumeAndHashProduit() && $this->getDocument()->isModifiedMother($lot->getHash(), $key)){
-                  $lot->date = $date;
-                  $lot->id_document = $this->_id;
+                  $lot->add('id_document',$this->_id);
+                  $lot->add('date',$date);
                   break;
                 }
               }
@@ -906,6 +906,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->storeLotsDateVersion($date);
+        //assigné le doc_id dans lots
         $this->cleanDoc();
         $this->validation = $date;
         $this->archiver();
@@ -1441,6 +1442,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     private function generateMouvementLotsFromLot($lot, $key) {
+
         $mvt = new stdClass();
         $mvt->date = $lot->date;
         $mvt->statut = $lot->statut;
@@ -1502,6 +1504,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $key = $lot->getUnicityKey();
             $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
         }
+    }
+
+    public function getMouvementLotFromLot($lot){
+      if(!$this->exist('mouvements_lots')){
+        return;
+      }
+      foreach ($this->get('mouvements_lots') as $identifiant => $mvtLots) {
+        foreach ($mvtLots as $mvtLot) {
+          if($mvtLot->origine_hash == $lot->getHash()){
+
+            return $mvtLot;
+          }
+        }
+      }
     }
 
     public function findMouvementFactures($cle, $id = null){

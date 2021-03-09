@@ -3,16 +3,6 @@
 class ImportDegustationIATask extends ImportLotsIATask
 {
 
-    public static $correspondancesStatuts = array(
-      "Conforme" => Lot::STATUT_CONFORME,
-      "Déclassé" => Lot::STATUT_NONCONFORME,
-      "Non Conforme" => Lot::STATUT_NONCONFORME,
-      "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
-      "Prélevé NA" => Lot::STATUT_PRELEVE, //Prélevé Non Anonimisé
-      "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
-      "Revendiqué NC" => Lot::STATUT_NONCONFORME
-    );
-
     protected function configure()
     {
         $this->addArguments(array(
@@ -132,9 +122,8 @@ EOF;
               $degustation = $newDegustation;
           }
 
-          $lot = $degustation->addLot($mouvement->value);
+          $lot = $degustation->addLot($mouvement->value, $statut);
           $lot->numero_table = 1; // Car on ne l'a pas
-          $lot->statut = $statut;
 
           if($lot->statut == Lot::STATUT_CONFORME) {
               $lot->conformite = Lot::CONFORMITE_CONFORME;

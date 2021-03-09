@@ -2,7 +2,7 @@
 
 <?php include_partial('conditionnement/breadcrumb', array('conditionnement' => $conditionnement )); ?>
 <?php if (isset($form)): ?>
-    <form action="<?php echo url_for('conditionnement_visualisation', $conditionnement) ?>" method="post">
+        <form role="form" class="form-inline" action="<?php echo url_for('conditionnement_visualisation', $conditionnement) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
@@ -51,7 +51,7 @@
 
 <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->date_degustation_voulue)     ? date_format(date_create($conditionnement->validation), 'd/m/Y') : null;?></p>
+    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->exist('date_degustation_voulue') && $conditionnement->date_degustation_voulue) ? date_format(date_create($conditionnement->validation), 'd/m/Y') : '<i>non saisi</i>';?></p>
 <?php endif ?>
 <div class="row row-margin row-button">
     <div class="col-xs-6">
@@ -71,7 +71,9 @@
                                                  ($sf_user->hasConditionnementAdmin() && ConditionnementConfiguration::getInstance()->hasValidationOdgRegion() && !$conditionnement->isValidateOdgByRegion($regionParam))
                                                )): ?>
         <?php $params = array("sf_subject" => $conditionnement, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
-                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("conditionnement_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+        <div class="col-xs-6 text-right">
+            <button type="button" name="validateOdg" id="btn-validation-document-conditionnement" data-toggle="modal" data-target="#conditionnement-confirmation-validation" <?php if($validation->hasErreurs() && $conditionnement->isTeledeclare() && !$sf_user->hasTransactionAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+        </div>
         <?php endif; ?>
         </div>
     </div>
@@ -79,3 +81,4 @@
 <?php if (isset($form)): ?>
 </form>
 <?php endif; ?>
+<?php include_partial('conditionnement/popupConfirmationValidation', array('approuver' => false)); ?>

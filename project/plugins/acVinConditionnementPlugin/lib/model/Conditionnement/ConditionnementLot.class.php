@@ -3,6 +3,10 @@
 
 class ConditionnementLot extends BaseConditionnementLot
 {
+    public function getFieldsToFill() {
+        return array('numero_cuve', 'millesime', 'volume', 'produit_hash', 'destination_date', 'elevage', 'specificite', 'centilisation');
+    }
+
     public function getProduitRevendiqueLibelleComplet() {
         $p = $this->getProduitRevendique();
         if ($p) {
@@ -100,21 +104,26 @@ class ConditionnementLot extends BaseConditionnementLot
         return $libelle;
     }
 
-    public function getNumeroCuve() {
-        if($this->exist('numero_cuve') && $this->get('numero_cuve')) {
-            $this->numero = $this->get('numero_cuve');
+    public function setNumeroCuve($numero) {
+        if (!$this->exist('numero_cuve')) {
+            $this->add('numero_cuve');
         }
-        if($this->exist('numero_cuve')) {
-            $this->remove('numero_cuve');
-
-            return $this->getNumeroCuve();
-        }
-        return $this->numero;
+        return $this->_set('numero_cuve', $numero);
     }
 
-    public function setNumeroCuve($numero) {
+    public function setCentilisation($centilisation) {
+        if (!$this->exist('centilisation')) {
+            $this->add('centilisation');
+        }
+        return $this->_set('centilisation', $centilisation);
+    }
 
-        return $this->setNumero($numero);
+    public function getCentilisation() {
+        $c = null;
+        if ($this->exist('centilisation')) {
+            $c = $this->_get('centilisation');
+        }
+        return $c;
     }
 
 }

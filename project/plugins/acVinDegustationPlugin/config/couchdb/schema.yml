@@ -41,6 +41,7 @@ Degustation:
                   details: {}
                   statut: {}
                   numero_table: {}
+                  position: {}
                   leurre: {}
                   conformite: {}
                   motif: {}
@@ -48,6 +49,7 @@ Degustation:
                   centilisation: { }
                   observation: {}
                   email_envoye: { }
+                  nombre_degustation: {required: false}
       mouvements_lots:
         type: collection
         definition:
@@ -91,6 +93,7 @@ Degustation:
                         centilisation: { }
                         conformite: {}
                         motif: {}
+                        nombre_degustation: {required: false}
       degustateurs:
         type: collection
         definition:

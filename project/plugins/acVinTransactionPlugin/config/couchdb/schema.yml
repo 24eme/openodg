@@ -15,6 +15,7 @@ Transaction:
                   '*': { }
       type: { }
       campagne: { }
+      date: { }
       etape: { required: false }
       achat_tolerance: { required: false }
       identifiant: { }

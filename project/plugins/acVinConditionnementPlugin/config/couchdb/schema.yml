@@ -15,6 +15,7 @@ Conditionnement:
                   '*': { }
       type: { }
       campagne: { }
+      date: { }
       etape: { required: false }
       achat_tolerance: { required: false }
       identifiant: { }
@@ -65,7 +66,6 @@ Conditionnement:
                   id_document: { }
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero: { required: false }
                   numero_cuve: { required: false } # a supprimer
                   millesime: { }
                   volume: { type: float }
@@ -77,6 +77,7 @@ Conditionnement:
                   statut: {}
                   specificite: { required: false }
                   centilisation: { required: false }
+                  degustable: { required: false}
                   cepages:
                     type: collection
                     definition:
