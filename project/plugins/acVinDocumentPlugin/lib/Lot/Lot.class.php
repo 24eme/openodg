@@ -91,7 +91,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_ATTABLE => "04_STATUT_ATTABLE",
         self::STATUT_PRELEVE => "03_STATUT_PRELEVE",
         self::STATUT_ATTENTE_PRELEVEMENT => "02_STATUT_ATTENTE_PRELEVEMENT",
-        self::STATUT_AFFECTE_SRC => "01_STATUT_AFFECTE_SRC",
+        self::STATUT_AFFECTE_DEST => "01_STATUT_AFFECTE_DEST",
     ];
 
     public static function getLibelleStatut($statut) {
