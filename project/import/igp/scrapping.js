@@ -120,7 +120,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstChangDen.aspx";
-      var exportFilename = destination_file+'changement_denom.xlsx';
+      var exportFilename = destination_file+'changement_denom.xls';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -211,7 +211,7 @@ nightmare
       .select('#ddlCampagne','')
       .wait("#BtnRech")
       .click('#BtnRech')
-      .wait("#gvFactureAExporter")
+      .wait(3000)
       .click('#btnExport')
       .download(exportFilename)
   })
