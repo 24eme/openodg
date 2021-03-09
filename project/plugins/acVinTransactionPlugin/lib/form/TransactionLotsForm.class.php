@@ -27,17 +27,8 @@ class TransactionLotsForm extends acCouchdbForm
 	public function save() {
 		$values = $this->getValues();
 
-			foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-				$this->getDocument()->lots[$key]->getOrAdd("degustable");
-
-				if(($this->getDocument()->etape == TransactionEtapes::ETAPE_VALIDATION || $this->getDocument()->etape == TransactionEtapes::ETAPE_LOTS)
-				 && $values['lots'][$key]['produit_hash']){
-						$embedForm->doUpdateObject($values['lots'][$key]);
-						continue;
-				}else{
-					$this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
-					TransactionLotForm::setLotStatut($this->getDocument()->lots[$key], $values['lots'][$key]);
-				}
+			foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {				
+				$embedForm->doUpdateObject($values['lots'][$key]);
 			}
 		$this->getDocument()->save();
 	}

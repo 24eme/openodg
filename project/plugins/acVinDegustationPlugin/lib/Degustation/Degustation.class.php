@@ -432,14 +432,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				 if(!array_key_exists($lot->getDeclarantIdentifiant(),$lotsByAdherents)){
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()] = new stdClass();
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->declarant_nom = $lot->declarant_nom;
-					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = true;
+                     $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = $lot->email_envoye;
+                     if(!$lot->email_envoye){
+                         $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = false;
+                     }
 					 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots = array();
 					}
 					if(!array_key_exists($conformite,$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots)){
 						$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite] = array();
  					}
 				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite][] = $lot;
-				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye &= $lot->email_envoye;
+				 if($lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye === false){
+                     $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = false;
+                 }
 			 }
 		 }
 		return $lotsByAdherents;
@@ -996,14 +1001,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function isMailEnvoyeEtablissement($identifiant){
-
-				return $this->getLotsConformitesOperateur($identifiant)->email_envoye;
+				return boolval($this->getLotsConformitesOperateur($identifiant)->email_envoye);
 		}
 
-		public function setMailEnvoyeEtablissement($identifiant, $envoye = true){
+		public function setMailEnvoyeEtablissement($identifiant, $date){
 				foreach ($this->getLotsConformitesOperateur($identifiant)->lots as $conformite => $lots) {
 					foreach ($lots as $lot) {
-						$lot->email_envoye = $envoye;
+						$lot->email_envoye = $date;
 					}
 				}
 		}

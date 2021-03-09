@@ -191,24 +191,26 @@ class transactionActions extends sfActions {
         }
 
         $this->validation = new TransactionValidation($this->transaction);
-        $this->form = new TransactionValidationForm($this->transaction, $this->isAdmin, array(), array('engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
+
+        $this->form = new TransactionValidationForm($this->transaction, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-          return sfView::SUCCESS;
+
+            return sfView::SUCCESS;
         }
 
-        if(!$this->validation->isValide() && $this->transaction->isTeledeclare() && !$this->getUser()->hasTransactionAdmin()){
-          return sfView::SUCCESS;
+        if (!$this->validation->isValide() && $this->transaction->isTeledeclare() && !$this->getUser()->hasTransactionAdmin()) {
+
+            return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
+
             return sfView::SUCCESS;
         }
-
         $this->form->save();
-
         $dateValidation = date('c');
 
         if($this->form->getValue("date")) {
@@ -292,19 +294,19 @@ class transactionActions extends sfActions {
         $this->transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::VISUALISATION, $this->transaction);
         $this->isAdmin = $this->getUser()->isAdmin();
-
         $this->service = $request->getParameter('service');
 
         $this->regionParam = $request->getParameter('region',null);
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasTransactionAdmin() || $this->transaction->validation) {
             $this->validation = new TransactionValidation($this->transaction);
+            $this->form = new TransactionValidationForm($this->transaction, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = new TransactionLotsForm($this->transaction);
+
         $this->dr = DRClient::getInstance()->findByArgs($this->transaction->identifiant, $this->transaction->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
