@@ -34,7 +34,7 @@
     <?php $lot = $degustation->lots->get($key); ?>
        <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
         <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo(substr($lot->id_document,0,4))?></span> </td>
-        <td class="edit"><?= $lot->numero_cuve ?>
+        <td class="edit"><?= $lot->numero_logement_operateur ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
               <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -68,7 +68,7 @@
               <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
               	<?php echo $formLot['preleve']->renderError() ?>
                   <div class="col-xs-12">
-            	<?php echo $formLot['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+            	<?php echo $formLot['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                   </div>
               </div>
       	</td>

@@ -44,7 +44,7 @@ $lot1 = $conditionnement->addLot();
 $t->is($lot1->millesime, $conditionnement->campagne, "Le millésime est intialisé avec la campagne");
 $t->is($lot1->specificite, Lot::SPECIFICITE_UNDEFINED, "La spécificité est nul à la création du lot");
 $t->ok($lot1->isEmpty(), "Le lot est vide sans numéro et sans produit");
-$lot1->add('numero_cuve', "1");
+$lot1->add('numero_logement_operateur', "1");
 $t->ok(!$lot1->isEmpty(), "Le lot n'est plus vide avec un numéro");
 $lot1->volume = 12;
 
@@ -60,7 +60,7 @@ $t->comment("création du lot 3");
 $lot3 = $conditionnement->addLot();
 $lot3->produit_hash = $produit->getHash();
 $lot3->volume = 15;
-$lot3->numero_cuve = 'C12';
+$lot3->numero_logement_operateur = 'C12';
 $lot3->specificite =  null;
 $lot3->centilisation = $centilisations_bib_key;
 $conditionnement->save();

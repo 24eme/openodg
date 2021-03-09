@@ -45,7 +45,7 @@
                   <tr>
                     <td style="overflow-wrap:break-word;line-height:12px; width:75%;">
                       <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
-                      &nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_cuve.$centilisation;  ?></strong>
+                      &nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_logement_operateur.$centilisation;  ?></strong>
                     </td>
                     <td style="text-align: right; width:25%;">
                       <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>

@@ -33,7 +33,7 @@
     <?php endif; ?>
 
     <?php if($sf_user->isAdmin()): ?>
-      <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form['lots'])); ?>
+      <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form)); ?>
     <?php else:?>
       <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement)); ?>
     <?php endif; ?>

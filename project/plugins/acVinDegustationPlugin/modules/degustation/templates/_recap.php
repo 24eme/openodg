@@ -54,7 +54,7 @@
             	<?php foreach ($degustation->lots as $lot): ?>
             	<tr>
             		<td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $lot->declarant_identifiant)) ?>" target="_blank"><?php echo $lot->declarant_nom; ?></a></td>
-    				<td><?php echo $lot->numero_cuve; ?></td>
+    				<td><?php echo $lot->numero_logement_operateur; ?></td>
     				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 						<?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
                         <td><?php echo $lot->specificite; ?> <?= $lot->isSecondPassage() ? ', '.$lot->getTextPassage() : ", pouet" ?></td>

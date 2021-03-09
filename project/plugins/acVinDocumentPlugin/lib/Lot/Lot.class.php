@@ -81,6 +81,19 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_DECLASSE
     );
 
+    public static $ordreStatut = [
+        // Statuts Degustations
+        self::STATUT_CONFORME => "08_STATUT_CONFORME",
+        self::STATUT_NONCONFORME => "08_STATUT_NONCONFORME",
+        self::STATUT_AFFECTE_SRC => "07_STATUT_AFFECTE_SRC",
+        self::STATUT_DEGUSTE => "06_STATUT_DEGUSTE",
+        self::STATUT_ANONYMISE => "05_STATUT_ANONYMISE",
+        self::STATUT_ATTABLE => "04_STATUT_ATTABLE",
+        self::STATUT_PRELEVE => "03_STATUT_PRELEVE",
+        self::STATUT_ATTENTE_PRELEVEMENT => "02_STATUT_ATTENTE_PRELEVEMENT",
+        self::STATUT_AFFECTE_DEST => "01_STATUT_AFFECTE_DEST",
+    ];
+
     public static function getLibelleStatut($statut) {
         $libelles = self::$libellesStatuts;
         return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
@@ -255,7 +268,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
 
     public function getIntitulePartiel(){
-      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_cuve.') de '.$this->produit_libelle;
+      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_logement_operateur.') de '.$this->produit_libelle;
       if ($this->millesime){
         $libelle .= ' ('.$this->millesime.')';
       }
@@ -324,12 +337,6 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         // Tagguer le lot avec un flag special
         // Regenerer les mouvements
-
-        if (! $this->exist('nombre_degustation')) {
-            $this->add('nombre_degustation', 1);
-        }
-
-        $this->nombre_degustation++;
 
         $this->getDocument()->generateMouvementsLots();
     }

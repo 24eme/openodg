@@ -261,7 +261,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
   			$mvt->statut = $lot->statut;
   			$mvt->numero_dossier = $lot->numero_dossier;
   			$mvt->numero_archive = $lot->numero_archive;
-  			$mvt->numero_cuve = $lot->numero_cuve;
+  			$mvt->numero_logement_operateur = $lot->numero_logement_operateur;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
         $mvt->elevage = $lot->elevage;
@@ -362,7 +362,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $mvtLot = $this->getMvtLot();
       $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
       $libelle .= ($this->isChgtTotal())? '' : ' partiel';
-      $libelle .= ' du logement n°'.$mvtLot->numero_cuve;
+      $libelle .= ' du logement n°'.$mvtLot->numero_logement_operateur;
       $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),

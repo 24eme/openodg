@@ -194,7 +194,7 @@ class conditionnementActions extends sfActions {
 
         $this->validation = new ConditionnementValidation($this->conditionnement);
 
-        $this->form = new ConditionnementValidationForm($this->conditionnement, $this->isAdmin, array(), array('engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
+        $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -303,12 +303,13 @@ class conditionnementActions extends sfActions {
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasConditionnementAdmin() || $this->conditionnement->validation) {
             $this->validation = new ConditionnementValidation($this->conditionnement);
+            $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = new ConditionnementLotsForm($this->conditionnement);
+
         $this->dr = DRClient::getInstance()->findByArgs($this->conditionnement->identifiant, $this->conditionnement->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;

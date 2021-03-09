@@ -56,7 +56,7 @@
       <td><?php echo (int)$lot->numero_dossier ?></td>
       <td><?php echo (int)$lot->numero_archive ?></td>
       <td><?php echo $lot->declarant_identifiant?></td>
-      <td><?php echo $lot->numero_cuve ?></td>
+      <td><?php echo $lot->numero_logement_operateur ?></td>
       <td><?php echo $lot->produit_libelle ."<br>". $lot->millesime ?></td>
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lot->volume); ?></td>
       <td><?php echo $lot->observation ?></td>

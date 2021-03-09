@@ -54,7 +54,7 @@ $i=1;
 foreach($drev->lots as $lot) {
 $lot->id_document = $drev->_id;
 $lot->millesime = $campagne;
-$lot->numero_cuve = $i;
+$lot->numero_logement_operateur = $i;
 $lot->volume = rand(10,50);
 $lot->destination_type = null;
 $lot->destination_date = ($campagne+1).'-'.sprintf("%02d", rand(1,12)).'-'.sprintf("%02d", rand(1,28));
