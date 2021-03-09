@@ -24,6 +24,16 @@ class MouvementLotHistoryView extends acCouchdbView
                     ->getView($this->design, $this->view);
     }
 
+    public function getNombrePassage($lot)
+    {
+        $mouvements = $this->client
+                           ->startkey([$declarant, $dossier, $archive, Lot::$ordreStatut[Lot::STATUT_AFFECTE_SRC]])
+                           ->endkey([$declarant, $dossier, $archive, Lot::$ordreStatut[Lot::STATUT_AFFECTE_SRC], []])
+                           ->getView($this->design, $this->view);
+
+        return count($mouvements->rows);
+    }
+
     public static function generateLotByMvt($mvt)
     {
         $lot = new stdClass();
