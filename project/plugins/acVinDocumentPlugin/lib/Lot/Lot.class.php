@@ -6,17 +6,17 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
-    const STATUT_AFFECTE_DEST = "AFFECTE_DEST";
+    const STATUT_AFFECTE_DEST = "01_AFFECTE_DEST";
     const STATUT_PRELEVABLE = "PRELEVABLE";
     const STATUT_NONPRELEVABLE = "NON_PRELEVABLE";
-    const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
-    const STATUT_PRELEVE = "PRELEVE";
-    const STATUT_ATTABLE = "ATTABLE";
-    const STATUT_ANONYMISE = "ANONYMISE";
-    const STATUT_DEGUSTE = "DEGUSTE";
-    const STATUT_CONFORME = "CONFORME";
-    const STATUT_AFFECTE_SRC = "AFFECTE_SRC";
-    const STATUT_NONCONFORME = "NON_CONFORME";
+    const STATUT_ATTENTE_PRELEVEMENT = "02_ATTENTE_PRELEVEMENT";
+    const STATUT_PRELEVE = "03_PRELEVE";
+    const STATUT_ATTABLE = "04_ATTABLE";
+    const STATUT_ANONYMISE = "05_ANONYMISE";
+    const STATUT_DEGUSTE = "06_DEGUSTE";
+    const STATUT_CONFORME = "08_CONFORME";
+    const STATUT_AFFECTE_SRC = "07_AFFECTE_SRC";
+    const STATUT_NONCONFORME = "08_NON_CONFORME";
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
     const STATUT_ELEVAGE = "ELEVAGE";
@@ -80,19 +80,6 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CHANGE,
         self::STATUT_DECLASSE
     );
-
-    public static $ordreStatut = [
-        // Statuts Degustations
-        self::STATUT_CONFORME => "08_STATUT_CONFORME",
-        self::STATUT_NONCONFORME => "08_STATUT_NONCONFORME",
-        self::STATUT_AFFECTE_SRC => "07_STATUT_AFFECTE_SRC",
-        self::STATUT_DEGUSTE => "06_STATUT_DEGUSTE",
-        self::STATUT_ANONYMISE => "05_STATUT_ANONYMISE",
-        self::STATUT_ATTABLE => "04_STATUT_ATTABLE",
-        self::STATUT_PRELEVE => "03_STATUT_PRELEVE",
-        self::STATUT_ATTENTE_PRELEVEMENT => "02_STATUT_ATTENTE_PRELEVEMENT",
-        self::STATUT_AFFECTE_DEST => "01_STATUT_AFFECTE_DEST",
-    ];
 
     public static function getLibelleStatut($statut) {
         $libelles = self::$libellesStatuts;
