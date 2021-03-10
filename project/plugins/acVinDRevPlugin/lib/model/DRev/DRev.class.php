@@ -1460,7 +1460,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->origine_type = 'drev';
         $mvt->origine_document_id = $this->_id;
         $mvt->id_document = $this->_id;
-        $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key.'-'.$statut;
+        $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key.'-'.KeyInflector::slugify($statut);
         $mvt->declarant_identifiant = $this->identifiant;
         $mvt->declarant_nom = $this->declarant->raison_sociale;
         $mvt->destination_type = $lot->destination_type;
@@ -1508,7 +1508,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($this->lots as $lot) {
             $mouvements = $this->buildMouvementsLot($lot);
             foreach ($mouvements as $key => $mouvement) {
-                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add($key, $mouvement);
+                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add(KeyInflector::slugify($key), $mouvement);
             }
         }
     }
