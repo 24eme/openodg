@@ -132,6 +132,7 @@ DRev:
                   elevage: { }
                   statut: {}
                   specificite: { required: false }
+                  degustable: { required: false}
                   cepages:
                     type: collection
                     definition:

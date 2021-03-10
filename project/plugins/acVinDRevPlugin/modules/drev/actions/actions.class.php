@@ -618,6 +618,7 @@ class drevActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if ($this->needDrDouane()) {
 
@@ -632,7 +633,7 @@ class drevActions extends sfActions {
 
         $this->validation = new DRevValidation($this->drev);
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+        $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -650,6 +651,7 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+        $this->form->save();
 
         $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
