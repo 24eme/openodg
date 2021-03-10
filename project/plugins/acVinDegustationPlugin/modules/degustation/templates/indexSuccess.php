@@ -68,7 +68,7 @@
             </div>
             <div class="form-group text-right">
                 <div class="col-sm-4 col-sm-offset-8 col-xs-12">
-                    <button type="submit" class="btn btn-default btn-block btn-upper">Créer</button>
+                    <button type="submit" class="btn btn-primary">Créer une dégustation</button>
                 </div>
             </div>
         </div>
