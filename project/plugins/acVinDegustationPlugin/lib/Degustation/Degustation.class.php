@@ -191,7 +191,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	private function generateMouvementLotsFromLot($lot, $key) {
 			$mvt = new stdClass();
 			$mvt->date = $lot->date;
-			$mvt->statut = Lot::$ordreStatut[$lot->statut];
+			$mvt->statut = $lot->statut;
             $mvt->doc_ordre = $this->getDocumentOrdre($lot);
 			$mvt->numero_dossier = $lot->numero_dossier;
 			$mvt->numero_archive = $lot->numero_archive;

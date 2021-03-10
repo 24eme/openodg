@@ -27,8 +27,8 @@ class MouvementLotHistoryView extends acCouchdbView
     public function getNombrePassage($lot)
     {
         $mouvements = $this->client
-                           ->startkey([$declarant, $dossier, $archive, Lot::$ordreStatut[Lot::STATUT_AFFECTE_SRC]])
-                           ->endkey([$declarant, $dossier, $archive, Lot::$ordreStatut[Lot::STATUT_AFFECTE_SRC], []])
+                           ->startkey([$declarant, $dossier, $archive, Lot::STATUT_AFFECTE_SRC])
+                           ->endkey([$declarant, $dossier, $archive, Lot::STATUT_AFFECTE_SRC, []])
                            ->getView($this->design, $this->view);
 
         return count($mouvements->rows);

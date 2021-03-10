@@ -125,10 +125,10 @@ $t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 2, 'La géné
 foreach($degustation->mouvements_lots->{$drev->identifiant} as $k => $mvt) {
     $mouvement[$mvt->statut] = $mvt;
 }
-$t->is($mouvement[Lot::$ordreStatut[Lot::STATUT_ATTENTE_PRELEVEMENT]]->id_document, $degustation->_id, 'le mvt lot permet de retrouver la degustation via id_document');
-$t->is($mouvement[Lot::$ordreStatut[Lot::STATUT_ATTENTE_PRELEVEMENT]]->origine_document_id, $degustation->_id, 'le mvt lot issu de la degustation est bien l\'id de la degustation');
-$t->is($mouvement[Lot::$ordreStatut[Lot::STATUT_ATTENTE_PRELEVEMENT]]->statut, Lot::$ordreStatut[Lot::STATUT_ATTENTE_PRELEVEMENT], "le mvt lot du lot est en attente de prélèvement");
-$t->is($mouvement[Lot::$ordreStatut[Lot::STATUT_AFFECTE_DEST]]->statut, Lot::$ordreStatut[Lot::STATUT_AFFECTE_DEST], "le deuxième mvt lot du lot est affecté destination");
+$t->is($mouvement[Lot::STATUT_ATTENTE_PRELEVEMENT]->id_document, $degustation->_id, 'le mvt lot permet de retrouver la degustation via id_document');
+$t->is($mouvement[Lot::STATUT_ATTENTE_PRELEVEMENT]->origine_document_id, $degustation->_id, 'le mvt lot issu de la degustation est bien l\'id de la degustation');
+$t->is($mouvement[Lot::STATUT_ATTENTE_PRELEVEMENT]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "le mvt lot du lot est en attente de prélèvement");
+$t->is($mouvement[Lot::STATUT_AFFECTE_DEST]->statut, Lot::STATUT_AFFECTE_DEST, "le deuxième mvt lot du lot est affecté destination");
 
 $t->comment("Prélévé");
 
