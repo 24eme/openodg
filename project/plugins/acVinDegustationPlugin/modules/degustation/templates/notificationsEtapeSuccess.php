@@ -77,7 +77,6 @@
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">
-                  <a href="<?php echo url_for("degustation") ?>" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></a>
                 </div>
               </div>
             </div>
