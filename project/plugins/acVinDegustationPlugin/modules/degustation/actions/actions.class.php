@@ -488,6 +488,13 @@ class degustationActions extends sfActions {
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
     }
 
+    protected function getRouteEtape($etape = null, $class = "DegustationEtapes") {
+        $etapes = $class::getInstance();
+        $routes = $etapes->getRouteLinksHash();
+
+        return (isset($routes[$etape]))? $routes[$etape] : null;
+    }
+
     protected function getRouteNextEtape($etape = null, $class = "DegustationEtapes") {
         $etapes = $class::getInstance();
         $routes = $etapes->getRouteLinksHash();
