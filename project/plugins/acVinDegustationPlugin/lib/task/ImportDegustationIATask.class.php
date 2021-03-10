@@ -129,6 +129,7 @@ EOF;
               $lot->conformite = Lot::CONFORMITE_CONFORME;
           }
 
+          $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
           $degustation->generateMouvementsLots();
           $degustation->save();
         }

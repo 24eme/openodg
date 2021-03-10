@@ -25,8 +25,8 @@
             <table class="table table-bordered table-condensed">
               <thead>
                 <tr>
-                  <th class="col-xs-4 text-left">Opérateur</th>
-                  <th class="col-xs-4 text-left">Echantillons dégustés</th>
+                  <th class="col-xs-3 text-left">Opérateur</th>
+                  <th class="col-xs-5 text-left">Echantillons dégustés</th>
                   <th class="col-xs-2 text-left">Notifications</th>
                 </tr>
               </thead>
@@ -37,9 +37,11 @@
                   <td class="text-left">
                     <?php echo $conformitesLots->declarant_nom; ?>
                   </td>
+                  <?php $emailLinkManagerLot = null; ?>
                   <td class="text-left">
                     <?php foreach ($conformitesLots->lots as $conformite => $lots): ?>
                       <?php foreach ($lots as $lot): ?>
+                        <?php if (!$emailLinkManagerLot) $emailLinkManagerLot = new DegustationEmailManager($degustation->getRawValue(), $lot->getEtablissement()->getRawValue()); ?>
                         <a data-toggle="tooltip" title='<?php echo $lot->produit_libelle;?>&nbsp;
                           <?php echo showProduitLot($lot); ?>
                           <?php if($lot->isNonConforme() || $lot->isConformeObs()): ?>
@@ -52,10 +54,16 @@
                       </td>
                       <td class="text-center">
                         <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm <?php if($conformitesLots->email_envoye): ?>disabled<?php endif;?>">
-                            <?php if(!$conformitesLots->email_envoye): ?><i class="glyphicon glyphicon-envelope"></i>&nbsp;Prévisualiser<?php else: ?>
+                            <?php if(!$conformitesLots->email_envoye): ?><i class="glyphicon glyphicon-eye-open"></i>&nbsp;Prévisualiser<?php else: ?>
                                 <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($conformitesLots->email_envoye, "dd/MM/yyyy")." à ".format_date($conformitesLots->email_envoye, "H")."h".format_date($conformitesLots->email_envoye, "mm"); ?>
                             <?php endif; ?>
                         </a>
+                        <?php if(!$conformitesLots->email_envoye): ?>
+                        <a class="btn btn-primary btn btn-sm pull-right"
+                           href="<?php echo $emailLinkManagerLot->getMailerLink(); ?>"
+                           id="link-mail-auto"
+                           data-retour="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $emailLinkManagerLot->getEtablissement()->identifiant)); ?>" ><i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer</a>
+                       <?php endif; ?>
                         <?php if($conformitesLots->email_envoye): ?>
                           <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
                         <?php endif;?>
