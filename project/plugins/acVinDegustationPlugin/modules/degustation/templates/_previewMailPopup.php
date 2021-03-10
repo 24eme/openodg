@@ -12,7 +12,7 @@
           </div>
         </div>
       <div class="modal-footer">
-        <a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
+        <a class="btn btn-default btn pull-left" href="<?php echo url_for('degustation_notifications_etape',array('id' => $degustation->_id)) ; ?>">Annuler</a>
         <a class="btn btn-primary btn pull-right"
            href="<?php echo $emailLinkManager->getMailerLink(); ?>"
            id="link-mail-auto"
