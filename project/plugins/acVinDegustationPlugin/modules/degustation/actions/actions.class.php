@@ -25,7 +25,7 @@ class degustationActions extends sfActions {
 
         $degustation = $this->form->save();
 
-        return $this->redirect('degustation_redirect', $degustation);
+        return $this->redirect('degustation_prelevement_lots', $degustation);
     }
 
     public function executePrelevementLots(sfWebRequest $request) {
@@ -471,7 +471,7 @@ class degustationActions extends sfActions {
     public function executeRedirect(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         //$this->redirectIfIsValidee();
-        return ($next = $this->getRouteNextEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        return ($next = $this->getRouteEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation_prelevement_lots', $this->degustation);
     }
 
     public function redirectIfIsValidee(){
