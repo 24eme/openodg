@@ -133,6 +133,7 @@ DRev:
                   statut: {}
                   specificite: { required: false }
                   degustable: { required: false}
+                  document_fils: { required: false }
                   cepages:
                     type: collection
                     definition:
@@ -242,6 +243,7 @@ DRev:
                         id_document: {  }
                         statut: {  }
                         specificite: { required: false }
+                        doc_ordre: {  }
       pieces:
         type: array_collection
         definition:

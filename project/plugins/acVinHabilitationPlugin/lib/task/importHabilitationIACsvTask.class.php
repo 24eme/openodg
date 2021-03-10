@@ -112,7 +112,12 @@ EOF;
              }
 
             $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $this->date);
-            $hab_activites = $habilitation->addProduit($produitKey)->add('activites');
+            $produit = $habilitation->addProduit($produitKey);
+            if (!$produit) {
+                echo "WARNING: produit $produitKey (".$data[self::CSV_PRODUIT].") non trouvé : ligne non importée\n";
+                continue;
+            }
+            $hab_activites = $produit->add('activites');
 
             $statut = $this->convert_statut[trim($data[self::CSV_STATUT])];
 

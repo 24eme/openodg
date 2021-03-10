@@ -112,6 +112,14 @@ class declarationActions extends sfActions {
             return $this->redirect("chgtdenom_visualisation", array("id" => $doc_id));
         }
 
+        if ($doc_type == "CONDITIONNEMENT" ) {
+            return $this->redirect("conditionnement_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "TRANSACTION" ) {
+            return $this->redirect("transaction_visualisation", array("id" => $doc_id));
+        }
+
         return $this->forward404();
     }
 
