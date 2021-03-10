@@ -6,6 +6,10 @@
 
 class DegustationLot extends BaseDegustationLot {
 
+  public function getEtablissement() {
+      return EtablissementClient::getInstance()->findByIdentifiant($this->declarant_identifiant);
+  }
+
   public function isNonConforme(){
     return ($this->statut == Lot::STATUT_NONCONFORME);
   }

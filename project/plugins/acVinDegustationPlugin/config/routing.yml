@@ -60,7 +60,7 @@ degustation_commission_etape:
       sf_method: [get]
 
 degustation_resultats_etape:
-  url: /degustation/:id/resultats
+  url: /degustation/:id/resultats-presences
   param: { module: degustation, action: resultatsEtape }
   class: DegustationRoute
   options:
