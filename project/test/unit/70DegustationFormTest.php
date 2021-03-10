@@ -56,9 +56,10 @@ $drev->lots[1] = clone $drev->lots[0];
 $drev->lots[1]->numero_logement_operateur = '2';
 $drev->lots[1]->volume = 2;
 $drev->validate();
+$drev->validateOdg();
 $drev->save();
 $t->comment($drev->_id);
-$res_mvt = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$res_mvt = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_AFFECTABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 $t->is(count($res_mvt->rows), 2, 'on a au moins un mouvement de lot prélevable');
 
 $t->comment("Test de la dégustation : $docid");
