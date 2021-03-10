@@ -9,7 +9,7 @@ chgtdenom_create:
     sf_method: [get]
 
 chgtdenom_create_lot:
-  url: /changement-denomination/creation/:identifiant/lot/:lot
+  url: /changement-denomination/creation-lot/:identifiant
   param: { module: chgtdenom, action: createLot }
   class: EtablissementRoute
   options:

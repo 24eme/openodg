@@ -57,7 +57,7 @@
     				<td><?php echo $lot->numero_logement_operateur; ?></td>
     				<td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small><?php if ($lot->millesime): ?>&nbsp;(<?php echo $lot->millesime; ?>)<?php endif; ?></td>
 						<?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                        <td><?php echo $lot->specificite; ?> <?= $lot->isSecondPassage() ? ', '.$lot->getTextPassage() : ", pouet" ?></td>
+                        <td><?php echo $lot->specificite; ?> <?= $lot->isSecondPassage() ? ', '.$lot->getTextPassage() : "" ?></td>
 		        <?php endif ?>
 						<td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
             		<td><?php echo Lot::getLibelleStatut($lot->statut); ?></td>
