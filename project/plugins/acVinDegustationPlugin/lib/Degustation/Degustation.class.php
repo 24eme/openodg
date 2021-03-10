@@ -208,7 +208,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->origine_type = 'degustation';
 			$mvt->origine_document_id = $this->_id;
 			$mvt->id_document = $this->_id;
-			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
+			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.KeyInflector::slugify($key);
 			$mvt->declarant_identifiant = $lot->declarant_identifiant;
 			$mvt->declarant_nom = $lot->declarant_nom;
 			$mvt->destination_type = $lot->destination_type;
@@ -234,7 +234,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = $this->buildMouvementsLot($lot);
 
             foreach ($mouvements as $key => $mouvement) {
-                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add($key, $mouvement);
+                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add(KeyInflector::slugify($key), $mouvement);
             }
         }
     }
@@ -249,10 +249,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             case Lot::STATUT_CONFORME:
             case Lot::STATUT_NONCONFORME:
                 $lot->statut = ($lot->statut === Lot::STATUT_CONFORME) ? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_AFFECTE_SRC:
-                $lot->statut = Lot::STATUT_AFFECTE_SRC;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
 
             case Lot::STATUT_DEGUSTE:
@@ -281,6 +277,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             default:
                 break;
+        }
+
+        if ($statut_originel === Lot::STATUT_NONCONFORME) {
+            if ($lot->exist('affectable') && $lot->affectable === true) {
+                $lot->statut = Lot::STATUT_AFFECTABLE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+                $lot->statut = Lot::STATUT_AFFECTE_SRC;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+            } else {
+                $lot->statut = Lot::STATUT_MANQUEMENT_EN_ATTENTE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+            }
         }
 
         $lot->statut = $statut_originel;
@@ -333,7 +342,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function getMvtLotsPrelevables() {
          $mvt = array();
-         foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_PRELEVABLE)->rows as $item) {
+         foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_AFFECTABLE)->rows as $item) {
              $mvt[Lot::generateMvtKey($item->value)] = $item->value;
 		 }
 		 ksort($mvt);
