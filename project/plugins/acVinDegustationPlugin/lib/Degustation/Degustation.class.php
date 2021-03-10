@@ -1052,6 +1052,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			// Drev => modificatrice + changement dans Drev
 			$drevOriginal = DRevClient::getInstance()->find($lot->id_document);
 			$mvtLotDrevOriginal = $drevOriginal->get($lot->origine_mouvement);
+
 			$hashOriginalLot = $mvtLotDrevOriginal->origine_hash;
 			$lotDrevOriginal = $drevOriginal->get($hashOriginalLot);
             $lotDrevOriginalToSave = clone $lotDrevOriginal;
@@ -1074,7 +1075,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 			$lot->volume = $volume;
             $lot->id_document = $modificatrice->_id;
-			$lot->origine_mouvement = $lotModificatrice->getHash();
+			$lot->origine_mouvement = $modificatrice->getMouvementLotFromLot($lotModificatrice)->getHash();
 
 		}
 
