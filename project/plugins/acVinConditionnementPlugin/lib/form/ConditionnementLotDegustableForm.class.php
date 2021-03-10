@@ -1,9 +1,9 @@
 <?php
-class ConditionnementLotDegustableForm extends acCouchdbObjectForm
+class ConditionnementLotaffectableForm extends acCouchdbObjectForm
 {
     public function configure() {
-        $this->setWidget('degustable', new sfWidgetFormInputCheckbox());
-        $this->setValidator('degustable', new sfValidatorBoolean(['required' => false]));
+        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
         $this->widgetSchema->setNameFormat('[%s]');
     }
 }
