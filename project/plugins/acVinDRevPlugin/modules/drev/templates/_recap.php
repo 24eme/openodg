@@ -168,14 +168,14 @@
                                   <?php if ($sf_user->isAdmin() && !$drev->validation_odg): ?>
                                   	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "drev bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
-                                      <span class="<?php if($lot->statut == Lot::STATUT_PRELEVABLE):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
+                                      <span class="<?php if($lot->degustable):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
                                   <?php endif; ?>
                                 </div>
                             </div>
                           <?php else: ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
-                                <span class="<?php if($lot->statut == Lot::STATUT_PRELEVABLE):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
+                                <span class="<?php if($lot->degustable):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
                               </div>
                             </div>
                           <?php endif; ?>

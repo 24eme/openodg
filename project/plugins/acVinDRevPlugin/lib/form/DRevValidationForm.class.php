@@ -39,7 +39,7 @@ class DRevValidationForm extends acCouchdbForm
 
         $formDegustable = new BaseForm();
         foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
-            foreach ($lots as $lot) {                
+            foreach ($lots as $lot) {
                 $formDegustable->embedForm($lot->getKey(), new DRevLotDegustableForm($lot));
             }
         }
@@ -55,12 +55,6 @@ class DRevValidationForm extends acCouchdbForm
         if($this->isAdmin){
           foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
             $this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
-
-            if($values['lots'][$key]['degustable']){
-              $this->getDocument()->lots[$key]->statut = Lot::STATUT_PRELEVABLE;
-            }else{
-              $this->getDocument()->lots[$key]->statut = Lot::STATUT_NONPRELEVABLE;
-            }
          }
         }
 

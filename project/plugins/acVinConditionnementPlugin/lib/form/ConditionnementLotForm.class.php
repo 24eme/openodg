@@ -94,8 +94,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         }
         $this->getObject()->getOrAdd("degustable");
         $this->getObject()->set("degustable",true);
-        $this->getObject()->statut = Lot::STATUT_PRELEVABLE;
-    }  
+    }
 
     public function getSpecificites()
     {
