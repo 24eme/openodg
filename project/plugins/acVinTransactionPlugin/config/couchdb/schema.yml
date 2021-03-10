@@ -77,7 +77,7 @@ Transaction:
                   statut: {}
                   specificite: {  }
                   pays: { }
-                  degustable: { }
+                  affectable: { }
                   cepages:
                     type: collection
                     definition:

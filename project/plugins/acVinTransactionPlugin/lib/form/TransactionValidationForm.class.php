@@ -49,7 +49,7 @@ class TransactionValidationForm extends acCouchdbForm
 
         if($this->isAdmin){
           foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-            $this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
+            $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
          }
         }
 

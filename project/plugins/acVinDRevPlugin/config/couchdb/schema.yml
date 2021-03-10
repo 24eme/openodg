@@ -132,7 +132,8 @@ DRev:
                   elevage: { }
                   statut: {}
                   specificite: { }
-                  degustable: { }
+                  affectable: { }
+                  document_fils: {  }
                   cepages:
                     type: collection
                     definition:
@@ -242,6 +243,7 @@ DRev:
                         id_document: {  }
                         statut: {  }
                         specificite: { required: false }
+                        doc_ordre: {  }
       pieces:
         type: array_collection
         definition:

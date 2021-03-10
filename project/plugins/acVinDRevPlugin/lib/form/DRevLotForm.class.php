@@ -85,7 +85,7 @@ class DRevLotForm extends acCouchdbObjectForm
         if (!empty($values['elevage'])) {
           $this->getObject()->statut = Lot::STATUT_ELEVAGE;
         }
-        $this->getObject()->set("degustable",true);
+        $this->getObject()->set("affectable",true);
     }
 
     public function getDestinationsType()

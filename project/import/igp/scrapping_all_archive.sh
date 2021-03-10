@@ -10,7 +10,9 @@ do
     echo "Scrapping $config_file"
     bash scrapping.sh $config_file
     cd imports
+    echo "Scrapping $config_file" > /tmp/commit_message
+    bash scrapping_verify.sh $config_file >> /tmp/commit_message
     git add .
-    git commit -m "Scrapping $config_file" > /dev/null
+    git commit -F /tmp/commit_message > /dev/null
     cd ..
 done

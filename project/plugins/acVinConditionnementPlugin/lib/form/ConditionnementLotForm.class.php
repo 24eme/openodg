@@ -51,8 +51,8 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         $this->setWidget('numero_logement_operateur', new bsWidgetFormInput());
         $this->setValidator('numero_logement_operateur', new sfValidatorString(array('required' => false)));
 
-        $this->setWidget('degustable', new sfWidgetFormInputCheckbox());
-        $this->setValidator('degustable', new sfValidatorBoolean(['required' => false]));
+        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
 
 
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
@@ -92,7 +92,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
-        $this->getObject()->set("degustable",true);
+        $this->getObject()->set("affectable",true);
     }
 
     public function getSpecificites()

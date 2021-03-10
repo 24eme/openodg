@@ -77,7 +77,7 @@ Conditionnement:
                   statut: {}
                   specificite: { }
                   centilisation: { required: false }
-                  degustable: { }
+                  affectable: { }
                   cepages:
                     type: collection
                     definition:
