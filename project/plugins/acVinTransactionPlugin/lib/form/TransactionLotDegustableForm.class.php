@@ -1,5 +1,5 @@
 <?php
-class TransactionLotaffectableForm extends acCouchdbObjectForm
+class TransactionLotDegustableForm extends acCouchdbObjectForm
 {
     public function configure() {
         $this->setWidget('affectable', new sfWidgetFormInputCheckbox());

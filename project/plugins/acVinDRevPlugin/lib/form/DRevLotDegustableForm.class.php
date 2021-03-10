@@ -1,5 +1,5 @@
 <?php
-class DRevLotaffectableForm extends acCouchdbObjectForm
+class DRevLotDegustableForm extends acCouchdbObjectForm
 {
     public function configure() {
         $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
