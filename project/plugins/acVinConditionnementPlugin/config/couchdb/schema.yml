@@ -78,6 +78,7 @@ Conditionnement:
                   specificite: { }
                   centilisation: { required: false }
                   affectable: { }
+                  document_fils: {  }
                   cepages:
                     type: collection
                     definition:

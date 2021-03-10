@@ -25,6 +25,9 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
     const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
 
+    const STATUT_MANQUEMENT_EN_ATTENTE = "01_MANQUEMENT_EN_ATTENTE";
+    const STATUT_TRANSITOIRE_AFFECTATION_EN_ATTENTE = "02_AFFECTATION_EN_ATTENTE";
+
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
     const CONFORMITE_NONCONFORME_MAJEUR = "NONCONFORME_MAJEUR";
@@ -329,6 +332,7 @@ abstract class Lot extends acCouchdbDocumentTree
         // Tagguer le lot avec un flag special
         // Regenerer les mouvements
 
+        $this->affectable = true;
         $this->getDocument()->generateMouvementsLots();
     }
 
