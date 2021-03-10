@@ -62,7 +62,7 @@
                                   <?php if ($sf_user->isAdmin() && !$conditionnement->validation_odg): ?>
                                   	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
-                                      <span class="<?php if($lot->statut == Lot::STATUT_PRELEVABLE):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
+                                      <span class="<?php if($lot->degustable):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
                                   <?php endif; ?>
                                 </div>
                             </div>
