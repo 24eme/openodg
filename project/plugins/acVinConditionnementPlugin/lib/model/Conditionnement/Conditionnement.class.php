@@ -30,8 +30,11 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     }
 
     public function constructId() {
-        $date = date("Ymd");        
-        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $date;
+        if (!$this->date) {
+            $this->date = date("Y-m-d");
+        }
+        $idDate = str_replace('-', '', $this->date);
+        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $idDate;
         if($this->version) {
             $id .= "-".$this->version;
         }
@@ -71,9 +74,13 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         return $this->_get('validation_odg');
     }
 
-    public function initDoc($identifiant, $campagne) {
+    public function initDoc($identifiant, $campagne, $date = null) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
+        $this->date = $date;
+        if (!$this->date) {
+            $this->date = date("Y-m-d");
+        }
         $etablissement = $this->getEtablissementObject();
     }
 
@@ -168,11 +175,8 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
 
     public function addLot() {
         $lot = $this->add('lots')->add();
-        $lot->millesime = $this->campagne;
-        $lot->statut = Lot::STATUT_PRELEVABLE;
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
-          $lot->add('specificite','aucune');
-        }
+        $lot->initDefault();
+
         return $lot;
     }
 
@@ -441,7 +445,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $mvt->statut = $lot->statut;
         $mvt->numero_dossier = $lot->numero_dossier;
         $mvt->numero_archive = $lot->numero_archive;
-        $mvt->numero_cuve = $lot->numero_cuve;
+        $mvt->numero_logement_operateur = $lot->numero_logement_operateur;
         $mvt->millesime = $lot->millesime;
         $mvt->volume = $lot->volume;
         $mvt->elevage = $lot->elevage;
@@ -460,7 +464,9 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
         $mvt->destination_type = $lot->destination_type;
         $mvt->destination_date = $lot->destination_date;
         $mvt->details = '';
-        $mvt->centilisation = $lot->centilisation;
+        if ($lot->exist('centilisation')) {
+            $mvt->centilisation = $lot->centilisation;
+        }
 
         $tabCepages=[];
 
@@ -487,7 +493,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
 
     public function generateAndAddMouvementLotsFromLot($lot, $key) {
         $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-        return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
+        return $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
     }
 
     public function generateMouvementsLots() {
@@ -519,7 +525,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $date,
-    		'libelle' => 'Déclaration de conditionnement '.$this->campagne.' '.$complement,
+    		'libelle' => 'Déclaration de conditionnement '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
@@ -531,7 +537,7 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     }
 
     public function generateUrlPiece($source = null) {
-    	return sfContext::getInstance()->getRouting()->generate('conditionnement_export_pdf', $this);
+    	return null;
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
@@ -656,7 +662,11 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
     }
 
     public function findDocumentByVersion($version) {
-        $id = 'CONDITIONNEMENT-' . $this->identifiant . '-' . $this->campagne;
+        $tabId = explode('-', $this->_id);
+        if (count($tabId) < 3) {
+          throw new sfException("Doc id incoherent");
+        }
+        $id = $tabId[0].'-'.$tabId[1].'-'.$tabId[2];
         if($version) {
             $id .= "-".$version;
         }
@@ -760,9 +770,11 @@ class Conditionnement extends BaseConditionnement implements InterfaceVersionDoc
       return $this->isValideeOdg() && $this->isValidee();
     }
 
+    public function isLectureSeule() {
+
+        return $this->exist('lecture_seule') && $this->get('lecture_seule');
+    }
+
     /**** FIN DE VERSION ****/
 
-    public function getDate() {
-      return $this->campagne.'-12-10';
-    }
 }

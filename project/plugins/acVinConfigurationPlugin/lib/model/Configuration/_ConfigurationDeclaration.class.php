@@ -1064,7 +1064,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function canHaveVci() {
 
-        return true;
+        return $this->hasRendementVci();
     }
 
     public function isEffervescentNode(){

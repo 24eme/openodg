@@ -202,6 +202,7 @@ class declarationActions extends sfActions {
             $this->facets["Type"][$row->key[DeclarationTousView::KEY_TYPE]] += $row->value;
         }
         if (!isset($this->query['Campagne'])){
+            ksort($this->facets["Campagne"]);
             $campagnes = array_keys($this->facets["Campagne"]);
             $this->query['Campagne'] = "".array_pop($campagnes);
         }

@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
@@ -31,7 +32,7 @@
               </thead>
               <tbody>
                 <?php
-                foreach ($degustation->getLotsByOperateursAndConformites() as $conformitesLots): ?>
+                foreach ($degustation->getLotsByOperateursAndConformites() as $idenfiant => $conformitesLots): ?>
                 <tr class="vertical-center">
                   <td class="text-left">
                     <?php echo $conformitesLots->declarant_nom; ?>
@@ -40,10 +41,7 @@
                     <?php foreach ($conformitesLots->lots as $conformite => $lots): ?>
                       <?php foreach ($lots as $lot): ?>
                         <a data-toggle="tooltip" title='<?php echo $lot->produit_libelle;?>&nbsp;
-                          <?php echo $lot->details; echo ($lot->millesime)? '&nbsp;'.$lot->millesime : ''; ?>
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <?php echo '('.$lot->specificite.')'; ?>
-                          <?php endif ?>
+                          <?php echo showProduitLot($lot); ?>
                           <?php if($lot->isNonConforme() || $lot->isConformeObs()): ?>
                             <?php echo "&nbsp;&nbsp;".$lot->getShortLibelleConformite(); ?>
                           <?php endif; ?>
@@ -53,17 +51,14 @@
                         <?php endforeach; ?>
                       </td>
                       <td class="text-center">
-                        <?php
-                        if(!$lot->isNonConforme()):
-                          $uri = url_for('degustation_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant));
-                        else:
-                          $uri = url_for('degustation_non_conformite_pdf',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'lot_dossier' => $lot->numero_dossier, 'lot_num_anon' => $lot->getNumeroAnonymat()));
-                        endif;
-                        $urlBase = $sf_request->getUriPrefix().$sf_request->getRelativeUrlRoot().$sf_request->getPathInfoPrefix();
-                        ?>
-                        <a class="btn" href="<?php echo $uri ?>">PDF conforme</a>
-
-                        <a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><i class="glyphicon glyphicon-envelope"></i></a>
+                        <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm <?php if($conformitesLots->email_envoye): ?>disabled<?php endif;?>">
+                            <?php if(!$conformitesLots->email_envoye): ?><i class="glyphicon glyphicon-envelope"></i>&nbsp;Prévisualiser<?php else: ?>
+                                <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($conformitesLots->email_envoye, "dd/MM/yyyy")." à ".format_date($conformitesLots->email_envoye, "H")."h".format_date($conformitesLots->email_envoye, "mm"); ?>
+                            <?php endif; ?>
+                        </a>
+                        <?php if($conformitesLots->email_envoye): ?>
+                          <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
+                        <?php endif;?>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -83,3 +78,8 @@
       </div>
     </div>
   </div>
+  <?php
+  if(isset($emailLinkManager)):
+    include_partial('degustation/previewMailPopup', array('emailLinkManager' => $emailLinkManager, 'degustation' => $degustation));
+ endif;
+  ?>

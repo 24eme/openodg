@@ -16,9 +16,6 @@ class ConditionnementLotsForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								if(DRevConfiguration::getInstance()->hasSpecificiteLot() && (!$lot->exist('specificite') || !$lot->specificite)){
-									$lot->add('specificite', DRevConfiguration::getInstance()->getSpecificites()['aucune']);
-								}
                 $formLots->embedForm($lot->getKey(), new ConditionnementLotForm($lot));
             }
         }
@@ -30,9 +27,11 @@ class ConditionnementLotsForm extends acCouchdbForm
 
 	public function save() {
 		$values = $this->getValues();
+
 		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
 			$embedForm->doUpdateObject($values['lots'][$key]);
-        }
+		}
+
 		$this->getDocument()->save();
 	}
 

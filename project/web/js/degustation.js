@@ -1,15 +1,13 @@
 
   $(document).ready(function(){
 
-    var mailLinkAuto = document.getElementById('link-mail-auto');
-    if(mailLinkAuto) {
-      mailLinkAuto.click();
-      var retour = mailLinkAuto.getAttribute("data-retour");
-      console.log(retour);
+    $('#mailPreviewModal').modal('show');
+    $('#link-mail-auto').click(function(){
+      var retour = $(this).attr("data-retour");
       if(retour){
-        window.location = retour;
+         window.location = retour;
       }
-    }
+    });
     $('#popupLeurreForm').each(function(){
       $('#vin_sans_cepage').click(function(){
         if($(this).is(':checked')){

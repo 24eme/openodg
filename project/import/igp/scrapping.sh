@@ -1,31 +1,32 @@
+#!/bin/bash
 
-if ! test "$1"; then
+if ! test -f "$1"; then
     echo "Fichier config requis";
     exit 1;
 fi
 
 CONFIGFILE=$1
+ODG=$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+DATADIR="imports/$ODG"
 
-mkdir -p imports
-if [ -d "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)" ]; then
-  rm -r "imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)";
+if ! test "$ODG"; then
+    echo "Nom du dossier de l'ODG non trouvé";
+    exit 1;
 fi
 
-FILE_NAME=$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+if [ -d $DATADIR ]; then
+  rm -r $DATADIR;
+fi
+mkdir -p $DATADIR
 
-mkdir -p imports/$(cat $CONFIGFILE | jq '.file_name' | sed s/\"//g)
+
 if test "$DISPLAY"; then
   node scrapping.js $CONFIGFILE
-  node scrapping_cepages.js $CONFIGFILE
-  node scrapping_membres_innactifs.js $CONFIGFILE
-
 else
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js $CONFIGFILE
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_cepages.js $CONFIGFILE
-  DEBUG=nightmare* xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping_membres_innactifs.js $CONFIGFILE
+  xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js $CONFIGFILE
 fi
 
-bash script_verify.sh
-sed "s/\t/;/" imports/$FILE_NAME/produits.txt >> imports/$FILE_NAME/produits.csv
-sed "s/\t/;/" imports/$FILE_NAME/cépages.txt | cut -d ";" -f 1 >> imports/$FILE_NAME/cépages.csv
-sed "s/\t/;/" imports/$FILE_NAME/membres_innactifs.txt >> imports/$FILE_NAME/membres_innactifs.csv
+#bash script_verify.sh $CONFIGFILE
+
+echo "date;code;campagne;millesime;responsable;lieu_nom;lieu_adresse;lieu_code_postal;lieu_ville;type_ligne;operateur;produit;cepage;volume;logement;type_lot;passage;degre;doc;numero_anonymat;conformite;motif_refus;commentaire" > $DATADIR/commissions.csv
+ls $DATADIR/commission_* | while read file; do nodejs parse_commisson.js $file; done >> $DATADIR/commissions.csv

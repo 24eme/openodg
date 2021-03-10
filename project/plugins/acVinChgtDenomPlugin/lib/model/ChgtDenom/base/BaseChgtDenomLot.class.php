@@ -1,14 +1,14 @@
 <?php
 /**
  * BaseChgtDenomLot
- * 
+ *
  * Base model for ChgtDenomLot
 
  * @property string $date
  * @property string $id_document
  * @property string $numero_dossier
  * @property string $numero_archive
- * @property string $numero_cuve
+ * @property string $numero_logement_operateur
  * @property string $millesime
  * @property string $elevage
  * @property float $volume
@@ -31,8 +31,8 @@
  * @method string setNumeroDossier()
  * @method string getNumeroArchive()
  * @method string setNumeroArchive()
- * @method string getNumeroCuve()
- * @method string setNumeroCuve()
+ * @method string getNumeroLogementOperateur()
+ * @method string setNumeroLogementOperateur()
  * @method string getMillesime()
  * @method string setMillesime()
  * @method string getElevage()
@@ -59,14 +59,14 @@
  * @method string setStatut()
  * @method string getSpecificite()
  * @method string setSpecificite()
- 
+
  */
 
 abstract class BaseChgtDenomLot extends Lot {
-                
+
     public function configureTree() {
        $this->_root_class_name = 'ChgtDenom';
        $this->_tree_class_name = 'ChgtDenomLot';
     }
-                
+
 }

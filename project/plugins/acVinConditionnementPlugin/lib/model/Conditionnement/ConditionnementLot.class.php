@@ -3,6 +3,10 @@
 
 class ConditionnementLot extends BaseConditionnementLot
 {
+    public function getFieldsToFill() {
+        return array('numero_logement_operateur', 'millesime', 'volume', 'produit_hash', 'destination_date', 'elevage', 'specificite', 'centilisation');
+    }
+
     public function getProduitRevendiqueLibelleComplet() {
         $p = $this->getProduitRevendique();
         if ($p) {
@@ -56,6 +60,13 @@ class ConditionnementLot extends BaseConditionnementLot
       return parent::getDocOrigine();
     }
 
+    public function getDefaults() {
+        $defaults = parent::getDefaults();
+        $defaults['destination_type'] = DRevClient::LOT_DESTINATION_CONDITIONNEMENT;
+
+        return $defaults;
+    }
+
     public function getCepagesToStr(){
       $cepages = $this->cepages;
       $str ='';
@@ -93,21 +104,32 @@ class ConditionnementLot extends BaseConditionnementLot
         return $libelle;
     }
 
-    public function getNumeroCuve() {
-        if($this->exist('numero_cuve') && $this->get('numero_cuve')) {
-            $this->numero = $this->get('numero_cuve');
+    public function setCentilisation($centilisation) {
+        if (!$this->exist('centilisation')) {
+            $this->add('centilisation');
         }
-        if($this->exist('numero_cuve')) {
-            $this->remove('numero_cuve');
-
-            return $this->getNumeroCuve();
-        }
-        return $this->numero;
+        return $this->_set('centilisation', $centilisation);
     }
 
-    public function setNumeroCuve($numero) {
-
-        return $this->setNumero($numero);
+    public function getCentilisation() {
+        $c = null;
+        if ($this->exist('centilisation')) {
+            $c = $this->_get('centilisation');
+        }
+        return $c;
+    }
+    
+    public function getNumeroLogementOperateur() {
+        if(!$this->exist('numero_logement_operateur')) {
+            return null;
+        }
+        return $this->_get('numero_logement_operateur');
     }
 
+    public function setNumeroLogementOperateur($numero) {
+        if(!$this->exist('numero_logement_operateur')) {
+            $this->add('numero_logement_operateur');
+        }
+        return $this->_set('numero_logement_operateur', $numero);
+    }
 }

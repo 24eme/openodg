@@ -184,16 +184,15 @@ class transactionActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::EDITION, $this->transaction);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if($this->transaction->storeEtape($this->getEtape($this->transaction, TransactionEtapes::ETAPE_VALIDATION))) {
             $this->transaction->save();
         }
 
-        $this->transaction->cleanDoc();
-
         $this->validation = new TransactionValidation($this->transaction);
 
-        $this->form = new TransactionValidationForm($this->transaction, array(), array('engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
+        $this->form = new TransactionValidationForm($this->transaction, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -294,19 +293,20 @@ class transactionActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::VISUALISATION, $this->transaction);
-
+        $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
 
         $this->regionParam = $request->getParameter('region',null);
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasTransactionAdmin() || $this->transaction->validation) {
             $this->validation = new TransactionValidation($this->transaction);
+            $this->form = new TransactionValidationForm($this->transaction, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = null;
+
         $this->dr = DRClient::getInstance()->findByArgs($this->transaction->identifiant, $this->transaction->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
@@ -319,6 +319,10 @@ class transactionActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin && $this->transaction->isValidee() && $this->transaction->isValideeODG() === false){
+          return $this->redirect('transaction_validation_admin', $this->transaction);
+        }
 
         return $this->redirect('transaction_visualisation', $this->transaction);
     }

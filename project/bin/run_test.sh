@@ -40,6 +40,12 @@ fi
 
 for APPLICATION in $APPLICATIONS ; do
 
+if test $APPLICATION == 'ava' ; then
+    TEST_DIR="test_ava"
+else
+    TEST_DIR="test"
+fi
+
 if test "$APPLICATIONOUTPUT"; then
     echo $APPLICATION;
     APPLICATIONOUTPUT=" | sed 's/^/$APPLICATION : /' | grep -v '\.\.ok'"
@@ -49,16 +55,16 @@ echo "Running test on $COUCHTEST"
 
 NOM_TEST=$(echo $2 | sed 's/.*\///' | sed 's/Test\.*[a-z]*$//')
 if ! test "$TYPE_TEST" && test "$NOM_TEST"; then
-    TYPE_TEST=$( find test -name "$(basename $NOM_TEST)"* | head -n 1 | awk -F '/' '{print $2}' )
+    TYPE_TEST=$( find $TEST_DIR -name "$(basename $NOM_TEST)"* | head -n 1 | awk -F '/' '{print $2}' )
 fi
 
-if [ $NOM_TEST ] && [ $TYPE_TEST == "unit" ]
+if test "$NOM_TEST"  && test "$TYPE_TEST" == "unit" ;
 then
     APPLICATION=$APPLICATION COUCHURL=$COUCHTEST php symfony test:unit $NOM_TEST --trace
     exit;
 fi
 
-if [ $NOM_TEST ] && [ $TYPE_TEST == "functional" ]
+if test "$NOM_TEST"  && test "$TYPE_TEST" == "functional" ;
 then
     APPLICATION=$APPLICATION COUCHURL=$COUCHTEST php symfony test:functional $APPLICATION $NOM_TEST --trace
     exit;

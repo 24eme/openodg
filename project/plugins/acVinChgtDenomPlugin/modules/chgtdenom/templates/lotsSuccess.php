@@ -25,12 +25,12 @@
         <tr>
             <td class="text-right"><strong><?php echo $lot->numero_dossier; ?></strong></td>
             <td class="text-right"><strong><?php echo $lot->numero_archive; ?></strong></td>
-            <td class="text-right"><?php echo $lot->numero_cuve; ?></td>
+            <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>
             <td class="text-center"><?php echo format_date($lot->date, 'dd/MM/yyyy'); ?></td>
             <td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
-            <td><a href="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom, 'key' => $k)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
+            <td><a href="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom, 'key' => $lot->origine_document_id.":".$lot->origine_mouvement)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
         </tr>
         <?php endforeach; ?>
         </tbody>

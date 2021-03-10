@@ -1,62 +1,25 @@
 {
-  "_id": "TEMPLATE-FACTURE-IGPARDECHE-2020",
+  "_id": "TEMPLATE-FACTURE-2021",
   "type": "TemplateFacture",
-  "campagne": 2020,
+  "campagne": 2021,
   "template": "IGP",
-  "libelle": "2020 - IGPArdeche",
+  "libelle": "2021 - IGP13",
   "docs": [
-    "DRev",
-    "DR"
+    "DRev","ChgtDenom"
   ],
   "cotisations": {
-    "odg_forfait": {
-      "fallback": false,
+    "igp13": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisation ODG Forfait",
-      "code_comptable": "706102",
-      "details": {
-        "forfait": {
-          "modele": "CotisationFixe",
-          "callback": null,
-          "prix": 75,
-          "tva": 0.2,
-          "unite": "",
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ]
-        }
-      }
-    },
-    "cotisationSyndicale": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Cotisation syndicale",
+      "libelle": "IGP13",
       "code_comptable": "706100",
       "details": {
-        "revendicationDR": {
+        "revendication": {
           "modele": "CotisationVariable",
-          "prix": 0.02,
+          "prix": 0.17,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Revendication DR L15",
-          "complement_libelle": "",
-          "docs": [
-            "DR"
-          ],
-          "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "NOT /appellations/APL,/appellations/MED"
-          ]
-        },
-        "revendicationDRev": {
-          "modele": "CotisationVariable",
-          "prix": 0.21,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Revendication DRev",
+          "libelle": "Revendication",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -66,60 +29,49 @@
             "NOT /appellations/APL,/appellations/MED"
           ]
         },
-        "lots": {
+        "cotisation": {
           "modele": "CotisationVariable",
-          "prix": 8,
-          "tva": 0.2,
+          "prix": 0.245,
+          "tva": 0,
           "unite": "hl",
-          "libelle": "Degustation Lot",
+          "libelle": "Cotisation syndicale",
           "complement_libelle": "",
           "docs": [
-            "Degustation"
+            "DRev"
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
             "NOT /appellations/APL,/appellations/MED"
           ]
-        }
-      }
-    },
-    "inao": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "INAO",
-      "code_comptable": "706102",
-      "details": {
-        "cotisation": {
+        },
+        "controleexterne": {
           "modele": "CotisationVariable",
-          "prix": 0.03,
-          "tva": 0,
-          "libelle": "Cotisation reversée à l'INAO",
+          "prix": 0.1,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle externe",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable"
-        }
-      }
-    },
-    "changement": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Changement de dénomination",
-      "code_comptable": "706102",
-      "details": {
-        "cotisation": {
+          "callback": "getVolumeFacturable",
+          "callback_parameters": [
+            "NOT /appellations/APL,/appellations/MED"
+          ]
+        },
+        "controleinterne": {
           "modele": "CotisationVariable",
-          "prix": 0.03,
-          "tva": 0,
-          "libelle": "vers Méditerrannée",
+          "prix": 0.2,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle interne",
           "complement_libelle": "",
           "docs": [
-            "ChgtDenom"
+            "DRev"
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
-            "/appellations/MED"
+            "NOT /appellations/APL,/appellations/MED"
           ]
         }
       }
@@ -160,6 +112,47 @@
           "complement_libelle": "",
           "docs": [
             "DRev"
+          ],
+          "callback": "getVolumeFacturable",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        }
+      }
+    },
+    "inao": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "INAO",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "libelle": "Cotisation reversée à l'INAO",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeFacturable"
+        }
+      }
+    },
+    "changement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "libelle": "vers Méditerrannée",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [

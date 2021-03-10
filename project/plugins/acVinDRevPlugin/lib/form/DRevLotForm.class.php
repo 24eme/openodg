@@ -32,8 +32,8 @@ class DRevLotForm extends acCouchdbObjectForm
         $this->setWidget('millesime', new bsWidgetFormInput());
         $this->setValidator('millesime', new sfValidatorInteger(array('required' => false)));
 
-        $this->setWidget('numero', new bsWidgetFormInput());
-        $this->setValidator('numero', new sfValidatorString(array('required' => false)));
+        $this->setWidget('numero_logement_operateur', new bsWidgetFormInput());
+        $this->setValidator('numero_logement_operateur', new sfValidatorString(array('required' => false)));
 
         $this->setWidget('destination_date', new bsWidgetFormInput());
         $this->setValidator('destination_date', new sfValidatorDate(
@@ -55,6 +55,7 @@ class DRevLotForm extends acCouchdbObjectForm
             if ($cepages && count($cepages)) {
                 $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
                 $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
+                $this->getValidator('cepage_'.$i)->setMessage('invalid', "Cepage non valide. Choix possibles : ".join(', ', $cepages));
             }else{
                 $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
                 $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
@@ -84,6 +85,8 @@ class DRevLotForm extends acCouchdbObjectForm
         if (!empty($values['elevage'])) {
           $this->getObject()->statut = Lot::STATUT_ELEVAGE;
         }
+        $this->getObject()->getOrAdd("degustable");
+        $this->getObject()->set("degustable",true);
     }
 
     public function getDestinationsType()
@@ -93,7 +96,7 @@ class DRevLotForm extends acCouchdbObjectForm
 
     public function getSpecificites()
     {
-        return array_merge(array("" => ""), DRevConfiguration::getInstance()->getSpecificites());
+        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
     }
 
     public function getProduits()

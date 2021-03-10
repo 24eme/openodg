@@ -26,7 +26,7 @@ Degustation:
                   id_document: { }
                   numero_dossier: { }
                   numero_archive: { }
-                  numero_cuve: { }
+                  numero_logement_operateur: { }
                   numero_anonymat: { }
                   millesime: { }
                   elevage: { }
@@ -41,12 +41,16 @@ Degustation:
                   details: {}
                   statut: {}
                   numero_table: {}
+                  position: {}
                   leurre: {}
                   conformite: {}
                   motif: {}
                   specificite: {}
                   centilisation: { }
                   observation: {}
+                  email_envoye: { }
+                  nombre_degustation: {required: false}
+                  doc_ordre: {}
       mouvements_lots:
         type: collection
         definition:
@@ -71,7 +75,7 @@ Degustation:
                         region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: {  }
+                        numero_logement_operateur: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -90,6 +94,8 @@ Degustation:
                         centilisation: { }
                         conformite: {}
                         motif: {}
+                        nombre_degustation: {required: false}
+                        doc_ordre: {}
       degustateurs:
         type: collection
         definition:

@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(128);
+$t = new lime_test(127);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -132,12 +132,8 @@ $t->is($produit1->superficie_revendique, $valuesRev['produits'][$produit_hash1][
 $t->comment("Étape lots");
 $t->comment("Vérifier la spécificité");
 $drevConfig = DRevConfiguration::getInstance();
-if($drevConfig->hasSpecificiteLot()){
-  $t->is(true, $drevConfig->hasSpecificiteLot(), "Il y a une configuration de spécificité des Lots");
-  $t->is(5, count($drevConfig->getSpecificites()), "5 spécificités");
-}else{
-  $t->is(true, $drevConfig->hasSpecificiteLot(), "Il n'y a pas une configuration de spécificité des Lots");
-}
+$t->is($drevConfig->hasSpecificiteLot(), true, "La configuration a des spécificités de Lots");
+$t->ok(count($drevConfig->getSpecificites()), "La configuration retourne bien des spécificités");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_LOTS)) {
     $drev->save();
@@ -154,14 +150,13 @@ $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $drev->_rev,
 );
-$valuesRev['lots']['0']['numero'] = "Cuve A";
+$valuesRev['lots']['0']['numero_logement_operateur'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$campagne;
 if($drevConfig->hasSpecificiteLot()){
-  $t->is($drevConfig->getSpecificites()['aucune'], $valuesRev['lots']['0']['specificite'], "Pas de spécificité choisie donc par defaut aucune");
+  $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
   $valuesRev['lots']['0']['specificite'] = $drevConfig->getSpecificites()['bio'];
-  $t->is($drevConfig->getSpecificites()['bio'], $valuesRev['lots']['0']['specificite'], "La spécificité de Lot est choisie");
 }
 
 $form->bind($valuesRev);
@@ -169,7 +164,7 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
 $t->is(count($drev->lots), 2, "Les deux lots sont conservés dans la DRev");
-$t->is($drev->lots[0]->numero_cuve, $valuesRev['lots']['0']['numero'], "Le numéro de cuve du lot 1 est bien enregistré");
+$t->is($drev->lots[0]->numero_logement_operateur, $valuesRev['lots']['0']['numero_logement_operateur'], "Le numéro de cuve du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->volume, $valuesRev['lots']['0']['volume'], "Le volume du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->destination_type, $valuesRev['lots']['0']['destination_type'], "Le type de destination lot 1 est bien enregistré");
 $t->is($drev->lots[0]->destination_date, join('-', array_reverse(explode('/', $valuesRev['lots']['0']['destination_date']))), "La date de destination du lot 1 est bien enregistré");
@@ -220,7 +215,7 @@ $t->is($mvt->volume, $drev->lots[0]->volume, 'Le mouvement a le bon volume');
 $t->is($mvt->date, $drev->lots[0]->date, 'Le mouvement a la bonne date');
 $t->is($mvt->millesime, $drev->lots[0]->millesime, 'Le mouvement a le bon millesime');
 $t->is($mvt->region, '', "Le mouvement a la bonne région");
-$t->is($mvt->numero_cuve, $drev->lots[0]->numero_cuve, 'Le mouvement a le bon numero');
+$t->is($mvt->numero_logement_operateur, $drev->lots[0]->numero_logement_operateur, 'Le mouvement a le bon numero');
 $t->is($mvt->version, 0, "Le mouvement a la version 0");
 $t->is($mvt->origine_hash, $drev->lots[0]->getHash(), 'Le mouvement a bien comme origine le premier lot');
 $t->is($mvt->origine_type, 'drev', 'le mouvement a bien comme origine une drev');
@@ -313,15 +308,15 @@ $valuesRev = array(
     '_revision' => $drev_modif->_rev,
 );
 
-$valuesRev['lots']['1']['numero'] = "Cuve B";
+$valuesRev['lots']['1']['numero_logement_operateur'] = "Cuve B";
 $valuesRev['lots']['1']['volume'] = 1;
 $valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['1']['destination_date'] = '30/11/'.$campagne;
 $valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
-$valuesRev['lots']['1']['millesime'] = '2010';
+$valuesRev['lots']['1']['millesime'] = date('Y') - 1;
 
 $valuesRev['lots']['2'] = $valuesRev['lots']['1'];
-$valuesRev['lots']['2']['numero'] = "Cuve C";
+$valuesRev['lots']['2']['numero_logement_operateur'] = "Cuve C";
 $valuesRev['lots']['2']['produit_hash'] = $produitconfig_horsDR->getHash();
 
 $form->bind($valuesRev);
@@ -335,11 +330,11 @@ foreach ($form->getErrorSchema() as $key => $err) {
 }
 $t->is($errors, null, "Pas d'erreur dans le formulaire validé");
 $form->save();
-$t->is($drev_modif->lots[1]->numero_cuve, $valuesRev['lots']['1']['numero'], "Le numéro de cuve du lot 2 est bien enregistré");
+$t->is($drev_modif->lots[1]->numero_logement_operateur, $valuesRev['lots']['1']['numero_logement_operateur'], "Le numéro de cuve du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->volume, $valuesRev['lots']['1']['volume'], "Le volume du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Le libellé du produit du lot 2 est bien enregistré");
 $t->is($drev_modif->lots[1]->millesime, $valuesRev['lots']['1']['millesime'], "Le millesime du lot 2 est bien enregistré");
-$t->is($drev_modif->lots[2]->numero_cuve, $valuesRev['lots']['2']['numero'], "Le numéro de cuve du lot 3 est bien enregistré");
+$t->is($drev_modif->lots[2]->numero_logement_operateur, $valuesRev['lots']['2']['numero_logement_operateur'], "Le numéro de cuve du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->volume, $valuesRev['lots']['2']['volume'], "Le volume du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->produit_libelle, $produitconfig_horsDR->getLibelleComplet(), "Le libellé du produit du lot 3 est bien enregistré");
 $t->is($drev_modif->lots[2]->millesime, $valuesRev['lots']['2']['millesime'], "Le millesime du lot 3 est bien enregistré");

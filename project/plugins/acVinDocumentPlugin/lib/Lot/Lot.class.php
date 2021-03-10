@@ -6,16 +6,24 @@
 
 abstract class Lot extends acCouchdbDocumentTree
 {
+    const STATUT_AFFECTE_DEST = "01_AFFECTE_DEST";
     const STATUT_PRELEVABLE = "PRELEVABLE";
     const STATUT_NONPRELEVABLE = "NON_PRELEVABLE";
-    const STATUT_ATTENTE_PRELEVEMENT = "ATTENTE_PRELEVEMENT";
-    const STATUT_PRELEVE = "PRELEVE";
-    const STATUT_DEGUSTE = "DEGUSTE";
-    const STATUT_CONFORME = "CONFORME";
-    const STATUT_NONCONFORME = "NON_CONFORME";
+    const STATUT_ATTENTE_PRELEVEMENT = "02_ATTENTE_PRELEVEMENT";
+    const STATUT_PRELEVE = "03_PRELEVE";
+    const STATUT_ATTABLE = "04_ATTABLE";
+    const STATUT_ANONYMISE = "05_ANONYMISE";
+    const STATUT_DEGUSTE = "06_DEGUSTE";
+    const STATUT_CONFORME = "08_CONFORME";
+    const STATUT_AFFECTE_SRC = "07_AFFECTE_SRC";
+    const STATUT_NONCONFORME = "08_NON_CONFORME";
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
     const STATUT_ELEVAGE = "ELEVAGE";
+    const STATUT_REVENDIQUE = "01_REVENDIQUE";
+    const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
+    const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
+    const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -23,16 +31,22 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
+    const SPECIFICITE_UNDEFINED = "UNDEFINED";
+
     const TYPE_ARCHIVE = 'Lot';
 
     public static $libellesStatuts = array(
+        self::STATUT_AFFECTE_DEST => 'Affecte dest',
         self::STATUT_PRELEVABLE => 'Prélevable',
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
+        self::STATUT_ATTABLE => 'Attablé',
+        self::STATUT_ANONYMISE => 'Anonymisé',
         self::STATUT_DEGUSTE => 'Dégusté',
         self::STATUT_CONFORME => 'Conforme',
         self::STATUT_NONCONFORME => 'Non conforme',
+        self::STATUT_AFFECTE_SRC => 'Affecte src',
         self::STATUT_CHANGE => 'Changé',
         self::STATUT_DECLASSE => 'Déclassé',
         self::STATUT_ELEVAGE => 'En élevage'
@@ -97,6 +111,42 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($this->produit_hash) {
             return $this->getDocument()->getConfiguration()->get($this->produit_hash);
         }
+        return null;
+    }
+
+    public function getDefaults() {
+        $defaults = array();
+        $defaults['millesime'] = $this->getDocument()->campagne;
+        $defaults['statut'] = Lot::STATUT_PRELEVABLE;
+        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+          $defaults['specificite'] = self::SPECIFICITE_UNDEFINED;
+        }
+
+        return $defaults;
+    }
+
+    public function initDefault() {
+        foreach($this->getDefaults() as $defaultKey => $defaultValue) {
+            $this->add($defaultKey, $defaultValue);
+        }
+    }
+
+    protected function getFieldsToFill() {
+        return  array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'elevage', 'specificite', 'centilisation');
+    }
+
+    public function isEmpty() {
+      $defaults = $this->getDefaults();
+      foreach($this->getFieldsToFill() as $field) {
+        if($this->exist($field) && $this->get($field) && !isset($defaults[$field])) {
+            return false;
+        }
+        if($this->exist($field) && $this->get($field) && isset($defaults[$field]) && $defaults[$field] != $this->get($field)) {
+            return false;
+        }
+      }
+
+      return true;
     }
 
     public function setProduitHash($hash) {
@@ -133,6 +183,10 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == 'millesime') {
             return ($this->millesime) ? $this->millesime : 'XXXX';
         }
+        if (!$this->getConfig()||$type == 'numero_anonymat') {
+          $numero= intval(substr($this->numero_anonymat, 1));
+          return $numero;
+        }
         if ($type == 'appellation') {
             return $this->getConfig()->getAppellation()->getKey();
         }
@@ -149,24 +203,12 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == 'produit') {
             return $this->_get('produit_hash').$this->_get('details');
         }
-        if ($type == 'numero_anonymat'){
-          $numero= intval(substr($this->numero_anonymat, 1));
-          return $numero;
-        }
         throw new sfException('unknown type of value : '.$type);
     }
 
     public function isCleanable() {
 
-        if(!$this->exist('produit_hash') || !$this->produit_hash){
-          return true;
-        }
-
-        if(!$this->exist('volume') || !$this->volume){
-          return true;
-        }
-
-        return false;
+        return $this->isEmpty();
     }
 
     public function isOrigineEditable()
@@ -217,7 +259,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
 
     public function getIntitulePartiel(){
-      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_cuve.') de '.$this->produit_libelle;
+      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_logement_operateur.') de '.$this->produit_libelle;
       if ($this->millesime){
         $libelle .= ' ('.$this->millesime.')';
       }
@@ -248,7 +290,7 @@ abstract class Lot extends acCouchdbDocumentTree
         return $hash;
     }
     public function getTriLibelle(array $tri = null) {
-        if (!$tri) {
+        if (!$tri||!$this->getConfig()) {
             return $this->produit_libelle;
         }
         $format = '';
@@ -270,4 +312,116 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         return $libelle;
     }
+
+    public function isSecondPassage()
+    {
+        return $this->exist('nombre_degustation') && $this->nombre_degustation > 1;
+    }
+
+    public function getTextPassage()
+    {
+        $nb = $this->isSecondPassage() ? $this->nombre_degustation.'ème' : '1er';
+        return $nb." passage";
+    }
+
+    public function redegustation()
+    {
+        // Tagguer le lot avec un flag special
+        // Regenerer les mouvements
+
+        $this->getDocument()->generateMouvementsLots();
+    }
+
+    public function setNumeroTable($numero) {
+        $lastLot = $this->getLotInLastPosition($numero);
+        if ($lastLot) {
+          $this->position = $lastLot->getPosition() + 1;
+        }
+        return $this->_set('numero_table', $numero);
+    }
+
+    public function getPosition()
+    {
+      if (!$this->_get('position')) {
+        $recalcul = true;
+      } elseif(!$this->numero_table||substr($this->_get('position'), 0, 2) == '99') {
+        $recalcul = true;
+      } else {
+        $recalcul = false;
+      }
+      if ($recalcul) {
+          $table = ($this->numero_table) ? $this->numero_table : 99;
+          $this->position =  sprintf("%02d%03d", $table, $this->getKey());
+      }
+      return $this->_get('position');
+    }
+
+    public function getLotInPrevPosition() {
+      $lots = $this->getDocument()->lots;
+      $lot = null;
+      foreach($lots as $l) {
+        if ($l->numero_table == $this->numero_table) {
+          if ($l->getPosition() < $this->getPosition()) {
+            if ($lot && $l->getPosition() < $lot->getPosition()) {
+              continue;
+            } else {
+              $lot = $l;
+            }
+          }
+        }
+      }
+      return $lot;
+    }
+
+    public function getLotInNextPosition() {
+      $lots = $this->getDocument()->lots;
+      $lot = null;
+      foreach($lots as $l) {
+        if ($l->numero_table == $this->numero_table) {
+          if ($l->getPosition() > $this->getPosition()) {
+            if ($lot && $l->getPosition() > $lot->getPosition()) {
+              continue;
+            } else {
+              $lot = $l;
+            }
+          }
+        }
+      }
+      return $lot;
+    }
+
+    public function switchPosition($toLot, $fromLot) {
+        if (!$toLot||!$fromLot) {
+          return false;
+        }
+        $toPos = $toLot->getPosition();
+        $toLot->position =  $fromLot->getPosition();
+        $fromLot->position = $toPos;
+        return true;
+    }
+
+    public function upPosition()
+    {
+      return $this->switchPosition($this, $this->getLotInPrevPosition());
+    }
+
+    public function downPosition()
+    {
+      return $this->switchPosition($this->getLotInNextPosition(), $this);
+    }
+
+    public function getLotInLastPosition($numeroTable) {
+        $lots = $this->getDocument()->lots;
+        $lot = null;
+        foreach($lots as $l) {
+          if ($l->numero_table == $numeroTable) {
+            if (!$lot||$l->getPosition() > $lot->getPosition()) {
+                $lot = $l;
+            }
+          }
+        }
+        return $lot;
+    }
+
+
 }

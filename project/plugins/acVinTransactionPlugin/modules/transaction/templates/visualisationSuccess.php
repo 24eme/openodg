@@ -2,13 +2,14 @@
 
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php if (isset($form)): ?>
-    <form action="<?php echo url_for('transaction_visualisation', $transaction) ?>" method="post">
+
+    <form role="form" class="form-inline" action="<?php echo url_for('transaction_visualisation', $transaction) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Transaction <?php echo $transaction->campagne ?>
+    <h2>Déclaration de Vrac export <small>du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?></small>
     <?php if($transaction->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($transaction->validation && $transaction->validation !== true): ?> reçue le <?php echo format_date($transaction->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
       <?php if($transaction->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
@@ -62,7 +63,7 @@
         <div class="btn-group">
         <?php if ($transaction->validation && TransactionSecurity::getInstance($sf_user, $transaction->getRawValue())->isAuthorized(TransactionSecurity::DEVALIDATION)):
                 if (!$transaction->validation_odg): ?>
-                    <a class="btn btn-default" href="<?php echo url_for('transaction_devalidation', $transaction) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette Transaction ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+                    <a class="btn btn-default" href="<?php echo url_for('transaction_devalidation', $transaction) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir ce vrac export ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
             <?php endif; ?>
         <?php endif; ?>
         <?php if(!$transaction->validation): ?>
@@ -71,7 +72,10 @@
                                                  ($sf_user->hasTransactionAdmin() && TransactionConfiguration::getInstance()->hasValidationOdgRegion() && !$transaction->isValidateOdgByRegion($regionParam))
                                                )): ?>
         <?php $params = array("sf_subject" => $transaction, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
-                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("transaction_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+        <div class="col-xs-6 text-right">
+            <button type="button" name="validateOdg" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && !$sf_user->hasTransactionAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+        </div>
+
         <?php endif; ?>
         </div>
     </div>
@@ -79,3 +83,4 @@
 <?php if (isset($form)): ?>
 </form>
 <?php endif; ?>
+<?php include_partial('transaction/popupConfirmationValidation', array('approuver' => false)); ?>

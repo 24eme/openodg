@@ -155,7 +155,7 @@ th {
               <td><small><?php $etablissement = $etablissements[$lotDeguste->numero_dossier]; echo $etablissement->nom."<br/>".$etablissement->commune."<br/>".$etablissement->cvi ?></small></td>
               <td><small><?php echo "" ?></small></td>
               <td><small><?php echo "" ?></small></td>
-              <td><small><?php echo $lotDeguste->numero_cuve ?></small></td>
+              <td><small><?php echo $lotDeguste->numero_logement_operateur ?></small></td>
               <td style="float:right; text-align:right;"><small><?php echo number_format($lotDeguste->volume, 2) ?></small></td>
               <td><small><?php echo $lotDeguste->produit_libelle ?></small></td>
               <td><small><?php echo $lotDeguste->details ?></small></td>

@@ -272,9 +272,9 @@ degustation_elevages:
   requirements:
     sf_method: [get]
 
-degustation_prelevable:
-  url: /degustation/lots/:id/:index/prelevable
-  param: { module: degustation, action: prelevable }
+degustation_redeguster:
+  url: /degustation/lots/:id/:index/redeguster
+  param: { module: degustation, action: redeguster }
   requirements:
     sf_method: [get]
 
@@ -349,15 +349,25 @@ degustation_non_conformite_pdf:
   requirements:
     sf_method: [get,post]
 
-degustation_envoi_mail_resultats:
-  url: /degustation/:id/:identifiant/envoi-mail
-  param: { module: degustation, action: envoiMail }
+degustation_mail_resultats_previsualisation:
+  url: /degustation/:id/:identifiant/mail-previsualisation
+  param: { module: degustation, action: mailPrevisualisation }
   class: DegustationRoute
   options:
     model:    Degustation
     type:     object
   requirements:
-    sf_method: [get,post]
+    sf_method: [get]
+
+degustation_envoi_mail_resultats:
+  url: /degustation/:id/:identifiant/envoi-mail
+  param: { module: degustation, action: setEnvoiMail }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
 
 retrait_non_conformite_pdf:
   url: /degustation/:id/:identifiant/:lot_dossier/RetraitNonConformite/pdf

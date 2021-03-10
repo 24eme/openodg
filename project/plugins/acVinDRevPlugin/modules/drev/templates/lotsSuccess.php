@@ -36,7 +36,7 @@
             </div>
             <div class="row">
               <div class="col-md-2"></div>
-              <div class="col-md-3">Numéro cuve : <?php echo $lot->numero_cuve; ?></div>
+              <div class="col-md-3">Numéro cuve : <?php echo $lot->numero_logement_operateur; ?></div>
               <div class="col-md-3"><strong>Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></strong></div>
               <div class="col-md-3"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
               <div class="col-md-1" >
@@ -85,9 +85,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-3 control-label")); ?>
+                            <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-3 control-label")); ?>
                             <div class="col-sm-6">
-                                  <?php echo $lot['numero']->render(); ?>
+                                  <?php echo $lot['numero_logement_operateur']->render(); ?>
                             </div>
                         </div>
                     </div>
@@ -191,7 +191,7 @@
             <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button id="lots_continue" type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>
     </div>
 </form>

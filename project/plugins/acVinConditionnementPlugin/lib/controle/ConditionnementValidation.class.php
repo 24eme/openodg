@@ -17,10 +17,8 @@ class ConditionnementValidation extends DocumentValidation
 
     public function configure()
     {
-        $this->addControle(self::TYPE_ERROR, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
-        $this->addControle(self::TYPE_ERROR, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
-        $this->addControle(self::TYPE_ERROR, 'lot_centilisation_non_saisie', "La centilisation du lot n'a pas été renseignée");
-        $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
+        $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Les informations du lot sont incomplètes (millésime, numéro de lot, centilisation, produit, volume, spécificité)");
+        $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "La date du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
         $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->campagne-1));
         /*
@@ -39,24 +37,49 @@ class ConditionnementValidation extends DocumentValidation
 
       if($this->document->exist('lots')){
         foreach ($this->document->lots as $key => $lot) {
+
           if($lot->hasBeenEdited()){
             continue;
           }
-          if(!$lot->hasVolumeAndHashProduit()){
+
+          if($lot->isEmpty()){
             continue;
           }
-          $volume = sprintf("%01.02f",$lot->getVolume());
-          if($lot->millesime && $lot->millesime < ($this->document->campagne - 1)){
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+
+          if(!$lot->exist('produit_hash') || !$lot->produit_hash){
+            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." : il manque le produit", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+            continue;
           }
+          if(!$lot->exist('volume') || !$lot->volume){
+            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." : il manque le volume", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+            continue;
+          }
+
+          if(!$lot->exist('numero_logement_operateur') || !$lot->numero_logement_operateur){
+            $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." : il manque le numéro de logement", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id)));
+            continue;
+          }
+
+          $volume = sprintf("%01.02f",$lot->getVolume());
+
           if(!$lot->exist('destination_type') || !$lot->destination_type){
-              $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
+          }
+          if(!$lot->exist('specificite') || $lot->specificite == Lot::SPECIFICITE_UNDEFINED){
+              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              continue;
           }
           if(!$lot->exist('centilisation') || !$lot->centilisation){
-              $this->addPoint(self::TYPE_ERROR, 'lot_centilisation_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              continue;
           }
           if(!$lot->exist('destination_date') || !$lot->destination_date){
-            $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            $this->addPoint(self::TYPE_WARNING, 'lot_a_completer', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            continue;
+          }
+
+          if($lot->millesime && $lot->millesime < ($this->document->campagne - 1)){
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
 
 
@@ -66,7 +89,7 @@ class ConditionnementValidation extends DocumentValidation
               $somme+=$v;
             }
             if($somme != $lot->volume){
-              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
             }
           }
 

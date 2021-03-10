@@ -86,12 +86,12 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <?php echo $lot['numero']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                      <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
                       <div class="col-sm-3">
-                            <?php echo $lot['numero']->render(); ?>
+                            <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>
                       <div class="col-sm-6 text-danger">
-                            <?php echo $lot['numero']->renderError(); ?>
+                            <?php echo $lot['numero_logement_operateur']->renderError(); ?>
                       </div>
                     </div>
                   </div>
@@ -117,7 +117,7 @@
                   </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['volume']->renderLabel("Volume</br>global", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
                                 <div class="input-group">
                                     <?php echo $lot['volume']->render(); ?>

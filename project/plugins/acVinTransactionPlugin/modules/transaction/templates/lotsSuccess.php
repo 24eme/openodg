@@ -5,7 +5,7 @@
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php include_partial('transaction/step', array('step' => TransactionEtapes::ETAPE_LOTS, 'transaction' => $transaction, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Transaction des Lots IGP</h2></div>
+    <div class="page-header"><h2>Vrac export des Lots IGP</h2></div>
 
 
 
@@ -86,12 +86,12 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <?php echo $lot['numero']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                      <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
                       <div class="col-sm-3">
-                            <?php echo $lot['numero']->render(); ?>
+                            <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>
                       <div class="col-sm-6 text-danger">
-                            <?php echo $lot['numero']->renderError(); ?>
+                            <?php echo $lot['numero_logement_operateur']->renderError(); ?>
                       </div>
                     </div>
                   </div>
