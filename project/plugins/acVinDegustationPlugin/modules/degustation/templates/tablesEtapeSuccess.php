@@ -25,6 +25,12 @@
             <br/>
             <br/>
           </div>
+          <?php if($degustation->isAnonymized()): ?>
+              <div class="col-xs-12">
+                  <div class="alert alert-warning" role="alert">La dégustation est déjà <strong>anonymisée</strong>, il n'est pas possible de modifier les prélèvements, veuillez
+                      <a href="<?php echo url_for('degustation_anonymats_etape',$degustation)?>">desanonymiser</a> pour modifier les prélèvements.</div>
+              </div>
+          <?php endif; ?>
         </div>
 
         <div class="row">
@@ -41,7 +47,11 @@
           <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Aucun' ?></strong> <strong>Échantillon<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
         </div>
         <div class="col-xs-12 text-right">
-          <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Échantillons par table&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+            <?php if($degustation->isAnonymized()): ?>
+                <a class="btn btn-default btn-sm" href="" disabled="disabled" >&nbsp;Échantillons par table&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+            <?php else: ?>
+                <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Échantillons par table&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+            <?php endif; ?>
         </div>
       </div>
     </div>
