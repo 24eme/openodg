@@ -333,6 +333,7 @@ abstract class Lot extends acCouchdbDocumentTree
         // Regenerer les mouvements
 
         $this->affectable = true;
+        $this->specificite .= ' 2eme degustation';
         $this->getDocument()->generateMouvementsLots();
     }
 
