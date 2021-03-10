@@ -8,7 +8,8 @@ class DRevValidationForm extends acCouchdbForm
       $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
     }
     public function configure() {
-        if(!$this->getDocument()->isPapier()) {
+
+        if(!$this->getDocument()->isPapier() && !$this->getDocument()->validation) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
@@ -54,7 +55,7 @@ class DRevValidationForm extends acCouchdbForm
 
         if($this->isAdmin){
           foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-            $this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
+            $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
          }
         }
 

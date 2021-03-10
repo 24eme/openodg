@@ -66,7 +66,7 @@ Conditionnement:
                   id_document: { }
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero_logement_operateur: { required: false } # a supprimer
+                  numero_logement_operateur: { }
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }
@@ -75,9 +75,10 @@ Conditionnement:
                   produit_libelle: { }
                   elevage: { }
                   statut: {}
-                  specificite: { required: false }
+                  specificite: { }
                   centilisation: { required: false }
-                  degustable: { required: false}
+                  affectable: { }
+                  document_fils: {  }
                   cepages:
                     type: collection
                     definition:

@@ -795,7 +795,7 @@ class drevActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
-
+        $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
 
         $documents = $this->drev->getOrAdd('documents');
@@ -803,12 +803,12 @@ class drevActions extends sfActions {
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
+            $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
@@ -821,6 +821,10 @@ class drevActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin && $this->drev->isValidee() && $this->drev->isValideeODG() === false){
+          return $this->redirect('drev_validation_admin', $this->drev);
+        }
 
         return $this->redirect('drev_visualisation', $this->drev);
     }
