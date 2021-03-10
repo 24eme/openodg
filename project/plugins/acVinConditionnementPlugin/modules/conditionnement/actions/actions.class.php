@@ -306,7 +306,7 @@ class conditionnementActions extends sfActions {
         $this->form = null;
         if($this->getUser()->hasConditionnementAdmin() || $this->conditionnement->validation) {
             $this->validation = new ConditionnementValidation($this->conditionnement);
-            $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
+            $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
         }
 
 
