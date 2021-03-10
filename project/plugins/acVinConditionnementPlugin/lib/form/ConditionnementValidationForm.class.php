@@ -50,12 +50,6 @@ class ConditionnementValidationForm extends acCouchdbForm
        if($this->isAdmin){
          foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
            $this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
-
-           if($values['lots'][$key]['degustable']){
-             $this->getDocument()->lots[$key]->statut = Lot::STATUT_PRELEVABLE;
-           }else{
-             $this->getDocument()->lots[$key]->statut = Lot::STATUT_NONPRELEVABLE;
-           }
         }
        }
 
