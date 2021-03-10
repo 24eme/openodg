@@ -8,7 +8,7 @@ class degustationActions extends sfActions {
         $newDegutation->getMvtLotsPrelevables();
         $this->lotsPrelevables = $newDegutation->getLotsPrelevablesSortByDate();
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
-        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_NONCONFORME)->rows;
+        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -471,7 +471,7 @@ class degustationActions extends sfActions {
     public function executeRedirect(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         //$this->redirectIfIsValidee();
-        return ($next = $this->getRouteNextEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        return ($next = $this->getRouteEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
 
     public function redirectIfIsValidee(){
@@ -486,6 +486,13 @@ class degustationActions extends sfActions {
             return $etape;
         }
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
+    }
+
+    protected function getRouteEtape($etape = null, $class = "DegustationEtapes") {
+        $etapes = $class::getInstance();
+        $routes = $etapes->getRouteLinksHash();
+
+        return (isset($routes[$etape]))? $routes[$etape] : null;
     }
 
     protected function getRouteNextEtape($etape = null, $class = "DegustationEtapes") {
@@ -537,7 +544,8 @@ class degustationActions extends sfActions {
           $lot = $doc->lots->get($ind);
         }
         $this->forward404Unless($lot);
-        DegustationClient::updatedSpecificite($lot);
+        //DegustationClient::updatedSpecificite($lot);
+        $lot->redegustation();
         $doc->generateMouvementsLots();
         $doc->save();
         return $this->redirect($back);
