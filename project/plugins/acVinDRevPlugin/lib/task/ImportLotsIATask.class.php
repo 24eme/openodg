@@ -242,12 +242,14 @@ EOF;
             $lot->date = $date;
             $lot->statut = Lot::STATUT_NONPRELEVABLE;
             $lot->specificite = null;
+            $lot->document_fils = true;
             if ($statut == self::STATUT_NONCONFORME) {
               $lot->statut = self::STATUT_PRELEVABLE;
               $lot->specificite = "2ème passage $lot->specificite";
             }
             if($statut == Lot::STATUT_PRELEVABLE && $prelevable) {
                 $lot->statut = Lot::STATUT_PRELEVABLE;
+                $lot->remove('document_fils');
             }
             if($lot->elevage) {
                 $lot->statut = Lot::STATUT_ELEVAGE;
