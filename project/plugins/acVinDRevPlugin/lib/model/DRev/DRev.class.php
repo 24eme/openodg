@@ -911,7 +911,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->validation = $date;
         $this->archiver();
         $this->generateMouvementsFactures();
-        $this->generateMouvementsLots();
         $this->updateStatutsLotsSupprimes();
 
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
@@ -1257,10 +1256,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
         $this->piece_document->generatePieces();
-
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
+        $this->generateMouvementsLots();
 	}
 
   public function archiver() {
