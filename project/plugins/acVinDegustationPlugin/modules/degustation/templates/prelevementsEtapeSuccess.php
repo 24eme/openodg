@@ -25,6 +25,12 @@
             <br/>
             <br/>
         </div>
+        <?php if($degustation->isAnonymized()): ?>
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">La dégustation est déjà <strong>anonymisée</strong>, il n'est pas possible de modifier les prélèvements, veuillez
+                    <a href="<?php echo url_for('degustation_anonymats_etape',$degustation)?>">desanonymiser</a> pour modifier les prélèvements.</div>
+            </div>
+        <?php endif; ?>
           <div class="col-xs-12">
               <a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a>
               <a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle de tournée (Lot à prélever)</a>
@@ -61,7 +67,11 @@
             </div>
           </div>
           <div class="col-xs-12 text-right">
-            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_preleve', $degustation) ?>" >&nbsp;Saisir les prélévements effectués&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+              <?php if($degustation->isAnonymized()): ?>
+                  <a class="btn btn-default btn-sm" href="" disabled="disabled" >&nbsp;Saisir les prélévements effectués&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+              <?php else: ?>
+                  <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_preleve', $degustation) ?>" >&nbsp;Saisir les prélévements effectués&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+              <?php endif; ?>
           </div>
         </div>
       </div>
