@@ -28,7 +28,7 @@
               </div>
         </div>
 
-        <div class="row" id="bloc_changement_produit" data-condition-value="CHGT">
+        <div class="row" id="bloc_changement_produit" data-condition-value="<?php echo ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT; ?>">
           <div class="col-md-8">
               <div class="form-group">
                   <?php echo $form['changement_produit']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
