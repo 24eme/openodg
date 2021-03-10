@@ -44,7 +44,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function constructId() {
         $date = new DateTime($this->date);
-        
+
         $id = 'CHGTDENOM-' . $this->identifiant . '-' . $date->format('YmdHis');
         $this->set('_id', $id);
         $this->set('campagne', $this->getCampagneByDate());
@@ -225,7 +225,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       if (!$this->isChgtTotal()) {
         $lot->volume -= $this->changement_volume;
-        $lot->statut = Lot::STATUT_CONFORME;
         $lotBis = MouvementLotView::generateLotByMvt($mvtLot);
         $lotBis->numero_archive .= 'b';
         $lotBis->volume = $this->changement_volume;
