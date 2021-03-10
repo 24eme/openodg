@@ -795,7 +795,7 @@ class drevActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
-        $this->isAdmin = $this->getUser()->isAdmin();
+
         $this->service = $request->getParameter('service');
 
         $documents = $this->drev->getOrAdd('documents');
