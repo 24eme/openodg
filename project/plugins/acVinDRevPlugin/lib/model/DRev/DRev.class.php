@@ -911,7 +911,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->validation = $date;
         $this->archiver();
         $this->generateMouvementsFactures();
-        $this->generateMouvementsLots();
         $this->updateStatutsLotsSupprimes();
 
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
@@ -1257,10 +1256,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
         $this->piece_document->generatePieces();
-
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
+        $this->generateMouvementsLots();
 	}
 
   public function archiver() {
@@ -1441,11 +1440,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $result;
     }
 
-    private function generateMouvementLotsFromLot($lot, $key) {
-
+    private function generateMouvementLotsFromLot($lot, $key, $statut) {
         $mvt = new stdClass();
         $mvt->date = $lot->date;
-        $mvt->statut = $lot->statut;
+        $mvt->statut = $statut;
+        $mvt->doc_ordre = $this->getDocumentOrdre($lot);
         $mvt->numero_dossier = $lot->numero_dossier;
         $mvt->numero_archive = $lot->numero_archive;
         $mvt->numero_logement_operateur = $lot->numero_logement_operateur;
@@ -1461,7 +1460,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvt->origine_type = 'drev';
         $mvt->origine_document_id = $this->_id;
         $mvt->id_document = $this->_id;
-        $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
+        $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key.'-'.$statut;
         $mvt->declarant_identifiant = $this->identifiant;
         $mvt->declarant_nom = $this->declarant->raison_sociale;
         $mvt->destination_type = $lot->destination_type;
@@ -1491,19 +1490,42 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $mvt;
     }
 
-    public function generateAndAddMouvementLotsFromLot($lot, $key) {
-        $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-        return $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
+    public function getDocumentOrdre($lot)
+    {
+        // Retourne l'ordre du document en
+        // interrogeant la vue
+        return 1;
     }
 
-    public function generateMouvementsLots() {
-        if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
-            $this->add('mouvements_lots')->add($this->identifiant);
+
+
+    public function generateMouvementsLots()
+    {
+        $this->remove('mouvements_lots');
+        if (!$this->isValideeOdg()) {
+          return;
         }
-        foreach($this->lots as $k => $lot) {
-            $key = $lot->getUnicityKey();
-            $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
+        foreach ($this->lots as $lot) {
+            $mouvements = $this->buildMouvementsLot($lot);
+            foreach ($mouvements as $key => $mouvement) {
+                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add($key, $mouvement);
+            }
         }
+    }
+
+    private function buildMouvementsLot($lot)
+    {
+        $mvts = [];
+        $key = $lot->getUnicityKey();
+        $mvts[$key.'-'.Lot::STATUT_REVENDIQUE] = $this->generateMouvementLotsFromLot($lot, $key, Lot::STATUT_REVENDIQUE);
+        if ($lot->exist('degustable') && !$lot->degustable) {
+          $mvts[$key.'-'.Lot::STATUT_NONAFFECTABLE] = $this->generateMouvementLotsFromLot($lot, $key, Lot::STATUT_NONAFFECTABLE);
+        } elseif ((!$lot->exist('document_fils'))||(!$lot->document_fils)) {
+          $mvts[$key.'-'.Lot::STATUT_AFFECTABLE] = $this->generateMouvementLotsFromLot($lot, $key, Lot::STATUT_AFFECTABLE);
+        } else {
+          $mvts[$key.'-'.Lot::STATUT_AFFECTE_SRC_DREV] = $this->generateMouvementLotsFromLot($lot, $key, Lot::STATUT_AFFECTE_SRC_DREV);
+        }
+        return $mvts;
     }
 
     public function getMouvementLotFromLot($lot){
