@@ -56,16 +56,24 @@
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
+                            <?php if(isset($form['lots'])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['degustable']->renderError() ?>
                                 <div class="col-xs-12">
                                   <?php if ($sf_user->isAdmin() && !$conditionnement->validation_odg): ?>
-                                  	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                  	<?php echo $form['lots'][$lot->getKey()]['degustable']->render(array('class' => "conditionnement bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
                                       <span class="<?php if($lot->degustable):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
                                   <?php endif; ?>
                                 </div>
                             </div>
+                          <?php else: ?>
+                            <div style="margin-bottom: 0;" class="">
+                              <div class="col-xs-12">
+                                <span class="<?php if($lot->degustable):?> glyphicon text-success glyphicon-ok-sign <?php endif; ?>"></span>
+                              </div>
+                            </div>
+                          <?php endif; ?>
                         	</td>
                         <?php endif; ?>
                       </tr>
