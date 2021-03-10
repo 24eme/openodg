@@ -50,7 +50,7 @@ class DegustationEmailManager extends Email
 
   public function getSubject(){
     if(!$this->subject){
-      $this->subject = "[".sfConfig::get('app_organisme_nom')."] Résultat de dégustation du ".ucfirst(format_date($this->degustation->date, "P", "fr_FR"));
+      $this->subject = "Résultat de dégustation du ".ucfirst(format_date($this->degustation->date, "P", "fr_FR"));
     }
     return $this->subject;
   }

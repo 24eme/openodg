@@ -251,10 +251,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $lot->statut = ($lot->statut === Lot::STATUT_CONFORME) ? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
 
-            case Lot::STATUT_AFFECTE_SRC:
-                $lot->statut = Lot::STATUT_AFFECTE_SRC;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
             case Lot::STATUT_DEGUSTE:
                 $lot->statut = Lot::STATUT_DEGUSTE;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
@@ -281,6 +277,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             default:
                 break;
+        }
+
+        if ($statut_originel === Lot::STATUT_NONCONFORME) {
+            if ($lot->exist('affectable') && $lot->affectable === true) {
+                $lot->statut = Lot::STATUT_AFFECTABLE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+                $lot->statut = Lot::STATUT_AFFECTE_SRC;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+            } else {
+                $lot->statut = Lot::STATUT_MANQUEMENT_EN_ATTENTE;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+            }
         }
 
         $lot->statut = $statut_originel;
