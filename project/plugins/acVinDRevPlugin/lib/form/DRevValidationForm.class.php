@@ -8,7 +8,8 @@ class DRevValidationForm extends acCouchdbForm
       $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
     }
     public function configure() {
-        if(!$this->getDocument()->isPapier()) {
+
+        if(!$this->getDocument()->isPapier() && !$this->getDocument()->validation) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
