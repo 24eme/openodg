@@ -276,7 +276,6 @@ EOF;
             $document->remove('lots');
             $document->add('lots', $lots);
 
-            $document->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
             try {
                 $document->save();
                 echo "SUCCESS;Lot importé;".$document->_id.";\n";
