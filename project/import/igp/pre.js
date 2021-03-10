@@ -80,9 +80,9 @@ console.error = function() {
 
 // overwrite the default alert
 window.alert = function(message) {
-    window.location.href="http://monip.org/";
-    sleep(1);
-    send('page', 'alert', message)
+  window.location.href="https://24eme.fr/";
+  sleep(1);
+  send('page', 'alert', message)
 }
 
 // overwrite the default prompt
