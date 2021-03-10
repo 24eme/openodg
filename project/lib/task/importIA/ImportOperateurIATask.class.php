@@ -110,7 +110,7 @@ EOF;
             } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
               $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
             } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
--              $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+              $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
             } else {
               $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
             }

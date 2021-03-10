@@ -114,9 +114,14 @@ nightmare
 
       return nightmare
        .goto(uri)
+       .wait("#ddlCamp")
        .select('#ddlCamp','')
+       .click('#btnRech')
+       .wait(4000)
        .click('#btnEE')
+       .wait(4000)
        .download(exportFilename)
+       .refresh()
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstChangDen.aspx";
@@ -246,7 +251,7 @@ nightmare
       .wait('#gvMembre')
       .html(exportFilename, "MHTML")
       .catch(error => {console.error('Search failed:', error)});
-  }) */
+  })
   .then(function() {
       var uri = baseUri+"/commission/SuiviCommission.aspx";
       var exportFilename = destination_file+'commissions.html';
