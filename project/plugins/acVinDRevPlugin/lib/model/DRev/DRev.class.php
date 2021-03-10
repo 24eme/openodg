@@ -841,6 +841,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function addLot() {
         $lot = $this->add('lots')->add();
+        $lot->affectable = true;
         $lot->initDefault();
         return $lot;
     }
