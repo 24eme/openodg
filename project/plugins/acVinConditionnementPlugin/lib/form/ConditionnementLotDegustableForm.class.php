@@ -1,5 +1,5 @@
 <?php
-class ConditionnementLotaffectableForm extends acCouchdbObjectForm
+class ConditionnementLotDegustableForm extends acCouchdbObjectForm
 {
     public function configure() {
         $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
