@@ -471,7 +471,7 @@ class degustationActions extends sfActions {
     public function executeRedirect(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         //$this->redirectIfIsValidee();
-        return ($next = $this->getRouteNextEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        return ($next = $this->getRouteEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
 
     public function redirectIfIsValidee(){
