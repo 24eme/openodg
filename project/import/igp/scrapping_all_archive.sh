@@ -1,4 +1,6 @@
 #!/bin/bash
+
+mkdir imports 2> /dev/null
 cd imports
 git init 2> /dev/null
 cd ..

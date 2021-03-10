@@ -192,6 +192,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt = new stdClass();
 			$mvt->date = $lot->date;
 			$mvt->statut = $lot->statut;
+            $mvt->doc_ordre = $this->getDocumentOrdre($lot);
 			$mvt->numero_dossier = $lot->numero_dossier;
 			$mvt->numero_archive = $lot->numero_archive;
 			$mvt->numero_logement_operateur = $lot->numero_logement_operateur;
@@ -285,6 +286,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->statut = $statut_originel;
 
         return $mvts;
+    }
+
+    public function getDocumentOrdre($lot)
+    {
+        // Retourne l'ordre du document en
+        // interrogeant la vue
+        return 1;
     }
 
 	public function isValidee() {

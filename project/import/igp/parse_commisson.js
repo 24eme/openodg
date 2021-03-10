@@ -3,8 +3,6 @@ var fileHTML = process.argv[2];
 const cheerio = require('cheerio');
 const $ = cheerio.load(fs.readFileSync(fileHTML));
 
-
-
 var date = $('#lblDtCom').text();
 var code = $('#lblCommission').text();
 var campagne = $('#lblCampagne').text();
@@ -50,5 +48,5 @@ $('table#gvPrelev tr').each(function() {
     var motif_refus = cleanChamps($(this).find('td').eq(12).text());
     var commentaire = cleanChamps($(this).find('td').eq(13).text());
 
-    console.log(baseLigne + ";" + operateur + ";" + produit + ";" + cepage + ";" + volume + ";" + logement + ";" + type_lot + ";" + passage + ";" + degre + ";" + doc + ";" + numero_anonymat + ";" + conformite + ";" + motif_refus + ";" + commentaire);
+    console.log(baseLigne + ";LOT;" + operateur + ";" + produit + ";" + cepage + ";" + volume + ";" + logement + ";" + type_lot + ";" + passage + ";" + degre + ";" + doc + ";" + numero_anonymat + ";" + conformite + ";" + motif_refus + ";" + commentaire);
 });

@@ -17,7 +17,7 @@ fi
 if [ -d $DATADIR ]; then
   rm -r $DATADIR;
 fi
-mkdir -p imports/$DATADIR
+mkdir -p $DATADIR
 
 
 if test "$DISPLAY"; then
@@ -26,4 +26,7 @@ else
   xvfb-run -a --server-args="-screen 0 1366x768x24" node scrapping.js $CONFIGFILE
 fi
 
-bash script_verify.sh
+#bash script_verify.sh $CONFIGFILE
+
+echo "date;code;campagne;millesime;responsable;lieu_nom;lieu_adresse;lieu_code_postal;lieu_ville;type_ligne;operateur;produit;cepage;volume;logement;type_lot;passage;degre;doc;numero_anonymat;conformite;motif_refus;commentaire" > $DATADIR/commissions.csv
+ls $DATADIR/commission_* | while read file; do nodejs parse_commisson.js $file; done >> $DATADIR/commissions.csv

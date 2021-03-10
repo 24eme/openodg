@@ -50,6 +50,7 @@ Degustation:
                   observation: {}
                   email_envoye: { }
                   nombre_degustation: {required: false}
+                  doc_ordre: {}
       mouvements_lots:
         type: collection
         definition:
@@ -94,6 +95,7 @@ Degustation:
                         conformite: {}
                         motif: {}
                         nombre_degustation: {required: false}
+                        doc_ordre: {}
       degustateurs:
         type: collection
         definition:

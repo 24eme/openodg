@@ -37,7 +37,7 @@ class DegustationEmailManager extends Email
   public function getMailerLink() {
 
     $email = $this->etablissement->email;
-    $cc = sfConfig::get('app_email_plugin_from_adresse');
+    $cc = implode(sfConfig::get('app_email_plugin_to_notification'),";");
 
     $subject = $this->getSubject();
     $body = $this->getBody(true);
