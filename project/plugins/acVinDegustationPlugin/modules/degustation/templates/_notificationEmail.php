@@ -30,7 +30,7 @@ ci-jointes ont été ajournés.
 Vous trouverez ci dessous l'ensemble des pdfs présentant des non conformités :
 
 <?php foreach($mailManager->etablissementLotsNonConformes as $lotsNonConformes): ?>
-<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $etablissement->identifiant, 'lot_dossier' => $lotsNonConformes->numero_dossier ,'lot_num_anon' => $lotsNonConformes->numero_anonymat), true); ?>
+<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $etablissement->identifiant, 'lot_dossier' => $lotsNonConformes->numero_dossier ,'lot_archive' => $lotsNonConformes->numero_archive), true); ?>
 
 <?php endforeach; ?>
 <?php endif; ?>
