@@ -122,7 +122,7 @@ DRev:
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero: { }
-                  numero_logement_operateur: { required: false } # a supprimer
+                  numero_logement_operateur: { }
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }
@@ -131,9 +131,9 @@ DRev:
                   produit_libelle: { }
                   elevage: { }
                   statut: {}
-                  specificite: { required: false }
-                  degustable: { required: false}
-                  document_fils: { required: false }
+                  specificite: { }
+                  affectable: { }
+                  document_fils: {  }
                   cepages:
                     type: collection
                     definition:

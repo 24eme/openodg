@@ -1518,7 +1518,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mvts = [];
         $key = $lot->getUnicityKey();
         $mvts[$key.'-'.Lot::STATUT_REVENDIQUE] = $this->generateMouvementLotsFromLot($lot, $key, Lot::STATUT_REVENDIQUE);
-        if ($lot->exist('degustable') && !$lot->degustable) {
+        if ($lot->exist('affectable') && !$lot->affectable) {
           $mvts[$key.'-'.Lot::STATUT_NONAFFECTABLE] = $this->generateMouvementLotsFromLot($lot, $key, Lot::STATUT_NONAFFECTABLE);
         } elseif ((!$lot->exist('document_fils'))||(!$lot->document_fils)) {
           $mvts[$key.'-'.Lot::STATUT_AFFECTABLE] = $this->generateMouvementLotsFromLot($lot, $key, Lot::STATUT_AFFECTABLE);

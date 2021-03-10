@@ -2,7 +2,7 @@
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php if (isset($form)): ?>
-    <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
+    <form role="form" class="form-inline" action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
@@ -96,7 +96,7 @@
         <?php if (!$drev->isMiseEnAttenteOdg()): ?>
                 <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
         <?php endif; ?>
-                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+                <button type="button" name="validateOdg" id="btn-validation-document-drev" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         <?php endif; ?>
         </div>
     </div>
@@ -104,3 +104,4 @@
 <?php if (isset($form)): ?>
 </form>
 <?php endif; ?>
+<?php include_partial('drev/popupConfirmationValidation', array('approuver' => false)); ?>

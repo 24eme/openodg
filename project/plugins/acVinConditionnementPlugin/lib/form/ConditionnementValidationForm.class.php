@@ -20,17 +20,17 @@ class ConditionnementValidationForm extends acCouchdbForm
             }
         }
 
-        $formDegustable = new BaseForm();
+        $formaffectable = new BaseForm();
         foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
             foreach ($lots as $lot) {
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								$formDegustable->embedForm($lot->getKey(), new ConditionnementLotDegustableForm($lot));
+								$formaffectable->embedForm($lot->getKey(), new ConditionnementLotaffectableForm($lot));
             }
         }
 
-        $this->embedForm('lots', $formDegustable);
+        $this->embedForm('lots', $formaffectable);
 
         if($this->getDocument()->isPapier()) {
             $this->setWidget('date', new sfWidgetFormInput());
@@ -49,7 +49,7 @@ class ConditionnementValidationForm extends acCouchdbForm
 
        if($this->isAdmin){
          foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-           $this->getDocument()->lots[$key]->set("degustable", $values['lots'][$key]['degustable']);
+           $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
         }
        }
 
