@@ -33,7 +33,6 @@
                 <li><a class="dropdown-item" href="<?php echo url_for('degustation_redeguster', array('id' => $m->id_document, 'index' => str_replace('/lots/', '', $m->origine_hash), 'back' => 'degustation_manquements')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
                 <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_lot', array('identifiant' => $m->declarant_identifiant, 'lot' => $m->origine_document_id.":".$m->origine_mouvement)) ?>">Déclassement / Chgmt denom.</a></li>
                 <li><a class="dropdown-item" href="<?php echo url_for('degustation_etablissement_list', array('id' => $m->declarant_identifiant)) ?>">Voir l'historique</a></li>
-                <li><a class="dropdown-item" href="#">Clore</a></li>
             </ul>
               </div>
             </div>
