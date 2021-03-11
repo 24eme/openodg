@@ -438,6 +438,60 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 	 }
 
+    public function getLotsByOperateurs($identifiant = null)
+    {
+        $lots = [];
+        foreach ($this->getLots() as $lot) {
+            if ($lot->isLeurre()) {
+                continue;
+            }
+
+            if ($identifiant && $lot->declarant_identifiant !== $identifiant) {
+                continue;
+            }
+
+            if (array_key_exists($lot->declarant_identifiant, $lots) === false) {
+                $lots[$lot->declarant_identifiant] = [];
+            }
+
+            $lots[$lot->declarant_identifiant][] = $lot;
+        }
+
+        return $lots;
+    }
+
+    public function getLotsConformes($identifiant = null)
+    {
+        $all_lots = $this->getLotsByOperateurs($identifiant);
+        $lots = [];
+
+        foreach ($all_lots as $operateur) {
+            foreach ($operateur as $lot) {
+                if ($lot->statut === Lot::STATUT_CONFORME) {
+                    $lots[] = $lot;
+                }
+            }
+        }
+
+        return $lots;
+    }
+
+    public function getLotsNonConformes($identifiant = null)
+    {
+        $all_lots = $this->getLotsByOperateurs($identifiant);
+        $lots = [];
+
+        foreach ($all_lots as $operateur) {
+            foreach ($operateur as $lot) {
+                if ($lot->statut === Lot::STATUT_NONCONFORME) {
+                    $lots[] = $lot;
+                }
+            }
+        }
+
+        return $lots;
+    }
+
 	 public function getLotsByOperateursAndConformites(){
 		 $lotsByAdherents = array();
 		 $conformiteArray = array(Lot::STATUT_CONFORME,Lot::STATUT_NONCONFORME);
