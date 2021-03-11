@@ -22,7 +22,7 @@
               <div class="col-md-12 text-right">
                 <label>
                   <?php echo $form['deguster']->render() ?>
-                  <?php echo $form['deguster']->renderLabel('A déguster') ?>
+                  <?php echo $form['deguster']->renderLabel('À déguster') ?>
                 </label>
               </div>
           </div>
