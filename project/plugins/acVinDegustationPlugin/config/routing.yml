@@ -280,7 +280,7 @@ degustation_redeguster:
 
 degustation_etiquette_pdf:
   url: /degustation/:id/etiquettes/pdf
-  param: { module: degustation, action: etiquettesPdf }
+  param: { module: degustation, action: etiquettesPrlvmtPdf }
   class: DegustationRoute
   options:
     model:    Degustation

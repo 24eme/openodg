@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationEtiquettesPDF extends ExportPDF {
+class ExportDegustationEtiquettesPrlvmtPDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -19,7 +19,7 @@ class ExportDegustationEtiquettesPDF extends ExportPDF {
 
     public function create() {
       foreach ($this->degustation->getEtiquettesFromLots(7) as $plancheLots) {
-        $this->printable_document->addPage($this->getPartial('degustation/etiquettesPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
+        $this->printable_document->addPage($this->getPartial('degustation/etiquettesPrlvmtPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
       }
   }
 

@@ -615,9 +615,9 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
     }
 
-    public function executeEtiquettesPdf(sfWebRequest $request) {
+    public function executeEtiquettesPrlvmtPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationEtiquettesPdf($degustation, $request->getParameter('output', 'pdf'), false);
+      $this->document = new ExportDegustationEtiquettesPrlvmtPdf($degustation, $request->getParameter('output', 'pdf'), false);
       return $this->mutualExcecutePDF($request);
     }
 
