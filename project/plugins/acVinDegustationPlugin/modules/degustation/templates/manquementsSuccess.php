@@ -12,7 +12,7 @@
     <th>Appellation</th>
     <th>Volume</th>
     <th>Manquement</th>
-    <th>Action</th>
+    <th>Traitement</th>
 </thead>
 <tbody>
 <?php foreach($manquements as $keyLot => $m): ?>
@@ -26,7 +26,7 @@
         <td>
             <div class="dropdown">
               <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                &nbsp;
+                Traiter
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
