@@ -25,7 +25,7 @@
         <td><?php echo $m->conformite?Lot::$libellesConformites[$m->conformite]: null; ?> <span class="text-muted"><?php echo $m->motif; ?></span></td>
         <td>
             <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 &nbsp;
                 <span class="caret"></span>
               </button>
