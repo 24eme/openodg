@@ -62,7 +62,7 @@
             <div class="form-group">
               <?php echo $form["provenance"]->renderError(); ?>
               <?php echo $form["lieu"]->renderLabel("Provenance", array("class" => "col-xs-4 control-label")); ?>
-              <div class="col-sm-5 col-xs-5">
+              <div class="col-sm-8 col-xs-8">
                 <?php echo $form["provenance"]->render(); ?>
               </div>
             </div>

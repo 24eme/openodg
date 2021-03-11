@@ -35,7 +35,7 @@ class DegustationCreationForm extends acCouchdbObjectForm
     }
 
     public static function getProvenances(){
-      return array("DREV" => "DREV", "CONDITIONNEMENT" => "CONDITIONNEMENT", "DEFAULT" => "TOUS");
+      return array("DREV" => "DREV", "CONDITIONNEMENT" => "CONDITIONNEMENT", "TRANSACTION" => "TRANSACTION", "CHGTDENOM" => "CHGT DENOM.", "DEFAULT" => "TOUS");
     }
 
     protected function doUpdateObject($values) {
