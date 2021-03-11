@@ -62,13 +62,13 @@
             <div class="form-group">
               <?php echo $form["provenance"]->renderError(); ?>
               <?php echo $form["lieu"]->renderLabel("Provenance", array("class" => "col-xs-4 control-label")); ?>
-              <div class="col-sm-5 col-xs-5">
+              <div class="col-sm-8 col-xs-8">
                 <?php echo $form["provenance"]->render(); ?>
               </div>
             </div>
             <div class="form-group text-right">
                 <div class="col-sm-4 col-sm-offset-8 col-xs-12">
-                    <button type="submit" class="btn btn-default btn-block btn-upper">Créer</button>
+                    <button type="submit" class="btn btn-primary">Créer une dégustation</button>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
 <table class="table table-condensed table-striped">
 <thead>
     <th class="col-sm-2 text-center">Date de dégustation</th>
-    <th class="col-sm-6">Lieu de la dégustation</th>
+    <th class="col-sm-7">Lieu de la dégustation</th>
     <th class="col-sm-2">Infos</th>
     <th class="col-sm-2 text-center"></th>
 </thead>
@@ -90,16 +90,16 @@
 <?php foreach($degustations as $d): ?>
     <tr>
         <td class="col-sm-2 text-center"><?php echo $d->date; ?></td>
-        <td class="col-sm-6"><?php echo $d->lieu; ?></td>
+        <td class="col-sm-"><?php echo $d->lieu; ?></td>
         <td class="col-sm-2">
             <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span> -
             <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
         </td>
-        <td class="col-sm-2 text-right">
-            <?php if ($d->isValidee()): ?>
-              <a href="<?php echo url_for('degustation_redirect', $d)?>"class="btn btn-success" >Suivi de la dégustation</a>
-          <?php else: ?>
-            <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la création de la dégustation</a>
+        <td class="col-sm-1 text-right">
+            <?php if ($d->isValidee() && in_array($d->etape, array(DegustationEtapes::ETAPE_RESULTATS, DegustationEtapes::ETAPE_NOTIFICATIONS))): ?>
+                <a href="<?php echo url_for('degustation_redirect', $d)?>"class="btn btn-default">Visualiser</a>
+            <?php else: ?>
+              <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-primary">Continuer</a>
           <?php endif; ?>
         </td>
     </tr>

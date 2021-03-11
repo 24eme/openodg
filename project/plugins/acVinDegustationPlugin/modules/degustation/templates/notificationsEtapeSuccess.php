@@ -53,20 +53,27 @@
                         <?php endforeach; ?>
                       </td>
                       <td class="text-center">
-                        <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm <?php if($conformitesLots->email_envoye): ?>disabled<?php endif;?>">
-                            <?php if(!$conformitesLots->email_envoye): ?><i class="glyphicon glyphicon-eye-open"></i>&nbsp;Prévisualiser<?php else: ?>
-                                <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($conformitesLots->email_envoye, "dd/MM/yyyy")." à ".format_date($conformitesLots->email_envoye, "H")."h".format_date($conformitesLots->email_envoye, "mm"); ?>
-                            <?php endif; ?>
-                        </a>
                         <?php if(!$conformitesLots->email_envoye): ?>
-                        <a class="btn btn-primary btn btn-sm pull-right"
-                           href="<?php echo $emailLinkManagerLot->getMailerLink(); ?>"
-                           id="link-mail-auto"
-                           data-retour="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $emailLinkManagerLot->getEtablissement()->identifiant)); ?>" ><i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer</a>
-                       <?php endif; ?>
-                        <?php if($conformitesLots->email_envoye): ?>
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Notifier <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu text-left">
+                                  <li><a class="btn" href="<?php echo $emailLinkManagerLot->getMailerLink(); ?>" id="link-mail-auto"
+                                      data-retour="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $emailLinkManagerLot->getEtablissement()->identifiant)); ?>">
+                                      <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
+                                  </a></li>
+                                  <li><a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn">
+                                      <i class="glyphicon glyphicon-eye-open"></i>&nbsp;Prévisualiser
+                                  </a></li>
+                              </ul>
+                        </div>
+                       <?php else: ?>
+                            <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm disabled">
+                                <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($conformitesLots->email_envoye, "dd/MM/yyyy")." à ".format_date($conformitesLots->email_envoye, "H")."h".format_date($conformitesLots->email_envoye, "mm"); ?>
+                            </a>
                           <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
-                        <?php endif;?>
+                       <?php endif;?>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -77,7 +84,6 @@
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">
-                  <a href="<?php echo url_for("degustation") ?>" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></a>
                 </div>
               </div>
             </div>
