@@ -4,9 +4,9 @@ class ExportDegustationEtiquettesPrlvmtPDF extends ExportPDF {
 
     protected $degustation = null;
 
-    public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation, $anonymat4labo = false, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
-
+        $this->anonymat4labo = $anonymat4labo;
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
@@ -19,7 +19,7 @@ class ExportDegustationEtiquettesPrlvmtPDF extends ExportPDF {
 
     public function create() {
       foreach ($this->degustation->getEtiquettesFromLots(7) as $plancheLots) {
-        $this->printable_document->addPage($this->getPartial('degustation/etiquettesPrlvmtPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots, 'anonymat4labo' => true)));
+        $this->printable_document->addPage($this->getPartial('degustation/etiquettesPrlvmtPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots, 'anonymat4labo' => $this->anonymat4labo)));
       }
   }
 
