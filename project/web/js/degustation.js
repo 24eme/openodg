@@ -2,7 +2,7 @@
   $(document).ready(function(){
 
     $('#mailPreviewModal').modal('show');
-    $('#link-mail-auto').click(function(){
+    $('.link-mail-auto').click(function(){
       var retour = $(this).attr("data-retour");
       if(retour){
          window.location = retour;
