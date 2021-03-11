@@ -288,6 +288,16 @@ degustation_etiquette_pdf:
   requirements:
     sf_method: [get]
 
+degustation_etiquette_csv:
+  url: /degustation/:id/etiquettes/csv
+  param: { module: degustation, action: etiquettesPrlvmtCsv }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_etiquette_anonymes_pdf:
   url: /degustation/:id/etiquettesAnonymes/pdf
   param: { module: degustation, action: etiquettesAnonymesPDF }

@@ -615,6 +615,12 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
     }
 
+    public function executeEtiquettesPrlvmtCsv(sfWebRequest $request) {
+      $this->degustation = $this->getRoute()->getDegustation();
+      $this->getResponse()->setHttpHeader('Content-Type', 'text/csv');
+      $this->setLayout(false);
+    }
+
     public function executeEtiquettesPrlvmtPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
       $this->document = new ExportDegustationEtiquettesPrlvmtPdf($degustation, $request->getParameter('anonymat4labo', true), $request->getParameter('output', 'pdf'), false);
