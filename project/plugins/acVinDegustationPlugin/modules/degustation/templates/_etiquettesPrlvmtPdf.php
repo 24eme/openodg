@@ -17,15 +17,22 @@
                   </tr>
                   <tr style="line-height:12px;">
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
-                      <?php echo tdStart() ?>&nbsp;<strong><?php echo ($lotInfo->lot->declarant_nom)? $lotInfo->lot->declarant_nom : "Leurre";  ?></strong>
+                      <?php echo tdStart() ?><strong>&nbsp;
+                      <?php if ($i != 2 || !$anonymat4labo): ?>
+                      <?php echo ($lotInfo->lot->declarant_nom)? $lotInfo->lot->declarant_nom : "Leurre";  ?>
+                      <?php endif; ?></strong>
                     </td>
                   </tr>
                   <tr style="line-height:12px;">
                     <td colspan="2" style="text-align: center;">
-                      <?php echo tdStart() ?><strong><?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi);
-                        elseif ($lotInfo->etablissement->siret):echo (substr($lotInfo->etablissement->siret,0,3)." ".substr($lotInfo->etablissement->siret,3,3)." ".substr($lotInfo->etablissement->siret,6,3)." ".substr($lotInfo->etablissement->siret,9,5));
-                        endif;
-                       ?></strong>
+                      <?php echo tdStart() ?>
+                      <?php if ($i != 2 || !$anonymat4labo): ?>
+                          <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi);
+                           elseif ($lotInfo->etablissement->siret):echo (substr($lotInfo->etablissement->siret,0,3)." ".substr($lotInfo->etablissement->siret,3,3)." ".substr($lotInfo->etablissement->siret,6,3)." ".substr($lotInfo->etablissement->siret,9,5));
+                          endif; ?>
+                      <?php else: ?>
+                          <i>Lot destiné au laboratoire</i>
+                      <?php endif; ?>
                     </td>
                   </tr>
                   <tr style="line-height:12px;">
