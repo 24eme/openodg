@@ -568,11 +568,11 @@ class degustationActions extends sfActions {
     public function executeMailPrevisualisation(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
 
-      $this->lots = [];
+      $this->conformiteLots = [];
 
       $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
-      $this->lots[Lot::STATUT_CONFORME] = $this->degustation->getLotsConformes($this->etablissement->identifiant);
-      $this->lots[Lot::STATUT_NONCONFORME] = $this->degustation->getLotsNonConformes($this->etablissement->identifiant);
+      $this->conformiteLots[Lot::STATUT_CONFORME] = $this->degustation->getLotsConformes($this->etablissement->identifiant);
+      $this->conformiteLots[Lot::STATUT_NONCONFORME] = $this->degustation->getLotsNonConformes($this->etablissement->identifiant);
 
       $this->popup = true;
 
@@ -627,7 +627,7 @@ class degustationActions extends sfActions {
 
     public function executeEtiquettesPrlvmtPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationEtiquettesPrlvmtPdf($degustation, $request->getParameter('anonymat4labo', true), $request->getParameter('output', 'pdf'), false);
+      $this->document = new ExportDegustationEtiquettesPrlvmtPDF($degustation, $request->getParameter('anonymat4labo', true), $request->getParameter('output', 'pdf'), false);
       return $this->mutualExcecutePDF($request);
     }
 
@@ -664,10 +664,10 @@ class degustationActions extends sfActions {
 
     public function executeDegustationNonConformitePDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
-      $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
       $lot_dossier = $request->getParameter('lot_dossier');
-      $lot_num_anon = $request->getParameter('lot_num_anon');
-      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier, $lot_num_anon, $request->getParameter('output','pdf'),false);
+      $lot_archive = $request->getParameter('lot_archive');
+      $lot = $degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+      $this->document = new ExportDegustationNonConformitePDF($degustation,$lot, $request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
 

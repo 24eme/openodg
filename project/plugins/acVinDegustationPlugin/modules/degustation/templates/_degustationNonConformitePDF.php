@@ -119,9 +119,9 @@
     <th style="font-weight:bold">Décision/<br/>Observation</th>
   </tr>
   <tr>
-    <td><?php echo (int)$lot->numero_dossier ?></td>
-    <td><?php echo (int)$lot->numero_archive ?></td>
-    <td><?php echo (int)$lot->numero_logement_operateur ?></td>
+    <td><?php echo $lot->numero_dossier ?></td>
+    <td><?php echo $lot->numero_archive ?></td>
+    <td><?php echo $lot->numero_logement_operateur ?></td>
     <td><?php echo $lot->produit_libelle ?></td>
     <td><?php echo $lot->details ?></td>
     <td><?php echo $lot->millesime ?></td>

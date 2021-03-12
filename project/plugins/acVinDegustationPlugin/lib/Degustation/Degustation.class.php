@@ -182,7 +182,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$tables = $this->getTablesWithFreeLots();
 		$infos["nbTables"] = count($tables);
 		$infos["nbFreeLots"] = count($this->getFreeLots());
-		$infos["nbLotsDegustes"] = count($this->getLotsDegustes());
+		$infos["nbLotsAnonymises"] = count($this->getLotsAnonymized());
 		$infos["nbLotsConformes"] = $this->getNbLotsConformes();
 		$infos["nbLotsNonConformes"] = $this->getNbLotsNonConformes();
 		return $infos;
@@ -512,7 +512,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					if(!array_key_exists($conformite,$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots)){
 						$lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite] = array();
  					}
-				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite][] = $lot;
+				 $lotsByAdherents[$lot->getDeclarantIdentifiant()]->lots[$conformite][$lot->getUnicityKey()] = $lot;
 				 if($lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye === false){
                      $lotsByAdherents[$lot->getDeclarantIdentifiant()]->email_envoye = false;
                  }
@@ -703,6 +703,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 			return false;
 		}
+
+        public function getLotsAnonymized(){
+            $lotsAnon = array();
+            foreach ($this->getLots() as $k => $lot){
+                if (!$lot->leurre && $lot->numero_anonymat) {
+                    $lotsAnon[$lot->numero_anonymat] = $lot;
+                }
+            }
+            return $lotsAnon;
+        }
 
 		public function getLotsTableOrFreeLots($numero_table, $free = true){
 			$lots = array();
@@ -1003,17 +1013,45 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-		public function getLotsByNumDossierNumCuve(){
+		public function getLotsByNumDossierNumLogementOperateur(){
 			$lots = array();
 			foreach ($this->getLots() as  $lot) {
-				if($lot->numero_logement_operateur)
-					$lots[$lot->numero_dossier][$lot->numero_logement_operateur] = $lot;
-				else
-					$lots[$lot->numero_dossier][$lot->numero_archive] = $lot;
+			  $lots[$lot->numero_dossier][$lot->numero_logement_operateur] = $lot;
 			}
 
 			return $lots;
 		}
+
+        public function getLotByNumDossierNumLogementOperateur($numero_dossier, $numero_logement_operateur){
+            $allLots = $this->getLotsByNumDossierNumLogementOperateur();
+            if(!isset($allLots[$numero_dossier])){
+                return null;
+            }
+            if(!isset($allLots[$numero_dossier][$numero_logement_operateur])){
+                return null;
+            }
+			return $allLots[$numero_dossier][$numero_logement_operateur];
+		}
+
+        public function getLotsByNumDossierNumArchive(){
+            $lots = array();
+            foreach ($this->getLots() as $lot) {
+              $lots[$lot->numero_dossier][$lot->numero_archive] = $lot;
+            }
+
+            return $lots;
+        }
+
+        public function getLotByNumDossierNumArchive($numero_dossier, $numero_archive){
+            $allLots = $this->getLotsByNumDossierNumArchive();
+            if(!isset($allLots[$numero_dossier])){
+                return null;
+            }
+            if(!isset($allLots[$numero_dossier][$numero_archive])){
+                return null;
+            }
+            return $allLots[$numero_dossier][$numero_archive];
+        }
 
 		public function getOdg(){
 			return sfConfig::get('sf_app');
@@ -1101,14 +1139,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getNbLotByTypeForNumDossier($numDossier){
 			$lots = array();
-			foreach ($this->getLotsByNumDossierNumCuve()[$numDossier] as $numCuve => $lot) {
+			foreach ($this->getLotsByNumDossierNumLogementOperateur()[$numDossier] as $numCuve => $lot) {
 				$lots[$lot->getTypeLot()] +=1;
 			}
 			return $lots;
 		}
 
 		/** Mis à jour par la degustation du volume d'un lot de DRev **/
-		public function modifyVolumeLotAndCreateDRevModificatrice($hash_lot,$volume){
+		public function modifyVolumeLot($hash_lot,$volume){
 
 			$lot = $this->get($hash_lot);
 

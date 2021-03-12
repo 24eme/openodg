@@ -16,7 +16,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     public function create() {
       $etablissement = null;
 
-      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
+      foreach ($this->degustation->getLotsByNumDossierNumLogementOperateur() as $numDossier => $lotsEtablissement) {
         $volumeLotTotal = 0;
         foreach ($lotsEtablissement as $key => $lot) {
           $volumeLotTotal += $lot->volume;

@@ -14,7 +14,7 @@ class DegustationLotForm extends acCouchdbObjectForm
 
     public function doUpdateObject($values)
     {
-        return $this->getObject()->getDocument()->modifyVolumeLotAndCreateDRevModificatrice($this->getObject()->getHash(), $values['volume']);
+        return $this->getObject()->getDocument()->modifyVolumeLot($this->getObject()->getHash(), $values['volume']);
 
     }
 }
