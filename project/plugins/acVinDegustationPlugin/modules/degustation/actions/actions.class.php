@@ -673,14 +673,15 @@ class degustationActions extends sfActions {
 
     }
 
-    public function executeDegustationNonConformitePDF(sfWebRequest $request){
+    public function executeNonConformitePDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
 
-      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
-      $lot_dossier = $request['lot_dossier'];
-      $lot_num_anon = $request['lot_num_anon'];
+      $lot_dossier = $request->getParameter('lot_dossier', null);
+      $lot_archive = $request->getParameter('lot_archive', null);
 
-      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier, $lot_num_anon, $this->getRequestParameter('output','pdf'),false);
+      $lot = $degustation->getLotByNumDossierNumArchive($lot_dossier,$lot_archive);
+
+      $this->document = new ExportDegustationNonConformitePDF($degustation, $lot, $this->getRequestParameter('output','pdf'),false);
       $this->document->setPartialFunction(array($this, 'getPartial'));
 
       if ($request->getParameter('force')) {

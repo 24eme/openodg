@@ -16,7 +16,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     public function create() {
       $etablissements = array();
       $nbLotTotal = 0;
-      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
+      foreach ($this->degustation->getLotsByNumDossierNumLogementOperateur() as $numDossier => $lotsEtablissement) {
 				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
         $nbLotTotal += count($lotsEtablissement);
         $etablissements[$numDossier] = $etablissement;

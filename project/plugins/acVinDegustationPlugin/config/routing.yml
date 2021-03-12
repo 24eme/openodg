@@ -340,8 +340,8 @@ degustation_conformite_pdf:
     sf_method: [get,post]
 
 degustation_non_conformite_pdf:
-  url: /degustation/:id/:identifiant/:lot_dossier/:lot_archive/DegustationNonConformite/pdf
-  param: { module: degustation, action: degustationNonConformitePDF }
+  url: /degustation/:id/:lot_dossier/:lot_archive/nonConformite/pdf
+  param: { module: degustation, action: nonConformitePDF }
   class: DegustationRoute
   options:
     model:    Degustation
