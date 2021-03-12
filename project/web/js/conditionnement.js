@@ -63,6 +63,8 @@
                     if(cepage && volume > 0) {
                         if(libelle) {
                             libelle = libelle + ", ";
+                        }else{
+                            libelle = "Mention : ";
                         }
                         var p = (total)? Math.round((volume/total) * 100) : 0;
                         libelle = libelle + cepage + "&nbsp;("+p+"%)";
@@ -78,12 +80,12 @@
                     });
                 });
                 if(!libelle) {
-                    libelle = "Vin de cépage(s)";
+                    libelle = "Sans mention de cépage";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
                 }else{
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");
                 }
-                $('span.checkboxtext_'+$(this).attr('id')).html(libelle);
+                $('span.checkboxtext_'+$(this).attr('id')).html(libelle + " <a>(Changer)</a>");
             });
         }
 
