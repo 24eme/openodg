@@ -44,7 +44,7 @@
                         <?php endforeach; ?>
                       </td>
                       <td>
-                        <?php if (true): ?>
+                        <?php if ($emailInfos[$identifiant]->email_envoye === false): ?>
                         <div class="btn-group">
                           <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Notifier <span class="caret"></span>

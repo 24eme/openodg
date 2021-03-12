@@ -234,6 +234,8 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
+
+        $this->emailInfos = $this->degustation->getEmailNotificationInfos();
     }
 
     public function executeConfirmation(sfWebRequest $request) {
