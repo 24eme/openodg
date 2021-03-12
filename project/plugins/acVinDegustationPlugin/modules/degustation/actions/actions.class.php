@@ -234,8 +234,6 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
-
-        $this->emailInfos = $this->degustation->getEmailNotificationInfos();
     }
 
     public function executeConfirmation(sfWebRequest $request) {
@@ -574,7 +572,6 @@ class degustationActions extends sfActions {
       $this->lotsOperateur = $this->degustation->getLotsByOperateurs($this->identifiant_operateur);
 
       $this->popup = true;
-      $this->emailInfos = $this->degustation->getEmailNotificationInfos();
 
       $this->setTemplate('notificationsEtape');
     }
