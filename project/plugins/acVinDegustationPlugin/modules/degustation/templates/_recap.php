@@ -20,7 +20,7 @@
 	        		<tr>
 								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
 	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
-								
+
 							</tr>
         		<?php endforeach;?>
         		<?php endforeach; ?>
@@ -31,7 +31,7 @@
 
 <div class="row row-condensed">
 	<div class="col-xs-12">
-		<h3>Lots à déguster</h3>
+		<h3>Lots prévus</h3>
         <table class="table table-bordered table-condensed table-striped">
         	<thead>
             	<tr>
