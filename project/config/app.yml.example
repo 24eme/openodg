@@ -89,8 +89,9 @@ all:
       "150 cl": 150
       "300 cl": 300
   scrapy:
-    bin: "/.../.../prodouane_scrapy/bin/download_douane.sh"
-    documents: "/.../.../prodouane_scrapy/documents"
+    bin: "../../../prodouane_scrapy/bin/"
+    documents: "../../../prodouane_scrapy/documents/"
+    configfilename: "config.inc"
   oi:
     login: utilisateur
     mdp: motdepasse
