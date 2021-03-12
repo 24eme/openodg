@@ -570,13 +570,11 @@ class degustationActions extends sfActions {
     public function executeMailPrevisualisation(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
 
-      $this->conformiteLots = [];
-
-      $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
-      $this->conformiteLots[Lot::STATUT_CONFORME] = $this->degustation->getLotsConformes($this->etablissement->identifiant);
-      $this->conformiteLots[Lot::STATUT_NONCONFORME] = $this->degustation->getLotsNonConformes($this->etablissement->identifiant);
+      $this->identifiant_operateur = $request->getParameter('identifiant');
+      $this->lotsOperateur = $this->degustation->getLotsByOperateurs($this->identifiant_operateur);
 
       $this->popup = true;
+      $this->emailInfos = $this->degustation->getEmailNotificationInfos();
 
       $this->setTemplate('notificationsEtape');
     }
