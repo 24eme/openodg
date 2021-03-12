@@ -70,4 +70,24 @@ class DegustationLot extends BaseDegustationLot {
         $this->getDocument()->generateMouvementsLots();
     }
 
+    public function getDocumentType() {
+
+        return DegustationClient::TYPE_MODEL;
+    }
+
+    public function getDocumentOrdre() {
+
+        return "02";
+    }
+
+    public function getLibelle() {
+
+        return "";
+    }
+
+    public function getMouvementFreeInstance() {
+
+        return DegustationMouvementLots::freeInstance($this->getDocument());
+    }
+
 }
