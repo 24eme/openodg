@@ -34,7 +34,7 @@
                 <?php foreach ($degustation->getLotsByOperateurs() as $identifiant => $lots): ?>
                     <tr>
                       <td><?= $lots[0]->declarant_nom ?></td>
-                      <td>
+                      <td style="line-height: 2.5rem">
                         <?php foreach ($lots as $lot): ?>
                         <span data-toggle="tooltip"
                               data-html="true"
