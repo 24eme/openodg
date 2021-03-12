@@ -269,7 +269,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	 public function setLotsFromMvtKeys($keys, $statut){
 		 $this->remove('lots');
 		 $this->add('lots');
-		 $mvts = $this->getMvtLotsPrelevables();
+		 $mvts = DegustationClient::getInstance()->getLotsPrelevables();
 		 foreach($keys as $key => $activated) {
 			 if (!$activated) {
 				continue;
