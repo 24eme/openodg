@@ -122,3 +122,5 @@
 .pr-5 { padding-right:3rem!important; }
 .pb-5 { padding-bottom:3rem!important; }
 .pl-5 { padding-left:3rem!important; }
+
+.checkboxlots input:not(:checked) { display: none; }
