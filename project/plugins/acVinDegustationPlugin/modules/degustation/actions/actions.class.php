@@ -238,10 +238,6 @@ class degustationActions extends sfActions {
         $this->emailInfos = $this->degustation->getEmailNotificationInfos();
     }
 
-    public function executeConfirmation(sfWebRequest $request) {
-      $this->degustation = $this->getRoute()->getDegustation();
-    }
-
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
