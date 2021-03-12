@@ -41,6 +41,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
           return $configuration;
       }
 
+      public function getConfigProduits() {
+          return $this->getConfiguration()->declaration->getProduits();
+      }
+
       public function isPapier() {
           return $this->exist('papier') && $this->get('papier');
       }
