@@ -38,6 +38,12 @@ Degustation:
                   declarant_identifiant: { }
                   declarant_nom: { }
                   origine_mouvement: {}
+                  document_fils: {  }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
                   details: {}
                   statut: {}
                   numero_table: {}

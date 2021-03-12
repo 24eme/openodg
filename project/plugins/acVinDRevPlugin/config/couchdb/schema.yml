@@ -121,7 +121,6 @@ DRev:
                   id_document: { }
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero: { }
                   numero_logement_operateur: { }
                   millesime: { }
                   volume: { type: float }

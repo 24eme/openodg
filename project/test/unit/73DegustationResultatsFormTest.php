@@ -73,7 +73,7 @@ $form->save();
 
 $lotConformes = $doc->getLotsConformesOrNot();
 $t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
-$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a 16 mouvements de lot');
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 14, 'Il y a 14 mouvements de lot');
 
 $doc = acCouchdbManager::getClient()->find($docid);
 $form = new DegustationResultatsForm($doc, $options);
