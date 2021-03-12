@@ -1,4 +1,5 @@
 <?php use_helper('Lot') ?>
+<?php use_helper('Date') ?>
 Monsieur, Madame,
 
 Nous vous prions de bien vouloir trouver ci-dessous extrait du procès verbal de

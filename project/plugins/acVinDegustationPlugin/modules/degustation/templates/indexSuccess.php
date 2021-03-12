@@ -96,10 +96,10 @@
             <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
         </td>
         <td class="col-sm-1 text-right">
-            <?php if ($d->isValidee() && in_array($d->etape, array(DegustationEtapes::ETAPE_RESULTATS, DegustationEtapes::ETAPE_NOTIFICATIONS))): ?>
-                <a href="<?php echo url_for('degustation_redirect', $d)?>"class="btn btn-default">Visualiser</a>
+            <?php if ($d->isValidee()): ?>
+                <a href="<?php echo url_for('degustation_redirect', $d)?>"class="btn btn-default"><?= DegustationEtapes::$libelles_short[$d->etape] ?></a>
             <?php else: ?>
-              <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-primary">Continuer</a>
+              <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-primary">Continuer Brouillon</a>
           <?php endif; ?>
         </td>
     </tr>

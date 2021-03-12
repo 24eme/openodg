@@ -163,7 +163,7 @@ class degustationActions extends sfActions {
         }
 
         if(!$next_college){
-          ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_DEGUSTATEURS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+          return $this->redirect('degustation_validation', $this->degustation);
         }
 
         return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id ,'college' => $next_college));
@@ -172,9 +172,6 @@ class degustationActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsValidee();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
-            $this->degustation->save();
-        }
 
         $this->validation = new DegustationValidation($this->degustation);
         $this->form = new DegustationValidationForm($this->degustation);
@@ -193,14 +190,24 @@ class degustationActions extends sfActions {
 
          $this->form->save();
 
-        return $this->redirect('degustation');
+        return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 
 
     public function executePrelevementsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
+            $this->degustation->save();
+        }
+    }
+
+    public function executeTablesEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsAnonymized();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
             $this->degustation->save();
         }
     }
@@ -226,14 +233,6 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_RESULTATS))) {
             $this->degustation->save();
           }
-    }
-
-    public function executeTablesEtape(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->infosDegustation = $this->degustation->getInfosDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
-            $this->degustation->save();
-        }
     }
 
     public function executeNotificationsEtape(sfWebRequest $request) {
@@ -475,15 +474,10 @@ class degustationActions extends sfActions {
 
     public function executeRedirect(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        //$this->redirectIfIsValidee();
+
         return ($next = $this->getRouteEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation_prelevement_lots', $this->degustation);
     }
 
-    public function redirectIfIsValidee(){
-      if ($this->degustation->isValidee()) {
-          return $this->redirect('degustation_confirmation', $this->degustation);
-      }
-    }
 
     protected function getEtape($doc, $etape, $class = "DegustationEtapes") {
         $etapes = $class::getInstance();
@@ -723,5 +717,19 @@ class degustationActions extends sfActions {
         $this->document->addHeaders($this->getResponse());
         return $this->renderText($this->document->output());
     }
+
+    private function redirectIfIsValidee(){
+      if ($this->degustation->isValidee()) {
+          return $this->redirect($this->getRouteEtape($this->degustation->etape),$this->degustation);
+      }
+    }
+
+    private function redirectIfIsAnonymized(){
+      if ($this->degustation->isAnonymized()) {
+          return $this->redirect($this->getRouteEtape($this->degustation->etape),$this->degustation);
+      }
+    }
+
+
 
 }
