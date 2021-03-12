@@ -117,6 +117,13 @@ abstract class Lot extends acCouchdbDocumentTree
         return null;
     }
 
+    public function getEtablissement(){
+        if(!$this->identifiant){
+            return null;
+        }
+        return EtablissementClient::getInstance()->find($this->identifiant);
+    }
+
     public function getDefaults() {
         $defaults = array();
         $defaults['millesime'] = $this->getDocument()->campagne;

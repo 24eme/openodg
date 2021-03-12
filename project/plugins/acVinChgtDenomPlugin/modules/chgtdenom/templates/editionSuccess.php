@@ -46,7 +46,7 @@
                       <input type="checkbox" <?php echo (count($chgtDenom->changement_cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
                              id="lien_changement_cepages" data-toggle="modal"
                              data-target="#changement_cepages" />
-                      <span class="checkboxtext_changement_cepages"><?php echo (count($chgtDenom->changement_cepages->toArray(true, false))) ? "Assemblages : " :  "Assemblage" ?></span></label>
+                      <span class="checkboxtext_changement_cepages"><?php echo (count($chgtDenom->changement_cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
                     </div>
                   </div>
               </div>
@@ -78,12 +78,13 @@
         </div>
 
 
-        <div class="modal fade modal_lot_cepages" id="changement_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
+        <div class="modal fade modal_lot_cepages" id="changement_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
+                        <h4 class="modal-title" id="myModalLabel">Mention de cépages</h4>
+                        <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
                     </div>
                     <div class="modal-body form-horizontal">
                         <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
