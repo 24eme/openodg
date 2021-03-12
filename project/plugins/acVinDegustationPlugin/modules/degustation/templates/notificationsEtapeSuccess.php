@@ -92,6 +92,6 @@
   </div>
   <?php
   if(isset($popup)):
-    include_partial('degustation/previewMailPopup', array('degustation' => $degustation, 'etablissement' => $etablissement, 'lots' => $lots));
+    include_partial('degustation/previewMailPopup', array('degustation' => $degustation, 'etablissement' => $etablissement, 'lots' => $conformiteLots));
  endif;
   ?>
