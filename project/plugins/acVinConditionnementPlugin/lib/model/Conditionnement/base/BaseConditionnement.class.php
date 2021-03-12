@@ -1,7 +1,7 @@
 <?php
 
 
-abstract class BaseConditionnement extends acCouchdbDocument {
+abstract class BaseConditionnement extends DeclarationLots {
 
     public function getDocumentDefinitionModel() {
         return 'Conditionnement';
