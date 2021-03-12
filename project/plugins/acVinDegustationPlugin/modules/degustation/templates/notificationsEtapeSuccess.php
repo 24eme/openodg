@@ -38,10 +38,9 @@
                         <?php foreach ($lots as $lot): ?>
                         <span data-toggle="tooltip"
                               data-html="true"
-                              title="<?= strip_tags(showProduitLot($lot) . "<br>" . $lot->getShortLibelleConformite(), '<br>')?>"
-                              class="label label-<?= ($lot->isNonConforme()) ? 'danger' : 'success'?>">
-                                <span class="glyphicon glyphicon-<?= ($lot->isNonConforme()) ? 'remove' : 'ok' ?>"></span>
-                        </span>&nbsp;
+                              title="<?= showProduitLot($lot) . "<br>" . $lot->getShortLibelleConformite() ?>"
+                              class="label label-<?= ($lot->isNonConforme()) ? 'danger' : 'success'?>"
+                        ><span class="glyphicon glyphicon-<?= ($lot->isNonConforme()) ? 'remove' : 'ok' ?>"></span></span>&nbsp;
                         <?php endforeach; ?>
                       </td>
                       <td>
