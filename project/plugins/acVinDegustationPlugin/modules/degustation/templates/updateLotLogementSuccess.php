@@ -1,5 +1,15 @@
 <div class="page-header">
-  <h2>Logement du lot <?= $degustation->lots[$lot]->getProduitLibelle() ?></h2>
+  <?php $l = $degustation->lots[$lot]; ?>
+  <h2>Logement du lot <?= $l->getProduitLibelle() ?> <small class="text-muted"><?= $l->millesime ?></small></h2>
+  <h3>Récapitulatif du lot :</h3>
+  <div class="well">
+    <?php if ($l->details): ?>
+      <?= $l->details ?> <br/>
+    <?php endif; ?>
+    Spécificité : <?= $l->specificite ?> <br/>
+    Volume : <?= $l->volume ?> <small class="text-muted">hl</small><br/>
+    Opérateur : <?= $l->declarant_nom ?> &bull; Dossier : <?= $l->numero_dossier ?> &bull; Archive : <?= $l->numero_archive ?>
+  </div>
 </div>
 
 <div class="container">
@@ -9,7 +19,7 @@
       <div class="col-xs-5">
         <div class="form-group">
           <label for="oldLogement">Logement actuel</label>
-          <input type="text" disabled class="form-control" id="oldLogement" value="<?= $degustation->lots[$lot]->numero_cuve ?>">
+          <input type="text" disabled class="form-control" id="oldLogement" value="<?= $degustation->lots[$lot]->numero_logement_operateur ?>">
         </div>
       </div>
 

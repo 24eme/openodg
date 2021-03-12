@@ -43,6 +43,17 @@ class ImportLotsIATask extends sfBaseTask
   const CSV_EMAIL = 38;
 
   const TYPE_REVENDIQUE = 'R';
+  const TYPE_CONDITIONNEMENT = 'B';
+  const TYPE_TRANSACTION_VRAC_FRANCE = 'VF';
+  const TYPE_TRANSACTION_VRAC_HORS_FRANCE = 'VHF';
+  const TYPE_CHANGEMENT_DE_DENOMINATION_NEGOCIANT = 'BN';
+
+  public static $typeAllowed = array (
+      self::TYPE_REVENDIQUE,
+      self::TYPE_CONDITIONNEMENT,
+      self::TYPE_TRANSACTION_VRAC_FRANCE,
+      self::TYPE_TRANSACTION_VRAC_HORS_FRANCE,
+  );
 
   const STATUT_PRELEVE = "PRELEVE";
   const STATUT_PRELEVABLE = "PRELEVE";
@@ -59,7 +70,6 @@ class ImportLotsIATask extends sfBaseTask
   protected $produits;
   protected $cepages;
 
-  public static $types = array('B' => DRevClient::LOT_DESTINATION_CONDITIONNEMENT, 'VF' => DRevClient::LOT_DESTINATION_VRAC_FRANCE, 'VHF' => DRevClient::LOT_DESTINATION_VRAC_EXPORT);
   public static $correspondancesCepages = array(
     "Cabernet sauvignon N" => "CAB-SAUV-N",
     "Chardonnay B" => "CHARDONN.B",
@@ -76,14 +86,14 @@ class ImportLotsIATask extends sfBaseTask
     "Vermentino B" => "VERMENT.B"
   );
     public static $correspondancesStatuts = array(
-      "Conforme" => self::STATUT_CONFORME,
-      "Déclassé" => self::STATUT_DECLASSE,
-      "Non Conforme" => self::STATUT_NONCONFORME,
-      "Prélevé A" => self::STATUT_PRELEVE,
-      "Prélevé NA" => self::STATUT_PRELEVE,
-      "Prévu" => self::STATUT_PRELEVE,
-      "Revendiqué C" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE),
-      "Revendiqué NC" => array(self::STATUT_PRELEVABLE, self::STATUT_PRELEVE)
+      "Conforme" => Lot::STATUT_CONFORME,
+      "Déclassé" => Lot::STATUT_DECLASSE,
+      "Non Conforme" => Lot::STATUT_NONCONFORME,
+      "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
+      "Prélevé NA" => Lot::STATUT_PRELEVE,//Prélevé Non Anonimisé
+      "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
+      "Revendiqué C" => Lot::STATUT_PRELEVABLE,
+      "Revendiqué NC" => Lot::STATUT_NONCONFORME
     );
 
     protected function configure()
@@ -113,6 +123,7 @@ EOF;
         $this->initProduitsCepages();
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        $document = null;
         $ligne = 0;
         foreach(file($arguments['csv']) as $line) {
             $ligne++;
@@ -123,7 +134,7 @@ EOF;
             }
 
             $type = trim($data[self::CSV_TYPE]);
-            if ($type != self::TYPE_REVENDIQUE) {
+            if (!in_array($type, self::$typeAllowed)) {
                 echo "SQUEEZE;lot non issu de la revendication, type : ".$type.";pas d'import;$line\n";
                 continue;
             }
@@ -144,32 +155,32 @@ EOF;
             if (trim($data[self::CSV_CEPAGE_1])) {
               $cep1 = $this->identifyCepage($data[self::CSV_CEPAGE_1]);
               if (!$cep1) {
-                echo "WARNING;cepage_1 non trouvé ".$data[self::CSV_CEPAGE_1].";pas d'import;$line\n";
-                continue;
+                echo "WARNING;cepage_1 non trouvé ".$data[self::CSV_CEPAGE_1].";$line\n";
+              } else {
+                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_1]) * 1;
+                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
+                  $cepages[$cep1] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
-              $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_1]) * 1;
-              $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$cep1] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             if (trim($data[self::CSV_CEPAGE_2])) {
               $cep2 = $this->identifyCepage($data[self::CSV_CEPAGE_2]);
               if (!$cep2) {
-                echo "WARNING;cepage_2 non trouvé ".$data[self::CSV_CEPAGE_2].";pas d'import;$line\n";
-                continue;
+                echo "WARNING;cepage_2 non trouvé ".$data[self::CSV_CEPAGE_2].";$line\n";
+              } else {
+                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_2]) * 1;
+                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
+                  $cepages[$cep2] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
-              $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_2]) * 1;
-              $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$cep2] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             if (trim($data[self::CSV_CEPAGE_3])) {
               $cep3 = $this->identifyCepage($data[self::CSV_CEPAGE_3]);
               if (!$cep3) {
-                echo "WARNING;cepage_3 non trouvé ".$data[self::CSV_CEPAGE_3].";pas d'import;$line\n";
-                continue;
+                echo "WARNING;cepage_3 non trouvé ".$data[self::CSV_CEPAGE_3].";$line\n";
+              } else {
+                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_3]) * 1;
+                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
+                  $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
-              $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_3]) * 1;
-              $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-              $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
             }
             $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
             $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
@@ -178,50 +189,83 @@ EOF;
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
             $destinationDate = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_TRANSACTION_DATE]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-            if ($date) {
-                  $dt = new DateTime($date);
-                  $date = $dt->modify('+1 minute')->format('c');
-            }
-            $statut = trim($data[self::CSV_STATUT]);
-            $preleve = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui')? 1 : 0;
-            $correspondances = self::$correspondancesStatuts;
 
-            if (!isset($correspondances[$statut])) {
-                echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
-                continue;
-            }
+            $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
+            $statut = null;
+            if(isset($data[self::CSV_STATUT])){
+              $statut = trim($data[self::CSV_STATUT]);
+           }
 
-            $statut = (is_array($correspondances[$statut]))? $correspondances[$statut][$preleve] : $correspondances[$statut];
+           if (!isset(self::$correspondancesStatuts[$statut])) {
+              echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
+              continue;
+           }
 
-            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
+           $statut = self::$correspondancesStatuts[$statut];
 
-            if (!$drev) {
-              $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-              $drev->constructId();
-              $drev->storeDeclarant();
-              $drev->validation = $date;
-              $drev->validation_odg = $date;
-              $drev->numero_archive = $numeroDossier;
-            }
+           $document = $this->getDocument($type, $document, $etablissement, $campagne, $date, $numeroDossier);
 
-            $lot = $drev->addLot();
+            $lot = $document->addLot();
 
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
             $lot->cepages = $cepages;
-            $lot->id_document = $drev->_id;
+            $lot->id_document = $document->_id;
             $lot->millesime = $millesime;
             $lot->numero_dossier = $numeroDossier;
             $lot->numero_archive = $numeroLot;
-            $lot->numero_cuve = $numero;
+            $lot->numero_logement_operateur = $numero;
             $lot->volume = $volume;
             $lot->destination_type = null;
+            $lot->elevage = false;
+
+            if (!$data[self::CSV_DESTINATION]) {
+                $data[self::CSV_DESTINATION] = $data[self::CSV_TYPE];
+            }
+
+            if(preg_match('/VF/', $data[self::CSV_DESTINATION])) {
+                $lot->destination_type .= DRevClient::LOT_DESTINATION_VRAC_FRANCE."_";
+            }
+            if(preg_match('/VHF/', $data[self::CSV_DESTINATION])) {
+                $lot->destination_type .= DRevClient::LOT_DESTINATION_VRAC_EXPORT."_";
+            }
+            if(preg_match('/B/', $data[self::CSV_DESTINATION])) {
+                $lot->destination_type .= DRevClient::LOT_DESTINATION_CONDITIONNEMENT."_";
+            }
+            if($lot->destination_type) {
+                $lot->destination_type = preg_replace('/_$/', "", $lot->destination_type);
+            }
+            if(preg_match('/E/', $data[self::CSV_DESTINATION])) {
+                $lot->elevage = true;
+            }
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
-            $lot->statut = $statut;
+            $lot->statut = Lot::STATUT_NONPRELEVABLE;
+            $lot->specificite = null;
+            $lot->add('document_fils', true);
+            if ($statut == self::STATUT_NONCONFORME) {
+              $lot->statut = self::STATUT_PRELEVABLE;
+              $lot->specificite = "2ème passage $lot->specificite";
+            }
+            if($statut == Lot::STATUT_PRELEVABLE && $prelevable) {
+                $lot->statut = Lot::STATUT_PRELEVABLE;
+                $lot->remove('document_fils');
+            }
+            if($lot->elevage) {
+                $lot->statut = Lot::STATUT_ELEVAGE;
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {
+                $lot->centilisation = "donnée non présente dans l'import";
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_TRANSACTION_VRAC_FRANCE) {
+                $lot->pays = "France";
+            }
+            if ($data[self::CSV_TYPE] == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
+                $lot->pays = "Export : données du pays non importée";
+            }
 
             $deleted = array();
-            foreach($drev->lots as $k => $l) {
+            foreach($document->lots as $k => $l) {
               if ($lot->getUnicityKey() == $l->getUnicityKey() && $lot->getKey() != $k) {
                 $deleted[] = $l;
               }
@@ -230,14 +274,23 @@ EOF;
               $d->delete();
             }
 
-            $drev->generateAndAddMouvementLotsFromLot($lot, $lot->getUnicityKey());
-            $drev->save();
-            echo "SUCCESS;Lot importé;".$drev->_id.";\n";
+            $lots = array_values($document->lots->toArray(true, false));
+            $document->remove('lots');
+            $document->add('lots', $lots);
+
+            try {
+                $document->save();
+                //echo "SUCCESS;Lot importé;".$document->_id.";\n";
+            } catch(Exception $e) {
+                echo "ERROR;".$e->getMessage().";".$document->_id.";".$line."\n";
+            }
         }
     }
 
     protected function clearProduitKey($key) {
       $key = str_replace('PAYS-DES-', '', $key);
+      $key = str_replace('VAR-VAR-', 'VAR-', $key);
+      $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
       return $key;
     }
 
@@ -287,4 +340,72 @@ EOF;
         }
       }
     }
+
+    public function getDocument($type, $previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        if ($type == self::TYPE_REVENDIQUE) {
+            return $this->getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
+        if ($type == self::TYPE_CONDITIONNEMENT) {
+            return $this->getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
+        if ($type == self::TYPE_TRANSACTION_VRAC_FRANCE) {
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
+        if ($type == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+        }
+    }
+
+    public function getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        $drev = $previousdoc;
+
+        $newDrev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
+        $newDrev->constructId();
+        $newDrev->storeDeclarant();
+        $newDrev->validation = $date;
+        $newDrev->validation_odg = $date;
+        $newDrev->numero_archive = $numeroDossier;
+
+        if(!$previousdoc || $newDrev->_id != $drev->_id) {
+          $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
+          if($drev) { $drev->delete(); $drev = null; }
+        }
+
+        if(!$drev) {
+            $drev = $newDrev;
+        }
+        return $drev;
+    }
+
+    public function getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
+        $newCond->constructId();
+        $newCond->storeDeclarant();
+        $newCond->validation = $date;
+        $newCond->validation_odg = $date;
+        $newCond->numero_archive = $numeroDossier;
+        $newCond->add('date_degustation_voulue', $date);
+        if (!$previousdoc || $previousdoc->_id != $newCond->_id) {
+            $newCond->remove('lots');
+            $newCond->add('lots');
+        }
+        return $newCond;
+    }
+
+    public function getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
+        $newTrans->constructId();
+        $newTrans->storeDeclarant();
+        $newTrans->validation = $date;
+        $newTrans->validation_odg = $date;
+        $newTrans->numero_archive = $numeroDossier;
+        $newTrans->add('date_degustation_voulue', $date);
+        if (!$previousdoc || $previousdoc->_id != $newTrans->_id) {
+            $newTrans->remove('lots');
+            $newTrans->add('lots');
+        }
+        return $newTrans;
+    }
+
+
 }

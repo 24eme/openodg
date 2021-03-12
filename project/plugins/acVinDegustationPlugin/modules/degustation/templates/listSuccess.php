@@ -5,7 +5,22 @@
 <?php use_helper('Float') ?>
 
 <div class="page-header no-border">
-  <h2>Les lots de <?php echo $etablissement->getNom(); ?></h2>
+  <div class="pull-right">
+      <?php if ($sf_user->hasDrevAdmin()): ?>
+      <form method="GET" class="form-inline" action="">
+          Campagne :
+          <select class="select2SubmitOnChange form-control" name="campagne">
+              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+                  <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+              <?php endfor; ?>
+          </select>
+          <button type="submit" class="btn btn-default">Changer</button>
+      </form>
+      <?php else: ?>
+          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne ?>-<?php echo $campagne + 1 ?></span>
+      <?php endif; ?>
+  </div>
+  <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
 <?php if (count($lots)): ?>
   <div class="row">
@@ -29,7 +44,7 @@
                 <td><?php echo $lot->numero_dossier;  ?></td>
                 <td ><strong><?php echo Date::francizeDate($lot->date); ?></strong></td>
                 <td><strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?><strong class="pull-right">&nbsp;<?php echo echoFloat($lot->volume); ?>&nbsp;hl</strong></small></td>
-                <td class="text-center"><a class="btn btn-xs btn-success" href="<?php echo url_for($lot->dossier_type.'_visualisation',$lot->dossier_origine)?>"><?php echo $lot->dossier_libelle; ?></a></td>
+                <td class="text-center"><a class="btn btn-xs btn-success" href="<?php echo url_for($lot->dossier_type.'_redirect',$lot->dossier_origine)?>"><?php echo $lot->dossier_libelle; ?></a></td>
                 <td class="text-center" >
                   <?php if($lot->degustation): ?>
                     <a class="btn btn-xs btn-<?php echo $lot->degustation_color?>" href="<?php echo url_for($lot->degustation_step_route,$lot->degustation)?>"><?php echo $lot->degustation_libelle; ?></a>
@@ -41,7 +56,7 @@
                     <a class="btn btn-xs btn-<?php echo $lot->numero_table_color?>"
                       href="<?php echo ($lot->numero_table)? url_for($lot->numero_table_step_route , array('id' => $lot->degustation->_id, 'numero_table' => $lot->numero_table))
                       : url_for($lot->numero_table_step_route, array('id' => $lot->degustation->_id)); ?>">
-                      <?php echo ($lot->numero_table)? "Table ".$lot->numero_table : "Choisir"; ?>
+                      <?php echo ($lot->numero_table)? "Table ".DegustationClient::getNumeroTableStr($lot->numero_table) : "Choisir"; ?>
                     </a>
                   <?php endif; ?>
 

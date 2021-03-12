@@ -29,6 +29,6 @@ class DegustationPreleveUpdateLogementForm extends acCouchdbObjectForm
     {
         parent::doUpdateObject($values);
 
-        $this->degustation->updateLotLogement($this->lot, $values['lot_'.$this->lot]);
+        $this->degustation->updateLotLogement($this->lots->get($this->lot), $values['lot_'.$this->lot]);
     }
 }

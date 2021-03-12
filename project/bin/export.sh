@@ -2,11 +2,18 @@
 
 . bin/config.inc
 
+ODG=$1
+
+if test "$1"; then
+    . bin/config_$ODG.inc
+fi
+
+
 mkdir $EXPORTDIR 2> /dev/null
 
 php symfony export:etablissements-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/etablissements.csv.part
-cat $EXPORTDIR/etablissements.csv.part | sort | grep -E "^Identifiant" > $EXPORTDIR/etablissements.csv.sorted.part
-cat $EXPORTDIR/etablissements.csv.part | sort | grep -Ev "^Identifiant" >> $EXPORTDIR/etablissements.csv.sorted.part
+cat $EXPORTDIR/etablissements.csv.part | sort | grep -E "^(Login)" > $EXPORTDIR/etablissements.csv.sorted.part
+cat $EXPORTDIR/etablissements.csv.part | sort | grep -Ev "^(Login)" >> $EXPORTDIR/etablissements.csv.sorted.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/etablissements.csv.sorted.part > $EXPORTDIR/etablissements.en.csv
 cat $EXPORTDIR/etablissements.en.csv | sed 's/;/ø/g' | awk -F ',' 'BEGIN { OFS=";" }{ $1=$1; print $0 }' | sed 's/ø/,/g' > $EXPORTDIR/etablissements.csv
 rm $EXPORTDIR/etablissements.csv.part $EXPORTDIR/etablissements.csv.sorted.part
@@ -76,23 +83,28 @@ bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaireaffectati
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireaffectation.csv.part > $EXPORTDIR/parcellaireaffectation.csv
 rm $EXPORTDIR/parcellaireaffectation.csv.part
 
-sleep 60
+#sleep 60
 
 php symfony pieces:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/pieces.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pieces.csv.part > $EXPORTDIR/pieces.csv
 rm $EXPORTDIR/pieces.csv.part
 
-sleep 60
+#sleep 60
 
 php symfony liaisons:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/liaisons.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/liaisons.csv.part > $EXPORTDIR/liaisons.csv
 rm $EXPORTDIR/liaisons.csv.part
 
-sleep 60
+#sleep 60
 
 php symfony compte:export-all-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes.csv
 rm $EXPORTDIR/comptes.csv.part
+
+echo "id;identifiant;campagne;statut;region;date;origine_document_id;produit_hash;produit_libelle;produit_couleur;volume;date lot;elevage;millesime;region;numero_dossier;numero_archive;numero_logement_operateur;version;origine_hash;origine_type;origine_document_id lot;origine_mouvement;declarant_identifiant;declarant_nom;destination_type;destination_date;details;campagne lot;id_document;statut lot;specificite;centilisation;conformite;motif" > $EXPORTDIR/lots.csv.part
+curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHBASE/_design/mouvement/_view/lot" | grep id | grep -v '"key":\[null' | sed 's/{"id"://' | sed 's/,"key":\[/,/' | sed 's/null//g' | sed 's/"value":{//' | sed -r 's/,"[a-z_]+":/,/g' | sed 's/}},//' | sed 's/\],/,/' | sed 's/","/";"/g' | sed 's/,,,/;;;/g' | sed 's/,,/;;/g' | sed -r 's/",/";/g'| sed 's/,"/;"/g' | grep --color "," | sed -r 's/(false|true),/\1;/g' | sed -r 's/,(false|true)/;\1/g' >> $EXPORTDIR/lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
+rm $EXPORTDIR/lots.csv.part
 
 find $EXPORTDIR -type f -empty -delete
 

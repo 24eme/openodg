@@ -55,6 +55,8 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le complément de récolte par du vci dépasse le rendement autorisé");
         $this->addControle(self::TYPE_ERROR, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
 
+        $this->addControle(self::TYPE_ERROR, 'chai_manquant', "Les informations liées à votre chai sont manquantes");
+
         /*
          * Engagement
          */
@@ -108,6 +110,8 @@ class DRevValidation extends DocumentValidation {
 
         $this->controleErrorRevendicationSansLot(DRev::CUVE_ALSACE);
         $this->controleErrorRevendicationSansLot(DRev::CUVE_GRDCRU);
+
+        $this->controleErrorChaiManquant();
 
         $this->controleEngagementDr();
         $this->controleEngagementSv();
@@ -413,6 +417,19 @@ class DRevValidation extends DocumentValidation {
     protected function controleWarningLotVtsgnSansPrelevement() {
         if (!$this->document->addPrelevement(DRev::CUVE_VTSGN) && $this->document->hasLots(true)) {
             $this->addPoint(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', '', $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
+        }
+    }
+
+    protected function controleErrorChaiManquant() {
+        $hasChai = false;
+        foreach ($this->document->chais as $values) {
+          if ($values->adresse||$values->commune||$values->code_postal) {
+            $hasChai = true;
+            break;
+          }
+        }
+        if (!$hasChai && $this->document->exist('non_vinificateur') && !$this->document->non_vinificateur) {
+            $this->addPoint(self::TYPE_ERROR, 'chai_manquant', "Exploitation", $this->generateUrl('drev_exploitation', array('sf_subject' => $this->document)));
         }
     }
 

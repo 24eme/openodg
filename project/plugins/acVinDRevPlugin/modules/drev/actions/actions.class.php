@@ -435,11 +435,17 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        if(!isset($this->drev->lots[$request->getParameter('appellation')])){
-          throw new sfException("le lot d'index ".$request->getParameter('appellation')." n'existe pas ");
+        if($this->drev->getLotByNumArchive($request->getParameter('numArchive')) === null){
+          throw new sfException("le lot d'index ".$request->getParameter('numArchive')." n'existe pas ");
         }
 
-        $lot = $this->drev->lots[$request->getParameter('appellation')];
+        $lot = $this->drev->getLotByNumArchive($request->getParameter('numArchive'));
+        $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->drev->identifiant, $lot->numero_archive, $this->drev->campagne);
+        if($lotCheck){
+          throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
+          " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
+        }
+
         if($lot){
             $this->drev->remove($lot->getHash());
         }
@@ -612,6 +618,7 @@ class drevActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if ($this->needDrDouane()) {
 
@@ -626,8 +633,8 @@ class drevActions extends sfActions {
 
         $this->validation = new DRevValidation($this->drev);
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-
+        $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -644,6 +651,7 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+        $this->form->save();
 
         $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
@@ -683,7 +691,7 @@ class drevActions extends sfActions {
 
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
-            $this->drev->cleanLots();  
+            $this->drev->cleanLots();
             $this->drev->save();
             $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
 
@@ -728,14 +736,38 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
         }
 
-        $service = $request->getParameter("service");
-        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
         if($this->regionParam){
           $params = array_merge($params,array('region' => $this->regionParam));
         }
         return $this->redirect('drev_visualisation', $params);
     }
 
+    public function executeEnattenteAdmin(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
+        $this->regionParam = $request->getParameter('region',null);
+
+        if (!$this->drev->isValidee()) {
+            throw sfException("Une DREV non validée ne peut être mise en attente");
+        }
+
+        if ($this->drev->isValideeOdg($this->regionParam)) {
+            throw sfException("Une DREV validée par une région ne peut être mise en attente par celle-ci");
+        }
+
+        $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        $this->drev->save();
+
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
+        if($this->regionParam){
+          $params = array_merge($params,array('region' => $this->regionParam));
+        }
+        return $this->redirect('drev_visualisation', $params);
+
+    }
 
 
     public function executeConfirmation(sfWebRequest $request) {
@@ -763,7 +795,7 @@ class drevActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
-
+        $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
 
         $documents = $this->drev->getOrAdd('documents');
@@ -771,16 +803,15 @@ class drevActions extends sfActions {
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
+            $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
-
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
+          return sfView::SUCCESS;
         }
         $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -790,6 +821,10 @@ class drevActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin && $this->drev->isValidee() && $this->drev->isValideeODG() === false){
+          return $this->redirect('drev_validation_admin', $this->drev);
+        }
 
         return $this->redirect('drev_visualisation', $this->drev);
     }

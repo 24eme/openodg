@@ -5,9 +5,8 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     const TYPE_MODEL = "ChgtDenom";
     const TYPE_COUCHDB = "CHGTDENOM";
     const ORIGINE_LOT = "DREV";
-
-    const FORMAT_DATE = 'Y-m-d\THis';
-
+    const CHANGEMENT_TYPE_CHANGEMENT = "CHANGEMENT";
+    const CHANGEMENT_TYPE_DECLASSEMENT = "DECLASSEMENT";
 
     public static function getInstance() {
         return acCouchdbManager::getClient("ChgtDenom");
@@ -21,15 +20,16 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
-    public function getHistory($identifiant, $campagne_to = "9999-99-99T999999", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = "0000-00-00T000000";
+    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $campagne_from = "00000000000000";
+        $campagne_to = "99999999999999";
         return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 
     public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-        return $this->findPreviousByIdentifiantAndDate($identifiant, "9999-99-99T999999");
+        return $this->findPreviousByIdentifiantAndDate($identifiant, "99999999999999");
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -45,11 +45,20 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     public function createDoc($identifiant, $date = null, $papier = false) {
         $chgtdenom = new ChgtDenom();
-        $date = ($date && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $date))? $date : date(self::FORMAT_DATE);
-        $chgtdenom->initDoc($identifiant, $date);
+
+        if(!$date) {
+            $date = new DateTime();
+        } else {
+            $date = new DateTime($date);
+        }
+
+        $chgtdenom->identifiant = $identifiant;
+        $chgtdenom->date = $date->format('Y-m-d H:i:s');
+
         if($papier) {
             $chgtdenom->add('papier', 1);
         }
+        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_CHANGEMENT;
         $chgtdenom->storeDeclarant();
         return $chgtdenom;
     }

@@ -10,6 +10,7 @@ Degustation:
       lieu: {  }
       max_lots: {  }
       etape: {  }
+      provenance: { }
       validation: {  }
       lots:
         type: array_collection
@@ -25,9 +26,10 @@ Degustation:
                   id_document: { }
                   numero_dossier: { }
                   numero_archive: { }
-                  numero_cuve: { }
+                  numero_logement_operateur: { }
+                  numero_anonymat: { }
                   millesime: { }
-                  elevage: { required: false }
+                  elevage: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -39,11 +41,17 @@ Degustation:
                   details: {}
                   statut: {}
                   numero_table: {}
+                  position: {}
                   leurre: {}
                   conformite: {}
                   motif: {}
                   specificite: {}
+                  centilisation: { }
                   observation: {}
+                  email_envoye: { }
+                  nombre_degustation: {required: false}
+                  doc_ordre: {}
+                  affectable: {}
       mouvements_lots:
         type: collection
         definition:
@@ -63,12 +71,12 @@ Degustation:
                         produit_couleur: { }
                         volume: { type: float }
                         date: {  }
-                        elevage: { required: false }
+                        elevage: { }
                         millesime: {  }
                         region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: {  }
+                        numero_logement_operateur: {  }
                         version: {  }
                         origine_hash: {  }
                         origine_type: {  }
@@ -84,6 +92,12 @@ Degustation:
                         id_document: {  }
                         statut: {  }
                         specificite: {}
+                        centilisation: { }
+                        conformite: {}
+                        motif: {}
+                        nombre_degustation: {required: false}
+                        doc_ordre: {}
+                        affectable: {}
       degustateurs:
         type: collection
         definition:

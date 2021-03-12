@@ -3,7 +3,7 @@
   <table class="table table-condensed" style="margin: 0;">
     <tbody>
       <tr>
-        <td style="border: none;">Logement : <strong><?php echo $lot->numero_cuve; ?></td>
+        <td style="border: none;">Logement : <strong><?php echo $lot->numero_logement_operateur; ?></td>
       </tr>
       <tr>
         <td style="border: none;">Produit : <strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<?php echo $lot->millesime; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>

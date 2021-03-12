@@ -4,6 +4,10 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $t = new lime_test(0);
 
+if (!sfConfig::get('app_scrapy_documents') || !file_exists(sfConfig::get('app_scrapy_documents'))) {
+	return ;
+}
+
 $dr = current(DRClient::getInstance()->findAll(1));
 if ($dr) {
 	$t = new lime_test(1);

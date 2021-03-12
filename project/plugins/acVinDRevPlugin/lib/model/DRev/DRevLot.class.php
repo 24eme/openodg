@@ -73,13 +73,19 @@ class DRevLot extends BaseDRevLot
       $str ='';
       $k=0;
       $total = 0.0;
-      foreach ($cepages as $c => $volume){ $total+=$volume; }
-
+      $tabCepages=array();
       foreach ($cepages as $c => $volume){
-        $k++;
+        $total+=$volume;
+      }
+      foreach ($cepages as $c => $volume){
         $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $str.= $c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ', ' : '';
+        $tabCepages[$c]=$p;
+      }
+      arsort($tabCepages);
+      foreach ($tabCepages as $c => $p) {
+        $k++;
+        $str.=" ".$c." (".$p.'%)';
+        $str.= ($k < count($cepages))? ',' : '';
       }
       return $str;
     }
@@ -99,21 +105,18 @@ class DRevLot extends BaseDRevLot
         return $libelle;
     }
 
-    public function getNumeroCuve() {
-        if($this->exist('numero_cuve') && $this->get('numero_cuve')) {
-            $this->numero = $this->get('numero_cuve');
+    public function getNumeroLogementOperateur() {
+        if(!$this->exist('numero_logement_operateur')) {
+            return null;
         }
-        if($this->exist('numero_cuve')) {
-            $this->remove('numero_cuve');
-
-            return $this->getNumeroCuve();
-        }
-        return $this->numero;
+        return $this->_get('numero_logement_operateur');
     }
 
-    public function setNumeroCuve($numero) {
-
-        return $this->setNumero($numero);
+    public function setNumeroLogementOperateur($numero) {
+        if(!$this->exist('numero_logement_operateur')) {
+            $this->add('numero_logement_operateur');
+        }
+        return $this->_set('numero_logement_operateur', $numero);
     }
 
 }

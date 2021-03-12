@@ -1,5 +1,12 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
+<style>
+  ul{
+    list-style: none;
+    display: flex;
+  }
+</style>
+
 <div class="page-header no-border">
     <h2>Création d'une dégustation</h2>
 </div>
@@ -33,7 +40,7 @@
                     </div>
                 </div>
                 <div class="col-sm-3 col-xs-3">
-                  <div class="input-group" id="time">
+                  <div class="input-group">
                       <?php echo $form["time"]->render(array("class" => "form-control")); ?>
                       <div class="input-group-addon">
                           <span class="glyphicon-time glyphicon"></span>
@@ -51,6 +58,13 @@
                 <div class="col-sm-3 col-xs-3">
                   	<?php echo $form["max_lots"]->render(array("class" => "form-control", "placeholder" => 'Nombre max de lots')); ?>
                 </div>
+            </div>
+            <div class="form-group">
+              <?php echo $form["provenance"]->renderError(); ?>
+              <?php echo $form["lieu"]->renderLabel("Provenance", array("class" => "col-xs-4 control-label")); ?>
+              <div class="col-sm-5 col-xs-5">
+                <?php echo $form["provenance"]->render(); ?>
+              </div>
             </div>
             <div class="form-group text-right">
                 <div class="col-sm-4 col-sm-offset-8 col-xs-12">
@@ -83,9 +97,9 @@
         </td>
         <td class="col-sm-2 text-right">
             <?php if ($d->isValidee()): ?>
-              <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-success" >Visualisation</a>
+              <a href="<?php echo url_for('degustation_redirect', $d)?>"class="btn btn-success" >Suivi de la dégustation</a>
           <?php else: ?>
-            <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la saisie</a>
+            <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la création de la dégustation</a>
           <?php endif; ?>
         </td>
     </tr>
@@ -96,10 +110,10 @@
 <div class="page-header no-border">
     <h2>Elevages</h2>
 </div>
-<p><strong><?php echo count($lotsElevages); ?> lots</strong> sont actuellement en élevages : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
+<p><strong><?php echo count($lotsElevages); ?><?php if(count($lotsElevages)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement en élevage<?php if(count($lotsElevages)>1):?>s<?php endif; ?> : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
 
 <div class="page-header no-border">
     <h2>Manquements</h2>
 </div>
-<p>Manquements en cours : <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>
+<p><strong><?php echo count($lotsManquements); ?><?php if(count($lotsManquements)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement non conforme<?php if(count($lotsManquements)>1):?>s<?php endif; ?> <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>
 </div>

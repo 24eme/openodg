@@ -6,6 +6,10 @@
 
 class DegustationLot extends BaseDegustationLot {
 
+  public function getEtablissement() {
+      return EtablissementClient::getInstance()->findByIdentifiant($this->declarant_identifiant);
+  }
+
   public function isNonConforme(){
     return ($this->statut == Lot::STATUT_NONCONFORME);
   }
@@ -20,16 +24,36 @@ class DegustationLot extends BaseDegustationLot {
         return ($this->exist('conformite') && isset($libelles[$this->conformite]))? $libelles[$this->conformite] : $conformite;
   }
 
-  public function getNumeroAnonymise() {
-    if ($this->numero_table) {
-      $table = DegustationClient::getNumeroTableStr($this->numero_table);
-      foreach($this->getDocument()->getLotsByTable($this->numero_table) as $k => $v) {
-        if ($v->getUnicityKey() == $this->getUnicityKey()) {
-          return $table.($k+1);
-        }
+  public function getNumeroTableStr() {
+      if (!$this->numero_table) {
+          return '';
       }
-    }
-    return '';
+      return DegustationClient::getNumeroTableStr($this->numero_table);
   }
 
+  public function isConditionnement(){
+    return preg_match('/'.ConditionnementClient::TYPE_COUCHDB.'/', $this->id_document);
+  }
+
+  public function getTypeLot(){
+    if(preg_match('/'.ConditionnementClient::TYPE_COUCHDB.'/', $this->id_document)){
+      return 'Cond';
+    }
+
+    if(preg_match('/'.DRevClient::TYPE_COUCHDB.'/', $this->id_document)){
+      return 'DRev';
+    }
+  }
+
+    public function attributionTable($table)
+    {
+        $this->numero_table = $table;
+        $this->statut = Lot::STATUT_ATTABLE;
+    }
+
+    public function anonymize($index)
+    {
+        $this->numero_anonymat = $this->getNumeroTableStr().($index+1);
+        $this->statut = Lot::STATUT_ANONYMISE;
+    }
 }

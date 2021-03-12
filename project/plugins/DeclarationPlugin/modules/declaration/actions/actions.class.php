@@ -56,7 +56,8 @@ class declarationActions extends sfActions {
     public function executeDoc(sfWebRequest $request) {
         $doc_id = $request->getParameter("id");
         $this->regionParam = $request->getParameter('region',null);
-        if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
+
+        if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-MT]*$/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
@@ -65,7 +66,6 @@ class declarationActions extends sfActions {
         $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$matches[2]);
 
         if(!$etablissement) {
-
            return $this->forward404();
         }
 
@@ -105,6 +105,19 @@ class declarationActions extends sfActions {
         if($doc_type == "PARCELLAIREIRRIGABLE") {
 
             return $this->redirect("parcellaireirrigable_visualisation", array("id" => $doc_id));
+        }
+
+        if($doc_type == "CHGTDENOM") {
+
+            return $this->redirect("chgtdenom_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "CONDITIONNEMENT" ) {
+            return $this->redirect("conditionnement_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "TRANSACTION" ) {
+            return $this->redirect("transaction_visualisation", array("id" => $doc_id));
         }
 
         return $this->forward404();
@@ -197,6 +210,7 @@ class declarationActions extends sfActions {
             $this->facets["Type"][$row->key[DeclarationTousView::KEY_TYPE]] += $row->value;
         }
         if (!isset($this->query['Campagne'])){
+            ksort($this->facets["Campagne"]);
             $campagnes = array_keys($this->facets["Campagne"]);
             $this->query['Campagne'] = "".array_pop($campagnes);
         }

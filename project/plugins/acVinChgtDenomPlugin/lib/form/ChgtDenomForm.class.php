@@ -2,11 +2,9 @@
 
 class ChgtDenomForm extends acCouchdbObjectForm
 {
-    public static $types = array("CHGT" => "Changement de dénomination", "DCLST" => "Déclassement");
-    public $firstEdition;
+    public static $types = array(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT => "Changement de dénomination", ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT  => "Déclassement");
 
-    public function __construct(acCouchdbJson $object, $firstEdition, $options = array(), $CSRFSecret = null) {
-        $this->firstEdition = $firstEdition;
+    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -36,12 +34,9 @@ class ChgtDenomForm extends acCouchdbObjectForm
 
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
-        if ($values['changement_type'] == 'DCLST') {
-          	$this->getObject()->changement_produit = null;
-        }
+      	$this->getObject()->changement_type = $values['changement_type'];
         if ($values['changement_produit']) {
-            $produits = $this->getProduits();
-          	$this->getObject()->changement_produit_libelle = (isset($produits[$values['changement_produit']]))? $produits[$values['changement_produit']] : null;
+            $this->getObject()->changement_produit = $values['changement_produit'];
         }
         $this->getObject()->remove('changement_cepages');
         $this->getObject()->add('changement_cepages');
@@ -57,7 +52,7 @@ class ChgtDenomForm extends acCouchdbObjectForm
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
-      $defaults['changement_type'] = (!$this->firstEdition && !$this->getObject()->changement_produit)? 'DCLST' : 'CHGT';
+      $defaults['changement_type'] = $this->getObject()->changement_type;
       $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getMvtLot()->volume;
       $i=0;
       foreach($this->getObject()->changement_cepages as $cepage => $repartition) {

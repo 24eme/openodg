@@ -134,18 +134,20 @@ $t->comment("Validation");
 
 $date = date('c');
 $drev->validate($date);
-$drev->validateOdg($date);
+if (DRevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    foreach(DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+        $drev->validateOdg($date, $region);
+    }
+}else {
+    $drev->validateOdg($date);
+}
 $drev->save();
 
 $t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est toujours de 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
 $t->is($drev->validation, $date , "La DRev a la date du jour comme date de validation");
-if(DRevConfiguration::getInstance()->hasValidationOdgAuto()) {
-    $t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
-} else {
-    $t->is($drev->validation_odg, null, "La date de validation ODG n'est pas mise automatiquement");
-}
+$t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
 
 if(FactureConfiguration::getInstance()->isActive()) {
     $t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
@@ -160,14 +162,22 @@ $drev->validate();
 $drev->save();
 
 
+$nbMvtsAttendu = 0;
 if(FactureConfiguration::getInstance()->isActive()) {
+    $template = $drev->getTemplateFacture();
     $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
     $mouvements = $drev->mouvements->get($viti->identifiant);
-    $nbMvtsAttendu = 4;
-    if($igp13){
-      $nbMvtsAttendu = 5;
+    foreach ($template->cotisations as $type => $cot) {
+        foreach($cot->details as $h => $d) {
+            if (in_array('DRev', $d->docs->toArray())) {
+                $nbMvtsAttendu++;
+                break;
+            }
+        }
     }
-    $t->is(count($mouvements), $nbMvtsAttendu, "La DRev a $nbMvtsAttendu mouvements");
+}
+if ($nbMvtsAttendu) {
+    $t->ok(count($mouvements) > 0, "La DRev a des mouvements");
     $mouvement = $mouvements->getFirst();
     $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
     $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
@@ -204,8 +214,8 @@ $drevM1->save();
 $drevM1->validate();
 $drevM1->save();
 
-if(FactureConfiguration::getInstance()->isActive()) {
-    $t->is(count($drevM1->mouvements->get($viti->identifiant)), $nbMvtsAttendu, "La DRev modificatrice a $nbMvtsAttendu mouvements");
+if(FactureConfiguration::getInstance()->isActive() && $nbMvtsAttendu) {
+    $t->ok(count($drevM1->mouvements->get($viti->identifiant)) > 0, "La DRev modificatrice a des mouvements");
 } else {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
 }

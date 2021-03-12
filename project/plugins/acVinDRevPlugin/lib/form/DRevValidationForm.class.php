@@ -2,8 +2,14 @@
 
 class DRevValidationForm extends acCouchdbForm
 {
+    public $isAdmin = null;
+    public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+      parent::__construct($doc, $defaults, $options, $CSRFSecret);
+      $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
+    }
     public function configure() {
-        if(!$this->getDocument()->isPapier()) {
+
+        if(!$this->getDocument()->isPapier() && !$this->getDocument()->validation) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
@@ -32,6 +38,27 @@ class DRevValidationForm extends acCouchdbForm
             $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");
         }
 
+        $formDegustable = new BaseForm();
+        foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
+            foreach ($lots as $lot) {
+                $formDegustable->embedForm($lot->getKey(), new DRevLotDegustableForm($lot));
+            }
+        }
+
+       $this->embedForm('lots', $formDegustable);
+
         $this->widgetSchema->setNameFormat('validation[%s]');
     }
+
+    public function save() {
+       $values = $this->getValues();
+
+        if($this->isAdmin){
+          foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+            $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
+         }
+        }
+
+       $this->getDocument()->save();
+  	}
 }

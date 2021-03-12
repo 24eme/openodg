@@ -10,6 +10,6 @@ all:
       all_etablissements: true
       numero_campagne: true
       numero_format: "%02d%05d"
-      modalite_paiement: "Modalités de paiements : \\ - comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars 2020 à novembre 2020 \\ - prélèvement automatique en 9 fois de mars 2020 à novembre 2020 \\"
+      modalite_paiement: "Modalités de paiements : \\ - comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars à novembre \\ - prélèvement automatique en 9 fois de mars \\ à novembre \\"
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
       paiements: true

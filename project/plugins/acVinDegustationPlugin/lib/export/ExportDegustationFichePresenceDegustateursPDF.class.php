@@ -14,14 +14,15 @@ class ExportDegustationFichePresenceDegustateursPDF extends ExportPDF {
     }
 
     public function create() {
-        @$this->printable_document->addPage(
-          $this->getPartial('degustation/fichePresenceDegustateursPdf',
-          array(
-            'degustation' => $this->degustation,
-            'degustateursByCollegeComptes' => $this->degustation->getComptesDegustateurs()
+      @$this->printable_document->addPage(
+        $this->getPartial('degustation/fichePresenceDegustateursPdf',
+        array(
+          'degustation' => $this->degustation,
+          'degustateursATable' => $this->degustation->getDegustateursConfirmes(),
+          'degustateursByCollegeComptes' => $this->degustation->getComptesDegustateurs()
 
-          )
-        ));
+        )
+      ));
     }
 
 
@@ -43,16 +44,14 @@ class ExportDegustationFichePresenceDegustateursPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s Feuille de présence", $this->degustation->getOdg());
+        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
 
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
-
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."Feuille de présence";
         return $header_subtitle;
     }
 

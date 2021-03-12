@@ -293,7 +293,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
             $format_libelle = $this->getFormatLibelleCalcule();
             $formatResolu = str_replace("%format_libelle%", $format_libelle, $format);
             $libelle = $this->formatProduitLibelle($formatResolu);
-          //  var_dump($this->getDocument()->isEffervescentVindebaseActivate()); exit;
             if($this->getDocument()->isEffervescentVindebaseActivate() && $this->isEffervescentNode()){
                   $libelle= "Vin de base ".$libelle;
             }
@@ -1065,7 +1064,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function canHaveVci() {
 
-        return true;
+        return $this->hasRendementVci();
     }
 
     public function isEffervescentNode(){
@@ -1102,6 +1101,15 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         }
 
         return false;
+    }
+
+    public function getCepagesAutorises() {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            $produits = array_merge($produits, $p->getCepage()->getCepagesAutorises()->toArray());
+        }
+        $produits = array_unique($produits);
+        return $produits;
     }
 
 }

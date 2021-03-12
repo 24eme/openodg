@@ -72,5 +72,5 @@ rm $EXPORTDIR/pieces.csv.part
 echo '{cvi=$4 ; insee=substr(cvi,0,5); print "php symfony dr:pdf '$SYMFONYTASKOPTIONS' "$1"-"$3"-"$2" '$EXPORTDIR'/DR/"insee"/"$1"-"cvi"-"$2".pdf"}' > /tmp/awk.$$
 cat $EXPORTDIR/NANTES/dr.csv | grep -v '^#' | awk -F ';' -f /tmp/awk.$$  | sort -u | sh
 echo '{cvi=$4 ; insee=substr(cvi,0,5); pdf="'$EXPORTDIR'/NANTES/DREV/"insee"/DREV-"cvi"-"$2".pdf" ; print "mkdir -p $(dirname "pdf") ; cp "$6" "pdf" ;" }' > /tmp/awk.$$
-cat $EXPORTDIR/NANTES/drev.csv | awk -F ';' '{print $40}'   | grep ^DREV | sort -u | while read drev ; do echo php symfony drev:pdf $SYMFONYTASKOPTIONS $drev --trace ; done | sh | awk -F ';' -f /tmp/awk.$$ | sh
+cat $EXPORTDIR/NANTES/drev.csv | awk -F ';' '{print $41}'   | grep ^DREV | sort -u | while read drev ; do echo php symfony drev:pdf $SYMFONYTASKOPTIONS $drev --trace ; done | sh | awk -F ';' -f /tmp/awk.$$ | sh
 rm /tmp/awk.$$
