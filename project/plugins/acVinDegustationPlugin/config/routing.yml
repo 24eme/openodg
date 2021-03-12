@@ -351,7 +351,7 @@ degustation_conformite_pdf:
 
 degustation_non_conformite_pdf:
   url: /degustation/:id/:lot_dossier/:lot_archive/nonConformite/pdf
-  param: { module: degustation, action: nonConformitePDF }
+  param: { module: degustation, action: degustationNonConformitePDF }
   class: DegustationRoute
   options:
     model:    Degustation

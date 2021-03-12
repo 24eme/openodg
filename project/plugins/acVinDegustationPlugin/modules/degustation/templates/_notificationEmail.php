@@ -1,3 +1,4 @@
+<?php use_helper('Lot') ?>
 Monsieur, Madame,
 
 Nous vous prions de bien vouloir trouver ci-dessous extrait du procès verbal de
@@ -32,8 +33,9 @@ ci-jointes ont été ajournés.
 Vous trouverez ci dessous l'ensemble des pdfs présentant des non conformités :
 
 <?php foreach($lots[Lot::STATUT_NONCONFORME] as $lotNonConforme): ?>
-    <?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>
-
+    <a href="<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>">
+        <?= showProduitLot($lotNonConforme) . ", non conformité de type : " . $lotNonConforme->getShortLibelleConformite() ?>
+    </a>
 <?php endforeach; ?>
 <?php endif; ?>
 

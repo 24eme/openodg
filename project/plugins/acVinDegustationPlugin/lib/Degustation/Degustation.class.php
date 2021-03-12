@@ -1146,7 +1146,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		/** Mis à jour par la degustation du volume d'un lot de DRev **/
-		public function modifyVolumeLotAndCreateDRevModificatrice($hash_lot,$volume){
+		public function modifyVolumeLot($hash_lot,$volume){
 
 			$lot = $this->get($hash_lot);
 
