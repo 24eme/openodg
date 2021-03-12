@@ -565,145 +565,18 @@ class degustationActions extends sfActions {
       return $this->redirect('degustation_anonymats_etape', $degustation);
     }
 
-    public function executeEtiquettesPdf(sfWebRequest $request) {
-      $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationEtiquettesPdf($degustation, $this->getRequestParameter('output', 'pdf'), false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-    }
-    public function executeEtiquettesAnonymesPDF(sfWebRequest $request) {
-      $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationEtiquettesAnonymesPDF($degustation, $this->getRequestParameter('output', 'pdf'), false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-    }
-
-
-    public function executeFicheIndividuellePDF(sfWebRequest $request){
-      $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationFicheIndividuellePDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-
-    }
-
-    public function executeFicheEchantillonsPrelevesPDF(sfWebRequest $request){
-      $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationFicheEchantillonsPrelevesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-
-    }
-
-    public function executeFicheEchantillonsPrelevesTablePDF(sfWebRequest $request){
-      $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationFicheEchantillonsPrelevesTablePDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-
-    }
-
-    public function executeDegustationConformitePDF(sfWebRequest $request){
-      $degustation = $this->getRoute()->getDegustation();
-
-      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
-
-      $this->document = new ExportDegustationConformitePDF($degustation,$etablissement,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-
-    }
-
-    public function executeNonConformitePDF(sfWebRequest $request){
-      $degustation = $this->getRoute()->getDegustation();
-
-      $lot_dossier = $request->getParameter('lot_dossier', null);
-      $lot_archive = $request->getParameter('lot_archive', null);
-
-      $lot = $degustation->getLotByNumDossierNumArchive($lot_dossier,$lot_archive);
-
-      $this->document = new ExportDegustationNonConformitePDF($degustation, $lot, $this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-
-    }
-
     public function executeMailPrevisualisation(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
 
+      $this->lots = [];
+
       $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
-      $this->emailLinkManager = new DegustationEmailManager($this->degustation,$this->etablissement);
+      $this->lots[Lot::STATUT_CONFORME] = $this->degustation->getLotsConformes($this->etablissement->identifiant);
+      $this->lots[Lot::STATUT_NONCONFORME] = $this->degustation->getLotsNonConformes($this->etablissement->identifiant);
+
+      $this->popup = true;
 
       $this->setTemplate('notificationsEtape');
-
     }
 
     public function executeSetEnvoiMail(sfWebRequest $request){
@@ -712,49 +585,10 @@ class degustationActions extends sfActions {
       if(!boolval($date)){ $date = null; }
 
       $this->setTemplate('notificationsEtape');
-      $this->degustation->setMailEnvoyeEtablissement($request['identifiant'],$date);
+      $this->degustation->setMailEnvoyeEtablissement($request->getParameter('identifiant'),$date);
       $this->degustation->save();
 
       return $this->redirect('degustation_notifications_etape', $this->degustation);
-    }
-
-    public function executeRetraitNonConformitePDF(sfWebRequest $request){
-      $degustation = $this->getRoute()->getDegustation();
-
-      $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$request['identifiant']);
-      $lot_dossier = $request['lot_dossier'];
-
-      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$lot_dossier,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-
-    }
-
-    public function executeFicheRecapTablesPDF(sfWebRequest $request){
-      $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationFicheRecapTablesPDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
-
     }
 
     public function executeTriTable(sfWebRequest $request) {
@@ -785,72 +619,104 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
     }
 
+    public function executeEtiquettesPrlvmtCsv(sfWebRequest $request) {
+      $this->degustation = $this->getRoute()->getDegustation();
+      $this->getResponse()->setHttpHeader('Content-Type', 'text/csv');
+      $this->setLayout(false);
+    }
+
+    public function executeEtiquettesPrlvmtPdf(sfWebRequest $request) {
+      $degustation = $this->getRoute()->getDegustation();
+      $this->document = new ExportDegustationEtiquettesPrlvmtPDF($degustation, $request->getParameter('anonymat4labo', true), $request->getParameter('output', 'pdf'), false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeEtiquettesAnonymesPDF(sfWebRequest $request) {
+      $degustation = $this->getRoute()->getDegustation();
+      $this->document = new ExportDegustationEtiquettesAnonymesPDF($degustation, $request->getParameter('output', 'pdf'), false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeFicheIndividuellePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $this->document = new ExportDegustationFicheIndividuellePDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeFicheEchantillonsPrelevesPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $this->document = new ExportDegustationFicheEchantillonsPrelevesPDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeFicheEchantillonsPrelevesTablePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $this->document = new ExportDegustationFicheEchantillonsPrelevesTablePDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeDegustationConformitePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
+      $this->document = new ExportDegustationConformitePDF($degustation,$etablissement,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeDegustationNonConformitePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
+      $lot_dossier = $request->getParameter('lot_dossier');
+      $lot_num_anon = $request->getParameter('lot_num_anon');
+      $this->document = new ExportDegustationNonConformitePDF($degustation,$etablissement,$lot_dossier, $lot_num_anon, $request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeFicheRecapTablesPDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $this->document = new ExportDegustationFicheRecapTablesPDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeRetraitNonConformitePDF(sfWebRequest $request){
+      $degustation = $this->getRoute()->getDegustation();
+      $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
+      $lot_dossier = $request->getParameter('lot_dossier');
+      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$lot_dossier,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
     public function executeFicheLotsAPreleverPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationFicheLotsAPreleverPDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
+      $this->document = new ExportDegustationFicheLotsAPreleverPDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
     }
 
     public function executeFicheIndividuelleLotsAPreleverPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationFicheIndividuelleLotsAPreleverPDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
+      $this->document = new ExportDegustationFicheIndividuelleLotsAPreleverPDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
     }
 
     public function executeFichePresenceDegustateursPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
-
-      $this->document = new ExportDegustationFichePresenceDegustateursPDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
+      $this->document = new ExportDegustationFichePresenceDegustateursPDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
     }
 
     public function executeProcesVerbalDegustationPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
+      $this->document = new ExportDegustationFicheProcesVerbalDegustationPDF($degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
 
-      $this->document = new ExportDegustationFicheProcesVerbalDegustationPDF($degustation,$this->getRequestParameter('output','pdf'),false);
-      $this->document->setPartialFunction(array($this, 'getPartial'));
-
-      if ($request->getParameter('force')) {
-          $this->document->removeCache();
-      }
-
-      $this->document->generate();
-
-      $this->document->addHeaders($this->getResponse());
-
-      return $this->renderText($this->document->output());
+    private function mutualExcecutePDF(sfWebRequest $request) {
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+        $this->document->generate();
+        $this->document->addHeaders($this->getResponse());
+        return $this->renderText($this->document->output());
     }
 
 }

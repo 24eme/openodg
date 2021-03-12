@@ -31,54 +31,53 @@
                 </tr>
               </thead>
               <tbody>
-                <?php
-                foreach ($degustation->getLotsByOperateursAndConformites() as $idenfiant => $conformitesLots): ?>
-                <tr class="vertical-center">
-                  <td class="text-left">
-                    <?php echo $conformitesLots->declarant_nom; ?>
-                  </td>
-                  <?php $emailLinkManagerLot = null; ?>
-                  <td class="text-left">
-                    <?php foreach ($conformitesLots->lots as $conformite => $lots): ?>
-                      <?php foreach ($lots as $lot): ?>
-                        <?php if (!$emailLinkManagerLot) $emailLinkManagerLot = new DegustationEmailManager($degustation->getRawValue(), $lot->getEtablissement()->getRawValue()); ?>
-                        <a data-toggle="tooltip" title='<?php echo $lot->produit_libelle;?>&nbsp;
-                          <?php echo showProduitLot($lot); ?>
-                          <?php if($lot->isNonConforme() || $lot->isConformeObs()): ?>
-                            <?php echo "&nbsp;&nbsp;".$lot->getShortLibelleConformite(); ?>
-                          <?php endif; ?>
-                          '
-                          class="label <?php if($lot->isNonConforme()): ?>label-danger<?php elseif($lot->isConformeObs()): ?>label-warning<?php else: ?>label-success<?php endif; ?>"><span class="glyphicon <?php if($lot->isNonConforme()): ?>glyphicon-remove<?php else: ?>glyphicon-ok<?php endif ?>"></span></a>&nbsp;
-                          <?php endforeach; ?>
+                <?php foreach ($degustation->getLotsByOperateurs() as $identifiant => $lots): ?>
+                    <tr>
+                      <td><?= $lots[0]->declarant_nom ?></td>
+                      <td>
+                        <?php foreach ($lots as $lot): ?>
+                        <span data-toggle="tooltip"
+                              data-html="true"
+                              title="<?= strip_tags(showProduitLot($lot) . "<br>" . $lot->getShortLibelleConformite(), '<br>')?>"
+                              class="label label-<?= ($lot->isNonConforme()) ? 'danger' : 'success'?>">
+                                <span class="glyphicon glyphicon-<?= ($lot->isNonConforme()) ? 'remove' : 'ok' ?>"></span>
+                        </span>&nbsp;
                         <?php endforeach; ?>
                       </td>
-                      <td class="text-center">
-                        <?php if(!$conformitesLots->email_envoye): ?>
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Notifier <span class="caret"></span>
-                              </button>
-                              <ul class="dropdown-menu text-left">
-                                  <li><a class="btn" href="<?php echo $emailLinkManagerLot->getMailerLink(); ?>" id="link-mail-auto"
-                                      data-retour="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $emailLinkManagerLot->getEtablissement()->identifiant)); ?>">
-                                      <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
-                                  </a></li>
-                                  <li><a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn">
-                                      <i class="glyphicon glyphicon-eye-open"></i>&nbsp;Prévisualiser
-                                  </a></li>
-                              </ul>
+                      <td>
+                        <?php if (true): ?>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Notifier <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu text-left">
+                            <li>
+                                <a class="btn" href="#" class="link-mail-auto"
+                                  data-retour="<?php echo url_for('degustation_envoi_mail_resultats', array('id' => $degustation->_id, 'identifiant' => $lots[0]->declarant_identifiant)); ?>">
+                                  <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
+                              </a>
+                            </li>
+                            <li>
+                              <a href="<?php echo url_for('degustation_mail_resultats_previsualisation', array('id' => $degustation->_id, 'identifiant' => $lots[0]->declarant_identifiant)); ?>" class="btn">
+                                  <i class="glyphicon glyphicon-eye-open"></i>&nbsp;Prévisualiser
+                              </a>
+                            </li>
+                          </ul>
                         </div>
-                       <?php else: ?>
-                            <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm disabled">
+                        <?php else: ?>
+                            /** Mail envoyé */
+                            /** <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm disabled">
                                 <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($conformitesLots->email_envoye, "dd/MM/yyyy")." à ".format_date($conformitesLots->email_envoye, "H")."h".format_date($conformitesLots->email_envoye, "mm"); ?>
                             </a>
                           <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
-                       <?php endif;?>
+                          **/
+                        <?php endif ?>
                       </td>
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+
               <div class="row row-margin row-button">
                 <div class="col-xs-4"><a href="<?php echo url_for("degustation_resultats_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
                 <div class="col-xs-4 text-center">
@@ -93,7 +92,7 @@
     </div>
   </div>
   <?php
-  if(isset($emailLinkManager)):
-    include_partial('degustation/previewMailPopup', array('emailLinkManager' => $emailLinkManager, 'degustation' => $degustation));
+  if(isset($popup)):
+    include_partial('degustation/previewMailPopup', array('degustation' => $degustation, 'etablissement' => $etablissement, 'lots' => $lots));
  endif;
   ?>

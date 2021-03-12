@@ -6,31 +6,33 @@ la séance de dégustation du : <?php echo ucfirst(format_date($degustation->dat
 Au vu des documents fournis, et des résultats du contrôle documentaire, analytique
 et organoleptique, nous vous confirmons les résultats pour vos lots :
 
-<?php if($mailManager->hasConformesNonConformes()): ?>
+<?php if(count($lots[Lot::STATUT_CONFORME]) > 0 && count($lots[Lot::STATUT_NONCONFORME]) > 0): ?>
 Certain de vos lots sont CONFORMES et aptes à la commercialisation tandis que
 d'autres sont NON CONFORMES.
-<?php elseif($mailManager->hasNonConformes()): ?>
+<?php elseif(count($lots[Lot::STATUT_CONFORME])): ?>
 L'ensemble de vos lots sont CONFORMES et aptes à la commercialisation.
-<?php elseif($mailManager->hasConformes()): ?>
+<?php elseif(count($lots[Lot::STATUT_NONCONFORME])): ?>
 Nous vous confirmons que vos lots SONT CONFORMES et aptes à la commercialisation.
 <?php endif; ?>
 
-<?php if($mailManager->hasConformes()): ?>
+<?php if(count($lots[Lot::STATUT_CONFORME])): ?>
 Vous trouverez ci-dessous le lien vers le pdf des lots conformes :
-<?php echo url_for('degustation_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $etablissement->identifiant), true); ?>
+<a href="<?php echo url_for('degustation_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $etablissement->identifiant), true); ?>">
+    lots conformes
+</a>
 
 
 <?php endif; ?>
-<?php if($mailManager->hasConformesNonConformes()): ?>
+<?php if(count($lots[Lot::STATUT_CONFORME]) && count($lots[Lot::STATUT_NONCONFORME])): ?>
 Par ailleurs, certains de vos vins dont la liste figure dans les fiches de non conformité
 ci-jointes ont été ajournés.
 
 <?php endif; ?>
-<?php if($mailManager->hasNonConformes()): ?>
+<?php if(count($lots[Lot::STATUT_NONCONFORME])): ?>
 Vous trouverez ci dessous l'ensemble des pdfs présentant des non conformités :
 
-<?php foreach($mailManager->etablissementLotsNonConformes as $lotsNonConformes): ?>
-<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotsNonConformes->numero_dossier ,'lot_archive' => $lotsNonConformes->numero_archive), true); ?>
+<?php foreach($lots[Lot::STATUT_NONCONFORME] as $lotNonConforme): ?>
+    <?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>
 
 <?php endforeach; ?>
 <?php endif; ?>
