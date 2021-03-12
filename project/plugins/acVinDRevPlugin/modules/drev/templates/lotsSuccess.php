@@ -66,30 +66,29 @@
                     <div class="col-md-6">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
-                          <div class="col-sm-7">
+                          <div>
                             <div class="checkbox checkboxlots">
                               <label>
                                 <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
                                        id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal"
                                        data-target="#<?php echo $lot->renderId() ?>_cepages" />
-                                <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Assemblages : " :  "Assemblage" ?></span></label>
+                                <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
                               </div>
-
-                            </div>
-                            <div class="col-sm-2">
-                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-6">
-                                  <?php echo $lot['numero_logement_operateur']->render(); ?>
-                            </div>
+                      <div class="form-group">
+                        <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                        <div class="col-sm-3">
+                              <?php echo $lot['numero_logement_operateur']->render(); ?>
                         </div>
+                        <div class="col-sm-6 text-danger">
+                              <?php echo $lot['numero_logement_operateur']->renderError(); ?>
+                        </div>
+                      </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -129,28 +128,27 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-9">
+                            <div class="col-sm-4">
                                   <?php echo $lot['specificite']->render(); ?>
                             </div>
+                            <div class="col-sm-5"></div>
                         </div>
                     </div>
                   <?php endif ?>
                   <div class="col-md-6 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
-                    <label>
                       <?php echo $lot['elevage']->render() ?>
                       <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
-                    </label>
                   </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade modal_lot_cepages" data-lot=<?php echo $key ?> id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
+        <div class="modal fade modal_lot_cepages" data-lot=<?php echo $key ?> id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
-                        <h5>Déclarer seulement les cépages qui figureront sur l'étiquette </h5>
+                        <h4 class="modal-title" id="myModalLabel">Mention de cépages</h4>
+                        <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
                     </div>
                     <div class="modal-body">
                         <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
