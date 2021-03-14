@@ -26,7 +26,7 @@ class ConditionnementValidationForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								$formaffectable->embedForm($lot->getKey(), new ConditionnementLotaffectableForm($lot));
+								$formaffectable->embedForm($lot->getKey(), new ConditionnementLotDegustableForm($lot));
             }
         }
 
