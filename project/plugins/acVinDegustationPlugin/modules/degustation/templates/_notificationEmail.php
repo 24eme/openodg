@@ -34,10 +34,11 @@ ci-jointes ont été ajournés.
 Vous trouverez ci dessous l'ensemble des pdfs présentant des non conformités :
 
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
+* <?= showProduitLot($lotNonConforme) . ", non conformité de type : " . $lotNonConforme->getShortLibelleConformite() ?>
 <a href="<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>">
 <?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>
-<?= showProduitLot($lotNonConforme) . ", non conformité de type : " . $lotNonConforme->getShortLibelleConformite() ?>
 </a>
+
 <?php endforeach; ?>
 <?php endif; ?>
 

@@ -44,7 +44,7 @@
                         <?php endforeach; ?>
                       </td>
                       <td>
-                        <?php if ($lot->email_envoye !== true): ?>
+                        <?php if ($lot->email_envoye === null): ?>
                             <div class="btn-group">
                               <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Notifier <span class="caret"></span>
@@ -61,14 +61,10 @@
                               </ul>
                             </div>
                         <?php else: ?>
-                            <strong>In progress</strong>
-                            <?php
-                            /** Mail envoyé */
-                            /** <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>" class="btn btn-default btn-sm disabled">
-                                <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($conformitesLots->email_envoye, "dd/MM/yyyy")." à ".format_date($conformitesLots->email_envoye, "H")."h".format_date($conformitesLots->email_envoye, "mm"); ?>
+                            <a href="<?php echo url_for('degustation_mail_resultats_previsualisation',array('id' => $degustation->_id, 'identifiant' => $identifiant)); ?>" class="btn btn-default btn-sm disabled">
+                                <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($lot->email_envoye, "dd/MM/yyyy")." à ".format_date($lot->email_envoye, "H")."h".format_date($lot->email_envoye, "mm"); ?>
                             </a>
                           <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
-                          **/ ?>
                         <?php endif ?>
                       </td>
                     </tr>
