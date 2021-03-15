@@ -37,7 +37,7 @@
         </tr>
         <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
         <tr>
-          <td style="border: none;">Produit : <strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
+          <td style="border: none;">Produit : <strong><?php echo showProduitLot($lot) ?></strong></td>
         </tr>
       <?php endif; ?>
         <tr>
