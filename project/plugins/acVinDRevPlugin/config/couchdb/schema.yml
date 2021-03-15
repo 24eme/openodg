@@ -119,6 +119,7 @@ DRev:
                 fields:
                   date: { }
                   id_document: { }
+                  unique_id: { }
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero_logement_operateur: { }

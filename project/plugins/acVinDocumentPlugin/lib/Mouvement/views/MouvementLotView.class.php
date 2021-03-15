@@ -3,7 +3,7 @@
 class MouvementLotView extends acCouchdbView
 {
   const KEY_STATUT = 0;
-  const KEY_LOT_UNIQUE_ID = 1;
+  const IDENTIFIANT = 1;
 
   const VALUE_LOT = 0;
 
@@ -29,9 +29,10 @@ class MouvementLotView extends acCouchdbView
         throw new sfException("À réimplemter à partir de la vue mouvement lot history");
     }
 
-    public function getAllByIdentifiantAndStatuts($declarant_identifiant, $statuts, $campagne = null) {
-
-        throw new sfException("À réimplemter à partir de la vue mouvement lot history");
+    public function getByIdentifiant($statut, $identifiant) {
+        return $this->client->startkey(array($statut, $identifiant))
+                            ->endkey(array($statut, $identifiant, array()))
+                            ->getView($this->design, $this->view);
     }
 
   public static function getDestinationLibelle($lot) {

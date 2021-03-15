@@ -196,6 +196,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
     }
 
+	public function getLot($uniqueId) {
+
+        foreach($this->lots as $lot) {
+            if($lot != $uniqueId) {
+
+                continue;
+            }
+
+            return $lot;
+        }
+
+        return null;
+    }
+
     public function generateMouvementsLots()
     {
         $this->clearMouvementsLots();

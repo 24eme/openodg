@@ -543,9 +543,28 @@ abstract class Lot extends acCouchdbDocumentTree
     abstract public function getLibelle();
 
     public function getUniqueId(){
-        return KeyInflector::slugify($this->numero_dossier.'-'.$this->numero_archive);
+        if(is_null($this->_get('unique_id'))) {
+            $this->set('unique_id', KeyInflector::slugify($this->numero_dossier.'-'.$this->numero_archive));
+        }
+
+        return $this->_get('unique_id');
     }
 
+    public function setNumeroArchive($numeroArchive) {
+        $this->unique_id = null;
+
+        $this->_set('numero_archive', $numeroArchive);
+
+        $this->getUniqueId();
+    }
+
+    public function setNumeroDossier($numeroDossier) {
+        $this->unique_id = null;
+
+        $this->_set('numero_dossier', $numeroDossier);
+
+        $this->getUniqueId();
+    }
 
     public function buildMouvement($statut) {
         $mouvement = $this->getMouvementFreeInstance();

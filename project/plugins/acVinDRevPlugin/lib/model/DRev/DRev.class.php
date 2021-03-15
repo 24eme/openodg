@@ -1434,6 +1434,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     /**** MOUVEMENTS LOTS ****/
 
+    public function getLot($uniqueId) {
+
+        foreach($this->lots as $lot) {
+            if($lot->getUniqueId() != $uniqueId) {
+
+                continue;
+            }
+
+            return $lot;
+        }
+
+        return null;
+    }
+
     public function clearMouvementsLots(){
         $this->remove('mouvements_lots');
         $this->add('mouvements_lots');

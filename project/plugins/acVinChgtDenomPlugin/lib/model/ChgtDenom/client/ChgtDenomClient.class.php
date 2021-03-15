@@ -43,6 +43,18 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
+    public function getLotsChangeable($identifiant) {
+        $lots = array();
+        $statuts = array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
+        foreach($statuts as $statut) {
+            foreach (MouvementLotView::getInstance()->getByIdentifiant($statut, $identifiant)->rows as $mouvement) {
+                $lots[$mouvement->value->unique_id] = $mouvement->value;
+            }
+        }
+
+        return $lots;
+    }
+
     public function createDoc($identifiant, $date = null, $papier = false) {
         $chgtdenom = new ChgtDenom();
 
