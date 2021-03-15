@@ -52,7 +52,7 @@
                     if (!$lot->leurre && isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
                         <td class="text-left"><?php echo $lot->getNumeroAnonymat() ?></td>
-                        <td class="text-left"><?php echo $lot->declarant_nom ?></td>
+                        <td class="text-left"><?php echo $lot->declarant_nom ?> <span class="pull-right text-muted"><?= $lot->getProvenance() ?></span></td>
                         <td class="text-left">
                           <?php echo $lot->produit_libelle;?>&nbsp;
                           <small class="text-muted"><?php echo $lot->details; ?></small>
