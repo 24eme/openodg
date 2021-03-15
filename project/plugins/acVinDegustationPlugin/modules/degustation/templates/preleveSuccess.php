@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
@@ -48,17 +49,8 @@
             </span>
           <?php endif; ?>
         </td>
-				<td>
-          <?php echo $lot->produit_libelle; ?>
-          &nbsp;
-          <small class="text-muted"><?php echo $lot->details; ?></small>
-          <?php if ($lot->millesime): ?>
-            &nbsp;
-            <?php echo $lot->millesime; ?>
-          <?php endif; ?>
-          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-            <small class="text-muted">(<?php echo $lot->specificite; ?>)</small>
-          <?php endif ?>
+        <td>
+            <?= showProduitLot($lot) ?>
         </td>
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
