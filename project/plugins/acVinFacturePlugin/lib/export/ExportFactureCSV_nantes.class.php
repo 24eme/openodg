@@ -24,7 +24,7 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-        return "Crée le;Nom relation;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Cotisation valorisation HT;Cotisation valorisation TVA;Remboursement valorisation covid HT;Remboursement valorisation covid TVA;Cotisation valorisation TTC;Cotisation ODG TOTAL ou forfait;Remboursement ODG covid;Droits I.N.A.O.;Cotisation ODG TOTAL ou forfait + INAO;Total Facture TTC\n";
+        return "Crée le;Nom relation;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Cotisation valorisation HT;Cotisation valorisation TVA;Remboursement valorisation covid HT;Remboursement valorisation covid TVA;Cotisation valorisation TTC;Cotisation ODG TOTAL ou forfait;Remboursement ODG covid;Droits I.N.A.O.;Cotisation ODG TOTAL ou forfait + INAO;Total Facture TTC;id facture\n";
     }
 
     public function export() {
@@ -112,7 +112,9 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         $csv .= ($odg_ou_forfait_inao_total)? $this->floatHelper->formatFr($odg_ou_forfait_inao_total, 2, 2).";" : ";";
 
         //total
-        $csv .= $this->floatHelper->formatFr($this->facture->total_ttc, 2, 2)."\n";
+        $csv .= $this->floatHelper->formatFr($this->facture->total_ttc, 2, 2);
+        $csv .= ";".$this->facture->_id;
+        $csv .= "\n";
 
         return $csv;
     }

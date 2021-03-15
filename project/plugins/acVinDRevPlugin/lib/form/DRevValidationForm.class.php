@@ -41,7 +41,7 @@ class DRevValidationForm extends acCouchdbForm
         $formDegustable = new BaseForm();
         foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
             foreach ($lots as $lot) {
-                $formDegustable->embedForm($lot->getKey(), new DRevLotDegustableForm($lot));
+                $formDegustable->embedForm($lot->getKey(), new LotAffectableForm($lot));
             }
         }
 
