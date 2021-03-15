@@ -58,7 +58,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         if($papier) {
             $chgtdenom->add('papier', 1);
         }
-        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_CHANGEMENT;
+        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_DECLASSEMENT;
         $chgtdenom->storeDeclarant();
         return $chgtdenom;
     }
