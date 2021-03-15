@@ -56,4 +56,18 @@ class DegustationLot extends BaseDegustationLot {
         $this->numero_anonymat = $this->getNumeroTableStr().($index+1);
         $this->statut = Lot::STATUT_ANONYMISE;
     }
+
+    public function recoursOc(){
+
+        $this->recours_oc = true;
+        $this->statut = Lot::STATUT_RECOURS_OC;
+        $this->getDocument()->generateMouvementsLots();
+    }
+
+    public function conformeAppel()
+    {
+        $this->statut = self::STATUT_CONFORME_APPEL;
+        $this->getDocument()->generateMouvementsLots();
+    }
+
 }

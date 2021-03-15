@@ -269,6 +269,18 @@ degustation_redeguster:
   requirements:
     sf_method: [get]
 
+degustation_recours_oc:
+  url: /degustation/lots/:id/:index/recours
+  param: { module: degustation, action: recoursOc }
+  requirements:
+    sf_method: [get]
+
+degustation_lot_conforme_appel:
+  url: /degustation/lots/:id/:index/conforme-appel
+  param: { module: degustation, action: lotConformeAppel }
+  requirements:
+    sf_method: [get]
+
 degustation_etiquette_pdf:
   url: /degustation/:id/etiquettes/pdf
   param: { module: degustation, action: etiquettesPrlvmtPdf }

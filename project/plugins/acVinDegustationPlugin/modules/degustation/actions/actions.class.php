@@ -548,6 +548,38 @@ class degustationActions extends sfActions {
         return $this->redirect($back);
     }
 
+    public function executeRecoursOc(sfWebRequest $request) {
+        $docid = $request->getParameter('id');
+        $ind = $request->getParameter('index');
+        $doc = acCouchdbManager::getClient()->find($docid);
+        $this->forward404Unless($doc);
+        $lot = null;
+        if ($doc->lots->exist($ind)) {
+          $lot = $doc->lots->get($ind);
+        }
+        $this->forward404Unless($lot);
+        $lot->recoursOc();
+        $doc->generateMouvementsLots();
+        $doc->save();
+        return $this->redirect("degustation_manquements");
+    }
+
+    public function executeLotConformeAppel(sfWebRequest $request) {
+        $docid = $request->getParameter('id');
+        $ind = $request->getParameter('index');
+        $doc = acCouchdbManager::getClient()->find($docid);
+        $this->forward404Unless($doc);
+        $lot = null;
+        if ($doc->lots->exist($ind)) {
+          $lot = $doc->lots->get($ind);
+        }
+        $this->forward404Unless($lot);
+        $lot->conformeAppel();
+        $doc->generateMouvementsLots();
+        $doc->save();
+        return $this->redirect("degustation_manquements");
+    }
+
     public function executeAnonymize(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
       $degustation->anonymize();
