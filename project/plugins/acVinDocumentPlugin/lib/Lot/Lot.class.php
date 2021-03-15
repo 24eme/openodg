@@ -547,7 +547,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
 
-    public function getMouvement($statut) {
+    public function buildMouvement($statut) {
         $mouvement = $this->getMouvementFreeInstance();
 
         $mouvement->date = $this->date;
@@ -569,6 +569,17 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->statut = $statut;
 
         return $mouvement;
+    }
+
+    public function getMouvement($statut) {
+        $hash = "/mouvements_lots/".$this->declarant_identifiant."/".$this->getUniqueId()."-".KeyInflector::slugify($statut);
+
+        if(!$this->getDocument()->exist($hash)) {
+
+            return null;
+        }
+
+        return $this->getDocument()->get($hash);
     }
 
     abstract public function getDocumentOrdre();
