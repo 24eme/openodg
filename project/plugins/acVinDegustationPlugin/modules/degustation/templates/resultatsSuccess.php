@@ -52,13 +52,13 @@
                     if (!$lot->leurre && isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
                         <td class="text-left"><?php echo $lot->getNumeroAnonymat() ?></td>
-                        <td class="text-left"><?php echo $lot->declarant_nom ?></td>
+                        <td class="text-left"><?php echo $lot->declarant_nom ?> <span class="pull-right text-muted"><?= $lot->getProvenance() ?></span></td>
                         <td class="text-left">
                           <?php echo $lot->produit_libelle;?>&nbsp;
                           <small class="text-muted"><?php echo $lot->details; ?></small>
                           <?php echo ($lot->millesime)? $lot->millesime : ''; ?>
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <span class="text-muted">(<?php echo $lot->specificite; ?>)</span>
+                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot() && $lot->specificite): ?>
+                            <span class="text-muted"><?php echo "($lot->specificite)"; ?></span>
                           <?php endif ?>
                         </td>
                         <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
@@ -93,7 +93,7 @@
               <?php
               foreach ($form->getTableLots() as $lot):
                 $name = $form->getWidgetNameFromLot($lot);
-                include_partial('degustation/popupResultats', array('form' => $form, 'name' => $name));
+                include_partial('degustation/popupResultats', array('form' => $form, 'name' => $name, 'lot' => $lot));
               endforeach;
               ?>
             </form>
