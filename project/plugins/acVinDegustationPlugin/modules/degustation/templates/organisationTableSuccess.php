@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'numero_table' => $numero_table, 'tri' => $tri)); ?>
 
@@ -65,11 +66,9 @@
                                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
                                                   <?php echo $lot->declarant_nom; echo (!$lot->leurre)? ' ('.$lot->numero_logement_operateur.')' : ''; ?>
                                               </div>
-                                              <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
-                                            <div class="col-xs-6 text-left">
-                                                <?php echo $lot->produit_libelle;?>
-                                                <small class="text-muted"><?php echo $lot->details; ?></small>
-                                            </div>
+                                              <div class="col-xs-6">
+                                                <?= showProduitLot($lot) ?>
+                                              </div>
           								</div>
           							</td>
                                     <td><?= $lot->getProvenance() ?></td>
