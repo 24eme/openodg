@@ -29,6 +29,7 @@ EOF;
     // initialize the database connection
     $databaseManager = new sfDatabaseManager($this->configuration);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+    $context = sfContext::createInstance($this->configuration);
 
     if(!$options['factureid']) {
 	throw new sfException('factureid neeeded');
