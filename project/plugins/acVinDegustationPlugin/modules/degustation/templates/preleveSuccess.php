@@ -38,7 +38,7 @@
 		<?php foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
       <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->numero_dossier; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
-        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo(substr($lot->id_document,0,4))?></span> </td>
+        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo $lot->getProvenance() ?></span> </td>
         <td class="edit"><?= $lot->numero_logement_operateur ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
