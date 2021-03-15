@@ -130,7 +130,7 @@
           "callback": "calcul",
           "callback_parameters": [
             "L5 - (L12 + L14 + L16)",
-            "NOT CLISSON,GORGES,LEPALLET"
+            "lieux/DEFAUT"
           ]
         },
         "volume_crus": {
@@ -146,7 +146,7 @@
           "callback": "calcul",
           "callback_parameters": [
             "L5 - (L12 + L14 + L16)",
-            "CLISSON,GORGES,LEPALLET"
+            "NOT lieux/DEFAUT"
           ]
         },
         "vci": {
