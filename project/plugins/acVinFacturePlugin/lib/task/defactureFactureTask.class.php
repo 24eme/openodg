@@ -36,6 +36,8 @@ EOF;
     }
 
     $facture = FactureClient::getInstance()->find($options['factureid']);
+    echo $facture->_id." : ";
     $avoir = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($facture);
+    echo "avoir ".$avoir->_id." created\n";
   }
 }
