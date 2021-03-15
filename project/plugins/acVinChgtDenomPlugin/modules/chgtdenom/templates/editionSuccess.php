@@ -1,5 +1,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
+
+<?php use_javascript("chgtDenom.js", "last") ?>
 <?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $chgtDenom )); ?>
 <?php include_partial('chgtdenom/step', array('step' => 'edition', 'chgtDenom' => $chgtDenom)) ?>
 

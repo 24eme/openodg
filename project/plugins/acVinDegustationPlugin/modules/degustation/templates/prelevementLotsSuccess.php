@@ -35,9 +35,10 @@
         <thead>
             <tr>
                 <th class="col-xs-1">Degustation voulue<br/> à partir du</th>
-                <th class="col-xs-2">Opérateur</th>
+                <th class="col-xs-3">Opérateur</th>
+                <th class="col-xs-1">Provenance</th>
                 <th class="col-xs-1">Logement</th>
-                <th class="col-xs-3">Produit (millésime, spécificité)</th>
+                <th class="col-xs-5">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">À prélever?</th>
             </tr>
@@ -51,6 +52,7 @@
 			<tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
         <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
         <td><?php echo $lot->declarant_nom; ?></td>
+        <td><?php echo substr($lot->id_document, 0, 4) ?></td>
 				<td><?php echo $lot->numero_logement_operateur; ?></td>
 				<td>
           <?php echo showProduitLot($lot) ?>
