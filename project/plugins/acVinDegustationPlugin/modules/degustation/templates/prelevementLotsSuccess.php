@@ -35,9 +35,9 @@
         <thead>
             <tr>
                 <th class="col-xs-1">Degustation voulue<br/> à partir du</th>
-                <th class="col-xs-2">Opérateur</th>
+                <th class="col-xs-3">Opérateur</th>
                 <th class="col-xs-1">Logement</th>
-                <th class="col-xs-3">Produit (millésime, spécificité)</th>
+                <th class="col-xs-5">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">À prélever?</th>
             </tr>
