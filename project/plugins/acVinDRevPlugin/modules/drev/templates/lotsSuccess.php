@@ -66,7 +66,7 @@
                     <div class="col-md-6">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
-                          <div>
+                          <div class="col-sm-7">
                             <div class="checkbox checkboxlots">
                               <label>
                                 <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
@@ -74,6 +74,9 @@
                                        data-target="#<?php echo $lot->renderId() ?>_cepages" />
                                 <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
                               </div>
+                            </div>
+                            <div class="col-sm-2">
+                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
                             </div>
                         </div>
                     </div>

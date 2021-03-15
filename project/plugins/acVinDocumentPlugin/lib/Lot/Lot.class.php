@@ -530,5 +530,8 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->_set('numero_logement_operateur', $numero);
     }
 
-
+    public function getProvenance()
+    {
+        return substr($this->id_document, 0, 4);
+    }
 }

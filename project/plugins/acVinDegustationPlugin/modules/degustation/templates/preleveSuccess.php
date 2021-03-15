@@ -12,6 +12,11 @@
 <?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
 <p>Sélectionner les lots qui ont été prélevés</p>
+
+<div class="form-group">
+  <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
+</div>
+
 <form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="form-horizontal degustation prelevements">
 	<?php echo $form->renderHiddenFields(); ?>
 
@@ -19,7 +24,7 @@
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
 
-    <table class="table table-bordered table-condensed table-striped">
+    <table class="table table-bordered table-condensed table-striped" id="table_prelevements">
         <thead>
             <tr>
                 <th class="col-xs-3">Opérateur</th>
@@ -30,10 +35,10 @@
             </tr>
         </thead>
 		<tbody>
-		<?php $adherents = array(); foreach ($form['lots'] as $key => $formLot): ?>
+		<?php foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
-       <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
-        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo(substr($lot->id_document,0,4))?></span> </td>
+      <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->numero_dossier; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
+        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo $lot->getProvenance() ?></span> </td>
         <td class="edit"><?= $lot->numero_logement_operateur ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
@@ -85,3 +90,5 @@
     </div>
 </form>
 </div>
+
+<?php use_javascript('hamza_style.js'); ?>
