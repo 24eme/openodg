@@ -71,6 +71,7 @@ ChgtDenom:
                   details: {}
                   statut: {}
                   specificite: {}
+                  affectable: { }
       mouvements:
         type: collection
         definition:

@@ -20,7 +20,8 @@ class ChgtDenomForm extends acCouchdbObjectForm
 
         $this->setWidget('changement_produit', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('changement_produit', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
-
+        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
         for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
             $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
@@ -45,7 +46,8 @@ class ChgtDenomForm extends acCouchdbObjectForm
                 continue;
             }
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
-        }
+        }      
+
         $this->getObject()->generateLots();
     }
 
