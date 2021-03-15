@@ -90,26 +90,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    return true;
 	}
 
-	public function validate($date = null) {
-	    if(is_null($date)) {
-	        $date = date('Y-m-d');
-	    }
-	    $this->validation = $date;
-	    $this->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
-	    $this->generateMouvementsLots();
-	}
-
 
 	public function getVersion() {
 			return null;
-	}
-
-	public function devalidate($reinit_version_lot = true) {
-	    $this->validation = null;
-	    if($this->exist('etape')) {
-	        $this->etape = null;
-	    }
-	    $this->updateOrigineLots(Lot::STATUT_PRELEVABLE);
 	}
 
 	public function findLot($origineMouvement) {
@@ -313,10 +296,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return 1;
     }
 
-	public function isValidee() {
-
-	    return $this->validation;
-	}
 
     /**** PIECES ****/
 

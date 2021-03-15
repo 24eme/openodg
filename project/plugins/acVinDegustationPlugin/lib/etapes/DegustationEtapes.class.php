@@ -78,18 +78,11 @@ class DegustationEtapes extends Etapes {
 
     public function isEtapeDisabled($etape, $doc) {
 
-        $etapePrelevement = self::$etapes[self::ETAPE_PRELEVEMENTS];
         $etapeAnonymat = self::$etapes[self::ETAPE_ANONYMATS];
 
         if($doc->isAnonymized() &&  self::$etapes[$doc->etape] >= $etapeAnonymat){
             return self::$etapes[$etape] < $etapeAnonymat;
         }
-
-        if(self::$etapes[$doc->etape] >= $etapePrelevement){
-            return self::$etapes[$etape] < $etapePrelevement;
-        }
-
-
 
         return false;
     }

@@ -99,17 +99,6 @@ degustation_selection_degustateurs:
   requirements:
     sf_method: [get, post]
 
-degustation_validation:
-  url: /degustation/:id/validation
-  param: { module: degustation, action: validation }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-
 degustation_preleve:
   url: /degustation/:id/preleve
   param: { module: degustation, action: preleve }
@@ -229,16 +218,6 @@ degustation_degustateurs_presences:
     type:     object
   requirements:
     sf_method: [get, post]
-
-degustation_devalidation:
-  url: /degustation/:id/devalidation
-  param: { module: degustation, action: devalidation }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get]
 
 
 degustation_redirect:
