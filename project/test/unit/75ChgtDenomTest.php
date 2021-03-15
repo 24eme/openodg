@@ -70,18 +70,17 @@ $t->is(count($drev->lots), 3, "3 lots ont automatiquement été créés");
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 3, "3 mouvements de lot prelevables ont été générés");
 
-$newDegutation = new Degustation();
-$newDegutation->lieu = "Test — Test";
-$newDegutation->date = date('Y-m-d')." 14:00";
+$degustation = new Degustation();
+$degustation->lieu = "Test — Test";
+$degustation->date = date('Y-m-d')." 14:00";
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 3, "3 lots en attentes de dégustation");
 $mvtkeys = array();
 foreach ($lotsPrelevables as $key => $value) {
   $mvtkeys[$key] = 1;
 }
-$newDegutation->setLotsFromMvtKeys($mvtkeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
-$newDegutation->validate();
-$newDegutation->save();
+$degustation->setLotsFromMvtKeys($mvtkeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
+$degustation->save();
 
 $t->is(count(MouvementLotView::getInstance()->getByStatut($campagne, Lot::STATUT_PRELEVABLE)->rows), 0, "0 lots prelevables");
 
@@ -95,11 +94,11 @@ $t->is($chgtDenom->_id, "CHGTDENOM-".$viti->identifiant."-".preg_replace("/[-\ :
 $t->is(count($lots), 0, "0 lot disponible au changement de denomination");
 
 $first = true;
-foreach($newDegutation->lots as $lot) {
+foreach($degustation->lots as $lot) {
   $lot->setStatut(($first)? Lot::STATUT_NONCONFORME : Lot::STATUT_CONFORME);
   $first = false;
 }
-$newDegutation->save();
+$degustation->save();
 
 $t->is(count(MouvementLotView::getInstance()->getByIdentifiant(Lot::STATUT_NONCONFORME, $viti->identifiant)->rows), 1, "1 lot non conforme");
 $t->is(count(MouvementLotView::getInstance()->getByIdentifiant(Lot::STATUT_CONFORME, $viti->identifiant)->rows), 2, "2 lots conformes");
@@ -155,16 +154,7 @@ $chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 1, "1 lot généré");
 $chgtDenom->generateMouvementsLots(1);
-$postfix = 'a';
-$okPostfix = true;
-foreach ($chgtDenom->lots as $lot) {
-  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
-    $okPostfix = false;
-    break;
-  }
-  $postfix++;
-}
-$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d'archive correctement postfixés");
 $t->is($chgtDenom->changement_produit, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
@@ -180,17 +170,8 @@ $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
-$chgtDenom->generateMouvementsLots(1);
-$postfix = 'a';
-$okPostfix = true;
-foreach ($chgtDenom->lots as $lot) {
-  if ($lot->numero_archive != $mvtLot->numero_archive.$postfix) {
-    $okPostfix = false;
-    break;
-  }
-  $postfix++;
-}
-$t->is($okPostfix, true, "numeros d'archive correctement postfixés");
+$chgtDenom->generateMouvementsLots();
+$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d'archive correctement postfixés");
 $t->is($chgtDenom->changement_produit, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
