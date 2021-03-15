@@ -93,7 +93,7 @@
               <?php
               foreach ($form->getTableLots() as $lot):
                 $name = $form->getWidgetNameFromLot($lot);
-                include_partial('degustation/popupResultats', array('form' => $form, 'name' => $name));
+                include_partial('degustation/popupResultats', array('form' => $form, 'name' => $name, 'lot' => $lot));
               endforeach;
               ?>
             </form>
