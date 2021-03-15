@@ -65,10 +65,11 @@
                                                   <?php echo $lot->declarant_nom; echo (!$lot->leurre)? ' ('.$lot->numero_logement_operateur.')' : ''; ?>
                                               </div>
                                               <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
-          									<div class="col-xs-7 text-left">
+                                            <div class="col-xs-6 text-left">
                                                 <?php echo $lot->produit_libelle;?>
                                                 <small class="text-muted"><?php echo $lot->details; ?></small>
                                             </div>
+                                            <div class="col-xs-1 text-right"><?= $lot->getProvenance() ?></div>
           								</div>
           							</td>
           							<td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>" data-hash="<?php echo $lot->getTriHash($tri_array->getRawValue()); ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
