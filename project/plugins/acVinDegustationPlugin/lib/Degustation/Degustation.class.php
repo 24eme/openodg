@@ -180,6 +180,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 continue;
             }
             $lotPere = $lot->getLotPere();
+            if(!$lotPere) {
+                continue;
+            }
+
             $docs[$lotPere->getDocument()->_id] = $lotPere->getDocument();
         }
 
@@ -1045,32 +1049,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$lot = $this->get($hash_lot);
 
 			// Drev => modificatrice + changement dans Drev
-			$drevOriginal = DRevClient::getInstance()->find($lot->id_document);
-			$mvtLotDrevOriginal = $drevOriginal->get($lot->origine_mouvement);
-
-			$hashOriginalLot = $mvtLotDrevOriginal->origine_hash;
-			$lotDrevOriginal = $drevOriginal->get($hashOriginalLot);
+			$lotDrevOriginal = $lot->getLotPere();
             $lotDrevOriginalToSave = clone $lotDrevOriginal;
 
 			// $modificatrice
-			$modificatrice = $drevOriginal->generateModificative();
+			$modificatrice = $lotDrevOriginal->getDocument()->generateModificative();
 			$modificatrice->save();
 
 			$modificatrice = DRevClient::getInstance()->find($modificatrice->_id);
 
 
-		    $lotModificatrice = $modificatrice->get($hashOriginalLot);
+		    $lotModificatrice = $modificatrice->get($lotDrevOriginal->getHash());
             $lotModificatrice->volume = $volume;
             $lotModificatrice->statut = Lot::STATUT_PRELEVABLE;
 
             $modificatrice->validate();
 			$modificatrice->validateOdg();
-			$modificatrice->generateMouvementsLots();
 			$modificatrice->save();
 
 			$lot->volume = $volume;
-            $lot->id_document = $modificatrice->_id;
-			$lot->origine_mouvement = $modificatrice->getMouvementLotFromLot($lotModificatrice)->getHash();
-
 		}
 }

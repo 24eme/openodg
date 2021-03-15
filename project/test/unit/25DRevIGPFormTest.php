@@ -238,20 +238,6 @@ $t->is($mouvement->declarant_identifiant, $drev->identifiant, "Mouvement declara
 $t->is($mouvement->declarant_nom, $drev->declarant->raison_sociale, "Mouvement declarant raison sociale");
 $t->is($mouvement->campagne, $drev->getCampagne(), "Mouvement campagne");
 
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
-$t->is(count($res->rows), 1, 'on retrouve le mouvement dans la vue MouvementLot');
-$t->is($res->rows[0]->document_id, $drev->_id, 'le mouvement correspond bien à notre drev');
-$drevres = DRevClient::getInstance()->find($res->rows[0]->value->origine_document_id);
-$t->ok($drevres, 'le mouvement pointe bien sur une Drev existante');
-$t->ok( ($drevres instanceof InterfaceMouvementLotsDocument) , 'le mouvement pointe bien vers un document de type InterfaceMouvementLotsDocument');
-$lotres = $drevres->get($res->rows[0]->value->origine_hash);
-$t->ok($lotres, 'le mouvement correspond bien à un lot');
-$mvtres = $drevres->get($res->rows[0]->value->origine_mouvement);
-$t->ok($mvtres, 'le mouvement a bien un origine mouvement existant');
-$t->ok( ($mvtres instanceof MouvementLots) , 'le mouvement correspond bien à un lot de type MouvementLots');
-$t->ok( ($mvtres instanceof InterfaceMouvementLots) , 'le mouvement correspond bien à un lot de type InterfaceMouvementLots');
-$t->is($mvtres->origine_mouvement, $res->rows[0]->value->origine_mouvement, "le mouvement l'origine mouvement correspond bien au mouvement");
-
 $t->comment("Test de la synthèse des lots (visu/validation/_recap)");
 
 $synthese = $drev->summerizeProduitsLotsByCouleur();
@@ -262,11 +248,10 @@ $t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_max'], 208.2, "On 
 $t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_restant'], 200, "On a le bon volume restant en synthèse des lots");
 
 $t->comment("Gestion du prélèvement");
-$mvtres->prelever();
-$drevres->save();
-$t->is($mvtres->statut, Lot::STATUT_PRELEVE,"Le mouvement prelevé est bien indiqué comme tel");
-$res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
-$t->is(count($res->rows), 0, 'on retrouve plus le mouvement prelevé dans la vue MouvementLot');
+$drev->lots[0]->document_fils = true;
+$drev->save();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$t->is(count($lotsPrelevables), 0, 'on retrouve plus le mouvement prelevé dans la vue MouvementLot');
 
 $t->comment("Modificatrice ".$drev->_id."-M01");
 $drevBackup = $drev;

@@ -913,8 +913,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->cleanDoc();
         $this->validation = $date;
         $this->archiver();
-        $this->generateMouvementsFactures();
-        $this->updateStatutsLotsSupprimes();
 
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
 
@@ -925,11 +923,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-
-
     public function delete() {
-        $this->updateStatutsLotsSupprimes(false);
-        return parent::delete();
+        parent::delete();
+        $this->motherSave();
     }
 
     public function devalidate($reinit_version_lot = true) {
@@ -949,31 +945,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
               }
           }
         }
-        $this->updateStatutsLotsSupprimes(false);
         $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
     }
 
-    public function updateStatutsLotsSupprimes($validation = true) {
+    public function motherSave() {
       if (!$this->hasVersion()) {
         return;
       }
       $mother = $this->getMother();
-      $updated = false;
-      if ($mother)
-      foreach ($mother->getLots() as $lot) {
-        if ($validation && in_array($lot->statut, array(Lot::STATUT_PRELEVABLE, Lot::STATUT_ELEVAGE)) && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
-          $lot->statut = Lot::STATUT_NONPRELEVABLE;
-          $updated = true;
-        }
-        if (!$validation && $lot->statut == Lot::STATUT_NONPRELEVABLE && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
-          $lot->statut = Lot::STATUT_PRELEVABLE;
-          $updated = true;
-        }
+      if(!$mother) {
+          return;
       }
-      if ($updated) {
-        $mother->generateMouvementsLots();
-        $mother->save();
-      }
+      $mother->save();
     }
 
     public function validateOdg($date = null, $region = null) {
@@ -1268,6 +1251,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->generateMouvementsLots();
 
         parent::save();
+
+        $this->motherSave();
     }
 
   public function archiver() {
