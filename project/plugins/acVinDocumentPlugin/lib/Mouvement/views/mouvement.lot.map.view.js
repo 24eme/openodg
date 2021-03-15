@@ -4,11 +4,15 @@ function (doc) {
   }
   for(identifiant in doc.mouvements_lots) {
     for(key in doc.mouvements_lots[identifiant]) {
-      mouvement = doc.mouvements_lots[identifiant][key];
-
+      var mouvement = doc.mouvements_lots[identifiant][key];
+      var lot = doc.lots[mouvement.lot_hash.replace("/lots/", "")*1];
       emit([
         mouvement.statut, mouvement.declarant_identifiant
-      ], doc.lots[mouvement.lot_hash.replace("/lots/", "")*1]);
+      ], lot);
+
+      emit([
+        null, mouvement.declarant_identifiant
+      ], lot);
     }
   }
 }

@@ -92,7 +92,7 @@ sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots.csv
 sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots.csv
 php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
-echo "Changement de denomination"
+echo "Import des Changements de denomination"
 
 xls2ods $DATA_DIR/changement_denom.xls
 ods2tsv $DATA_DIR/changement_denom.ods | sed 's/;/ /g' | sed 's/\t/;/g' > $DATA_DIR/changement_denom.csv
