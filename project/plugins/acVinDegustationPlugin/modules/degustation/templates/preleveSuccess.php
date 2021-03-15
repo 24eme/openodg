@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
@@ -28,6 +29,7 @@
         <thead>
             <tr>
                 <th class="col-xs-3">Opérateur</th>
+                <th class="col-xs-1">Provenance</th>
                 <th class="col-xs-1">Logement</th>
                 <th class="col-xs-3">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
@@ -38,7 +40,8 @@
 		<?php foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
       <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->numero_dossier; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
-        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo $lot->getProvenance() ?></span> </td>
+        <td><?php echo $lot->declarant_nom; ?></td>
+        <td><?php echo $lot->getProvenance() ?></td>
         <td class="edit"><?= $lot->numero_logement_operateur ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
@@ -46,17 +49,8 @@
             </span>
           <?php endif; ?>
         </td>
-				<td>
-          <?php echo $lot->produit_libelle; ?>
-          &nbsp;
-          <small class="text-muted"><?php echo $lot->details; ?></small>
-          <?php if ($lot->millesime): ?>
-            &nbsp;
-            <?php echo $lot->millesime; ?>
-          <?php endif; ?>
-          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-            <small class="text-muted">(<?php echo $lot->specificite; ?>)</small>
-          <?php endif ?>
+        <td>
+            <?= showProduitLot($lot) ?>
         </td>
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>

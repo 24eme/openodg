@@ -52,6 +52,7 @@ Degustation:
                   nombre_degustation: {required: false}
                   doc_ordre: {}
                   affectable: {}
+                  recours_oc: {}
       mouvements_lots:
         type: collection
         definition:
@@ -98,6 +99,7 @@ Degustation:
                         nombre_degustation: {required: false}
                         doc_ordre: {}
                         affectable: {}
+                        recours_oc: {}
       degustateurs:
         type: collection
         definition:

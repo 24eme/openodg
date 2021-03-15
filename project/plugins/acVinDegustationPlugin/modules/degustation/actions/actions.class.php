@@ -23,13 +23,6 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $nonValides = DegustationClient::getInstance()->findNonValides();
-        if (count($nonValides)) {
-            $firstDeg = array_shift($nonValides);
-            throw new sfException(sprintf("La degustation du %s à %s n'a pas encore été validée %s", $firstDeg->date, $firstDeg->lieu,$firstDeg->_id ));
-
-        }
-
         $degustation = $this->form->save();
 
         return $this->redirect('degustation_prelevement_lots', $degustation);
@@ -38,7 +31,7 @@ class degustationActions extends sfActions {
     public function executePrelevementLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        $this->redirectIfIsValidee();
+        $this->redirectIfIsAnonymized();
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
             $this->degustation->save();
@@ -122,7 +115,7 @@ class degustationActions extends sfActions {
 
     public function executeSelectionDegustateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->redirectIfIsValidee();
+        $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->colleges = DegustationConfiguration::getInstance()->getColleges();
         $first_college = array_key_first($this->colleges);
@@ -163,40 +156,17 @@ class degustationActions extends sfActions {
         }
 
         if(!$next_college){
-          return $this->redirect('degustation_validation', $this->degustation);
+          return $this->redirect('degustation_prelevements_etape', $this->degustation);
         }
 
         return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id ,'college' => $next_college));
-    }
-
-    public function executeValidation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->redirectIfIsValidee();
-
-        $this->validation = new DegustationValidation($this->degustation);
-        $this->form = new DegustationValidationForm($this->degustation);
-
-         if (!$request->isMethod(sfWebRequest::POST)) {
-
-             return sfView::SUCCESS;
-         }
-
-         $this->form->bind($request->getParameter($this->form->getName()));
-
-         if (!$this->form->isValid()) {
-
-             return sfView::SUCCESS;
-         }
-
-         $this->form->save();
-
-        return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 
 
     public function executePrelevementsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
+        $this->validation = new DegustationValidation($this->degustation);
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
             $this->degustation->save();
@@ -460,16 +430,6 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
-    public function executeDevalidation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->devalidate();
-        $this->degustation->save();
-
-        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
-
-        return $this->redirect('degustation_validation', $this->degustation);
-    }
-
     public function executeRedirect(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
 
@@ -546,6 +506,38 @@ class degustationActions extends sfActions {
         $doc->generateMouvementsLots();
         $doc->save();
         return $this->redirect($back);
+    }
+
+    public function executeRecoursOc(sfWebRequest $request) {
+        $docid = $request->getParameter('id');
+        $ind = $request->getParameter('index');
+        $doc = acCouchdbManager::getClient()->find($docid);
+        $this->forward404Unless($doc);
+        $lot = null;
+        if ($doc->lots->exist($ind)) {
+          $lot = $doc->lots->get($ind);
+        }
+        $this->forward404Unless($lot);
+        $lot->recoursOc();
+        $doc->generateMouvementsLots();
+        $doc->save();
+        return $this->redirect("degustation_manquements");
+    }
+
+    public function executeLotConformeAppel(sfWebRequest $request) {
+        $docid = $request->getParameter('id');
+        $ind = $request->getParameter('index');
+        $doc = acCouchdbManager::getClient()->find($docid);
+        $this->forward404Unless($doc);
+        $lot = null;
+        if ($doc->lots->exist($ind)) {
+          $lot = $doc->lots->get($ind);
+        }
+        $this->forward404Unless($lot);
+        $lot->conformeAppel();
+        $doc->generateMouvementsLots();
+        $doc->save();
+        return $this->redirect("degustation_manquements");
     }
 
     public function executeAnonymize(sfWebRequest $request){
@@ -713,11 +705,6 @@ class degustationActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
-    private function redirectIfIsValidee(){
-      if ($this->degustation->isValidee()) {
-          return $this->redirect($this->getRouteEtape($this->degustation->etape),$this->degustation);
-      }
-    }
 
     private function redirectIfIsAnonymized(){
       if ($this->degustation->isAnonymized()) {

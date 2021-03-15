@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'numero_table' => $numero_table, 'tri' => $tri)); ?>
 
@@ -47,7 +48,8 @@
           		<table class="table table-bordered table-condensed table-striped">
           			<thead>
           				<tr>
-          					<th class="col-xs-11">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a> )</span></th>
+                            <th class="col-xs-10">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a> )</span></th>
+                            <th class="col-xs-1">Provenance</th>
           					<th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
@@ -64,14 +66,12 @@
                                                   <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
                                                   <?php echo $lot->declarant_nom; echo (!$lot->leurre)? ' ('.$lot->numero_logement_operateur.')' : ''; ?>
                                               </div>
-                                              <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
-                                            <div class="col-xs-6 text-left">
-                                                <?php echo $lot->produit_libelle;?>
-                                                <small class="text-muted"><?php echo $lot->details; ?></small>
-                                            </div>
-                                            <div class="col-xs-1 text-right"><?= $lot->getProvenance() ?></div>
+                                              <div class="col-xs-6">
+                                                <?= showProduitLot($lot) ?>
+                                              </div>
           								</div>
           							</td>
+                                    <td><?= $lot->getProvenance() ?></td>
           							<td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>" data-hash="<?php echo $lot->getTriHash($tri_array->getRawValue()); ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>

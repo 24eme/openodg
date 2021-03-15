@@ -99,17 +99,6 @@ degustation_selection_degustateurs:
   requirements:
     sf_method: [get, post]
 
-degustation_validation:
-  url: /degustation/:id/validation
-  param: { module: degustation, action: validation }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-
 degustation_preleve:
   url: /degustation/:id/preleve
   param: { module: degustation, action: preleve }
@@ -230,16 +219,6 @@ degustation_degustateurs_presences:
   requirements:
     sf_method: [get, post]
 
-degustation_devalidation:
-  url: /degustation/:id/devalidation
-  param: { module: degustation, action: devalidation }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get]
-
 
 degustation_redirect:
   url: /degustation/:id/redirect
@@ -266,6 +245,18 @@ degustation_elevages:
 degustation_redeguster:
   url: /degustation/lots/:id/:index/redeguster
   param: { module: degustation, action: redeguster }
+  requirements:
+    sf_method: [get]
+
+degustation_recours_oc:
+  url: /degustation/lots/:id/:index/recours
+  param: { module: degustation, action: recoursOc }
+  requirements:
+    sf_method: [get]
+
+degustation_lot_conforme_appel:
+  url: /degustation/lots/:id/:index/conforme-appel
+  param: { module: degustation, action: lotConformeAppel }
   requirements:
     sf_method: [get]
 
