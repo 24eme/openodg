@@ -74,7 +74,7 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
           $this->floatHelper->formatFr($montant_covid_valorisation_tva, 2, 2).";".
           $this->floatHelper->formatFr($valorisation->montant_tva+$valorisation->montant_ht, 2, 2).";";
         }else{
-          $csv.= ";;;;";
+          $csv.= ";;;;;";
         }
 
         // odg ou forfait
