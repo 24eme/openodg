@@ -52,5 +52,7 @@ class degustationComponents extends sfComponents {
         }
 
         $this->subject = sprintf("Résultat de dégustation du %s", ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
+        $this->email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
+        $this->cc = implode(sfConfig::get('app_email_plugin_to_notification'),";");
     }
 }
