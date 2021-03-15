@@ -16,11 +16,16 @@ class MouvementLotHistoryView extends acCouchdbView
         return acCouchdbManager::getView('mouvement', 'lotHistory');
     }
 
-    public function getMouvements($declarant, $dossier, $archive)
+    public function getMouvements($declarant, $dossier, $archive, $documentOrdre = null)
     {
+        $keys = array($declarant, $dossier, $archive);
+        if($documentOrdre) {
+            $keys[] = $documentOrdre;
+        }
+
         return $this->client
-                    ->startkey([$declarant, $dossier, $archive])
-                    ->endkey([$declarant, $dossier, $archive, []])
+                    ->startkey($keys)
+                    ->endkey(array_merge($keys, array(array())))
                     ->getView($this->design, $this->view);
     }
 

@@ -77,6 +77,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	protected function doSave() {
 		$this->piece_document->generatePieces();
+        $this->generateMouvementsLots();
 	}
 
 	public function storeEtape($etape) {
@@ -89,7 +90,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	    return true;
 	}
-
 
 	public function getVersion() {
 			return null;
@@ -109,20 +109,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function updateOrigineLots($statut) {
 	    foreach ($this->lots as $lot) {
-          if ($lot->leurre === true) {
-          	continue;
-          }
-          if(!$lot->id_document) {
-              continue;
-          }
-	        $doc = acCouchdbManager::getClient()->find($lot->id_document);
-	        if ($doc instanceof InterfaceMouvementLotsDocument) {
-	            if ($doc->exist($lot->origine_mouvement)) {
-	               $doc->get($lot->origine_mouvement)->set('statut', $statut);
-								 $doc->get($doc->get($lot->origine_mouvement)->origine_hash)->set('statut', $statut);
-	               $doc->save();
-	            }
-	        }
+            if ($lot->leurre === true) {
+          	     continue;
+            }
 	    }
 	}
 
@@ -231,6 +220,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
+
+        $this->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
     }
 
     /**** FIN DES MOUVEMENTS LOTS ****/

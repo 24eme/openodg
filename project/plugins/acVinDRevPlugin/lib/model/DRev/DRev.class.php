@@ -1467,7 +1467,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach ($this->lots as $lot) {
-        $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+            if($lot->getLotFils()) {
+                $lot->document_fils = $lot->getLotFils()->getDocument()->_id;
+            }
+            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
             if ($lot->isAffectable()) {
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
@@ -1479,7 +1482,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-        $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
+            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
         }
     }
 

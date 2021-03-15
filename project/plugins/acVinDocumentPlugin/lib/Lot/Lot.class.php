@@ -582,6 +582,38 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getDocument()->get($hash);
     }
 
+    public function getLotDocumentOrdre($documentOrdre) {
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
+
+        $docId = null;
+        foreach($mouvements->rows as $mouvement) {
+            $docId = $mouvement->id;
+            break;
+        }
+
+        if(!$docId) {
+
+            return null;
+        }
+
+        $doc = DeclarationClient::getInstance()->find($docId);
+
+        return $doc->get($mouvement->value->lot_hash);
+    }
+
+    public function getLotFils()
+    {
+
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+    }
+
+
+    public function getLotPere()
+    {
+
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+    }
+
     abstract public function getDocumentOrdre();
 
     abstract public function getDocumentType();
@@ -593,7 +625,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffectable() {
 
-        return $this->exist('affectable') && $this->affectable;
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable;
     }
 
     public function isAffecte() {
