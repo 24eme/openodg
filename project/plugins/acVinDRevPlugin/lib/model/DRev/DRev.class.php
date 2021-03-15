@@ -1262,8 +1262,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
-        $this->generateMouvementsLots();
 	}
+
+    public function save() {
+        $this->generateMouvementsLots();
+
+        parent::save();
+    }
 
   public function archiver() {
       $this->archivage_document->preSave();
@@ -1473,12 +1478,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
             if ($lot->isAffectable()) {
-            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
                 continue;
             }
 
             if($lot->isAffecte()) {
-            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC_DREV));
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC_DREV));
                 continue;
             }
 

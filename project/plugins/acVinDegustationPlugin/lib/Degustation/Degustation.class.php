@@ -77,8 +77,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	protected function doSave() {
 		$this->piece_document->generatePieces();
-        $this->generateMouvementsLots();
 	}
+
+    public function save() {
+        $this->saveDocumentsPere();
+        $this->generateMouvementsLots();
+
+        parent::save();
+
+        $this->saveDocumentsPere();
+    }
 
 	public function storeEtape($etape) {
 	    if ($etape == $this->etape) {
@@ -105,14 +113,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		return null;
-	}
-
-	public function updateOrigineLots($statut) {
-	    foreach ($this->lots as $lot) {
-            if ($lot->leurre === true) {
-          	     continue;
-            }
-	    }
 	}
 
     public function updateLotLogement($lot, $logement)
@@ -172,6 +172,26 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
     }
 
+    public function getDocumentsPere() {
+        $docs = array();
+
+        foreach ($this->lots as $lot) {
+            if ($lot->isLeurre()) {
+                continue;
+            }
+            $lotPere = $lot->getLotPere();
+            $docs[$lotPere->getDocument()->_id] = $lotPere->getDocument();
+        }
+
+        return $docs;
+    }
+
+    public function saveDocumentsPere() {
+        foreach($this->getDocumentsPere() as $doc) {
+            $doc->save();
+        }
+    }
+
     public function generateMouvementsLots()
     {
         $this->clearMouvementsLots();
@@ -220,8 +240,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
-
-        $this->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
     }
 
     /**** FIN DES MOUVEMENTS LOTS ****/

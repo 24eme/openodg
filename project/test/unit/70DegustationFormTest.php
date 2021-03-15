@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(35);
+$t = new lime_test(46);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -95,9 +95,6 @@ $valuesRev['lots'][$drev->lots[1]->getUnicityKey()]['preleve'] = 1;
 
 $form->bind($valuesRev);
 $form->save();
-
-$drev->generateMouvementsLots();
-$drev->save();
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
