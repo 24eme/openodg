@@ -1,6 +1,21 @@
 <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getMvtLot())); ?>
+<style>
+  #declassement_filigrane{
+    position:absolute;
+    font-size: 4em;
+    top: 22%;
+    left: 37%;
+    rotate: -33deg;
+    opacity: 0.3;
+    text-transform: uppercase;
+  }
+  .block-chgtDenom{
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+  }
+</style>
 
-<div class="col-sm-12" style="margin-bottom: 20px;">
+<div class="col-sm-12 mb-5">
   <div class="text-center">
     <strong>Devient</strong><br />
     <span class="glyphicon glyphicon-chevron-down"></span>
@@ -10,16 +25,21 @@
 <?php
   foreach($chgtDenom->lots as $k => $lot):
 ?>
-  <div class="alert col-sm-<?php if (count($chgtDenom->lots) == 1): ?>12<?php else: ?>6<?php endif; ?>" style="background-color: #f8f8f8; border: 1px solid #e7e7e7;">
+  <div class="alert block-chgtDenom col-sm-<?php if (count($chgtDenom->lots) == 1): ?>12<?php else: ?>6<?php endif; ?>">
+  <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>
+    <div id="declassement_filigrane" class="text-danger">Déclassé</div>
+  <?php endif; ?>
     <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong><?php if($chgtDenom->isValidee()): ?><a href="<?php echo url_for('degustation_etablissement_list',array('id' => $lot->declarant_identifiant))."#".$lot->numero_dossier.$lot->numero_archive; ?>" class="btn btn-default btn-xs pull-right">visu du lot&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a><?php endif; ?></h4>
     <table class="table table-condensed" style="margin: 0;">
       <tbody>
         <tr>
           <td style="border: none;">Logement : <?php if(!$chgtDenom->isValide()): ?><a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>"><strong><?php echo $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span></a><?php else: ?><strong><?php echo $lot->numero_logement_operateur; ?></strong><?php endif; ?></td>
         </tr>
+        <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
         <tr>
           <td style="border: none;">Produit : <strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
         </tr>
+      <?php endif; ?>
         <tr>
           <td style="border: none;">Volume : <strong><?php echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
         </tr>
