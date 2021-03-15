@@ -26,9 +26,23 @@ class ExportSV11CSV implements InterfaceDeclarationExportCsv
         if($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        if ($file = $this->doc->getFichier('csv')) {
+        if ($this->doc->exist('donnees') && count($this->doc->donnees) >= 1) {
+            $c = new SV11DouaneCsvFile(null, $this->doc);
+            $csv .= $c->convertByDonnees($this->doc);
+        } elseif ($file = $this->doc->getFichier('csv')) {
         	$c = new SV11DouaneCsvFile($file, $this->doc);
         	$csv .= $c->convert();
+        }
+        return $csv;
+    }
+
+    public function getCsv() {
+        $csv = array();
+        $datas = explode(PHP_EOL, $this->export());
+        foreach ($datas as $data) {
+            if ($data) {
+                $csv[] = explode(';', $data);
+            }
         }
         return $csv;
     }
