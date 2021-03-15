@@ -57,8 +57,8 @@
                           <?php echo $lot->produit_libelle;?>&nbsp;
                           <small class="text-muted"><?php echo $lot->details; ?></small>
                           <?php echo ($lot->millesime)? $lot->millesime : ''; ?>
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <span class="text-muted">(<?php echo $lot->specificite; ?>)</span>
+                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot() && $lot->specificite): ?>
+                            <span class="text-muted"><?php echo "($lot->specificite)"; ?></span>
                           <?php endif ?>
                         </td>
                         <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
