@@ -463,33 +463,35 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function getLotsConformes($identifiant = null)
     {
         $all_lots = $this->getLotsByOperateurs($identifiant);
-        $lots = [];
+        $conformes = [];
 
-        foreach ($all_lots as $operateur) {
-            foreach ($operateur as $lot) {
+        foreach ($all_lots as $operateur => $lots) {
+            $conformes[$operateur] = [];
+            foreach ($lots as $lot) {
                 if ($lot->statut === Lot::STATUT_CONFORME) {
-                    $lots[] = $lot;
+                    $conformes[$operateur][] = $lot;
                 }
             }
         }
 
-        return $lots;
+        return $conformes;
     }
 
     public function getLotsNonConformes($identifiant = null)
     {
         $all_lots = $this->getLotsByOperateurs($identifiant);
-        $lots = [];
+        $nonconformes = [];
 
-        foreach ($all_lots as $operateur) {
-            foreach ($operateur as $lot) {
+        foreach ($all_lots as $operateur => $lots) {
+            $nonconformes[$operateur] = [];
+            foreach ($lots as $lot) {
                 if ($lot->statut === Lot::STATUT_NONCONFORME) {
-                    $lots[] = $lot;
+                    $nonconformes[$operateur][] = $lot;
                 }
             }
         }
 
-        return $lots;
+        return $nonconformes;
     }
 
 	 public function getLotsByOperateursAndConformites(){
@@ -1179,28 +1181,4 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$lot->origine_mouvement = $modificatrice->getMouvementLotFromLot($lotModificatrice)->getHash();
 
 		}
-
-    public function getEmailNotificationInfos()
-    {
-        $operateurs = [];
-
-        foreach ($this->getLotsByOperateurs() as $operateur => $lots) {
-            $operateurs[$operateur] = new stdClass();
-
-            foreach ($lots as $lot) {
-                $operateurs[$operateur]->email_envoye = $lot->email_envoye;
-            }
-
-            $operateurs[$operateur]->email_envoye = false;
-            //$operateurs[$operateur]->subject =  "Résultat de dégustation du ".ucfirst(format_date($this->degustation->date, "P", "fr_FR"));
-
-            $email = $lot->getEtablissement()->getEmail();
-            $cc = implode(sfConfig::get('app_email_plugin_to_notification'),";");
-
-            //$operateurs[$operateur]->body = $this->getAction()->getPartial('degustation/notificationEmail', array('degustation' => $this->degustation , 'etablissement' => $lot->declarant_identifiant));
-            //$operateurs[$operateur]->link = "mailto:$email?cc=$cc&subject=$subject&body=$body";
-        }
-
-        return $operateurs;
-    }
 }
