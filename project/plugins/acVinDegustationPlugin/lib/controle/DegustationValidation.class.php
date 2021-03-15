@@ -15,11 +15,11 @@ class DegustationValidation extends DocumentValidation
         /*
          * Warning
          */
-        $this->addControle(self::TYPE_ERROR, 'degustateurs_choisi_multiple', 'Vous avez choisi ce dégustateur plusieurs fois.');
 
         /*
          * Error
          */
+         $this->addControle(self::TYPE_ERROR, 'degustateurs_choisi_multiple', 'Vous avez choisi ce dégustateur plusieurs fois.');
 
 
         /*

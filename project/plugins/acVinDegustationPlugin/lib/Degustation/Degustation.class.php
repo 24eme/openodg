@@ -90,26 +90,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    return true;
 	}
 
-	public function validate($date = null) {
-	    if(is_null($date)) {
-	        $date = date('Y-m-d');
-	    }
-	    $this->validation = $date;
-	    $this->updateOrigineLots(Lot::STATUT_NONPRELEVABLE);
-	    $this->generateMouvementsLots();
-	}
-
 
 	public function getVersion() {
 			return null;
-	}
-
-	public function devalidate($reinit_version_lot = true) {
-	    $this->validation = null;
-	    if($this->exist('etape')) {
-	        $this->etape = null;
-	    }
-	    $this->updateOrigineLots(Lot::STATUT_PRELEVABLE);
 	}
 
 	public function findLot($origineMouvement) {
@@ -219,6 +202,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$mvt->centilisation = $lot->centilisation;
 			$mvt->conformite = $lot->conformite;
 			$mvt->motif = $lot->motif;
+			$mvt->recours_oc = $lot->recours_oc;
 			return $mvt;
 	}
 
@@ -246,6 +230,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $statut_originel = $lot->statut;
 
         switch($lot->statut) {
+            case Lot::STATUT_CONFORME_APPEL:
+                $lot->statut = Lot::STATUT_CONFORME_APPEL;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
+            case Lot::STATUT_RECOURS_OC:
+                $lot->statut = Lot::STATUT_RECOURS_OC;
+                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
+
             case Lot::STATUT_CONFORME:
             case Lot::STATUT_NONCONFORME:
                 $lot->statut = ($lot->statut === Lot::STATUT_CONFORME) ? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME;
@@ -279,7 +271,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 break;
         }
 
-        if ($statut_originel === Lot::STATUT_NONCONFORME) {
+        if (($statut_originel === Lot::STATUT_NONCONFORME) || ($statut_originel === Lot::STATUT_RECOURS_OC)) {
             if ($lot->exist('affectable') && $lot->affectable === true) {
                 $lot->statut = Lot::STATUT_AFFECTABLE;
                 $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
@@ -304,10 +296,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return 1;
     }
 
-	public function isValidee() {
-
-	    return $this->validation;
-	}
 
     /**** PIECES ****/
 

@@ -17,9 +17,13 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CONFORME = "08_CONFORME";
     const STATUT_AFFECTE_SRC = "07_AFFECTE_SRC";
     const STATUT_NONCONFORME = "08_NON_CONFORME";
+    const STATUT_RECOURS_OC = "09_RECOURS_OC";
+    const STATUT_CONFORME_APPEL = "10_CONFORME_APPEL";
+
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
     const STATUT_ELEVAGE = "ELEVAGE";
+
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
@@ -530,5 +534,8 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->_set('numero_logement_operateur', $numero);
     }
 
-
+    public function getProvenance()
+    {
+        return substr($this->id_document, 0, 4);
+    }
 }

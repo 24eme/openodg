@@ -401,7 +401,7 @@ class drevActions extends sfActions {
             $this->drev->save();
         }
 
-        if (count($this->drev->getLots()) == 0 || current(array_reverse($this->drev->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        if (count($this->drev->getLots()) == 0 || $request->getParameter('submit') == "add") {
             $this->drev->addLot();
         }
         $this->form = new DRevLotsForm($this->drev);

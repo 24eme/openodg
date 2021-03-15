@@ -4,6 +4,15 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Resultat de la dégustation</h4>
+                    <h6>Opérateur : <?= $lot->declarant_nom ?></h6>
+                    <h6>Produit : <?= $lot->produit_libelle ?> <?= ($lot->details)
+                                                                    ? '<small class="text-muted"> - ' . $lot->details . '</small>'
+                                                                    : '' ?>
+                        <?= $lot->millesime ?>
+                    </h6>
+                    <?php if ($lot->specificite): ?>
+                        <h6>Spécificité : <?= $lot->specificite ?></h6>
+                    <?php endif ?>
 				</div>
 				<div class="modal-body">
 					<span class="error"><?php echo $form['conformite_'.$name]->renderError() ?></span>

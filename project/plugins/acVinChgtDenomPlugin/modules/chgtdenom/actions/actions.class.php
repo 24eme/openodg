@@ -111,6 +111,7 @@ class chgtdenomActions extends sfActions {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
         $this->form = new ChgtDenomValidationForm($this->chgtDenom);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -125,6 +126,14 @@ class chgtdenomActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin) {
+            $this->chgtDenom->validateOdg();
+            $this->chgtDenom->save();
+            $this->getUser()->setFlash("notice", "Le changement dénommination a été validé et approuvé");
+
+            return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+        }
 
         return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
     }
