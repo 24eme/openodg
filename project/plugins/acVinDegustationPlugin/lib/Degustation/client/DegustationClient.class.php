@@ -42,16 +42,6 @@ class DegustationClient extends acCouchdbClient {
         return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
     }
 
-    public function findNonValides($hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $nonValides = array();
-        foreach ($this->startkey(self::TYPE_COUCHDB)->endkey(self::TYPE_COUCHDB."Z")->execute(acCouchdbClient::HYDRATE_JSON) as $doc) {
-            if(!$doc->validation){
-                $nonValides[] = $doc;
-            }
-        }
-
-        return $nonValides;
-    }
 
     public static function getNumeroTableStr($numero_table){
       $alphas = range('A', 'Z');
