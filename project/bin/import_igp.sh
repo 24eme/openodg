@@ -85,7 +85,7 @@ echo "Habilitations"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
 
-echo "Lots"
+echo "Import Lots"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 24 > $DATA_DIR/lots.csv
 sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots.csv
