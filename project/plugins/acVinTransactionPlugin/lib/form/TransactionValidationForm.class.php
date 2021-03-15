@@ -26,7 +26,7 @@ class TransactionValidationForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								$formDegustable->embedForm($lot->getKey(), new TransactionLotDegustableForm($lot));
+								$formDegustable->embedForm($lot->getKey(), new LotAffectableForm($lot));
             }
         }
 
