@@ -80,12 +80,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
     public function save() {
-        $this->saveDocumentsPere();
+        $this->saveDocumentsDependants();
         $this->generateMouvementsLots();
 
         parent::save();
 
-        $this->saveDocumentsPere();
+        $this->saveDocumentsDependants();
     }
 
 	public function storeEtape($etape) {
@@ -172,7 +172,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
     }
 
-    public function getDocumentsPere() {
+    protected function getDocumentsPereLot() {
         $docs = array();
 
         foreach ($this->lots as $lot) {
@@ -190,8 +190,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $docs;
     }
 
-    public function saveDocumentsPere() {
-        foreach($this->getDocumentsPere() as $doc) {
+    public function saveDocumentsDependants() {
+        foreach($this->getDocumentsPereLot() as $doc) {
             $doc->save();
         }
     }

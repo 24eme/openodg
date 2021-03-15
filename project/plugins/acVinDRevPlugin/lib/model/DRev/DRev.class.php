@@ -925,7 +925,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function delete() {
         parent::delete();
-        $this->motherSave();
+        $this->saveDocumentsDependants();
     }
 
     public function devalidate($reinit_version_lot = true) {
@@ -946,17 +946,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           }
         }
         $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
-    }
-
-    public function motherSave() {
-      if (!$this->hasVersion()) {
-        return;
-      }
-      $mother = $this->getMother();
-      if(!$mother) {
-          return;
-      }
-      $mother->save();
     }
 
     public function validateOdg($date = null, $region = null) {
@@ -1247,12 +1236,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 	}
 
+    public function saveDocumentsDependants() {
+        $mother = $this->getMother();
+        if($mother) {
+            $mother->save();
+        }
+    }
+
     public function save() {
         $this->generateMouvementsLots();
 
         parent::save();
 
-        $this->motherSave();
+        $this->saveDocumentsDependants();
     }
 
   public function archiver() {

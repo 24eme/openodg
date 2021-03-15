@@ -267,7 +267,7 @@ $drev_modif->add('lots');
 $drev_modif->validate();
 $drev = $drev_modif->getMother();
 $t->is(count($drev_modif->lots), 0, "Le Lot de la DRev modificatrice est correctement supprimé");
-$t->is(count($drev_modif->mouvements_lots->get($drev_modif->identifiant)), 0, "Les mvts de lot sont cohérents");
+$t->ok(!$drev_modif->mouvements_lots->exist($drev_modif->identifiant), "Les mvts de lot sont cohérents");
 $t->is($drev->lots->get(0)->statut, Lot::STATUT_NONPRELEVABLE, "Validate : La suppression du lot a été répercutée sur la DRev parente (statut passe de prélévable à non prélevable)");
 $t->is($drev->mouvements_lots->get($drev->identifiant)->get($drev->lots->get(0)->getUnicityKey())->statut, Lot::STATUT_NONPRELEVABLE, "Validate : Les mvts de lot sont cohérents");
 $drev_modif->devalidate();
