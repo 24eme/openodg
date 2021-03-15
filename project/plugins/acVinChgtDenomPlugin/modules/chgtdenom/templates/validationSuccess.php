@@ -1,6 +1,5 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
-<?php use_helper('Lot') ?>
 <?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $chgtDenom )); ?>
 <?php include_partial('chgtdenom/step', array('step' => 'validation', 'chgtDenom' => $chgtDenom)) ?>
 

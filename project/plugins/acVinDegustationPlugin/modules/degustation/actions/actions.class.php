@@ -23,13 +23,6 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $nonValides = DegustationClient::getInstance()->findNonValides();
-        if (count($nonValides)) {
-            $firstDeg = array_shift($nonValides);
-            throw new sfException(sprintf("La degustation du %s à %s n'a pas encore été validée %s", $firstDeg->date, $firstDeg->lieu,$firstDeg->_id ));
-
-        }
-
         $degustation = $this->form->save();
 
         return $this->redirect('degustation_prelevement_lots', $degustation);
