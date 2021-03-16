@@ -271,7 +271,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function getLot($uniqueId) {
 
         foreach($this->lots as $lot) {
-            if($lot != $uniqueId) {
+            if($lot->getUniqueId() != $uniqueId) {
 
                 continue;
             }

@@ -511,7 +511,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       public function getLot($uniqueId) {
 
           foreach($this->lots as $lot) {
-              if($lot != $uniqueId) {
+              if($lot->getUniqueId() != $uniqueId) {
 
                   continue;
               }

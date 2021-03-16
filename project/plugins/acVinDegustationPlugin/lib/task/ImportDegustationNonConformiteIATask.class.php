@@ -73,7 +73,7 @@ EOF;
           }
           $produit = $this->produits[$produitKey];
 
-          $mouvements = MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement->identifiant);
+          $mouvements = MouvementLotView::getInstance()->getByIdentifiant($etablissement->identifiant);
 
           $mouvement = null;
           foreach ($mouvements->rows as $key => $mvt) {
@@ -104,7 +104,8 @@ EOF;
 
           $degustation = DegustationClient::getInstance()->find($mouvement->id);
 
-          $lot = $degustation->findLot($mouvement->value->origine_mouvement);
+
+          $lot = $degustation->getLot($mouvement->value->unique_id);
 
           if(!$lot) {
               echo "WARNING;Lot non trouvé dans la dégustation;".$line."\n";
