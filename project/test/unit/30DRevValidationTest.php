@@ -73,7 +73,7 @@ $produit2->superficie_revendique = 150;
 if ($has_lot) {
     $lot = $drev->addLot();
     $lot->millesime = $campagne;
-    $lot->numero = "1";
+    $lot->numero_logement_operateur = "1";
     $lot->volume = 30.4;
     $lot->destination_type = null;
     $lot->destination_date = $campagne.'-11-15';
@@ -134,7 +134,7 @@ if ($has_lot) {
     $lot = $drev_modificative->addLot();
 
     $lot->millesime = $campagne;
-    $lot->numero = "14";
+    $lot->numero_logement_operateur = "14";
     $lot->volume = 3.5;
     $lot->destination_type = null;
     $lot->destination_date = ($campagne+1).'-06-15';
@@ -165,7 +165,7 @@ $t->is($drev_modificative->getValidation(),$date_validation_2,"La date de valida
 $t->is($drev_modificative->getValidationOdg(),$date_validation_odg_2,"La date de validation de l'odg est ".$date_validation_odg_2);
 
 if ($lot) {
-    $t->is($drev_modificative->lots[0]->date,$date_validation_2,"La date de version du lot de départ est celle de la validation ODG de la M00 ($date_validation_odg_1)");
+    $t->is($drev_modificative->lots[0]->date,$date_validation_1,"La date de version du lot de départ est celle de la validation de la M00 (date_validation_1)");
     $t->is($lot->date,$date_validation_2,"La date de version du dernier lot est celle de la validation ODG de la M01 ($date_validation_2)");
 }
 

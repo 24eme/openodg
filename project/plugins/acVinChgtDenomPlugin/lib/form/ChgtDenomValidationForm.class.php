@@ -8,8 +8,6 @@ class ChgtDenomValidationForm extends acCouchdbForm
       $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
     }
     public function configure() {
-        $this->setWidget('validation', new sfWidgetFormInputHidden());
-        $this->setValidator('validation', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})~', 'required' => true)));
 
         $formaffectable = new BaseForm();
 
@@ -24,14 +22,26 @@ class ChgtDenomValidationForm extends acCouchdbForm
 
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
-      $defaults = $this->getDefaults();
-      $defaults['validation'] = date('Y-m-d');
-      $this->setDefaults($defaults);
-      exit;
-      // if($this->isAdmin){
-      //   foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-      //     $$this->getObject()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
-      //  }
-      // }
+    }
+
+    public function save(){
+      $values = $this->getValues();
+
+      if($this->isAdmin){
+        foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+          $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
+       }
+
+       if($this->getDocument()->isValidee()){
+         $this->getDocument()->validation_odg = date("d/m/Y");
+         $this->getDocument()->generateMouvementsFactures();
+       }
+      }
+
+      if(!$this->getDocument()->isValidee()){
+        $this->getDocument()->validation = date("d/m/Y");
+      }
+
+      $this->getDocument()->save();
     }
 }
