@@ -18,6 +18,13 @@ class MandatSepaConfiguration implements InterfaceMandatSepaPartie {
       $this->configuration = sfConfig::get('mandatsepa_configuration', array());
   }
 
+  public function isActive() {
+      if(!isset($this->configuration['is_active'])){
+        return false;
+      }
+      return $this->configuration['is_active'];
+  }
+
   public function getFrequencePrelevement() {
       if(!isset($this->configuration['frequence_prelevement'])){
         return "";
