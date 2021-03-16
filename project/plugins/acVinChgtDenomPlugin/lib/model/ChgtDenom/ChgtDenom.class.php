@@ -209,6 +209,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lots[] = $lot;
       }
       foreach($lots as $l) {
+        $l->affectable = true;
         $this->lots->add(null, $l);
       }
     }

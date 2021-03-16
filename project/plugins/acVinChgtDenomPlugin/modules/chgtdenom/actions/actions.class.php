@@ -110,9 +110,10 @@ class chgtdenomActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
-        $this->form = new ChgtDenomValidationForm($this->chgtDenom);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin));
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;

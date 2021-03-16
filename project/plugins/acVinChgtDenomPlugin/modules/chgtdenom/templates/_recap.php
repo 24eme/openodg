@@ -34,28 +34,66 @@
     <table class="table table-condensed" style="margin: 0;">
       <tbody>
         <tr>
-          <td style="border: none;">Logement : <?php if(!$chgtDenom->isValide()): ?><a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>"><strong><?php echo $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span></a><?php else: ?><strong><?php echo $lot->numero_logement_operateur; ?></strong><?php endif; ?></td>
+          <td>
+            <div>
+              <div style="border: none;" class="m-3">
+                Logement :
+                <?php if(!$chgtDenom->isValide()): ?>
+                  <a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>">
+                    <strong><?php echo $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span>
+                  </a>
+                <?php else: ?>
+                  <strong><?php echo $lot->numero_logement_operateur; ?></strong>
+                <?php endif; ?>
+              </div>
+
+              <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
+              <div style="border: none;" class="m-3">
+                Produit : <strong><?php echo showProduitLot($lot) ?></strong>
+              </div>
+              <?php endif; ?>
+
+              <div style="border: none;" class="m-3">Volume : <strong><?php echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></div>
+            </div>
+          </td>
+          <td>
+            <?php if ($sf_user->isAdmin()): ?>
+              <div class="text-center">
+                <?php if(isset($form['lots'])): ?>
+                <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
+                  <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
+                    <div class="col-xs-12">
+                      <?php if ($sf_user->isAdmin() && !$chgtDenom->validation_odg): ?>
+                        <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                      <?php else: ?>
+                          <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                      <?php endif; ?>
+                    </div>
+                </div>
+              <?php else: ?>
+                <div style="margin-bottom: 0;" class="">
+                  <div class="col-xs-12">
+                    <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                  </div>
+                </div>
+              <?php endif; ?>
+              </div>
+            <?php endif; ?>
+          </td>
         </tr>
-        <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
-        <tr>
-          <td style="border: none;">Produit : <strong><?php echo showProduitLot($lot) ?></strong></td>
-        </tr>
-      <?php endif; ?>
-        <tr>
-          <td style="border: none;">Volume : <strong><?php echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
-        </tr>
+
       </tbody>
     </table>
   </div>
   <?php if(!$chgtDenom->isValide()):
-        $form = new ChgtDenomLogementForm($lot->getRawValue());
+        $formL = new ChgtDenomLogementForm($lot->getRawValue());
   ?>
     <div class="modal fade" id="modal_lot_<?php echo $k ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <form role="form" action="<?php echo url_for("chgtdenom_logement", array("sf_subject" => $chgtDenom, 'key' => "ind$k")) ?>" method="post" class="form-horizontal">
-            <?php echo $form->renderHiddenFields(); ?>
-            <?php echo $form->renderGlobalErrors(); ?>
+            <?php echo $formL->renderHiddenFields(); ?>
+            <?php echo $formL->renderGlobalErrors(); ?>
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $lot->numero_logement_operateur ?></strong></h4>
@@ -64,9 +102,9 @@
               <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <?php echo $form['numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $formL['numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-8">
-                                  <?php echo $form['numero_logement_operateur']->render(); ?>
+                                  <?php echo $formL['numero_logement_operateur']->render(); ?>
                             </div>
                         </div>
                     </div>
