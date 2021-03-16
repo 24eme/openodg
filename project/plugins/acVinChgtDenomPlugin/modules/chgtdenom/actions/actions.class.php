@@ -40,7 +40,7 @@ class chgtdenomActions extends sfActions {
     public function executeLots(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
-        $this->lots = $this->chgtDenom->getMvtLots();
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->chgtDenom->identifiant);
     }
 
     public function executeEdition(sfWebRequest $request) {
@@ -49,10 +49,10 @@ class chgtdenomActions extends sfActions {
 
         if($request->getParameter("key")) {
             $this->chgtDenom->changement_origine_document_id = preg_replace("/:.+/", "", $request->getParameter("key"));
-            $this->chgtDenom->changement_origine_mouvement = preg_replace("/.+:/", "", $request->getParameter("key"));
+            $this->chgtDenom->changement_origine_lot_unique_id = preg_replace("/.+:/", "", $request->getParameter("key"));
         }
 
-        if(!$this->chgtDenom->getMouvementLotOrigine()) {
+        if(!$this->chgtDenom->getLotOrigine()) {
 
             throw new sfError404Exception("Aucun lot trouvé");
         }
