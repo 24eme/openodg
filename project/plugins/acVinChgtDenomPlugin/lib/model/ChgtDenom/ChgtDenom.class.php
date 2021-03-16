@@ -180,7 +180,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $this->clearLots();
 
       $lots = array();
-      $lot = $this->getLotOrigine();
+      $lot = $this->getLotOrigine()->getData();
       $lot->numero_archive .= 'a';
 
       if (!$this->isChgtTotal()) {
