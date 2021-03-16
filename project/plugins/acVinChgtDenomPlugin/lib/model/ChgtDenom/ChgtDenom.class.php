@@ -96,7 +96,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function validateOdg($date = null) {
         if(is_null($date)) {
-            $date = date('Y-m-d');
+            $date = date('d/m/Y');
         }
         $this->validation_odg = $date;
     }
