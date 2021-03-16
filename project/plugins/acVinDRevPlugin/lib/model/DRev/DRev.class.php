@@ -841,6 +841,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function addLot() {
         $lot = $this->add('lots')->add();
+        $lot->id_document = $this->_id;
         $lot->declarant_identifiant = $this->identifiant;
         $lot->declarant_nom = $this->declarant->raison_sociale;
         $lot->affectable = true;
@@ -884,35 +885,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $etapeOriginal != $this->etape;
     }
 
-    public function storeLotsDateVersion($date) {
-        if(!$this->exist('lots')){
-            return;
-        }
-        foreach($this->lots as $lot) {
-          if($lot->hasVolumeAndHashProduit() && (!$lot->exist('id_document') || !$lot->id_document)){
-            $lot->add('id_document',$this->_id);
-            $lot->add('date',$date);
-          }
-          foreach ($lot as $key => $field) {
-            if($lot->hasVolumeAndHashProduit() && $this->getDocument()->isModifiedMother($lot->getHash(), $key)){
-              $lot->add('id_document',$this->_id);
-              $lot->add('date',$date);
-              break;
-            }
-          }
-        }
-    }
-
     public function validate($date = null) {
         if(is_null($date)) {
             $date = date('c');
         }
 
-        $this->storeLotsDateVersion($date);
-        //assigné le doc_id dans lots
         $this->cleanDoc();
         $this->validation = $date;
         $this->archiver();
+
+        foreach($this->lots as $lot) {
+            if($lot->hasBeenEdited()) {
+                continue;
+            }
+            $lot->date = $date;
+        }
 
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
 
@@ -928,7 +915,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->saveDocumentsDependants();
     }
 
-    public function devalidate($reinit_version_lot = true) {
+    public function devalidate() {
         $this->validation = null;
         $this->validation_odg = null;
         if($this->exist('etape')) {
@@ -936,14 +923,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
-        }
-        if($reinit_version_lot && ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
-          foreach($this->lots as $lot) {
-              if($lot->exist('date') && $lot->date && ($this->_id == $lot->id_document)){
-                $lot->date = null;
-                $lot->id_document = null;
-              }
-          }
         }
         $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
     }
@@ -1471,7 +1450,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach ($this->lots as $lot) {
-            if($lot->id_document != $this->_id) {
+            if($lot->hasBeenEdited()) {
                 continue;
             }
 
@@ -1725,9 +1704,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function listenerGenerateVersion($document) {
+        $document->constructId();
         $document->clearMouvementsLots();
         $document->clearMouvementsFactures();
-        $document->devalidate(false);
+        $document->devalidate();
         foreach ($document->getProduitsLots() as $produit) {
           if($produit->exist("validation_odg") && $produit->validation_odg){
             $produit->validation_odg = null;

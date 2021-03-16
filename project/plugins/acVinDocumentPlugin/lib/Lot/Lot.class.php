@@ -253,7 +253,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function hasBeenEdited(){
-      return ($this->getDocument()->hasVersion() && $this->exist('id_document') && $this->id_document);
+      return $this->id_document != $this->getDocument()->_id;
     }
 
     public function setOrigineDocumentId($id) {
