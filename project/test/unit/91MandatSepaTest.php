@@ -34,17 +34,17 @@ $t->is($mandatSepa->mention_autorisation, MandatSepaConfiguration::getInstance()
 $t->is($mandatSepa->mention_remboursement, MandatSepaConfiguration::getInstance()->getMentionRemboursement(), 'remboursement conforme à la configuration');
 $t->is($mandatSepa->mention_droits, MandatSepaConfiguration::getInstance()->getMentionDroits(), 'droits conforme à la configuration');
 
-$t->is($mandatSepa->debiteur->identifiant_ics, MandatSepaConfiguration::getInstance()->getMandatSepaIdentifiant(), 'ics conforme à la configuration');
-$t->is($mandatSepa->debiteur->nom, MandatSepaConfiguration::getInstance()->getMandatSepaNom(), 'nom conforme à la configuration');
-$t->is($mandatSepa->debiteur->adresse, MandatSepaConfiguration::getInstance()->getMandatSepaAdresse(), 'adresse conforme à la configuration');
-$t->is($mandatSepa->debiteur->code_postal, MandatSepaConfiguration::getInstance()->getMandatSepaCodePostal(), 'cp conforme à la configuration');
-$t->is($mandatSepa->debiteur->commune, MandatSepaConfiguration::getInstance()->getMandatSepaCommune(), 'commune conforme à la configuration');
+$t->is($mandatSepa->creancier->identifiant_ics, MandatSepaConfiguration::getInstance()->getMandatSepaIdentifiant(), 'ics conforme à la configuration');
+$t->is($mandatSepa->creancier->nom, MandatSepaConfiguration::getInstance()->getMandatSepaNom(), 'nom conforme à la configuration');
+$t->is($mandatSepa->creancier->adresse, MandatSepaConfiguration::getInstance()->getMandatSepaAdresse(), 'adresse conforme à la configuration');
+$t->is($mandatSepa->creancier->code_postal, MandatSepaConfiguration::getInstance()->getMandatSepaCodePostal(), 'cp conforme à la configuration');
+$t->is($mandatSepa->creancier->commune, MandatSepaConfiguration::getInstance()->getMandatSepaCommune(), 'commune conforme à la configuration');
 
-$t->is($mandatSepa->creancier->identifiant_rum, $societe->identifiant, 'rum conforme à la societe');
-$t->is($mandatSepa->creancier->nom, $societe->raison_sociale, 'nom conforme à la societe');
-$t->is($mandatSepa->creancier->adresse, $societe->siege->adresse, 'adresse conforme à la societe');
-$t->is($mandatSepa->creancier->code_postal, $societe->siege->code_postal, 'cp conforme à la societe');
-$t->is($mandatSepa->creancier->commune, $societe->siege->commune, 'commune conforme à la societe');
+$t->is($mandatSepa->debiteur->identifiant_rum, $societe->identifiant, 'rum conforme à la societe');
+$t->is($mandatSepa->debiteur->nom, $societe->raison_sociale, 'nom conforme à la societe');
+$t->is($mandatSepa->debiteur->adresse, $societe->siege->adresse, 'adresse conforme à la societe');
+$t->is($mandatSepa->debiteur->code_postal, $societe->siege->code_postal, 'cp conforme à la societe');
+$t->is($mandatSepa->debiteur->commune, $societe->siege->commune, 'commune conforme à la societe');
 
 $mandatSepa->constructId();
 $id = 'MANDATSEPA-'.$societe->getIdentifiant().'-'.date('Ymd');

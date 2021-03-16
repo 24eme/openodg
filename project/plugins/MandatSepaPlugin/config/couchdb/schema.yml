@@ -11,7 +11,8 @@ MandatSepa:
       mention_remboursement: { }
       mention_droits: { }
       is_signe: { }
-      debiteur:
+      is_actif: { }
+      creancier:
         type: collection
         class: MandatSepaPartie
         definition:
@@ -21,7 +22,7 @@ MandatSepa:
             adresse: { }
             code_postal: { }
             commune: { }
-      creancier:
+      debiteur:
         type: collection
         class: MandatSepaPartie
         definition:

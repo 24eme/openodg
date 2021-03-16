@@ -2,7 +2,7 @@
 class MandatSepa extends BaseMandatSepa {
 
   public function constructId() {
-      $id = 'MANDATSEPA-' . $this->creancier->identifiant_rum . '-' . str_replace('-', '', $this->date);
+      $id = 'MANDATSEPA-' . $this->debiteur->identifiant_rum . '-' . str_replace('-', '', $this->date);
       $this->set('_id', $id);
   }
 

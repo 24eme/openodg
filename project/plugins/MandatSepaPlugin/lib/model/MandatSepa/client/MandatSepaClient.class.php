@@ -21,14 +21,29 @@ class MandatSepaClient extends acCouchdbClient {
       return $doc;
   }
 
-  public function createDoc($creancier, $debiteur = null, $date = null, $frequence = null) {
+  public function findLastBySociete($id_or_object) {
+    if (is_object($id_or_object)) {
+      $id_or_object = $id_or_object->getIdentifiant();
+    }
+    $ids = $this->startkey_docid(sprintf(self::TYPE_COUCHDB."-%s-%s", $id_or_object, "00000000"))
+                ->endkey_docid(sprintf(self::TYPE_COUCHDB."-%s-%s", $id_or_object, "99999999"))
+                ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+
+    $nbIds = count($ids);
+    if (!$nbIds) {
+      return null;
+    }
+    return $this->find($ids[$nbIds-1]);
+  }
+
+  public function createDoc($debiteur, $creancier = null, $date = null, $frequence = null) {
       $mandatSepaConf = MandatSepaConfiguration::getInstance();
       $mandatSepa = new MandatSepa();
-      $mandatSepa->setCreancier($creancier);
-      if (!$debiteur) {
-        $debiteur = MandatSepaConfiguration::getInstance();
-      }
       $mandatSepa->setDebiteur($debiteur);
+      if (!$creancier) {
+        $creancier = MandatSepaConfiguration::getInstance();
+      }
+      $mandatSepa->setCreancier($creancier);
       if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date)) {
         $date = date('Y-m-d');
       }
