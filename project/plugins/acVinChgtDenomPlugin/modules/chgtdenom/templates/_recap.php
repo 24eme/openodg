@@ -1,4 +1,3 @@
-<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getMvtLot())); ?>
 <style>
   #declassement_filigrane{
     position:absolute;
