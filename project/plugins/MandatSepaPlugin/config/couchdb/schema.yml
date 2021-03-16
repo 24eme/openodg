@@ -6,7 +6,6 @@ MandatSepa:
       _rev: { }
       type: { }
       date: { }
-      frequence_prelevement: { }
       mention_autorisation: { }
       mention_remboursement: { }
       mention_droits: { }
@@ -34,3 +33,4 @@ MandatSepa:
             commune: { }
             iban: { }
             bic: { }
+            frequence_prelevement: { }

@@ -54,7 +54,7 @@ class MandatSepaClient extends acCouchdbClient {
           $frequence = self::FREQUENCE_PRELEVEMENT_RECURRENT;
         }
       }
-      $mandatSepa->setFrequencePrelevement($frequence);
+      $mandatSepa->debiteur->setFrequencePrelevement($frequence);
       $mandatSepa->setMentionAutorisation($mandatSepaConf->getMentionAutorisation());
       $mandatSepa->setMentionRemboursement($mandatSepaConf->getMentionRemboursement());
       $mandatSepa->setMentionDroits($mandatSepaConf->getMentionDroits());

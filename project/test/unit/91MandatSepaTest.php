@@ -19,7 +19,7 @@ $mandatSepa = MandatSepaClient::getInstance()->createDoc($societe);
 
 $t->is($mandatSepa->date, date('Y-m-d'), 'date de creation = date du jour');
 $t->is($mandatSepa->is_signe, 0, 'mandat non signe');
-$t->is($mandatSepa->frequence_prelevement, MandatSepaClient::FREQUENCE_PRELEVEMENT_RECURRENT, 'fréquence = récurrent');
+$t->is($mandatSepa->debiteur->frequence_prelevement, MandatSepaClient::FREQUENCE_PRELEVEMENT_RECURRENT, 'fréquence = récurrent');
 $t->is(MandatSepaConfiguration::getInstance()->getMentionAutorisation(), 'En signant ce formulaire de mandat, vous autorisez (A) le Syndicat des Vins IGP à envoyer des instructions à votre banque pour débiter votre compte, et (B) votre banque à débiter votre compte conformément aux instructions du Syndicat des Vins IGP.', 'autorisation correctement configuré');
 $t->is(MandatSepaConfiguration::getInstance()->getMentionRemboursement(), 'Vous bénéficiez d\'un droit à remboursement par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle. Toute demande de remboursement doit être présentée dans les 8 semaines suivant la date de débit de votre compte ou sans tarder et au plus tard dans les 13 mois en cas de prélèvement non autorisé.', 'remboursement correctement configuré');
 $t->is(MandatSepaConfiguration::getInstance()->getMentionDroits(), 'Vos droits concernant le présent mandat sont expliqués dans un document que vous pouvez obtenir auprès de votre banque.', 'droits correctement configuré');
