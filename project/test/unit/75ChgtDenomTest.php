@@ -111,7 +111,7 @@ $autreLot = next($lots);
 
 $t->comment("Création d'un Chgt de Denom Total");
 
-$chgtDenom->setMouvementLotOrigine($lot);
+$chgtDenom->setLotOrigine($lot);
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_volume = $lot->volume;
 $chgtDenom->generateLots();
