@@ -9,6 +9,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	protected $piece_document = null;
 	protected $tri = null;
 	protected $cm = null;
+    protected $docToSave = array();
 
     public function __construct() {
         parent::__construct();
@@ -80,11 +81,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
     public function save() {
-        $this->saveDocumentsDependants();
         $this->generateMouvementsLots();
 
         parent::save();
 
+		$this->fillDocToSaveFromLots();
         $this->saveDocumentsDependants();
     }
 
@@ -172,10 +173,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
     }
 
-    protected function getDocumentsPereLot() {
-        $docs = array();
-
-        foreach ($this->lots as $lot) {
+	public function fillDocToSaveFromLots() {
+		foreach ($this->lots as $lot) {
             if ($lot->isLeurre()) {
                 continue;
             }
@@ -184,15 +183,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 continue;
             }
 
-            $docs[$lotPere->getDocument()->_id] = $lotPere->getDocument();
+            $this->docToSave[$lotPere->getDocument()->_id] = $lotPere->getDocument()->_id;
         }
-
-        return $docs;
-    }
+	}
 
     public function saveDocumentsDependants() {
-        foreach($this->getDocumentsPereLot() as $doc) {
-            $doc->save();
+        foreach($this->docToSave as $docId) {
+            (acCouchdbManager::getClient()->find($docId))->save();
         }
     }
 
@@ -565,7 +562,27 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
  		 	return $lots;
 		}
 
+        public function getLotsNonAnonymisable(){
+            $lotsNonAnonymisable = array();
+            foreach ($this->getLots() as $lot) {
+            if(!$lot->isAnonymisable())
+                $lotsNonAnonymisable[$lot->getHash()] = $lot;
+            }
+
+            return $lotsNonAnonymisable;
+        }
+
+        public function cleanLotsNonAnonymisable(){
+			$this->fillDocToSaveFromLots();
+            foreach ($this->getLotsNonAnonymisable() as $hashLot => $lot) {
+                $this->remove($hashLot);
+            }
+			$this->generateMouvementsLots();
+        }
+
 		public function anonymize(){
+            $this->cleanLotsNonAnonymisable();
+
 			for($table = 1; true ; $table++) {
 				$lots = $this->getLotsByTable($table);
 				if (!count($lots)) {

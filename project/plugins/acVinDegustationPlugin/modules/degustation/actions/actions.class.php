@@ -259,17 +259,18 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->tri = $request->getParameter('tri');
         if(!$request->getParameter('numero_table')) {
-
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
+            if(!$this->tri){
+                $this->tri = 'Couleur|Genre|Appellation';
+            }
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1, 'tri' => $this->tri));
         }
         $this->numero_table = $request->getParameter('numero_table');
 
         if (!$request->getParameter('tri')) {
-            $tri_default = 'Couleur|Genre|Appellation';
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $tri_default));
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $this->tri));
         }
-        $this->tri = $request->getParameter('tri');
         $this->tri_array = explode('|', strtolower($this->tri));
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
@@ -297,7 +298,7 @@ class degustationActions extends sfActions {
 
         if(!count($this->degustation->getLotsTableOrFreeLots($this->numero_table, false)) && $this->degustation->hasFreeLots()) {
 
-            return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id));
+            return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id, 'tri' => $this->tri));
         }
 
         if($this->degustation->hasFreeLots()) {
