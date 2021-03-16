@@ -21,5 +21,25 @@ class ConditionnementLot extends BaseConditionnementLot
         }
         return $c;
     }
-    
+
+    public function getDocumentType() {
+
+        return ConditionnementClient::TYPE_MODEL;
+    }
+
+    public function getDocumentOrdre() {
+
+        return "01";
+    }
+
+    public function getLibelle() {
+
+        return "";
+    }
+
+    public function getMouvementFreeInstance() {
+
+        return ConditionnementMouvementLots::freeInstance($this->getDocument());
+    }
+
 }

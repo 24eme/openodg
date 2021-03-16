@@ -79,6 +79,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$this->piece_document->generatePieces();
 	}
 
+    public function save() {
+        $this->saveDocumentsDependants();
+        $this->generateMouvementsLots();
+
+        parent::save();
+
+        $this->saveDocumentsDependants();
+    }
+
 	public function storeEtape($etape) {
 	    if ($etape == $this->etape) {
 
@@ -89,7 +98,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	    return true;
 	}
-
 
 	public function getVersion() {
 			return null;
@@ -105,25 +113,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		return null;
-	}
-
-	public function updateOrigineLots($statut) {
-	    foreach ($this->lots as $lot) {
-          if ($lot->leurre === true) {
-          	continue;
-          }
-          if(!$lot->id_document) {
-              continue;
-          }
-	        $doc = acCouchdbManager::getClient()->find($lot->id_document);
-	        if ($doc instanceof InterfaceMouvementLotsDocument) {
-	            if ($doc->exist($lot->origine_mouvement)) {
-	               $doc->get($lot->origine_mouvement)->set('statut', $statut);
-								 $doc->get($doc->get($lot->origine_mouvement)->origine_hash)->set('statut', $statut);
-	               $doc->save();
-	            }
-	        }
-	    }
 	}
 
     public function updateLotLogement($lot, $logement)
@@ -143,7 +132,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos["nbLots"] = count($this->getLots());
 		$infos["nbLotsLeurre"] = count($this->getLots()) - count($this->getLotsWithoutLeurre());;
 		$infos["nbLotsSansLeurre"] = count($this->getLotsWithoutLeurre());
-		$infos['nbLotsPrelevable'] = count($this->getLotsPrelevables());
+		$infos['nbLotsPrelevable'] = count(DegustationClient::getInstance()->getLotsPrelevables());
 		$infos['nbLotsRestantAPrelever'] = $this->getNbLotsRestantAPreleve();
 		$infos['nbLotsPreleves'] = $this->getNbLotsPreleves();
 		$infos['nbLotsPrelevesSansLeurre'] = $this->getNbLotsPreleves() - $infos["nbLotsLeurre"];
@@ -171,131 +160,107 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		return $infos;
 	}
 
-	private function generateMouvementLotsFromLot($lot, $key) {
-			$mvt = new stdClass();
-			$mvt->date = $lot->date;
-			$mvt->statut = $lot->statut;
-            $mvt->doc_ordre = $this->getDocumentOrdre($lot);
-			$mvt->numero_dossier = $lot->numero_dossier;
-			$mvt->numero_archive = $lot->numero_archive;
-			$mvt->numero_logement_operateur = $lot->numero_logement_operateur;
-			$mvt->millesime = $lot->millesime;
-			$mvt->volume = $lot->volume;
-			$mvt->elevage = $lot->elevage;
-			$mvt->produit_hash = $lot->produit_hash;
-			$mvt->produit_libelle = $lot->produit_libelle;
-			$mvt->produit_couleur = $lot->getCouleurLibelle();
-			$mvt->region = '';
-			$mvt->version = $this->getVersion();
-			$mvt->origine_hash = $lot->getHash();
-			$mvt->origine_type = 'degustation';
-			$mvt->origine_document_id = $this->_id;
-			$mvt->id_document = $this->_id;
-			$mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.KeyInflector::slugify($key);
-			$mvt->declarant_identifiant = $lot->declarant_identifiant;
-			$mvt->declarant_nom = $lot->declarant_nom;
-			$mvt->destination_type = $lot->destination_type;
-			$mvt->destination_date = $lot->destination_date;
-			$mvt->details = $lot->details;
-			$mvt->campagne = $this->getCampagneByDate();
-			$mvt->specificite = $lot->specificite;
-			$mvt->centilisation = $lot->centilisation;
-			$mvt->conformite = $lot->conformite;
-			$mvt->motif = $lot->motif;
-			$mvt->recours_oc = $lot->recours_oc;
-			return $mvt;
-	}
+    /**** MOUVEMENTS LOTS ****/
 
-    public function generateMouvementsLots()
-    {
+    public function clearMouvementsLots(){
         $this->remove('mouvements_lots');
+        $this->add('mouvements_lots');
+    }
+
+    public function addMouvementLot($mouvement) {
+
+        return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
+    }
+
+    protected function getDocumentsPereLot() {
+        $docs = array();
 
         foreach ($this->lots as $lot) {
             if ($lot->isLeurre()) {
                 continue;
             }
+            $lotPere = $lot->getLotPere();
+            if(!$lotPere) {
+                continue;
+            }
 
-            $mouvements = $this->buildMouvementsLot($lot);
+            $docs[$lotPere->getDocument()->_id] = $lotPere->getDocument();
+        }
 
-            foreach ($mouvements as $key => $mouvement) {
-                $this->add('mouvements_lots')->add($mouvement->declarant_identifiant)->add(KeyInflector::slugify($key), $mouvement);
+        return $docs;
+    }
+
+    public function saveDocumentsDependants() {
+        foreach($this->getDocumentsPereLot() as $doc) {
+            $doc->save();
+        }
+    }
+
+	public function getLot($uniqueId) {
+
+        foreach($this->lots as $lot) {
+            if($lot->getUniqueId() != $uniqueId) {
+
+                continue;
+            }
+
+            return $lot;
+        }
+
+        return null;
+    }
+
+    public function generateMouvementsLots()
+    {
+        $this->clearMouvementsLots();
+
+        foreach ($this->lots as $lot) {
+            if ($lot->isLeurre()) {
+                continue;
+            }
+            switch($lot->statut) {
+                case Lot::STATUT_CONFORME_APPEL:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
+
+                case Lot::STATUT_RECOURS_OC:
+                    $this->addMouvementLot($lot->buildMouvement( Lot::STATUT_RECOURS_OC));
+
+                case Lot::STATUT_CONFORME:
+                case Lot::STATUT_NONCONFORME:
+                    $this->addMouvementLot($lot->buildMouvement($lot->statut));
+
+                case Lot::STATUT_DEGUSTE:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_DEGUSTE));
+
+                case Lot::STATUT_ANONYMISE:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANONYMISE));
+
+                case Lot::STATUT_ATTABLE:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE));
+
+                case Lot::STATUT_PRELEVE:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE));
+
+                case Lot::STATUT_ATTENTE_PRELEVEMENT:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
+
+                case Lot::STATUT_AFFECTE_DEST:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_DEST));
+
+                default:
+                    break;
+            }
+
+            if ($lot->statut === Lot::STATUT_NONCONFORME && $lot->isAffectable()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
+            } elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
     }
 
-    public function buildMouvementsLot($lot)
-    {
-        $mvts = [];
-        $key = $lot->getUnicityKey();
-        $statut_originel = $lot->statut;
-
-        switch($lot->statut) {
-            case Lot::STATUT_CONFORME_APPEL:
-                $lot->statut = Lot::STATUT_CONFORME_APPEL;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_RECOURS_OC:
-                $lot->statut = Lot::STATUT_RECOURS_OC;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_CONFORME:
-            case Lot::STATUT_NONCONFORME:
-                $lot->statut = ($lot->statut === Lot::STATUT_CONFORME) ? Lot::STATUT_CONFORME : Lot::STATUT_NONCONFORME;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_DEGUSTE:
-                $lot->statut = Lot::STATUT_DEGUSTE;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_ANONYMISE:
-                $lot->statut = Lot::STATUT_ANONYMISE;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_ATTABLE:
-                $lot->statut = Lot::STATUT_ATTABLE;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_PRELEVE:
-                $lot->statut = Lot::STATUT_PRELEVE;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_ATTENTE_PRELEVEMENT:
-                $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            case Lot::STATUT_AFFECTE_DEST:
-                $lot->statut = Lot::STATUT_AFFECTE_DEST;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-            default:
-                break;
-        }
-
-        if (($statut_originel === Lot::STATUT_NONCONFORME) || ($statut_originel === Lot::STATUT_RECOURS_OC)) {
-            if ($lot->exist('affectable') && $lot->affectable === true) {
-                $lot->statut = Lot::STATUT_AFFECTABLE;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-
-                $lot->statut = Lot::STATUT_AFFECTE_SRC;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-            } else {
-                $lot->statut = Lot::STATUT_MANQUEMENT_EN_ATTENTE;
-                $mvts[$key.'-'.$lot->statut] = $this->generateMouvementLotsFromLot($lot, $key.'-'.$lot->statut);
-            }
-        }
-
-        $lot->statut = $statut_originel;
-
-        return $mvts;
-    }
-
-    public function getDocumentOrdre($lot)
-    {
-        // Retourne l'ordre du document en
-        // interrogeant la vue
-        return 1;
-    }
-
+    /**** FIN DES MOUVEMENTS LOTS ****/
 
     /**** PIECES ****/
 
@@ -328,53 +293,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
-	public function getMvtLotsPrelevables() {
-         $mvt = array();
-         foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_AFFECTABLE)->rows as $item) {
-             $mvt[Lot::generateMvtKey($item->value)] = $item->value;
-		 }
-		 ksort($mvt);
-		 return $mvt;
-	 }
-
-	public function getLotsPrelevables() {
-	    $lots = array();
-	    foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
-	        $lot = MouvementLotView::generateLotByMvt($mvt);
-	        $lots[$key] = $lot;
-	    }
-			return $lots;
-	}
-
-	public function getLotsPrelevablesByProvenance($provenance) {
-			$lots = array();
-			foreach ($this->getMvtLotsPrelevables() as $key => $mvt) {
-					$lot = MouvementLotView::generateLotByMvt($mvt);
-					if(preg_match("/$provenance/", $lot->id_document) == 1){
-						$lots[$key] = $lot;
-					}
-			}
-			return $lots;
-	}
-
-	public function getLotsPrelevablesSortByDate($provenance = false) {
-		$lots = $provenance != false ? $this->getLotsPrelevablesByProvenance($provenance) : $this->getLotsPrelevables();
-        uasort($lots, function ($lot1, $lot2) {
-            $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
-            $date2 = DateTime::createFromFormat('Y-m-d', $lot2->date);
-
-            if ($date1 == $date2) {
-                return 0;
-            }
-            return ($date1 < $date2) ? -1 : 1;
-        });
-        return $lots;
-    }
-
 	 public function setLotsFromMvtKeys($keys, $statut){
 		 $this->remove('lots');
 		 $this->add('lots');
-		 $mvts = $this->getMvtLotsPrelevables();
+		 $mvts = DegustationClient::getInstance()->getLotsPrelevables();
 		 foreach($keys as $key => $activated) {
 			 if (!$activated) {
 				continue;
@@ -1122,7 +1044,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function addLot($mouvement, $statut) {
 
-			$lot = $this->lots->add(null, MouvementLotView::generateLotByMvt($mouvement));
+			$lot = $this->lots->add(null, $mouvement);
             $lot->statut = $statut;
             return $lot;
 		}
@@ -1141,32 +1063,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$lot = $this->get($hash_lot);
 
 			// Drev => modificatrice + changement dans Drev
-			$drevOriginal = DRevClient::getInstance()->find($lot->id_document);
-			$mvtLotDrevOriginal = $drevOriginal->get($lot->origine_mouvement);
-
-			$hashOriginalLot = $mvtLotDrevOriginal->origine_hash;
-			$lotDrevOriginal = $drevOriginal->get($hashOriginalLot);
+			$lotDrevOriginal = $lot->getLotPere();
             $lotDrevOriginalToSave = clone $lotDrevOriginal;
 
 			// $modificatrice
-			$modificatrice = $drevOriginal->generateModificative();
+			$modificatrice = $lotDrevOriginal->getDocument()->generateModificative();
 			$modificatrice->save();
 
 			$modificatrice = DRevClient::getInstance()->find($modificatrice->_id);
 
 
-		    $lotModificatrice = $modificatrice->get($hashOriginalLot);
+		    $lotModificatrice = $modificatrice->get($lotDrevOriginal->getHash());
             $lotModificatrice->volume = $volume;
             $lotModificatrice->statut = Lot::STATUT_PRELEVABLE;
 
             $modificatrice->validate();
 			$modificatrice->validateOdg();
-			$modificatrice->generateMouvementsLots();
 			$modificatrice->save();
 
 			$lot->volume = $volume;
-            $lot->id_document = $modificatrice->_id;
-			$lot->origine_mouvement = $modificatrice->getMouvementLotFromLot($lotModificatrice)->getHash();
-
 		}
 }

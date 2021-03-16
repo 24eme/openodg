@@ -12,9 +12,8 @@ ChgtDenom:
       validation_odg: {  }
       identifiant: {  }
       papier: { required: false, type: integer }
-      changement_origine_mvtkey: { required: false} # À supprimer
       changement_origine_document_id: {}
-      changement_origine_mouvement: {}
+      changement_origine_lot_unique_id: {}
       changement_type: {}
       changement_produit: {}
       changement_produit_libelle: { }
@@ -55,6 +54,7 @@ ChgtDenom:
                 fields:
                   date: { }
                   id_document: { }
+                  unique_id: { }
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero_logement_operateur: { }
@@ -72,6 +72,12 @@ ChgtDenom:
                   statut: {}
                   specificite: {}
                   affectable: { }
+                  document_fils: { }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
       mouvements:
         type: collection
         definition:
@@ -82,6 +88,38 @@ ChgtDenom:
                 fields:
                   '*':
                     class: ChgtDenomMouvementFactures
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        detail_identifiant: {  }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        unite: { required: false }
+                        taux: { }
+                        tva: { }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
+                        categorie: {  }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: DRevMouvementFactures
                     inheritance: MouvementFactures
                     type: collection
                     definition:
@@ -118,34 +156,22 @@ ChgtDenom:
                     type: collection
                     definition:
                       fields:
-                        prelevable: { type: integer }
-                        preleve: { type: integer }
-                        produit_hash: {  }
-                        produit_libelle: {  }
-                        produit_couleur: { }
-                        volume: { type: float }
                         date: {  }
-                        millesime: {  }
-                        elevage: { }
-                        region: {  }
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_logement_operateur: { }
+                        libelle: {}
+                        detail: {}
+                        region: {}
                         version: {  }
-                        origine_hash: {  }
-                        origine_type: {  }
-                        origine_document_id: {  }
-                        origine_mouvement: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        destination_type: { }
-                        destination_date: { }
-                        details: {}
-                        region: {}
                         campagne: {}
-                        id_document: {  }
                         statut: {}
-                        specificite: {}
       pieces:
         type: array_collection
         definition:

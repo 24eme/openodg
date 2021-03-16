@@ -29,9 +29,7 @@ if($drevModificatrice = DRevClient::getInstance()->find($first_document_origine_
   $drevModificatrice->delete(false);
 }
 
-$first_mvtlot_drev = $drev->get($first_lot_degust->origine_mouvement);
-
-
+$first_mvtlot_drev = $first_lot_degust->getLotPere();
 
 $t->comment("La condition préalable est que le lot soit prélevable");
 $t->is($first_mvtlot_drev->statut,Lot::STATUT_PRELEVABLE, "Le lot de la DRev est bien prélevable");
@@ -66,14 +64,13 @@ $t->is(false, $oldMvtLot, 'Le mouvement lot d\'origine de la Degustation de clef
 
 $t->isnt($first_lot_degust->origine_mouvement, $first_mvtlot_drev->getHash(), 'Les mouvements lot d\'origine dans la DREV 0 et la DREV M01 sont différents');
 
-$mvtlot_origine_drev = $first_document_origine->get($first_mvtlot_drev->getHash());
-$lot_origine_drev = $first_document_origine->get($mvtlot_origine_drev->origine_hash);
+$lot_origine_drev = $first_document_origine->get($first_lot_degust->getHash());
 
 $t->is($lot_origine_drev->volume, $volume, 'Le volume dans la Drev 0 n\'a pas changé');
 $t->is($lot_origine_drev->statut, Lot::STATUT_NONPRELEVABLE, 'Le statut dans la Drev 0 est devenu "NON PRELEVABLE"');
 
 $drevModificatrice = DRevClient::getInstance()->find($new_document_origine_id);
-$lot_drev_modif = $drevModificatrice->get($lot->origine_mouvement);
+$lot_drev_modif = $drevModificatrice->get($lot->getHash());
 
 $t->is($lot_drev_modif->volume, $newVolume, 'Le mouvement dans la Drev Modif a le nouveau volume');
 $t->is($lot_drev_modif->statut, Lot::STATUT_PRELEVABLE, 'Le statut dans la Drev Modif est "PRELEVABLE"');

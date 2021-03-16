@@ -14,6 +14,7 @@
     border: 1px solid #e7e7e7;
   }
 </style>
+<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine())); ?>
 
 <div class="col-sm-12 mb-5">
   <div class="text-center">

@@ -5,10 +5,9 @@ class degustationActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         $newDegutation = new Degustation();
         $this->form = new DegustationCreationForm($newDegutation);
-        $newDegutation->getMvtLotsPrelevables();
-        $this->lotsPrelevables = $newDegutation->getLotsPrelevablesSortByDate();
-        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
-        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
+        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE)->rows;
+        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
@@ -357,8 +356,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->numero_table = $request->getParameter('numero_table',0);
         $this->popup_validation = $request->getParameter('popup',0);
-        $this->etablissementsLotsConforme = $this->degustation->getEtablissementLotsConformesOrNot();
-        $this->etablissementsLotsNonConforme = $this->degustation->getEtablissementLotsConformesOrNot(false);
+
         if(!$this->numero_table && $this->degustation->getFirstNumeroTable()){
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
@@ -469,14 +467,14 @@ class degustationActions extends sfActions {
         $this->forward404Unless($this->etablissement);
         $this->campagne = $request->getParameter('campagne',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
 
-        $this->lots = MouvementLotView::getInstance()->getLotsStepsByDeclarantIdentifiant($etablissement_id,$this->campagne);
+        $this->lots = array();
 
     }
 
     public function executeLot(sfWebRequest $request) {
         $campagne = $request->getParameter('campagne');
         $lot_id = $request->getParameter('id');
-        $this->lotsStepsHistory = MouvementLotView::getInstance()->getLotStepsByArchive($campagne, $lot_id);
+        $this->lotsStepsHistory = array();
 
     }
 

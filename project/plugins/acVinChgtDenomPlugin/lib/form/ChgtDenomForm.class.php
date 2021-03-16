@@ -55,7 +55,7 @@ class ChgtDenomForm extends acCouchdbObjectForm
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
       $defaults['changement_type'] = $this->getObject()->changement_type;
-      $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getMvtLot()->volume;
+      $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
       $i=0;
       foreach($this->getObject()->changement_cepages as $cepage => $repartition) {
           $defaults['cepage_'.$i] = $cepage;

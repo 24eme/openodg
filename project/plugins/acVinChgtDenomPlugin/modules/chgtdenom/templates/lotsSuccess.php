@@ -4,7 +4,7 @@
 <?php include_partial('chgtdenom/step', array('step' => 'lots', 'chgtDenom' => $chgtDenom)) ?>
 <div class="page-header">
     <h2>Changement de dénomination / Déclassement</h2>
-    <p class="text-muted">Selectionnez, ci-dessous, le logement que vous souhaitez modifier</p>
+    <p class="text-muted">Selectionnez, ci-dessous, le lot souhaitez changer</p>
     <?php if(!count($lots)): ?>
     <p>Aucun lot pour la campagne <?php echo $chgtDenom->campagne ?></p>
     <?php else: ?>

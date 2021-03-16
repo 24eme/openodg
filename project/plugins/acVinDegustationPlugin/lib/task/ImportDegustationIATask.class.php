@@ -83,7 +83,7 @@ EOF;
          }
          $statut = self::$correspondancesStatuts[$statut];
 
-          $mouvements = MouvementLotView::getInstance()->getByDeclarantIdentifiant($etablissement->identifiant, $campagne);
+          $mouvements = MouvementLotView::getInstance()->getByIdentifiant($etablissement->identifiant);
 
           $mouvement = null;
           foreach ($mouvements->rows as $mvt) {
@@ -114,6 +114,7 @@ EOF;
           $newDegustation->validation = $degustation_date;
 
           if(!$degustation || $newDegustation->_id != $degustation->_id) {
+              if($degustation) { $degustation->etape = DegustationEtapes::ETAPE_RESULTATS; $degustation->save(); }
               $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
               if($degustation) { $degustation->delete(); $degustation = null; }
           }
@@ -128,11 +129,9 @@ EOF;
           if($lot->statut == Lot::STATUT_CONFORME) {
               $lot->conformite = Lot::CONFORMITE_CONFORME;
           }
-
-          $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
-          $degustation->generateMouvementsLots();
-          $degustation->save();
         }
+
+        if($degustation) { $degustation->etape = DegustationEtapes::ETAPE_RESULTATS; $degustation->save(); }
       }
 
     public function formatDate($date){

@@ -85,20 +85,20 @@ echo "Habilitations"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
 
-echo "Lots"
+echo "Import Lots"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 24 > $DATA_DIR/lots.csv
 sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots.csv
 sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots.csv
 php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
-echo "Changement de denomination"
+echo "Import des Changements de denomination"
 
 xls2ods $DATA_DIR/changement_denom.xls
 ods2tsv $DATA_DIR/changement_denom.ods | sed 's/;/ /g' | sed 's/\t/;/g' > $DATA_DIR/changement_denom.csv
 php symfony import:chgt-denom-ia $DATA_DIR/changement_denom.csv --application="$ODG" --trace
 
-echo "Degustations"
+echo "Import des Degustations"
 # trie des lots par date de commission pour dire qu'une date correspond à une degustation.
 sort -t";" -k32.7,32.10 -k32.4,32.5 -k32.1,32.2 $DATA_DIR/lots.csv  > $DATA_DIR/lots_sort_by_date.csv
 # il y a également un problème avec le nom de lieu j'ai mis SYNDICAT-VIGNERONS-ARLES par défaut mais il faudra le changer en fonction de ce qu'il y a en base pour chaque lot ce champs n'est pas dans le csv exporté.

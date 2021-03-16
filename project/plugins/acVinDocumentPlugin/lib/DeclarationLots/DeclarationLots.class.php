@@ -326,73 +326,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
         return $result;
       }
 
-      private function generateMouvementLotsFromLot($lot, $key) {
-          $mvt = new stdClass();
-          $mvt->date = $lot->date;
-          $mvt->statut = $lot->statut;
-          $mvt->numero_dossier = $lot->numero_dossier;
-          $mvt->numero_archive = $lot->numero_archive;
-          $mvt->numero_logement_operateur = $lot->numero_logement_operateur;
-          $mvt->millesime = $lot->millesime;
-          $mvt->volume = $lot->volume;
-          $mvt->elevage = $lot->elevage;
-          $mvt->produit_hash = $lot->produit_hash;
-          $mvt->produit_libelle = $lot->produit_libelle;
-          $mvt->produit_couleur = $lot->getCouleurLibelle();
-          $mvt->region = '';
-          $mvt->version = $this->getVersion();
-          $mvt->origine_hash = $lot->getHash();
-          $mvt->origine_type = $this->getDocumentDefinitionModel();
-          $mvt->origine_document_id = $this->_id;
-          $mvt->id_document = $this->_id;
-          $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
-          $mvt->declarant_identifiant = $this->identifiant;
-          $mvt->declarant_nom = $this->declarant->raison_sociale;
-          $mvt->destination_type = $lot->destination_type;
-          $mvt->destination_date = $lot->destination_date;
-          $mvt->details = '';
-          if ($lot->exist('centilisation')) {
-              $mvt->centilisation = $lot->centilisation;
-          }
-          if ($lot->exist('pays')) {
-              $mvt->pays = $lot->pays;
-          }
-          $tabCepages=[];
-          foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc){
-            $tabCepages[$cep]=$pc;
-          }
-          arsort($tabCepages);
-          foreach($tabCepages as $cep => $pc) {
-            if (strlen($mvt->details)==0){
-              $mvt->details .=$cep.' ('.$pc.'%)';
-            }
-            else{
-              $mvt->details .= ' '.$cep.' ('.$pc.'%)';
-            }
-          }
-          $mvt->region = '';
-          $mvt->campagne = $this->campagne;
-          if($lot->exist('specificite')){
-            $mvt->specificite = $lot->specificite;
-          }
-          return $mvt;
-      }
-
-      public function generateAndAddMouvementLotsFromLot($lot, $key) {
-          $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-          return $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
-      }
-
-      public function generateMouvementsLots() {
-          if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
-              $this->add('mouvements_lots')->add($this->identifiant);
-          }
-          foreach($this->lots as $k => $lot) {
-              $key = $lot->getUnicityKey();
-              $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
-          }
-      }
-
       public function generatePieces() {
       	return $this->piece_document->generatePieces();
       }
@@ -562,4 +495,41 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       public function isLectureSeule() {
           return $this->exist('lecture_seule') && $this->get('lecture_seule');
       }
+
+      /**** MOUVEMENTS LOTS ****/
+
+      public function clearMouvementsLots(){
+          $this->remove('mouvements_lots');
+          $this->add('mouvements_lots');
+      }
+
+      public function addMouvementLot($mouvement) {
+
+          return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
+      }
+
+      public function getLot($uniqueId) {
+
+          foreach($this->lots as $lot) {
+              if($lot->getUniqueId() != $uniqueId) {
+
+                  continue;
+              }
+
+              return $lot;
+          }
+
+          return null;
+      }
+
+      public function generateMouvementsLots()
+      {
+          $this->clearMouvementsLots();
+
+          foreach ($this->lots as $lot) {
+
+          }
+      }
+
+      /**** FIN DES MOUVEMENTS LOTS ****/
 }
