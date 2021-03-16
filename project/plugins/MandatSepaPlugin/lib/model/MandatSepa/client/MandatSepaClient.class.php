@@ -1,8 +1,14 @@
 <?php
 class MandatSepaClient extends acCouchdbClient {
 
+  const TYPE_MODEL = "MandatSepa";
+  const TYPE_COUCHDB = "MANDATSEPA";
+
   const FREQUENCE_PRELEVEMENT_RECURRENT = 'RECURRENT';
   const FREQUENCE_PRELEVEMENT_PONCTUEL = 'PONCTUEL';
+
+  const STATUT_VALIDE = 'Mandat SEPA validé (reçu signé)';
+  const STATUT_NONVALIDE = 'En attente de reception du mandat SEPA signé';
 
   public static $frequence_prelevement_libelles = array(
       self::FREQUENCE_PRELEVEMENT_RECURRENT => "Récurrent",
@@ -11,6 +17,11 @@ class MandatSepaClient extends acCouchdbClient {
 
   public static function getInstance() {
       return acCouchdbManager::getClient("MandatSepa");
+  }
+
+  public static function getFrequencePrelevementLibelle($fp) {
+    $libelles = self::$frequence_prelevement_libelles;
+    return (isset($libelles[$fp]))? $libelles[$fp] : $fp;
   }
 
   public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
