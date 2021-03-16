@@ -1,0 +1,16 @@
+all:
+  configuration:
+    degustation:
+      specificite_lot_pdf: true
+      colleges:
+        degustateur_technicien: "Technicien"
+        degustateur_porteur_de_memoire: "Porteur de mémoire"
+        degustateur_usager_du_produit: "Usager du produit"
+      commissions:
+        - "Syndicat Vignerons Arles — 2 Chemin de Barriol 13200 Arles"
+        - "Fédération Inter Med — 49 avenue Jean Moulin 13330 Pelissanne"
+        - "Laboratoire Aix Oenologie — Rond Point du Canet 13590 Meyreuil"
+        - "Chambre Agriculture Aix — 22 avenue Henri Pontier 13626 Aix-en-Provence Cedex 1"
+        - "Salle de dégustation Espace Pellegrin — Maison des Agriculteurs 13626 Aix-en-Provence Cedex 1"
+        - "Laboratoire Oenologique ICV — 6 route de Carpentras 84190 Beaumes de Venise"
+        - "ODG 84 — 8 roue de Carpentras 84190 Beaumes de Venise"

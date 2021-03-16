@@ -12,8 +12,13 @@ function showProduitLot($lot)
   $text .= "</small>";
 
   if (get_class($lot) === stdClass::class) {
-      if(property_exists($lot, "cepages") && count($lot->cepages)) {
-        $text .= " <small class='text-muted'>".$lot->cepages."</small>";
+
+      if(property_exists($lot, "cepages") && count((array)$lot->cepages)) {
+
+        foreach ($lot->cepages as $cepage => $pourcentage_volume) {
+          $text .= " <small class='text-muted'> ".$cepage."</small>";
+        }
+
       }
   } else {
       if($lot->exist("details")) {
