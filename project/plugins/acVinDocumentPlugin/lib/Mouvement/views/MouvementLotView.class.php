@@ -26,7 +26,7 @@ class MouvementLotView extends acCouchdbView
     }
 
     public function find($identifiant, $query) {
-        $mouvements = MouvementLotView::getInstance()->getByIdentifiant($statut, $identifiant);
+        $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant);
 
         $mouvement = null;
         foreach ($mouvements->rows as $mouvement) {
