@@ -19,4 +19,25 @@ class MandatSepa extends BaseMandatSepa {
     }
     $this->creancier->setPartieInformations($creancier);
   }
+
+  public function getStatut() {
+    return ($this->is_signe)? MandatSepaClient::STATUT_VALIDE : MandatSepaClient::STATUT_NONVALIDE;
+  }
+
+  public function switchIsSigne() {
+    if ($this->is_signe) {
+      $this->is_signe = 0;
+      $this->is_actif = 0;
+    } else {
+      $this->is_signe = 1;
+    }
+  }
+
+  public function switchIsActif() {
+    if ($this->is_actif) {
+      $this->is_actif = 0;
+    } else {
+      $this->is_actif = 1;
+    }
+  }
 }
