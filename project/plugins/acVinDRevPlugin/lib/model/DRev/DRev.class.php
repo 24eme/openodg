@@ -1238,9 +1238,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function saveDocumentsDependants() {
         $mother = $this->getMother();
-        if($mother) {
-            $mother->save();
+
+        if(!$mother) {
+
+            return;
         }
+
+        $mother->save();
     }
 
     public function save() {
@@ -1467,9 +1471,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach ($this->lots as $lot) {
+            if($lot->id_document != $this->_id) {
+                continue;
+            }
+
+            if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && !$this->getMaster()->getLot($lot->unique_id)) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE));
+                continue;
+            }
+
+            $lot->document_fils = null;
+
             if($lot->getLotFils()) {
                 $lot->document_fils = $lot->getLotFils()->getDocument()->_id;
             }
+
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
             if ($lot->isAffectable()) {
@@ -1704,36 +1720,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateModificative() {
-        $doc = $this->version_document->generateModificative();
-        $doc->clearMouvementsLots();
-        $doc->clearMouvementsFactures();
-        return $doc;
-    }
 
-    public function generateNextVersion() {
-
-        throw new sfException("Not implemented");
+        return $this->version_document->generateModificative();
     }
 
     public function listenerGenerateVersion($document) {
+        $document->clearMouvementsLots();
+        $document->clearMouvementsFactures();
         $document->devalidate(false);
         foreach ($document->getProduitsLots() as $produit) {
           if($produit->exist("validation_odg") && $produit->validation_odg){
             $produit->validation_odg = null;
           }
         }
-        foreach ($document->lots as $lot) {
-          $lot->statut = Lot::STATUT_NONPRELEVABLE;
-        }
+    }
+
+    public function generateNextVersion() {
+
+        throw new sfException("Not use");
     }
 
     public function listenerGenerateNextVersion($document) {
-
+        throw new sfException("Not use");
     }
 
     public function getSuivante() {
 
-        throw new sfException("Not implemented");
+        throw new sfException("Not use");
     }
 
     public function isValidee() {

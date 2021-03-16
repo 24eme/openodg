@@ -141,9 +141,11 @@ class chgtdenomActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->isAdmin = $this->getUser()->isAdmin();
 
-        if ($this->getUser()->isAdmin() && !$this->chgtDenom->isApprouve()) {
-          $this->form = new ChgtDenomApprobationForm($this->chgtDenom);
+        $this->form = null;
+        if ($this->isAdmin && !$this->chgtDenom->isApprouve()) {
+          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin));
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -159,6 +161,12 @@ class chgtdenomActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin) {
+            $this->chgtDenom->validateOdg();
+            $this->chgtDenom->save();
+            $this->getUser()->setFlash("notice", "Le changement dénommination a été approuvé");
+        }
 
         return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
     }
