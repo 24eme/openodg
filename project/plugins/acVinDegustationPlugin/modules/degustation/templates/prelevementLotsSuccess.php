@@ -51,12 +51,7 @@
 		?>
 			<tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
         <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
-        <td><?php echo $lot->declarant_nom; ?></td>
-        <td><?php echo substr($lot->id_document, 0, 4) ?></td>
-				<td><?php echo $lot->numero_logement_operateur; ?></td>
-				<td>
-          <?php echo showProduitLot($lot) ?>
-        </td>
+        <?php include_partial('degustation/rowTablePrelevable', ['lot' => $lot]) ?>
         <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
             	<td class="text-center" data-hash="<?php echo $lot->declarant_nom; ?>">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
