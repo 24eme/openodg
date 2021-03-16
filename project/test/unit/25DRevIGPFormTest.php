@@ -411,7 +411,7 @@ $t->is(count($res->rows), 0, 'on ne retrouve pas le mouvement comme prelevable d
 $res = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_NONPRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev_modif2->_id);
 $t->is(count($res->rows), 0, 'on retrouve le mouvement comme non prelevable dans la vue MouvementLot');
 
-$res = MouvementLotView::getInstance()->getByDeclarantIdentifiant($drev->identifiant, $drev->campagne);
+$res = MouvementLotView::getInstance()->getByIdentifiant($drev->identifiant);
 $ok = false;
 foreach($res->rows as $r) {
     if ($r->value->origine_document_id == $drev->_id) {
