@@ -2,6 +2,7 @@
 
 class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
+    private $lots = [];
     private $lotsPrelevables = null;
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
@@ -17,20 +18,20 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
-        $formLots = new BaseForm();
-        foreach ($this->lotsPrelevables as $key => $item) {
-            $formLots->embedForm($key, new DegustationPrelevementLotForm());
-
-            if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
-                $obj = acCouchdbManager::getClient()->find($item->id_document);
-                $this->dates_degust_drevs[$item->id_document] = date('Ymd');
-                if(($obj->exist("date_degustation_voulue")) && DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue))
-                {
-                 $this->dates_degust_drevs[$item->id_document] = DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd');
-                }
-            }
+        foreach ($this->object->lots as $lot) {
+            $this->lots[$lot->unique_id] = $lot;
         }
+
+        foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {
+            $this->lots[$key] = $item;
+        }
+
+        $formLots = new BaseForm();
+
+        foreach ($this->lots as $key => $lot) {
+            $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
+        }
+
         $this->embedForm('lots', $formLots);
         $this->widgetSchema->setNameFormat('prelevement[%s]');
 
@@ -83,5 +84,10 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     public function getDateDegustParDrev()
     {
         return $this->dates_degust_drevs;
+    }
+
+    public function getLot($key)
+    {
+        return $this->lots[$key];
     }
 }
