@@ -13,7 +13,7 @@
     border: 1px solid #e7e7e7;
   }
 </style>
-<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine())); ?>
+<?php include_partial('infoLotOrigine', array('chgtDenom' => $chgtDenom, 'opacity' => true)); ?>
 
 <div class="col-sm-12 mb-5">
   <div class="text-center">
@@ -56,7 +56,7 @@
             </div>
           </td>
           <td>
-            <?php if ($sf_user->isAdmin()): ?>
+            <?php if ($sf_user->isAdmin() && $chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
               <div class="text-center">
                 <?php if(isset($form['lots'])): ?>
                 <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
