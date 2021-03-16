@@ -8,4 +8,4 @@ all:
     max_decimal_authorized: 4
   donnees_viticoles:
     regions:
-      NANTES: "IGP13"
+      IGP13: "IGP13"
