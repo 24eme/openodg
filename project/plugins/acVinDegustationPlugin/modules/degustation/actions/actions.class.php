@@ -254,8 +254,11 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->tri = $request->getParameter('tri','Couleur|Genre|Appellation');
+        $this->tri = $request->getParameter('tri');
         if(!$request->getParameter('numero_table')) {
+            if(!$this->tri){
+                $this->tri = 'Couleur|Genre|Appellation';
+            }
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1, 'tri' => $this->tri));
         }
         $this->numero_table = $request->getParameter('numero_table');
