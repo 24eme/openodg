@@ -15,13 +15,6 @@ class DegustationCreationForm extends acCouchdbObjectForm
         $this->setWidget('max_lots', new bsWidgetFormInput());
         $this->setValidator('max_lots', new sfValidatorNumber(array('required' => false)));
 
-        $this->setWidget('provenance', new bsWidgetFormSelectRadio(array(
-          'choices'  => $this->getProvenances(),
-          "default" => "DEFAULT"
-        )));
-        $this->setValidator('provenance', new sfValidatorChoice(array('choices' => array_keys($this->getProvenances()), 'required' => true)));
-
-
         $this->widgetSchema->setNameFormat('degustation_creation[%s]');
     }
 
@@ -34,19 +27,12 @@ class DegustationCreationForm extends acCouchdbObjectForm
         return $lieux;
     }
 
-    public static function getProvenances(){
-      return array("DREV" => "DREV", "CONDITIONNEMENT" => "CONDITIONNEMENT", "TRANSACTION" => "TRANSACTION", "CHGTDENOM" => "CHGT DENOM.", "DEFAULT" => "TOUS");
-    }
-
     protected function doUpdateObject($values) {
 		  parent::doUpdateObject($values);
       $dateVal = str_replace("-", "", preg_replace("/(.+)$/","$1",$values['date']));
       $timeVal = $values['time'];
       $dateTime = DateTime::createFromFormat('Ymd H:i',$dateVal." ".$timeVal);
       $this->getObject()->set('date', $dateTime->format("Y-m-d H:i"));
-      if($values['provenance'] == "DEFAULT"){
-        $this->getObject()->set('provenance', false);
-      }
     }
 
     public function save($con = null) {
@@ -55,7 +41,6 @@ class DegustationCreationForm extends acCouchdbObjectForm
         $timeVal = $values['time'];
         $dateTime = DateTime::createFromFormat('Ymd H:i',$dateVal." ".$timeVal);
         $lieu = Degustation::getNomByLieu($values['lieu'], true);
-        $provenance = $values["provenance"];
         $degustation = DegustationClient::getInstance()->find(sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, $dateTime->format("YmdHi"), $lieu));
         if ($degustation) {
             return $degustation;
