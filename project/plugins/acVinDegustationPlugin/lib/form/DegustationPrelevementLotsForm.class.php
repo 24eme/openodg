@@ -49,8 +49,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         $defaults = $this->getDefaults();
 
         foreach ($this->getObject()->lots as $lot) {
-          $key = $lot->getGeneratedMvtKey();
-          $defaults['lots'][$key] = array('preleve' => 1);
+          $defaults['lots'][$lot->getUniqueId()] = array('preleve' => 1);
         }
 
         if(!count($this->getObject()->lots)){

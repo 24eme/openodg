@@ -102,14 +102,6 @@ abstract class Lot extends acCouchdbDocumentTree
         return (isset($libelles[$conformite]))? $libelles[$conformite] : $conformite;
     }
 
-    public function getGeneratedMvtKey() {
-        return self::generateMvtKey($this);
-    }
-
-    public static function generateMvtKey($lot) {
-        return KeyInflector::slugify($lot->id_document.'/'.$lot->origine_mouvement);
-    }
-
     public function getConfigProduit() {
             return $this->getConfig();
     }
