@@ -6,8 +6,8 @@ class degustationActions extends sfActions {
         $newDegutation = new Degustation();
         $this->form = new DegustationCreationForm($newDegutation);
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
-        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
-        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
+        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE)->rows;
+        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
 
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
