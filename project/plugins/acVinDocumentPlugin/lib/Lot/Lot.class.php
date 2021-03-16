@@ -25,6 +25,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_ELEVAGE = "ELEVAGE";
 
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
+    const STATUT_REVENDICATION_SUPPRIMEE = "02_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
     const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
@@ -580,6 +581,24 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->statut = $statut;
 
         return $mouvement;
+    }
+
+    public function getMouvements() {
+        if(!$this->getDocument()->exist("/mouvements_lots/".$this->declarant_identifiant)) {
+
+            return array();
+        }
+
+        $mouvements = array();
+
+        foreach($this->getDocument()->get("/mouvements_lots/".$this->declarant_identifiant) as $m) {
+            if($m->lot_unique_id != $this->unique_id) {
+                continue;
+            }
+            $mouvements[$m->getKey()] = $m;
+        }
+
+        return $mouvements;
     }
 
     public function getMouvement($statut) {
