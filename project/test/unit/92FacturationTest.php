@@ -218,7 +218,7 @@ $t->ok(($montantHt > 0),"Le montant HT est supérieur à 0");
 $t->ok(($montantTtc > 0),"Le montant TTC est supérieur à 0");
 
 
-$res_mvts = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+$res_mvts = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_AFFECTABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
 
 $commissions = DegustationConfiguration::getInstance()->getCommissions();
 $degustation = new Degustation();

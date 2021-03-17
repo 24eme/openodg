@@ -7,7 +7,6 @@
 abstract class Lot extends acCouchdbDocumentTree
 {
     const STATUT_AFFECTE_DEST = "01_AFFECTE_DEST";
-    const STATUT_PRELEVABLE = "PRELEVABLE";
     const STATUT_NONPRELEVABLE = "NON_PRELEVABLE";
     const STATUT_ATTENTE_PRELEVEMENT = "02_ATTENTE_PRELEVEMENT";
     const STATUT_PRELEVE = "03_PRELEVE";
@@ -46,7 +45,6 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public static $libellesStatuts = array(
         self::STATUT_AFFECTE_DEST => 'Affecte dest',
-        self::STATUT_PRELEVABLE => 'Prélevable',
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
@@ -138,7 +136,6 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getDefaults() {
         $defaults = array();
         $defaults['millesime'] = $this->getDocument()->campagne;
-        $defaults['statut'] = Lot::STATUT_PRELEVABLE;
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
           $defaults['specificite'] = self::SPECIFICITE_UNDEFINED;
         }

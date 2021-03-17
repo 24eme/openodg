@@ -51,7 +51,7 @@ foreach ($mvts_prelevables as $key => $m) {
     }
 }
 
-$t->is($mvt->statut, Lot::STATUT_PRELEVABLE, "Le mouvement est prélevable");
+$t->is($mvt->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le mouvement est prélevable");
 //$t->ok($mvt->nombre_degustation, "Le mouvement est taggué en redégustation");
 //$t->is($mvt->nombre_degustation, 2, "C'est le deuxième passage du mouvement");
 $t->is($mvt->id_document, $degustation->_id, "L'id du doc du mouvement est la même degustation");

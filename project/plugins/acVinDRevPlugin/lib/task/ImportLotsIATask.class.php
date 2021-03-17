@@ -56,7 +56,6 @@ class ImportLotsIATask extends sfBaseTask
   );
 
   const STATUT_PRELEVE = "PRELEVE";
-  const STATUT_PRELEVABLE = "PRELEVE";
   const STATUT_DEGUSTE = "DEGUSTE";
   const STATUT_CONFORME = "CONFORME";
   const STATUT_NONCONFORME = "NON_CONFORME";
@@ -92,7 +91,7 @@ class ImportLotsIATask extends sfBaseTask
       "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
       "Prélevé NA" => Lot::STATUT_PRELEVE,//Prélevé Non Anonimisé
       "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
-      "Revendiqué C" => Lot::STATUT_PRELEVABLE,
+      "Revendiqué C" => Lot::STATUT_REVENDIQUE,
       "Revendiqué NC" => Lot::STATUT_NONCONFORME
     );
 
@@ -244,11 +243,9 @@ EOF;
             $lot->specificite = null;
             $lot->add('document_fils', true);
             if ($statut == self::STATUT_NONCONFORME) {
-              $lot->statut = self::STATUT_PRELEVABLE;
               $lot->specificite = "2ème passage $lot->specificite";
             }
-            if($statut == Lot::STATUT_PRELEVABLE && $prelevable) {
-                $lot->statut = Lot::STATUT_PRELEVABLE;
+            if($prelevable) {
                 $lot->remove('document_fils');
             }
             if($lot->elevage) {

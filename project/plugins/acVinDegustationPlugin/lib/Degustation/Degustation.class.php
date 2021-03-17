@@ -497,10 +497,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsPreleves() {
 	   		$lots = array();
 	   		foreach ($this->getLots() as $lot) {
-	   			if(!$lot->leurre && in_array($lot->statut, array(Lot::STATUT_PRELEVABLE, Lot::STATUT_NONPRELEVABLE, Lot::STATUT_ATTENTE_PRELEVEMENT))) {
-	   				continue;
-	   			}
-	   			$lots[] = $lot;
+                if ($lot->isLeurre()) {
+                    $lots[] = $lot;
+                    continue;
+                }
+
+                if(! $lot->getMouvement(Lot::STATUT_PRELEVE)) {
+                    continue;
+                }
+
+                $lots[] = $lot;
 	   		}
 			return $lots;
 		}

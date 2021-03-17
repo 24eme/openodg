@@ -21,7 +21,13 @@ class MandatSepa extends BaseMandatSepa {
   }
 
   public function getStatut() {
-    return ($this->is_signe)? MandatSepaClient::STATUT_VALIDE : MandatSepaClient::STATUT_NONVALIDE;
+    if (!$this->is_signe) {
+      return MandatSepaClient::STATUT_NONVALIDE;
+    }
+    if (!$this->is_actif) {
+      return MandatSepaClient::STATUT_SIGNE;
+    }
+    return MandatSepaClient::STATUT_VALIDE;
   }
 
   public function switchIsSigne() {
@@ -39,5 +45,37 @@ class MandatSepa extends BaseMandatSepa {
     } else {
       $this->is_actif = 1;
     }
+  }
+
+  public function getReference($withRev = true) {
+    $ref = $this->debiteur->identifiant_rum . '-' . str_replace('-', '', $this->date);
+    if ($withRev) {
+      $ref .= '/'.$this->_rev;
+    }
+    return $ref;
+  }
+
+  public function getDateFr() {
+    if (!$this->date) {
+      return '';
+    }
+    $d = new DateTime($this->date);
+    return $d->format('d/m/Y');
+  }
+
+  public function getIbanFormate() {
+    if (!$this->debiteur->iban) {
+      return '';
+    }
+    $iban = $this->debiteur->iban;
+    $result = '';
+    $length = strlen($this->debiteur->iban);
+    for($i=0; $i<$length; $i++) {
+      if ($i%4 === 0) {
+        $result .= ' ';
+      }
+      $result .= $iban[$i];
+    }
+    return $result;
   }
 }

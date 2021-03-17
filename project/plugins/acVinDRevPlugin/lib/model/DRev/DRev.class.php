@@ -752,36 +752,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function addLotFromDegustation($lot) {
-        $lot_degustation = clone $lot;
-
-        $lot_degustation->remove('details');
-        $lot_degustation->remove('numero_table');
-        $lot_degustation->remove('leurre');
-        $lot_degustation->remove('conformite');
-        $lot_degustation->remove('motif');
-        $lot_degustation->remove('observation');
-        $lot_degustation->remove('declarant_nom');
-        $lot_degustation->remove('declarant_identifiant');
-        $lot_degustation->remove('origine_mouvement');
-        $lot_degustation->remove('numero_anonymat');
-        $lot_degustation->remove('centilisation');
-        $lot_degustation->remove('email_envoye');
-
-        $lot_degustation->statut = Lot::STATUT_PRELEVABLE;
-
-        $lots = [];
-        foreach ($this->lots as $lot) {
-            $lots[] = $lot;
-        }
-        $lots[] = $lot_degustation;
-
-        $this->remove('lots');
-        $this->add('lots', $lots);
-
-        return $lot_degustation;
-    }
-
     public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
@@ -901,6 +871,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $lot->date = $date;
         }
+
+        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
     }
 
     public function delete() {
