@@ -4,7 +4,7 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
 <div class="page-header no-border">
-    <h2>Liste des lots à prélever</h2>
+    <h2>Liste des lots à prélever : <span class=""><?= count($lotsPrelevables) ?></span></h2>
 </div>
 <div class="row">
 <table class="table table-condensed table-striped">

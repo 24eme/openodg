@@ -24,6 +24,8 @@ Degustation:
                   date: { }
                   id_document: { }
                   unique_id: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
                   numero_dossier: { }
                   numero_archive: { }
                   numero_logement_operateur: { }

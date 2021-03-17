@@ -633,12 +633,34 @@ abstract class Lot extends acCouchdbDocumentTree
         return $doc->get($mouvement->value->lot_hash);
     }
 
+    public function updateDocumentDependances() {
+        $this->id_document_affectation = null;
+        $lotAffectation = $this->getLotAffectation();
+        if($lotAffectation) {
+            $this->id_document_affectation = $lotAffectation->getDocument()->_id;
+        }
+        $lotProvenance = $this->getLotProvenance();
+        if($lotProvenance) {
+            $this->id_document_provenance = $lotProvenance->getDocument()->_id;
+        }
+    }
+
+    public function getLotAffectation()
+    {
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+    }
+
     public function getLotFils()
     {
 
         return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
     }
 
+    public function getLotProvenance()
+    {
+
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+    }
 
     public function getLotPere()
     {
@@ -662,7 +684,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffecte() {
 
-        return $this->exist('document_fils') && $this->document_fils;
+        return $this->exist('id_document_affectation') && $this->id_document_affectation;
     }
 
     public function getCampagne() {

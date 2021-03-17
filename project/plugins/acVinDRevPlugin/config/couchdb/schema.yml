@@ -120,6 +120,8 @@ DRev:
                   date: { }
                   id_document: { }
                   unique_id: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero_logement_operateur: { }
@@ -135,7 +137,7 @@ DRev:
                   statut: {}
                   specificite: { }
                   affectable: { }
-                  document_fils: {  }
+                  document_fils: { required: false  }
                   cepages:
                     type: collection
                     definition:

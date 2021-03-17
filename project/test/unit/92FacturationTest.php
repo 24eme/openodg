@@ -1,12 +1,12 @@
 <?php
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
-
-if ($application != 'igp13' && $application != 'igpardeche') {
-    $t = new lime_test(1);
-    $t->ok(true, "Test disabled");
-    return;
-}
+//
+// if ($application != 'igp13' && $application != 'igpardeche') {
+//     $t = new lime_test(1);
+//     $t->ok(true, "Test disabled");
+//     return;
+// }
 
 
 $t = new lime_test(5);
@@ -96,6 +96,7 @@ $dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");
 $dr->save();
 $dr->storeFichier($csvTmpFile);
+
 /* A placer dans la génération mouvements (selon la conf?) */
 $dr->generateDonnees();
 $dr->save();
@@ -108,34 +109,18 @@ $t->comment($drev->_id);
 
 $produits = $drev->getProduits();
 
-$produit1 = current($produits);
-$produit1->superficie_revendique = 208;
-$produit1->volume_revendique_issu_recolte = 66;
-$produit_hash1 = $produit1->getHash();
+$valeurs_superficie_revendique =   array(10,1,20,50,80);
+$valeurs_revendique_issu_recolte = array(500,50,1000,2500,4000);
 
-next($produits);
-$produit2 = current($produits);
-$produit2->superficie_revendique = 0.8601;
-$produit2->volume_revendique_issu_recolte= 60.31;
-$produit_hash2 = $produit2->getHash();
+for ($i=1; $i <= 5; $i++) {
 
-next($produits);
-$produit3 = current($produits);
-$produit3->superficie_revendique = 0.81;
-$produit3->volume_revendique_issu_recolte = 57;
-$produit_hash3 = $produit3->getHash();
-
-next($produits);
-$produit4 = current($produits);
-$produit4->superficie_revendique = 0.1;
-$produit4->volume_revendique_issu_recolte = 2.23;
-$produit_hash4 = $produit4->getHash();
-
-next($produits);
-$produit5 = current($produits);
-$produit5->superficie_revendique = 0.2;
-$produit5->volume_revendique_issu_recolte = 6.21;
-$produit_hash5 = $produit5->getHash();
+  $p = current($produits);
+  $p->superficie_revendique = $valeurs_superficie_revendique[$i];
+  $p->volume_revendique_issu_recolte = $valeurs_revendique_issu_recolte[$i];
+  ${"produit_hash".$i} = $p->getHash();
+  ${"produit".$i} = $p;
+  next($produits);
+}
 
 
 $drev->save();
@@ -148,6 +133,12 @@ $t->comment("%libelle_produit_5% = ".$produit5->getLibelleComplet()." (sup=".$pr
 
 $t->ok(!count($drev->mouvements),"La Drev n'a pas encore de mouvements facturables");
 
+$drev->addLot();
+$drev->lots[0]->numero_cuve = '1';
+$drev->lots[0]->volume = 1;
+$drev->lots[1] = clone $drev->lots[0];
+$drev->lots[1]->numero_cuve = '2';
+$drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
@@ -160,9 +151,9 @@ $t->ok(count($templatesFactures),"Il existe plusieurs template de facture");
 $cm = new CampagneManager(date('m-d'),CampagneManager::FORMAT_PREMIERE_ANNEE);
 $uniqueTemplateFactureName = FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrentPrevious());
 
-$templateFactureAttendu = "TEMPLATE-FACTURE-".strtoupper(sfConfig::get('sf_app')) ."-".$drev->campagne;
+$templateFactureAttendu = TemplateFactureClient::getInstance()->findByCampagne($drev->campagne);
 
-$t->is($uniqueTemplateFactureName,$templateFactureAttendu,"Le template de facture est : $uniqueTemplateFactureName");
+$t->is($uniqueTemplateFactureName,$templateFactureAttendu->_id,"Le template de facture est : $uniqueTemplateFactureName");
 
 
 $form = new FacturationDeclarantForm(array(), array('modeles' => $templatesFactures,'uniqueTemplateFactureName' => $uniqueTemplateFactureName));
@@ -191,6 +182,7 @@ $t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->c
 
 
 // Affichage Cotisations
+$cptCotisTotal = 0;
 $cptCotisDrev = 0;
 $cptCotisDr = 0;
 $cptCotisChgtDenom = 0;
@@ -207,35 +199,55 @@ foreach ($templateFacture->cotisations as $c_name => $c) {
 
     if(in_array("DRev",$detail->docs->toArray(0,1))){
       $cptCotisDrev++;
-      continue;
     }
-
     if(in_array("ChgtDenom",$detail->docs->toArray(0,1))){
       $cptCotisChgtDenom++;
     }
     if(in_array("DR",$detail->docs->toArray(0,1))){
       $cptCotisDr++;
     }
+    $cptCotisTotal++;
 
   }
 }
 
-$cptFactureDetails = 0;
-foreach ($facture->getLignes() as $ligne) {
-  foreach ($ligne->details as $d) {
-  $cptFactureDetails++;
-  }
+$t->ok(count($facture->getLignes()),"Il y a bien plusieurs lignes dans facture");
+$montantHt = $facture->total_ht;
+$montantTtc = $facture->total_ttc;
+$t->ok(($montantHt > 0),"Le montant HT est supérieur à 0");
+$t->ok(($montantTtc > 0),"Le montant TTC est supérieur à 0");
+
+
+$res_mvts = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
+
+$commissions = DegustationConfiguration::getInstance()->getCommissions();
+$degustation = new Degustation();
+$degustation->date = date('Y-m-d H:i');
+$degustation->lieu = $commissions[0];
+$mvtKeys = array();
+
+foreach ($res_mvts->rows as $mvtLot) {
+  $mvtKeys[Lot::generateMvtKey($mvtLot->value)] = 1;
 }
 
-$t->is($cptFactureDetails,$cptCotisDrev+$cptCotisDr,"Il y a bien $cptFactureDetails lignes de facture : DRev=$cptCotisDrev et DR=$cptCotisDr définies");
+$degustation->setLotsFromMvtKeys($mvtKeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
 
-foreach(DegustationClient::getInstance()->getHistory(1, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $d) {
-    $degustation = $d;
-}
+$degustation->save();
 
-$t->is($cptFactureLigneChgtDenom, 0, "Il n'y a pas de lignes de facture ChgtDenom");
 
+// ATTRIBUER les "non-conformites"
 
 
 
-var_dump($degustation->_id);
+// Créer le ChgtDENom
+// refacturer
+// test sur la cotisation changement denom
+
+
+// Re-deguster
+// refacturer
+
+// test sur la facture seconde degustation
+
+
+//$t->is($cptFactureLigneChgtDenom, 0, "Il n'y a pas de lignes de facture ChgtDenom");
