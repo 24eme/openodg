@@ -31,6 +31,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
               $this->date = date("Y-m-d");
           }
           $etablissement = $this->getEtablissementObject();
+          $this->constructId();
       }
 
       public function getConfiguration() {
@@ -128,6 +129,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
 
       public function addLot() {
           $lot = $this->add('lots')->add();
+          $lot->id_document = $this->_id;
           $lot->initDefault();
           return $lot;
       }
@@ -167,7 +169,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
           if(is_null($date)) {
               $date = date('Y-m-d');
           }
-          $this->storeLotsDateVersion($date);
+
           $this->cleanDoc();
           $this->validation = $date;
       }
@@ -182,25 +184,24 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
         if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
-        $this->storeLotsDateVersion($date);
+
+        foreach($this->lots as $lot) {
+          if($lot->hasBeenEdited()) {
+              continue;
+          }
+          $lot->date = $date;
+        }
+
         $this->cleanDoc();
         $this->archiver();
         $this->validation_odg = $date;
     }
 
-      public function devalidate($reinit_version_lot = true) {
+      public function devalidate() {
           $this->validation = null;
           $this->validation_odg = null;
           if($this->exist('etape')) {
               $this->etape = null;
-          }
-          if($reinit_version_lot && ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
-            foreach($this->lots as $lot) {
-                if($lot->exist('date') && $lot->date && ($this->_id == $lot->id_document)){
-                  $lot->date = null;
-                  $lot->id_document = null;
-                }
-            }
           }
       }
 
@@ -464,7 +465,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       }
 
       public function listenerGenerateVersion($document) {
-          $document->devalidate(false);
+          $document->constructId();
+          $document->clearMouvementsLots();
+          $document->clearMouvementsFactures();
+          $document->devalidate();
           foreach ($document->getProduitsLots() as $produit) {
             if($produit->exist("validation_odg") && $produit->validation_odg){
               $produit->validation_odg = null;

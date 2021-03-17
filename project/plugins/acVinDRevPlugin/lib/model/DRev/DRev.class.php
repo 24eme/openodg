@@ -385,6 +385,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
         $etablissement = $this->getEtablissementObject();
+        $this->constructId();
     }
 
     public function getCSV() {

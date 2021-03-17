@@ -79,7 +79,6 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     {
         $drev = new DRev();
         $drev->initDoc($identifiant, $campagne);
-        $drev->constructId();
         $drev->storeDeclarant();
 
         $etablissement = $drev->getEtablissementObject();
