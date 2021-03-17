@@ -96,7 +96,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function validateOdg($date = null) {
         if(is_null($date)) {
-            $date = date('Y-m-d');
+            $date = date('d/m/Y');
         }
         $this->validation_odg = $date;
     }
@@ -122,7 +122,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->_set('changement_produit', $hash);
     }
 
-    public function setMouvementLotOrigine($lot) {
+    public function setLotOrigine($lot) {
         $this->changement_origine_document_id = $lot->id_document;
         $this->changement_origine_lot_unique_id = $lot->unique_id;
     }
@@ -180,12 +180,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $this->clearLots();
 
       $lots = array();
-      $lot = $this->getLotOrigine();
-      $lot->numero_archive .= 'a';
+      $lot = $this->getLotOrigine()->getData();
 
       if (!$this->isChgtTotal()) {
         $lot->volume -= $this->changement_volume;
-        $lotBis = $lot;
+        $lotBis = clone $lot;
+        $lot->numero_archive .= 'a';
         $lotBis->numero_archive .= 'b';
         $lotBis->volume = $this->changement_volume;
         $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
@@ -197,6 +197,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lots[] = $lot;
         $lots[] = $lotBis;
       } else {
+        $lot->numero_archive .= 'a';
         $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
         $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
         $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;

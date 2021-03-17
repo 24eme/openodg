@@ -18,6 +18,13 @@ class MandatSepaConfiguration implements InterfaceMandatSepaPartie {
       $this->configuration = sfConfig::get('mandatsepa_configuration', array());
   }
 
+  public function isActive() {
+      if(!isset($this->configuration['is_active'])){
+        return false;
+      }
+      return $this->configuration['is_active'];
+  }
+
   public function getFrequencePrelevement() {
       if(!isset($this->configuration['frequence_prelevement'])){
         return "";
@@ -47,48 +54,48 @@ class MandatSepaConfiguration implements InterfaceMandatSepaPartie {
   }
 
   public function getMandatSepaIdentifiant() {
-      if(!isset($this->configuration['debiteur'])){
+      if(!isset($this->configuration['creancier'])){
         return "";
       }
-      if(!isset($this->configuration['debiteur']['identifiant_ics'])){
+      if(!isset($this->configuration['creancier']['identifiant_ics'])){
         return "";
       }
-      return $this->configuration['debiteur']['identifiant_ics'];
+      return $this->configuration['creancier']['identifiant_ics'];
   }
   public function getMandatSepaNom() {
-      if(!isset($this->configuration['debiteur'])){
+      if(!isset($this->configuration['creancier'])){
         return "";
       }
-      if(!isset($this->configuration['debiteur']['nom'])){
+      if(!isset($this->configuration['creancier']['nom'])){
         return "";
       }
-      return $this->configuration['debiteur']['nom'];
+      return $this->configuration['creancier']['nom'];
   }
   public function getMandatSepaAdresse() {
-      if(!isset($this->configuration['debiteur'])){
+      if(!isset($this->configuration['creancier'])){
         return "";
       }
-      if(!isset($this->configuration['debiteur']['adresse'])){
+      if(!isset($this->configuration['creancier']['adresse'])){
         return "";
       }
-      return $this->configuration['debiteur']['adresse'];
+      return $this->configuration['creancier']['adresse'];
   }
   public function getMandatSepaCodePostal() {
-      if(!isset($this->configuration['debiteur'])){
+      if(!isset($this->configuration['creancier'])){
         return "";
       }
-      if(!isset($this->configuration['debiteur']['code_postal'])){
+      if(!isset($this->configuration['creancier']['code_postal'])){
         return "";
       }
-      return $this->configuration['debiteur']['code_postal'];
+      return $this->configuration['creancier']['code_postal'];
   }
   public function getMandatSepaCommune() {
-      if(!isset($this->configuration['debiteur'])){
+      if(!isset($this->configuration['creancier'])){
         return "";
       }
-      if(!isset($this->configuration['debiteur']['commune'])){
+      if(!isset($this->configuration['creancier']['commune'])){
         return "";
       }
-      return $this->configuration['debiteur']['commune'];
+      return $this->configuration['creancier']['commune'];
   }
 }

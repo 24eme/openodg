@@ -17,14 +17,14 @@
     <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
     <?php endif; ?>
 
-
+    <?php if($sf_user->isAdmin()): ?>
+      <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom, 'form' => $form)); ?>
+    <?php else:?>
+      <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
+    <?php endif; ?>
 
     <form role="form" action="<?php echo url_for("chgtdenom_validation", $chgtDenom) ?>" method="post" class="form-horizontal" id="validation-form">
-      <?php if($sf_user->isAdmin()): ?>
-        <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom, 'form' => $form)); ?>
-      <?php else:?>
-        <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
-      <?php endif; ?>
+
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
@@ -33,7 +33,7 @@
                 <a tabindex="-1" href="<?php echo url_for('chgtdenom_edition', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
             </div>
             <div class="col-xs-6 text-right">
-                <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#confirmation-validation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+                <button type="button" id="btn-validation-document-chgtDenom" data-toggle="modal" data-target="#chgtDenom-confirmation-validation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
             </div>
         </div>
     </form>

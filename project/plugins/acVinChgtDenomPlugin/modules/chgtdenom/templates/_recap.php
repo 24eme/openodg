@@ -1,4 +1,3 @@
-<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getMvtLot())); ?>
 <style>
   #declassement_filigrane{
     position:absolute;
@@ -14,7 +13,7 @@
     border: 1px solid #e7e7e7;
   }
 </style>
-<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine())); ?>
+<?php include_partial('infoLotOrigine', array('chgtDenom' => $chgtDenom, 'opacity' => true)); ?>
 
 <div class="col-sm-12 mb-5">
   <div class="text-center">
@@ -57,15 +56,17 @@
             </div>
           </td>
           <td>
-            <?php if ($sf_user->isAdmin()): ?>
+            <?php if ($sf_user->isAdmin() && $chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
               <div class="text-center">
                 <?php if(isset($form['lots'])): ?>
                 <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                   <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                     <div class="col-xs-12">
                       <?php if ($sf_user->isAdmin() && !$chgtDenom->validation_odg): ?>
+                        <span>Dégustable&nbsp;&nbsp; :</span>
                         <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                       <?php else: ?>
+                          <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
                           <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
                       <?php endif; ?>
                     </div>
@@ -73,7 +74,8 @@
               <?php else: ?>
                 <div style="margin-bottom: 0;" class="">
                   <div class="col-xs-12">
-                    <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                      <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
+                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
                   </div>
                 </div>
               <?php endif; ?>
@@ -86,14 +88,14 @@
     </table>
   </div>
   <?php if(!$chgtDenom->isValide()):
-        $formL = new ChgtDenomLogementForm($lot->getRawValue());
+        $form = new ChgtDenomLogementForm($lot->getRawValue());
   ?>
     <div class="modal fade" id="modal_lot_<?php echo $k ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <form role="form" action="<?php echo url_for("chgtdenom_logement", array("sf_subject" => $chgtDenom, 'key' => "ind$k")) ?>" method="post" class="form-horizontal">
-            <?php echo $formL->renderHiddenFields(); ?>
-            <?php echo $formL->renderGlobalErrors(); ?>
+            <?php echo $form->renderHiddenFields(); ?>
+            <?php echo $form->renderGlobalErrors(); ?>
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $lot->numero_logement_operateur ?></strong></h4>
@@ -102,9 +104,9 @@
               <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <?php echo $formL['numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $form['numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-8">
-                                  <?php echo $formL['numero_logement_operateur']->render(); ?>
+                                  <?php echo $form['numero_logement_operateur']->render(); ?>
                             </div>
                         </div>
                     </div>
@@ -112,7 +114,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fermer</button>
-              <button type="submit" class="btn btn-success pull-right">Valider</button>
+              <button type="submit" class="btn btn-success pull-right">Enregistrer</button>
             </div>
           </form>
         </div>

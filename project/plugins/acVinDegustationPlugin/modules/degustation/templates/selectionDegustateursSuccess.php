@@ -42,7 +42,7 @@
             <?php echo $form->renderGlobalErrors(); ?>
           </div>
           <?php foreach ($form['degustateurs'] as $college => $collegeForm): ?>
-            <table id="table_college_<?php echo $college; s?>" class="table table-bordered table-condensed table-striped table_college">
+            <table id="table_college_<?php echo $college;?>" class="table table-bordered table-condensed table-striped table_college">
               <thead>
                 <tr>
                   <th class="col-xs-11">Membre</th>

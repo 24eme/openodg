@@ -2,7 +2,7 @@
 class MandatSepa extends BaseMandatSepa {
 
   public function constructId() {
-      $id = 'MANDATSEPA-' . $this->creancier->identifiant_rum . '-' . str_replace('-', '', $this->date);
+      $id = 'MANDATSEPA-' . $this->debiteur->identifiant_rum . '-' . str_replace('-', '', $this->date);
       $this->set('_id', $id);
   }
 
@@ -18,5 +18,26 @@ class MandatSepa extends BaseMandatSepa {
       throw new Exception('Il faut definir un creancier pour le mandat SEPA.');
     }
     $this->creancier->setPartieInformations($creancier);
+  }
+
+  public function getStatut() {
+    return ($this->is_signe)? MandatSepaClient::STATUT_VALIDE : MandatSepaClient::STATUT_NONVALIDE;
+  }
+
+  public function switchIsSigne() {
+    if ($this->is_signe) {
+      $this->is_signe = 0;
+      $this->is_actif = 0;
+    } else {
+      $this->is_signe = 1;
+    }
+  }
+
+  public function switchIsActif() {
+    if ($this->is_actif) {
+      $this->is_actif = 0;
+    } else {
+      $this->is_actif = 1;
+    }
   }
 }
