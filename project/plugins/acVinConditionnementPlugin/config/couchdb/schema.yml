@@ -68,6 +68,8 @@ Conditionnement:
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero_logement_operateur: { }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
                   millesime: { }
                   volume: { type: float }
                   destination_type: { }

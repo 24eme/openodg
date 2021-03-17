@@ -901,14 +901,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $lot->date = $date;
         }
-
-        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
-
-        if(!count($this->getLotsRevendiques())) {
-            foreach($this->getProduitsLots() as $produit) {
-                $produit->validateOdg($date);
-            }
-        }
     }
 
     public function delete() {

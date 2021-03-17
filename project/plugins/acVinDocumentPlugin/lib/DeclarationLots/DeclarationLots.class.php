@@ -130,6 +130,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       public function addLot() {
           $lot = $this->add('lots')->add();
           $lot->id_document = $this->_id;
+          $lot->declarant_identifiant = $this->identifiant;
+          $lot->declarant_nom = $this->declarant->raison_sociale;
+          $lot->affectable = true;
           $lot->initDefault();
           return $lot;
       }
@@ -172,6 +175,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
 
           $this->cleanDoc();
           $this->validation = $date;
+          $this->archiver();
       }
 
       public function validateOdg($date = null, $region = null) {
@@ -193,7 +197,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
         }
 
         $this->cleanDoc();
-        $this->archiver();
         $this->validation_odg = $date;
     }
 
@@ -282,6 +285,25 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
             $this->piece_document->generatePieces();
     	}
 
+        public function save() {
+            $this->generateMouvementsLots();
+
+            parent::save();
+
+            $this->saveDocumentsDependants();
+        }
+
+        public function saveDocumentsDependants() {
+            $mother = $this->getMother();
+
+            if(!$mother) {
+
+                return;
+            }
+
+            $mother->save();
+        }
+
       public function archiver() {
           $this->archivage_document->preSave();
           if ($this->isArchivageCanBeSet()) {
@@ -304,7 +326,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
             $num = $m[1];
           }
           foreach($this->lots as $lot) {
-            if (empty($lot->numero_archive) && empty($lot->numero_dossier)) {
+            if (!$lot->numero_archive && !$lot->numero_dossier) {
               $num++;
               $lot->numero_archive = sprintf("%05d", $num);
               $lot->numero_dossier = $numeroDossier;
@@ -526,6 +548,11 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
           return null;
       }
 
+      public function getStatutRevendique() {
+
+          return Lot::STATUT_REVENDIQUE;
+      }
+
       public function generateMouvementsLots()
       {
           $this->clearMouvementsLots();
@@ -550,7 +577,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
                   $lot->document_fils = $lot->getLotFils()->getDocument()->_id;
               }
 
-              $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+              $this->addMouvementLot($lot->buildMouvement($this->getStatutRevendique()));
 
               if ($lot->isAffectable()) {
                   $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));

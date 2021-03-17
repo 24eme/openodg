@@ -1,9 +1,7 @@
 <?php
 
 $directory = dirname(__FILE__);
-$files = scandir($directory."/xml");
-
-rsort($files);
+$allFiles = scandir($directory."/xml");
 
 $output = 'html';
 
@@ -20,21 +18,28 @@ if ($limit < 1) {
     unset($limit);
 }
 
-if($output == "xml") {
-    unset($limit);
-    sort($files);
-}
+rsort($allFiles);
 
-$tests = array();
-$precs = array();
+$files = array();
 $i = 0;
-foreach($files as $file) {
-    if(!preg_match('/^(.+)_(.+)_(.+)_(.+)\.xml/', $file, $matches)) {
+foreach($allFiles as $file) {
+    if(!preg_match('/^.+_.+_.+_.+\.xml/', $file)) {
         continue;
     }
     if (isset($limit) && ($i++ > $limit)) {
         break;
     }
+
+    $files[] = $file;
+}
+
+sort($files)
+
+$tests = array();
+$precs = array();
+foreach($files as $file) {
+    preg_match('/^(.+)_(.+)_(.+)_(.+)\.xml/', $file, $matches);
+
     $xml = new SimpleXMLElement(file_get_contents($directory."/xml/".$file));
 
     $date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '\1-\2-\3 \4:\5:\6', $matches[1]);
