@@ -138,7 +138,6 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getDefaults() {
         $defaults = array();
         $defaults['millesime'] = $this->getDocument()->campagne;
-        $defaults['statut'] = Lot::STATUT_PRELEVABLE;
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
           $defaults['specificite'] = self::SPECIFICITE_UNDEFINED;
         }
