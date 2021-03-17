@@ -298,6 +298,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 
         foreach($lots as $key => $lot) {
+            $lot->statut = Lot::STATUT_AFFECTE_DEST;
             $lot = $this->lots->add(null, $lot);
         }
 	 }
