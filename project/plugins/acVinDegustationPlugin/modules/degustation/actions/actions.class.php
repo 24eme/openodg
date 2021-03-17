@@ -517,7 +517,6 @@ class degustationActions extends sfActions {
         if (!$lot) {
           $this->forward404Unless($lot);
         }
-        //DegustationClient::updatedSpecificite($lot);
         $lot->redegustation();
         $doc->generateMouvementsLots();
         $doc->save();

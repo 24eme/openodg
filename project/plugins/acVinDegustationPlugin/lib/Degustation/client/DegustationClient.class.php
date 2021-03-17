@@ -11,24 +11,6 @@ class DegustationClient extends acCouchdbClient {
         return acCouchdbManager::getClient("Degustation");
     }
 
-    public static function updatedSpecificite($lot) {
-      $nb = 2;
-      if (preg_match("/.*([0-9]+)".str_replace('X', '', self::SPECIFICITE_PASSAGES).".*/", $lot->specificite, $m)) {
-        $nb = ((int)$m[1]) + 1;
-      }
-
-      if ($lot->specificite === null) {
-          $lot->specificite = str_replace('X', $nb, self::SPECIFICITE_PASSAGES);
-      } else {
-          $lot->specificite = (strpos($lot->specificite, str_replace('X', '', self::SPECIFICITE_PASSAGES)) !== false)
-              ? str_replace($nb - 1, $nb, $lot->specificite)                              // il y a déjà un X passage
-              : $lot->specificite.', '.str_replace('X', $nb, self::SPECIFICITE_PASSAGES); // il n'y a pas de passage
-      }
-
-      $lot->statut = Lot::STATUT_PRELEVABLE;
-      return $lot;
-    }
-
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
         if($doc && $doc->type != self::TYPE_MODEL) {
