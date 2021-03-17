@@ -182,6 +182,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lots = array();
       $lot = $this->getLotOrigine()->getData();
 
+
+      $lotDef = ChgtDenomLot::freeInstance($this);
+      foreach($lot as $key => $value) {
+          if($lotDef->getDefinition()->exist($key)) {
+              continue;
+          }
+
+          unset($lot->{$key});
+      }
+
       if (!$this->isChgtTotal()) {
         $lot->volume -= $this->changement_volume;
         $lotBis = clone $lot;
@@ -211,7 +221,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
       foreach($lots as $l) {
         $l->affectable = true;
-        $this->lots->add(null, $l);
+        $lot = $this->lots->add(null, $l);
+        $lot->id_document = $this->_id;
+        $lot->updateDocumentDependances();
       }
     }
 
