@@ -15,6 +15,8 @@ $degust_date = $campagne.'-09-01 12:45';
 $docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date))."-SYNDICAT-VIGNERONS-ARLES";
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $doc = acCouchdbManager::getClient()->find($docid);
+$doc->desanonymize();
+$doc->save();
 
 $t->comment('On ajoute le lot 2 à la dégustation');
 
@@ -40,11 +42,10 @@ $doc = acCouchdbManager::getClient()->find($docid);
 
 $t->comment('On a 3 lots normaux / 1 Leurre');
 
-$lotPere = ($doc->lots[3]->getLotPere());
-$idDocumentSrc = $lotPere->getDocument()->_id;
+$lotProvenance = ($doc->lots[3]->getLotProvenance());
+$idDocumentProvenance = $lotProvenance->getDocument()->_id;
 
-$t->ok($lotPere->isAffecte(),'Le lot 3 est affecté dans la DREV');
-$t->is($lotPere->document_fils, $doc->_id, 'Le lot 3 est dans la DREV à pour fils la dégustation');
+$t->ok($lotProvenance->isAffecte(),'Le lot 3 est affecté dans la DREV');
 
 $t->comment('On a 2 lots normaux / 1 Leurre sur la table A, 1 lot normal qui n\'a pas de table');
 
@@ -61,11 +62,10 @@ $doc = acCouchdbManager::getClient()->find($docid);
 
 $t->is(count($doc->lots),3,'La dégustation n\'a plus que 3 lots');
 
-$ancienPere = acCouchdbManager::getClient()->find($idDocumentSrc);
-$actuelLotPere = $ancienPere->get($lotPere->getHash());
+$ancienPere = acCouchdbManager::getClient()->find($idDocumentProvenance);
+$actuelLotProvenance = $ancienPere->get($lotProvenance->getHash());
 
-$t->is($actuelLotPere->document_fils, null,'Le document fils du lot de la DRev '.$idDocumentSrc.' est null');
-$t->ok(!$actuelLotPere->isAffecte(),'Le lot pere dans la DRev '.$idDocumentSrc.' n\'est plus affectée');
+$t->ok(!$actuelLotProvenance->isAffecte(),'Le lot pere dans la DRev '.$idDocumentProvenance.' n\'est plus affectée');
 
 $isAnonymized = $doc->isAnonymized();
 $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
