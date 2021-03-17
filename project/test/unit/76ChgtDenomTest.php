@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(38);
+$t = new lime_test(36);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -65,9 +65,9 @@ foreach($drev->lots as $lot) {
 $lot->id_document = $drev->_id;
 $lot->millesime = $campagne;
 $lot->numero_logement_operateur = $i;
-$lot->volume = rand(10,50);
+$lot->volume = 50;
 $lot->destination_type = null;
-$lot->destination_date = ($campagne+1).'-'.sprintf("%02d", rand(1,12)).'-'.sprintf("%02d", rand(1,28));
+$lot->destination_date = ($campagne+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d", 1);
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
 $i++;
 }
@@ -85,11 +85,8 @@ $degustation->lieu = "Test — Test";
 $degustation->date = date('Y-m-d')." 14:00";
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 3, "3 lots en attentes de dégustation");
-$mvtkeys = array();
-foreach ($lotsPrelevables as $key => $value) {
-  $mvtkeys[$key] = 1;
-}
-$degustation->setLotsFromMvtKeys($mvtkeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
+$degustation->save();
+$degustation->setLots($lotsPrelevables);
 $degustation->save();
 
 $t->is(count(MouvementLotView::getInstance()->getByStatut($campagne, Lot::STATUT_PRELEVABLE)->rows), 0, "0 lots prelevables");
@@ -113,13 +110,14 @@ $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
 $t->is(count($lots), 3, "3 mouvements disponibles au changement de dénomination");
 
 $lot = current($lots);
+$volume = $lot->volume;
 $autreLot = next($lots);
 
 $t->comment("Création d'un Chgt de Denom Total");
 
 $chgtDenom->setLotOrigine($lot);
 $chgtDenom->changement_produit = $autreLot->produit_hash;
-$chgtDenom->changement_volume = $lot->volume;
+$chgtDenom->changement_volume = $volume;
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
 
@@ -149,8 +147,7 @@ $t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d
 $t->is($chgtDenom->lots[1]->numero_archive, $lot->numero_archive.'b', "numeros d'archive correctement postfixés : ".$lot->numero_archive.'b');
 $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
-$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
-$t->is($chgtDenom->lots->get(1)->statut, Lot::STATUT_PRELEVABLE, "statut du nouveau lot prelevable");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_NONCONFORME, "statut du lot conforme");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE), "statut origine changé");
 
 $chgtDenom->clearMouvementsLots();
@@ -167,7 +164,7 @@ $t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d
 $t->is($chgtDenom->changement_produit, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
-$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
+$t->is(count($chgtDenom->lots), 0, "Pas lot dans un declassement total");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_DECLASSE), "statut origine déclassé");
 
 $chgtDenom->clearMouvementsLots();
