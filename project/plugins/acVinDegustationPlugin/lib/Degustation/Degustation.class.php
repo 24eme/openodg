@@ -290,16 +290,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
-	 public function setLotsFromMvtKeys($keys, $statut){
+    public function setLots($lots)
+    {
+         $this->fillDocToSaveFromLots();
+
 		 $this->remove('lots');
 		 $this->add('lots');
-		 $mvts = DegustationClient::getInstance()->getLotsPrelevables();
-		 foreach($keys as $key => $activated) {
-			 if (!$activated) {
-				continue;
-			 }
-			 $lot = $this->addLot($mvts[$key], $statut);
-		 }
+
+        foreach($lots as $key => $lot) {
+            $lot = $this->lots->add(null, $lot);
+        }
 	 }
 
 	 public function getAdherentsByLotsWithStatut($statut = null){
