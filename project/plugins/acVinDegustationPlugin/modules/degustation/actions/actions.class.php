@@ -472,6 +472,14 @@ class degustationActions extends sfActions {
         return (isset($routes[$etape]))? $routes[$etape] : null;
     }
 
+    public function executeLotHistorique(sfWebRequest $request){
+        $etablissement_identifiant = $request->getParameter('identifiant');
+        $this->lot_dossier = $request->getParameter('lot_dossier');
+        $this->lot_archive = $request->getParameter('lot_archive');
+        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissement_identifiant);
+        $this->mouvements =  array_reverse(MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant,$this->lot_dossier,$this->lot_archive)->rows);
+    }
+
     public function executeList(sfWebRequest $request) {
         $etablissement_id = $request->getParameter('id');
         $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);

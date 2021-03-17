@@ -19,12 +19,18 @@ degustation_lot:
     sf_method: [get]
 
 degustation_etablissement_list:
-  url: /degustation/etablissement/:id
+  url: /degustation/etablissement/:identifiant
   param: { module: degustation, action: list }
   class: DegustationRoute
   options:
     model:    Etablissement
     type:     object
+
+degustation_lot_historique:
+  url: /lot-historique/:identifiant/:lot_dossier/:lot_archive
+  param: { module: degustation, action: lotHistorique }
+  requirements:
+    sf_method: [get]
 
 degustation_prelevements_etape:
   url: /degustation/:id/prelevements
