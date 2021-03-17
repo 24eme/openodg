@@ -6,12 +6,12 @@ MandatSepa:
       _rev: { }
       type: { }
       date: { }
-      frequence_prelevement: { }
       mention_autorisation: { }
       mention_remboursement: { }
       mention_droits: { }
       is_signe: { }
-      debiteur:
+      is_actif: { }
+      creancier:
         type: collection
         class: MandatSepaPartie
         definition:
@@ -21,7 +21,7 @@ MandatSepa:
             adresse: { }
             code_postal: { }
             commune: { }
-      creancier:
+      debiteur:
         type: collection
         class: MandatSepaPartie
         definition:
@@ -33,3 +33,4 @@ MandatSepa:
             commune: { }
             iban: { }
             bic: { }
+            frequence_prelevement: { }
