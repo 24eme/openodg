@@ -67,7 +67,7 @@
                         <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                       <?php else: ?>
                           <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
-                          <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                          <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
                       <?php endif; ?>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                 <div style="margin-bottom: 0;" class="">
                   <div class="col-xs-12">
                       <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
-                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
                   </div>
                 </div>
               <?php endif; ?>
