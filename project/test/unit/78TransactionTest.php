@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(8);
+$t = new lime_test(9);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -66,4 +66,5 @@ $t->ok($lot->numero_archive, "Numéro d'archive");
 $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_ENLEVE), 'Le lot est enlevé');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
+$t->is($lot->getProvenance(), null, "pas de provenance");
 

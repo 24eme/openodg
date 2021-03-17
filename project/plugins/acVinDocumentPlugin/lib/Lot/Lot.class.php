@@ -531,7 +531,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getProvenance()
     {
-        return substr($this->id_document, 0, 4);
+        if(!$this->id_document_provenance) {
+
+            return null;
+        }
+
+        return substr($this->id_document_provenance, 0, 4);
     }
 
     abstract public function getMouvementFreeInstance();
