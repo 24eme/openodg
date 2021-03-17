@@ -70,7 +70,7 @@ class DegustationLot extends BaseDegustationLot {
 
     public function conformeAppel()
     {
-        $this->statut = self::STATUT_CONFORME_APPEL;
+        $this->statut = Lot::STATUT_CONFORME_APPEL;
         $this->getDocument()->generateMouvementsLots();
     }
 

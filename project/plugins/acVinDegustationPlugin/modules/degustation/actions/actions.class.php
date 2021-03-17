@@ -508,16 +508,15 @@ class degustationActions extends sfActions {
 
     public function executeRedeguster(sfWebRequest $request) {
         $docid = $request->getParameter('id');
-        $ind = $request->getParameter('index');
+        $lotid = $request->getParameter('lot');
         $back = $request->getParameter('back');
         $this->forward404Unless($back);
         $doc = acCouchdbManager::getClient()->find($docid);
         $this->forward404Unless($doc);
-        $lot = null;
-        if ($doc->lots->exist($ind)) {
-          $lot = $doc->lots->get($ind);
+        $lot = $doc->getLot($lotid);
+        if (!$lot) {
+          $this->forward404Unless($lot);
         }
-        $this->forward404Unless($lot);
         //DegustationClient::updatedSpecificite($lot);
         $lot->redegustation();
         $doc->generateMouvementsLots();
@@ -527,14 +526,13 @@ class degustationActions extends sfActions {
 
     public function executeRecoursOc(sfWebRequest $request) {
         $docid = $request->getParameter('id');
-        $ind = $request->getParameter('index');
+        $lotid = $request->getParameter('lot');
         $doc = acCouchdbManager::getClient()->find($docid);
         $this->forward404Unless($doc);
-        $lot = null;
-        if ($doc->lots->exist($ind)) {
-          $lot = $doc->lots->get($ind);
+        $lot = $doc->getLot($lotid);
+        if (!$lot) {
+          $this->forward404Unless($lot);
         }
-        $this->forward404Unless($lot);
         $lot->recoursOc();
         $doc->generateMouvementsLots();
         $doc->save();
@@ -543,14 +541,13 @@ class degustationActions extends sfActions {
 
     public function executeLotConformeAppel(sfWebRequest $request) {
         $docid = $request->getParameter('id');
-        $ind = $request->getParameter('index');
+        $lotid = $request->getParameter('lot');
         $doc = acCouchdbManager::getClient()->find($docid);
         $this->forward404Unless($doc);
-        $lot = null;
-        if ($doc->lots->exist($ind)) {
-          $lot = $doc->lots->get($ind);
+        $lot = $doc->getLot($lotid);
+        if (!$lot) {
+          $this->forward404Unless($lot);
         }
-        $this->forward404Unless($lot);
         $lot->conformeAppel();
         $doc->generateMouvementsLots();
         $doc->save();

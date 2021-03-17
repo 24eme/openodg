@@ -255,19 +255,19 @@ degustation_elevages:
     sf_method: [get]
 
 degustation_redeguster:
-  url: /degustation/lots/:id/:index/redeguster
+  url: /degustation/lots/:id/:lot/redeguster
   param: { module: degustation, action: redeguster }
   requirements:
     sf_method: [get]
 
 degustation_recours_oc:
-  url: /degustation/lots/:id/:index/recours
+  url: /degustation/lots/:id/:lot/recours
   param: { module: degustation, action: recoursOc }
   requirements:
     sf_method: [get]
 
 degustation_lot_conforme_appel:
-  url: /degustation/lots/:id/:index/conforme-appel
+  url: /degustation/lots/:id/:lot/conforme-appel
   param: { module: degustation, action: lotConformeAppel }
   requirements:
     sf_method: [get]

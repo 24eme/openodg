@@ -31,15 +31,15 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <li><a class="dropdown-item" href="<?php echo url_for('degustation_redeguster', array('id' => $m->id_document, 'index' => str_replace('/lots/', '', $m->origine_hash), 'back' => 'degustation_manquements')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
-                <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_lot', array('identifiant' => $m->declarant_identifiant, 'lot' => $m->origine_document_id.":".$m->origine_mouvement)) ?>">Déclassement / Chgmt denom.</a></li>
-                <li><a class="dropdown-item" href="<?php echo url_for('degustation_recours_oc', array('id' => $m->id_document, 'index' => str_replace('/lots/', '', $m->origine_hash))); ?>"  >Recours OC</a></li>
-                <li class="<?php if(!$m->recours_oc): ?> disabled <?php endif; ?>" ><a class="dropdown-item" href="<?php echo url_for('degustation_lot_conforme_appel', array('id' => $m->id_document, 'index' => str_replace('/lots/', '', $m->origine_hash))); ?>"  onclick="return confirm('Confirmez vous la mise en conformité de ce lot en appel ?')" >Conforme en appel</a></li>
+                <li><a class="dropdown-item" href="<?php echo url_for('degustation_redeguster', array('id' => $m->id_document, 'lot' => $m->unique_id, 'back' => 'degustation_manquements')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
+                <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_lot', array('identifiant' => $m->declarant_identifiant, 'lot' => $m->unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
+                <li><a class="dropdown-item" href="<?php echo url_for('degustation_recours_oc', array('id' => $m->id_document, 'lot' => $m->unique_id)); ?>"  >Recours OC</a></li>
+                <li class="<?php if(!$m->recours_oc): ?> disabled <?php endif; ?>" ><a class="dropdown-item" href="<?php echo url_for('degustation_lot_conforme_appel', array('id' => $m->id_document, 'lot' => $m->unique_id)); ?>"  onclick="return confirm('Confirmez vous la mise en conformité de ce lot en appel ?')" >Conforme en appel</a></li>
               </ul>
             </div>
         </td>
         <td>
-            <a class="btn btn-default" href="<?php echo url_for('degustation_etablissement_list', array('id' => $m->declarant_identifiant)) ?>">Historique</a>
+            <a class="btn btn-default" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $m->declarant_identifiant, 'lot_dossier' => $m->numero_dossier, 'lot_archive' => $m->numero_archive)) ?>">Historique</a>
         </td>
     </tr>
 <?php endforeach; ?>
