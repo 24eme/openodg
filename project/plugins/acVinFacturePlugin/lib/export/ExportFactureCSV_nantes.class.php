@@ -60,11 +60,10 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         $valorisation = $this->getCotisationNode('valorisation');
         if($valorisation){
           $montant_covid_valorisation_ht = 0.0;
+          $montant_covid_valorisation_tva = 0.0;
           foreach ($valorisation->details as $detailName => $detail) {
-            if($detail->montant_ht < 0.0){
+            if($detail->libelle == "Remise exceptionnelle Covid"){ //Goretterie car pas le temps de refactoriser tout ça
               $montant_covid_valorisation_ht += $detail->montant_ht;
-            }
-            if($detail->montant_tva < 0.0){
               $montant_covid_valorisation_tva += $detail->montant_tva;
             }
           }
@@ -87,11 +86,11 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
 
         $montant_covid_odg = 0.0;
         if($odg_ou_forfait){
-          $montant_covid_odg = 0.0;
+          $montant_covid_odg_ht = 0.0;
           foreach ($odg_ou_forfait->details as $detailName => $detail) {
-            if($detail->montant_ht < 0.0){
-              $montant_covid_odg += $detail->montant_ht;
-            }
+              if($detail->libelle == "Remise exceptionnelle Covid"){ //Goretterie car pas le temps de refactoriser tout ça
+                  $montant_covid_odg_ht += $detail->montant_ht;
+              }
           }
           $csv .= $this->floatHelper->formatFr(($odg_ou_forfait->montant_ht-$montant_covid_odg), 2, 2).";";
           $csv .= $this->floatHelper->formatFr($montant_covid_odg, 2, 2).";";
