@@ -166,7 +166,8 @@ $nbMvtsAttendu = 0;
 if(FactureConfiguration::getInstance()->isActive()) {
     $template = $drev->getTemplateFacture();
     $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
-    $mouvements = $drev->mouvements->get($viti->identifiant);
+    $drev->generateMouvementsFactures();
+    $mouvements = $drev->mouvements->add($viti->identifiant);
     foreach ($template->cotisations as $type => $cot) {
         foreach($cot->details as $h => $d) {
             if (in_array('DRev', $d->docs->toArray())) {
@@ -212,6 +213,7 @@ $t->comment("Validation de la modificatrice");
 
 $drevM1->save();
 $drevM1->validate();
+$drevM1->generateMouvementsFactures();
 $drevM1->save();
 
 if(FactureConfiguration::getInstance()->isActive() && $nbMvtsAttendu) {
