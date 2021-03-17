@@ -22,6 +22,7 @@ if ($limit < 1) {
 
 if($output == "xml") {
     unset($limit);
+    sort($files);
 }
 
 $tests = array();
