@@ -13,9 +13,17 @@
 <?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
 <p>Sélectionner les lots qui ont été prélevés</p>
+<div class="row">
+  <div class="form-group col-xs-10">
+    <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
+  </div>
 
-<div class="form-group">
-  <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
+  <div class="col-xs-2">
+    <button class="btn btn-block btn-success" id="btn-preleve-all">
+      <i class="glyphicon glyphicon-ok-sign"></i>
+      Tout prélever
+    </button>
+  </div>
 </div>
 
 <form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="form-horizontal degustation prelevements">

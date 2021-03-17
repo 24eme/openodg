@@ -14,7 +14,6 @@ $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
 $degust_date_fr = '01/09/'.$campagne;
 $degust_time_fr = '12:45';
-$provenance = 'DREV';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
 
@@ -66,7 +65,7 @@ $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
 $degustation = new Degustation();
 $form = new DegustationCreationForm($degustation);
-$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0], 'provenance' => $provenance);
+$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0]);
 
 $form->bind($values);
 $t->ok($form->isValid(), "Le formulaire de création est valide");

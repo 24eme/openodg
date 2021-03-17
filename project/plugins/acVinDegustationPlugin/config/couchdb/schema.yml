@@ -10,7 +10,6 @@ Degustation:
       lieu: {  }
       max_lots: {  }
       etape: {  }
-      provenance: { }
       validation: {  }
       lots:
         type: array_collection
