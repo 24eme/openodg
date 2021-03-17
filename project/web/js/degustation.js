@@ -8,6 +8,13 @@
          window.location = retour;
       }
     });
+
+    $('#btn-preleve-all').on('click', function (event) {
+      $('.bsswitch').each(function(index, element) {
+        $(element).bootstrapSwitch('state', true)
+      })
+    })
+
     $('#popupLeurreForm').each(function(){
       $('#vin_sans_cepage').click(function(){
         if($(this).is(':checked')){

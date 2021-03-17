@@ -75,9 +75,6 @@
                                 <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
                               </div>
                             </div>
-                            <div class="col-sm-2">
-                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -95,11 +92,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-5">
+                            <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-2">
                                 <div class="input-group">
-                                    <?php echo $lot['volume']->render(); ?>
-                                    <div class="input-group-addon">hl</div>
+                                    <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
                                 </div>
                             </div>
                         </div>
@@ -116,11 +112,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
-                                <div class="input-group date-picker">
-                                    <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
-                                    <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
+                                <div class="input-group">
+                                    <?php echo $lot['volume']->render(); ?>
+                                    <div class="input-group-addon">hl</div>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +134,20 @@
                         </div>
                     </div>
                   <?php endif ?>
-                  <div class="col-md-6 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
+                  <div class="col-md-6">
+                      <div class="form-group">
+                          <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
+                          <div class="col-sm-5">
+                              <div class="input-group date-picker">
+                                  <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
+                                  <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-offset-8 col-md-3 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
                       <?php echo $lot['elevage']->render() ?>
                       <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
                   </div>

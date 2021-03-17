@@ -682,13 +682,14 @@ class drevActions extends sfActions {
         $this->drev->validate($dateValidation);
         $this->drev->cleanLots();
         $this->drev->save();
-
-        if($this->getUser()->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if(!$this->getUser()->hasDrevAdmin()){
+          {
             $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée, elle devra être approuvée par l'ensemble des ODG concernées");
 
             return $this->redirect('drev_visualisation', $this->drev);
+          }
         }
-
+        
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
             $this->drev->cleanLots();
@@ -698,12 +699,12 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        if($this->getUser()->hasDrevAdmin()) {
-            $this->drev->validateOdg();
-            $this->drev->save();
-            $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
+        if($this->getUser()->hasDrevAdmin()){
+          $this->drev->validateOdg();
+          $this->drev->save();
+          $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
 
-            return $this->redirect('drev_visualisation', $this->drev);
+          return $this->redirect('drev_visualisation', $this->drev);
         }
 
         if(DrevConfiguration::getInstance()->hasValidationOdgAuto() && !$this->validation->hasPoints()) {

@@ -6,6 +6,8 @@ all:
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
+  societe:
+    format_identifiant: "83%06d"
   donnees_viticoles:
     regions:
-      NANTES: "IGP13"
+      IGPVAR: "IGPVAR"

@@ -5,6 +5,13 @@ degustation:
     sf_method: [get]
   class: DegustationGeneralRoute
 
+degustation_prelevables:
+  url: /degustation/prelevables
+  param: { module: degustation, action: prelevables }
+  requirements:
+    sf_method: [get]
+  class: DegustationGeneralRoute
+
 degustation_lot:
   url: /degustation/lot/:campagne/:id
   param: { module: degustation, action: lot }

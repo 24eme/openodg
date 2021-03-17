@@ -27,6 +27,11 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_prelevement_lots', $degustation);
     }
 
+    public function executePrelevables(sfWebRequest $request)
+    {
+        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+    }
+
     public function executePrelevementLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->infosDegustation = $this->degustation->getInfosDegustation();

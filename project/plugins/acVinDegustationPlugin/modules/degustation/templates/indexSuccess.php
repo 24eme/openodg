@@ -24,7 +24,7 @@
                   Nombre de lots ne faisant l'objet d'aucune dégustation :
               </div>
               <div class="col-sm-3 col-xs-3">
-                  <span class=""><strong><?php echo count($lotsPrelevables); ?></strong></span>
+              <strong><?php echo count($lotsPrelevables); ?></strong> <a href="<?= url_for('degustation_prelevables') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
               </div>
             </div>
             <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?> <?php if($form["time"]->getError()): ?>has-error<?php endif; ?>">
@@ -58,13 +58,6 @@
                 <div class="col-sm-3 col-xs-3">
                   	<?php echo $form["max_lots"]->render(array("class" => "form-control", "placeholder" => 'Nombre max de lots')); ?>
                 </div>
-            </div>
-            <div class="form-group">
-              <?php echo $form["provenance"]->renderError(); ?>
-              <?php echo $form["lieu"]->renderLabel("Provenance", array("class" => "col-xs-4 control-label")); ?>
-              <div class="col-sm-8 col-xs-8">
-                <?php echo $form["provenance"]->render(); ?>
-              </div>
             </div>
             <div class="form-group text-right">
                 <div class="col-sm-4 col-sm-offset-8 col-xs-12">
