@@ -48,6 +48,7 @@ class DegustationClient extends acCouchdbClient {
 	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $mouvement) {
 	        $lots[$mouvement->value->unique_id] = $mouvement->value;
             $lots[$mouvement->value->unique_id]->id_document_provenance = $mouvement->id;
+            $lots[$mouvement->value->unique_id]->provenance = substr($mouvement->id, 0, 4);
 	    }
         uasort($lots, function ($lot1, $lot2) {
             $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);

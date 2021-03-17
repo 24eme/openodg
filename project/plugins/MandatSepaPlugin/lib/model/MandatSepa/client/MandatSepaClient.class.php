@@ -7,8 +7,9 @@ class MandatSepaClient extends acCouchdbClient {
   const FREQUENCE_PRELEVEMENT_RECURRENT = 'RECURRENT';
   const FREQUENCE_PRELEVEMENT_PONCTUEL = 'PONCTUEL';
 
-  const STATUT_VALIDE = 'Mandat SEPA validé (reçu signé)';
+  const STATUT_VALIDE = 'Prélèvement actif';
   const STATUT_NONVALIDE = 'En attente de reception du mandat SEPA signé';
+  const STATUT_SIGNE = 'Reçu signé';
 
   public static $frequence_prelevement_libelles = array(
       self::FREQUENCE_PRELEVEMENT_RECURRENT => "Récurrent",

@@ -18,6 +18,9 @@
     <?php endif; ?>
 
 
+    <?php if($validation->hasPoints()): ?>
+        <?php include_partial('chgtdenom/pointsAttentions', array('chgtDenom' => $chgtDenom, 'validation' => $validation)); ?>
+    <?php endif; ?>
 
     <form role="form" action="<?php echo url_for("chgtdenom_validation", $chgtDenom) ?>" method="post" class="form-horizontal" id="validation-form">
       <?php if($sf_user->isAdmin()): ?>

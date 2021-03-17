@@ -209,7 +209,7 @@ if($compte->getSociete()->isTransaction()){
                     <label>Mandat de prélèvement SEPA :</label>
                 </div>
                 <div class="col-xs-6 text-left">
-                    <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Télécharger le document</a>
+                    <a href="<?php echo url_for('mandatsepa_pdf', $mandatSepa) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Télécharger le document</a>
                 </div>
               </div>
               <div class="row">

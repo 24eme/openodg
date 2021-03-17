@@ -296,6 +296,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 
         foreach($lots as $key => $lot) {
+            $lotDef = DegustationLot::freeInstance($this);
+            foreach($lot as $key => $value) {
+                if($lotDef->getDefinition()->exist($key)) {
+                    continue;
+                }
+
+                unset($lot->{$key});
+            }
             $lot = $this->lots->add(null, $lot);
             $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot->id_document = $this->_id;
