@@ -530,8 +530,39 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       {
           $this->clearMouvementsLots();
 
-          foreach ($this->lots as $lot) {
+          if (!$this->isValideeOdg()) {
+            return;
+          }
 
+          foreach ($this->lots as $lot) {
+              if($lot->hasBeenEdited()) {
+                  continue;
+              }
+
+              if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && !$this->getMaster()->getLot($lot->unique_id)) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE));
+                  continue;
+              }
+
+              $lot->document_fils = null;
+
+              if($lot->getLotFils()) {
+                  $lot->document_fils = $lot->getLotFils()->getDocument()->_id;
+              }
+
+              $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+
+              if ($lot->isAffectable()) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+                  continue;
+              }
+
+              if($lot->isAffecte()) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC_DREV));
+                  continue;
+              }
+
+              $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
           }
       }
 
