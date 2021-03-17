@@ -70,6 +70,7 @@ class DegustationClient extends acCouchdbClient {
     public function getManquements() {
         $manquements = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
+            $item->value->id_document = $item->id;
             $manquements[$item->value->unique_id] = $item->value;
         }
         return $manquements;

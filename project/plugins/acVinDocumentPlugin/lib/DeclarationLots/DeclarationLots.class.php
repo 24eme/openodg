@@ -312,10 +312,12 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       }
 
       public function getNumeroArchive() {
+
           return $this->_get('numero_archive');
       }
 
       public function isArchivageCanBeSet() {
+
           return $this->isValidee();
       }
 
@@ -571,11 +573,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
                   continue;
               }
 
-              $lot->document_fils = null;
-
-              if($lot->getLotFils()) {
-                  $lot->document_fils = $lot->getLotFils()->getDocument()->_id;
-              }
+              $lot->updateDocumentDependances();
 
               $this->addMouvementLot($lot->buildMouvement($this->getStatutRevendique()));
 

@@ -186,6 +186,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         foreach($this->docToSave as $docId) {
             (acCouchdbManager::getClient()->find($docId))->save();
         }
+
+        $this->docToSave = array();
     }
 
 	public function getLot($uniqueId) {

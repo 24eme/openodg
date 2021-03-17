@@ -11,6 +11,7 @@ Degustation:
       max_lots: {  }
       etape: {  }
       validation: {  }
+      provenance: { required: false }
       lots:
         type: array_collection
         definition:
@@ -75,7 +76,6 @@ Degustation:
                     type: collection
                     definition:
                       fields:
-                        id_document: { required: false }
                         date: {  }
                         numero_dossier: {  }
                         numero_archive: {  }
@@ -91,14 +91,15 @@ Degustation:
                         declarant_identifiant: {  }
                         declarant_nom: {  }
                         campagne: {}
-                        statut: {  }
-                        specificite: {}
-                        centilisation: { }
-                        conformite: {}
-                        motif: {}
-                        nombre_degustation: {required: false}
-                        affectable: {}
-                        recours_oc: {}
+                        statut: { }
+                        id_document: { required: false }
+                        specificite: { required: false }
+                        centilisation: { required: false }
+                        conformite: { required: false }
+                        motif: { required: false }
+                        nombre_degustation: { required: false }
+                        affectable: { required: false }
+                        recours_oc: { required: false }
       degustateurs:
         type: collection
         definition:

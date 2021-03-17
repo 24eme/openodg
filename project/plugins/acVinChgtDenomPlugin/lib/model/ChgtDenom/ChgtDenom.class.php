@@ -8,6 +8,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     protected $mouvement_document = null;
     protected $piece_document = null;
   	protected $cm = null;
+    protected $docToSave = array();
 
     public function __construct() {
         parent::__construct();
@@ -150,6 +151,31 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 	protected function doSave() {
           $this->piece_document->generatePieces();
     	}
+
+    public function saveDocumentsDependants() {
+        foreach($this->docToSave as $docId) {
+            (acCouchdbManager::getClient()->find($docId))->save();
+        }
+
+        $this->docToSave = array();
+    }
+
+    public function save() {
+        $this->generateMouvementsLots();
+
+        parent::save();
+
+        $this->saveDocumentsDependants();
+    }
+
+    public function fillDocToSaveFromLots() {
+        foreach ($this->lots as $lot) {
+            if(!$lot->id_document_provenance) {
+                continue;
+            }
+            $this->docToSave[$lot->id_document_provenance] = $lot->id_document_provenance;
+        }
+    }
 
     public function clearLots(){
       $this->remove('lots');
@@ -301,7 +327,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->clearMouvementsLots();
 
         foreach ($this->lots as $lot) {
-
+            $lot->updateDocumentDependances();
         }
     }
 

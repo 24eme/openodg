@@ -28,7 +28,6 @@ $doc->save();
 $doc = acCouchdbManager::getClient()->find($docid);
 
 //FAIRE une DREV
-
 $t->comment('On ajoute le lot 3 à la dégustation SANS table');
 $doc->lots->add();
 $doc->lots[3] = clone $doc->lots[0];
