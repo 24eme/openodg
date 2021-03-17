@@ -20,6 +20,10 @@ if ($limit < 1) {
     unset($limit);
 }
 
+if($output == "xml") {
+    unset($limit);
+}
+
 $tests = array();
 $precs = array();
 $i = 0;
