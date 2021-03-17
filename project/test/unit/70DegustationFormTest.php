@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(48);
+$t = new lime_test(49);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -114,6 +114,7 @@ $lotDrev = $drev->lots[1];
 $t->ok($lotDegustation, 'Lot à dégusté depuis la drev enregistré');
 $t->ok($lotDrev, "Le lot de la drev a pu être récupéré depuis la dégustation");
 
+$t->is($lotDegustation->id_document, $degustation->_id, "Id du document qui a ajouté le lot");
 $t->is($lotDegustation->getUniqueId(), $drev->lots[1]->getUniqueId(), "Le lot à la même clé unique");
 $t->is($lotDegustation->volume, $lotDrev->volume, 'Le lot a le bon volume');
 $t->is($lotDegustation->numero_logement_operateur, $lotDrev->numero_logement_operateur, 'Le lot a le bon numero de cuve');

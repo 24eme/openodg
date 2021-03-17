@@ -294,8 +294,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 
         foreach($lots as $key => $lot) {
-            $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot = $this->lots->add(null, $lot);
+            $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+            $lot->id_document = $this->_id;
             $lot->updateDocumentDependances();
         }
 	 }
@@ -1055,13 +1056,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 
 			return $degust;
-		}
-
-		public function addLot($mouvement, $statut) {
-
-			$lot = $this->lots->add(null, $mouvement);
-            $lot->statut = $statut;
-            return $lot;
 		}
 
 		public function getNbLotByTypeForNumDossier($numDossier){
