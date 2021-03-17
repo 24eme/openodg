@@ -26,6 +26,7 @@ class ChgtDenomValidationForm extends acCouchdbForm
 
     public function save(){
       $values = $this->getValues();
+      $dateValidation = date('c');
 
       if($this->isAdmin){
         foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
@@ -33,13 +34,13 @@ class ChgtDenomValidationForm extends acCouchdbForm
        }
 
        if($this->getDocument()->isValidee()){
-         $this->getDocument()->validation_odg = date("d/m/Y");
+         $this->getDocument()->validateOdg();
          $this->getDocument()->generateMouvementsFactures();
        }
       }
 
       if(!$this->getDocument()->isValidee()){
-        $this->getDocument()->validation = date("d/m/Y");
+        $this->getDocument()->validate($dateValidation);
       }
 
       $this->getDocument()->save();
