@@ -51,9 +51,47 @@ class DegustationLot extends BaseDegustationLot {
         $this->statut = Lot::STATUT_ATTABLE;
     }
 
+    public function isAnonymisable(){
+        return !is_null($this->numero_table);
+    }
+
     public function anonymize($index)
     {
         $this->numero_anonymat = $this->getNumeroTableStr().($index+1);
         $this->statut = Lot::STATUT_ANONYMISE;
     }
+
+    public function recoursOc(){
+
+        $this->recours_oc = true;
+        $this->statut = Lot::STATUT_RECOURS_OC;
+        $this->getDocument()->generateMouvementsLots();
+    }
+
+    public function conformeAppel()
+    {
+        $this->statut = self::STATUT_CONFORME_APPEL;
+        $this->getDocument()->generateMouvementsLots();
+    }
+
+    public function getDocumentType() {
+
+        return DegustationClient::TYPE_MODEL;
+    }
+
+    public function getDocumentOrdre() {
+
+        return "02";
+    }
+
+    public function getLibelle() {
+
+        return "";
+    }
+
+    public function getMouvementFreeInstance() {
+
+        return DegustationMouvementLots::freeInstance($this->getDocument());
+    }
+
 }

@@ -1,12 +1,14 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
+<?php use_helper('Lot') ?>
+
 <?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $chgtDenom )); ?>
 
 
     <div class="page-header no-border">
       <h2><?php if ($chgtDenom->isDeclassement()): ?>Déclassement<?php else: ?>Changement de dénomination<?php endif; ?> <?php if (!$chgtDenom->isChgtTotal()): ?>partiel<?php endif; ?>
       <?php if ($chgtDenom->isValide()): ?>
-      <small class="pull-right">Télédéclaration signée le <?php echo format_date($chgtDenom->validation, "dd/MM/yyyy", "fr_FR"); ?><?php if($chgtDenom->isApprouve()): ?> et approuvée le <?php echo format_date($chgtDenom->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?></small>
+      <small class="pull-right">Télédéclaration signée le <?php echo format_date($chgtDenom->validation, "d/m/Y", "fr_FR"); ?><?php if($chgtDenom->isApprouve()): ?> et approuvée le <?php echo format_date($chgtDenom->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?></small>
       <?php endif; ?>
       </h2>
     </div>
@@ -14,7 +16,11 @@
         <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
 
-    <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
+    <?php if($sf_user->isAdmin()): ?>
+      <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom, 'form' => $form)); ?>
+    <?php else:?>
+      <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
+    <?php endif; ?>
 
     <?php if (isset($form)): ?>
     <form role="form" action="<?php echo url_for("chgtdenom_visualisation", $chgtDenom) ?>" method="post" class="form-horizontal" id="validation-form">

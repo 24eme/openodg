@@ -17,10 +17,17 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CONFORME = "08_CONFORME";
     const STATUT_AFFECTE_SRC = "07_AFFECTE_SRC";
     const STATUT_NONCONFORME = "08_NON_CONFORME";
+    const STATUT_RECOURS_OC = "09_RECOURS_OC";
+    const STATUT_CONFORME_APPEL = "10_CONFORME_APPEL";
+
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
     const STATUT_ELEVAGE = "ELEVAGE";
+
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
+    const STATUT_ENLEVE = "01_ENLEVE";
+    const STATUT_CONDITIONNE = "01_CONDITIONNE";
+    const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
     const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
@@ -96,14 +103,6 @@ abstract class Lot extends acCouchdbDocumentTree
     public static function getLibelleConformite($conformite) {
         $libelles = self::$libellesConformites;
         return (isset($libelles[$conformite]))? $libelles[$conformite] : $conformite;
-    }
-
-    public function getGeneratedMvtKey() {
-        return self::generateMvtKey($this);
-    }
-
-    public static function generateMvtKey($lot) {
-        return KeyInflector::slugify($lot->id_document.'/'.$lot->origine_mouvement);
     }
 
     public function getConfigProduit() {
@@ -256,7 +255,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function hasBeenEdited(){
-      return ($this->getDocument()->hasVersion() && $this->exist('id_document') && $this->id_document);
+      return $this->id_document != $this->getDocument()->_id;
     }
 
     public function setOrigineDocumentId($id) {
@@ -286,7 +285,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getUnicityKey(){
-        return KeyInflector::slugify($this->produit_hash.'/'.$this->volume.'/'.$this->millesime.'/'.$this->numero_dossier.'/'.$this->numero_archive);
+        return KeyInflector::slugify($this->numero_dossier.'-'.$this->numero_archive);
     }
 
     public function getTriHash(array $tri = null) {
@@ -534,4 +533,141 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         return substr($this->id_document, 0, 4);
     }
+
+    abstract public function getMouvementFreeInstance();
+    abstract public function getLibelle();
+
+    public function getUniqueId(){
+        if(is_null($this->_get('unique_id'))) {
+            $this->set('unique_id', KeyInflector::slugify($this->numero_dossier.'-'.$this->numero_archive));
+        }
+
+        return $this->_get('unique_id');
+    }
+
+    public function setNumeroArchive($numeroArchive) {
+        $this->unique_id = null;
+
+        $this->_set('numero_archive', $numeroArchive);
+
+        $this->getUniqueId();
+    }
+
+    public function setNumeroDossier($numeroDossier) {
+        $this->unique_id = null;
+
+        $this->_set('numero_dossier', $numeroDossier);
+
+        $this->getUniqueId();
+    }
+
+    public function buildMouvement($statut) {
+        $mouvement = $this->getMouvementFreeInstance();
+
+        $mouvement->date = $this->date;
+        $mouvement->numero_dossier = $this->numero_dossier;
+        $mouvement->numero_archive = $this->numero_archive;
+        $mouvement->detail = $this->produit_hash;
+        $mouvement->libelle = $this->getLibelle();
+        $mouvement->detail = null;
+        $mouvement->region = '';
+        $mouvement->version = $this->getVersion();
+        $mouvement->document_ordre = $this->getDocumentOrdre();
+        $mouvement->document_type = $this->getDocumentType();
+        $mouvement->document_id = $this->getDocument()->_id;
+        $mouvement->lot_unique_id = $this->getUniqueId();
+        $mouvement->lot_hash = $this->getHash();
+        $mouvement->declarant_identifiant = $this->declarant_identifiant;
+        $mouvement->declarant_nom = $this->declarant_nom;
+        $mouvement->campagne = $this->getCampagne();
+        $mouvement->statut = $statut;
+
+        return $mouvement;
+    }
+
+    public function getMouvements() {
+        if(!$this->getDocument()->exist("/mouvements_lots/".$this->declarant_identifiant)) {
+
+            return array();
+        }
+
+        $mouvements = array();
+
+        foreach($this->getDocument()->get("/mouvements_lots/".$this->declarant_identifiant) as $m) {
+            if($m->lot_unique_id != $this->unique_id) {
+                continue;
+            }
+            $mouvements[$m->getKey()] = $m;
+        }
+
+        return $mouvements;
+    }
+
+    public function getMouvement($statut) {
+        $hash = "/mouvements_lots/".$this->declarant_identifiant."/".$this->getUniqueId()."-".KeyInflector::slugify($statut);
+
+        if(!$this->getDocument()->exist($hash)) {
+
+            return null;
+        }
+
+        return $this->getDocument()->get($hash);
+    }
+
+    public function getLotDocumentOrdre($documentOrdre) {
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
+
+        $docId = null;
+        foreach($mouvements->rows as $mouvement) {
+            $docId = $mouvement->id;
+            break;
+        }
+
+        if(!$docId) {
+
+            return null;
+        }
+
+        $doc = DeclarationClient::getInstance()->find($docId);
+
+        return $doc->get($mouvement->value->lot_hash);
+    }
+
+    public function getLotFils()
+    {
+
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+    }
+
+
+    public function getLotPere()
+    {
+
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+    }
+
+    abstract public function getDocumentOrdre();
+
+    abstract public function getDocumentType();
+
+    public function getVersion() {
+
+        return $this->getDocument()->getVersion();
+    }
+
+    public function isAffectable() {
+
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable;
+    }
+
+    public function isAffecte() {
+
+        return $this->exist('document_fils') && $this->document_fils;
+    }
+
+    public function getCampagne() {
+
+        return $this->getDocument()->getCampagne();
+    }
+
 }

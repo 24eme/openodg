@@ -43,12 +43,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numero_table) as $degustateur):
+                  <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numero_table) as $id_compte => $degustateur):
                     $name = $form->getWidgetNameFromDegustateur($degustateur);
                      ?>
                     <tr>
                       <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
-                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id_compte)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
                       <td class="text-center">
                         <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                           <?php echo $form[$name]->renderError() ?>

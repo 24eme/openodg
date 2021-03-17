@@ -42,16 +42,24 @@ class DegustationClient extends acCouchdbClient {
         return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
     }
 
-    public function findNonValides($hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $nonValides = array();
-        foreach ($this->startkey(self::TYPE_COUCHDB)->endkey(self::TYPE_COUCHDB."Z")->execute(acCouchdbClient::HYDRATE_JSON) as $doc) {
-            if(!$doc->validation){
-                $nonValides[] = $doc;
-            }
-        }
 
-        return $nonValides;
-    }
+	public function getLotsPrelevables() {
+	    $lots = array();
+	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $mouvement) {
+	        $lots[$mouvement->value->unique_id] = $mouvement->value;
+	    }
+        uasort($lots, function ($lot1, $lot2) {
+            $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
+            $date2 = DateTime::createFromFormat('Y-m-d', $lot2->date);
+
+            if ($date1 == $date2) {
+                return 0;
+            }
+            return ($date1 < $date2) ? -1 : 1;
+        });
+
+        return $lots;
+	}
 
     public static function getNumeroTableStr($numero_table){
       $alphas = range('A', 'Z');
@@ -60,8 +68,8 @@ class DegustationClient extends acCouchdbClient {
 
     public function getManquements() {
         $manquements = array();
-        foreach (MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
-            $manquements[Lot::generateMvtKey($item->value)] = $item->value;
+        foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
+            $manquements[$item->value->unique_id] = $item->value;
         }
         return $manquements;
     }

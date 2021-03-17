@@ -1,4 +1,3 @@
-<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getMvtLot())); ?>
 <style>
   #declassement_filigrane{
     position:absolute;
@@ -14,6 +13,7 @@
     border: 1px solid #e7e7e7;
   }
 </style>
+<?php include_partial('infoLotOrigine', array('chgtDenom' => $chgtDenom, 'opacity' => true)); ?>
 
 <div class="col-sm-12 mb-5">
   <div class="text-center">
@@ -33,16 +33,57 @@
     <table class="table table-condensed" style="margin: 0;">
       <tbody>
         <tr>
-          <td style="border: none;">Logement : <?php if(!$chgtDenom->isValide()): ?><a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>"><strong><?php echo $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span></a><?php else: ?><strong><?php echo $lot->numero_logement_operateur; ?></strong><?php endif; ?></td>
+          <td>
+            <div>
+              <div style="border: none;" class="m-3">
+                Logement :
+                <?php if(!$chgtDenom->isValide()): ?>
+                  <a href="#" data-toggle="modal" data-target="#modal_lot_<?php echo $k ?>">
+                    <strong><?php echo $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span>
+                  </a>
+                <?php else: ?>
+                  <strong><?php echo $lot->numero_logement_operateur; ?></strong>
+                <?php endif; ?>
+              </div>
+
+              <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
+              <div style="border: none;" class="m-3">
+                Produit : <strong><?php echo showProduitLot($lot) ?></strong>
+              </div>
+              <?php endif; ?>
+
+              <div style="border: none;" class="m-3">Volume : <strong><?php echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></div>
+            </div>
+          </td>
+          <td>
+            <?php if ($sf_user->isAdmin() && $chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
+              <div class="text-center">
+                <?php if(isset($form['lots'])): ?>
+                <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
+                  <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
+                    <div class="col-xs-12">
+                      <?php if ($sf_user->isAdmin() && !$chgtDenom->validation_odg): ?>
+                        <span>Dégustable&nbsp;&nbsp; :</span>
+                        <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                      <?php else: ?>
+                          <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
+                          <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                      <?php endif; ?>
+                    </div>
+                </div>
+              <?php else: ?>
+                <div style="margin-bottom: 0;" class="">
+                  <div class="col-xs-12">
+                      <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
+                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                  </div>
+                </div>
+              <?php endif; ?>
+              </div>
+            <?php endif; ?>
+          </td>
         </tr>
-        <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT): ?>
-        <tr>
-          <td style="border: none;">Produit : <strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
-        </tr>
-      <?php endif; ?>
-        <tr>
-          <td style="border: none;">Volume : <strong><?php echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
-        </tr>
+
       </tbody>
     </table>
   </div>
@@ -73,7 +114,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fermer</button>
-              <button type="submit" class="btn btn-success pull-right">Valider</button>
+              <button type="submit" class="btn btn-success pull-right">Enregistrer</button>
             </div>
           </form>
         </div>

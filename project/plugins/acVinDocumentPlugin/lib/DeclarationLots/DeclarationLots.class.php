@@ -31,6 +31,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
               $this->date = date("Y-m-d");
           }
           $etablissement = $this->getEtablissementObject();
+          $this->constructId();
       }
 
       public function getConfiguration() {
@@ -128,6 +129,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
 
       public function addLot() {
           $lot = $this->add('lots')->add();
+          $lot->id_document = $this->_id;
+          $lot->declarant_identifiant = $this->identifiant;
+          $lot->declarant_nom = $this->declarant->raison_sociale;
+          $lot->affectable = true;
           $lot->initDefault();
           return $lot;
       }
@@ -167,9 +172,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
           if(is_null($date)) {
               $date = date('Y-m-d');
           }
-          $this->storeLotsDateVersion($date);
+
           $this->cleanDoc();
           $this->validation = $date;
+          $this->archiver();
       }
 
       public function validateOdg($date = null, $region = null) {
@@ -182,25 +188,23 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
         if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
-        $this->storeLotsDateVersion($date);
+
+        foreach($this->lots as $lot) {
+          if($lot->hasBeenEdited()) {
+              continue;
+          }
+          $lot->date = $date;
+        }
+
         $this->cleanDoc();
-        $this->archiver();
         $this->validation_odg = $date;
     }
 
-      public function devalidate($reinit_version_lot = true) {
+      public function devalidate() {
           $this->validation = null;
           $this->validation_odg = null;
           if($this->exist('etape')) {
               $this->etape = null;
-          }
-          if($reinit_version_lot && ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
-            foreach($this->lots as $lot) {
-                if($lot->exist('date') && $lot->date && ($this->_id == $lot->id_document)){
-                  $lot->date = null;
-                  $lot->id_document = null;
-                }
-            }
           }
       }
 
@@ -281,6 +285,25 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
             $this->piece_document->generatePieces();
     	}
 
+        public function save() {
+            $this->generateMouvementsLots();
+
+            parent::save();
+
+            $this->saveDocumentsDependants();
+        }
+
+        public function saveDocumentsDependants() {
+            $mother = $this->getMother();
+
+            if(!$mother) {
+
+                return;
+            }
+
+            $mother->save();
+        }
+
       public function archiver() {
           $this->archivage_document->preSave();
           if ($this->isArchivageCanBeSet()) {
@@ -303,7 +326,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
             $num = $m[1];
           }
           foreach($this->lots as $lot) {
-            if (empty($lot->numero_archive) && empty($lot->numero_dossier)) {
+            if (!$lot->numero_archive && !$lot->numero_dossier) {
               $num++;
               $lot->numero_archive = sprintf("%05d", $num);
               $lot->numero_dossier = $numeroDossier;
@@ -324,73 +347,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
           $result[$cep] += round(($pc/$total) * 100);
         }
         return $result;
-      }
-
-      private function generateMouvementLotsFromLot($lot, $key) {
-          $mvt = new stdClass();
-          $mvt->date = $lot->date;
-          $mvt->statut = $lot->statut;
-          $mvt->numero_dossier = $lot->numero_dossier;
-          $mvt->numero_archive = $lot->numero_archive;
-          $mvt->numero_logement_operateur = $lot->numero_logement_operateur;
-          $mvt->millesime = $lot->millesime;
-          $mvt->volume = $lot->volume;
-          $mvt->elevage = $lot->elevage;
-          $mvt->produit_hash = $lot->produit_hash;
-          $mvt->produit_libelle = $lot->produit_libelle;
-          $mvt->produit_couleur = $lot->getCouleurLibelle();
-          $mvt->region = '';
-          $mvt->version = $this->getVersion();
-          $mvt->origine_hash = $lot->getHash();
-          $mvt->origine_type = $this->getDocumentDefinitionModel();
-          $mvt->origine_document_id = $this->_id;
-          $mvt->id_document = $this->_id;
-          $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
-          $mvt->declarant_identifiant = $this->identifiant;
-          $mvt->declarant_nom = $this->declarant->raison_sociale;
-          $mvt->destination_type = $lot->destination_type;
-          $mvt->destination_date = $lot->destination_date;
-          $mvt->details = '';
-          if ($lot->exist('centilisation')) {
-              $mvt->centilisation = $lot->centilisation;
-          }
-          if ($lot->exist('pays')) {
-              $mvt->pays = $lot->pays;
-          }
-          $tabCepages=[];
-          foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc){
-            $tabCepages[$cep]=$pc;
-          }
-          arsort($tabCepages);
-          foreach($tabCepages as $cep => $pc) {
-            if (strlen($mvt->details)==0){
-              $mvt->details .=$cep.' ('.$pc.'%)';
-            }
-            else{
-              $mvt->details .= ' '.$cep.' ('.$pc.'%)';
-            }
-          }
-          $mvt->region = '';
-          $mvt->campagne = $this->campagne;
-          if($lot->exist('specificite')){
-            $mvt->specificite = $lot->specificite;
-          }
-          return $mvt;
-      }
-
-      public function generateAndAddMouvementLotsFromLot($lot, $key) {
-          $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-          return $this->add('mouvements_lots')->add($this->identifiant)->add($key, $mvt);
-      }
-
-      public function generateMouvementsLots() {
-          if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
-              $this->add('mouvements_lots')->add($this->identifiant);
-          }
-          foreach($this->lots as $k => $lot) {
-              $key = $lot->getUnicityKey();
-              $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
-          }
       }
 
       public function generatePieces() {
@@ -531,7 +487,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       }
 
       public function listenerGenerateVersion($document) {
-          $document->devalidate(false);
+          $document->constructId();
+          $document->clearMouvementsLots();
+          $document->clearMouvementsFactures();
+          $document->devalidate();
           foreach ($document->getProduitsLots() as $produit) {
             if($produit->exist("validation_odg") && $produit->validation_odg){
               $produit->validation_odg = null;
@@ -562,4 +521,77 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       public function isLectureSeule() {
           return $this->exist('lecture_seule') && $this->get('lecture_seule');
       }
+
+      /**** MOUVEMENTS LOTS ****/
+
+      public function clearMouvementsLots(){
+          $this->remove('mouvements_lots');
+          $this->add('mouvements_lots');
+      }
+
+      public function addMouvementLot($mouvement) {
+
+          return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
+      }
+
+      public function getLot($uniqueId) {
+
+          foreach($this->lots as $lot) {
+              if($lot->getUniqueId() != $uniqueId) {
+
+                  continue;
+              }
+
+              return $lot;
+          }
+
+          return null;
+      }
+
+      public function getStatutRevendique() {
+
+          return Lot::STATUT_REVENDIQUE;
+      }
+
+      public function generateMouvementsLots()
+      {
+          $this->clearMouvementsLots();
+
+          if (!$this->isValideeOdg()) {
+            return;
+          }
+
+          foreach ($this->lots as $lot) {
+              if($lot->hasBeenEdited()) {
+                  continue;
+              }
+
+              if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && !$this->getMaster()->getLot($lot->unique_id)) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE));
+                  continue;
+              }
+
+              $lot->document_fils = null;
+
+              if($lot->getLotFils()) {
+                  $lot->document_fils = $lot->getLotFils()->getDocument()->_id;
+              }
+
+              $this->addMouvementLot($lot->buildMouvement($this->getStatutRevendique()));
+
+              if ($lot->isAffectable()) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+                  continue;
+              }
+
+              if($lot->isAffecte()) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC_DREV));
+                  continue;
+              }
+
+              $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
+          }
+      }
+
+      /**** FIN DES MOUVEMENTS LOTS ****/
 }

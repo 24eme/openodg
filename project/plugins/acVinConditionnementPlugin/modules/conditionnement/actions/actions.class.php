@@ -131,7 +131,7 @@ class conditionnementActions extends sfActions {
             $this->conditionnement->save();
         }
 
-        if (count($this->conditionnement->getLots()) == 0 || $request->getParameter('submit') == "add") {
+        if (count($this->conditionnement->getLots()) == 0 || current(array_reverse($this->conditionnement->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
             $this->conditionnement->addLot();
         }
         $this->form = new ConditionnementLotsForm($this->conditionnement);
@@ -166,11 +166,11 @@ class conditionnementActions extends sfActions {
         }
 
         $lot = $this->conditionnement->getLotByNumArchive($request->getParameter('numArchive'));
-        $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->conditionnement->identifiant, $lot->numero_archive, $this->conditionnement->campagne);
-        if($lotCheck){
-          throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
-          " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
-        }
+        // $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->conditionnement->identifiant, $lot->numero_archive, $this->conditionnement->campagne);
+        // if($lotCheck){
+        //   throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
+        //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
+        // }
 
         if($lot){
             $this->conditionnement->remove($lot->getHash());

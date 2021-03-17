@@ -35,37 +35,29 @@
         <thead>
             <tr>
                 <th class="col-xs-1">Degustation voulue<br/> à partir du</th>
-                <th class="col-xs-2">Opérateur</th>
+                <th class="col-xs-3">Opérateur</th>
+                <th class="col-xs-1">Provenance</th>
                 <th class="col-xs-1">Logement</th>
-                <th class="col-xs-3">Produit (millésime, spécificité)</th>
+                <th class="col-xs-5">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">À prélever?</th>
             </tr>
         </thead>
 		<tbody>
-		<?php
-            $dates = $form->getDateDegustParDrev();
-			foreach ($form->getLotsPrelevables() as $key => $lot):
-			if (isset($form['lots'][$key])):
-		?>
-			<tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
-        <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
-        <td><?php echo $lot->declarant_nom; ?></td>
-				<td><?php echo $lot->numero_logement_operateur; ?></td>
-				<td>
-          <?php echo showProduitLot($lot) ?>
-        </td>
-        <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-            	<td class="text-center" data-hash="<?php echo $lot->declarant_nom; ?>">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form['lots'][$key]['preleve']->renderError() ?>
-                        <div class="col-xs-12">
-			            	<?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
-                        </div>
-                    </div>
-            	</td>
-            </tr>
-        <?php  endif; endforeach; ?>
+        <?php $dates = $form->getDateDegustParDrev(); foreach ($form['lots'] as $key => $lotForm): ?>
+          <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $form->getLot($key)->numero_dossier ?>">
+            <td><?php echo DateTime::createFromFormat('Ymd', date('Ymd'))->format('d/m/Y') ?></td>
+            <?php include_partial('degustation/rowTablePrelevable', ['lot' => $form->getLot($key)]) ?>
+            <td class="text-center" data-hash="<?php echo $form->getLot($key)->declarant_nom; ?>">
+              <div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form['lots'][$key]['preleve']->renderError() ?>
+                  <div class="col-xs-12">
+                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => $form->getLot($key)->numero_dossier, "data-preleve-lot" => $form->getLot($key)->numero_logement_operateur, 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                  </div>
+              </div>
+            </td>
+          </tr>
+        <?php  endforeach; ?>
         </tbody>
 	</table>
 

@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
@@ -39,8 +40,9 @@
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
-                    <th class="col-xs-2 text-left">Numéro<br/>anonyme</th>
+                    <th class="col-xs-1 text-left">Numéro<br/>anonyme</th>
                     <th class="col-xs-4 text-left">Opérateur</th>
+                    <th class="col-xs-1 text-left">Provenance</th>
                     <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
                     <th class="col-xs-2 text-left" colspan="2" >Conformité</th>
                   </tr>
@@ -52,14 +54,10 @@
                     if (!$lot->leurre && isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
                         <td class="text-left"><?php echo $lot->getNumeroAnonymat() ?></td>
-                        <td class="text-left"><?php echo $lot->declarant_nom ?> <span class="pull-right text-muted"><?= $lot->getProvenance() ?></span></td>
+                        <td class="text-left"><?php echo $lot->declarant_nom ?></td>
+                        <td><?= $lot->getProvenance() ?></td>
                         <td class="text-left">
-                          <?php echo $lot->produit_libelle;?>&nbsp;
-                          <small class="text-muted"><?php echo $lot->details; ?></small>
-                          <?php echo ($lot->millesime)? $lot->millesime : ''; ?>
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot() && $lot->specificite): ?>
-                            <span class="text-muted"><?php echo "($lot->specificite)"; ?></span>
-                          <?php endif ?>
+                            <?php echo showProduitLot($lot) ?>
                         </td>
                         <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <div style="margin-bottom: 0;">
