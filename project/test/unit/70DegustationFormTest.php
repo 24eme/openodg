@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(49);
+$t = new lime_test(60);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -86,6 +86,7 @@ $t->is($degustation->_id, $docid, "doc id");
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->date, $degust_date, "La date de la degustation est la bonne");
 $t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
+
 $t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);
 
@@ -94,9 +95,38 @@ $valuesRev = array(
     '_revision' => $degustation->_rev,
 );
 
-$t->ok(isset($valuesRev['lots'][$drev->lots[1]->getUnicityKey()]), 'On retrouve le lot dans le formulaire sur la base de la vue');
+$valuesRev['lots'][$drev->lots[0]->getUnicityKey()]['preleve'] = 1;
+$valuesRev['lots'][$drev->lots[1]->getUnicityKey()]['preleve'] = 1;
+
+$t->ok(isset($valuesRev['lots'][$drev->lots[0]->getUnicityKey()]), 'On retrouve le lot 1 dans le formulaire sur la base de la vue');
+$t->ok(isset($valuesRev['lots'][$drev->lots[1]->getUnicityKey()]), 'On retrouve le lot 2 dans le formulaire sur la base de la vue');
+
+$form->bind($valuesRev);
+$form->save();
+
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$t->is(count($degustation->lots), 2, 'Il y a deux lots dans la dégustation');
+
+$t->ok($degustation->lots[0]->getUniqueId(),  "Le lot 1 à une clé unique");
+$t->ok($degustation->lots[1]->getUniqueId(),  "Le lot 2 à une clé unique");
+
+$t->is(count($degustation->mouvements_lots->get($drev->identifiant)), 4, "Il y a 4 mouvements");
+$t->is(count($degustation->lots[0]->getMouvements()), 2, "Le lot 1 à deux mouvements");
+$t->is(count($degustation->lots[1]->getMouvements()), 2, "Le lot 2 à deux mouvements");
+$t->ok($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Il a un mouvement attente prelevement");
+$t->ok($degustation->lots[0]->getMouvement(Lot::STATUT_AFFECTE_DEST), "Il a un mouvement affecté destination");
+
+$t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 0, "Il n'y a plus de mouvement prélevable");
 
 $t->comment('On décoche les lots et on en sélectionne qu\'un');
+$form = new DegustationPrelevementLotsForm($degustation);
+
+$valuesRev = array(
+    'lots' => $form['lots']->getValue(),
+    '_revision' => $degustation->_rev,
+);
+
 foreach ($valuesRev['lots'] as &$lot) {
     unset($lot['preleve']);
 }
@@ -108,6 +138,7 @@ $form->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 1, 'Il y a un lot dans la dégustation');
+$t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 1, "Il y a 1 mouvement prélevable");
 $lotDegustation = $degustation->lots[0];
 $lotDrev = $drev->lots[1];
 
