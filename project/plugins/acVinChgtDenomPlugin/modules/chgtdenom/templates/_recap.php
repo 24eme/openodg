@@ -26,7 +26,7 @@
   foreach($chgtDenom->lots as $k => $lot):
 ?>
   <div class="alert block-chgtDenom col-sm-<?php if (count($chgtDenom->lots) == 1): ?>12<?php else: ?>6<?php endif; ?>">
-  <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>
+  <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT && $lot->statut == Lot::STATUT_DECLASSE): ?>
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
   <?php endif; ?>
     <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong><?php if($chgtDenom->isValidee()): ?><a href="<?php echo url_for('degustation_etablissement_list',array('id' => $lot->declarant_identifiant))."#".$lot->numero_dossier.$lot->numero_archive; ?>" class="btn btn-default btn-xs pull-right">visu du lot&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a><?php endif; ?></h4>
