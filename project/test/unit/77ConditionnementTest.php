@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(15);
+$t = new lime_test(20);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -80,3 +80,16 @@ $t->is(count($conditionnement->lots), 4, "4 lots avant le clean");
 $conditionnement->cleanLots();
 $t->is(count($conditionnement->lots), 3, "3 lots après le clean");
 $conditionnement->save();
+
+$conditionnement->validate();
+$conditionnement->validateOdg();
+$conditionnement->save();
+
+$t->comment("Historique de mouvements");
+$lot = $conditionnement->lots[0];
+
+$t->ok($lot->numero_dossier, "Numéro de dossier");
+$t->ok($lot->numero_archive, "Numéro d'archive");
+$t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
+$t->ok($lot->getMouvement(Lot::STATUT_CONDITIONNE), 'Le lot est conditionné');
+$t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');

@@ -19,6 +19,16 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
+foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = ConditionnementClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+
+foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = TransactionClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+
 foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
     $degustation->delete(false);

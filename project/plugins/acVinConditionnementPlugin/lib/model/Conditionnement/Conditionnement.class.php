@@ -50,4 +50,9 @@ class Conditionnement extends BaseConditionnement
         return acCouchdbManager::getClient()->find($id);
     }
 
+    public function getStatutRevendique() {
+
+        return Lot::STATUT_CONDITIONNE;
+    }
+
 }

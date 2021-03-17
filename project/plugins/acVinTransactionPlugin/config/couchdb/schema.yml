@@ -70,6 +70,8 @@ Transaction:
                   numero_logement_operateur: { }
                   millesime: { }
                   volume: { type: float }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
                   destination_type: { }
                   destination_date: { }
                   produit_hash: { }
@@ -101,7 +103,7 @@ Transaction:
               definition:
                 fields:
                   '*':
-                    class: TransctionMouvementLots
+                    class: TransactionMouvementLots
                     inheritance: MouvementLots
                     type: collection
                     definition:
