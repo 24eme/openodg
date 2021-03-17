@@ -54,4 +54,9 @@ class Transaction extends BaseTransaction
         }
         return acCouchdbManager::getClient()->find($id);
     }
+
+    public function getStatutRevendique() {
+
+        return Lot::STATUT_ENLEVE;
+    }
 }
