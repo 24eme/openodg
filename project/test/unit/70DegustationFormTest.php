@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(46);
+$t = new lime_test(62);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -19,6 +19,14 @@ $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'deg
 
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
+}
+foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = ConditionnementClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = TransactionClient::getInstance()->find($k);
+    $conditionnement->delete(false);
 }
 foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
@@ -59,7 +67,10 @@ $drev->validateOdg();
 $drev->save();
 $t->comment($drev->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotPrelevable = current($lotsPrelevables);
 $t->is(count($lotsPrelevables), 2, 'on a au moins un mouvement de lot prélevable');
+$t->is($lotPrelevable->id_document_provenance, $drev->_id, "L'id du document de provenance est la DRev");
+$t->is($lotPrelevable->provenance, "DREV", "La provenance est DREV");
 
 $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
@@ -76,6 +87,7 @@ $t->is($degustation->_id, $docid, "doc id");
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->date, $degust_date, "La date de la degustation est la bonne");
 $t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
+
 $t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);
 
@@ -84,9 +96,38 @@ $valuesRev = array(
     '_revision' => $degustation->_rev,
 );
 
-$t->ok(isset($valuesRev['lots'][$drev->lots[1]->getUnicityKey()]), 'On retrouve le lot dans le formulaire sur la base de la vue');
+$valuesRev['lots'][$drev->lots[0]->getUnicityKey()]['preleve'] = 1;
+$valuesRev['lots'][$drev->lots[1]->getUnicityKey()]['preleve'] = 1;
+
+$t->ok(isset($valuesRev['lots'][$drev->lots[0]->getUnicityKey()]), 'On retrouve le lot 1 dans le formulaire sur la base de la vue');
+$t->ok(isset($valuesRev['lots'][$drev->lots[1]->getUnicityKey()]), 'On retrouve le lot 2 dans le formulaire sur la base de la vue');
+
+$form->bind($valuesRev);
+$form->save();
+
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$t->is(count($degustation->lots), 2, 'Il y a deux lots dans la dégustation');
+
+$t->ok($degustation->lots[0]->getUniqueId(),  "Le lot 1 à une clé unique");
+$t->ok($degustation->lots[1]->getUniqueId(),  "Le lot 2 à une clé unique");
+
+$t->is(count($degustation->mouvements_lots->get($drev->identifiant)), 4, "Il y a 4 mouvements");
+$t->is(count($degustation->lots[0]->getMouvements()), 2, "Le lot 1 à deux mouvements");
+$t->is(count($degustation->lots[1]->getMouvements()), 2, "Le lot 2 à deux mouvements");
+$t->ok($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Il a un mouvement attente prelevement");
+$t->ok($degustation->lots[0]->getMouvement(Lot::STATUT_AFFECTE_DEST), "Il a un mouvement affecté destination");
+
+$t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 0, "Il n'y a plus de mouvement prélevable");
 
 $t->comment('On décoche les lots et on en sélectionne qu\'un');
+$form = new DegustationPrelevementLotsForm($degustation);
+
+$valuesRev = array(
+    'lots' => $form['lots']->getValue(),
+    '_revision' => $degustation->_rev,
+);
+
 foreach ($valuesRev['lots'] as &$lot) {
     unset($lot['preleve']);
 }
@@ -98,12 +139,14 @@ $form->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 1, 'Il y a un lot dans la dégustation');
+$t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 1, "Il y a 1 mouvement prélevable");
 $lotDegustation = $degustation->lots[0];
 $lotDrev = $drev->lots[1];
 
 $t->ok($lotDegustation, 'Lot à dégusté depuis la drev enregistré');
 $t->ok($lotDrev, "Le lot de la drev a pu être récupéré depuis la dégustation");
 
+$t->is($lotDegustation->id_document, $degustation->_id, "Id du document qui a ajouté le lot");
 $t->is($lotDegustation->getUniqueId(), $drev->lots[1]->getUniqueId(), "Le lot à la même clé unique");
 $t->is($lotDegustation->volume, $lotDrev->volume, 'Le lot a le bon volume');
 $t->is($lotDegustation->numero_logement_operateur, $lotDrev->numero_logement_operateur, 'Le lot a le bon numero de cuve');
@@ -115,6 +158,8 @@ $t->is($lotDegustation->produit_libelle, $lotDrev->produit_libelle, 'Le lot a le
 $t->is($lotDegustation->specificite, $lotDrev->specificite, 'Le lot a le bonne spécificité');
 $t->is($lotDegustation->millesime, $lotDrev->millesime, 'Le lot a le bon millésoùe');
 $t->is($lotDegustation->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, 'Le lot a le bon statut');
+$t->is($lotDegustation->id_document_provenance, $drev->_id, 'La provenance du lot est la drev');
+$t->is($lotDegustation->getProvenance(), "DREV", 'La provenance est DRev');
 
 $t->is(count($degustation->mouvements_lots->get($drev->identifiant)->toArray(true, false)), 2, 'La génération de mouvement a généré 2 mouvements');
 $t->ok($lotDegustation->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Mouvement de lot en attente de prelevement présent");
@@ -123,13 +168,13 @@ $t->is($lotDegustation->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->document_
 $t->is($lotDegustation->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->document_id, $degustation->_id, "Document id du mouvement");
 $t->ok($lotDegustation->getMouvement(Lot::STATUT_AFFECTE_DEST), "Mouvement de lot affecté destination présent");
 
-$lotPere = $lotDegustation->getLotPere();
+$lotProvenance = $lotDegustation->getLotProvenance();
 
-$t->ok($lotPere->getDocument()->_id, $drev->_id, "Récupération du document du lot père");
-$t->ok($lotPere->getUniqueId(), $lotDrev->getUniqueId(), "Récupération du lot père");
-$t->is($lotPere->document_fils, $degustation->_id, "Document fils enregistré dans le lot de la drev");
-$t->ok(!$lotPere->getMouvement(Lot::STATUT_AFFECTABLE), "Pas de mouvement affectable dans la drev");
-$t->ok($lotPere->getMouvement(Lot::STATUT_AFFECTE_SRC_DREV), "Mouvement affecte dans la drev");
+$t->ok($lotProvenance->getDocument()->_id, $drev->_id, "Récupération du document du lot père");
+$t->ok($lotProvenance->getUniqueId(), $lotDrev->getUniqueId(), "Récupération du lot père");
+$t->is($lotProvenance->id_document_affectation, $degustation->_id, "Dans la drev le lot est relié à la dégustation");
+$t->ok(!$lotProvenance->getMouvement(Lot::STATUT_AFFECTABLE), "Pas de mouvement affectable dans la drev");
+$t->ok($lotProvenance->getMouvement(Lot::STATUT_AFFECTE_SRC_DREV), "Mouvement affecte dans la drev");
 
 $t->comment("Prélévé");
 

@@ -26,7 +26,7 @@
   foreach($chgtDenom->lots as $k => $lot):
 ?>
   <div class="alert block-chgtDenom col-sm-<?php if (count($chgtDenom->lots) == 1): ?>12<?php else: ?>6<?php endif; ?>">
-  <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>
+  <?php if($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT && $lot->statut == Lot::STATUT_DECLASSE): ?>
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
   <?php endif; ?>
     <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong><?php if($chgtDenom->isValidee()): ?><a href="<?php echo url_for('degustation_etablissement_list',array('id' => $lot->declarant_identifiant))."#".$lot->numero_dossier.$lot->numero_archive; ?>" class="btn btn-default btn-xs pull-right">visu du lot&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a><?php endif; ?></h4>
@@ -67,7 +67,7 @@
                         <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                       <?php else: ?>
                           <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
-                          <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                          <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
                       <?php endif; ?>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                 <div style="margin-bottom: 0;" class="">
                   <div class="col-xs-12">
                       <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
-                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-remove <?php endif; ?>"></span>
+                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
                   </div>
                 </div>
               <?php endif; ?>
@@ -87,38 +87,4 @@
       </tbody>
     </table>
   </div>
-  <?php if(!$chgtDenom->isValide()):
-        $form = new ChgtDenomLogementForm($lot->getRawValue());
-  ?>
-    <div class="modal fade" id="modal_lot_<?php echo $k ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form role="form" action="<?php echo url_for("chgtdenom_logement", array("sf_subject" => $chgtDenom, 'key' => "ind$k")) ?>" method="post" class="form-horizontal">
-            <?php echo $form->renderHiddenFields(); ?>
-            <?php echo $form->renderGlobalErrors(); ?>
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $lot->numero_logement_operateur ?></strong></h4>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <?php echo $form['numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-8">
-                                  <?php echo $form['numero_logement_operateur']->render(); ?>
-                            </div>
-                        </div>
-                    </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fermer</button>
-              <button type="submit" class="btn btn-success pull-right">Enregistrer</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  <?php endif; ?>
 <?php endforeach; ?>

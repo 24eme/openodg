@@ -8,6 +8,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     protected $mouvement_document = null;
     protected $piece_document = null;
   	protected $cm = null;
+    protected $docToSave = array();
 
     public function __construct() {
         parent::__construct();
@@ -96,7 +97,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function validateOdg($date = null) {
         if(is_null($date)) {
-            $date = date('d/m/Y');
+            $date = date('c');
         }
         $this->validation_odg = $date;
     }
@@ -151,6 +152,31 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $this->piece_document->generatePieces();
     	}
 
+    public function saveDocumentsDependants() {
+        foreach($this->docToSave as $docId) {
+            (acCouchdbManager::getClient()->find($docId))->save();
+        }
+
+        $this->docToSave = array();
+    }
+
+    public function save() {
+        $this->generateMouvementsLots();
+
+        parent::save();
+
+        $this->saveDocumentsDependants();
+    }
+
+    public function fillDocToSaveFromLots() {
+        foreach ($this->lots as $lot) {
+            if(!$lot->id_document_provenance) {
+                continue;
+            }
+            $this->docToSave[$lot->id_document_provenance] = $lot->id_document_provenance;
+        }
+    }
+
     public function clearLots(){
       $this->remove('lots');
       $this->add('lots');
@@ -182,6 +208,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lots = array();
       $lot = $this->getLotOrigine()->getData();
 
+
+      $lotDef = ChgtDenomLot::freeInstance($this);
+      foreach($lot as $key => $value) {
+          if($lotDef->getDefinition()->exist($key)) {
+              continue;
+          }
+
+          unset($lot->{$key});
+      }
+
       if (!$this->isChgtTotal()) {
         $lot->volume -= $this->changement_volume;
         $lotBis = clone $lot;
@@ -211,7 +247,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
       foreach($lots as $l) {
         $l->affectable = true;
-        $this->lots->add(null, $l);
+        $lot = $this->lots->add(null, $l);
+        $lot->id_document = $this->_id;
+        $lot->updateDocumentDependances();
       }
     }
 
@@ -289,7 +327,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->clearMouvementsLots();
 
         foreach ($this->lots as $lot) {
-
+            $lot->updateDocumentDependances();
         }
     }
 

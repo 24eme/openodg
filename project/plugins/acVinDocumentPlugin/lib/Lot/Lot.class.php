@@ -33,7 +33,6 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
 
     const STATUT_MANQUEMENT_EN_ATTENTE = "01_MANQUEMENT_EN_ATTENTE";
-    const STATUT_TRANSITOIRE_AFFECTATION_EN_ATTENTE = "02_AFFECTATION_EN_ATTENTE";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -56,10 +55,23 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_DEGUSTE => 'Dégusté',
         self::STATUT_CONFORME => 'Conforme',
         self::STATUT_NONCONFORME => 'Non conforme',
+        self::STATUT_RECOURS_OC => 'En recours OC',
+        self::STATUT_CONFORME_APPEL => 'Conforme en appel',
         self::STATUT_AFFECTE_SRC => 'Affecte src',
         self::STATUT_CHANGE => 'Changé',
         self::STATUT_DECLASSE => 'Déclassé',
-        self::STATUT_ELEVAGE => 'En élevage'
+        self::STATUT_ELEVAGE => 'En élevage',
+
+        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Manquement en attente',
+
+        self::STATUT_REVENDIQUE => 'Revendiqué',
+        self::STATUT_ENLEVE => 'Enlevé',
+        self::STATUT_CONDITIONNE => 'Conditionné',
+        self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
+        self::STATUT_NONAFFECTABLE => 'Non affectable',
+        self::STATUT_AFFECTABLE => 'Affectable',
+        self::STATUT_AFFECTE_SRC_DREV => 'Affecté source drev',
+
     );
 
 
@@ -531,7 +543,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getProvenance()
     {
-        return substr($this->id_document, 0, 4);
+        if(!$this->id_document_provenance) {
+
+            return null;
+        }
+
+        return substr($this->id_document_provenance, 0, 4);
     }
 
     abstract public function getMouvementFreeInstance();
@@ -616,7 +633,6 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getLotDocumentOrdre($documentOrdre) {
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
-
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;
@@ -633,12 +649,34 @@ abstract class Lot extends acCouchdbDocumentTree
         return $doc->get($mouvement->value->lot_hash);
     }
 
+    public function updateDocumentDependances() {
+        $this->id_document_affectation = null;
+        $lotAffectation = $this->getLotAffectation();
+        if($lotAffectation) {
+            $this->id_document_affectation = $lotAffectation->getDocument()->_id;
+        }
+        $lotProvenance = $this->getLotProvenance();
+        if($lotProvenance) {
+            $this->id_document_provenance = $lotProvenance->getDocument()->_id;
+        }
+    }
+
+    public function getLotAffectation()
+    {
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+    }
+
     public function getLotFils()
     {
 
         return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
     }
 
+    public function getLotProvenance()
+    {
+
+        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+    }
 
     public function getLotPere()
     {
@@ -662,7 +700,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffecte() {
 
-        return $this->exist('document_fils') && $this->document_fils;
+        return $this->exist('id_document_affectation') && $this->id_document_affectation;
     }
 
     public function getCampagne() {

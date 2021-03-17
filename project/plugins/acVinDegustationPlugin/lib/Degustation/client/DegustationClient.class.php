@@ -47,6 +47,8 @@ class DegustationClient extends acCouchdbClient {
 	    $lots = array();
 	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $mouvement) {
 	        $lots[$mouvement->value->unique_id] = $mouvement->value;
+            $lots[$mouvement->value->unique_id]->id_document_provenance = $mouvement->id;
+            $lots[$mouvement->value->unique_id]->provenance = substr($mouvement->id, 0, 4);
 	    }
         uasort($lots, function ($lot1, $lot2) {
             $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
@@ -69,6 +71,7 @@ class DegustationClient extends acCouchdbClient {
     public function getManquements() {
         $manquements = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
+            $item->value->id_document = $item->id;
             $manquements[$item->value->unique_id] = $item->value;
         }
         return $manquements;

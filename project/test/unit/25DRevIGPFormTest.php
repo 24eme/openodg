@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(111);
+$t = new lime_test(115);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -176,10 +176,11 @@ $t->is($drev->lots[0]->produit_hash, $valuesRev['lots']['0']['produit_hash'], "L
 $t->is($drev->lots[0]->produit_libelle, $produit1->getLibelle(), "Le libellé du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->millesime, $valuesRev['lots']['0']['millesime'], "Le millesime du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->statut, Lot::STATUT_PRELEVABLE, "Le statut du lot 1 est bien enregistré");
-$t->is($drev->lots[0]->document_fils, null, "Le lot n'a pas de fils");
+$t->is($drev->lots[0]->id_document_provenance, null, "Le lot n'a pas de provenance");
+$t->is($drev->lots[0]->id_document_affectation, null, "Le lot n'a pas de fils");
 $t->ok($drev->lots[0]->isAffectable(), "Le lot est affectable");
-$t->ok(!$drev->lots[0]->isAffecte(), "Le lot est affectable");
-
+$t->ok(!$drev->lots[0]->isAffecte(), "Le lot n'est pas affecté");
+$t->is($drev->lots[0]->getProvenance(), null, "pas de provenance");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
     $drev->save();
@@ -225,6 +226,8 @@ $t->comment("Génération d'un mouvement à partir d'un lot");
 $mouvement = $drev->mouvements_lots->get($drev->identifiant)->getFirst();
 $lot = $mouvement->getLot();
 
+$t->is($lot->id_document_provenance, null, "Le lot n'a pas de provenance");
+$t->is($lot->id_document_affectation, null, "Le lot n'a pas de fils");
 $t->is($mouvement->getUnicityKey(), $lot->getUnicityKey()."-".KeyInflector::slugify(Lot::STATUT_REVENDIQUE), "Clé unique des mouvements");
 $t->is($mouvement->date, $lot->date, "Mouvement date");
 $t->is($mouvement->statut, Lot::STATUT_REVENDIQUE, "Mouvement statut");
