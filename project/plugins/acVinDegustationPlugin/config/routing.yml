@@ -226,10 +226,9 @@ degustation_degustateurs_presences:
   requirements:
     sf_method: [get, post]
 
-
-degustation_redirect:
-  url: /degustation/:id/redirect
-  param: { module: degustation, action: redirect }
+degustation_visualisation:
+  url: /degustation/:id/visualisation
+  param: { module: degustation, action: visualisation }
   class: DegustationRoute
   options:
     model:    Degustation

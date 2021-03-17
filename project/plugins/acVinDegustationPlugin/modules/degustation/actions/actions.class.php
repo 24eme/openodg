@@ -434,10 +434,15 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 
-    public function executeRedirect(sfWebRequest $request) {
+    public function executeVisualisation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $etape = $this->getRouteEtape($this->degustation->etape);
+        if(!$etape){
 
-        return ($next = $this->getRouteEtape($this->degustation->etape))? $this->redirect($next, $this->degustation) : $this->redirect('degustation_prelevement_lots', $this->degustation);
+            return $this->redirect('degustation_prelevement_lots', $this->degustation);
+        }
+
+        return $this->redirect($etape, $this->degustation);
     }
 
 
