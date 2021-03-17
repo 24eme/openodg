@@ -26,6 +26,12 @@ degustation_etablissement_list:
     model:    Etablissement
     type:     object
 
+degustation_lot_historique:
+  url: /lot-historique/:identifiant/:lot_dossier/:lot_archive
+  param: { module: degustation, action: lotHistorique }
+  requirements:
+    sf_method: [get]
+
 degustation_prelevements_etape:
   url: /degustation/:id/prelevements
   param: { module: degustation, action: prelevementsEtape }
@@ -226,10 +232,9 @@ degustation_degustateurs_presences:
   requirements:
     sf_method: [get, post]
 
-
-degustation_redirect:
-  url: /degustation/:id/redirect
-  param: { module: degustation, action: redirect }
+degustation_visualisation:
+  url: /degustation/:id/visualisation
+  param: { module: degustation, action: visualisation }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -250,19 +255,19 @@ degustation_elevages:
     sf_method: [get]
 
 degustation_redeguster:
-  url: /degustation/lots/:id/:index/redeguster
+  url: /degustation/lots/:id/:lot/redeguster
   param: { module: degustation, action: redeguster }
   requirements:
     sf_method: [get]
 
 degustation_recours_oc:
-  url: /degustation/lots/:id/:index/recours
+  url: /degustation/lots/:id/:lot/recours
   param: { module: degustation, action: recoursOc }
   requirements:
     sf_method: [get]
 
 degustation_lot_conforme_appel:
-  url: /degustation/lots/:id/:index/conforme-appel
+  url: /degustation/lots/:id/:lot/conforme-appel
   param: { module: degustation, action: lotConformeAppel }
   requirements:
     sf_method: [get]
