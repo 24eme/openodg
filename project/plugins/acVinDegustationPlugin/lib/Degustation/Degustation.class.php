@@ -175,15 +175,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	public function fillDocToSaveFromLots() {
 		foreach ($this->lots as $lot) {
-            if ($lot->isLeurre()) {
+            if(!$lot->id_document_provenance) {
                 continue;
             }
-            $lotPere = $lot->getLotPere();
-            if(!$lotPere) {
-                continue;
-            }
-
-            $this->docToSave[$lotPere->getDocument()->_id] = $lotPere->getDocument()->_id;
+            $this->docToSave[$lot->id_document_provenance] = $lot->id_document_provenance;
         }
 	}
 
@@ -215,12 +210,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             if ($lot->isLeurre()) {
                 continue;
             }
+            $lot->updateDocumentDependances();
             switch($lot->statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
 
                 case Lot::STATUT_RECOURS_OC:
-                    $this->addMouvementLot($lot->buildMouvement( Lot::STATUT_RECOURS_OC));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC));
 
                 case Lot::STATUT_CONFORME:
                 case Lot::STATUT_NONCONFORME:
@@ -298,8 +294,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 
         foreach($lots as $key => $lot) {
-            $lot->statut = Lot::STATUT_AFFECTE_DEST;
+            $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot = $this->lots->add(null, $lot);
+            $lot->updateDocumentDependances();
         }
 	 }
 
