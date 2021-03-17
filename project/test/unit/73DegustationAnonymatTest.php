@@ -34,8 +34,8 @@ $doc->lots[3] = clone $doc->lots[0];
 $doc->lots[3]->numero_logement_operateur = $doc->lots[0]->numero_logement_operateur + 1;
 $doc->lots[3]->numero_table = null;
 $doc->lots[3]->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
-$doc->lots[3]->numero_dossier = "00001";
-$doc->lots[3]->numero_archive = "00002";
+$doc->lots[3]->numero_dossier = "00002";
+$doc->lots[3]->numero_archive = "00001";
 $doc->save();
 $doc = acCouchdbManager::getClient()->find($docid);
 

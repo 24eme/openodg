@@ -19,7 +19,7 @@ degustation_lot:
     sf_method: [get]
 
 degustation_etablissement_list:
-  url: /degustation/etablissement/:identifiant
+  url: /degustation/etablissement/:id
   param: { module: degustation, action: list }
   class: DegustationRoute
   options:

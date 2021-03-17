@@ -91,8 +91,8 @@ Degustation:
                         declarant_identifiant: {  }
                         declarant_nom: {  }
                         campagne: {}
+                        statut: { }
                         id_document: { required: false }
-                        statut: { required: false }
                         specificite: { required: false }
                         centilisation: { required: false }
                         conformite: { required: false }
