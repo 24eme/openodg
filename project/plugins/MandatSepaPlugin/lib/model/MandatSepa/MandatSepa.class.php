@@ -21,7 +21,13 @@ class MandatSepa extends BaseMandatSepa {
   }
 
   public function getStatut() {
-    return ($this->is_signe)? MandatSepaClient::STATUT_VALIDE : MandatSepaClient::STATUT_NONVALIDE;
+    if (!$this->is_signe) {
+      return MandatSepaClient::STATUT_NONVALIDE;
+    }
+    if (!$this->is_actif) {
+      return MandatSepaClient::STATUT_SIGNE;
+    }
+    return MandatSepaClient::STATUT_VALIDE;
   }
 
   public function switchIsSigne() {
