@@ -89,7 +89,7 @@ $degustation->save();
 $degustation->setLots($lotsPrelevables);
 $degustation->save();
 
-$t->is(count(MouvementLotView::getInstance()->getByStatut($campagne, Lot::STATUT_PRELEVABLE)->rows), 0, "0 lots prelevables");
+$t->is(count(MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows), 0, "0 lots prelevables");
 
 $date = date('Y-m-d H:i:s');
 
