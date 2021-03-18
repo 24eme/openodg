@@ -21,7 +21,7 @@ class DegustationLot extends BaseDegustationLot {
   public function getShortLibelleConformite(){
     if($this->isConformeObs()){ return 'Obs.'; }
         $libelles = Lot::$shortLibellesConformites;
-        return ($this->exist('conformite') && isset($libelles[$this->conformite]))? $libelles[$this->conformite] : $conformite;
+        return ($this->exist('conformite') && isset($libelles[$this->conformite]))? $libelles[$this->conformite] : $this->conformite;
   }
 
   public function getNumeroTableStr() {
