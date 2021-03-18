@@ -148,14 +148,12 @@ class degustationActions extends sfActions {
 
         $this->form->bind($request->getParameter($this->form->getName()));
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
 
         $this->form->save();
 
         if ($request->isXmlHttpRequest()) {
-
           return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
         }
 
@@ -170,7 +168,6 @@ class degustationActions extends sfActions {
     public function executePrelevementsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
-        $this->validation = new DegustationValidation($this->degustation);
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
             $this->degustation->save();

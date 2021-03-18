@@ -7,9 +7,6 @@
 <div class="page-header no-border">
   <h2>Prélévements des lots/ Convocations des dégustateurs</h2>
 </div>
-<?php if($validation->hasPoints()): ?>
-    <?php include_partial('degustation/pointsAttentions', array('degustation' => $degustation, 'validation' => $validation)); ?>
-<?php endif; ?>
 <div class="row">
   <div class="col-xs-12">
     <div class="panel panel-default" style="min-height: 160px">

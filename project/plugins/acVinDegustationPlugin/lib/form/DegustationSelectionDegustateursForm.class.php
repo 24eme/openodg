@@ -15,13 +15,14 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 
 	public function configure()
     {
-	    $form = new BaseForm();
+	  $form = new BaseForm();
       $subForm = new BaseForm();
       foreach($this->getDegustateursByCollege() as $compte_id => $compte) {
           $subForm->embedForm($compte->_id, new DegustationSelectionDegustateurForm());
       }
       $form->embedForm($this->college, $subForm);
       $this->embedForm('degustateurs', $form);
+      $this->validatorSchema->setPostValidator(new DegustationSelectionDegustateursValidator($this->getDocument(),null, array('college' => $this->college)));
       $this->widgetSchema->setNameFormat('degustation[%s]');
     }
 
@@ -40,8 +41,8 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
     }
 
 	public function save() {
-		$values = $this->getValues();
-		$doc = $this->getDocument();
+	$values = $this->getValues();
+	$doc = $this->getDocument();
     $doc->getOrAdd('degustateurs');
     foreach ($values['degustateurs'] as $college => $items) {
         if($college == $this->college){
