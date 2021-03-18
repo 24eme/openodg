@@ -36,6 +36,7 @@ class MandatSepa extends BaseMandatSepa {
       $this->is_actif = 0;
     } else {
       $this->is_signe = 1;
+      $this->is_actif = 1;
     }
   }
 

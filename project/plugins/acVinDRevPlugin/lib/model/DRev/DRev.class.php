@@ -46,6 +46,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected $csv_douanier = null;
     protected $document_douanier_type = null;
     protected $archivage_document = null;
+    protected $etablissement = null;
 
     public function __construct() {
         parent::__construct();
@@ -1012,8 +1013,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getEtablissementObject() {
+        if($this->etablissement) {
 
-        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+            return $this->etablissement;
+        }
+
+        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+
+        return $this->etablissement;
     }
 
     public function initProduits() {
