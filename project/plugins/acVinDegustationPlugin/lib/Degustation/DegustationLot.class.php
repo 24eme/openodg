@@ -86,7 +86,7 @@ class DegustationLot extends BaseDegustationLot {
 
     public function getLibelle() {
 
-        return "";
+        return parent::getLibelle();
     }
 
     public function getMouvementFreeInstance() {

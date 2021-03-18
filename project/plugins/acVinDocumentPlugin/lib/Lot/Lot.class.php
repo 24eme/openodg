@@ -586,23 +586,14 @@ abstract class Lot extends acCouchdbDocumentTree
 
     abstract public function getMouvementFreeInstance();
 
-    abstract public function getLibelle();
-
-    public function constructLibelle(){
-        $libelle = $this->produit_libelle;
+    protected function getLibelle()
+    {
+        $libelle = $this->getProduitRevendiqueLibelleComplet();
         $libelle .= ($this->millesime) ? " ".$this->millesime : "";
         $libelle .= ($this->specificite) ? " ".$this->specificite : "";
-        if($this->exist("details") && $this->details){
-            $libelle .=  $this->details;
-        }
-        if($this->exist("cepages") && count($this->cepages)){
-            $libelle .=  " ( ";
-            foreach ($this->cepages as $cepage => $pourcent) {
-                $libelle .=  $cepage." ";
-            }
-            $libelle .=  ")";
-        }
+        $libelle .= $this->getCepagesLibelle();
         return $libelle;
+
     }
 
     public function getUniqueId(){
@@ -636,7 +627,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->numero_dossier = $this->numero_dossier;
         $mouvement->numero_archive = $this->numero_archive;
         $mouvement->detail = $this->produit_hash;
-        $mouvement->libelle = $this->constructLibelle();
+        $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = null;
         $mouvement->region = '';
         $mouvement->version = $this->getVersion();
