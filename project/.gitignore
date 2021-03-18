@@ -13,6 +13,7 @@ log/[^.]*
 data/*
 .~*
 !data/configuration/
+!data/comptes/
 !data/elk
 test/output
 test_ava/output
