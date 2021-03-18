@@ -129,7 +129,7 @@ $lot->redegustation();
 $degustation->save();
 
 $t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est toujours non conforme");
-$t->is(! $lot->getMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE), "Le lot n'est plus en manquement en attente");
+$t->ok(! $lot->getMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE), "Le lot n'est plus en manquement en attente");
 $t->ok($lot->affectable, "Le lot est affectable");
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot a un mouvement affectable");
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot a un mouvement affecte source");
