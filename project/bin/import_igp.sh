@@ -87,7 +87,7 @@ php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$O
 
 echo "Import Lots"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 24 > $DATA_DIR/lots.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 14,14 -k 24,24 > $DATA_DIR/lots.csv # tri identifiant, campagne, type
 sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots.csv
 sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots.csv
 php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
