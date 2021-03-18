@@ -342,6 +342,12 @@ abstract class Lot extends acCouchdbDocumentTree
         return $nb." passage";
     }
 
+    public function getNumeroPassage()
+    {
+        $passages = MouvementLotView::getInstance()->getNombreDegustationAvantMoi($this);
+        return count($passages);
+    }
+
     public function redegustation()
     {
         // Tagguer le lot avec un flag special

@@ -20,11 +20,12 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(22);
+$t = new lime_test(24);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
 $degust_date_fr = '01/09/'.$campagne;
+$degust_date_fr2 = '02/09/'.$campagne;
 $degust_time_fr = '12:45';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
@@ -143,7 +144,7 @@ $t->is(count($lotsEnManquement), 0, "Il y a 0 mouvement en manquement");
 $t->comment('Deuxième degustation');
 $degustation2 = new Degustation();
 $form = new DegustationCreationForm($degustation2);
-$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[1]);
+$values = array('date' => $degust_date_fr2, 'time' => $degust_time_fr, 'lieu' => $commissions[1]);
 $form->bind($values);
 $degustation2 = $form->save();
 
@@ -164,11 +165,12 @@ $t->is(count($lot2->getMouvements()), 2, "Le lot a deux mouvements");
 $t->ok($lot2->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Le lot a le mouvement ".Lot::STATUT_ATTENTE_PRELEVEMENT);
 $t->ok($lot2->getMouvement(Lot::STATUT_AFFECTE_DEST), "Le lot a le mouvement ".Lot::STATUT_AFFECTE_DEST);
 $t->is(MouvementLotView::getInstance()->getNombrePassage($lot), 2, "Le lot de la première degust sait qu'il a deux passages");
-$t->is(MouvementLotView::getInstance()->getNombrePassage($lot2), 2, "Le lot de la deuxième dégust sait que c'est le deuxième passage");
+$t->is(MouvementLotView::getInstance()->getNombrePassage($lot2), 2, "Le lot de la deuxième dégust sait qu'il y a un deuxième passage");
 $t->is($lot2->affectable, false, "Le lot n'est plus affectable");
 
 $t->is($lot2->id_document, $degustation2->_id, "L'id du doc du mouvement est la même degustation");
 $t->is($lot2->numero_archive, $lot->numero_archive, "Le numero archive n'a pas changé");
 $t->is($lot2->numero_dossier, $lot->numero_dossier, "Le numero dossier n'a pas changé");
 
-
+$t->is($lot2->getNumeroPassage(), 2, "Le numero de passage du lot 2 est bien 2");
+$t->is($lot->getNumeroPassage(), 1, "Le numero de passage du lot 1 est bien 1");
