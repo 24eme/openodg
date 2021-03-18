@@ -605,6 +605,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
     public function getMandatSepaCommune() {
       return $this->siege->commune;
     }
+    // fin
+
+    public function hasMandatSepa() {
+      return (MandatSepaClient::getInstance()->findLastBySociete($this->getIdentifiant()) != null);
+    }
 
 
     /*** TODO : Fonctions à retirer après le merge ****/

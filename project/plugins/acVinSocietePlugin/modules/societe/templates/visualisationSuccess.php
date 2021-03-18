@@ -80,7 +80,7 @@
                     <div style="margin-bottom: 5px;" class="col-xs-1  text-muted">IBAN&nbsp;</div>
                     <div style="margin-bottom: 5px;" class="col-xs-5"><?php echo $mandatSepa->debiteur->iban; ?></div>
                     <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Mandat signé&nbsp;</div>
-                    <div style="margin-bottom: 5px;" class="col-xs-3"><input type="checkbox" data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" class="bsswitch ajax" data-size="mini"<?php if ($mandatSepa->is_signe): ?> checked="checked"<?php endif; ?> onchange="document.location='<?php echo url_for('societe_mandat_sepa_switch_signe', array('identifiant' => $societe->identifiant)); ?>'" /></div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3"><input type="checkbox" data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" class="bsswitch ajax" data-size="mini"<?php if ($mandatSepa->is_signe): ?> checked="checked" disabled<?php endif; ?> onchange="document.location='<?php echo url_for('societe_mandat_sepa_switch_signe', array('identifiant' => $societe->identifiant)); ?>'" /></div>
                   </div>
                   <div class="row" style="margin-top: 5px;">
                     <div style="margin-bottom: 5px;" class="col-xs-1 text-muted">BIC&nbsp;</div>

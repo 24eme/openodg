@@ -9,7 +9,7 @@
     <br/>
 
         <div id="modification_compte" class="col-xs-12">
-        	<p>Sur cette page, si besoin, vous pouvez redéfinir votre mot de passe ou modifier vos informations de contact.</p>
+        	<p>Pour vous inscrire au prélèvement automatique, merci de bien vouloir renseigner vos coordonnées bancaires dans le formulaire ci-dessous.</p>
 
           <div class="col-sm-12">&nbsp;<br/></div>
 
@@ -83,6 +83,8 @@
                 <?php echo $form['bic']->renderError(); ?>
               </div>
             </div>
+
+            <p>Une fois vos coordonnées bancaires saisies, vous devrez télécharger le document PDF du mandat de prélèvement SEPA, l'imprimer, le signer et nous le retourner par voie postale à l'adresse indiqué sur ledit document.</p>
 
             <div class="col-sm-12">&nbsp;<br/></div>
 
