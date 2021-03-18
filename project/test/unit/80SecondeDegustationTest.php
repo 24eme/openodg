@@ -22,6 +22,34 @@ function countMouvements($degustation) {
 
 $t = new lime_test(16);
 
+$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
+
+//Suppression des docs précédents
+foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $drev = DRevClient::getInstance()->find($k);
+    $drev->delete(false);
+}
+
+foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = ConditionnementClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+
+foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = TransactionClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+
+foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $degustation = DegustationClient::getInstance()->find($k);
+    $degustation->delete(false);
+}
+
+foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $chgtdenom = ChgtDenomClient::getInstance()->find($k);
+    $chgtdenom->delete(false);
+}
+
 //Début des tests
 $t->comment("Création d'un second passage");
 
@@ -29,8 +57,10 @@ foreach (DegustationClient::getInstance()->getHistory(1) as $d) {
     $degustation = $d;
 }
 
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+
 $t->is(countMouvements($degustation), 24, "Il y a 24 (8 × 3) mouvements originaux dans la dégustation");
-$t->is(count($degustation->getMvtLotsPrelevables()), 1, "Il y a un seul mouvement prélevable");
+$t->is(count($lotsPrelevables), 1, "Il y a un seul mouvement prélevable");
 
 $lot = $degustation->lots[0];
 $t->is(MouvementLotHistoryView::getInstance()->getNombrePassage($lot), 1, "C'est le premier passage du lot");
@@ -41,10 +71,12 @@ $t->is(MouvementLotHistoryView::getInstance()->getNombrePassage($lot), 2, "C'est
 $t->is($lot->statut, Lot::STATUT_NONCONFORME, "Le lot n'a pas bougé");
 
 $t->is(countMouvements($degustation), 25, "Il y a un mouvement de plus dans la dégustation");
-$t->is(count($degustation->getMvtLotsPrelevables()), 2, "Un deuxième mouvement a été créé");
 
-$mvts_prelevables = $degustation->getMvtLotsPrelevables();
-foreach ($mvts_prelevables as $key => $m) {
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+
+$t->is(count($lotsPrelevables), 2, "Un deuxième mouvement a été créé");
+
+foreach ($lotsPrelevables as $key => $m) {
     if (strpos($key, 'DEGUST') === 0) {
         $mvt = $m;
         continue;
@@ -65,7 +97,7 @@ $t->is(countMouvements($degustation), 4, "Regénérer les mouvements n'en rajout
 
 $t->comment("Nouvelle dégustation");
 $nouvelle_degustation = new Degustation();
-$lot_2passage = $nouvelle_degustation->addLot($mvt, Lot::STATUT_ATTENTE_PRELEVEMENT);
+$lot_2passage = $nouvelle_degustation->lots->add(null, $mvt);
 
 $t->is($lot_2passage->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le nouveau lot est en attente de prélèvement");
 //$t->is($lot_2passage->nombre_degustation, 2, "Il s'agit de la deuxième dégustation");
@@ -74,8 +106,8 @@ if (getenv('NODELETE')) {
     exit;
 }
 
-$mvmts_prelevables = $degustation->getMvtLotsPrelevables();
-foreach($mvmts_prelevables as $m) {
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+foreach($lotsPrelevables as $m) {
     if ($m->nombre_degustation) {
         $degustation->remove($m->origine_mouvement);
     }
