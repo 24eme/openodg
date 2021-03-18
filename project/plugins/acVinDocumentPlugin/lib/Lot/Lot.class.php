@@ -349,7 +349,6 @@ abstract class Lot extends acCouchdbDocumentTree
 
         $this->affectable = true;
         $this->specificite .= ' 2eme degustation';
-        $this->getDocument()->generateMouvementsLots();
     }
 
     public function setNumeroTable($numero) {
