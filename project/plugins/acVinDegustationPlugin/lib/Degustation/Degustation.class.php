@@ -307,6 +307,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lot = $this->lots->add(null, $lot);
             $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot->id_document = $this->_id;
+            $lot->affectable = false;
+            $lot->updateSpecificiteWithDegustationNumber();
             $lot->updateDocumentDependances();
         }
 	 }
@@ -517,6 +519,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$tri = array('couleur', 'appellation', 'cepage');
 			}
 			$this->tri = $tri;
+			  usort($lots, array($this, "sortLotsByPosition"));
 	   		uasort($lots, array($this, "sortLotsByThisTri"));
 	   		return $lots;
    	 	}
@@ -565,6 +568,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function sortLotsByPosition($a, $b){
+				if ($a->getPosition() == $b->getPosition()) {
+	        return 0;
+	    }
+	    return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
+		}
+
 		public function getLotsByTable($numero_table){
 			$lots = array();
 			foreach ($this->getLots() as $lot) {
@@ -573,6 +583,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			$this->tri = ['numero_anonymat'];
+			usort($lots, array($this, "sortLotsByPosition"));
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
@@ -604,6 +615,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					break;
 				}
 				$this->tri = ['couleur','appellation','cépage'];
+				usort($lots, array($this, "sortLotsByPosition"));
 				usort($lots, array($this, 'sortLotsByThisTri'));
 				foreach ($lots as $k => $lot){
 					if ($lot->numero_anonymat) {
@@ -677,6 +689,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsTableOrFreeLotsCustomSort($numero_table, array $tri,  $free = true){
 			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
 			$this->tri = $tri;
+			usort($lots, array($this, "sortLotsByPosition"));
 			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
 		}

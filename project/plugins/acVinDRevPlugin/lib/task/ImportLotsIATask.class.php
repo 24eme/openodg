@@ -66,6 +66,7 @@ class ImportLotsIATask extends sfBaseTask
   protected $convert_statut;
   protected $convert_activites;
   protected $etablissements;
+  protected $etablissementsCache = array();
   protected $produits;
   protected $cepages;
 
@@ -202,14 +203,22 @@ EOF;
 
            $statut = self::$correspondancesStatuts[$statut];
 
+           $previousdoc = $document;
            $document = $this->getDocument($type, $document, $etablissement, $campagne, $date, $numeroDossier);
+
+            if($previousdoc && $document->_id != $previousdoc->_id) {
+                try {
+                    $previousdoc->save();
+                } catch(Exception $e) {
+                    echo "ERROR;".$e->getMessage().";".$document->_id.";".$line."\n";
+                }
+            }
 
             $lot = $document->addLot();
 
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
             $lot->cepages = $cepages;
-            $lot->id_document = $document->_id;
             $lot->millesime = $millesime;
             $lot->numero_dossier = $numeroDossier;
             $lot->numero_archive = $numeroLot;
@@ -274,13 +283,9 @@ EOF;
             $lots = array_values($document->lots->toArray(true, false));
             $document->remove('lots');
             $document->add('lots', $lots);
-
-            try {
-                $document->save();
-                //echo "SUCCESS;Lot importé;".$document->_id.";\n";
-            } catch(Exception $e) {
-                echo "ERROR;".$e->getMessage().";".$document->_id.";".$line."\n";
-            }
+        }
+        if($document) {
+            $document->save();
         }
     }
 
@@ -301,25 +306,38 @@ EOF;
     }
 
     protected function identifyEtablissement($data) {
+
+        $key = KeyInflector::slugify(str_replace(" ", "", $data[self::CSV_CVI].$data[self::CSV_RAISON_SOCIALE].$data[self::CSV_NOM]));
+
+        if(isset($this->etablissementsCache[$key])) {
+            return $this->etablissementsCache[$key];
+        }
+
         foreach ($this->etablissements as $etab) {
             if (isset($data[self::CSV_CVI]) && trim($data[self::CSV_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_CVI])) {
-                return EtablissementClient::getInstance()->find($etab->id);
+
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
                 break;
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
                 break;
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
                 break;
             }
             if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
                 break;
             }
             if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
                 break;
             }
         }
@@ -363,9 +381,10 @@ EOF;
         $newDrev->validation_odg = $date;
         $newDrev->numero_archive = $numeroDossier;
 
-        if(!$previousdoc || $newDrev->_id != $drev->_id) {
-          $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
-          if($drev) { $drev->delete(); $drev = null; }
+        if(!$drev || $newDrev->_id != $drev->_id) {
+          $drev = DRevClient::getInstance()->find($newDrev->_id, acCouchdbClient::HYDRATE_JSON);
+
+          if($drev) { DRevClient::getInstance()->deleteDoc($drev); $drev = null; }
         }
 
         if(!$drev) {

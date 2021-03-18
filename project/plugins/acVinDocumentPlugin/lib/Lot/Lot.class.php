@@ -43,6 +43,8 @@ abstract class Lot extends acCouchdbDocumentTree
 
     const TYPE_ARCHIVE = 'Lot';
 
+    const TEXTE_PASSAGE = '%dème dégustation';
+
     public static $libellesStatuts = array(
         self::STATUT_AFFECTE_DEST => 'Affecte dest',
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
@@ -342,14 +344,42 @@ abstract class Lot extends acCouchdbDocumentTree
         return $nb." passage";
     }
 
+    public function getNumeroPassage()
+    {
+        $passages = MouvementLotView::getInstance()->getNombreDegustationAvantMoi($this);
+        return count($passages);
+    }
+
+    public function updateSpecificiteWithDegustationNumber()
+    {
+        $nombrePassage = $this->getNumeroPassage();
+
+        if ($nombrePassage < 1) {
+            return;
+        }
+
+        $nombrePassage++;
+
+        $specificite = $this->specificite;
+
+        if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
+            // il y a déjà un passage dans la spécificité
+            $specificite = preg_replace('/[0-9]+'.str_replace('%d', '', self::TEXTE_PASSAGE).'/', sprintf(self::TEXTE_PASSAGE, $nombrePassage), $specificite);
+        } else {
+            $specificite = (empty($specificite))
+                            ? sprintf(self::TEXTE_PASSAGE, $nombrePassage)
+                            : $specificite . ', '. sprintf(self::TEXTE_PASSAGE, $nombrePassage);
+        }
+
+        $this->specificite = $specificite;
+    }
+
     public function redegustation()
     {
         // Tagguer le lot avec un flag special
         // Regenerer les mouvements
 
         $this->affectable = true;
-        $this->specificite .= ' 2eme degustation';
-        $this->getDocument()->generateMouvementsLots();
     }
 
     public function setNumeroTable($numero) {
@@ -422,11 +452,17 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function upPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this, $this->getLotInPrevPosition());
     }
 
     public function downPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this->getLotInNextPosition(), $this);
     }
 
