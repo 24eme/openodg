@@ -11,7 +11,6 @@ class ProdouaneScrappyClient {
         $scrapybin = sfConfig::get('app_scrapy_bin');
         $scrapyconfigfilename = sfConfig::get('app_scrapy_configfilename');
         if ($scrapyconfigfilename) {
-            $scrapyconfigfilename = preg_replace('/%app%/', sfConfig::get('sf_app'), $scrapyconfigfilename);
             $scrapybin = "PRODOUANE_CONFIG_FILENAME=".$scrapyconfigfilename." bash ".$scrapybin;
         }else{
             $scrapybin = "bash ".$scrapybin;
@@ -19,7 +18,7 @@ class ProdouaneScrappyClient {
 
         $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments RUNNING");
         exec($scrapybin."/$scriptname $arguments", $output, $status);
-        $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments FIN ($status) ".implode(' - ', $output));
+        $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments".implode(' - ', $output));
         return $status;
     }
 
