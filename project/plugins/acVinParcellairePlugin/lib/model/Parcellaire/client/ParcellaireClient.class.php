@@ -82,8 +82,6 @@ class ParcellaireClient extends acCouchdbClient {
         $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
         $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
 
-        $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
-
         if (empty($files)) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
         }
