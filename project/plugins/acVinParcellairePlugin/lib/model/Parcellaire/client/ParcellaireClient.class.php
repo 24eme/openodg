@@ -76,18 +76,8 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireCSV($cvi, $contextInstance = null)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
-        $scrapybin = sfConfig::get('app_scrapy_bin');
-        $scrapyconfigfilename = sfConfig::get('app_scrapy_configfilename');
-        if ($scrapyconfigfilename) {
-            $scrapybin = "PRODOUANE_CONFIG_FILENAME=".$scrapyconfigfilename." bash ".$scrapybin;
-        }else{
-            $scrapybin = "bash ".$scrapybin;
-        }
-
-        $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".$scrapybin."/download_parcellaire.sh $cvi");
-        exec($scrapybin."/download_parcellaire.sh $cvi", $output, $status);
-        $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
+        $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
+        $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
 
         $files = glob($scrapydocs.'/parcellaire-'.$cvi.'.csv');
 
@@ -116,20 +106,9 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireJSON($cvi, $contextInstance = null)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
-        $scrapybin = sfConfig::get('app_scrapy_bin');
-        $scrapyconfigfilename = sfConfig::get('app_scrapy_configfilename');
-        if ($scrapyconfigfilename) {
-            $scrapybin = "PRODOUANE_CONFIG_FILENAME=".$scrapyconfigfilename." bash ".$scrapybin;
-        }else{
-            $scrapybin = "bash ".$scrapybin;
-        }
-
-
-        $contextInstance->getLogger()->info("scrapeParcellaireJSON:  $scrapybin/download_parcellaire_geojson.sh $cvi");
-        exec("$scrapybin/download_parcellaire_geojson.sh $cvi", $output, $status);
-        $contextInstance->getLogger()->info("scrapeParcellaireJSON: output: ".implode(' - ', $output));
-        $files = glob($scrapydocs.'/cadastre-'.$cvi.'-parcelles.json');
+        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
+        $status = ProdouaneScrappyClient::exec("download_parcellaire_geojson.sh", "$cvi", $output);
+        $file = $scrapydocs.'/cadastre-'.$cvi.'-parcelles.json';
         $message = "";
 
         if (empty($files)) {

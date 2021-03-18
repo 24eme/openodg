@@ -74,14 +74,7 @@ class FichierClient extends acCouchdbClient {
     		throw new sfException("$type is not allowed for scrapy file");
     	}
 
-        $scrapybin = sfConfig::get("app_scrapy_bin");
-        $scrapydocs = sfConfig::get("app_scrapy_documents");
-        $scrapyconfigfilename = sfConfig::get('app_scrapy_configfilename');
-        if ($scrapyconfigfilename) {
-            $scrapybin = "PRODOUANE_CONFIG_FILENAME=".$scrapyconfigfilename." bash ".$scrapybin;
-        }else{
-            $scrapybin = "bash ".$scrapybin;
-        }
+        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
 
         if (!preg_match('/^[0-9]{4}$/', $annee)) {
             throw new sfException("$annee is not a valid year for scrapy file");
@@ -101,7 +94,7 @@ class FichierClient extends acCouchdbClient {
             }
         }
 
-        exec("$scrapybin/download_douane.sh $t $annee $cvi 1>&2");
+        $status = ProdouaneScrappyClient::exec("download_douane.sh", "$t $annee $cvi 1>&2", $output);
     }
 
     private function getScrapyFiles($etablissement, $type, $annee)
