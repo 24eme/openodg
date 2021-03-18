@@ -35,6 +35,25 @@ class MouvementLotView extends acCouchdbView
         return count($mouvements->rows);
     }
 
+    public function getNombreDegustationAvantMoi($lot)
+    {
+        $mouvements = $this->client
+                           ->startkey([
+                               Lot::STATUT_AFFECTE_DEST,
+                               $lot->declarant_identifiant,
+                               $lot->unique_id,
+                               ""
+                           ])
+                           ->endkey([
+                               Lot::STATUT_AFFECTE_DEST,
+                               $lot->declarant_identifiant,
+                               $lot->unique_id,
+                               $lot->id_document
+                           ])
+                           ->getView($this->design, $this->view);
+
+        return $mouvements->rows;
+    }
 
     public function find($identifiant, $query) {
         $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant);
