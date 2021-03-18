@@ -421,11 +421,17 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function upPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this, $this->getLotInPrevPosition());
     }
 
     public function downPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this->getLotInNextPosition(), $this);
     }
 
