@@ -579,7 +579,7 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
       $degustation->anonymize();
       $degustation->save();
-      return $this->redirect('degustation_anonymats_etape', $degustation);
+      return $this->redirect('degustation_commission_etape', $degustation);
     }
 
     public function executeDesanonymize(sfWebRequest $request){
