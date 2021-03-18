@@ -105,3 +105,6 @@
 </form>
 <?php endif; ?>
 <?php include_partial('drev/popupConfirmationValidation', array('approuver' => false)); ?>
+<?php if (!$sf_user->isAdmin() && MandatSepaConfiguration::getInstance()->isActive() && !$drev->getEtablissementObject()->getSociete()->hasMandatSepa()): ?>
+<?php include_partial('mandatsepa/popupPropositionInscriptionPrelevement'); ?>
+<?php endif; ?>
