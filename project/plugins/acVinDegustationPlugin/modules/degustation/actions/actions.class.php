@@ -471,10 +471,10 @@ class degustationActions extends sfActions {
 
     public function executeLotHistorique(sfWebRequest $request){
         $etablissement_identifiant = $request->getParameter('identifiant');
-        $this->lot_dossier = $request->getParameter('lot_dossier');
-        $this->lot_archive = $request->getParameter('lot_archive');
+        $this->numero_dossier = $request->getParameter('numero_dossier');
+        $this->numero_archive = $request->getParameter('numero_archive');
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissement_identifiant);
-        $this->mouvements =  array_reverse(MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant,$this->lot_dossier,$this->lot_archive)->rows);
+        $this->mouvements =  array_reverse(MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant,$this->numero_dossier,$this->numero_archive)->rows);
     }
 
     public function executeList(sfWebRequest $request) {
@@ -483,8 +483,7 @@ class degustationActions extends sfActions {
         $this->forward404Unless($this->etablissement);
         $this->campagne = $request->getParameter('campagne',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
 
-        $this->lots = array();
-
+        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($etablissement_id)->rows;
     }
 
     public function executeLot(sfWebRequest $request) {
