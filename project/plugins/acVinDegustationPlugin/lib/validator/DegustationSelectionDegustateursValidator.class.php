@@ -31,7 +31,7 @@ class DegustationSelectionDegustateursValidator extends sfValidatorSchema {
             foreach ($collegesForm[$this->college] as $id => $value) {
                 if($value["selectionne"]){
                     foreach ($colleges as $collegeKey => $college) {
-                        if($degustateurs->get($collegeKey)->exist($id)){
+                        if($degustateurs->exist($collegeKey) && $degustateurs->get($collegeKey)->exist($id)){
                             $c = CompteClient::getInstance()->find($id);
                             throw new sfValidatorErrorSchema($this, array(new sfValidatorError($this, 'error_degustateur',array("degustateur" => $c->nom_a_afficher, "college" => $college))));
                         }
