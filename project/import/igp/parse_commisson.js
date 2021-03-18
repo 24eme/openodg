@@ -35,7 +35,8 @@ $('table#gvPrelev tr').each(function() {
     }
 
     var operateur = cleanChamps($(this).find('td').eq(1).text());
-    var produit = cleanChamps($(this).find('td').eq(2).text());
+    var appellation = cleanChamps($(this).find('td').eq(2).text().split("\n")[1]);
+    var couleur = cleanChamps($(this).find('td').eq(2).text().split("\n")[3]);
     var cepage = cleanChamps($(this).find('td').eq(3).text());
     var volume = cleanChamps($(this).find('td').eq(4).text());
     var logement = cleanChamps($(this).find('td').eq(5).text());
@@ -48,5 +49,5 @@ $('table#gvPrelev tr').each(function() {
     var motif_refus = cleanChamps($(this).find('td').eq(12).text());
     var commentaire = cleanChamps($(this).find('td').eq(13).text());
 
-    console.log(baseLigne + ";LOT;" + operateur + ";" + produit + ";" + cepage + ";" + volume + ";" + logement + ";" + type_lot + ";" + passage + ";" + degre + ";" + doc + ";" + numero_anonymat + ";" + conformite + ";" + motif_refus + ";" + commentaire);
+    console.log(baseLigne + ";LOT;" + operateur + ";" + appellation + ";" + couleur + ";"  + cepage + ";" + volume + ";" + logement + ";" + type_lot + ";" + passage + ";" + degre + ";" + doc + ";" + numero_anonymat + ";" + conformite + ";" + motif_refus + ";" + commentaire);
 });

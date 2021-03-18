@@ -102,7 +102,8 @@ echo "Import des Degustations"
 # trie des lots par date de commission pour dire qu'une date correspond à une degustation.
 sort -t";" -k32.7,32.10 -k32.4,32.5 -k32.1,32.2 $DATA_DIR/lots.csv  > $DATA_DIR/lots_sort_by_date.csv
 # il y a également un problème avec le nom de lieu j'ai mis SYNDICAT-VIGNERONS-ARLES par défaut mais il faudra le changer en fonction de ce qu'il y a en base pour chaque lot ce champs n'est pas dans le csv exporté.
-php symfony import:degustations-ia $DATA_DIR/lots_sort_by_date.csv --application="$ODG" --trace
+#php symfony import:degustations-ia $DATA_DIR/lots_sort_by_date.csv --application="$ODG" --trace
+php symfony import:commissions-ia $DATA_DIR/commissions.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/gestion_nc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/gestion_nc.csv
 php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace
