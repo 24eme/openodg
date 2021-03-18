@@ -48,9 +48,10 @@
           		<table class="table table-bordered table-condensed table-striped">
           			<thead>
           				<tr>
-                            <th class="col-xs-10">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a> )</span></th>
-                            <th class="col-xs-1">Provenance</th>
-          					<th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
+                      <th class="col-xs-1">&nbsp;</th>
+                      <th class="col-xs-9">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a> )</span></th>
+                      <th class="col-xs-1">Provenance</th>
+          					  <th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
           				</tr>
           			</thead>
           			<tbody>
@@ -60,6 +61,12 @@
           					if (isset($form[$name])):
           						?>
           						<tr class="vertical-center cursor-pointer">
+                        <td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>">
+                          <?php if ($numero_table == $lot->numero_table): ?>
+                          <a href="<?php echo url_for('degustation_position_lot_up', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-up"></span></a>
+                          <a href="<?php echo url_for('degustation_position_lot_down', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                          <?php endif; ?>
+                        </td>
           							<td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
           								<div class="row">
                                               <div class="col-xs-4 text-right">

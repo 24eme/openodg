@@ -39,7 +39,7 @@
             </div>
         </td>
         <td>
-            <a class="btn btn-default" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $m->declarant_identifiant, 'lot_dossier' => $m->numero_dossier, 'lot_archive' => $m->numero_archive)) ?>">Historique</a>
+            <a class="btn btn-default" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $m->declarant_identifiant, 'numero_dossier' => $m->numero_dossier, 'numero_archive' => $m->numero_archive)) ?>">Historique</a>
         </td>
     </tr>
 <?php endforeach; ?>
