@@ -306,6 +306,32 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id, 'tri' => $this->tri));
     }
 
+    public function executeUpPositionLot(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $index = $request->getParameter('index');
+        $tri = $request->getParameter('tri');
+        $numero_table = $request->getParameter('numero_table');
+
+        $this->forward404Unless($degustation->lots->exist($index));
+        $lot = $degustation->lots->get($index);
+        $lot->upPosition();
+        $degustation->save();
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
+    }
+
+    public function executeDownPositionLot(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $index = $request->getParameter('index');
+        $tri = $request->getParameter('tri');
+        $numero_table = $request->getParameter('numero_table');
+
+        $this->forward404Unless($degustation->lots->exist($index));
+        $lot = $degustation->lots->get($index);
+        $lot->downPosition();
+        $degustation->save();
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
+    }
+
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->tri = $request->getParameter('tri');
