@@ -588,10 +588,19 @@ abstract class Lot extends acCouchdbDocumentTree
 
     protected function getLibelle()
     {
-        $libelle = $this->getProduitRevendiqueLibelleComplet();
-        $libelle .= ($this->millesime) ? " ".$this->millesime : "";
-        $libelle .= ($this->specificite) ? " ".$this->specificite : "";
-        $libelle .= $this->getCepagesLibelle();
+        $libelle = $this->getProduitLibelle();
+
+        if($this->millesime) {
+            $libelle .= " ".$this->millesime;
+        }
+        if($this->specificite) {
+            $libelle .= " ".$this->specificite;
+        }
+
+        if($this->getCepagesLibelle()) {
+            $libelle .= " ".$this->getCepagesLibelle();
+        }
+
         return $libelle;
 
     }
