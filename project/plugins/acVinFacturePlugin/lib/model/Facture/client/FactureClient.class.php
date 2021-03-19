@@ -78,7 +78,7 @@ class FactureClient extends acCouchdbClient {
         if($docs && !is_array($docs)){
           $docs = array($docs);
         }
-        foreach($docs as $doc) {
+        foreach($docs as $id => $doc) {
             if($regenerate) {
                 $doc->remove('mouvements');
                 $doc->add('mouvements');
@@ -381,7 +381,6 @@ class FactureClient extends acCouchdbClient {
         if(is_string($compte)) {
             $compte = CompteClient::getInstance()->find($compte_or_id);
         }
-
         $f = $this->createFactureByTemplate($template, $compte, $date_facturation);
 
         if(!$f) {

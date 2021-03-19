@@ -175,7 +175,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
 
           $this->cleanDoc();
           $this->validation = $date;
-          $this->archiver();
       }
 
       public function validateOdg($date = null, $region = null) {
@@ -286,6 +285,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
     	}
 
         public function save() {
+            $this->archiver();
             $this->generateMouvementsLots();
 
             parent::save();
@@ -304,12 +304,14 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
             $mother->save();
         }
 
-      public function archiver() {
-          $this->archivage_document->preSave();
-          if ($this->isArchivageCanBeSet()) {
-              $this->archiverLot($this->numero_archive);
-          }
-      }
+        public function archiver() {
+            $this->add('type_archive', 'Revendication');
+            if (!$this->isArchivageCanBeSet()) {
+                return;
+            }
+            $this->archivage_document->preSave();
+            $this->archiverLot($this->numero_archive);
+        }
 
       public function getNumeroArchive() {
 

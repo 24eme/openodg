@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(9);
+$t = new lime_test(12);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -27,6 +27,9 @@ $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $
 
 $transaction->storeDeclarant();
 $transaction->save();
+
+$t->is($transaction->type_archive, "Revendication", "Type d'archive Revendication");
+$t->is($transaction->numero_archive, null, "Numéro d'archive nul");
 
 $produits = $transaction->getConfigProduits();
 
@@ -53,6 +56,9 @@ $lot->numero_logement_operateur = "A";
 
 $transaction->validate();
 $transaction->save();
+
+$t->ok($transaction->numero_archive, "Numéro d'archive défini");
+
 $transaction->validateOdg();
 $transaction->save();
 
