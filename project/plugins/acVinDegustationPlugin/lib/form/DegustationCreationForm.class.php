@@ -1,6 +1,6 @@
 <?php
 
-class DegustationCreationForm extends acCouchdbObjectForm
+class DegustationCreationForm extends BaseForm
 {
     public function configure() {
         $this->setWidget('date', new bsWidgetFormInput(array(), array()));
@@ -10,7 +10,7 @@ class DegustationCreationForm extends acCouchdbObjectForm
         $this->setValidator('time', new sfValidatorTime(array('time_output' => 'H:i', 'time_format' => '~(?<hour>\d{2}):(?P<minute>\d{2})~', 'required' => true)));
 
         $this->setWidget('lieu', new bsWidgetFormChoice(array('choices' => $this->getLieuxChoices())));
-        $this->setValidator('lieu', new sfValidatorChoice(array('choices' => array_keys($this->getLieuxChoices()), 'required' => true)));
+        $this->setValidator('lieu', new sfValidatorPass(array('required' => true)));
 
         $this->setWidget('max_lots', new bsWidgetFormInput());
         $this->setValidator('max_lots', new sfValidatorNumber(array('required' => false)));
@@ -23,26 +23,14 @@ class DegustationCreationForm extends acCouchdbObjectForm
         return array_merge($lieux, DegustationClient::getInstance()->getHistoryLieux());
     }
 
-    protected function doUpdateObject($values) {
-		  parent::doUpdateObject($values);
-      $dateVal = str_replace("-", "", preg_replace("/(.+)$/","$1",$values['date']));
-      $timeVal = $values['time'];
-      $dateTime = DateTime::createFromFormat('Ymd H:i',$dateVal." ".$timeVal);
-      $this->getObject()->set('date', $dateTime->format("Y-m-d H:i"));
-    }
-
-    public function save($con = null) {
+    public function save() {
         $values = $this->getValues();
-        $dateVal = str_replace("-", "", preg_replace("/(.+)$/","$1",$values['date']));
-        $timeVal = $values['time'];
-        $dateTime = DateTime::createFromFormat('Ymd H:i',$dateVal." ".$timeVal);
-        $lieu = Degustation::getNomByLieu($values['lieu'], true);
-        $degustation = DegustationClient::getInstance()->find(sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, $dateTime->format("YmdHi"), $lieu));
-        if ($degustation) {
-            return $degustation;
-        } else {
-            return parent::save($con);
-        }
 
+        $degustation = DegustationClient::getInstance()->createDoc($values['date']." ".$values['time'].":00");
+        $degustation->lieu = $values['lieu'];
+        $degustation->max_lots = $values['max_lots'];
+        $degustation->save();
+
+        return $degustation;
     }
 }

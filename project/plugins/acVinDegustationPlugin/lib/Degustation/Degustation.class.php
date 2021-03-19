@@ -47,10 +47,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function constructId() {
-				$dateId = str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$this->date));
-        $id = sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, $dateId, $this->getLieuNom(true));
+		$date = new DateTime($this->date);
 
-        $this->set('_id', $id);
+        $this->set('_id', DegustationClient::TYPE_COUCHDB."-".$date->format('YmdHi'));
     }
 
 
@@ -59,16 +58,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				return $this->getConfiguration()->declaration->getProduits();
 		}
 
-    public function getLieuNom($slugify = false) {
-        return self::getNomByLieu($this->lieu, $slugify);
-    }
+    public function getLieuNom() {
 
-    public static function getNomByLieu($lieu, $slugify = false) {
-        if (strpos($lieu, "—") === false) {
-            throw new sfException('Le lieu « '.$lieu.' » n\'est pas correctement formaté dans la configuration. Séparateur « — » non trouvé.');
-        }
-        $lieuExpld = explode('—', $lieu);
-        return ($slugify)? KeyInflector::slugify($lieuExpld[0]) : $lieuExpld[0];
+        return preg_replace("/[ ]*—.+/", "", $this->lieu);
     }
 
     public function getEtablissementObject() {
@@ -288,6 +280,26 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
+    public function addLot($lot)
+    {
+        $lotDef = DegustationLot::freeInstance($this);
+        foreach($lot as $key => $value) {
+            if($lotDef->getDefinition()->exist($key)) {
+                continue;
+            }
+
+            unset($lot->{$key});
+        }
+        $lot = $this->lots->add(null, $lot);
+        $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+        $lot->id_document = $this->_id;
+        $lot->affectable = false;
+        $lot->updateSpecificiteWithDegustationNumber();
+        $lot->updateDocumentDependances();
+
+        return $lot;
+    }
+
     public function setLots($lots)
     {
          $this->fillDocToSaveFromLots();
@@ -296,20 +308,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 
         foreach($lots as $key => $lot) {
-            $lotDef = DegustationLot::freeInstance($this);
-            foreach($lot as $key => $value) {
-                if($lotDef->getDefinition()->exist($key)) {
-                    continue;
-                }
-
-                unset($lot->{$key});
-            }
-            $lot = $this->lots->add(null, $lot);
-            $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
-            $lot->id_document = $this->_id;
-            $lot->affectable = false;
-            $lot->updateSpecificiteWithDegustationNumber();
-            $lot->updateDocumentDependances();
+            $this->addLot($lot);
         }
 	 }
 
@@ -519,6 +518,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$tri = array('couleur', 'appellation', 'cepage');
 			}
 			$this->tri = $tri;
+			  usort($lots, array($this, "sortLotsByPosition"));
 	   		uasort($lots, array($this, "sortLotsByThisTri"));
 	   		return $lots;
    	 	}
@@ -567,6 +567,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function sortLotsByPosition($a, $b){
+				if ($a->getPosition() == $b->getPosition()) {
+	        return 0;
+	    }
+	    return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
+		}
+
 		public function getLotsByTable($numero_table){
 			$lots = array();
 			foreach ($this->getLots() as $lot) {
@@ -575,6 +582,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			$this->tri = ['numero_anonymat'];
+			usort($lots, array($this, "sortLotsByPosition"));
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
@@ -606,6 +614,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					break;
 				}
 				$this->tri = ['couleur','appellation','cépage'];
+				usort($lots, array($this, "sortLotsByPosition"));
 				usort($lots, array($this, 'sortLotsByThisTri'));
 				foreach ($lots as $k => $lot){
 					if ($lot->numero_anonymat) {
@@ -679,6 +688,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsTableOrFreeLotsCustomSort($numero_table, array $tri,  $free = true){
 			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
 			$this->tri = $tri;
+			usort($lots, array($this, "sortLotsByPosition"));
 			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
 		}

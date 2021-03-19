@@ -452,11 +452,17 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function upPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this, $this->getLotInPrevPosition());
     }
 
     public function downPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this->getLotInNextPosition(), $this);
     }
 
@@ -579,7 +585,28 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     abstract public function getMouvementFreeInstance();
-    abstract public function getLibelle();
+
+    protected function getLibelle()
+    {
+        $libelle = $this->getProduitLibelle();
+
+        if($this->millesime) {
+            $libelle .= " ".$this->millesime;
+        }
+        if($this->specificite) {
+            $libelle .= " ".$this->specificite;
+        }
+
+        if($this->getCepagesLibelle()) {
+            $libelle .= " ".$this->getCepagesLibelle();
+        }
+
+        $libelle .= " (Vol : ".sprintf("%01.02f",$this->volume*1.0)." hl)";
+        $libelle .= " Logement : ".$this->numero_logement_operateur;
+
+        return $libelle;
+
+    }
 
     public function getUniqueId(){
         if(is_null($this->_get('unique_id'))) {

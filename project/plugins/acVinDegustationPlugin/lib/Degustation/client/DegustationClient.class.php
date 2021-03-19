@@ -19,6 +19,14 @@ class DegustationClient extends acCouchdbClient {
         return $doc;
     }
 
+    public function createDoc($date) {
+        $degustation = new Degustation();
+        $degustation->date = $date;
+        $degustation->constructId();
+
+        return $degustation;
+    }
+
     public function getHistory($limit = 10, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
 
         return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);

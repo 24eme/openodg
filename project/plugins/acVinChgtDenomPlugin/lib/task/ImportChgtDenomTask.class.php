@@ -110,7 +110,7 @@ EOF;
             $numeroArchive = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
 
-            $mouvementLot = MouvementLotView::getInstance()->find(null, $etablissement->identifiant, array('volume' => $volumeInitial, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produitInitial->getHash()));
+            $mouvementLot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volumeInitial, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produitInitial->getHash()));
 
             if(!$mouvementLot) {
                 echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
@@ -119,9 +119,10 @@ EOF;
 
             $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
-            $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration, true);
+            $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration." ".sprintf("%02d", rand(0,23)).":".sprintf("%02d", rand(0,59)).":".sprintf("%02d", rand(0,59)), true);
             $chgtDenom->constructId();
-            $chgtDenom->setMouvementLotOrigine($mouvementLot);
+            $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
+            $chgtDenom->setLotOrigine($mouvementLot);
             $chgtDenom->changement_produit = $produitFinal->getHash();
             $chgtDenom->changement_volume = $volumeConcerne;
             $chgtDenom->generateLots();
@@ -130,7 +131,6 @@ EOF;
                 $chgtDenom->lots[1]->numero_archive = $numeroArchive;
             }
 
-            $chgtDenom->generateMouvementsLots();
             $chgtDenom->validate($dateDeclaration);
             $chgtDenom->validateOdg($dateDeclaration);
             try {

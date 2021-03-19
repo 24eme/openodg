@@ -131,7 +131,7 @@ class DRevLot extends BaseDRevLot
 
     public function getLibelle() {
 
-        return "";
+        return parent::getLibelle();
     }
 
     public function getMouvementFreeInstance() {

@@ -14,7 +14,7 @@ class ChgtDenomLot extends BaseChgtDenomLot
 
     public function getLibelle() {
 
-        return "";
+        return parent::getLibelle();
     }
 
     public function getMouvementFreeInstance() {

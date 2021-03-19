@@ -40,7 +40,7 @@
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
-                    <th class="col-xs-1 text-left">Numéro<br/>anonyme</th>
+                    <th class="col-xs-1 text-left">N°&nbsp;Ano.</th>
                     <th class="col-xs-4 text-left">Opérateur</th>
                     <th class="col-xs-1 text-left">Provenance</th>
                     <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
@@ -53,7 +53,7 @@
                     $name = $form->getWidgetNameFromLot($lot);
                     if (!$lot->leurre && isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
-                        <td class="text-left"><?php echo $lot->getNumeroAnonymat() ?></td>
+                        <td class="text-right"><?php echo $lot->getNumeroAnonymat() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td><?= $lot->getProvenance() ?></td>
                         <td class="text-left">
