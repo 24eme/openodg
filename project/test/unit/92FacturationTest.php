@@ -30,6 +30,11 @@ foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identi
     FactureClient::getInstance()->delete($f);
 }
 
+foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $degustation = DegustationClient::getInstance()->find($k);
+    $degustation->delete(false);
+}
+
 // Selection des produits
 $path = dirname(__FILE__).'/../data/facturation_produits_'.$application.'.csv';
 
@@ -134,10 +139,8 @@ $t->comment("%libelle_produit_5% = ".$produit5->getLibelleComplet()." (sup=".$pr
 $t->ok(!count($drev->mouvements),"La Drev n'a pas encore de mouvements facturables");
 
 $drev->addLot();
-$drev->lots[0]->numero_cuve = '1';
 $drev->lots[0]->volume = 1;
 $drev->lots[1] = clone $drev->lots[0];
-$drev->lots[1]->numero_cuve = '2';
 $drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->validateOdg();
@@ -217,37 +220,49 @@ $montantTtc = $facture->total_ttc;
 $t->ok(($montantHt > 0),"Le montant HT est supérieur à 0");
 $t->ok(($montantTtc > 0),"Le montant TTC est supérieur à 0");
 
-
-$res_mvts = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_AFFECTABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
-
-$commissions = DegustationConfiguration::getInstance()->getCommissions();
 $degustation = new Degustation();
-$degustation->date = date('Y-m-d H:i');
-$degustation->lieu = $commissions[0];
-$mvtKeys = array();
-
-foreach ($res_mvts->rows as $mvtLot) {
-  $mvtKeys[Lot::generateMvtKey($mvtLot->value)] = 1;
-}
-
-$degustation->setLotsFromMvtKeys($mvtKeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
-
+$degustation->lieu = "Test — Test Facturation";
+$degustation->date = date('Y-m-d')." 14:00";
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$t->is(count($lotsPrelevables), 2, "2 lots en attentes de dégustation");
 $degustation->save();
 
+$degustation->setLots($lotsPrelevables);
 
-// ATTRIBUER les "non-conformites"
+$t->comment("Conformité des lots");
+$degustation->lots[0]->statut = Lot::STATUT_CONFORME;
+$degustation->lots[1]->statut = Lot::STATUT_NONCONFORME;
+$degustation->save();
 
+$lot = $degustation->lots[1];
+$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot ".$lot->unique_id." est non conforme");
+$t->is(MouvementLotView::getInstance()->getNombrePassage($lot), 1, "C'est le premier passage du lot");
 
+$nonconformeId = $lot->unique_id;
 
-// Créer le ChgtDENom
-// refacturer
-// test sur la cotisation changement denom
+$lot->redegustation();
+$degustation->save();
 
+$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est toujours non conforme");
 
-// Re-deguster
-// refacturer
+$t->comment('Deuxième degustation');
+$degustation2 = new Degustation();
+$degustation2->lieu = "Test — Test Facturation 2nd passage";
+$degustation2->date = date('Y-m-d')." 18:00";
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$t->is(count($lotsPrelevables), 1, "1 lots en attentes de dégustation");
+$degustation->setLots($lotsPrelevables);
 
-// test sur la facture seconde degustation
+$lot2 = $degustation->lots[0];
 
+$t->is($lot2->unique_id, $nonconformeId, "Le lot non conforme est bien celui de la degustation 2 ");
+$degustation->save();
 
-//$t->is($cptFactureLigneChgtDenom, 0, "Il n'y a pas de lignes de facture ChgtDenom");
+// ici test que pas de forfait de 70 euros
+
+$degustation->get('mouvements')
+
+$degustation->lots[0]->statut = Lot::STATUT_CONFORME;
+$degustation->save();
+
+// ici test que forfait de 70 euros
