@@ -13,10 +13,10 @@
     <th class="col-sm-1">Date</th>
     <th class="col-sm-1">N° Dossier</th>
     <th class="col-sm-1">N° Archive</th>
-    <th class="col-xs-3">Opérateur</th>
+    <th class="col-xs-2">Opérateur</th>
     <th class="col-xs-1">Provenance</th>
     <th class="col-xs-1">Logement</th>
-    <th class="col-xs-5">Produit (millésime, spécificité)</th>
+    <th class="col-xs-4">Produit (millésime, spécificité)</th>
     <th class="col-xs-1">Volume</th>
 </thead>
 <tbody>
