@@ -91,7 +91,7 @@ all:
   scrapy:
     bin: "../../../prodouane_scrapy/bin/"
     documents: "../../../prodouane_scrapy/documents/"
-    configfilename: "config.inc"
+    configfilename: "config.%app%.inc"
   oi:
     login: utilisateur
     mdp: motdepasse
