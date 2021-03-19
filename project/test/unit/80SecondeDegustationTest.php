@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(30);
+$t = new lime_test(27);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -124,9 +124,7 @@ $degustation->save();
 $lot = $degustation->lots[1];
 $t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est non conforme");
 $t->ok($lot->getMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE), 'Le lot à un manquement en attente');
-$t->is($lot->getNumeroPassage(), 1, "C'est le premier passage du lot");
-$t->is(MouvementLotView::getInstance()->getNombrePassage($lot), 1, "Le lot 1 a un passage dans la vue");
-$t->is($lot->getNombrePassage(), 1, "Le lot a 1 passage au total depuis l'objet");
+$t->is($lot->getNumeroPassage(), 0, "Pas encore de degustation précédente");
 
 $lot->redegustation();
 $degustation->save();
@@ -137,6 +135,8 @@ $t->ok($lot->affectable, "Le lot est affectable");
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot a un mouvement affectable");
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot a un mouvement affecte source");
 
+$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->detail, 1, "Mouvement : C'est la première affectation du lot");
+
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $lotsEnManquement = DegustationClient::getInstance()->getManquements();
 
@@ -144,8 +144,8 @@ $t->is(count($lotsPrelevables), 1, "Il y a 1 mouvement prélevable");
 $t->is(count($lotsEnManquement), 0, "Il y a 0 mouvement en manquement");
 
 $lotPrelevable = current($lotsPrelevables);
-$t->is(MouvementLotView::getInstance()->getNombreDegustationAvantMoi($lotPrelevable), 1, "Le lot prélevable sait qu'il a une dégust précédente");
-$t->is($lotPrelevable->specificite, Lot::SPECIFICITE_UNDEFINED, "La spécificité du lot prélevable est : ".Lot::SPECIFICITE_UNDEFINED);
+$t->is(MouvementLotView::getInstance()->getNombreDegustationAvantMoi($lotPrelevable), 0, "Le lot prélevable sait qu'il a une dégust précédente");
+$t->is($lotPrelevable->specificite, Lot::SPECIFICITE_UNDEFINED.", ".sprintf(Lot::TEXTE_PASSAGE, 2), "La spécificité du lot prélevable est : ".Lot::SPECIFICITE_UNDEFINED.", ".sprintf(Lot::TEXTE_PASSAGE, 2));
 
 $t->comment('Deuxième degustation');
 $degustation2 = new Degustation();
@@ -170,10 +170,8 @@ $lot2 = $degustation2->lots[0];
 $t->is(count($lot2->getMouvements()), 2, "Le lot a deux mouvements");
 $t->ok($lot2->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Le lot a le mouvement ".Lot::STATUT_ATTENTE_PRELEVEMENT);
 $t->ok($lot2->getMouvement(Lot::STATUT_AFFECTE_DEST), "Le lot a le mouvement ".Lot::STATUT_AFFECTE_DEST);
-$t->is($lot->getNombrePassage(), 2, "Le lot de la première degust sait qu'il a deux passages");
-$t->is($lot->getNumeroPassage(), 1, "Le lot de la première degust est toujours le passage 1");
-$t->is($lot2->getNombrePassage(), 2, "Le lot de la deuxième dégust sait qu'il y deux passages");
-$t->is($lot2->getNumeroPassage(), 2, "Le lot de la deuxième degust est le passage 2");
+$t->is($lot->getNumeroPassage(), 0, "Le lot de la première degust n'a pas de passage précédente");
+$t->is($lot2->getNumeroPassage(), 1, "Le lot de la deuxième degust a un passage précédent");
 $t->is($lot2->affectable, false, "Le lot n'est plus affectable");
 $t->is($lot2->specificite, Lot::SPECIFICITE_UNDEFINED.", ".sprintf(Lot::TEXTE_PASSAGE, 2), "La spécificité du lot prélevé est : ".Lot::SPECIFICITE_UNDEFINED.", ".sprintf(Lot::TEXTE_PASSAGE, 2));
 

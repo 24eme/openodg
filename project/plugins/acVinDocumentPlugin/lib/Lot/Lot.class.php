@@ -354,6 +354,22 @@ abstract class Lot extends acCouchdbDocumentTree
         return MouvementLotView::getInstance()->getNombrePassage($this);
     }
 
+    public static function generateTextePassage($lot, $nb)
+    {
+        $specificite = $lot->specificite;
+
+        if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
+            // il y a déjà un passage dans la spécificité
+            $specificite = preg_replace('/[0-9]+'.str_replace('%d', '', self::TEXTE_PASSAGE).'/', sprintf(self::TEXTE_PASSAGE, $nb), $specificite);
+        } else {
+            $specificite = (empty($specificite))
+                            ? sprintf(self::TEXTE_PASSAGE, $nb)
+                            : $specificite . ', '. sprintf(self::TEXTE_PASSAGE, $nb);
+        }
+
+        return $specificite;
+    }
+
     public function updateSpecificiteWithDegustationNumber()
     {
         $nombrePassage = $this->getNumeroPassage();
@@ -363,18 +379,8 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         $nombrePassage++;
-        $specificite = $this->specificite;
 
-        if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
-            // il y a déjà un passage dans la spécificité
-            $specificite = preg_replace('/[0-9]+'.str_replace('%d', '', self::TEXTE_PASSAGE).'/', sprintf(self::TEXTE_PASSAGE, $nombrePassage), $specificite);
-        } else {
-            $specificite = (empty($specificite))
-                            ? sprintf(self::TEXTE_PASSAGE, $nombrePassage)
-                            : $specificite . ', '. sprintf(self::TEXTE_PASSAGE, $nombrePassage);
-        }
-
-        $this->specificite = $specificite;
+        $this->specificite = self::generateTextePassage($this, $nombrePassage);
     }
 
     public function redegustation()
@@ -635,15 +641,14 @@ abstract class Lot extends acCouchdbDocumentTree
         $this->getUniqueId();
     }
 
-    public function buildMouvement($statut) {
+    public function buildMouvement($statut, $detail = null) {
         $mouvement = $this->getMouvementFreeInstance();
 
         $mouvement->date = $this->date;
         $mouvement->numero_dossier = $this->numero_dossier;
         $mouvement->numero_archive = $this->numero_archive;
-        $mouvement->detail = $this->produit_hash;
         $mouvement->libelle = $this->getLibelle();
-        $mouvement->detail = null;
+        $mouvement->detail = ($detail) ?? null;
         $mouvement->region = '';
         $mouvement->version = $this->getVersion();
         $mouvement->document_ordre = $this->getDocumentOrdre();
