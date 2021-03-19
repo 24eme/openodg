@@ -96,7 +96,11 @@ EOF;
           $numeroAnonymat = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[1]);
           $resultat = $data[self::CSV_RESULTAT];
 
-          $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash()));
+          $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME]));
+
+          if(!$lot) {
+               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash()));
+          }
 
           if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";

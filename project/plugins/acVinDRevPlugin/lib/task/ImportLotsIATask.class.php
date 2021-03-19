@@ -235,11 +235,13 @@ EOF;
             if(preg_match('/E/', $data[self::CSV_DESTINATION])) {
                 $lot->elevage = true;
             }
+            if(!$destinationDate) {
+                $destinationDate = $date;
+            }
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
             $lot->affectable = $prelevable;
             $lot->specificite = null;
-            $lot->add('document_fils', true);
 
             if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {
                 $lot->centilisation = "donnée non présente dans l'import";
