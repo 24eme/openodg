@@ -864,7 +864,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->cleanDoc();
         $this->validation = $date;
-        $this->archiver();
 
         foreach($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
@@ -1206,12 +1205,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->saveDocumentsDependants();
     }
 
-  public function archiver() {
-      $this->archivage_document->preSave();
-      if ($this->isArchivageCanBeSet()) {
-          $this->archiverLot($this->numero_archive);
-      }
-  }
+    protected function preSave() {
+        $this->add('type_archive', 'Revendication');
+        $this->archivage_document->preSave();
+        if ($this->isArchivageCanBeSet()) {
+            $this->archiverLot($this->numero_archive);
+        }
+    }
 
   /*** ARCHIVAGE ***/
 

@@ -175,7 +175,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
 
           $this->cleanDoc();
           $this->validation = $date;
-          $this->archiver();
       }
 
       public function validateOdg($date = null, $region = null) {
@@ -304,7 +303,8 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
             $mother->save();
         }
 
-      public function archiver() {
+      protected function preSave() {
+          $this->add('type_archive', 'Revendication');
           $this->archivage_document->preSave();
           if ($this->isArchivageCanBeSet()) {
               $this->archiverLot($this->numero_archive);

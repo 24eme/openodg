@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(48);
+$t = new lime_test(51);
 
 $igp13 = ($application == 'igp13');
 
@@ -24,6 +24,8 @@ $drev->save();
 
 $t->is($drev->identifiant, $viti->identifiant, "L'identifiant est celui du viti : ".$viti->identifiant);
 $t->is($drev->campagne, $campagne, "La campagne est ".$campagne);
+$t->is($drev->type_archive, "Revendication", "Le type d'archive est Revendication");
+$t->is($drev->numero_archive, null, "Le numéro d'archive est vide");
 
 $drev->storeDeclarant();
 $drev->save();
@@ -146,6 +148,7 @@ $drev->save();
 $t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est toujours de 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
+$t->ok($drev->numero_archive, "Le numéro d'archive a été défini");
 $t->is($drev->validation, $date , "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
 
