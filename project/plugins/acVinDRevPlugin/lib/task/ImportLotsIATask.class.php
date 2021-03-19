@@ -191,17 +191,6 @@ EOF;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
-            $statut = null;
-            if(isset($data[self::CSV_STATUT])){
-              $statut = trim($data[self::CSV_STATUT]);
-           }
-
-           if (!isset(self::$correspondancesStatuts[$statut])) {
-              echo "WARNING;statut inconnu ".$statut.";pas d'import;$line\n";
-              continue;
-           }
-
-           $statut = self::$correspondancesStatuts[$statut];
 
            $previousdoc = $document;
            $document = $this->getDocument($type, $document, $etablissement, $campagne, $date, $numeroDossier);
@@ -246,20 +235,14 @@ EOF;
             if(preg_match('/E/', $data[self::CSV_DESTINATION])) {
                 $lot->elevage = true;
             }
+            if(!$destinationDate) {
+                $destinationDate = $date;
+            }
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
-            $lot->statut = Lot::STATUT_NONPRELEVABLE;
+            $lot->affectable = $prelevable;
             $lot->specificite = null;
-            $lot->add('document_fils', true);
-            if ($statut == self::STATUT_NONCONFORME) {
-              $lot->specificite = "2ème passage $lot->specificite";
-            }
-            if($prelevable) {
-                $lot->remove('document_fils');
-            }
-            if($lot->elevage) {
-                $lot->statut = Lot::STATUT_ELEVAGE;
-            }
+
             if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {
                 $lot->centilisation = "donnée non présente dans l'import";
             }
@@ -318,27 +301,22 @@ EOF;
 
                 $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
                 return $this->etablissementsCache[$key];
-                break;
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
                 $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
                 return $this->etablissementsCache[$key];
-                break;
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
                 $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
                 return $this->etablissementsCache[$key];
-                break;
             }
             if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
                 $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
                 return $this->etablissementsCache[$key];
-                break;
             }
             if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
                 $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
                 return $this->etablissementsCache[$key];
-                break;
             }
         }
         return null;

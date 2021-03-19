@@ -26,6 +26,18 @@ class MouvementLotHistoryView extends acCouchdbView
         return $this->client
                     ->startkey($keys)
                     ->endkey(array_merge($keys, array(array())))
+                    ->reduce(false)
+                    ->getView($this->design, $this->view);
+    }
+
+    public function getMouvementsByDeclarant($declarant,$level = 3)
+    {
+        $keys = array($declarant);
+
+        return $this->client
+                    ->startkey($keys)
+                    ->endkey(array_merge($keys, array(array())))
+                    ->reduce(true)->group_level($level)
                     ->getView($this->design, $this->view);
     }
 

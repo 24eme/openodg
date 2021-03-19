@@ -89,7 +89,7 @@
             <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
         </td>
         <td class="col-sm-1 text-right">
-            <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-default"><?= DegustationEtapes::$libelles_short[$d->etape] ?></a>
+            <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-default"><?= ($d->etape)? DegustationEtapes::$libelles_short[$d->etape] : 'Lots'  ?></a>
         </td>
     </tr>
 <?php endforeach; ?>

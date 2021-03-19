@@ -153,11 +153,10 @@ nightmare
           console.log("export " + uri + ": " + exportFilename);
           nightmare
           .goto(uri+"?annee="+i)
-          .wait('#ddlAnnee')
+          .wait(2000)
           .select('#ddlAnnee',i+"")
-          .wait('#Button1')
+          .wait(3000)
           .click('#Button1')
-          .wait('#btnExport')
           .wait(2000)
           .click('#btnExport')
           .download(exportFilename)
@@ -166,6 +165,40 @@ nightmare
       }
 
       return nightmare;
+  })
+  .then(function() {
+      var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+
+      return nightmare
+      .goto(uri)
+      .wait('#ddlCommission')
+      .evaluate(function() {
+        var ids = [];
+        document.querySelectorAll('#ddlCommission option').forEach(
+          function(option) {
+            if(!option.value) {
+              return;
+            }
+            ids.push(option.value.replace(/ .*$/, ''));
+          }
+        )
+        return ids;
+      })
+      .then(function(ids) {
+        for (key in ids) {
+          var id = ids[key];
+          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+          var exportFilename = destination_file + "commission_"+id+".html";
+          console.log("export " + uri + ": " + exportFilename);
+
+          nightmare
+                .goto(uri)
+                .wait('body')
+                .html(exportFilename, "HTMLOnly")
+                .refresh()
+                .wait(500)
+        }
+      });
   })
   .then(function() {
       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
@@ -199,8 +232,7 @@ nightmare
                nightmare
                .goto(uri+"?campagne="+i)
                .select('#ddlCampagne',i+"")
-               .wait('#btnExportExcel')
-               .wait(2000)
+               .wait(3000)
                .click('#btnExportExcel')
                .download(exportFilename)
                .refresh()
@@ -251,38 +283,6 @@ nightmare
       .wait('#gvMembre')
       .html(exportFilename, "MHTML")
       .catch(error => {console.error('Search failed:', error)});
-  })
-  .then(function() {
-      var uri = baseUri+"/Analyse/ListeProdNC.aspx";
-
-      return nightmare
-      .goto(uri)
-      .wait('#ddlCommission')
-      .evaluate(function() {
-        var ids = [];
-        document.querySelectorAll('#ddlCommission option').forEach(
-          function(option) {
-            if(!option.value) {
-              return;
-            }
-            ids.push(option.value.replace(/ .*$/, ''));
-          }
-        )
-        return ids;
-      })
-      .then(function(ids) {
-        for (key in ids) {
-          var id = ids[key];
-          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-          var exportFilename = destination_file + "commission_"+id+".html";
-          console.log("export " + uri + ": " + exportFilename);
-
-          nightmare
-                .goto(uri)
-                .wait('body')
-                .html(exportFilename, "HTMLOnly")
-        }
-      });
   })
   .then(function() {
        var uri = baseUri+"/odg/LstAOC.aspx";

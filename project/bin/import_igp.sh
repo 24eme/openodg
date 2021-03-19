@@ -64,7 +64,7 @@ echo "Import des Opérateurs"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
 php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/apporteurs_de_raisins.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $4=""; $3=";Producteur de raisin"; print $0 }' | sort | uniq > $DATA_DIR/apporteurs_de_raisins.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/apporteurs_de_raisins.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { acheteur=$4; $4=""; $3=";Producteur de raisin"; print $0 ";;" acheteur }' | sort | uniq > $DATA_DIR/apporteurs_de_raisins.csv
 php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
@@ -100,9 +100,11 @@ php symfony import:chgt-denom-ia $DATA_DIR/changement_denom.csv --application="$
 
 echo "Import des Degustations"
 # trie des lots par date de commission pour dire qu'une date correspond à une degustation.
-sort -t";" -k32.7,32.10 -k32.4,32.5 -k32.1,32.2 $DATA_DIR/lots.csv  > $DATA_DIR/lots_sort_by_date.csv
+#sort -t";" -k32.7,32.10 -k32.4,32.5 -k32.1,32.2 $DATA_DIR/lots.csv  > $DATA_DIR/lots_sort_by_date.csv
 # il y a également un problème avec le nom de lieu j'ai mis SYNDICAT-VIGNERONS-ARLES par défaut mais il faudra le changer en fonction de ce qu'il y a en base pour chaque lot ce champs n'est pas dans le csv exporté.
-php symfony import:degustations-ia $DATA_DIR/lots_sort_by_date.csv --application="$ODG" --trace
+#php symfony import:degustations-ia $DATA_DIR/lots_sort_by_date.csv --application="$ODG" --trace
+sed -i 's/\xC2\xA0//g' $DATA_DIR/commissions.csv
+php symfony import:commissions-ia $DATA_DIR/commissions.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/gestion_nc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/gestion_nc.csv
 php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace

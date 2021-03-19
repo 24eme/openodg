@@ -3,8 +3,7 @@
 class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $newDegutation = new Degustation();
-        $this->form = new DegustationCreationForm($newDegutation);
+        $this->form = new DegustationCreationForm();
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
@@ -306,6 +305,32 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id, 'tri' => $this->tri));
     }
 
+    public function executeUpPositionLot(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $index = $request->getParameter('index');
+        $tri = $request->getParameter('tri');
+        $numero_table = $request->getParameter('numero_table');
+
+        $this->forward404Unless($degustation->lots->exist($index));
+        $lot = $degustation->lots->get($index);
+        $lot->upPosition();
+        $degustation->save();
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
+    }
+
+    public function executeDownPositionLot(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $index = $request->getParameter('index');
+        $tri = $request->getParameter('tri');
+        $numero_table = $request->getParameter('numero_table');
+
+        $this->forward404Unless($degustation->lots->exist($index));
+        $lot = $degustation->lots->get($index);
+        $lot->downPosition();
+        $degustation->save();
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
+    }
+
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->tri = $request->getParameter('tri');
@@ -471,10 +496,10 @@ class degustationActions extends sfActions {
 
     public function executeLotHistorique(sfWebRequest $request){
         $etablissement_identifiant = $request->getParameter('identifiant');
-        $this->lot_dossier = $request->getParameter('lot_dossier');
-        $this->lot_archive = $request->getParameter('lot_archive');
+        $this->numero_dossier = $request->getParameter('numero_dossier');
+        $this->numero_archive = $request->getParameter('numero_archive');
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissement_identifiant);
-        $this->mouvements =  array_reverse(MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant,$this->lot_dossier,$this->lot_archive)->rows);
+        $this->mouvements =  array_reverse(MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant,$this->numero_dossier,$this->numero_archive)->rows);
     }
 
     public function executeList(sfWebRequest $request) {
@@ -483,8 +508,7 @@ class degustationActions extends sfActions {
         $this->forward404Unless($this->etablissement);
         $this->campagne = $request->getParameter('campagne',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
 
-        $this->lots = array();
-
+        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($etablissement_id)->rows;
     }
 
     public function executeLot(sfWebRequest $request) {
@@ -554,7 +578,7 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
       $degustation->anonymize();
       $degustation->save();
-      return $this->redirect('degustation_anonymats_etape', $degustation);
+      return $this->redirect('degustation_commission_etape', $degustation);
     }
 
     public function executeDesanonymize(sfWebRequest $request){

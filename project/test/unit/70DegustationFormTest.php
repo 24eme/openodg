@@ -49,7 +49,7 @@ foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRA
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
-$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date))."-SYNDICAT-VIGNERONS-ARLES";
+$docid = "DEGUSTATION-".preg_replace("/[:\ -]+/", "", $degust_date);
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
@@ -64,7 +64,7 @@ foreach($config->getProduits() as $produitconfig) {
     break;
 }
 $produitconfig_hash1 = $produitconfig1->getHash();
-$commissions = DegustationConfiguration::getInstance()->getCommissions();
+$lieu = "Lieu test — adresse lieu test";
 
 $t->comment("prépartion avec une DRev");
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -91,9 +91,12 @@ $t->is($lotPrelevable->provenance, "DREV", "La provenance est DREV");
 
 $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
-$degustation = new Degustation();
-$form = new DegustationCreationForm($degustation);
-$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0]);
+
+$degustation = DegustationClient::getInstance()->createDoc($degust_date);
+$t->is($degustation->_id, $docid, "doc id");
+
+$form = new DegustationCreationForm();
+$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => "Lieu test — adresse lieu test");
 
 $form->bind($values);
 $t->ok($form->isValid(), "Le formulaire de création est valide");
@@ -102,8 +105,9 @@ $t->ok($degustation->_id, "la création donne un id à la degustation");
 $t->is($degustation->_id, $docid, "doc id");
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
-$t->is($degustation->date, $degust_date, "La date de la degustation est la bonne");
-$t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
+$t->is($degustation->date, $degust_date.":00", "La date de la degustation est la bonne");
+$t->is($degustation->lieu, $lieu, "Lieu de la dégustation");
+$t->is($degustation->getLieuNom(), "Lieu test", "Nom du lieu de la dégustation");
 
 $t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);

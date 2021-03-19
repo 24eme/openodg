@@ -1,6 +1,9 @@
+<?php use_helper('Date') ?>
+
 <ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
-  <li><a href=""><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
+  <li><a href="<?php echo url_for('degustation_etablissement_list',array('id' => $etablissement->identifiant)); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
+  <li><a href="" class="active" >N° dossier : <?php echo $numero_dossier ?> - N° archive :<?php echo $numero_archive ?></a></li>
 </ol>
 <?php use_helper('Float') ?>
 
@@ -12,30 +15,26 @@
   <div class="row">
     <table class="table table-condensed table-striped">
       <thead>
-        <th class="col-sm-3">Document</th>
-        <th class="col-sm-2">N° Dossier Lot</th>
-        <th class="col-sm-2">N° Archive Lot</th>
-        <th class="col-sm-3">Appellation</th>
-        <th class="col-sm-2 text-center">Etape</th>
+        <th class="col-sm-1">Date</th>
+        <th class="col-sm-1">N° Dossier</th>
+        <th class="col-sm-1">N° Archive</th>
+        <th class="col-sm-6">Appellation</th>
+        <th class="col-sm-1">Document</th>
+        <th class="col-sm-2">Etape</th>
       </thead>
       <tbody>
         <?php foreach($mouvements as $lotKey => $mouvement): ?>
               <tr>
+                <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
+                <td><?php echo $mouvement->value->numero_dossier;  ?></td>
+                <td><?php echo $mouvement->value->numero_archive;  ?></td>
+                <td><?php echo $mouvement->value->libelle;  ?></td>
                 <td>
                     <a href="<?php echo url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id));  ?>">
                         <?php echo $mouvement->value->document_type;  ?>
                     </a>
                 </td>
-                <td><?php echo $lot_dossier;  ?></td>
-                <td><?php echo $lot_archive;  ?></td>
-                <?php
-                $doc = acCouchdbManager::getClient()->find($mouvement->value->document_id);
-                $lot = $doc->get($mouvement->value->lot_hash);
-                ?>
-
-                <td><?php echo $mouvement->libelle;  ?></td>
-                <td><?php echo Lot::$libellesStatuts[$mouvement->key[MouvementLotHistoryView::KEY_STATUT]];  ?><td/>
-
+                <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?><td/>
             </tr>
                 <?php endforeach; ?>
             <tbody>
