@@ -358,10 +358,11 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         $nombrePassage = $this->getNumeroPassage();
 
-        if ($nombrePassage < 2) {
+        if ($nombrePassage < 1) {
             return;
         }
 
+        $nombrePassage++;
         $specificite = $this->specificite;
 
         if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
