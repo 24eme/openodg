@@ -1,6 +1,6 @@
 <?php
 
-class DegustationCreationForm extends acCouchdbObjectForm
+class DegustationCreationForm extends BaseForm
 {
     public function configure() {
         $this->setWidget('date', new bsWidgetFormInput(array(), array()));
@@ -27,26 +27,14 @@ class DegustationCreationForm extends acCouchdbObjectForm
         return $lieux;
     }
 
-    protected function doUpdateObject($values) {
-		  parent::doUpdateObject($values);
-      $dateVal = str_replace("-", "", preg_replace("/(.+)$/","$1",$values['date']));
-      $timeVal = $values['time'];
-      $dateTime = DateTime::createFromFormat('Ymd H:i',$dateVal." ".$timeVal);
-      $this->getObject()->set('date', $dateTime->format("Y-m-d H:i"));
-    }
-
-    public function save($con = null) {
+    public function save() {
         $values = $this->getValues();
-        $dateVal = str_replace("-", "", preg_replace("/(.+)$/","$1",$values['date']));
-        $timeVal = $values['time'];
-        $dateTime = DateTime::createFromFormat('Ymd H:i',$dateVal." ".$timeVal);
-        $lieu = Degustation::getNomByLieu($values['lieu'], true);
-        $degustation = DegustationClient::getInstance()->find(sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, $dateTime->format("YmdHi"), $lieu));
-        if ($degustation) {
-            return $degustation;
-        } else {
-            return parent::save($con);
-        }
 
+        $degustation = DegustationClient::getInstance()->createDoc($values['date']." ".$values['time'].":00");
+        $degustation->lieu = $values['lieu'];
+        $degustation->max_lots = $values['max_lots'];
+        $degustation->save();
+
+        return $degustation;
     }
 }
