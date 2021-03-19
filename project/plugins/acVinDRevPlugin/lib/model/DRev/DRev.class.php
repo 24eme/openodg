@@ -1198,6 +1198,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function save() {
+        $this->archiver();
         $this->generateMouvementsLots();
 
         parent::save();
@@ -1205,12 +1206,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->saveDocumentsDependants();
     }
 
-    protected function preSave() {
+    public function archiver() {
         $this->add('type_archive', 'Revendication');
-        $this->archivage_document->preSave();
-        if ($this->isArchivageCanBeSet()) {
-            $this->archiverLot($this->numero_archive);
+        if (!$this->isArchivageCanBeSet()) {
+            return;
         }
+        $this->archivage_document->preSave();
+        $this->archiverLot($this->numero_archive);
     }
 
   /*** ARCHIVAGE ***/

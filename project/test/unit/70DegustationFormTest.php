@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(64);
+$t = new lime_test(68);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -82,6 +82,12 @@ $drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
+
+$t->ok($drev->lots[0]->numero_archive, "Numéro d'archive du lot 1");
+$t->ok($drev->lots[0]->numero_dossier, "Numéro de dossier du lot 1");
+$t->ok($drev->lots[1]->numero_archive, "Numéro d'archive du lot 2");
+$t->ok($drev->lots[1]->numero_dossier, "Numéro de dossier du lot 2");
+
 $t->comment($drev->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $lotPrelevable = current($lotsPrelevables);
