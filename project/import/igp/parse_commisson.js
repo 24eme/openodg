@@ -51,3 +51,21 @@ $('table#gvPrelev tr').each(function() {
 
     console.log(baseLigne + ";LOT;" + operateur + ";" + appellation + ";" + couleur + ";"  + cepage + ";" + volume + ";" + logement + ";" + type_lot + ";" + passage + ";" + degre + ";" + doc + ";" + numero_anonymat + ";" + conformite + ";" + motif_refus + ";" + commentaire);
 });
+
+$('table#gvMembre tr').each(function() {
+  if(!$(this).find('td').length) {
+      return;
+  }
+
+  if($(this).hasClass('gvListeFooter')) {
+      return;
+  }
+
+  var jury = cleanChamps($(this).find('td').eq(0).text());
+  var college = cleanChamps($(this).find('td').eq(1).text());
+  var telephone = cleanChamps($(this).find('td').eq(2).text());
+  var courriel = cleanChamps($(this).find('td').eq(3).text());
+  var presence = cleanChamps($(this).find('td').eq(4).text());
+
+  console.log(baseLigne + ";JURY;" + jury + ";" + college + ";" + telephone + ";" + courriel + ";" + presence);
+});
