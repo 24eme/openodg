@@ -9,6 +9,7 @@ MandatSepa:
       mention_autorisation: { }
       mention_remboursement: { }
       mention_droits: { }
+      is_telecharge: { }
       is_signe: { }
       is_actif: { }
       creancier:
