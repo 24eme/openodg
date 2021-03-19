@@ -33,7 +33,7 @@ foreach($allFiles as $file) {
     $files[] = $file;
 }
 
-sort($files)
+sort($files);
 
 $tests = array();
 $precs = array();
