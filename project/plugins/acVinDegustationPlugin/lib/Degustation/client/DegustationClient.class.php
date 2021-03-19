@@ -24,6 +24,18 @@ class DegustationClient extends acCouchdbClient {
         return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
     }
 
+    public function getHistoryLieux($limit = 50) {
+        $degusts = $this->getHistory($limit, acCouchdbClient::HYDRATE_JSON);
+        $lieux = array();
+        foreach ($degusts as $d) {
+            $lieux[$d->lieu] = $d->lieu;
+        }
+        if (!count($lieux)) {
+            return array("Salle de dégustation par défaut" => "Salle de dégustation par défaut");
+        }
+        return $lieux;
+    }
+
 
 	public function getLotsPrelevables() {
 	    $lots = array();

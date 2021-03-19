@@ -20,11 +20,7 @@ class DegustationCreationForm extends acCouchdbObjectForm
 
     public static function getLieuxChoices() {
         $lieux = array(null=>null);
-        $commisions = DegustationConfiguration::getInstance()->getCommissions();
-        foreach ($commisions as $commission) {
-            $lieux[$commission] = $commission;
-        }
-        return $lieux;
+        return array_merge($lieux, DegustationClient::getInstance()->getHistoryLieux());
     }
 
     protected function doUpdateObject($values) {
