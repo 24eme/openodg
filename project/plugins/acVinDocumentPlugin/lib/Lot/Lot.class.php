@@ -601,6 +601,9 @@ abstract class Lot extends acCouchdbDocumentTree
             $libelle .= " ".$this->getCepagesLibelle();
         }
 
+        $libelle .= " (Vol : ".sprintf("%01.02f",$this->volume*1.0)." hl)";
+        $libelle .= " Logement : ".$this->numero_logement_operateur;
+
         return $libelle;
 
     }
