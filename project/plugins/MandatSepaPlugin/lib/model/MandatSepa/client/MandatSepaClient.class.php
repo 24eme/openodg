@@ -70,6 +70,7 @@ class MandatSepaClient extends acCouchdbClient {
       $mandatSepa->setMentionAutorisation($mandatSepaConf->getMentionAutorisation());
       $mandatSepa->setMentionRemboursement($mandatSepaConf->getMentionRemboursement());
       $mandatSepa->setMentionDroits($mandatSepaConf->getMentionDroits());
+      $mandatSepa->setIsTelecharge(0);
       $mandatSepa->setIsSigne(0);
       $mandatSepa->setIsActif(0);
       return $mandatSepa;
