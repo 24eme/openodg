@@ -1,15 +1,14 @@
 <?php
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
-//
-// if ($application != 'igp13' && $application != 'igpardeche') {
-//     $t = new lime_test(1);
-//     $t->ok(true, "Test disabled");
-//     return;
-// }
 
+if ($application != 'igp13') {
+    $t = new lime_test(1);
+    $t->ok(true, "Pass AOC");
+    return;
+}
 
-$t = new lime_test(5);
+$t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $socVitiCompte = $viti->getSociete()->getMasterCompte();
