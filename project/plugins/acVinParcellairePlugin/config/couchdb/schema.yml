@@ -17,6 +17,7 @@ Parcellaire:
       date: { }
       identifiant: { }
       source: { }
+      campagne: { }
       declarant:
         type: collection
         class: ParcellaireDeclarant

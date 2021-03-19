@@ -23,19 +23,19 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
           $this->archivage_document = new ArchivageDocument($this);
       }
 
-      public function initDoc($identifiant, $campagne, $date = null) {
+      public function initDoc($identifiant, $date = null) {
           $this->identifiant = $identifiant;
-          $this->campagne = $campagne;
           $this->date = $date;
           if (!$this->date) {
               $this->date = date("Y-m-d");
           }
+          $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
           $etablissement = $this->getEtablissementObject();
           $this->constructId();
       }
 
       public function getConfiguration() {
-          $configuration = ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+          $configuration = ConfigurationClient::getInstance()->getConfiguration($this->date);
           if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
             $configuration->setEffervescentVindebaseActivate();
           }

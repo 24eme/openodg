@@ -41,15 +41,15 @@ class TransactionClient extends acCouchdbClient {
     public function findByIdentifiantAndCampagneAndDateOrCreateIt($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $doc = $this->findByIdentifiantAndDate($identifiant, $date, $hydrate);
         if (!$doc) {
-            $doc = $this->createDoc($identifiant, $campagne, $date);
+            $doc = $this->createDoc($identifiant, $date);
         }
         return $doc;
     }
 
-    public function createDoc($identifiant, $campagne, $date = null, $papier = false)
+    public function createDoc($identifiant, $date, $papier = false)
     {
         $doc = new Transaction();
-        $doc->initDoc($identifiant, $campagne, $date);
+        $doc->initDoc($identifiant, $date);
 
         $doc->storeDeclarant();
 
@@ -70,22 +70,22 @@ class TransactionClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function getIds($campagne) {
-        $ids = $this->startkey_docid(sprintf("TRANSACTION-%s-%s", "0000000000", "0000"))
-                    ->endkey_docid(sprintf("TRANSACTION-%s-%s", "9999999999", "9999"))
+    public function getIds($periode) {
+        $ids = $this->startkey_docid(sprintf("TRANSACTION-%s-%s", "0000000000", "0"))
+                    ->endkey_docid(sprintf("TRANSACTION-%s-%s", "ZZZZZZZZZZ", "99999999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
-        $ids_campagne = array();
+        $ids_periode = array();
 
         foreach($ids as $id) {
-            if(strpos($id, "-".$campagne) !== false) {
-                $ids_campagne[] = $id;
+            if(strpos($id, "-".$periode) !== false) {
+                $ids_periode[] = $id;
             }
         }
 
-        sort($ids_campagne);
+        sort($ids_periode);
 
-        return $ids_campagne;
+        return $ids_periode;
     }
 
     public function getDateOuvertureDebut() {

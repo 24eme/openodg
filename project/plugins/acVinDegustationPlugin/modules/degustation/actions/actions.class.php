@@ -506,13 +506,13 @@ class degustationActions extends sfActions {
         $etablissement_id = $request->getParameter('id');
         $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);
         $this->forward404Unless($this->etablissement);
-        $this->campagne = $request->getParameter('campagne',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->periode = $request->getParameter('periode',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1 );
 
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($etablissement_id)->rows;
     }
 
     public function executeLot(sfWebRequest $request) {
-        $campagne = $request->getParameter('campagne');
+        $periode = $request->getParameter('periode');
         $lot_id = $request->getParameter('id');
         $this->lotsStepsHistory = array();
 

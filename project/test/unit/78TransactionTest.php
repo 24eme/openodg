@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(12);
+$t = new lime_test(13);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -19,17 +19,24 @@ foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouch
     $transaction->delete(false);
 }
 
-$campagne = (date('Y')-1)."";
+$year = date('Y');
+if (date('m') < 8) {
+    $year = $year - 1;
+}
+$campagne = sprintf("%04d-%04d", $year , $year + 1 );
+$date = $year.'10-28';
 //Début des tests
 $t->comment("Création d'une Transaction");
 
-$transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $date);
 
 $transaction->storeDeclarant();
 $transaction->save();
 
 $t->is($transaction->type_archive, "Revendication", "Type d'archive Revendication");
 $t->is($transaction->numero_archive, null, "Numéro d'archive nul");
+$t->comment($transaction->_id);
+$t->is($transaction->_id, 'TRANSACTION-'.$viti->identifiant.'-'.$year.'1028', "L'identifiant de la transaction est celui attendu");
 
 $produits = $transaction->getConfigProduits();
 

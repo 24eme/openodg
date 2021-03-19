@@ -61,16 +61,16 @@ $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produitconfig1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produitconfig2->getLibelleComplet());
 
-$campagne = (date('Y')-1)."";
+$periode = (date('Y')-1)."";
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
 $t->comment($drev->_id);
 $t->comment("Récupération des données à partir de la DR");
 
-$dr = DRClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
-$dr->setDateDepot("$campagne-12-15");
+$dr = DRClient::getInstance()->createDoc($viti->identifiant, $periode);
+$dr->setLibelle("DR $periode issue de Prodouane (Papier)");
+$dr->setDateDepot("$periode-12-15");
 $dr->save();
 $dr->storeFichier($csvTmpFile);
 $dr->save();
@@ -148,7 +148,7 @@ $defaults = $form->getDefaults();
 
 $t->is(count($form['lots']), 2, "autant de lots que de colonnes dans le DR");
 $t->is($form['lots']['0']['produit_hash']->getValue(), $produit1->getParent()->getHash(), 'lot 1 : un produit est déjà sélectionné');
-$t->is($form['lots']['0']['millesime']->getValue(), $campagne, 'lot 1 : le millesime est prérempli');
+$t->is($form['lots']['0']['millesime']->getValue(), $periode, 'lot 1 : le millesime est prérempli');
 
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),
@@ -157,7 +157,7 @@ $valuesRev = array(
 $valuesRev['lots']['0']['numero_logement_operateur'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
-$valuesRev['lots']['0']['destination_date'] = '30/11/'.$campagne;
+$valuesRev['lots']['0']['destination_date'] = '30/11/'.$periode;
 if($drevConfig->hasSpecificiteLot()){
   $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
   $valuesRev['lots']['0']['specificite'] = $drevConfig->getSpecificites()['bio'];
@@ -328,7 +328,7 @@ $valuesRev = array(
 $valuesRev['lots']['1']['numero_logement_operateur'] = "Cuve B";
 $valuesRev['lots']['1']['volume'] = 1;
 $valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
-$valuesRev['lots']['1']['destination_date'] = '30/11/'.$campagne;
+$valuesRev['lots']['1']['destination_date'] = '30/11/'.$periode;
 $valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
 $valuesRev['lots']['1']['millesime'] = date('Y') - 1;
 
