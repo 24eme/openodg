@@ -2,7 +2,12 @@ all:
   routing_context_production_host: declaration.ava-aoc.fr
   auth:
     mode: NO_CAS #NO_CAS, CAS, NO_AUTH
-#    rights: [] 
+  debug:
+    authorized_ip:
+      - 127.0.0.1
+      - localhost
+      - ::1
+#    rights: []
   cas:
     domain: login.cas
     port: 443
