@@ -65,14 +65,20 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $campagne) {
-    	$drev = $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
+    	$drevs = $this->getHistory($identifiant,$campagne,$campagne);
 
-        if($drev && !$drev->validation_odg) {
+        if(!$drevs){
 
-            return null;
+            return array();
+        }
+        $facturables = array();
+        foreach ($drevs as $drev) {
+            if($drev->validation_odg){
+                $facturables[$drev->_id] = $drev;
+            }
         }
 
-        return $drev;
+        return $facturables;
     }
 
     public function createDoc($identifiant, $campagne, $papier = false, $reprisePrecedente = true)
@@ -149,9 +155,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin();
     }
 
-    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = "0000";
-        $campagne_to = "9999";
+    public function getHistory($identifiant, $campagne_from = "0000", $campagne_to = "9999", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
 
         return $this->startkey(sprintf("DREV-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("DREV-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
