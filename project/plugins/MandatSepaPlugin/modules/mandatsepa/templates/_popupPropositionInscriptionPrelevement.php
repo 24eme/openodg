@@ -17,6 +17,7 @@
         </p>
     </div>
     <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fermer</button>
       <a href="<?php echo url_for('compte_teledeclarant_coordonnees_bancaires') ?>" class="btn btn-warning">Compléter mon mandat SEPA</a>
     </div>
   </div>
