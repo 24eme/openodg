@@ -47,10 +47,13 @@ class DegustationClient extends acCouchdbClient {
 
 	public function getLotsPrelevables() {
 	    $lots = array();
-	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $mouvement) {
-	        $lots[$mouvement->value->unique_id] = $mouvement->value;
-            $lots[$mouvement->value->unique_id]->id_document_provenance = $mouvement->id;
-            $lots[$mouvement->value->unique_id]->provenance = substr($mouvement->id, 0, 4);
+	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $lot) {
+	        $lots[$lot->value->unique_id] = $lot->value;
+            $lots[$lot->value->unique_id]->id_document_provenance = $lot->id;
+            $lots[$lot->value->unique_id]->provenance = substr($lot->id, 0, 4);
+            if ($lot->key[4]) {
+                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $lot->key[4] + 1); // clé détail
+            }
 	    }
         uasort($lots, function ($lot1, $lot2) {
             $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);

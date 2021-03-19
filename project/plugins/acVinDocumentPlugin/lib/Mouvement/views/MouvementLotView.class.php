@@ -39,13 +39,13 @@ class MouvementLotView extends acCouchdbView
     {
         $mouvements = $this->client
                            ->startkey([
-                               Lot::STATUT_AFFECTE_DEST,
+                               Lot::STATUT_AFFECTE_SRC,
                                $lot->declarant_identifiant,
                                $lot->unique_id,
                                ""
                            ])
                            ->endkey([
-                               Lot::STATUT_AFFECTE_DEST,
+                               Lot::STATUT_AFFECTE_SRC,
                                $lot->declarant_identifiant,
                                $lot->unique_id,
                                $lot->id_document
