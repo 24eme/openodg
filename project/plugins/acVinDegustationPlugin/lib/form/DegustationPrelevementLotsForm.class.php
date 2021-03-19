@@ -23,6 +23,10 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         }
 
         foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {
+            if (array_key_exists($key, $this->lots)) {
+                continue;
+            }
+
             $this->lots[$key] = $item;
         }
 
