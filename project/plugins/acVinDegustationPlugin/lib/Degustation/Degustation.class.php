@@ -294,6 +294,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
         $lot->id_document = $this->_id;
         $lot->affectable = false;
+        $lot->numero_anonymat = null;
         $lot->updateSpecificiteWithDegustationNumber();
         $lot->updateDocumentDependances();
 
