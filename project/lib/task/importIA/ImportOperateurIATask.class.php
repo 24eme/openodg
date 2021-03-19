@@ -22,6 +22,7 @@ class importOperateurIACsvTask extends sfBaseTask
   const CSV_CAVE_COOPERATIVE = 20;
   const CSV_PRODUCTEUR = 21;
   const CSV_STATUT = 22;
+  const CSV_ACHETEUR = 23;
 
   protected $date;
   protected $convert_statut;
@@ -97,7 +98,7 @@ EOF;
             try {
                 $societe->save();
             } catch (Exception $e) {
-                echo "$societe->_id save error\n";
+                echo "$societe->_id save error :".$e->getMessage()."\n";
                 continue;
             }
 
@@ -130,6 +131,32 @@ EOF;
             $societe->pushContactTo($etablissement);
             $etablissement->save();
 
+            if(isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
+                $etablissementAcheteurId = $this->identifyEtablissement($data[self::CSV_ACHETEUR]);
+                $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteurId);
+                $etablissement->save();
+            }
         }
+    }
+
+
+    protected function identifyEtablissement($nom) {
+
+        if(!$this->etablissements) {
+            $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        }
+
+        foreach ($this->etablissements as $etab) {
+            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($nom))) {
+
+                return $etab->id;
+            }
+
+            if (KeyInflector::slugify($etab->value[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($nom))) {
+
+                return $etab->id;
+            }
+        }
+        return null;
     }
 }
