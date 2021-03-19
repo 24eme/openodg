@@ -260,7 +260,6 @@ $degustation->save();
 
 // ici test que pas de forfait de 70 euros
 
-$degustation->get('mouvements')
 
 $degustation->lots[0]->statut = Lot::STATUT_CONFORME;
 $degustation->save();
