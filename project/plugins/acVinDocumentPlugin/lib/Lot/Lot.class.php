@@ -362,6 +362,7 @@ abstract class Lot extends acCouchdbDocumentTree
             return;
         }
 
+        $nombrePassage++;
         $specificite = $this->specificite;
 
         if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {

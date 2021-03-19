@@ -20,11 +20,7 @@ class DegustationCreationForm extends BaseForm
 
     public static function getLieuxChoices() {
         $lieux = array(null=>null);
-        $commisions = DegustationConfiguration::getInstance()->getCommissions();
-        foreach ($commisions as $commission) {
-            $lieux[$commission] = $commission;
-        }
-        return $lieux;
+        return array_merge($lieux, DegustationClient::getInstance()->getHistoryLieux());
     }
 
     public function save() {

@@ -3,7 +3,6 @@
 class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
     private $lots = [];
-    private $lotsPrelevables = null;
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
     protected $object = null;
@@ -63,7 +62,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
         if(!count($this->getObject()->lots)){
             $nbLots = 0;
-            foreach ($this->lotsPrelevables as $key => $item) {
+            foreach ($this->lots as $key => $item) {
                 if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
                     $obj = acCouchdbManager::getClient()->find($item->id_document);
                     $this->dates_degust_drevs[$item->id_document] = date('Ymd');
