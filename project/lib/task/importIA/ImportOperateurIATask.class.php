@@ -133,6 +133,11 @@ EOF;
 
             if(isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
                 $etablissementAcheteurId = $this->identifyEtablissement($data[self::CSV_ACHETEUR]);
+                if(!$etablissementAcheteurId) {
+                    echo "Établissement cooperative non identifié :".$data[self::CSV_ACHETEUR]."\n";
+                    continue;
+                }
+
                 $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteurId);
                 $etablissement->save();
             }
