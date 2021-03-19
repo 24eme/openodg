@@ -132,6 +132,7 @@
     <thead>
         <tr>
             <th class="col-xs-1">Document</th>
+            <th class="col-xs-1">Version</th>
             <th class="col-xs-1">Campagne</th>
             <th class="col-xs-4">Cotisation</th>
             <th class="col-xs-1">Quantite</th>
@@ -145,6 +146,7 @@
   <?php foreach ($mouvements as $keyMvt => $mvt): ?>
     <tr>
         <td><?php echo $mvt->getDocument()->getType();?></td>
+        <td><?php echo $mvt->getDocument()->getVersion();?></td>
         <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
         <td><?php echo ucfirst($mvt->categorie); ?> <?php echo $mvt->type_libelle; ?></td>
         <td class="text-right"><?php echo echoFloat($mvt->quantite); ?></td>

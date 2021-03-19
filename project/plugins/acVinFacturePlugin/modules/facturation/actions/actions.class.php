@@ -284,10 +284,9 @@ class facturationActions extends sfActions
 
         try {
           foreach ($this->templatesFactures as $key => $templateFacture) {
-            $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant),$this->mouvements);
+            $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant,true),$this->mouvements);
           }
         } catch (FacturationPassException $e) { }
-
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

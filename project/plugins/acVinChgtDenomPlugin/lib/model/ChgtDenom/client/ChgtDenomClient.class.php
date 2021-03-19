@@ -76,15 +76,15 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $campagne) {
-      $chgtsdenom = $this->getHistory($identifiant);
+      $chgtsdenomCampagne = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL,$campagne,$identifiant)->rows;
       $chgtsdenomFacturants = array();
-      foreach ($chgtsdenom as $chgtdenom) {
-        if($chgtdenom && !$chgtdenom->validation_odg) {
-          continue;
-        }
-        $chgtsdenomFacturants[] = $chgtdenom;
+      foreach ($chgtsdenomCampagne as $chgtdenomview) {
+          $chgtdenom = $this->find($chgtdenomview->id);
+          if($chgtdenom && !$chgtdenom->validation_odg) {
+           continue;
+          }
+          $chgtsdenomFacturants[$chgtdenom->_id] = $chgtdenom;
       }
-
       return $chgtsdenomFacturants;
     }
 
