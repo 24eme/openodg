@@ -1,3 +1,5 @@
+<?php use_helper('Date') ?>
+
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href=""><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
@@ -26,24 +28,26 @@
     <div class="row">
       <table class="table table-condensed table-striped">
         <thead>
-          <th class="col-sm-1">Document</th>
+          <th class="col-sm-1">Date</th>
           <th class="col-sm-1">N° Dossier</th>
           <th class="col-sm-1">N° Archive</th>
           <th class="col-sm-5">Appellation</th>
+          <th class="col-sm-1">Document</th>
           <th class="col-sm-2">Dernière étape</th>
           <th class="col-sm-1 text-right">Detail</th>
         </thead>
         <tbody>
           <?php foreach($mouvements as $lotKey => $mouvement): ?>
                 <tr>
+                  <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
+                  <td><?php echo $mouvement->value->numero_dossier;  ?></td>
+                  <td><?php echo $mouvement->value->numero_archive;  ?></td>
+                  <td><?php  echo $mouvement->value->libelle;  ?></td>
                   <td>
                       <a href="<?php  echo url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id));  ?>">
                           <?php echo $mouvement->value->document_type;  ?>
                       </a>
                   </td>
-                  <td><?php echo $mouvement->value->numero_dossier;  ?></td>
-                  <td><?php echo $mouvement->value->numero_archive;  ?></td>
-                  <td><?php  echo $mouvement->value->libelle;  ?></td>
                   <td><?php  echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
                   <td class="text-right"><a class="btn btn-xs btn-default" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant,'numero_dossier' => $mouvement->value->numero_dossier,'numero_archive' => $mouvement->value->numero_archive));  ?>">détail<span class="glyphicon glyphicon-chevron-right"></span></a></td>
 
