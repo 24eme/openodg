@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
+    <h2>Déclaration de Revendication <?php echo $drev->periode ?>
     <?php if($drev->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
       <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>

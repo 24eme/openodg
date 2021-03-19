@@ -36,6 +36,7 @@ class Parcellaire extends BaseParcellaire {
     public function initDoc($identifiant, $date, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
         $this->date = $date;
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ParcellaireClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->storeDeclarant();
     }

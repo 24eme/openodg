@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(36);
+$t = new lime_test(38);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -91,13 +91,17 @@ $degustation->save();
 
 $t->is(count(MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows), 0, "0 lots prelevables");
 
-$date = date('Y-m-d H:i:s');
+$year = date('Y') - 1;
+$date = $year.'-10-15 12:15:42';
+$campagne = $year.'-'.($year + 1);
 
 $chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
 $chgtDenom->constructId();
 $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
 
 $t->is($chgtDenom->_id, "CHGTDENOM-".$viti->identifiant."-".preg_replace("/[-\ :]+/", "", $date), "id du document");
+$t->is($chgtDenom->campagne, $campagne, "le chgt de denom a la bonne campagne à $campagne");
+$t->is($chgtDenom->periode, $year, "le chgt de denom a la bonne periode à $year");
 $t->is(count($lots), 0, "0 lot disponible au changement de denomination");
 
 

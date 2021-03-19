@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(51);
+$t = new lime_test(53);
 
 $igp13 = ($application == 'igp13');
 
@@ -14,18 +14,24 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-$campagne = (date('Y'))."";
+$periode = date('Y');
+if (date('m') < 8) {
+    $periode = $periode - 1;
+}
+$campagne = $periode.'-'.($periode + 1);
 
 //Début des tests
-$t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$campagne.")");
+$t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$periode.")");
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
 
 $t->is($drev->identifiant, $viti->identifiant, "L'identifiant est celui du viti : ".$viti->identifiant);
+$t->is($drev->periode, $periode, "La période est ".$periode);
 $t->is($drev->campagne, $campagne, "La campagne est ".$campagne);
 $t->is($drev->type_archive, "Revendication", "Le type d'archive est Revendication");
 $t->is($drev->numero_archive, null, "Le numéro d'archive est vide");
+$t->is($drev->_id,  'DREV-'.$viti->identifiant.'-'.$periode, "L'id est DREV-".$viti->identifiant.'-'.$periode);
 
 $drev->storeDeclarant();
 $drev->save();
@@ -184,7 +190,7 @@ if ($nbMvtsAttendu) {
     $t->ok(count($mouvements) > 0, "La DRev a des mouvements");
     $mouvement = $mouvements->getFirst();
     $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
-    $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
+    $t->ok($mouvement->date === $periode."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
 } else {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");

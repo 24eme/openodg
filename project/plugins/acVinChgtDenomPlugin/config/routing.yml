@@ -1,5 +1,5 @@
 chgtdenom_create:
-  url: /changement-denomination/creation/:identifiant/:campagne
+  url: /changement-denomination/creation/:identifiant
   param: { module: chgtdenom, action: create }
   class: EtablissementRoute
   options:

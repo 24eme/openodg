@@ -68,7 +68,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function constructId() {
-        $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
+        $id = 'DREV-' . $this->identifiant . '-' . $this->periode;
         if($this->version) {
             $id .= "-".$this->version;
         }
@@ -76,11 +76,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfiguration() {
-        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->getPeriode().'-10-01');
         if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
           $configuration->setEffervescentVindebaseActivate();
         }
         return $configuration;
+    }
+
+    public function getPeriode() {
+        return preg_replace('/-.*/', '', $this->campagne);
     }
 
     public function getProduits($region = null) {
@@ -308,7 +312,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach(array("DR", "SV12", "SV11") as $type) {
-            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $this->campagne);
+            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $this->periode);
             if (!$fichier) {
                 continue;
             }
@@ -382,9 +386,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getDocumentDouanierType();
     }
 
-    public function initDoc($identifiant, $campagne) {
+    public function initDoc($identifiant, $periode) {
         $this->identifiant = $identifiant;
-        $this->campagne = $campagne;
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
         $etablissement = $this->getEtablissementObject();
         $this->constructId();
     }
@@ -429,7 +433,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		return null;
     	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
-    	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->campagne.'.csv';
+    	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
     		if (!mkdir($path)) {
     			throw new sfException('cannot create '.$path);
@@ -735,7 +739,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function updateFromPrecedente()
     {
-    	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne - 1))) {
+    	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->identifiant, $this->periode - 1)) {
         foreach($precedente->getProduitsVci() as $produit) {
           if ($produit->vci->stock_final) {
             $this->cloneProduit($produit);
@@ -1295,10 +1299,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getCampagne())){
+        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getPeriode())){
           return TemplateFactureClient::getInstance()->find($templateName);
         }
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getPeriode());
     }
 
     public function getMouvementsFactures() {
@@ -1329,7 +1333,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->fillFromCotisation($cotisation);
           $mouvement->facture = 0;
           $mouvement->facturable = 1;
-          $mouvement->date = $this->getCampagne().'-12-10';
+          $mouvement->date = $this->getPeriode().'-12-10';
           $mouvement->date_version = $this->validation;
           $mouvement->version = $this->version;
 
@@ -1469,7 +1473,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $date,
-    		'libelle' => 'Revendication des produits '.$this->campagne.' '.$complement,
+    		'libelle' => 'Revendication des produits '.$this->periode.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
@@ -1614,7 +1618,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function findDocumentByVersion($version) {
-        $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
+        $id = 'DREV-' . $this->identifiant . '-' . $this->periode;
         if($version) {
             $id .= "-".$version;
         }
@@ -1719,7 +1723,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     /**** FIN DE VERSION ****/
 
     public function getDate() {
-      return $this->campagne.'-12-10';
+      return $this->periode.'-12-10';
     }
 
     public function hasDenominationAuto($const) {

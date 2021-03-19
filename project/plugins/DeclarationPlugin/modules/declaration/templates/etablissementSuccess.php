@@ -5,7 +5,7 @@
   <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
   <?php endif; ?>
  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
-  <li class="active"><a href=""><?php echo $campagne ?>-<?php echo $campagne +1 ?></a></li>
+  <li class="active"><a href=""><?php echo $periode ?>-<?php echo $periode +1 ?></a></li>
 </ol>
 
 <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
@@ -21,14 +21,14 @@
         <form method="GET" class="form-inline" action="">
             Campagne :
             <select class="select2SubmitOnChange form-control" name="campagne">
-                <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
-                    <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+                <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+                    <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
                 <?php endfor; ?>
             </select>
             <button type="submit" class="btn btn-default">Changer</button>
         </form>
         <?php else: ?>
-            <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne ?>-<?php echo $campagne + 1 ?></span>
+            <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne; ?></span>
         <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
@@ -56,48 +56,48 @@
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
 <div class="row">
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("DRevMarc")): ?>
-    <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("Transaction") && in_array('transaction', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("ChgtDenom") && in_array('chgtdenom', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('chgtdenom', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('chgtdenom', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("TravauxMarc")): ?>
-    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("Parcellaire") && in_array('parcellaire', sfConfig::get('sf_enabled_modules')) && sfContext::getInstance()->getController()->componentExists('parcellaire', 'monEspace')): ?>
-    <?php include_component('parcellaire', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('parcellaire', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireIrrigable") && in_array('parcellaireIrrigable', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireIrrigable', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('parcellaireIrrigable', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireIrrigue") && in_array('parcellaireIrrigue', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if($sf_user->isAdmin() && class_exists("ParcellaireIntentionAffectation") && in_array('parcellaireIntentionAffectation', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireIntentionAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('parcellaireIntentionAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireCremant") && in_array('parcellaireCremant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("IntentionCremant") && in_array('intentionCremant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("Tirage")): ?>
-    <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
-    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
 </div>
 <?php if(in_array('facturation', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="page-header">

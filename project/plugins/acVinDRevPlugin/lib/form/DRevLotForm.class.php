@@ -20,6 +20,7 @@ class DRevLotForm extends acCouchdbObjectForm
             $this->setDefault('repartition_'.$i, $repartition);
             $i++;
         }
+        $this->setDefault("millesime", preg_replace('/-.*/', '', $this->getObject()->campagne));
     }
 
     public function configure() {

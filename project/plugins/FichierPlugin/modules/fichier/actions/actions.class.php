@@ -208,11 +208,11 @@ class fichierActions extends sfActions
 
 	public function executeNew(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
-    	$this->campagne = $request->getParameter('campagne');
+    	$this->periode = $request->getParameter('periode');
     	$this->type = $request->getParameter('type');
 
-    	if (!$this->campagne) {
-    		return $this->forward404("La création d'un fichier nécessite la campagne");
+    	if (!$this->periode) {
+    		return $this->forward404("La création d'un fichier nécessite la periode");
     	}
 
     	if (!$this->type) {
@@ -220,12 +220,12 @@ class fichierActions extends sfActions
     	}
 
     	$client = $this->type.'Client';
-    	if ($doc = $client::getInstance()->findByArgs($this->etablissement->identifiant, $this->campagne)) {
+    	if ($doc = $client::getInstance()->findByArgs($this->etablissement->identifiant, $this->periode)) {
     		return $this->redirect($this->generateUrl('edit_fichier', $doc));
     	}
 
-        $doc = $client::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, true);
-        if ($doc->exist('libelle')) $doc->libelle = $this->type.' '.$this->campagne.' saisie interne';
+        $doc = $client::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, true);
+        if ($doc->exist('libelle')) $doc->libelle = $this->type.' '.$this->periode.' saisie interne';
         if ($doc->exist('visibilite')) $doc->visibilite = 0;
         if ($doc->exist('date_depot')) $doc->date_depot = date('Y-m-d');
         if ($doc->exist('date_import')) $doc->date_import = date('Y-m-d');
@@ -236,10 +236,10 @@ class fichierActions extends sfActions
 
 	public function executeScrape(sfWebRequest $request) {
 		$this->etablissement = $this->getRoute()->getEtablissement();
-		$this->campagne = $request->getParameter('campagne');
+		$this->periode = $request->getParameter('periode');
 		$this->type = $request->getParameter('type');
 
-		FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->campagne);
+		FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
 
 		return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
 	}

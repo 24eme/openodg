@@ -5,10 +5,9 @@ class chgtdenomActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $campagne = $request->getParameter('campagne');
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
         $chgtDenom->save();
 
         return $this->redirect('chgtdenom_lots', $chgtDenom);

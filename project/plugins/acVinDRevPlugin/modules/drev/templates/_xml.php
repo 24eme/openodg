@@ -14,7 +14,7 @@
 				<code_extravitis value="<?php echo intval(substr($drev->identifiant, 0, -2)); ?>" />
 				<numero_evv value="<?php echo $drev->declarant->cvi; ?>" />
 				<rs value="<?php echo $drev->declarant->raison_sociale; ?>" />
-				<millesime value="<?php echo $drev->campagne; ?>" />
+				<millesime value="<?php echo $drev->periode; ?>" />
 				<date_saisie value="<?php echo $drev->getDateValidation() ?>" />
 				<lignes>
 <?php foreach ($drev->declaration->getProduits($region) as $produit): ?>

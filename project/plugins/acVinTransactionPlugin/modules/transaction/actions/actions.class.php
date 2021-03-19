@@ -7,8 +7,8 @@ class transactionActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
 
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $date = $request->getParameter("date", date('Y-m-d'));
+        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $date);
         $transaction->save();
 
         return $this->redirect('transaction_edit', $transaction);
@@ -18,8 +18,8 @@ class transactionActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
 
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
+        $date = $request->getParameter("date", date('Y-m-d'));
+        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $date, true);
         $transaction->save();
 
         return $this->redirect('transaction_edit', $transaction);
