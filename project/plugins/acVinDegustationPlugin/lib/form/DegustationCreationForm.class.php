@@ -10,7 +10,7 @@ class DegustationCreationForm extends BaseForm
         $this->setValidator('time', new sfValidatorTime(array('time_output' => 'H:i', 'time_format' => '~(?<hour>\d{2}):(?P<minute>\d{2})~', 'required' => true)));
 
         $this->setWidget('lieu', new bsWidgetFormChoice(array('choices' => $this->getLieuxChoices())));
-        $this->setValidator('lieu', new sfValidatorChoice(array('choices' => array_keys($this->getLieuxChoices()), 'required' => true)));
+        $this->setValidator('lieu', new sfValidatorPass(array('required' => true)));
 
         $this->setWidget('max_lots', new bsWidgetFormInput());
         $this->setValidator('max_lots', new sfValidatorNumber(array('required' => false)));
@@ -20,11 +20,7 @@ class DegustationCreationForm extends BaseForm
 
     public static function getLieuxChoices() {
         $lieux = array(null=>null);
-        $commisions = DegustationConfiguration::getInstance()->getCommissions();
-        foreach ($commisions as $commission) {
-            $lieux[$commission] = $commission;
-        }
-        return $lieux;
+        return array_merge($lieux, DegustationClient::getInstance()->getHistoryLieux());
     }
 
     public function save() {

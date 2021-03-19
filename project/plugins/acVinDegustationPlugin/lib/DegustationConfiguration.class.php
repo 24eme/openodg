@@ -20,11 +20,6 @@ class DegustationConfiguration {
         $this->configuration = sfConfig::get('degustation_configuration_degustation', array());
     }
 
-    public function getCommissions() {
-
-        return (isset($this->configuration['commissions']))? $this->configuration['commissions'] : array();
-    }
-
     public function getColleges() {
 
         return (isset($this->configuration['colleges']))? $this->configuration['colleges'] : array();

@@ -51,8 +51,6 @@ EOF;
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
 
-        $config = ConfigurationClient::getCurrent();
-        $commissions = DegustationConfiguration::getInstance()->getCommissions();
         $degustation = null;
         $ligne=0;
         foreach(file($arguments['csv']) as $line) {
@@ -90,6 +88,10 @@ EOF;
                continue;
             }
           $date_validation = $degustation_date;
+
+          // On utilise le numero de la commission pour l'heure et les minutes pour éviter les doublons
+          $degustation_date .= " ".sprintf("%02d:%02d:00", preg_replace("/-.*$/", "", $data[self::CSV_ID]), preg_replace("/^.*-/", "", $data[self::CSV_ID]));
+
           $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
           $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
           $numeroTable = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[0]);
@@ -109,7 +111,7 @@ EOF;
 
           $newDegustation = new Degustation();
           $newDegustation->date=$degustation_date;
-          $newDegustation->lieu =$commissions[0];   //choisir un lieu car pas dispo dans le csv
+          $newDegustation->lieu = $data[self::CSV_LIEU_NOM]." — ".$data[self::CSV_LIEU_ADRESSE]." ".$data[self::CSV_LIEU_CODE_POSTAL]." ".$data[self::CSV_LIEU_COMMUNE];   //choisir un lieu car pas dispo dans le csv
           $newDegustation->campagne=$campagne;
           $newDegustation->constructId();
           $newDegustation->validation = $degustation_date;
@@ -160,7 +162,7 @@ EOF;
       $jour=$date[0].$date[1];
       $mois=$date[3].$date[4];
       $annee=$date[6].$date[7].$date[8].$date[9];
-      $d= $annee.'-'.$mois.'-'.$jour." 01:00";
+      $d= $annee.'-'.$mois.'-'.$jour;
       return $d;
     }
 

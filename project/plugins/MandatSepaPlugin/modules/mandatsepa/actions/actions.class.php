@@ -11,8 +11,11 @@ class mandatsepaActions extends sfActions
         $this->document->removeCache();
     }
     $this->document->generate();
+		$output = $this->document->output();
+		$mandatSepa->setIsTelecharge(1);
+		$mandatSepa->save();
     $this->document->addHeaders($this->getResponse());
-    return $this->renderText($this->document->output());
+    return $this->renderText($output);
 	}
 
 }

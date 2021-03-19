@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(62);
+$t = new lime_test(64);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -64,7 +64,7 @@ foreach($config->getProduits() as $produitconfig) {
     break;
 }
 $produitconfig_hash1 = $produitconfig1->getHash();
-$commissions = DegustationConfiguration::getInstance()->getCommissions();
+$lieu = "Lieu test — adresse lieu test";
 
 $t->comment("prépartion avec une DRev");
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -96,7 +96,7 @@ $degustation = DegustationClient::getInstance()->createDoc($degust_date);
 $t->is($degustation->_id, $docid, "doc id");
 
 $form = new DegustationCreationForm();
-$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0]);
+$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => "Lieu test — adresse lieu test");
 
 $form->bind($values);
 $t->ok($form->isValid(), "Le formulaire de création est valide");
@@ -106,7 +106,8 @@ $t->is($degustation->_id, $docid, "doc id");
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->date, $degust_date.":00", "La date de la degustation est la bonne");
-$t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
+$t->is($degustation->lieu, $lieu, "Lieu de la dégustation");
+$t->is($degustation->getLieuNom(), "Lieu test", "Nom du lieu de la dégustation");
 
 $t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);

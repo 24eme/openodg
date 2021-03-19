@@ -12,7 +12,7 @@ $t = new lime_test();
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
-$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date))."-SYNDICAT-VIGNERONS-ARLES";
+$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $doc = acCouchdbManager::getClient()->find($docid);
 

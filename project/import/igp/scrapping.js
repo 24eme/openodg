@@ -4,7 +4,7 @@ require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 const path = require('path');
-var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 6000, maxDownloadRequestWait: 8000});
+var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 30000, maxDownloadRequestWait: 30000, webPreferences: { preload: path.resolve("pre.js") }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
@@ -25,9 +25,8 @@ nightmare
 
       return nightmare
       .goto(uri)
-      .wait('#Button1')
       .click('#Button1')
-      .wait('#Button2')
+      .wait(10000)
       .click('#Button2')
       .download(exportFilename)
 
@@ -114,10 +113,9 @@ nightmare
 
       return nightmare
        .goto(uri)
-       .wait("#ddlCamp")
        .select('#ddlCamp','')
        .click('#btnRech')
-       .wait(4000)
+       .wait(20000)
        .click('#btnEE')
        .wait(4000)
        .download(exportFilename)
@@ -196,7 +194,7 @@ nightmare
                 .wait('body')
                 .html(exportFilename, "HTMLOnly")
                 .refresh()
-                .wait(500)
+                .wait(1000)
         }
       });
   })

@@ -58,16 +58,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				return $this->getConfiguration()->declaration->getProduits();
 		}
 
-    public function getLieuNom($slugify = false) {
-        return self::getNomByLieu($this->lieu, $slugify);
-    }
+    public function getLieuNom() {
 
-    public static function getNomByLieu($lieu, $slugify = false) {
-        if (strpos($lieu, "—") === false) {
-            throw new sfException('Le lieu « '.$lieu.' » n\'est pas correctement formaté dans la configuration. Séparateur « — » non trouvé.');
-        }
-        $lieuExpld = explode('—', $lieu);
-        return ($slugify)? KeyInflector::slugify($lieuExpld[0]) : $lieuExpld[0];
+        return preg_replace("/[ ]*—.+/", "", $this->lieu);
     }
 
     public function getEtablissementObject() {

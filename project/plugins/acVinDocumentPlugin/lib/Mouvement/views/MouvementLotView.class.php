@@ -52,7 +52,7 @@ class MouvementLotView extends acCouchdbView
                            ])
                            ->getView($this->design, $this->view);
 
-        return $mouvements->rows;
+        return count($mouvements->rows);
     }
 
     public function find($identifiant, $query) {

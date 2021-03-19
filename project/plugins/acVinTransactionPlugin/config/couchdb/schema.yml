@@ -32,6 +32,7 @@ Transaction:
       date_degustation_voulue: { required: false }
       version: {  }
       numero_archive: {  }
+      type_archive: { required: false }
       declarant:
         type: collection
         class: TransactionDeclarant

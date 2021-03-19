@@ -346,8 +346,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getNumeroPassage()
     {
-        $passages = MouvementLotView::getInstance()->getNombreDegustationAvantMoi($this);
-        return count($passages);
+        return MouvementLotView::getInstance()->getNombreDegustationAvantMoi($this);
+    }
+
+    public function getNombrePassage()
+    {
+        return MouvementLotView::getInstance()->getNombrePassage($this);
     }
 
     public function updateSpecificiteWithDegustationNumber()
@@ -359,7 +363,6 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         $nombrePassage++;
-
         $specificite = $this->specificite;
 
         if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
