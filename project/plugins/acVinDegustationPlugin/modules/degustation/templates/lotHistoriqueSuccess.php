@@ -13,11 +13,11 @@
   <div class="row">
     <table class="table table-condensed table-striped">
       <thead>
-        <th class="col-sm-2">Document</th>
-        <th class="col-sm-1">N° Dossier Lot</th>
-        <th class="col-sm-1">N° Archive Lot</th>
+        <th class="col-sm-1">Document</th>
+        <th class="col-sm-1">N° Dossier</th>
+        <th class="col-sm-1">N° Archive</th>
         <th class="col-sm-6">Appellation</th>
-        <th class="col-sm-2 text-center">Etape</th>
+        <th class="col-sm-2">Etape</th>
       </thead>
       <tbody>
         <?php foreach($mouvements as $lotKey => $mouvement): ?>

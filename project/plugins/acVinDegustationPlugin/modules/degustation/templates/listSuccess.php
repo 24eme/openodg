@@ -26,12 +26,12 @@
     <div class="row">
       <table class="table table-condensed table-striped">
         <thead>
-          <th class="col-sm-2">Document</th>
-          <th class="col-sm-1">N° dossier</th>
-          <th class="col-sm-1">N° archive</th>
+          <th class="col-sm-1">Document</th>
+          <th class="col-sm-1">N° Dossier</th>
+          <th class="col-sm-1">N° Archive</th>
           <th class="col-sm-5">Appellation</th>
           <th class="col-sm-2">Dernière étape</th>
-          <th class="col-sm-1 text-center">Detail</th>
+          <th class="col-sm-1 text-right">Detail</th>
         </thead>
         <tbody>
           <?php foreach($mouvements as $lotKey => $mouvement): ?>
