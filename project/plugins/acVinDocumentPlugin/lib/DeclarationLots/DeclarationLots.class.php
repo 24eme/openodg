@@ -5,6 +5,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       protected $version_document = null;
       protected $piece_document = null;
       protected $archivage_document = null;
+      protected $etablissement = null;
 
       public function __construct() {
           parent::__construct();
@@ -260,7 +261,14 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       }
 
       public function getEtablissementObject() {
-          return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+          if($this->etablissement) {
+
+              return $this->etablissement;
+          }
+
+          $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+
+          return $this->etablissement;
       }
 
       public function isAdresseLogementDifferente() {
