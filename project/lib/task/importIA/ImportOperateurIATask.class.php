@@ -57,7 +57,18 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
 
-            $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_IDENTIFIANT]));
+            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_IDENTIFIANT]));
+
+            $societe = SocieteClient::getInstance()->find($newSociete->_id);
+            if($societe && isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
+                $this->importLiaison(EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant."01"), $data[self::CSV_ACHETEUR]);
+            }
+
+            if($societe) {
+                continue;
+            }
+
+            $societe = $newSociete;
 
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $societe->statut = SocieteClient::STATUT_SUSPENDU;
@@ -132,18 +143,21 @@ EOF;
             $etablissement->save();
 
             if(isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
-                $etablissementAcheteurId = $this->identifyEtablissement($data[self::CSV_ACHETEUR]);
-                if(!$etablissementAcheteurId) {
-                    echo "Établissement cooperative non identifié :".$data[self::CSV_ACHETEUR]."\n";
-                    continue;
-                }
-
-                $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteurId);
-                $etablissement->save();
+                $this->importLiaison($etablissement, $data[self::CSV_ACHETEUR]);
             }
         }
     }
 
+    protected function importLiaison($etablissement, $acheteur) {
+        $etablissementAcheteurId = $this->identifyEtablissement($acheteur);
+        if(!$etablissementAcheteurId) {
+            echo "Établissement cooperative non identifié :".$acheteur."\n";
+            return;
+        }
+        echo $etablissement->_id.":".$acheteur."\n";
+        $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteurId);
+        $etablissement->save();
+    }
 
     protected function identifyEtablissement($nom) {
 
@@ -151,15 +165,21 @@ EOF;
             $this->etablissements = EtablissementAllView::getInstance()->getAll();
         }
 
+        $key = KeyInflector::slugify($nom);
+
+        if(isset($this->etablissementsCache[$key])) {
+            return $this->etablissementsCache[$key];
+        }
+
         foreach ($this->etablissements as $etab) {
             if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($nom))) {
-
-                return $etab->id;
+                $this->etablissementsCache[$key] = $etab->id;
+                return $this->etablissementsCache[$key];
             }
 
             if (KeyInflector::slugify($etab->value[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($nom))) {
-
-                return $etab->id;
+                $this->etablissementsCache[$key] = $etab->id;
+                return $this->etablissementsCache[$key];
             }
         }
         return null;
