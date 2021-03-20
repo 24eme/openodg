@@ -240,7 +240,8 @@ EOF;
             }
             $lot->destination_date = $destinationDate;
             $lot->date = $date;
-            $lot->affectable = $prelevable;
+            //$lot->affectable = $prelevable;
+            $lot->affectable = true;
             $lot->specificite = null;
 
             if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {

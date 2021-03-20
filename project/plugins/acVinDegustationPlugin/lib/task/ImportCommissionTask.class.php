@@ -63,55 +63,20 @@ EOF;
 
           $degustation_date = $this->formatDate($data[self::CSV_DATE_COMMISSION]);
 
-          if(!$degustation_date){
+          if(!$degustation_date) {
               continue;
           }
+
+          $date = $degustation_date." ".sprintf("%02d:%02d:00", preg_replace("/-.*$/", "", $data[self::CSV_ID]), preg_replace("/^.*-/", "", $data[self::CSV_ID]));
 
           $campagne = null;
           if(isset($data[self::CSV_CAMPAGNE])){
-            $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
-          }
-          $produitKey=null;
-          if (isset($data[self::CSV_APPELLATION])){
-            $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
-          }
-
-          if (!isset($this->produits[$produitKey])) {
-            echo "WARNING;produit non trouvé;pas d'import;$line\n";
-            continue;
-          }
-          $produit = $this->produits[$produitKey];
-
-          $etablissement = $this->identifyEtablissement($data);
-            if (!$etablissement) {
-               echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
-               continue;
-            }
-          $date_validation = $degustation_date;
-
-          // On utilise le numero de la commission pour l'heure et les minutes pour éviter les doublons
-          $degustation_date .= " ".sprintf("%02d:%02d:00", preg_replace("/-.*$/", "", $data[self::CSV_ID]), preg_replace("/^.*-/", "", $data[self::CSV_ID]));
-
-          $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
-          $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
-          $numeroTable = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[0]);
-          $numeroAnonymat = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[1]);
-          $resultat = $data[self::CSV_RESULTAT];
-
-          $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME]));
-
-          if(!$lot) {
-               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash()));
-          }
-
-          if(!$lot) {
-              echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
-              continue;
+              $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
           }
 
           $newDegustation = new Degustation();
-          $newDegustation->date=$degustation_date;
-          $newDegustation->lieu = $data[self::CSV_LIEU_NOM]." — ".$data[self::CSV_LIEU_ADRESSE]." ".$data[self::CSV_LIEU_CODE_POSTAL]." ".$data[self::CSV_LIEU_COMMUNE];   //choisir un lieu car pas dispo dans le csv
+          $newDegustation->date=$date;
+          $newDegustation->lieu = $data[self::CSV_LIEU_NOM]." — ".$data[self::CSV_LIEU_ADRESSE]." ".$data[self::CSV_LIEU_CODE_POSTAL]." ".$data[self::CSV_LIEU_COMMUNE];
           $newDegustation->campagne=$campagne;
           $newDegustation->constructId();
           $newDegustation->validation = $degustation_date;
@@ -129,7 +94,41 @@ EOF;
               $degustation = $newDegustation;
           }
 
-          $lot = $degustation->addLot($lot);
+          if($data[self::CSV_TYPE_LIGNE] == "JURY") {
+              continue;
+          }
+
+          $produitKey=null;
+          if (isset($data[self::CSV_APPELLATION])){
+            $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
+          }
+
+          if (!isset($this->produits[$produitKey])) {
+            echo "WARNING;produit non trouvé;pas d'import;$line\n";
+            continue;
+          }
+          $produit = $this->produits[$produitKey];
+
+          $etablissement = $this->identifyEtablissement($data);
+            if (!$etablissement) {
+               echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
+               continue;
+            }
+
+          $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
+          $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
+          $numeroTable = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[0]);
+          $numeroAnonymat = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[1]);
+          $resultat = $data[self::CSV_RESULTAT];
+
+          $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE));
+
+          if(!$lot) {
+              echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
+              continue;
+          }
+
+          $lot = $degustation->addLot($lot, false);
           $lot->numero_table = $numeroTable;
           $lot->numero_anonymat = $numeroAnonymat;
 
@@ -157,6 +156,9 @@ EOF;
 
     public function formatDate($date){
         if(!$date) {
+            return null;
+        }
+        if(!isset($date[9])) {
             return null;
         }
       $jour=$date[0].$date[1];

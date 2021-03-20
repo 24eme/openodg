@@ -18,10 +18,10 @@ class MouvementLotView extends acCouchdbView
     }
 
 
-    public function getByIdentifiant($identifiant) {
+    public function getByIdentifiant($identifiant, $statut = null) {
 
-        return $this->client->startkey(array(null, $identifiant))
-                            ->endkey(array(null, $identifiant, array()))
+        return $this->client->startkey(array($statut, $identifiant))
+                            ->endkey(array($statut, $identifiant, array()))
                             ->getView($this->design, $this->view);
     }
 
@@ -56,7 +56,12 @@ class MouvementLotView extends acCouchdbView
     }
 
     public function find($identifiant, $query) {
-        $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant);
+        $statut = null;
+        if(isset($query['statut'])) {
+            $statut = $query['statut'];
+        }
+        unset($query['statut']);
+        $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant, $statut);
 
         $mouvement = null;
         foreach ($mouvements->rows as $mouvement) {

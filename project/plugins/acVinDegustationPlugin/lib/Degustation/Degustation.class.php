@@ -205,6 +205,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 continue;
             }
             $lot->updateDocumentDependances();
+            $lot->updateSpecificiteWithDegustationNumber();
             switch($lot->statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
@@ -280,7 +281,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
-    public function addLot($lot)
+    public function addLot($lot, $update = true)
     {
         $lotDef = DegustationLot::freeInstance($this);
         foreach($lot as $key => $value) {
@@ -295,9 +296,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->id_document = $this->_id;
         $lot->affectable = false;
         $lot->numero_anonymat = null;
-        $lot->updateSpecificiteWithDegustationNumber();
-        $lot->updateDocumentDependances();
-
+        if($update) {
+            $lot->updateSpecificiteWithDegustationNumber();
+            $lot->updateDocumentDependances();
+        }
         return $lot;
     }
 
