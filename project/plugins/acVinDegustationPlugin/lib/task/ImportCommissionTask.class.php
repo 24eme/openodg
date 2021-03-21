@@ -178,6 +178,7 @@ EOF;
           $lot = $degustation->addLot($lot, false);
           $lot->numero_table = $numeroTable;
           $lot->numero_anonymat = $numeroAnonymat;
+          $lot->email_envoye = $date;
 
           if($data[self::CSV_RESULTAT] == "C") {
              $lot->statut = Lot::STATUT_CONFORME;
@@ -196,7 +197,7 @@ EOF;
         }
 
         if($degustation) {
-            $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
+            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
             $degustation->save();
         }
       }
