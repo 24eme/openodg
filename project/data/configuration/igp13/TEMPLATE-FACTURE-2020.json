@@ -5,7 +5,7 @@
   "template": "IGP",
   "libelle": "2020 - IGP13",
   "docs": [
-    "DRev","ChgtDenom"
+    "DRev","ChgtDenom","Degustation"
   ],
   "cotisations": {
     "igp13": {
@@ -160,6 +160,26 @@
           ]
         }
       }
+  },
+    "redegustation": {
+        "modele": "CotisationsCollection",
+        "callback": "",
+        "libelle": "Forfait sur nouveau passage en dégustation",
+        "code_comptable": "706102",
+        "details": {
+          "forfait": {
+            "modele": "CotisationFixe",
+            "callback": null,
+            "prix": 70,
+            "tva": 0.2,
+            "unite": "",
+            "libelle": "",
+            "complement_libelle": "",
+            "docs": [
+              "Degustation"
+            ]
+          }
+        }
     }
   }
 }

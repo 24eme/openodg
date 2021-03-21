@@ -6,8 +6,8 @@ class parcellaireIrrigableActions extends sfActions {
     	$etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
-        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1);
+        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDoc($etablissement->identifiant, $periode);
         $parcellaireIrrigable->save();
 
         return $this->redirect('parcellaireirrigable_edit', $parcellaireIrrigable);
@@ -17,8 +17,8 @@ class parcellaireIrrigableActions extends sfActions {
     	$etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
-        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1);
+        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDoc($etablissement->identifiant, $periode, true);
         $parcellaireIrrigable->save();
 
         return $this->redirect('parcellaireirrigable_edit', $parcellaireIrrigable);
@@ -43,7 +43,7 @@ class parcellaireIrrigableActions extends sfActions {
     	$parcellaireIrrigable->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-    	return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireIrrigable->campagne - 1));
+    	return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireIrrigable->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {

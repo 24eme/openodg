@@ -8,14 +8,31 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(62);
+$t = new lime_test(68);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
 $degust_date_fr = '01/09/'.$campagne;
 $degust_time_fr = '12:45';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
-$degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
+
+$degustPorteurMemoire =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
+
+
+$degustTechnicien = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($degustPorteurMemoire->getSociete());
+$degustTechnicien->nom = 'Actualys';
+$degustTechnicien->prenom = 'Degustateur technicien';
+$degustTechnicien->add('droits');
+$degustTechnicien->droits->add(null, 'degustateur:technicien');
+$degustTechnicien->save();
+
+$degustUsager = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($degustPorteurMemoire->getSociete());
+$degustUsager->nom = 'Actualys';
+$degustUsager->prenom = 'Degustateur usager';
+$degustUsager->add('droits');
+$degustUsager->droits->add(null, 'degustateur:usager_du_produit');
+$degustUsager->save();
+
 
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
@@ -32,7 +49,7 @@ foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRA
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
-$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date))."-SYNDICAT-VIGNERONS-ARLES";
+$docid = "DEGUSTATION-".preg_replace("/[:\ -]+/", "", $degust_date);
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
@@ -47,7 +64,7 @@ foreach($config->getProduits() as $produitconfig) {
     break;
 }
 $produitconfig_hash1 = $produitconfig1->getHash();
-$commissions = DegustationConfiguration::getInstance()->getCommissions();
+$lieu = "Lieu test — adresse lieu test";
 
 $t->comment("prépartion avec une DRev");
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -65,6 +82,12 @@ $drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
+
+$t->ok($drev->lots[0]->numero_archive, "Numéro d'archive du lot 1");
+$t->ok($drev->lots[0]->numero_dossier, "Numéro de dossier du lot 1");
+$t->ok($drev->lots[1]->numero_archive, "Numéro d'archive du lot 2");
+$t->ok($drev->lots[1]->numero_dossier, "Numéro de dossier du lot 2");
+
 $t->comment($drev->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $lotPrelevable = current($lotsPrelevables);
@@ -74,9 +97,12 @@ $t->is($lotPrelevable->provenance, "DREV", "La provenance est DREV");
 
 $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
-$degustation = new Degustation();
-$form = new DegustationCreationForm($degustation);
-$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0]);
+
+$degustation = DegustationClient::getInstance()->createDoc($degust_date);
+$t->is($degustation->_id, $docid, "doc id");
+
+$form = new DegustationCreationForm();
+$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => "Lieu test — adresse lieu test");
 
 $form->bind($values);
 $t->ok($form->isValid(), "Le formulaire de création est valide");
@@ -85,8 +111,9 @@ $t->ok($degustation->_id, "la création donne un id à la degustation");
 $t->is($degustation->_id, $docid, "doc id");
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
-$t->is($degustation->date, $degust_date, "La date de la degustation est la bonne");
-$t->is($degustation->lieu, $commissions[0], "La commission de la degustation est la bonne");
+$t->is($degustation->date, $degust_date.":00", "La date de la degustation est la bonne");
+$t->is($degustation->lieu, $lieu, "Lieu de la dégustation");
+$t->is($degustation->getLieuNom(), "Lieu test", "Nom du lieu de la dégustation");
 
 $t->comment("Prélèvement");
 $form = new DegustationPrelevementLotsForm($degustation);
@@ -209,12 +236,12 @@ $t->comment("Dégustateurs");
 $formPorteurDeMemoire = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_porteur_de_memoire'));
 $defaultsPorteurDeMemoire = $formPorteurDeMemoire->getDefaults();
 
-$t->ok(isset($defaultsPorteurDeMemoire['degustateurs']['degustateur_porteur_de_memoire'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme porteur de mémoire');
+$t->ok(isset($defaultsPorteurDeMemoire['degustateurs']['degustateur_porteur_de_memoire'][$degustPorteurMemoire->_id]), 'Notre dégustateur est dans le formulaire comme porteur de mémoire');
 $valuesRev = array(
     '_revision' => $degustation->_rev,
 );
 
-$valuesRev['degustateurs']['degustateur_porteur_de_memoire'][$degust->_id]['selectionne'] = 1;
+$valuesRev['degustateurs']['degustateur_porteur_de_memoire'][$degustPorteurMemoire->_id]['selectionne'] = 1;
 $formPorteurDeMemoire->bind($valuesRev);
 $formPorteurDeMemoire->save();
 $t->is(count($degustation->degustateurs->degustateur_porteur_de_memoire), 1, 'On a bien notre dégustateur porteur de mémoire');
@@ -223,12 +250,12 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $formTechnicien = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_technicien'));
 $defaultsTechnicien = $formTechnicien->getDefaults();
-$t->ok(isset($defaultsTechnicien['degustateurs']['degustateur_technicien'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme technicien');
+$t->ok(isset($defaultsTechnicien['degustateurs']['degustateur_technicien'][$degustTechnicien->_id]), 'Notre dégustateur est dans le formulaire comme technicien');
 $valuesRev = array(
     '_revision' => $degustation->_rev,
 );
 
-$valuesRev['degustateurs']['degustateur_technicien'][$degust->_id]['selectionne'] = 1;
+$valuesRev['degustateurs']['degustateur_technicien'][$degustTechnicien->_id]['selectionne'] = 1;
 $formTechnicien->bind($valuesRev);
 $formTechnicien->save();
 $t->is(count($degustation->degustateurs->degustateur_technicien), 1, 'On a bien le dégustateur technicien');
@@ -237,13 +264,13 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $formUsager = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_usager_du_produit'));
 $defaultsUsager = $formUsager->getDefaults();
-$t->ok(isset($defaultsUsager['degustateurs']['degustateur_usager_du_produit'][$degust->_id]), 'Notre dégustateur est dans le formulaire comme usager du produit');
+$t->ok(isset($defaultsUsager['degustateurs']['degustateur_usager_du_produit'][$degustPorteurMemoire->_id]), 'Notre dégustateur est dans le formulaire comme usager du produit');
 
 $valuesRev = array(
     '_revision' => $degustation->_rev,
 );
 
-$valuesRev['degustateurs']['degustateur_usager_du_produit'][$degust->_id]['selectionne'] = 1;
+$valuesRev['degustateurs']['degustateur_usager_du_produit'][$degustUsager->_id]['selectionne'] = 1;
 
 $formUsager->bind($valuesRev);
 $formUsager->save();
@@ -256,12 +283,12 @@ $t->is(count($degustation->degustateurs), 3, 'On a bien les trois collèges');
 
 $t->comment('Présence dégustateur');
 $t->comment('On confirme les deux premiers degustateurs');
-$degustation->degustateurs->degustateur_usager_du_produit->get($degust->_id)->add('confirmation', 1);
-$degustation->degustateurs->degustateur_technicien->get($degust->_id)->add('confirmation', 1);
+$degustation->degustateurs->degustateur_usager_du_produit->get($degustUsager->_id)->add('confirmation', 1);
+$degustation->degustateurs->degustateur_technicien->get($degustTechnicien->_id)->add('confirmation', 1);
 
 $t->is($degustation->hasAllDegustateursConfirmation(), false, "Les dégustateurs n'ont pas tous signalé leurs présence");
 
 $t->comment('On confirme le dernier degustateur');
-$degustation->degustateurs->degustateur_porteur_de_memoire->get($degust->_id)->add('confirmation', 1);
+$degustation->degustateurs->degustateur_porteur_de_memoire->get($degustPorteurMemoire->_id)->add('confirmation', 1);
 
 $t->is($degustation->hasAllDegustateursConfirmation(), true, "Les dégustateurs ont tous signalé leurs présence");

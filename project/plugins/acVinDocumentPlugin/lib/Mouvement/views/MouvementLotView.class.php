@@ -18,18 +18,58 @@ class MouvementLotView extends acCouchdbView
     }
 
 
-    public function getByIdentifiant($identifiant) {
+    public function getByIdentifiant($identifiant, $statut = null) {
 
-        return $this->client->startkey(array(null, $identifiant))
-                            ->endkey(array(null, $identifiant, array()))
+        return $this->client->startkey(array($statut, $identifiant))
+                            ->endkey(array($statut, $identifiant, array()))
                             ->getView($this->design, $this->view);
     }
 
+    public function getNombrePassage($lot)
+    {
+        $mouvements = $this->client
+                           ->startkey([Lot::STATUT_AFFECTE_DEST, $lot->declarant_identifiant, $lot->unique_id])
+                           ->endkey([Lot::STATUT_AFFECTE_DEST, $lot->declarant_identifiant, $lot->unique_id, []])
+                           ->getView($this->design, $this->view);
+
+        return count($mouvements->rows);
+    }
+
+    public function getNombreDegustationAvantMoi($lot)
+    {
+        $mouvements = $this->client
+                           ->startkey([
+                               Lot::STATUT_AFFECTE_SRC,
+                               $lot->declarant_identifiant,
+                               $lot->unique_id,
+                               ""
+                           ])
+                           ->endkey([
+                               Lot::STATUT_AFFECTE_SRC,
+                               $lot->declarant_identifiant,
+                               $lot->unique_id,
+                               $lot->id_document
+                           ])
+                           ->getView($this->design, $this->view);
+
+        return count($mouvements->rows);
+    }
+
     public function find($identifiant, $query) {
-        $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant);
+        $statut = null;
+        if(isset($query['statut'])) {
+            $statut = $query['statut'];
+        }
+        unset($query['statut']);
+        $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant, $statut);
+
+        $query["numero_logement_operateur"] = KeyInflector::slugify($query["numero_logement_operateur"]);
 
         $mouvement = null;
         foreach ($mouvements->rows as $mouvement) {
+
+            $mouvement->value->numero_logement_operateur = KeyInflector::slugify($mouvement->value->numero_logement_operateur);
+
             $match = true;
             foreach($query as $key => $value) {
                 if($mouvement->value->{ $key } != $value) {

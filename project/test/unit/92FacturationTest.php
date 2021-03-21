@@ -1,15 +1,14 @@
 <?php
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
-//
-// if ($application != 'igp13' && $application != 'igpardeche') {
-//     $t = new lime_test(1);
-//     $t->ok(true, "Test disabled");
-//     return;
-// }
 
+if ($application != 'igp13') {
+    $t = new lime_test(1);
+    $t->ok(true, "Pass AOC");
+    return;
+}
 
-$t = new lime_test(5);
+$t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $socVitiCompte = $viti->getSociete()->getMasterCompte();
@@ -28,6 +27,11 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 //Suppression des factures précédentes
 foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
     FactureClient::getInstance()->delete($f);
+}
+
+foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $degustation = DegustationClient::getInstance()->find($k);
+    $degustation->delete(false);
 }
 
 // Selection des produits
@@ -134,10 +138,8 @@ $t->comment("%libelle_produit_5% = ".$produit5->getLibelleComplet()." (sup=".$pr
 $t->ok(!count($drev->mouvements),"La Drev n'a pas encore de mouvements facturables");
 
 $drev->addLot();
-$drev->lots[0]->numero_cuve = '1';
 $drev->lots[0]->volume = 1;
 $drev->lots[1] = clone $drev->lots[0];
-$drev->lots[1]->numero_cuve = '2';
 $drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->validateOdg();
@@ -217,37 +219,55 @@ $montantTtc = $facture->total_ttc;
 $t->ok(($montantHt > 0),"Le montant HT est supérieur à 0");
 $t->ok(($montantTtc > 0),"Le montant TTC est supérieur à 0");
 
-
-$res_mvts = MouvementLotView::getInstance()->getByPrelevablePreleveRegionDateIdentifiantDocumentId($drev->campagne, Lot::STATUT_PRELEVABLE, '', $drev->lots[0]->date, $drev->identifiant, $drev->_id);
-
-$commissions = DegustationConfiguration::getInstance()->getCommissions();
 $degustation = new Degustation();
-$degustation->date = date('Y-m-d H:i');
-$degustation->lieu = $commissions[0];
-$mvtKeys = array();
-
-foreach ($res_mvts->rows as $mvtLot) {
-  $mvtKeys[Lot::generateMvtKey($mvtLot->value)] = 1;
-}
-
-$degustation->setLotsFromMvtKeys($mvtKeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
-
+$degustation->lieu = "Test — Test Facturation";
+$degustation->date = date('Y-m-d')." 14:00";
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$t->is(count($lotsPrelevables), 2, "2 lots en attentes de dégustation");
 $degustation->save();
 
+$degustation->setLots($lotsPrelevables);
 
-// ATTRIBUER les "non-conformites"
+$t->comment("Conformité des lots");
+$degustation->lots[0]->statut = Lot::STATUT_CONFORME;
+$degustation->lots[1]->statut = Lot::STATUT_NONCONFORME;
+$degustation->save();
+
+$lot = $degustation->lots[1];
+$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot ".$lot->unique_id." est non conforme");
+$t->is(MouvementLotView::getInstance()->getNombrePassage($lot), 1, "C'est le premier passage du lot");
+
+$nonconformeId = $lot->unique_id;
+
+$lot->redegustation();
+$degustation->save();
+
+$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est toujours non conforme");
 
 
+$t->comment('Deuxième degustation');
+$degustation2 = new Degustation();
+$form = new DegustationCreationForm($degustation2);
+$values = array('date' => date("d/m/Y"), 'time' => "18:00", 'lieu' => "Test — Test Facturation 2nd Degustation");
+$form->bind($values);
+$degustation2 = $form->save();
 
-// Créer le ChgtDENom
-// refacturer
-// test sur la cotisation changement denom
+$t->comment("Sélection des lots");
+$form = new DegustationPrelevementLotsForm($degustation2);
+$valuesRev = array(
+    'lots' => $form['lots']->getValue(),
+    '_revision' => $degustation2->_rev,
+);
+$valuesRev['lots'][$drev->lots[1]->getUnicityKey()]['preleve'] = 1;
+$form->bind($valuesRev);
+$form->save();
 
+$lot2 = $degustation2->lots[0];
 
-// Re-deguster
-// refacturer
+$t->is($lot2->unique_id, $nonconformeId, "Le lot non conforme est bien celui de la degustation 2 ");
+$degustation2->save();
 
-// test sur la facture seconde degustation
-
-
-//$t->is($cptFactureLigneChgtDenom, 0, "Il n'y a pas de lignes de facture ChgtDenom");
+$degustation2->remove('mouvements');
+$degustation2->generateMouvementsFactures();
+$degustation2->save();
+$t->is(count($degustation2->getMouvementsFactures()), 1, "On a bien 1 mouvement de facture");

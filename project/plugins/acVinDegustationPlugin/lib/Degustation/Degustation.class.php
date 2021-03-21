@@ -4,12 +4,13 @@
  *
  */
 
-class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument {
+class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument {
 
 	protected $piece_document = null;
 	protected $tri = null;
 	protected $cm = null;
     protected $docToSave = array();
+    protected $mouvement_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -40,6 +41,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     protected function initDocuments() {
         $this->piece_document = new PieceDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
     }
 
     public function getConfiguration() {
@@ -47,10 +49,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function constructId() {
-				$dateId = str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$this->date));
-        $id = sprintf("%s-%s-%s", DegustationClient::TYPE_COUCHDB, $dateId, $this->getLieuNom(true));
+		$date = new DateTime($this->date);
 
-        $this->set('_id', $id);
+        $this->set('_id', DegustationClient::TYPE_COUCHDB."-".$date->format('YmdHi'));
     }
 
 
@@ -59,16 +60,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				return $this->getConfiguration()->declaration->getProduits();
 		}
 
-    public function getLieuNom($slugify = false) {
-        return self::getNomByLieu($this->lieu, $slugify);
-    }
+    public function getLieuNom() {
 
-    public static function getNomByLieu($lieu, $slugify = false) {
-        if (strpos($lieu, "—") === false) {
-            throw new sfException('Le lieu « '.$lieu.' » n\'est pas correctement formaté dans la configuration. Séparateur « — » non trouvé.');
-        }
-        $lieuExpld = explode('—', $lieu);
-        return ($slugify)? KeyInflector::slugify($lieuExpld[0]) : $lieuExpld[0];
+        return preg_replace("/[ ]*—.+/", "", $this->lieu);
     }
 
     public function getEtablissementObject() {
@@ -213,6 +207,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 continue;
             }
             $lot->updateDocumentDependances();
+            $lot->updateSpecificiteWithDegustationNumber();
             switch($lot->statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
@@ -247,7 +242,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
 
             if ($lot->statut === Lot::STATUT_NONCONFORME && $lot->isAffectable()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, $lot->getNumeroPassage() + 1));
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
             } elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
@@ -288,6 +283,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
+    public function addLot($lot, $update = true)
+    {
+        $lotDef = DegustationLot::freeInstance($this);
+        foreach($lot as $key => $value) {
+            if($lotDef->getDefinition()->exist($key)) {
+                continue;
+            }
+
+            unset($lot->{$key});
+        }
+        $lot = $this->lots->add(null, $lot);
+        $lot->date = $this->date;
+        $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+        $lot->id_document = $this->_id;
+        $lot->affectable = false;
+        $lot->numero_anonymat = null;
+        if($update) {
+            $lot->updateSpecificiteWithDegustationNumber();
+            $lot->updateDocumentDependances();
+        }
+        return $lot;
+    }
+
     public function setLots($lots)
     {
          $this->fillDocToSaveFromLots();
@@ -296,18 +314,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 
         foreach($lots as $key => $lot) {
-            $lotDef = DegustationLot::freeInstance($this);
-            foreach($lot as $key => $value) {
-                if($lotDef->getDefinition()->exist($key)) {
-                    continue;
-                }
-
-                unset($lot->{$key});
-            }
-            $lot = $this->lots->add(null, $lot);
-            $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
-            $lot->id_document = $this->_id;
-            $lot->updateDocumentDependances();
+            $this->addLot($lot);
         }
 	 }
 
@@ -497,10 +504,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsPreleves() {
 	   		$lots = array();
 	   		foreach ($this->getLots() as $lot) {
-	   			if(!$lot->leurre && in_array($lot->statut, array(Lot::STATUT_PRELEVABLE, Lot::STATUT_NONPRELEVABLE, Lot::STATUT_ATTENTE_PRELEVEMENT))) {
-	   				continue;
-	   			}
-	   			$lots[] = $lot;
+                if ($lot->isLeurre()) {
+                    $lots[] = $lot;
+                    continue;
+                }
+
+                if(! $lot->getMouvement(Lot::STATUT_PRELEVE)) {
+                    continue;
+                }
+
+                $lots[] = $lot;
 	   		}
 			return $lots;
 		}
@@ -511,6 +524,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$tri = array('couleur', 'appellation', 'cepage');
 			}
 			$this->tri = $tri;
+			  usort($lots, array($this, "sortLotsByPosition"));
 	   		uasort($lots, array($this, "sortLotsByThisTri"));
 	   		return $lots;
    	 	}
@@ -559,6 +573,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function sortLotsByPosition($a, $b){
+				if ($a->getPosition() == $b->getPosition()) {
+	        return 0;
+	    }
+	    return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
+		}
+
 		public function getLotsByTable($numero_table){
 			$lots = array();
 			foreach ($this->getLots() as $lot) {
@@ -567,6 +588,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			$this->tri = ['numero_anonymat'];
+			usort($lots, array($this, "sortLotsByPosition"));
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
@@ -598,6 +620,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					break;
 				}
 				$this->tri = ['couleur','appellation','cépage'];
+				usort($lots, array($this, "sortLotsByPosition"));
 				usort($lots, array($this, 'sortLotsByThisTri'));
 				foreach ($lots as $k => $lot){
 					if ($lot->numero_anonymat) {
@@ -671,6 +694,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsTableOrFreeLotsCustomSort($numero_table, array $tri,  $free = true){
 			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
 			$this->tri = $tri;
+			usort($lots, array($this, "sortLotsByPosition"));
 			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
 		}
@@ -1076,7 +1100,88 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-		/** Mis à jour par la degustation du volume d'un lot de DRev **/
+
+        /**** MOUVEMENTS ****/
+
+        public function getTemplateFacture() {
+
+            return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
+        }
+
+        public function getMouvementsFactures() {
+
+            return $this->_get('mouvements');
+        }
+
+        public function getMouvementsFacturesCalcule() {
+          $templateFacture = $this->getTemplateFacture();
+
+          if(!$templateFacture) {
+              return array();
+          }
+          $cotisations = $templateFacture->generateCotisations($this);
+          $mouvements = array();
+          foreach ($this->getLots() as $lot) {
+              $mouvementIdentifiant = array();
+              if($lot->getNumeroPassage() >= 1){
+                  $mouvement = null;
+                  foreach($cotisations as $cotisation) {
+                      $mouvement = DegustationMouvementFactures::freeInstance($this);
+                      $mouvement->fillFromCotisation($cotisation);
+                      $mouvement->facture = 0;
+                      $mouvement->facturable = 1;
+                      $mouvement->date = $this->getDateStdr();
+                      $mouvement->date_version = $this->validation;
+                      $mouvement->detail_libelle = $lot->getLibelle()." ".($lot->getNumeroPassage()+1)."ème passage";
+                  }
+                  if($mouvement){
+                      $mouvementIdentifiant[uniqid()] = $mouvement;
+                  }
+              }
+              if(count($mouvementIdentifiant)){
+                  $mouvements[$lot->declarant_identifiant] = $mouvementIdentifiant;
+              }
+          }
+
+          return $mouvements;
+        }
+
+        public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+
+            return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+        }
+
+        public function generateMouvementsFactures() {
+            return $this->mouvement_document->generateMouvementsFactures();
+        }
+
+        public function findMouvementFactures($cle, $id = null){
+          return $this->mouvement_document->findMouvementFactures($cle, $id);
+        }
+
+        public function facturerMouvements() {
+
+            return $this->mouvement_document->facturerMouvements();
+        }
+
+        public function isFactures() {
+
+            return $this->mouvement_document->isFactures();
+        }
+
+        public function isNonFactures() {
+
+            return $this->mouvement_document->isNonFactures();
+        }
+
+        public function clearMouvementsFactures(){
+            $this->remove('mouvements');
+            $this->add('mouvements');
+        }
+
+        /**** FIN DES MOUVEMENTS ****/
+
+        /** Mis à jour par la degustation du volume d'un lot de DRev **/
 		public function modifyVolumeLot($hash_lot,$volume){
 
 			$lot = $this->get($hash_lot);

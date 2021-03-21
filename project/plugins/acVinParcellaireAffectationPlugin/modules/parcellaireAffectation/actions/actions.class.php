@@ -1,15 +1,15 @@
 <?php
 
 class parcellaireAffectationActions extends sfActions {
-    
+
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
-    
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
-        $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $campagne);
+
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1);
+        $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
         $parcellaireAffectation->save();
-    
+
         return $this->redirect('parcellaireaffectation_edit', $parcellaireAffectation);
     }
 
@@ -17,8 +17,8 @@ class parcellaireAffectationActions extends sfActions {
     	$etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
-        $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1);
+        $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->createDoc($etablissement->identifiant, $periode, true);
         $parcellaireAffectation->save();
 
         return $this->redirect('parcellaireaffectation_edit', $parcellaireAffectation);
@@ -43,7 +43,7 @@ class parcellaireAffectationActions extends sfActions {
     	$parcellaireAffectation->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-    	return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireAffectation->campagne - 1));
+    	return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireAffectation->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {

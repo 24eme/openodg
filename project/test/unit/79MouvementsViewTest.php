@@ -30,6 +30,6 @@ foreach (DegustationClient::getInstance()->getHistory(1) as $d) {
 }
 
 $lot = $d->lots->get(0);
-$mouvements = MouvementLotHistoryView::getInstance()->getMouvements($lot->declarant_identifiant, $lot->numero_dossier, $lot->numero_archive);
+$mouvements = MouvementLotHistoryView::getInstance()->getMouvements($lot->declarant_identifiant, $lot->campagne, $lot->numero_dossier, $lot->numero_archive);
 
 $t->is(count($mouvements->rows), 8, "Il y a 8 mouvements pour ce lot");

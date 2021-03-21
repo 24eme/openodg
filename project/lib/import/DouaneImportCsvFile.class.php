@@ -10,8 +10,12 @@ class DouaneImportCsvFile {
     public function __construct($filePath, $doc = null) {
         $this->filePath = $filePath;
         $this->doc = $doc;
-        $this->campagne = ($doc)? $doc->campagne : date('Y');
         $this->configuration = ConfigurationClient::getConfiguration();
+        if ($doc) {
+            $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($doc->campagne);
+        }else{
+            $this->campagne = ConfigurationClient::getInstance()->buildCampagne(date('Y-m-d'));
+        }
         $this->cvi = null;
         set_time_limit(30000);
     }
@@ -99,7 +103,7 @@ class DouaneImportCsvFile {
     }
 
     public function setCampagne($c){
-      $this->campagne = $c;
+      $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($c);
     }
 
     public function convertByDonnees() {
@@ -110,7 +114,7 @@ class DouaneImportCsvFile {
         $configuration = ConfigurationClient::getCurrent();
         $categories = sfConfig::get('app_dr_categories');
         $this->etablissement = EtablissementClient::getInstance()->find($this->doc->identifiant);
-        $this->campagne = $this->doc->campagne;
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($this->doc->campagne);
         if (!$this->etablissement) {
             return null;
         }

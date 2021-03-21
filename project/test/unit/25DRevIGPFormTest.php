@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(115);
+$t = new lime_test(117);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -61,16 +61,16 @@ $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produitconfig1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produitconfig2->getLibelleComplet());
 
-$campagne = (date('Y')-1)."";
+$periode = (date('Y')-1)."";
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
 $t->comment($drev->_id);
 $t->comment("Récupération des données à partir de la DR");
 
-$dr = DRClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
-$dr->setDateDepot("$campagne-12-15");
+$dr = DRClient::getInstance()->createDoc($viti->identifiant, $periode);
+$dr->setLibelle("DR $periode issue de Prodouane (Papier)");
+$dr->setDateDepot("$periode-12-15");
 $dr->save();
 $dr->storeFichier($csvTmpFile);
 $dr->save();
@@ -148,7 +148,7 @@ $defaults = $form->getDefaults();
 
 $t->is(count($form['lots']), 2, "autant de lots que de colonnes dans le DR");
 $t->is($form['lots']['0']['produit_hash']->getValue(), $produit1->getParent()->getHash(), 'lot 1 : un produit est déjà sélectionné');
-$t->is($form['lots']['0']['millesime']->getValue(), $campagne, 'lot 1 : le millesime est prérempli');
+$t->is($form['lots']['0']['millesime']->getValue(), $periode, 'lot 1 : le millesime est prérempli');
 
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),
@@ -157,7 +157,7 @@ $valuesRev = array(
 $valuesRev['lots']['0']['numero_logement_operateur'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
-$valuesRev['lots']['0']['destination_date'] = '30/11/'.$campagne;
+$valuesRev['lots']['0']['destination_date'] = '30/11/'.$periode;
 if($drevConfig->hasSpecificiteLot()){
   $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
   $valuesRev['lots']['0']['specificite'] = $drevConfig->getSpecificites()['bio'];
@@ -175,7 +175,6 @@ $t->is($drev->lots[0]->destination_date, join('-', array_reverse(explode('/', $v
 $t->is($drev->lots[0]->produit_hash, $valuesRev['lots']['0']['produit_hash'], "La hash du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->produit_libelle, $produit1->getLibelle(), "Le libellé du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->millesime, $valuesRev['lots']['0']['millesime'], "Le millesime du lot 1 est bien enregistré");
-$t->is($drev->lots[0]->statut, Lot::STATUT_PRELEVABLE, "Le statut du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->id_document_provenance, null, "Le lot n'a pas de provenance");
 $t->is($drev->lots[0]->id_document_affectation, null, "Le lot n'a pas de fils");
 $t->ok($drev->lots[0]->isAffectable(), "Le lot est affectable");
@@ -228,6 +227,9 @@ $lot = $mouvement->getLot();
 
 $t->is($lot->id_document_provenance, null, "Le lot n'a pas de provenance");
 $t->is($lot->id_document_affectation, null, "Le lot n'a pas de fils");
+$t->is(count($lot->getMouvements()), 2, "Le lot à deux mouvements");
+$t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot à un mouvement affectable");
+$t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), "Le lot à un mouvement revendique");
 $t->is($mouvement->getUnicityKey(), $lot->getUnicityKey()."-".KeyInflector::slugify(Lot::STATUT_REVENDIQUE), "Clé unique des mouvements");
 $t->is($mouvement->date, $lot->date, "Mouvement date");
 $t->is($mouvement->statut, Lot::STATUT_REVENDIQUE, "Mouvement statut");
@@ -326,7 +328,7 @@ $valuesRev = array(
 $valuesRev['lots']['1']['numero_logement_operateur'] = "Cuve B";
 $valuesRev['lots']['1']['volume'] = 1;
 $valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
-$valuesRev['lots']['1']['destination_date'] = '30/11/'.$campagne;
+$valuesRev['lots']['1']['destination_date'] = '30/11/'.$periode;
 $valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
 $valuesRev['lots']['1']['millesime'] = date('Y') - 1;
 

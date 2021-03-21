@@ -1,6 +1,6 @@
 <?php
 
-class DegustationClient extends acCouchdbClient {
+class DegustationClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "Degustation";
     const TYPE_COUCHDB = "DEGUSTATION";
@@ -11,24 +11,6 @@ class DegustationClient extends acCouchdbClient {
         return acCouchdbManager::getClient("Degustation");
     }
 
-    public static function updatedSpecificite($lot) {
-      $nb = 2;
-      if (preg_match("/.*([0-9]+)".str_replace('X', '', self::SPECIFICITE_PASSAGES).".*/", $lot->specificite, $m)) {
-        $nb = ((int)$m[1]) + 1;
-      }
-
-      if ($lot->specificite === null) {
-          $lot->specificite = str_replace('X', $nb, self::SPECIFICITE_PASSAGES);
-      } else {
-          $lot->specificite = (strpos($lot->specificite, str_replace('X', '', self::SPECIFICITE_PASSAGES)) !== false)
-              ? str_replace($nb - 1, $nb, $lot->specificite)                              // il y a déjà un X passage
-              : $lot->specificite.', '.str_replace('X', $nb, self::SPECIFICITE_PASSAGES); // il n'y a pas de passage
-      }
-
-      $lot->statut = Lot::STATUT_PRELEVABLE;
-      return $lot;
-    }
-
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
         if($doc && $doc->type != self::TYPE_MODEL) {
@@ -37,18 +19,41 @@ class DegustationClient extends acCouchdbClient {
         return $doc;
     }
 
+    public function createDoc($date) {
+        $degustation = new Degustation();
+        $degustation->date = $date;
+        $degustation->constructId();
+
+        return $degustation;
+    }
+
     public function getHistory($limit = 10, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
 
         return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
     }
 
+    public function getHistoryLieux($limit = 50) {
+        $degusts = $this->getHistory($limit, acCouchdbClient::HYDRATE_JSON);
+        $lieux = array();
+        foreach ($degusts as $d) {
+            $lieux[$d->lieu] = $d->lieu;
+        }
+        if (!count($lieux)) {
+            return array("Salle de dégustation par défaut" => "Salle de dégustation par défaut");
+        }
+        return $lieux;
+    }
+
 
 	public function getLotsPrelevables() {
 	    $lots = array();
-	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $mouvement) {
-	        $lots[$mouvement->value->unique_id] = $mouvement->value;
-            $lots[$mouvement->value->unique_id]->id_document_provenance = $mouvement->id;
-            $lots[$mouvement->value->unique_id]->provenance = substr($mouvement->id, 0, 4);
+	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $lot) {
+	        $lots[$lot->value->unique_id] = $lot->value;
+            $lots[$lot->value->unique_id]->id_document_provenance = $lot->id;
+            $lots[$lot->value->unique_id]->provenance = substr($lot->id, 0, 4);
+            if ($lot->key[4]) {
+                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $lot->key[4] + 1); // clé détail
+            }
 	    }
         uasort($lots, function ($lot1, $lot2) {
             $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
@@ -75,6 +80,18 @@ class DegustationClient extends acCouchdbClient {
             $manquements[$item->value->unique_id] = $item->value;
         }
         return $manquements;
+    }
+
+    public function findFacturable($identifiant, $campagne) {
+        $lotsView = MouvementLotView::getInstance()->getByIdentifiant($identifiant)->rows;
+
+        $facturables = array();
+        foreach ($lotsView as $lotView) {
+            if(preg_match("/^".self::TYPE_COUCHDB."-".($campagne+1)."/", $lotView->id) && !array_key_exists($lotView->id,$facturables)){
+                $facturables[$lotView->id] = $this->find($lotView->id);
+            }
+        }
+        return $facturables;
     }
 
 }

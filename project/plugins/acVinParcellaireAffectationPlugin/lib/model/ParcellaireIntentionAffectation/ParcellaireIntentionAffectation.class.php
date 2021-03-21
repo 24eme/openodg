@@ -15,18 +15,22 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $id = $this->getTheoriticalId();
       $this->set('_id', $id);
   }
-  public function initDoc($identifiant, $campagne, $date) {
+  public function initDoc($identifiant, $periode, $date) {
       $this->identifiant = $identifiant;
-      $this->campagne = $campagne;
       if ($this->exist('date')) {
         $this->date = $date;
         $this->updateValidationDoc();
       }
+      $this->campagne = $periode.'-'.($periode + 1);
       $this->constructId();
       $this->storeDeclarant();
       $this->storeParcelles();
   }
-  
+
+  public function getPeriode() {
+      return preg_replace('/-.*/', '', $this->campagne);
+  }
+
   public function updateValidationDoc() {
       $this->validation = $this->date;
       $this->validation_odg = $this->date;

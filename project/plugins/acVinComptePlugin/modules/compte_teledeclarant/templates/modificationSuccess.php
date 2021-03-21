@@ -221,6 +221,9 @@ if($compte->getSociete()->isTransaction()){
                 </div>
               </div>
             </div>
+            <?php if (!$mandatSepa->is_telecharge): ?>
+            <?php include_partial('mandatsepa/popupIncitationSignatureMandat', array('mandatSepa' => $mandatSepa)); ?>
+            <?php endif; ?>
           <?php else: ?>
             <div class="col-xs-8">
               <div class="row">

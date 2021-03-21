@@ -30,6 +30,7 @@ DRev:
       lecture_seule: { required: false }
       denomination_auto: { required: false }
       date_degustation_voulue: { required: false }
+      type_archive:  { required: false }
       version: {  }
       numero_archive: {  }
       declarant:
@@ -122,6 +123,7 @@ DRev:
                   unique_id: { }
                   id_document_provenance: { }
                   id_document_affectation: { }
+                  campagne: {}
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero_logement_operateur: { }
@@ -222,10 +224,12 @@ DRev:
                     definition:
                       fields:
                         date: {  }
+                        campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
                         libelle: {}
                         detail: {}
+                        volume: { type: float }
                         region: {}
                         version: {  }
                         document_ordre: {  }
@@ -235,7 +239,6 @@ DRev:
                         lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        campagne: {}
                         statut: {}
       pieces:
         type: array_collection

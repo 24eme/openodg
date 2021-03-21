@@ -7,7 +7,6 @@
 abstract class Lot extends acCouchdbDocumentTree
 {
     const STATUT_AFFECTE_DEST = "01_AFFECTE_DEST";
-    const STATUT_PRELEVABLE = "PRELEVABLE";
     const STATUT_NONPRELEVABLE = "NON_PRELEVABLE";
     const STATUT_ATTENTE_PRELEVEMENT = "02_ATTENTE_PRELEVEMENT";
     const STATUT_PRELEVE = "03_PRELEVE";
@@ -44,9 +43,10 @@ abstract class Lot extends acCouchdbDocumentTree
 
     const TYPE_ARCHIVE = 'Lot';
 
+    const TEXTE_PASSAGE = '%dème dégustation';
+
     public static $libellesStatuts = array(
         self::STATUT_AFFECTE_DEST => 'Affecte dest',
-        self::STATUT_PRELEVABLE => 'Prélevable',
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
@@ -138,7 +138,6 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getDefaults() {
         $defaults = array();
         $defaults['millesime'] = $this->getDocument()->campagne;
-        $defaults['statut'] = Lot::STATUT_PRELEVABLE;
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
           $defaults['specificite'] = self::SPECIFICITE_UNDEFINED;
         }
@@ -345,14 +344,51 @@ abstract class Lot extends acCouchdbDocumentTree
         return $nb." passage";
     }
 
+    public function getNumeroPassage()
+    {
+        return MouvementLotView::getInstance()->getNombreDegustationAvantMoi($this);
+    }
+
+    public function getNombrePassage()
+    {
+        return MouvementLotView::getInstance()->getNombrePassage($this);
+    }
+
+    public static function generateTextePassage($lot, $nb)
+    {
+        $specificite = $lot->specificite;
+
+        if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
+            // il y a déjà un passage dans la spécificité
+            $specificite = preg_replace('/[0-9]+'.str_replace('%d', '', self::TEXTE_PASSAGE).'/', sprintf(self::TEXTE_PASSAGE, $nb), $specificite);
+        } else {
+            $specificite = (empty($specificite))
+                            ? sprintf(self::TEXTE_PASSAGE, $nb)
+                            : $specificite . ', '. sprintf(self::TEXTE_PASSAGE, $nb);
+        }
+
+        return $specificite;
+    }
+
+    public function updateSpecificiteWithDegustationNumber()
+    {
+        $nombrePassage = $this->getNumeroPassage();
+
+        if ($nombrePassage < 1) {
+            return;
+        }
+
+        $nombrePassage++;
+
+        $this->specificite = self::generateTextePassage($this, $nombrePassage);
+    }
+
     public function redegustation()
     {
         // Tagguer le lot avec un flag special
         // Regenerer les mouvements
 
         $this->affectable = true;
-        $this->specificite .= ' 2eme degustation';
-        $this->getDocument()->generateMouvementsLots();
     }
 
     public function setNumeroTable($numero) {
@@ -425,11 +461,17 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function upPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this, $this->getLotInPrevPosition());
     }
 
     public function downPosition()
     {
+      if (!$this->numero_table) {
+        return;
+      }
       return $this->switchPosition($this->getLotInNextPosition(), $this);
     }
 
@@ -516,13 +558,16 @@ abstract class Lot extends acCouchdbDocumentTree
         $this->cepages->add($cepage, $repartition);
     }
 
-    public function getCepagesLibelle() {
+    public function getCepagesLibelle($withRepartition = true) {
         $libelle = null;
         foreach($this->cepages as $cepage => $repartition) {
             if($libelle) {
                 $libelle .= ", ";
             }
-            $libelle .= $cepage . " (".$repartition."%)";
+            $libelle .= $cepage;
+            if($withRepartition) {
+                $libelle .= " (".$repartition."%)";
+            }
         }
         return $libelle;
     }
@@ -552,7 +597,27 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     abstract public function getMouvementFreeInstance();
-    abstract public function getLibelle();
+
+    protected function getLibelle()
+    {
+        $libelle = $this->getProduitLibelle();
+
+        if($this->millesime) {
+            $libelle .= " ".$this->millesime;
+        }
+        if($this->specificite) {
+            $libelle .= " ".$this->specificite;
+        }
+
+        if($this->getCepagesLibelle(false)) {
+            $libelle .= " ".$this->getCepagesLibelle(false);
+        }
+
+        $libelle .= " (N° ".$this->numero_logement_operateur.")";
+
+        return $libelle;
+
+    }
 
     public function getUniqueId(){
         if(is_null($this->_get('unique_id'))) {
@@ -578,15 +643,15 @@ abstract class Lot extends acCouchdbDocumentTree
         $this->getUniqueId();
     }
 
-    public function buildMouvement($statut) {
+    public function buildMouvement($statut, $detail = null) {
         $mouvement = $this->getMouvementFreeInstance();
 
         $mouvement->date = $this->date;
         $mouvement->numero_dossier = $this->numero_dossier;
         $mouvement->numero_archive = $this->numero_archive;
-        $mouvement->detail = $this->produit_hash;
         $mouvement->libelle = $this->getLibelle();
-        $mouvement->detail = null;
+        $mouvement->detail = ($detail) ?? null;
+        $mouvement->volume = $this->volume;
         $mouvement->region = '';
         $mouvement->version = $this->getVersion();
         $mouvement->document_ordre = $this->getDocumentOrdre();
@@ -632,7 +697,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getLotDocumentOrdre($documentOrdre) {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;
@@ -701,11 +766,6 @@ abstract class Lot extends acCouchdbDocumentTree
     public function isAffecte() {
 
         return $this->exist('id_document_affectation') && $this->id_document_affectation;
-    }
-
-    public function getCampagne() {
-
-        return $this->getDocument()->getCampagne();
     }
 
 }

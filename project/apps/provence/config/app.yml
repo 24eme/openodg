@@ -3,6 +3,8 @@
 
 # default values
 all:
+  organisme:
+    nom: "Syndicat des Vins Côtes de Provence"
   elasticversion: '2.4.6'
   document_validation_signataire: 1
   parcellaire_irrigable:

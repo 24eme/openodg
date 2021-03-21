@@ -94,17 +94,6 @@ class DRevLot extends BaseDRevLot
         $this->cepages->add($cepage, $repartition);
     }
 
-    public function getCepagesLibelle() {
-        $libelle = null;
-        foreach($this->cepages as $cepage => $repartition) {
-            if($libelle) {
-                $libelle .= ", ";
-            }
-            $libelle .= $cepage . " (".$repartition."%)";
-        }
-        return $libelle;
-    }
-
     public function getNumeroLogementOperateur() {
         if(!$this->exist('numero_logement_operateur')) {
             return null;
@@ -131,7 +120,7 @@ class DRevLot extends BaseDRevLot
 
     public function getLibelle() {
 
-        return "";
+        return parent::getLibelle();
     }
 
     public function getMouvementFreeInstance() {

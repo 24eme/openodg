@@ -19,7 +19,7 @@ degustation_lot:
     sf_method: [get]
 
 degustation_etablissement_list:
-  url: /degustation/etablissement/:id
+  url: /degustation/declarant/:identifiant
   param: { module: degustation, action: list }
   class: DegustationRoute
   options:
@@ -27,7 +27,7 @@ degustation_etablissement_list:
     type:     object
 
 degustation_lot_historique:
-  url: /lot-historique/:identifiant/:lot_dossier/:lot_archive
+  url: /historique/:identifiant/:campagne/:numero_dossier/:numero_archive
   param: { module: degustation, action: lotHistorique }
   requirements:
     sf_method: [get]
@@ -171,6 +171,26 @@ degustation_organisation_table:
     type:     object
   requirements:
     sf_method: [get, post]
+
+degustation_position_lot_up:
+  url: /degustation/:id/position-lot/:index/up/:numero_table/:tri
+  param: { module: degustation, action: upPositionLot, numero_table: 0, tri: 0}
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_position_lot_down:
+  url: /degustation/:id/position-lot/:index/down/:numero_table/:tri
+  param: { module: degustation, action: downPositionLot, numero_table: 0, tri: 0}
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
 
 degustation_tri_table:
   url: /degustation/:id/tri-table/:numero_table

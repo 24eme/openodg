@@ -12,7 +12,7 @@ $t = new lime_test();
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
-$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date))."-SYNDICAT-VIGNERONS-ARLES";
+$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $doc = acCouchdbManager::getClient()->find($docid);
 
@@ -39,7 +39,7 @@ $form->save();
 
 $lotConformes = $doc->getLotsConformesOrNot();
 $t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
-$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 14, 'Il y a 14 mouvements de lot');
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a 16 mouvements de lot');
 
 $doc = acCouchdbManager::getClient()->find($docid);
 $form = new DegustationResultatsForm($doc, $options);
@@ -65,7 +65,7 @@ $lotNonConformes = $doc->getLotsConformesOrNot(false);
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
 
-$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a toujours 16 mouvements de lot');
+$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 17, 'Il y a toujours 16 mouvements de lot');
 
 foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');

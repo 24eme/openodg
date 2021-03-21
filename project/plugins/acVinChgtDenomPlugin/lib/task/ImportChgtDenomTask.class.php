@@ -110,7 +110,7 @@ EOF;
             $numeroArchive = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
 
-            $mouvementLot = MouvementLotView::getInstance()->find(null, $etablissement->identifiant, array('volume' => $volumeInitial, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produitInitial->getHash()));
+            $mouvementLot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volumeInitial, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produitInitial->getHash(), 'statut' => Lot::STATUT_AFFECTABLE));
 
             if(!$mouvementLot) {
                 echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
@@ -119,18 +119,24 @@ EOF;
 
             $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
-            $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration, true);
+            $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration." ".sprintf("%02d", rand(0,23)).":".sprintf("%02d", rand(0,59)).":".sprintf("%02d", rand(0,59)), true);
             $chgtDenom->constructId();
-            $chgtDenom->setMouvementLotOrigine($mouvementLot);
+            $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
+            $chgtDenom->setLotOrigine($mouvementLot);
             $chgtDenom->changement_produit = $produitFinal->getHash();
             $chgtDenom->changement_volume = $volumeConcerne;
             $chgtDenom->generateLots();
             if (!$chgtDenom->isChgtTotal()) {
                 $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[1]->numero_archive = $numeroArchive;
+                $chgtDenom->lots[1]->affectable = true;
+                $chgtDenom->lots[0]->affectable = false;
+            } elseif($chgtDenom->isChgtTotal()) {
+                $chgtDenom->lots[0]->numero_dossier = $numeroDossier;
+                $chgtDenom->lots[0]->numero_archive = $numeroArchive;
+                $chgtDenom->lots[0]->affectable = true;
             }
 
-            $chgtDenom->generateMouvementsLots();
             $chgtDenom->validate($dateDeclaration);
             $chgtDenom->validateOdg($dateDeclaration);
             try {
@@ -158,26 +164,36 @@ EOF;
     }
 
     protected function identifyEtablissement($data) {
+        $key = KeyInflector::slugify(str_replace(" ", "", $data[self::CSV_CVI].$data[self::CSV_RAISON_SOCIALE].$data[self::CSV_NOM]));
+
+        if(isset($this->etablissementsCache[$key])) {
+            return $this->etablissementsCache[$key];
+        }
         foreach ($this->etablissements as $etab) {
             if (isset($data[self::CSV_CVI]) && trim($data[self::CSV_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_CVI])) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
+
+                return $this->etablissementsCache[$key];
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
+
+                return $this->etablissementsCache[$key];
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
+
+                return $this->etablissementsCache[$key];
             }
             if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
+
+                return $this->etablissementsCache[$key];
             }
             if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
+
+                return $this->etablissementsCache[$key];
             }
         }
         return null;

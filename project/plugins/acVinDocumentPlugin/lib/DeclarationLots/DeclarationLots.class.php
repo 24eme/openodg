@@ -5,6 +5,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       protected $version_document = null;
       protected $piece_document = null;
       protected $archivage_document = null;
+      protected $etablissement = null;
 
       public function __construct() {
           parent::__construct();
@@ -23,19 +24,19 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
           $this->archivage_document = new ArchivageDocument($this);
       }
 
-      public function initDoc($identifiant, $campagne, $date = null) {
+      public function initDoc($identifiant, $date = null) {
           $this->identifiant = $identifiant;
-          $this->campagne = $campagne;
           $this->date = $date;
           if (!$this->date) {
               $this->date = date("Y-m-d");
           }
+          $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
           $etablissement = $this->getEtablissementObject();
           $this->constructId();
       }
 
       public function getConfiguration() {
-          $configuration = ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+          $configuration = ConfigurationClient::getInstance()->getConfiguration($this->date);
           if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
             $configuration->setEffervescentVindebaseActivate();
           }
@@ -130,6 +131,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       public function addLot() {
           $lot = $this->add('lots')->add();
           $lot->id_document = $this->_id;
+          $lot->campagne = $this->getCampagne();
           $lot->declarant_identifiant = $this->identifiant;
           $lot->declarant_nom = $this->declarant->raison_sociale;
           $lot->affectable = true;
@@ -175,7 +177,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
 
           $this->cleanDoc();
           $this->validation = $date;
-          $this->archiver();
       }
 
       public function validateOdg($date = null, $region = null) {
@@ -261,7 +262,14 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
       }
 
       public function getEtablissementObject() {
-          return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+          if($this->etablissement) {
+
+              return $this->etablissement;
+          }
+
+          $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+
+          return $this->etablissement;
       }
 
       public function isAdresseLogementDifferente() {
@@ -286,6 +294,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
     	}
 
         public function save() {
+            $this->archiver();
             $this->generateMouvementsLots();
 
             parent::save();
@@ -304,12 +313,14 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
             $mother->save();
         }
 
-      public function archiver() {
-          $this->archivage_document->preSave();
-          if ($this->isArchivageCanBeSet()) {
-              $this->archiverLot($this->numero_archive);
-          }
-      }
+        public function archiver() {
+            $this->add('type_archive', 'Revendication');
+            if (!$this->isArchivageCanBeSet()) {
+                return;
+            }
+            $this->archivage_document->preSave();
+            $this->archiverLot($this->numero_archive);
+        }
 
       public function getNumeroArchive() {
 

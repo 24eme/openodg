@@ -4,7 +4,7 @@ require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 const path = require('path');
-var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 6000, maxDownloadRequestWait: 8000, webPreferences: { preload: path.resolve("pre.js") }});
+var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 30000, maxDownloadRequestWait: 30000, webPreferences: { preload: path.resolve("pre.js") }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
@@ -25,9 +25,8 @@ nightmare
 
       return nightmare
       .goto(uri)
-      .wait('#Button1')
       .click('#Button1')
-      .wait('#Button2')
+      .wait(10000)
       .click('#Button2')
       .download(exportFilename)
 
@@ -114,10 +113,9 @@ nightmare
 
       return nightmare
        .goto(uri)
-       .wait("#ddlCamp")
        .select('#ddlCamp','')
        .click('#btnRech')
-       .wait(4000)
+       .wait(20000)
        .click('#btnEE')
        .wait(4000)
        .download(exportFilename)
@@ -153,11 +151,10 @@ nightmare
           console.log("export " + uri + ": " + exportFilename);
           nightmare
           .goto(uri+"?annee="+i)
-          .wait('#ddlAnnee')
+          .wait(2000)
           .select('#ddlAnnee',i+"")
-          .wait('#Button1')
+          .wait(3000)
           .click('#Button1')
-          .wait('#btnExport')
           .wait(2000)
           .click('#btnExport')
           .download(exportFilename)
@@ -166,6 +163,40 @@ nightmare
       }
 
       return nightmare;
+  })
+  .then(function() {
+      var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+
+      return nightmare
+      .goto(uri)
+      .wait('#ddlCommission')
+      .evaluate(function() {
+        var ids = [];
+        document.querySelectorAll('#ddlCommission option').forEach(
+          function(option) {
+            if(!option.value) {
+              return;
+            }
+            ids.push(option.value.replace(/ .*$/, ''));
+          }
+        )
+        return ids;
+      })
+      .then(function(ids) {
+        for (key in ids) {
+          var id = ids[key];
+          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+          var exportFilename = destination_file + "commission_"+id+".html";
+          console.log("export " + uri + ": " + exportFilename);
+
+          nightmare
+                .goto(uri)
+                .wait('body')
+                .html(exportFilename, "HTMLOnly")
+                .refresh()
+                .wait(1000)
+        }
+      });
   })
   .then(function() {
       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
@@ -199,8 +230,7 @@ nightmare
                nightmare
                .goto(uri+"?campagne="+i)
                .select('#ddlCampagne',i+"")
-               .wait('#btnExportExcel')
-               .wait(2000)
+               .wait(3000)
                .click('#btnExportExcel')
                .download(exportFilename)
                .refresh()
@@ -251,35 +281,6 @@ nightmare
       .wait('#gvMembre')
       .html(exportFilename, "MHTML")
       .catch(error => {console.error('Search failed:', error)});
-  })
-  .then(function() {
-      var uri = baseUri+"/commission/SuiviCommission.aspx";
-      var exportFilename = destination_file+'commissions.html';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .wait('#Button1')
-      .select('#ddlAnnee', '')
-      .click('#Button1')
-      .wait('#gvCommission1')
-      .click('input#BntTermine')
-      .wait('#gvCommission')
-      .html(exportFilename, "HTMLOnly")
-      .then(function() {
-        for (var i = 1; i < 200; i++) {
-          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+i;
-          var exportFilename = destination_file + "commission_"+i+".html";
-          console.log("export " + uri + ": " + exportFilename);
-
-          nightmare
-                .goto(uri)
-                .wait('body')
-                .html(exportFilename, "HTMLOnly")
-        }
-
-        return nightmare;
-      })
   })
   .then(function() {
        var uri = baseUri+"/odg/LstAOC.aspx";

@@ -13,7 +13,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
-				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
+				$this->cm = new CampagneManager('08-01');
     }
 
     public function __clone() {
@@ -39,9 +39,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
 		}
 
-		public function getCampagneByDate() {
+		private function getCampagneByDate() {
 			return $this->cm->getCampagneByDate($this->getDateStdr());
 		}
+
+        public function getPeriode() {
+            return preg_replace('/-.*/', '', $this->campagne);
+        }
 
     public function constructId() {
         $date = new DateTime($this->date);
@@ -328,6 +332,14 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         foreach ($this->lots as $lot) {
             $lot->updateDocumentDependances();
+
+            if($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+            }
+
+            if($lot->affectable && $this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+            }
         }
     }
 
@@ -378,10 +390,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getCampagne())){
-          return TemplateFactureClient::getInstance()->find($templateName);
-        }
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
     }
 
     public function getMouvementsFactures() {

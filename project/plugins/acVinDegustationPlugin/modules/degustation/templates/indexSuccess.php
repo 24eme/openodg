@@ -71,10 +71,9 @@
     <h2>Les dernières dégustations</h2>
 </div>
 <?php if (count($degustations)): ?>
-<div class="row">
 <table class="table table-condensed table-striped">
 <thead>
-    <th class="col-sm-2 text-center">Date de dégustation</th>
+    <th class="col-sm-2">Date de dégustation</th>
     <th class="col-sm-7">Lieu de la dégustation</th>
     <th class="col-sm-2">Infos</th>
     <th class="col-sm-2 text-center"></th>
@@ -82,14 +81,14 @@
 <tbody>
 <?php foreach($degustations as $d): ?>
     <tr>
-        <td class="col-sm-2 text-center"><?php echo $d->date; ?></td>
+        <td class="col-sm-2"><?php echo $d->date; ?></td>
         <td class="col-sm-"><?php echo $d->lieu; ?></td>
         <td class="col-sm-2">
             <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span> -
             <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
         </td>
         <td class="col-sm-1 text-right">
-            <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-default"><?= DegustationEtapes::$libelles_short[$d->etape] ?></a>
+            <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-default"><?= ($d->etape)? DegustationEtapes::$libelles_short[$d->etape] : 'Lots'  ?></a>
         </td>
     </tr>
 <?php endforeach; ?>
@@ -105,4 +104,3 @@
     <h2>Manquements</h2>
 </div>
 <p><strong><?php echo count($lotsManquements); ?><?php if(count($lotsManquements)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement non conforme<?php if(count($lotsManquements)>1):?>s<?php endif; ?> <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>
-</div>

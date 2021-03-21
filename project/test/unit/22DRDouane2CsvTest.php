@@ -44,7 +44,12 @@ $t->is($line[DRCsvFile::CSV_COLONNE_ID], '8', 'On a bien repéré 8 colonnes');
 $line = explode(";", $lines[0]);
 
 $t->is($line[DRCsvFile::CSV_TYPE], "DR", "Le type de la ligne est DR");
-$t->is($line[DRCsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
+$year = date('Y');
+if (date('m') < 8) {
+    $year = $year - 1;
+}
+$campagne = sprintf("%04d-%04d", $year , $year + 1 );
+$t->is($line[SV11CsvFile::CSV_CAMPAGNE], $campagne, "La campagne est ".$campagne);
 $t->is($line[DRCsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
 $t->is($line[DRCsvFile::CSV_PRODUIT_CERTIFICATION], $produit1->getCertification()->getKey(), "Certification OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_GENRE], $produit1->getGenre()->getKey(), "Genre OK");

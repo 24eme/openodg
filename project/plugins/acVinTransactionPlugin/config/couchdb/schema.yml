@@ -32,6 +32,7 @@ Transaction:
       date_degustation_voulue: { required: false }
       version: {  }
       numero_archive: {  }
+      type_archive: { required: false }
       declarant:
         type: collection
         class: TransactionDeclarant
@@ -67,6 +68,7 @@ Transaction:
                   unique_id: { }
                   id_document_provenance: { }
                   id_document_affectation: { }
+                  campagne: {}
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero_logement_operateur: { }
@@ -111,10 +113,12 @@ Transaction:
                     definition:
                       fields:
                         date: {  }
+                        campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
                         libelle: {}
                         detail: {}
+                        volume: { type: float }
                         region: {}
                         version: {  }
                         document_ordre: {  }
@@ -124,7 +128,6 @@ Transaction:
                         lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        campagne: {}
                         statut: {}
       pieces:
         type: array_collection

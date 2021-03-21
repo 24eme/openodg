@@ -22,6 +22,7 @@ class importOperateurIACsvTask extends sfBaseTask
   const CSV_CAVE_COOPERATIVE = 20;
   const CSV_PRODUCTEUR = 21;
   const CSV_STATUT = 22;
+  const CSV_ACHETEUR = 23;
 
   protected $date;
   protected $convert_statut;
@@ -56,7 +57,18 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
 
-            $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_IDENTIFIANT]));
+            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_IDENTIFIANT]));
+
+            $societe = SocieteClient::getInstance()->find($newSociete->_id);
+            if($societe && isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
+                $this->importLiaison(EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant."01"), $data[self::CSV_ACHETEUR]);
+            }
+
+            if($societe) {
+                continue;
+            }
+
+            $societe = $newSociete;
 
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $societe->statut = SocieteClient::STATUT_SUSPENDU;
@@ -97,7 +109,7 @@ EOF;
             try {
                 $societe->save();
             } catch (Exception $e) {
-                echo "$societe->_id save error\n";
+                echo "$societe->_id save error :".$e->getMessage()."\n";
                 continue;
             }
 
@@ -130,6 +142,46 @@ EOF;
             $societe->pushContactTo($etablissement);
             $etablissement->save();
 
+            if(isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
+                $this->importLiaison($etablissement, $data[self::CSV_ACHETEUR]);
+            }
         }
+    }
+
+    protected function importLiaison($etablissement, $acheteur) {
+        $etablissementAcheteurId = $this->identifyEtablissement($acheteur);
+        if(!$etablissementAcheteurId) {
+            echo "Établissement cooperative non identifié :".$acheteur."\n";
+            return;
+        }
+        echo $etablissement->_id.":".$acheteur."\n";
+        $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteurId);
+        $etablissement->save();
+    }
+
+    protected function identifyEtablissement($nom) {
+
+        if(!$this->etablissements) {
+            $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        }
+
+        $key = KeyInflector::slugify($nom);
+
+        if(isset($this->etablissementsCache[$key])) {
+            return $this->etablissementsCache[$key];
+        }
+
+        foreach ($this->etablissements as $etab) {
+            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($nom))) {
+                $this->etablissementsCache[$key] = $etab->id;
+                return $this->etablissementsCache[$key];
+            }
+
+            if (KeyInflector::slugify($etab->value[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($nom))) {
+                $this->etablissementsCache[$key] = $etab->id;
+                return $this->etablissementsCache[$key];
+            }
+        }
+        return null;
     }
 }

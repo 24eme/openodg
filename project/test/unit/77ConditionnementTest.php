@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(21);
+$t = new lime_test(25);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -21,18 +21,26 @@ foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acC
     $conditionnement->delete(false);
 }
 
-$campagne = (date('Y')-1)."";
-$mydate = $campagne.'-'.date('m-d');
+$year = date('Y');
+if (date('m') < 8) {
+    $year = $year - 1;
+}
+$campagne = sprintf("%04d-%04d", $year , $year + 1 );
+$mydate = $year.'-11-01';
+
 //Début des tests
 $t->comment("Création d'un Conditionnement");
 
-$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne, $mydate);
+$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $mydate);
 $conditionnement->save();
 
 $t->comment($conditionnement->_id);
 $t->is($conditionnement->date, $mydate, "La date est bien la date fournie ($mydate)");
-$t->is($conditionnement->_id, "CONDITIONNEMENT-".$viti->identifiant."-".preg_replace('/-/', '', $mydate), "L'identifiant est bien constituté de la date");
+$t->is($conditionnement->campagne, $campagne, "La campagne $campagne est bonne");
+$t->is($conditionnement->_id, "CONDITIONNEMENT-".$viti->identifiant."-".$year.'1101', "L'identifiant est bien constituté de la date");
 $t->is($conditionnement->_id, ConditionnementClient::getInstance()->findByIdentifiantAndDate($viti->identifiant, $mydate)->_id, "On retrouve bien le conditionnement à partir de l'identifiant and la date");
+$t->is($conditionnement->type_archive, "Revendication", "Type d'archive Revendication");
+$t->is($conditionnement->numero_archive, null, "Numéro d'archive nul");
 
 $produits = $conditionnement->getConfigProduits();
 
@@ -82,6 +90,9 @@ $t->is(count($conditionnement->lots), 3, "3 lots après le clean");
 $conditionnement->save();
 
 $conditionnement->validate();
+$conditionnement->save();
+$t->ok($conditionnement->numero_archive, "Numéro d'archive défini");
+
 $conditionnement->validateOdg();
 $conditionnement->save();
 

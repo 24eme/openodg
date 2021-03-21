@@ -13,7 +13,7 @@
  	<div class="alert alert-danger" role="alert">La saisie des surfaces affectables est invalide</div>
 <?php endif; ?>
 
-<form id="validation-form" action="<?php echo url_for("parcellaireintentionaffectation_edit", array("sf_subject" => $etablissement, "campagne" => $campagne)) ?>" method="post" class="form-horizontal">
+<form id="validation-form" action="<?php echo url_for("parcellaireintentionaffectation_edit", array("sf_subject" => $etablissement, "periode" => $periode)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
