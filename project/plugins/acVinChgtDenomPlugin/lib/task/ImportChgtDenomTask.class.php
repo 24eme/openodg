@@ -130,6 +130,7 @@ EOF;
                 $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[1]->numero_archive = $numeroArchive;
                 $chgtDenom->lots[1]->affectable = true;
+                $chgtDenom->lots[0]->affectable = false;
             } elseif($chgtDenom->isChgtTotal()) {
                 $chgtDenom->lots[0]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[0]->numero_archive = $numeroArchive;
