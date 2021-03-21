@@ -12,7 +12,6 @@
   <h2>Historique du lot de <?php echo $etablissement->getNom(); ?></h2>
 </div>
 <?php if (count($mouvements)): ?>
-  <div class="row">
     <table class="table table-condensed table-striped">
       <thead>
         <th class="col-sm-1">Date</th>
@@ -40,4 +39,3 @@
             <tbody>
             </table>
           <?php endif; ?>
-        </div>

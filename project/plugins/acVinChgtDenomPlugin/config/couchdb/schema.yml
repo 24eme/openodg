@@ -57,6 +57,7 @@ ChgtDenom:
                   unique_id: { }
                   id_document_provenance: { }
                   id_document_affectation: { }
+                  campagne: {}
                   numero_dossier: {  }
                   numero_archive: {  }
                   numero_logement_operateur: { }
@@ -127,10 +128,12 @@ ChgtDenom:
                     definition:
                       fields:
                         date: {  }
+                        campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
                         libelle: {}
                         detail: {}
+                        volume: { type: float }
                         region: {}
                         version: {  }
                         document_ordre: {  }
@@ -140,7 +143,6 @@ ChgtDenom:
                         lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        campagne: {}
                         statut: {}
       pieces:
         type: array_collection

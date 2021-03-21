@@ -8,6 +8,7 @@ function (doc) {
 
       emit([
         mouvement.declarant_identifiant,
+        mouvement.campagne,
         mouvement.numero_dossier,
         mouvement.numero_archive,
         mouvement.document_ordre,
