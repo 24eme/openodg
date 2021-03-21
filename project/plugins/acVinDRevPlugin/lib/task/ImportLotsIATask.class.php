@@ -270,6 +270,7 @@ EOF;
         }
         if($document) {
             $document->save();
+            echo $document->_id."\n";
         }
     }
 

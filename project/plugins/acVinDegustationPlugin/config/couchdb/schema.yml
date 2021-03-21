@@ -27,6 +27,7 @@ Degustation:
                   unique_id: { }
                   id_document_provenance: { }
                   id_document_affectation: { }
+                  campagne: {}
                   numero_dossier: { }
                   numero_archive: { }
                   numero_logement_operateur: { }
@@ -77,10 +78,12 @@ Degustation:
                     definition:
                       fields:
                         date: {  }
+                        campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
                         libelle: {}
                         detail: {}
+                        volume: { type: float }
                         region: {}
                         version: {  }
                         document_ordre: {  }
@@ -90,7 +93,6 @@ Degustation:
                         lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        campagne: {}
                         statut: { }
                         id_document: { required: false }
                         specificite: { required: false }

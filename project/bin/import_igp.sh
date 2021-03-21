@@ -67,7 +67,7 @@ php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
-echo "Import des interlocuteurs"
+echo "Import des Interlocuteurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv
 php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" --trace
@@ -81,8 +81,9 @@ php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
 echo "Import des Changements de denomination"
 
+zip $DATA_DIR/changement_denom.xlsx $DATA_DIR/changement_denom.xls
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/changement_denom.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/changement_denom.csv
-#php symfony import:chgt-denom-ia $DATA_DIR/changement_denom.csv --application="$ODG" --trace
+php symfony import:chgt-denom-ia $DATA_DIR/changement_denom.csv --application="$ODG" --trace
 
 echo "Import des Degustations"
 # trie des lots par date de commission pour dire qu'une date correspond à une degustation.

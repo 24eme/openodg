@@ -558,13 +558,16 @@ abstract class Lot extends acCouchdbDocumentTree
         $this->cepages->add($cepage, $repartition);
     }
 
-    public function getCepagesLibelle() {
+    public function getCepagesLibelle($withRepartition = true) {
         $libelle = null;
         foreach($this->cepages as $cepage => $repartition) {
             if($libelle) {
                 $libelle .= ", ";
             }
-            $libelle .= $cepage . " (".$repartition."%)";
+            $libelle .= $cepage;
+            if($withRepartition) {
+                $libelle .= " (".$repartition."%)";
+            }
         }
         return $libelle;
     }
@@ -606,12 +609,11 @@ abstract class Lot extends acCouchdbDocumentTree
             $libelle .= " ".$this->specificite;
         }
 
-        if($this->getCepagesLibelle()) {
-            $libelle .= " ".$this->getCepagesLibelle();
+        if($this->getCepagesLibelle(false)) {
+            $libelle .= " ".$this->getCepagesLibelle(false);
         }
 
-        $libelle .= " (Vol : ".sprintf("%01.02f",$this->volume*1.0)." hl)";
-        $libelle .= " Logement : ".$this->numero_logement_operateur;
+        $libelle .= " (N° ".$this->numero_logement_operateur.")";
 
         return $libelle;
 
@@ -649,6 +651,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->numero_archive = $this->numero_archive;
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = ($detail) ?? null;
+        $mouvement->volume = $this->volume;
         $mouvement->region = '';
         $mouvement->version = $this->getVersion();
         $mouvement->document_ordre = $this->getDocumentOrdre();
@@ -694,7 +697,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getLotDocumentOrdre($documentOrdre) {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;
@@ -763,11 +766,6 @@ abstract class Lot extends acCouchdbDocumentTree
     public function isAffecte() {
 
         return $this->exist('id_document_affectation') && $this->id_document_affectation;
-    }
-
-    public function getCampagne() {
-
-        return $this->getDocument()->getCampagne();
     }
 
 }

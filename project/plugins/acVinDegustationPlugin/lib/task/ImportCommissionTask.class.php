@@ -71,7 +71,7 @@ EOF;
 
           $campagne = null;
           if(isset($data[self::CSV_CAMPAGNE])){
-              $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
+              $campagne = str_replace('/', '-', trim($data[self::CSV_CAMPAGNE]));
           }
 
           $newDegustation = new Degustation();
@@ -122,6 +122,14 @@ EOF;
           $resultat = $data[self::CSV_RESULTAT];
 
           $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE));
+
+          if(!$lot) {
+              $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'campagne' => $campagne, 'statut' => Lot::STATUT_AFFECTABLE));
+          }
+
+          if(!$lot) {
+              $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE));
+          }
 
           if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
