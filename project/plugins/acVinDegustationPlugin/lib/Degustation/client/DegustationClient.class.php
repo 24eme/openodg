@@ -1,6 +1,6 @@
 <?php
 
-class DegustationClient extends acCouchdbClient {
+class DegustationClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "Degustation";
     const TYPE_COUCHDB = "DEGUSTATION";
@@ -80,6 +80,18 @@ class DegustationClient extends acCouchdbClient {
             $manquements[$item->value->unique_id] = $item->value;
         }
         return $manquements;
+    }
+
+    public function findFacturable($identifiant, $campagne) {
+        $lotsView = MouvementLotView::getInstance()->getByIdentifiant($identifiant)->rows;
+
+        $facturables = array();
+        foreach ($lotsView as $lotView) {
+            if(preg_match("/^".self::TYPE_COUCHDB."-".($campagne+1)."/", $lotView->id) && !array_key_exists($lotView->id,$facturables)){
+                $facturables[$lotView->id] = $this->find($lotView->id);
+            }
+        }
+        return $facturables;
     }
 
 }

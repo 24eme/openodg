@@ -272,7 +272,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       public function getTemplateFacture() {
 
-          return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+          return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
       }
 
       public function getMouvementsFactures() {

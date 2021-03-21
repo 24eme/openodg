@@ -4,12 +4,13 @@
  *
  */
 
-class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument {
+class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument {
 
 	protected $piece_document = null;
 	protected $tri = null;
 	protected $cm = null;
     protected $docToSave = array();
+    protected $mouvement_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -40,6 +41,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     protected function initDocuments() {
         $this->piece_document = new PieceDocument($this);
+        $this->mouvement_document = new MouvementFacturesDocument($this);
     }
 
     public function getConfiguration() {
@@ -1098,7 +1100,88 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-		/** Mis à jour par la degustation du volume d'un lot de DRev **/
+
+        /**** MOUVEMENTS ****/
+
+        public function getTemplateFacture() {
+
+            return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
+        }
+
+        public function getMouvementsFactures() {
+
+            return $this->_get('mouvements');
+        }
+
+        public function getMouvementsFacturesCalcule() {
+          $templateFacture = $this->getTemplateFacture();
+
+          if(!$templateFacture) {
+              return array();
+          }
+          $cotisations = $templateFacture->generateCotisations($this);
+          $mouvements = array();
+          foreach ($this->getLots() as $lot) {
+              $mouvementIdentifiant = array();
+              if($lot->getNumeroPassage() >= 1){
+                  $mouvement = null;
+                  foreach($cotisations as $cotisation) {
+                      $mouvement = DegustationMouvementFactures::freeInstance($this);
+                      $mouvement->fillFromCotisation($cotisation);
+                      $mouvement->facture = 0;
+                      $mouvement->facturable = 1;
+                      $mouvement->date = $this->getDateStdr();
+                      $mouvement->date_version = $this->validation;
+                      $mouvement->detail_libelle = $lot->getLibelle()." ".($lot->getNumeroPassage()+1)."ème passage";
+                  }
+                  if($mouvement){
+                      $mouvementIdentifiant[uniqid()] = $mouvement;
+                  }
+              }
+              if(count($mouvementIdentifiant)){
+                  $mouvements[$lot->declarant_identifiant] = $mouvementIdentifiant;
+              }
+          }
+
+          return $mouvements;
+        }
+
+        public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+
+            return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+        }
+
+        public function generateMouvementsFactures() {
+            return $this->mouvement_document->generateMouvementsFactures();
+        }
+
+        public function findMouvementFactures($cle, $id = null){
+          return $this->mouvement_document->findMouvementFactures($cle, $id);
+        }
+
+        public function facturerMouvements() {
+
+            return $this->mouvement_document->facturerMouvements();
+        }
+
+        public function isFactures() {
+
+            return $this->mouvement_document->isFactures();
+        }
+
+        public function isNonFactures() {
+
+            return $this->mouvement_document->isNonFactures();
+        }
+
+        public function clearMouvementsFactures(){
+            $this->remove('mouvements');
+            $this->add('mouvements');
+        }
+
+        /**** FIN DES MOUVEMENTS ****/
+
+        /** Mis à jour par la degustation du volume d'un lot de DRev **/
 		public function modifyVolumeLot($hash_lot,$volume){
 
 			$lot = $this->get($hash_lot);

@@ -244,23 +244,30 @@ $degustation->save();
 
 $t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est toujours non conforme");
 
+
 $t->comment('Deuxième degustation');
 $degustation2 = new Degustation();
-$degustation2->lieu = "Test — Test Facturation 2nd passage";
-$degustation2->date = date('Y-m-d')." 18:00";
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
-$t->is(count($lotsPrelevables), 1, "1 lots en attentes de dégustation");
-$degustation->setLots($lotsPrelevables);
+$form = new DegustationCreationForm($degustation2);
+$values = array('date' => date("d/m/Y"), 'time' => "18:00", 'lieu' => "Test — Test Facturation 2nd Degustation");
+$form->bind($values);
+$degustation2 = $form->save();
 
-$lot2 = $degustation->lots[0];
+$t->comment("Sélection des lots");
+$form = new DegustationPrelevementLotsForm($degustation2);
+$valuesRev = array(
+    'lots' => $form['lots']->getValue(),
+    '_revision' => $degustation2->_rev,
+);
+$valuesRev['lots'][$drev->lots[1]->getUnicityKey()]['preleve'] = 1;
+$form->bind($valuesRev);
+$form->save();
+
+$lot2 = $degustation2->lots[0];
 
 $t->is($lot2->unique_id, $nonconformeId, "Le lot non conforme est bien celui de la degustation 2 ");
-$degustation->save();
+$degustation2->save();
 
-// ici test que pas de forfait de 70 euros
-
-
-$degustation->lots[0]->statut = Lot::STATUT_CONFORME;
-$degustation->save();
-
-// ici test que forfait de 70 euros
+$degustation2->remove('mouvements');
+$degustation2->generateMouvementsFactures();
+$degustation2->save();
+$t->is(count($degustation2->getMouvementsFactures()), 1, "On a bien 1 mouvement de facture");
