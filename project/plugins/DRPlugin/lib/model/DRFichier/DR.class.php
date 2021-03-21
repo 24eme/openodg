@@ -37,7 +37,7 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
 	/**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
     }
 
     public function getMouvementsFactures() {
@@ -134,6 +134,11 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
         $this->remove('mouvements');
         $this->add('mouvements');
     }
+
+		public function getVolumeFacturable($produitFilter = null)
+		{
+			return $this->getTotalValeur("15");
+		}
 
     /**** FIN DES MOUVEMENTS ****/
 
