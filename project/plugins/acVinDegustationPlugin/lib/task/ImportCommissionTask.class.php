@@ -14,6 +14,7 @@ class ImportCommissionIATask extends ImportLotsIATask
     const CSV_TYPE_LIGNE = 9;
     const CSV_RAISON_SOCIALE = 10;
     const CSV_NOM = 10;
+    const CSV_COLLEGE = 10;
     const CSV_APPELLATION = 11;
     const CSV_COULEUR = 12;
     const CSV_VOLUME = 14;
@@ -50,6 +51,12 @@ EOF;
         $this->initProduitsCepages();
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        $degustateurs =  array();
+
+        foreach(CompteTagsView::getInstance()->listByTags('automatique', 'degustateur') as $row) {
+            $compte = CompteClient::getInstance()->find($row->id);
+            $degustateurs[$compte->nom." ".$compte->prenom] = $compte;
+        }
 
         $degustation = null;
         $ligne=0;
@@ -106,6 +113,25 @@ EOF;
           }
 
           if($data[self::CSV_TYPE_LIGNE] == "JURY") {
+
+              if(!isset($degustateurs[$data[self::CSV_RAISON_SOCIALE]])) {
+                  continue;
+              }
+
+              if($data[self::CSV_COLLEGE] == "Porteur de mémoire") {
+                  $college = "degustateur_porteur_de_memoire";
+              }
+
+              if($data[self::CSV_COLLEGE] == "Technicien") {
+                  $college = "degustateur_technicien";
+              }
+
+              if($data[self::CSV_COLLEGE] == "Usager du produit") {
+                  $college = "degustateur_usager_du_produit";
+              }
+
+              $degustation->degustateurs->getOrAdd($college)->getOrAdd($degustateurs[$data[self::CSV_RAISON_SOCIALE]]->_id)->libelle = $compte->nom_a_afficher;
+
               continue;
           }
 
