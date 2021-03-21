@@ -95,6 +95,8 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
           $csv .= $this->floatHelper->formatFr(($odg_ou_forfait->montant_ht-$montant_covid_odg), 2, 2).";";
           $csv .= $this->floatHelper->formatFr($montant_covid_odg_ht, 2, 2).";";
           $odg_ou_forfait_inao_total += $odg_ou_forfait->montant_ht-$montant_covid_odg;
+        }else{
+          $csv .= ";;";
         }
         // inao
         $inao = $this->getCotisationNode('inao');
