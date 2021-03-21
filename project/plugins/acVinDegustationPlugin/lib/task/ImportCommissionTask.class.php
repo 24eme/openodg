@@ -101,7 +101,7 @@ EOF;
 
           if(!$degustation || $newDegustation->_id != $degustation->_id) {
               if($degustation) {
-                  $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
+                  $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
                   $degustation->save();
               }
               $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
