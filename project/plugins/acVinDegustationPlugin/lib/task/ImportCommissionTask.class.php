@@ -115,6 +115,7 @@ EOF;
           if($data[self::CSV_TYPE_LIGNE] == "JURY") {
 
               if(!isset($degustateurs[$data[self::CSV_RAISON_SOCIALE]])) {
+                  echo "WARNING;Dégustateur non trouvé;".$line."\n";
                   continue;
               }
 
