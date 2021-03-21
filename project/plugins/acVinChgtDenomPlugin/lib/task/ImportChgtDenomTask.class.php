@@ -129,9 +129,11 @@ EOF;
             if (!$chgtDenom->isChgtTotal()) {
                 $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[1]->numero_archive = $numeroArchive;
-            }
-            foreach($chgtDenom->lots as $lot) {
-                $lot->affectable = true;
+                $chgtDenom->lots[1]->affectable = true;
+            } elseif($chgtDenom->isChgtTotal()) {
+                $chgtDenom->lots[0]->numero_dossier = $numeroDossier;
+                $chgtDenom->lots[0]->numero_archive = $numeroArchive;
+                $chgtDenom->lots[0]->affectable = true;
             }
 
             $chgtDenom->validate($dateDeclaration);
