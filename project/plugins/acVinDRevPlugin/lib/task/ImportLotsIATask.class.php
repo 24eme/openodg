@@ -360,7 +360,7 @@ EOF;
         $newDrev->validation = $date;
         $newDrev->validation_odg = $date;
         $newDrev->numero_archive = $numeroDossier;
-
+        $newDrev->add('date_degustation_voulue', $date);
         if(!$drev || $newDrev->_id != $drev->_id) {
           $drev = DRevClient::getInstance()->find($newDrev->_id, acCouchdbClient::HYDRATE_JSON);
 
