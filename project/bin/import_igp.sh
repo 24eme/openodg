@@ -81,8 +81,7 @@ php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
 echo "Import des Changements de denomination"
 
-zip $DATA_DIR/changement_denom.xlsx $DATA_DIR/changement_denom.xls
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/changement_denom.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/changement_denom.csv
+cat $DATA_DIR/changement_denom.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' > $DATA_DIR/changement_denom.csv
 php symfony import:chgt-denom-ia $DATA_DIR/changement_denom.csv --application="$ODG" --trace
 
 echo "Import des Degustations"
