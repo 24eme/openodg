@@ -46,7 +46,7 @@
 		<tbody>
         <?php $dates = $form->getDateDegustParDrev(); foreach ($form['lots'] as $key => $lotForm): ?>
           <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $form->getLot($key)->numero_dossier ?>">
-            <td><?php echo DateTime::createFromFormat('Ymd', date('Ymd'))->format('d/m/Y') ?></td>
+            <td><?php echo DateTime::createFromFormat('Ymd', $dates[$form->getLot($key)->id_document])->format('d/m/Y') ?></td>
             <?php include_partial('degustation/rowTablePrelevable', ['lot' => $form->getLot($key)]) ?>
             <td class="text-center" data-hash="<?php echo $form->getLot($key)->declarant_nom; ?>">
               <div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
