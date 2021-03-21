@@ -67,7 +67,18 @@ EOF;
               continue;
           }
 
-          $date = $degustation_date." ".sprintf("%02d:%02d:00", preg_replace("/-.*$/", "", $data[self::CSV_ID]), preg_replace("/^.*-/", "", $data[self::CSV_ID]));
+          $heure = preg_replace("/-.*$/", "", $data[self::CSV_ID]);
+          $minute = preg_replace("/^.*-/", "", $data[self::CSV_ID]);
+
+          if($heure > 23) {
+              $heure = rand(1,23);
+          }
+
+          if($minute > 59) {
+              $minute = rand(1,59);
+          }
+
+          $date = $degustation_date." ".sprintf("%02d:%02d:00", $heure, $minute);
 
           $campagne = null;
           if(isset($data[self::CSV_CAMPAGNE])){
