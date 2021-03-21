@@ -105,6 +105,7 @@ if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $nb_bio = 0;
+if (isset($erreurs['revendication_incomplete_volume']))
 foreach($erreurs['revendication_incomplete_volume'] as $err) {
   if (preg_match('/ '.DRevClient::DENOMINATION_BIO_LIBELLE_AUTO.'/', $err->getInfo()) ) {
     $nb_bio++;
