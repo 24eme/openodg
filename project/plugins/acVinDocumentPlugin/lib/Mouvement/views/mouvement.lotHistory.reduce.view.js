@@ -1,8 +1,10 @@
 function(keys,values,rereduce) {
-  if (!rereduce) {
-    values = values.map(function(value){return value.document_ordre + value.statut ; });
+  iMax = 0;
+  for (i = 1 ; i < values.length ; i++) {
+    if (values[i].document_ordre + values[i].statut > values[iMax].document_ordre + values[iMax].statut) {
+      iMax = i;
+    }
   }
-  values.sort().reverse();
-  return values[0];
-}
-
+   return values[iMax];
+ }
+ 
