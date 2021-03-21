@@ -14,7 +14,7 @@ class ImportCommissionIATask extends ImportLotsIATask
     const CSV_TYPE_LIGNE = 9;
     const CSV_RAISON_SOCIALE = 10;
     const CSV_NOM = 10;
-    const CSV_COLLEGE = 10;
+    const CSV_COLLEGE = 11;
     const CSV_APPELLATION = 11;
     const CSV_COULEUR = 12;
     const CSV_VOLUME = 14;
@@ -130,7 +130,9 @@ EOF;
                   $college = "degustateur_usager_du_produit";
               }
 
-              $degustation->degustateurs->getOrAdd($college)->getOrAdd($degustateurs[$data[self::CSV_RAISON_SOCIALE]]->_id)->libelle = $compte->nom_a_afficher;
+              $degustateur = $degustation->degustateurs->add($college)->add($degustateurs[$data[self::CSV_RAISON_SOCIALE]]->_id);
+              $degustateur->add('libelle', $degustateurs[$data[self::CSV_RAISON_SOCIALE]]->nom_a_afficher);
+              $degustateur->add('confirmation', true);
 
               continue;
           }
