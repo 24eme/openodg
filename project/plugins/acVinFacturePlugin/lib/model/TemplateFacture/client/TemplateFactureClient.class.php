@@ -23,8 +23,8 @@ class TemplateFactureClient extends acCouchdbClient {
     }
 
     public function findByCampagne($campagne){
-
       //TODO: Transformer les templates des autres instance en TEMPLATE-FACTURE-CAMPAGNE
+      $campagne = substr($campagne,0,4);
       if($templateFactureAoc = $this->find("TEMPLATE-FACTURE-AOC-".$campagne)){
         return $templateFactureAoc;
       }

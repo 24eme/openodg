@@ -45,11 +45,13 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     public function getLotsChangeable($identifiant) {
         $lots = array();
-        foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant)->rows as $mouvement) {
-            if(!in_array($mouvement->value->statut, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME))) {
+        foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant)->rows as $lot) {
+            if(!in_array($lot->value->statut, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME))) {
                 continue;
             }
-            $lots[$mouvement->value->unique_id] = $mouvement->value;
+            $lots[$lot->value->unique_id] = $lot->value;
+            $lots[$lot->value->unique_id]->id_document_provenance = $lot->id;
+            $lots[$lot->value->unique_id]->provenance = substr($lot->id, 0, 4);
         }
 
         return $lots;
@@ -76,6 +78,10 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $campagne) {
+
+      // TODO : A retirer : aujourd'hui on bypass les Chgts Denom facturables pour optimiser la page de facturation
+      return array();
+
       $chgtsdenomCampagne = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL,$campagne,$identifiant)->rows;
       $chgtsdenomFacturants = array();
       foreach ($chgtsdenomCampagne as $chgtdenomview) {

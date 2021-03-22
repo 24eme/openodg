@@ -228,8 +228,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot->numero_archive .= 'a';
         $lotBis->numero_archive .= 'b';
         $lotBis->volume = $this->changement_volume;
-        $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
-        $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        $lotBis->produit_hash = $this->changement_produit;
         $lotBis->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
         foreach($this->getPourcentagesCepages() as $cep => $pc) {
             $lotBis->details .= $cep.' ('.$pc.'%) ';
@@ -237,9 +236,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lots[] = $lot;
         $lots[] = $lotBis;
       } else {
-        $lot->numero_archive .= 'a';
-        $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
-        $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
+        $lot->produit_hash = $this->changement_produit;
         $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
         if (count($this->changement_cepages->toArray(true, false))) {
           $lot->details = '';
@@ -334,6 +331,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $lot->updateDocumentDependances();
 
             if($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST));
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
             }
 

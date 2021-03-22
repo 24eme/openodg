@@ -46,8 +46,9 @@
           "docs": [
             "DR"
           ],
-          "callback": "getVolumeFacturable",
+          "callback": "calcul",
           "callback_parameters": [
+             "L15",
             "NOT /appellations/APL,/appellations/MED"
           ]
         },
@@ -164,6 +165,29 @@
           "callback": "getVolumeFacturable",
           "callback_parameters": [
             "/appellations/MED"
+          ]
+        }
+      }
+    },
+    "lotsDegustes": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nombre de Lot",
+      "code_comptable": "706102",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 8,
+          "tva": 0.2,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationLotDeguste",
+          "callback_parameters": [
+            "NOT /appellations/APL,/appellations/MED"
           ]
         }
       }

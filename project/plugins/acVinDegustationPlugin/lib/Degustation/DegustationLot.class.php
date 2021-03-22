@@ -65,7 +65,6 @@ class DegustationLot extends BaseDegustationLot {
 
         $this->recours_oc = true;
         $this->statut = Lot::STATUT_RECOURS_OC;
-        $this->getDocument()->generateMouvementsLots();
     }
 
     public function conformeAppel()
@@ -80,8 +79,11 @@ class DegustationLot extends BaseDegustationLot {
     }
 
     public function getDocumentOrdre() {
+        if(is_null($this->_get('document_ordre'))) {
+            $this->_set('document_ordre', sprintf("%02d", 2 + $this->getNumeroPassage()));
+        }
 
-        return sprintf("%02d", 2 + $this->getNumeroPassage());
+        return $this->_get('document_ordre');
     }
 
     public function getLibelle() {

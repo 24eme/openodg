@@ -23,13 +23,17 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_DECLASSE = "DECLASSE";
     const STATUT_ELEVAGE = "ELEVAGE";
 
+    const STATUT_CHANGE_DEST = "02_CHANGE_DEST";
+
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
+    const STATUT_REVENDIQUE_CHANGE = "01_REVENDIQUE_CHANGE";
     const STATUT_ENLEVE = "01_ENLEVE";
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
     const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
+    const STATUT_CHANGE_SRC = "05_CHANGE_SRC";
 
     const STATUT_MANQUEMENT_EN_ATTENTE = "01_MANQUEMENT_EN_ATTENTE";
 
@@ -71,6 +75,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_NONAFFECTABLE => 'Non affectable',
         self::STATUT_AFFECTABLE => 'Affectable',
         self::STATUT_AFFECTE_SRC_DREV => 'Affecté source drev',
+
+        self::STATUT_CHANGE_DEST => 'Changé dest'
 
     );
 
@@ -650,7 +656,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->numero_dossier = $this->numero_dossier;
         $mouvement->numero_archive = $this->numero_archive;
         $mouvement->libelle = $this->getLibelle();
-        $mouvement->detail = ($detail) ?? null;
+        $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
         $mouvement->region = '';
         $mouvement->version = $this->getVersion();

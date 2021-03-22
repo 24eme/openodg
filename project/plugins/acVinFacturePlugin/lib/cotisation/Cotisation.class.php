@@ -47,12 +47,12 @@ class Cotisation
 		return $this->getConfig()->complement_libelle;
 	}
 
-	protected function getConfigCallback() {
+	public function getConfigCallback() {
 
 		return $this->getConfig()->callback;
 	}
 
-	protected function getConfigCallbackParameters() {
+	public function getConfigCallbackParameters() {
 		if(!$this->getConfig()->exist('callback_parameters')) {
 			return array();
 		}

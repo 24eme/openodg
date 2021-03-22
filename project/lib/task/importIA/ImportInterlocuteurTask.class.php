@@ -140,6 +140,9 @@ EOF;
               if(preg_match('/Porteur de mémoire/', $data[self::CSV_COLLEGE])) {
                   $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
               }
+              if(preg_match('/Observateur/', $data[self::CSV_COLLEGE])) {
+                  $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
+              }
               if(preg_match('/Technicien/', $data[self::CSV_COLLEGE])) {
                   $compte->add('droits')->add(null, 'degustateur:technicien');
               }
