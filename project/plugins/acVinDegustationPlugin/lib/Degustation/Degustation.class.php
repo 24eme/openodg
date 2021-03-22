@@ -210,7 +210,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lot->updateSpecificiteWithDegustationNumber();
 			$statut = $lot->statut;
 			if ($statut == Lot::STATUT_NONCONFORME_LEVEE) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE, "Levée"));
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE));
 				$statut = Lot::STATUT_NONCONFORME;
 			}
             switch($statut) {
