@@ -83,6 +83,9 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $campagne) {
+        // TODO : A retirer : ajourd'hui on bypass les Degustation facturables pour optimiser la page de facturation
+        return array();
+
         $lotsView = MouvementLotView::getInstance()->getByIdentifiant($identifiant)->rows;
 
         $facturables = array();
