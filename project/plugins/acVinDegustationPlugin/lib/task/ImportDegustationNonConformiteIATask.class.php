@@ -150,6 +150,8 @@ EOF;
                 break;
                 break;
               case 'Levée':
+                $lot->statut = Lot::STATUT_NONCONFORME_LEVEE;
+                break;
               case 'Traitée OC':
                 $lot->statut = Lot::STATUT_CONFORME_APPEL;
                 break;

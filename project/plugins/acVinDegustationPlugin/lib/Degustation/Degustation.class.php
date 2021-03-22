@@ -209,6 +209,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lot->updateDocumentDependances();
             $lot->updateSpecificiteWithDegustationNumber();
 			$statut = $lot->statut;
+			if ($statut == Lot::STATUT_NONCONFORME_LEVEE) {
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE, "Levée"));
+				$statut = Lot::STATUT_NONCONFORME;
+			}
             switch($statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
@@ -249,7 +253,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
 			}elseif($lot->isAffectable()) {
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, $lot->getNumeroPassage() + 1));
-			} elseif(in_array($statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
+			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
