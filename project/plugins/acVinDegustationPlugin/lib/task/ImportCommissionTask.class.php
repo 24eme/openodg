@@ -155,6 +155,7 @@ EOF;
                continue;
             }
 
+          $alphas = range('A', 'Z');
           $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
           $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
           $numeroTable = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[0]);
@@ -178,7 +179,7 @@ EOF;
 
           $lot = $degustation->addLot($lot, false);
           $lot->numero_table = $numeroTable;
-          $lot->numero_anonymat = $numeroAnonymat;
+          $lot->numero_anonymat = $alphas[((int)$numeroTable)-1].$numeroAnonymat;
           $lot->email_envoye = $date;
 
           if($data[self::CSV_RESULTAT] == "C") {
