@@ -65,7 +65,6 @@ class DegustationLot extends BaseDegustationLot {
 
         $this->recours_oc = true;
         $this->statut = Lot::STATUT_RECOURS_OC;
-        $this->getDocument()->generateMouvementsLots();
     }
 
     public function conformeAppel()

@@ -213,20 +213,26 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
 
                 case Lot::STATUT_RECOURS_OC:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC,"En recours OC"));
 
                 case Lot::STATUT_CONFORME:
                 case Lot::STATUT_NONCONFORME:
-                    $this->addMouvementLot($lot->buildMouvement($lot->statut));
+                    $detail = $lot->getShortLibelleConformite();
+                    $statut = Lot::CONFORMITE_CONFORME;
+                    if($lot->conformite != Lot::CONFORMITE_CONFORME){
+                        $statut = Lot::STATUT_NONCONFORME;
+                        $detail .= ": ".$lot->motif;
+                    }
+                    $this->addMouvementLot($lot->buildMouvement($statut,$detail));
 
                 case Lot::STATUT_DEGUSTE:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_DEGUSTE));
 
                 case Lot::STATUT_ANONYMISE:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANONYMISE));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANONYMISE,"N° anon. : ".$lot->numero_anonymat));
 
                 case Lot::STATUT_ATTABLE:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE,"Table : ".$lot->getNumeroTableStr()));
 
                 case Lot::STATUT_PRELEVE:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE));
@@ -259,6 +265,22 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getAllPieces() {
     	$pieces = array();
+
+        $libelle = 'Résultat de la dégustation du ' . $this->getDate();
+
+        foreach ($this->lots as $lot) {
+            $piece = [
+                'identifiant' => $lot->declarant_identifiant,
+                'date_depot' => $this->validation,
+                'libelle' => $libelle,
+                'mime' => Piece::MIME_PDF,
+                'visibilite' => 1,
+                'source' => null
+            ];
+
+            $pieces[] = $piece;
+        }
+
     	return $pieces;
     }
 
@@ -267,11 +289,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function generateUrlPiece($source = null) {
-    	return null;
+        return sfContext::getInstance()->getRouting()->generate('degustation_conformite_pdf',  ['id' => $this->_id]);
     }
 
-    public static function getUrlvisualisationPiece($id, $admin = false) {
-    	return null;
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+        return sfContext::getInstance()->getRouting()->generate('degustation_visualisation', array('id' => $id, 'identifiant' => '1300000401'));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
@@ -1127,6 +1149,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
           $mouvements = array();
 
           foreach($cotisations as $cotisation) {
+			  if(!$cotisation->getConfigCallback()){
+				  continue;
+			  }
               $parameters = array_merge(array($cotisation),$cotisation->getConfigCallbackParameters());
               $mvts = call_user_func_array(array($this, $cotisation->getConfigCallback()), $parameters);
               foreach ($mvts as $identifiant => $mvtsArray) {

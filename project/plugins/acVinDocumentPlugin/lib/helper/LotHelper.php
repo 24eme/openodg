@@ -11,14 +11,13 @@ function showProduitLot($lot)
 
   $text .= "</small>";
 
-  if (get_class($lot) === stdClass::class) {
+  if (isset($lot["cepages"])) {
 
-      if(property_exists($lot, "cepages") && count((array)$lot->cepages)) {
+      if(count((array)$lot->cepages)) {
 
         foreach ($lot->cepages as $cepage => $pourcentage_volume) {
           $text .= " <small class='text-muted'> ".$cepage."</small>";
         }
-
       }
   } else {
       if($lot->exist("details")) {
@@ -28,4 +27,19 @@ function showProduitLot($lot)
 
   return $text;
 
+}
+
+function showDetailMvtLot($mvtLot){
+    $text = "";
+    if(!$mvtLot->value->detail){
+        return '<span class="label label-success">'.Lot::$libellesStatuts[$mvtLot->value->statut].'</span>';
+    }
+    switch ($mvtLot->value->statut) {
+        case Lot::STATUT_NONCONFORME :
+            return '<span class="label label-danger">'.$mvtLot->value->detail.'</span>';
+        case Lot::STATUT_RECOURS_OC :
+            return '<span class="label label-warning">'.$mvtLot->value->detail.'</span>';
+    }
+
+    return '<span class="label label-success">'.$mvtLot->value->detail.'</span>';
 }

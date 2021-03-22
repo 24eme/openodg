@@ -122,6 +122,16 @@ degustation_preleve:
   requirements:
     sf_method: [get, post]
 
+degustation_supprimer_lot_non_preleve:
+  url: /degustation/:id/supprimer-lot-non-preleve/:lot
+  param: { module: degustation, action: supprimerLotNonPreleve }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_preleve_update_logement:
   url: /degustation/:id/update-lot-logement/:lot
   param: { module: degustation, action: updateLotLogement }
