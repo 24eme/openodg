@@ -82,8 +82,6 @@ EOF;
         $this->convert_products["Coteaux de Tannay"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CTXT/mentions/DEFAUT/lieux/DEFAUT';
         $this->convert_products["Coteaux du Cher et de l'Arnon"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CHERAR/mentions/DEFAUT/lieux/DEFAUT';
         $this->convert_products['Cotes de la Charité'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CDLC/mentions/DEFAUT/lieux/DEFAUT';
-        IGP
-
     }
 
     protected function execute($arguments = array(), $options = array())
