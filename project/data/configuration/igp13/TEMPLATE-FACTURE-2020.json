@@ -162,14 +162,13 @@
       }
   },
     "redegustation": {
-        "modele": "CotisationsCollection",
-        "callback": "",
-        "libelle": "Forfait sur nouveau passage en dégustation",
-        "code_comptable": "706102",
-        "details": {
-          "forfait": {
-            "modele": "CotisationFixe",
-            "callback": null,
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Forfait sur nouveau passage pour la dégustation du %date%",
+      "code_comptable": "706102",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
             "prix": 70,
             "tva": 0.2,
             "unite": "",
@@ -177,9 +176,13 @@
             "complement_libelle": "",
             "docs": [
               "Degustation"
+            ],
+            "callback": "getRedegustationForfait",
+            "callback_parameters": [
+              "NOT /appellations/APL,/appellations/MED"
             ]
           }
         }
-    }
+      }
   }
 }
