@@ -1413,6 +1413,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     /**** FIN DES MOUVEMENTS ****/
 
+    /**** FCT de FACTURATION ****/
+
+    public function getForfaitDRev(){
+        return ($this->declarant->famille != EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR);
+    }
+
+    public function getForfaitDRevNegociantVini(){
+        return ($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR);
+    }
+
     /**** MOUVEMENTS LOTS ****/
 
     public function getLot($uniqueId) {
