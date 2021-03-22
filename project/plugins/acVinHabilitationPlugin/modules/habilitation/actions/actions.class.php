@@ -159,7 +159,7 @@ class habilitationActions extends sfActions {
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->habilitationLast = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
-        if($habilationLast->_id == $this->habilitation->_id) {
+        if($this->habilitationLast->_id == $this->habilitation->_id) {
 
             return $this->redirect('habilitation_declarant', $this->habilitation->getEtablissementObject());
         }
