@@ -21,7 +21,7 @@
 
         <div class="row row-condensed">
           <div class="col-xs-12">
-            <h3>Échantillons par opérateurs</h3>
+          <h3>Échantillons par opérateurs <span class="pull-right"><a href="<?= url_for('degustation_all_notification_pdf', ['id' => $degustation->_id]) ?>">Télécharger toutes les notifications</a></span></h3>
             <table class="table table-bordered table-condensed">
               <thead>
                 <tr>

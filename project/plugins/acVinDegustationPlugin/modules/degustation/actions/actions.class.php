@@ -676,6 +676,13 @@ class degustationActions extends sfActions {
       return $this->mutualExcecutePDF($request);
     }
 
+    public function executeDegustationAllNotificationsPDF(sfWebRequest $request)
+    {
+        $degustation = $this->getRoute()->getDegustation();
+        $this->document = new ExportDegustationAllNotificationsPDF($degustation, $request->getParameter('output', 'pdf'), false);
+        return $this->mutualExcecutePDF($request);
+    }
+
     public function executeDegustationConformitePDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
       $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
