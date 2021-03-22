@@ -19,7 +19,7 @@
   </div>
 
   <div class="col-xs-2">
-    <button class="btn btn-block btn-success" id="btn-preleve-all">
+    <button class="btn btn-block btn-default" id="btn-preleve-all">
       <i class="glyphicon glyphicon-ok-sign"></i>
       Tout prélever
     </button>
