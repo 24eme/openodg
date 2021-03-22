@@ -193,7 +193,7 @@ class DRevValidation extends DocumentValidation
     protected function controleRecoltes()
     {
         foreach($this->document->getProduits() as $produit) {
-            if($produit->getConfig()->getRendementDR() && ($produit->getRendementDR() > $produit->getConfig()->getRendementDR()) ) {
+            if($produit->getConfig()->getRendementDrL15() && ($produit->getRendementDrL15() > $produit->getConfig()->getRendementDrL15()) ) {
                 if(!array_key_exists($produit->gethash(),$this->produit_revendication_rendement)){
                   $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
                   $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
