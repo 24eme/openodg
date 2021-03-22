@@ -265,6 +265,22 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getAllPieces() {
     	$pieces = array();
+
+        $libelle = 'Résultat de la dégustation du ' . $this->getDate();
+
+        foreach ($this->lots as $lot) {
+            $piece = [
+                'identifiant' => $lot->declarant_identifiant,
+                'date_depot' => $this->validation,
+                'libelle' => $libelle,
+                'mime' => Piece::MIME_PDF,
+                'visibilite' => 1,
+                'source' => null
+            ];
+
+            $pieces[] = $piece;
+        }
+
     	return $pieces;
     }
 
@@ -273,11 +289,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function generateUrlPiece($source = null) {
-    	return null;
+        return sfContext::getInstance()->getRouting()->generate('degustation_conformite_pdf',  ['id' => $this->_id]);
     }
 
-    public static function getUrlvisualisationPiece($id, $admin = false) {
-    	return null;
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+        return sfContext::getInstance()->getRouting()->generate('degustation_visualisation', array('id' => $id, 'identifiant' => '1300000401'));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
