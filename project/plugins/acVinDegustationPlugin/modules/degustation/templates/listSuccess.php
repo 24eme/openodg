@@ -52,7 +52,7 @@
                       </a>
                   </td>
                   <td><?php  echo str_replace(" ", "&nbsp;", Lot::$libellesStatuts[$mouvement->value->statut]);  ?></td>
-                  <td class="text-right"><a class="btn btn-xs btn-default" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'campagne' => $mouvement->value->campagne, 'numero_dossier' => $mouvement->value->numero_dossier, 'numero_archive' => $mouvement->value->numero_archive));  ?>">détail<span class="glyphicon glyphicon-chevron-right"></span></a></td>
+                  <td class="text-right"><a class="btn btn-xs btn-default" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'campagne' => $mouvement->value->campagne, 'numero_dossier' => $mouvement->value->numero_dossier, 'numero_archive' => $mouvement->value->numero_archive));  ?>">détail&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
 
               </tr>
                   <?php endforeach; ?>
