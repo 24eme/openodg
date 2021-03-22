@@ -389,6 +389,7 @@ abstract class Lot extends acCouchdbDocumentTree
         // Regenerer les mouvements
 
         $this->affectable = true;
+        $this->a_redeguster = true;
     }
 
     public function setNumeroTable($numero) {

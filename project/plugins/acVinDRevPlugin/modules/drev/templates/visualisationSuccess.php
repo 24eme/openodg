@@ -62,7 +62,7 @@
 <?php endif ?>
 
 <div class="row row-margin row-button">
-    <div class="col-xs-3">
+    <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $drev->identifiant, 'campagne' => $drev->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
     <div class="col-xs-4 text-center">
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="col-xs-5 text-right">
+    <div class="col-xs-4 text-right">
         <div class="btn-group">
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)):
                 if (!$drev->validation_odg): ?>

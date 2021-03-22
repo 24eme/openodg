@@ -133,6 +133,16 @@ nightmare
       .download(exportFilename)
   })
   .then(function() {
+      var uri = baseUri+"/Declaration/SyntheseDeclassement.aspx";
+      var exportFilename = destination_file+'declassements.xls';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .click('#Button2')
+      .download(exportFilename)
+  })
+  .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=10";
       var exportFilename = destination_file+'changement_denom_autre_igp.xlsx';
       console.log("export " + uri + ": " + exportFilename);

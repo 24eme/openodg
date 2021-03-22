@@ -81,7 +81,7 @@ class DegustationLot extends BaseDegustationLot {
 
     public function getDocumentOrdre() {
 
-        return "02";
+        return sprintf("%02d", 2 + $this->getNumeroPassage());
     }
 
     public function getLibelle() {

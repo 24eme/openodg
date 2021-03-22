@@ -177,6 +177,7 @@ $t->is($lot2->specificite, Lot::SPECIFICITE_UNDEFINED.", ".sprintf(Lot::TEXTE_PA
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 0, "Il y a 0 mouvement prélevable");
+$t->is(count(DegustationClient::getInstance()->getManquements()), 0, "Il y a 0 mouvement en manquement");
 
 $t->is($lot2->id_document, $degustation2->_id, "L'id du doc du mouvement est la même degustation");
 $t->is($lot2->numero_archive, $lot->numero_archive, "Le numero archive n'a pas changé");

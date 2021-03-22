@@ -14,6 +14,7 @@ class ImportCommissionIATask extends ImportLotsIATask
     const CSV_TYPE_LIGNE = 9;
     const CSV_RAISON_SOCIALE = 10;
     const CSV_NOM = 10;
+    const CSV_COLLEGE = 11;
     const CSV_APPELLATION = 11;
     const CSV_COULEUR = 12;
     const CSV_VOLUME = 14;
@@ -50,6 +51,12 @@ EOF;
         $this->initProduitsCepages();
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        $degustateurs =  array();
+
+        foreach(CompteTagsView::getInstance()->listByTags('automatique', 'degustateur') as $row) {
+            $compte = CompteClient::getInstance()->find($row->id);
+            $degustateurs[$compte->nom." ".$compte->prenom] = $compte;
+        }
 
         $degustation = null;
         $ligne=0;
@@ -67,7 +74,18 @@ EOF;
               continue;
           }
 
-          $date = $degustation_date." ".sprintf("%02d:%02d:00", preg_replace("/-.*$/", "", $data[self::CSV_ID]), preg_replace("/^.*-/", "", $data[self::CSV_ID]));
+          $heure = preg_replace("/-.*$/", "", $data[self::CSV_ID]);
+          $minute = preg_replace("/^.*-/", "", $data[self::CSV_ID]);
+
+          if($heure > 23) {
+              $heure = rand(1,23);
+          }
+
+          if($minute > 59) {
+              $minute = rand(1,59);
+          }
+
+          $date = $degustation_date." ".sprintf("%02d:%02d:00", $heure, $minute);
 
           $campagne = null;
           if(isset($data[self::CSV_CAMPAGNE])){
@@ -83,7 +101,7 @@ EOF;
 
           if(!$degustation || $newDegustation->_id != $degustation->_id) {
               if($degustation) {
-                  $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
+                  $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
                   $degustation->save();
               }
               $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
@@ -95,6 +113,28 @@ EOF;
           }
 
           if($data[self::CSV_TYPE_LIGNE] == "JURY") {
+
+              if(!isset($degustateurs[$data[self::CSV_RAISON_SOCIALE]])) {
+                  echo "WARNING;Dégustateur non trouvé;".$line."\n";
+                  continue;
+              }
+
+              if($data[self::CSV_COLLEGE] == "Porteur de mémoire") {
+                  $college = "degustateur_porteur_de_memoire";
+              }
+
+              if($data[self::CSV_COLLEGE] == "Technicien") {
+                  $college = "degustateur_technicien";
+              }
+
+              if($data[self::CSV_COLLEGE] == "Usager du produit") {
+                  $college = "degustateur_usager_du_produit";
+              }
+
+              $degustateur = $degustation->degustateurs->add($college)->add($degustateurs[$data[self::CSV_RAISON_SOCIALE]]->_id);
+              $degustateur->add('libelle', $degustateurs[$data[self::CSV_RAISON_SOCIALE]]->nom_a_afficher);
+              $degustateur->add('confirmation', true);
+
               continue;
           }
 
@@ -139,6 +179,7 @@ EOF;
           $lot = $degustation->addLot($lot, false);
           $lot->numero_table = $numeroTable;
           $lot->numero_anonymat = $numeroAnonymat;
+          $lot->email_envoye = $date;
 
           if($data[self::CSV_RESULTAT] == "C") {
              $lot->statut = Lot::STATUT_CONFORME;
@@ -157,7 +198,7 @@ EOF;
         }
 
         if($degustation) {
-            $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
+            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
             $degustation->save();
         }
       }
