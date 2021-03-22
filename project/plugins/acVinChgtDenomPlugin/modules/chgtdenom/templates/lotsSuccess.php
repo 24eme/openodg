@@ -8,25 +8,26 @@
     <?php if(!count($lots)): ?>
     <p>Aucun lot pour la campagne <?php echo $chgtDenom->campagne ?></p>
     <?php else: ?>
-    <div class="row">
       <table class="table table-condensed table-striped">
         <thead>
-            <th class="col-sm-1 text-right">N° dossier</th>
-            <th class="col-sm-1 text-right">N° lot</th>
-            <th class="col-sm-1 text-right">Logement</th>
-            <th class="col-sm-1 text-center">Date</th>
-            <th class="col-sm-4">Appellation</th>
-            <th class="col-sm-1 text-right">Volume</th>
+            <th class="col-sm-1">Date</th>
+            <th class="col-sm-1">N° dossier</th>
+            <th class="col-sm-1">N° lot</th>
+            <th class="col-sm-1">Provenance</th>
+            <th class="col-sm-1">Logement</th>
+            <th class="col-sm-4">Produit (millésime, spécificité)</th>
+            <th class="col-sm-1 text-center">Volume</th>
             <th class="col-sm-1 text-center">Etat</th>
             <th class="col-sm-1"></th>
         </thead>
         <tbody>
         <?php foreach($lots as $k => $lot): ?>
         <tr>
-            <td class="text-right"><strong><?php echo $lot->numero_dossier; ?></strong></td>
-            <td class="text-right"><strong><?php echo $lot->numero_archive; ?></strong></td>
-            <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>
             <td class="text-center"><?php echo format_date($lot->date, 'dd/MM/yyyy'); ?></td>
+            <td><?php echo $lot->numero_dossier; ?></td>
+            <td><?php echo $lot->numero_archive; ?></td>
+            <td><a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>"><?php echo $lot->provenance; ?></a></td>
+            <td><?php echo $lot->numero_logement_operateur; ?></td>
             <td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
@@ -35,7 +36,6 @@
         <?php endforeach; ?>
         </tbody>
       </table>
-    </div>
   <?php endif; ?>
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
