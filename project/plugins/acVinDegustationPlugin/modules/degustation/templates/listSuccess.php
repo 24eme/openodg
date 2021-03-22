@@ -11,18 +11,18 @@
       <?php if ($sf_user->hasDrevAdmin()): ?>
       <form method="GET" class="form-inline" action="">
           Campagne :
-          <select class="select2SubmitOnChange form-control" name="periode">
+          <select class="select2SubmitOnChange form-control" name="campagne">
               <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
-                  <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+                  <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i; ?>-<?php echo $i+1 ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
               <?php endfor; ?>
           </select>
           <button type="submit" class="btn btn-default">Changer</button>
       </form>
       <?php else: ?>
-          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $periode ?>-<?php echo $periode + 1 ?></span>
+          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne ?></span>
       <?php endif; ?>
   </div>
-  <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $periode; ?>)</h2>
+  <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
 <?php if (count($mouvements)): ?>
       <table class="table table-condensed table-striped">

@@ -76,6 +76,10 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $campagne) {
+
+      // TODO : A retirer : aujourd'hui on bypass les Chgts Denom facturables pour optimiser la page de facturation
+      return array();
+
       $chgtsdenomCampagne = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL,$campagne,$identifiant)->rows;
       $chgtsdenomFacturants = array();
       foreach ($chgtsdenomCampagne as $chgtdenomview) {

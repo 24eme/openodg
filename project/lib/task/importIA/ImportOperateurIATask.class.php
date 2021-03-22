@@ -154,7 +154,7 @@ EOF;
             echo "Établissement cooperative non identifié :".$acheteur."\n";
             return;
         }
-        echo $etablissement->_id.":".$acheteur."\n";
+
         $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteurId);
         $etablissement->save();
     }
