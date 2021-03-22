@@ -2,6 +2,8 @@
 
 function showProduitLot($lot)
 {
+  $fromView = ($lot instanceof stdClass);
+
   $text = $lot->produit_libelle." <small>";
   $text .= ($lot->millesime) ? $lot->millesime : "";
 
@@ -10,8 +12,7 @@ function showProduitLot($lot)
   }
 
   $text .= "</small>";
-
-  if (isset($lot["cepages"])) {
+  if (!$fromView && isset($lot["cepages"])) {
 
       if(count((array)$lot->cepages)) {
 
@@ -20,7 +21,7 @@ function showProduitLot($lot)
         }
       }
   } else {
-      if($lot->exist("details")) {
+      if(!$fromView && $lot->exist("details")) {
         $text .= " <small class='text-muted'>".$lot->details."</small>";
       }
   }
