@@ -41,7 +41,7 @@ endforeach;
                     </a>
                 </td>
                 <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
-                <td><?php echo "Detail";  ?></td>
+                <td><?php echo showDetailMvtLot($mouvement);  ?></td>
                 <td>
                     <a href="#" class="btn btn-default btn-xs">voir</a>
                 </td>
