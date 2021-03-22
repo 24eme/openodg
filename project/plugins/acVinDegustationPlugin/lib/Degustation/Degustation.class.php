@@ -340,6 +340,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         foreach($lots as $key => $lot) {
             $lot->affectable = false;
+			$lot->document_ordre = null;
             $this->addLot($lot);
         }
 	 }

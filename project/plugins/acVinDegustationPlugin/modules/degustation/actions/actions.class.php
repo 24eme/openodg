@@ -463,12 +463,6 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        if ($request->isXmlHttpRequest()) {
-          $this->degustation = $this->getRoute()->getDegustation();
-          $this->form->save();
-          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
-        }
-
         $this->form->save();
 
         if($this->numero_table && ($this->numero_table < $this->degustation->getLastNumeroTable())){
