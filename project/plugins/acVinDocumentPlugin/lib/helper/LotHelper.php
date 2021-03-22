@@ -43,3 +43,24 @@ function showDetailMvtLot($mvtLot){
 
     return '<span class="label label-success">'.$mvtLot->value->detail.'</span>';
 }
+
+function getUrlEtapeFromMvtLot($mvtLot){
+    if($mvtLot->value->document_type != DegustationClient::TYPE_MODEL){
+
+        return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $mvtLot->value->document_id));
+    }
+
+    switch ($mvtLot->value->statut) {
+        case Lot::STATUT_NONCONFORME :
+        case Lot::STATUT_CONFORME :
+            return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $mvtLot->value->document_id));
+
+        case Lot::STATUT_ANONYMISE :
+            return url_for('degustation_anonymats_etape', array('id' => $mvtLot->value->document_id));
+
+        case Lot::STATUT_DEGUSTE :
+            return url_for('degustation_resultats_etape', array('id' => $mvtLot->value->document_id));
+
+    }
+    return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $mvtLot->value->document_id));
+}
