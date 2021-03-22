@@ -50,3 +50,9 @@ endforeach;
             <tbody>
             </table>
           <?php endif; ?>
+
+    <div class="row">
+        <div class="col-xs-12 text-left">
+            <a href="<?php echo url_for('degustation'); ?>" class=" btn btn-default" alt="Retour">Retour</a>
+        </div>
+    </div>
