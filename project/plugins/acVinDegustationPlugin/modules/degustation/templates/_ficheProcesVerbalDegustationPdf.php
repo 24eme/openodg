@@ -24,7 +24,7 @@ th {
     </tr>
   </table>
 
-  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN IGP PRÉSENTÉS À LA COMMISION :</p>
+  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN IGP PRÉSENTÉS À LA COMMISSION :</p>
   <table>
     <tr>
       <td style="width:2%"></td>
