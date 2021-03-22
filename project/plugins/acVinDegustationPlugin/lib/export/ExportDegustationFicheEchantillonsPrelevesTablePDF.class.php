@@ -17,8 +17,8 @@ class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
       $lots = [];
       $nbLots = 0;
       foreach ($this->degustation->getLotsByNumDossier() as $numero_dossier => $lotInfo) {
-        foreach ($lotInfo as $ano => $lot) {
-          $lots[$lot->numero_table][$numero_dossier][$ano] = $lot;
+        foreach ($lotInfo as $uniqueId => $lot) {
+          $lots[$lot->numero_table][$numero_dossier][$uniqueId] = $lot;
           $nbLots++;
 
         }
