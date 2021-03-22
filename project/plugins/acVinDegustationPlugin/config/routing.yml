@@ -21,7 +21,7 @@ degustation_lot:
 degustation_etablissement_list:
   url: /degustation/declarant/:identifiant
   param: { module: degustation, action: list }
-  class: DegustationRoute
+  class: DegustationDeclarantRoute
   options:
     model:    Etablissement
     type:     object
