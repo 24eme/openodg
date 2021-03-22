@@ -41,7 +41,7 @@ endforeach;
                     </a>
                 </td>
                 <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
-                <td><?php echo "Detail";  ?></td>
+                <td><?php echo showDetailMvtLot($mouvement);  ?></td>
                 <td>
                     <a href="#" class="btn btn-default btn-xs">voir</a>
                 </td>
@@ -50,3 +50,9 @@ endforeach;
             <tbody>
             </table>
           <?php endif; ?>
+
+    <div class="row">
+        <div class="col-xs-12 text-left">
+            <a href="<?php echo url_for('degustation'); ?>" class=" btn btn-default" alt="Retour">Retour</a>
+        </div>
+    </div>
