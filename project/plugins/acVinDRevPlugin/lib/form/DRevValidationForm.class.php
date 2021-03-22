@@ -8,16 +8,19 @@ class DRevValidationForm extends acCouchdbForm
       $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
     }
     public function configure() {
-
+        $this->isAdmin = $this->getOption('isAdmin');
         if(!$this->getDocument()->isPapier() && !$this->getDocument()->validation) {
+          if(!$this->isAdmin){
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
                 $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
+
                 if (preg_match('/_OUEX_/', $engagement->getCode())) {
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
             }
+          }
 
             if (DrevConfiguration::getInstance()->hasDegustation()) {
                 $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
