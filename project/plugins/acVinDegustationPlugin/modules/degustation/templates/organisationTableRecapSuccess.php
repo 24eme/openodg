@@ -66,7 +66,7 @@
                     </tr>
               </thead>
               <tbody>
-              <?php foreach ($degustation->getLotsTablesByNumAnonyme() as $numTab => $lotsAno): ?>
+              <?php foreach ($degustation->getLotsTablesByUniqId() as $numTab => $lotsAno): ?>
                 <?php foreach ($lotsAno as $numAnonyme => $lot): ?>
                 <?php $name = $form->getWidgetNameFromLot($lot);
                 if (isset($form[$name])): ?>
