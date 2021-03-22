@@ -51,7 +51,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-      $title = sprintf($this->adresse['raison_sociale']);
+        $title = '';
         return $title;
     }
 
