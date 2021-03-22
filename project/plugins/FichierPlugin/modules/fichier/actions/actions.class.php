@@ -239,9 +239,11 @@ class fichierActions extends sfActions
 		$this->periode = $request->getParameter('periode');
 		$this->type = $request->getParameter('type');
 
-		FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
+		if ($request->isMethod(sfWebRequest::POST)) {
+			FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
+			return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
+		}
 
-		return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
 	}
 
 	protected function secureEtablissement($etablissement) {
