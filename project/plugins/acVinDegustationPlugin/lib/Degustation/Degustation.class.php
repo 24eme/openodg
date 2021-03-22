@@ -1121,30 +1121,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
           }
           $cotisations = $templateFacture->generateCotisations($this);
           $mouvements = array();
-          foreach ($this->getLots() as $lot) {
-              $mouvementIdentifiant = array();
-              if($lot->getNumeroPassage() >= 1){
-                  $mouvement = null;
-                  foreach($cotisations as $cotisation) {
-                      $mouvement = DegustationMouvementFactures::freeInstance($this);
-                      $mouvement->fillFromCotisation($cotisation);
-                      $mouvement->facture = 0;
-                      $mouvement->facturable = 1;
-                      $mouvement->date = $this->getDateStdr();
-                      $mouvement->date_version = $this->validation;
-                      $mouvement->detail_libelle = $lot->getLibelle()." ".($lot->getNumeroPassage()+1)."ème passage";
+
+          foreach($cotisations as $cotisation) {
+              $parameters = array_merge(array($cotisation),$cotisation->getConfigCallbackParameters());
+              $mvts = call_user_func_array(array($this, $cotisation->getConfigCallback()), $parameters);
+              foreach ($mvts as $identifiant => $mvtsArray) {
+                  foreach ($mvtsArray as $key => $value) {
+                      $mouvements[$identifiant][$key] = $value;
                   }
-                  if($mouvement){
-                      $mouvementIdentifiant[uniqid()] = $mouvement;
-                  }
-              }
-              if(count($mouvementIdentifiant)){
-                  $mouvements[$lot->declarant_identifiant] = $mouvementIdentifiant;
               }
           }
 
           return $mouvements;
         }
+
 
         public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
 
@@ -1180,6 +1170,63 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
         /**** FIN DES MOUVEMENTS ****/
+
+		/**** Fonctions de facturation ****/
+
+        public function creationMouvementFacture($cotisation){
+
+            $mouvement = DegustationMouvementFactures::freeInstance($this);
+            $mouvement->fillFromCotisation($cotisation);
+            $mouvement->facture = 0;
+            $mouvement->facturable = 1;
+            $mouvement->date = $this->date;
+            $mouvement->date_version = $this->validation;
+            $mouvement->version = $this->version;
+            $mouvement->detail_identifiant = $lot->unique_id;
+            $mouvement->quantite = 1;
+            return $mouvement;
+        }
+
+	    public function getRedegustationForfait($cotisation,$filters){
+
+            $mouvements = array();
+
+			foreach ($this->getLots() as $lot) {
+                if($lot->getNombrePassage() < 2){
+                    continue;
+                }
+                $create = false;
+                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot)->rows as $deg) {
+                    $create = ($deg->id != $this->_id);
+                }
+
+                if(!$create){
+                    continue;
+                }
+
+                $mouvements[$lot->declarant_identifiant][md5($lot->getNombrePassage())] = $this->creationMouvementFacture($cotisation);
+
+            }
+
+            return $mouvements;
+	    }
+
+        public function getFacturationLotDeguste($cotisation,$filters){
+            $mouvements = array();
+            $keyCumul = $cotisation->getDetailKey();
+            foreach ($this->getLotsPreleves() as $lot) {
+                if(isset($mouvements[$lot->declarant_identifiant]) && $mouvements[$lot->declarant_identifiant][$keyCumul]){
+                    $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
+                    continue;
+                }
+
+                $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFacture($cotisation);
+            }
+
+            return $mouvements;
+        }
+
+
 
         /** Mis à jour par la degustation du volume d'un lot de DRev **/
 		public function modifyVolumeLot($hash_lot,$volume){
