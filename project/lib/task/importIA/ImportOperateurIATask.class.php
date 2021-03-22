@@ -136,6 +136,11 @@ EOF;
             }
             if (isset($data[self::CSV_CVI])){
               $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
+              if (strlen($cvi) < 10) {
+                  for($i = 0 ; $i < ( 10 - strlen($cvi) ) ;  $i++) {
+                    $cvi .= $cvi."0";
+                  }
+              }
             }
             $etablissement->cvi = ($cvi) ? str_pad($cvi, 10, "0", STR_PAD_LEFT) : null;
             $societe->pushAdresseTo($etablissement);

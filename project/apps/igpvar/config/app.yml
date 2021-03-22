@@ -9,7 +9,7 @@ all:
     default_decimal_format: 2
     max_decimal_authorized: 4
   societe:
-    format_identifiant: "83%06d"
+    format_identifiant: "VAR%06d"
   donnees_viticoles:
     regions:
       IGPVAR: "IGPVAR"

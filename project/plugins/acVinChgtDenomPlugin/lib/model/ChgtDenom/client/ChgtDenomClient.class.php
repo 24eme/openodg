@@ -28,6 +28,14 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
                     ->execute($hydrate);
     }
 
+    public function getHistoryCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $campagne_from = $campagne."0000000000";
+        $campagne_to = ($campagne+1)."9999999999";
+        return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
+                    ->endkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_to))
+                    ->execute($hydrate);
+    }
+
     public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
         return $this->findPreviousByIdentifiantAndDate($identifiant, "99999999999999");
     }
@@ -80,15 +88,10 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     public function findFacturable($identifiant, $campagne) {
 
       // TODO : A retirer : aujourd'hui on bypass les Chgts Denom facturables pour optimiser la page de facturation
-      return array();
 
-      $chgtsdenomCampagne = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL,$campagne,$identifiant)->rows;
+      $chgtsdenomCampagne = $this->getHistoryCampagne($identifiant,$campagne);
       $chgtsdenomFacturants = array();
-      foreach ($chgtsdenomCampagne as $chgtdenomview) {
-          $chgtdenom = $this->find($chgtdenomview->id);
-          if($chgtdenom && !$chgtdenom->validation_odg) {
-           continue;
-          }
+      foreach ($chgtsdenomCampagne as $chgtdenom) {
           $chgtsdenomFacturants[$chgtdenom->_id] = $chgtdenom;
       }
       return $chgtsdenomFacturants;

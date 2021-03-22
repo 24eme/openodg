@@ -415,7 +415,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $mouvement->fillFromCotisation($cotisation);
           $mouvement->facture = 0;
           $mouvement->facturable = 1;
-          $mouvement->date = $this->getCampagne().'-12-10';
+          $mouvement->date = $this->validation_odg;
           $mouvement->date_version = $this->validation;
           $mouvement->version = $this->version;
 
@@ -472,6 +472,35 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     /**** FIN DES MOUVEMENTS ****/
+
+    public function getFirstChgtDenomFacturable()
+    {
+
+        $views = ChgtDenomClient::getInstance()->getHistoryCampagne($this->identifiant,substr($this->campagne,0,4));
+
+        foreach ($views as $id => $view) {
+            if($id == $this->_id){
+                return 1;
+            }
+            return 0;
+        }
+    }
+
+    public function getSecondChgtDenomFacturable()
+    {
+        $views = ChgtDenomClient::getInstance()->getHistoryCampagne($this->identifiant,substr($this->campagne,0,4));
+        $first = true;
+        foreach ($views as $id => $view) {
+            if($first){
+                $first = false;
+                continue;
+            }
+            if($id == $this->_id){
+                return 1;
+            }
+        }
+        return 0;
+    }
 
 
     public function getVolumeFacturable($produitFilter = null)
