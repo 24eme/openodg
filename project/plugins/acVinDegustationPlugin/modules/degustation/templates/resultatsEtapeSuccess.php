@@ -21,7 +21,7 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-xs-7">
-            <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong><?php echo ($infosDegustation["nbLotsConformes"]>1)? 'échantillons <strong>conformes</strong>' : 'échantillon <strong>conforme</strong>' ?><br/>
+            <strong class="lead"><?php echo $infosDegustation["nbLotsConformes"]; ?></strong> <?php echo ($infosDegustation["nbLotsConformes"]>1)? 'échantillons <strong>conformes</strong>' : 'échantillon <strong>conforme</strong>' ?><br/>
             <strong class="lead"><?php echo $infosDegustation["nbLotsNonConformes"]; ?></strong> <?php echo ($infosDegustation["nbLotsNonConformes"]>1)? 'échantillons <strong>non conformes</strong>' : 'échantillon <strong>non conforme</strong>' ?>
           </div>
           <div class="col-xs-12 text-right">

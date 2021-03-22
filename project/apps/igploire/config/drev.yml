@@ -6,7 +6,6 @@ all:
       import_with_mentions_complementaire: true
       validation_odg: 'auto'
       habilitation_inao: true
-      cgu: true
       etape_superficie: false
       dr_douane_required: false
       degustation: true

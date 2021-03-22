@@ -2,6 +2,7 @@
 
 function showProduitLot($lot)
 {
+
   $text = $lot->produit_libelle." <small>";
   $text .= ($lot->millesime) ? $lot->millesime : "";
 
@@ -10,8 +11,11 @@ function showProduitLot($lot)
   }
 
   $text .= "</small>";
+  $fromView = ($lot instanceof stdClass);
+  if(!$fromView){
 
-  $text .= showOnlyCepages($lot);
+    $text .= showOnlyCepages($lot);
+  }
 
   return $text;
 
@@ -69,4 +73,12 @@ function getUrlEtapeFromMvtLot($mvtLot){
 
     }
     return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $mvtLot->value->document_id));
+}
+
+function pictoDegustable($lot) {
+    if($lot->affectable) {
+        return '<span title="À déguster" class="glyphicon glyphicon-ok-sign"></span>';
+    }
+
+    return '<span title="Ne sera pas dégusté" style="opacity: 0.7;" class="text-muted glyphicon glyphicon-ban-circle"></span>';
 }

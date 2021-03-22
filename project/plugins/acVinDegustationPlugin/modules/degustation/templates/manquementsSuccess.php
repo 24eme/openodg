@@ -6,25 +6,27 @@
     <h2>Liste des manquements à traiter</h2>
 </div>
 <div class="row">
-<table class="table table-condensed table-striped">
+<table class="table table-condensed">
 <thead>
     <th>Déclarant</th>
     <th class="text-center">Numéro de dossier</th>
     <th>Appellation</th>
     <th>Volume</th>
-    <th>Manquement</th>
+    <th colspan="2">Manquement</th>
     <th>Traitement</th>
     <th>Histo</th>
 </thead>
 <tbody>
 <?php foreach($manquements as $keyLot => $m): ?>
-    <tr class="<?php if($m->recours_oc): ?>text-danger<?php endif;?>">
+    <tr class="<?php if($m->recours_oc): ?>list-group-item-warning<?php endif;?>">
         <td><?php echo $m->declarant_nom; ?></td>
         <td class="text-center"><?php echo $m->numero_dossier; ?></td>
         <td><?php echo showProduitLot($m->getRawValue()) ?></td>
         <td class="text-right"><?php echo formatFloat($m->volume); ?>&nbsp;hl</td>
 
-        <td><?php echo $m->conformite?Lot::$libellesConformites[$m->conformite]: null; ?> <span class="text-muted"><?php echo $m->motif; ?></span></td>
+        <td><?php echo $m->conformite?Lot::$libellesConformites[$m->conformite]: null; ?> <span class="text-muted"><?php echo $m->motif; ?></span>
+        <td><?php if($m->recours_oc): ?><span class="label label-warning">Dégust. OC</span><?php endif;?></td>
+        </td>
         <td>
             <div class="dropdown">
               <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

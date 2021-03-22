@@ -8,5 +8,6 @@
   <?php if (isset($options)): ?>
     <li class="active"><a href=""><?php echo $options['nom']; ?></a></li>
   <?php endif; ?>
+  <li class="pull-right text-muted"><?= $degustation->_id ?></li>
   <?php endif; ?>
 </ol>

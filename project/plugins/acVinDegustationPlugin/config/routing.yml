@@ -363,6 +363,16 @@ degustation_fiche_echantillons_preleves_table_pdf:
     requirements:
       sf_method: [get]
 
+degustation_all_notification_pdf:
+  url: /degustation/:id/degustation-notification/pdf
+  param: { module: degustation, action: degustationAllNotificationsPDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_conformite_pdf:
   url: /degustation/:id/:identifiant/DegustationConformite/pdf
   param: { module: degustation, action: degustationConformitePDF }
