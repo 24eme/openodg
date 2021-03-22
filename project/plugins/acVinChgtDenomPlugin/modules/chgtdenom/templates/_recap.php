@@ -67,11 +67,7 @@
                         <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                       <?php else: ?>
                           <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
-                          <?php if($lot->affectable):?>
-                          <span class="text-muted glyphicon glyphicon-ok-sign"></span>
-                          <?php else:?>
-                           <span style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ban-circle"></span>
-                           <?php endif; ?>
+                          <?php echo pictoDegustable($lot); ?>
                       <?php endif; ?>
                     </div>
                 </div>
@@ -79,11 +75,7 @@
                 <div style="margin-bottom: 0;" class="">
                   <div class="col-xs-12">
                       <span>Dégustable&nbsp;:&nbsp;&nbsp;</span>
-                      <?php if($lot->affectable):?>
-                      <span class="text-muted glyphicon glyphicon-ok-sign"></span>
-                      <?php else:?>
-                       <span style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ban-circle"></span>
-                       <?php endif; ?>
+                      <?php echo pictoDegustable($lot); ?>
                   </div>
                 </div>
               <?php endif; ?>
