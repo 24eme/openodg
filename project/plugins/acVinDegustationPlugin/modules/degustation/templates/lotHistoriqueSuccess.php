@@ -20,7 +20,7 @@ endforeach;
 <h2>Historique du lot de <?php echo $etablissement->getNom(); ?></h2>
 <br/>
 
-<?php include_partial('chgtdenom/infoLotOrigine', array('lot' => $lot)); ?>
+<?php include_partial('chgtdenom/infoLotOrigine', array('lot' => $lot, 'opacity' => false)); ?>
 
 <?php if (count($mouvements)): ?>
     <table class="table table-condensed table-striped">
