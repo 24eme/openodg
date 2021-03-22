@@ -78,6 +78,12 @@ EOF;
               continue;
             }
 
+            $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+
+            if($dateDeclaration < "2016-01-01") {
+                continue;
+            }
+
             $etablissement = $this->identifyEtablissement($data);
             if (!$etablissement) {
                echo "ERROR;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
@@ -98,13 +104,6 @@ EOF;
 
             $volumeInitial = str_replace(',','.',trim($data[self::CSV_VOLUME_INITIAL])) * 1;
             $volumeConcerne = str_replace(',','.',trim($data[self::CSV_VOLUME_CONCERNE])) * 1;
-            $cepages = array();
-            if (trim($data[self::CSV_CEPAGE])) {
-              $cep1 = $this->identifyCepage($data[self::CSV_CEPAGE]);
-              if (!$cep1) {
-                echo "WARNING;cepage non trouvé ".$data[self::CSV_CEPAGE].";$line\n";
-              }
-            }
 
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroArchive = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
@@ -117,8 +116,6 @@ EOF;
                 continue;
             }
 
-            $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-
             $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration." ".sprintf("%02d", rand(0,23)).":".sprintf("%02d", rand(0,59)).":".sprintf("%02d", rand(0,59)), true);
             $chgtDenom->constructId();
             $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
@@ -129,12 +126,12 @@ EOF;
             if (!$chgtDenom->isChgtTotal()) {
                 $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[1]->numero_archive = $numeroArchive;
-                $chgtDenom->lots[1]->affectable = false;
+                $chgtDenom->lots[1]->affectable = true;
                 $chgtDenom->lots[0]->affectable = false;
             } elseif($chgtDenom->isChgtTotal()) {
                 $chgtDenom->lots[0]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[0]->numero_archive = $numeroArchive;
-                $chgtDenom->lots[0]->affectable = false;
+                $chgtDenom->lots[0]->affectable = true;
             }
 
             $chgtDenom->validate($dateDeclaration);
@@ -152,15 +149,6 @@ EOF;
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
       $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
       return $key;
-    }
-
-    protected function identifyCepage($key) {
-      if (isset($this->cepages[KeyInflector::slugify(trim($key))])) {
-        return $this->cepages[KeyInflector::slugify(trim($key))];
-      } else {
-        $correspondances = self::$correspondancesCepages;
-        return (isset($correspondances[trim($key)]))? $correspondances[trim($key)] : null;
-      }
     }
 
     protected function identifyEtablissement($data) {

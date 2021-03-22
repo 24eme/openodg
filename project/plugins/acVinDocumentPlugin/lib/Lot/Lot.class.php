@@ -18,6 +18,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_NONCONFORME = "08_NON_CONFORME";
     const STATUT_RECOURS_OC = "09_RECOURS_OC";
     const STATUT_CONFORME_APPEL = "10_CONFORME_APPEL";
+    const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
 
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
@@ -59,6 +60,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_DEGUSTE => 'Dégusté',
         self::STATUT_CONFORME => 'Conforme',
         self::STATUT_NONCONFORME => 'Non conforme',
+        self::STATUT_NONCONFORME_LEVEE => 'Non conformité levée',
         self::STATUT_RECOURS_OC => 'En recours OC',
         self::STATUT_CONFORME_APPEL => 'Conforme en appel',
         self::STATUT_AFFECTE_SRC => 'Affecte src',

@@ -41,7 +41,10 @@
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?>&nbsp;<small><?php echo $doc->key[DeclarationTousView::KEY_CVI]; ?>&nbsp;(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
-                        <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
+                        <td title="<?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?>" data-toggle="tooltip" class="text-center">
+                        <span class="<?php if($doc->key[DeclarationTousView::KEY_MODE] == DeclarationTousView::MODE_SAISIE_INTERNE): ?>glyphicon glyphicon-text-size
+                            <?php else: ?>glyphicon glyphicon-file<?php endif; ?>"></span>
+                        </td>
                         <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_INFOS]); ?></small><?php endif; ?></a></td>
                     </tr>
                 <?php endforeach; ?>

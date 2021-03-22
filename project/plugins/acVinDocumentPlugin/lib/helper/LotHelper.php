@@ -23,7 +23,7 @@ function showProduitLot($lot)
 
 function showOnlyCepages($lot){
   $text = null;
-    if (isset($lot["cepages"])) {
+    if ($lot->cepages) {
 
         if(count((array)$lot->cepages)) {
 

@@ -209,12 +209,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lot->updateDocumentDependances();
             $lot->updateSpecificiteWithDegustationNumber();
 			$statut = $lot->statut;
+			if ($statut == Lot::STATUT_NONCONFORME_LEVEE) {
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE));
+				$statut = Lot::STATUT_NONCONFORME;
+			}
             switch($statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
 
                 case Lot::STATUT_RECOURS_OC:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC,"Degust. OC"));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC));
                     $statut = Lot::STATUT_NONCONFORME;
                 case Lot::STATUT_CONFORME:
                 case Lot::STATUT_NONCONFORME:
@@ -248,8 +252,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			if ($lot->isAffecte()) {
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
 			}elseif($lot->isAffectable()) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, $lot->getNumeroPassage() + 1));
-			} elseif(in_array($statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, "Passage ".($lot->getNumeroPassage() + 1)));
+			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
@@ -989,7 +993,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsByNumDossier(){
 			$lots = array();
-			foreach ($this->getLotsTablesByNumAnonyme() as $numTab => $lotTable) {
+			foreach ($this->getLotsTablesByUniqId() as $numTab => $lotTable) {
 				foreach ($lotTable as $numAnonyme => $lot) {
 					$lots[$lot->numero_dossier][$numAnonyme] = $lot;
 				}
@@ -1042,14 +1046,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return sfConfig::get('sf_app');
 		}
 
-		public function getLotsTablesByNumAnonyme(){
+		public function getLotsTablesByUniqId(){
 			$lots = array();
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
 				$table = chr($numTab+64);
+
 				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
-					$lots[$numTab][$lot->getNumeroAnonymat()] = $lot;
+
+					$lots[$numTab][$lot->unique_id] = $lot;
 				}
 			}
+
 			return $lots;
 		}
 
