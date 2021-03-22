@@ -66,11 +66,10 @@
                     </tr>
               </thead>
               <tbody>
-              <?php
-                foreach ($degustation->getLotsPrelevesCustomSort($tri_array->getRawValue()) as $lot):
-                $name = $form->getWidgetNameFromLot($lot);
-                if (isset($form[$name])):
-              ?>
+              <?php foreach ($degustation->getLotsTablesByUniqId() as $numTab => $lotsAno): ?>
+                <?php foreach ($lotsAno as $numAnonyme => $lot): ?>
+                <?php $name = $form->getWidgetNameFromLot($lot);
+                if (isset($form[$name])): ?>
                 <tr class="vertical-center cursor-pointer">
                         <td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
                             <div class="row">
@@ -93,6 +92,7 @@
                         </td>
                       </tr>
                   <?php  endif; ?>
+                  <?php endforeach; ?>
                 <?php endforeach; ?>
                 </tbody>
               </table>

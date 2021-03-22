@@ -99,7 +99,7 @@ p, div {
       <th style="width: 10%"><?php echo tdStart() ?><small>Contenant<br/>Logement</small></th>
       <th style="width: 25%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
     </tr>
-    <?php $i = 0;  foreach($lots as $numAnonyme => $lot): ?>
+    <?php $i = 0;  foreach($lots as $key => $lot): ?>
      <?php if($i == 2 || $i == 12): ?>
        </table>
        <br pagebreak="true" />

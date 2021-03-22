@@ -14,7 +14,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public function create() {
-      foreach ($this->degustation->getLotsTablesByNumAnonyme() as $numTab => $lotsAnom) {
+      foreach ($this->degustation->getLotsTablesByUniqId() as $numTab => $lotsAnom) {
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheRecapTablesPdf',
           array(

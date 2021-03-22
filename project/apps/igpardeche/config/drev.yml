@@ -14,3 +14,4 @@ all:
       specificites:
         bio: "bio"
         HVE: "HVE"
+        primeur: "primeur"
