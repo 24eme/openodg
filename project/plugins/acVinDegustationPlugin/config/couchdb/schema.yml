@@ -60,7 +60,6 @@ Degustation:
                   observation: {}
                   email_envoye: { }
                   nombre_degustation: {required: false}
-                  a_redeguster: {}
                   doc_ordre: {}
                   affectable: {}
                   recours_oc: {}
