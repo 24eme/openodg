@@ -92,6 +92,10 @@ EOF;
               $campagne = str_replace('/', '-', trim($data[self::CSV_CAMPAGNE]));
           }
 
+          if($campagne < "2016-2017") {
+              continue;
+          }
+
           $newDegustation = new Degustation();
           $newDegustation->date=$date;
           $newDegustation->lieu = $data[self::CSV_LIEU_NOM]." — ".$data[self::CSV_LIEU_ADRESSE]." ".$data[self::CSV_LIEU_CODE_POSTAL]." ".$data[self::CSV_LIEU_COMMUNE];
@@ -101,8 +105,7 @@ EOF;
 
           if(!$degustation || $newDegustation->_id != $degustation->_id) {
               if($degustation) {
-                  $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
-                  $degustation->save();
+                  $this->saveDegustation($degustation);
               }
               $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
               if($degustation) { $degustation->delete(); $degustation = null; }
@@ -172,6 +175,10 @@ EOF;
           }
 
           if(!$lot) {
+              $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'statut' => Lot::STATUT_AFFECTABLE));
+          }
+
+          if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
               continue;
           }
@@ -198,10 +205,18 @@ EOF;
         }
 
         if($degustation) {
-            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
-            $degustation->save();
+            $this->saveDegustation($degustation);
         }
       }
+
+    public function saveDegustation($degustation) {
+        if($degustation->date > date('Y-m-d H:i:s')) {
+            $degustation->etape = DegustationEtapes::ETAPE_LOTS;
+        } else {
+            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
+        }
+        $degustation->save();
+    }
 
     public function formatDate($date){
         if(!$date) {
