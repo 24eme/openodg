@@ -3,6 +3,8 @@
 class ImportDegustationNonConformiteIATask extends ImportLotsIATask
 {
 
+    const CSV_CODE_NC = 1;
+    const CSV_STATUT = 1;
     const CSV_DATE = 2;
     const CSV_DEFAUTS = 3;
     const CSV_GRAVITE = 4;
@@ -14,6 +16,11 @@ class ImportDegustationNonConformiteIATask extends ImportLotsIATask
     const CSV_RAISON_SOCIALE = 11;
     const CSV_NOM = 11;
     const CSV_CVI = 12;
+    const CSV_ADRESSE_1 = 13;
+    const CSV_ADRESSE_2 = 14;
+    const CSV_CODE_POSTAL = 15;
+    const CSV_VILLE = 16;
+    const CSV_FACTURE = 17;
 
     protected function configure()
     {
@@ -44,7 +51,6 @@ EOF;
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
 
         $config = ConfigurationClient::getCurrent();
-        $commissions = DegustationConfiguration::getInstance()->getCommissions();
         $degustation = null;
         $ligne=0;
         foreach(file($arguments['csv']) as $line) {
@@ -112,14 +118,46 @@ EOF;
               continue;
           }
 
-          if($data[self::CSV_GRAVITE] == "mineure") {
-              $lot->statut = Lot::STATUT_NONCONFORME;
-              $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
-              $lot->motif = trim($data[self::CSV_DEFAUTS]);
-          } else {
-              echo "WARNING;Gravité non géré;".$line."\n";
-              continue;
+          switch ($data[self::CSV_GRAVITE]) {
+              case 'mineure':
+                $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
+                break;
+            case 'Majeure':
+                $lot->conformite = Lot::CONFORMITE_NONCONFORME_MAJEUR;
+                break;
+            case 'Grave':
+                $lot->conformite = Lot::CONFORMITE_NONCONFORME_GRAVE;
+                break;
           }
+          $lot->motif = trim($data[self::CSV_DEFAUTS]);
+
+          $lot->statut = Lot::STATUT_NONCONFORME;
+          switch ($data[self::CSV_STATUT]) {
+              case 'Constatée':
+              case 'Notifiée':
+                break;
+              case 'Déclassement du lot':
+                $lot->statut = Lot::STATUT_DECLASSE;
+                break;
+              case 'Deuxième Passage':
+                $lot->statut = Lot::STATUT_NONCONFORME;
+                $lot->affectable = true;
+                break;
+              case 'Deuxième Passage - Commission':
+                $lot->statut = Lot::STATUT_NONCONFORME;
+                $lot->affectable = true;
+                $lot->id_document_provenance = "DEGUSTATIONXXX";
+                break;
+                break;
+              case 'Levée':
+              case 'Traitée OC':
+                $lot->statut = Lot::STATUT_CONFORME_APPEL;
+                break;
+              case 'Transmise OC':
+                $lot->statut = Lot::STATUT_RECOURS_OC;
+                break;
+          }
+
 
           $degustation->generateMouvementsLots();
           $degustation->save();
