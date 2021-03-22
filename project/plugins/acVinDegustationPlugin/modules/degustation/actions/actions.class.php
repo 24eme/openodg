@@ -100,6 +100,28 @@ class degustationActions extends sfActions {
         }
     }
 
+    public function executeSupprimerLotNonPreleve(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->lot = $request->getParameter('lot');
+
+        $lots = $this->degustation->lots;
+
+        foreach ($lots as $key => $value) {
+          if($this->lot <= $key && isset($this->degustation->lots[$key+1])){
+            $this->degustation->lots[$key] = $this->degustation->lots[$key+1];
+          }
+          if(!isset($this->degustation->lots[$key+1])){
+            unset($this->degustation->lots[$key]);
+            break;
+          }
+        }
+
+
+        $this->degustation->save();
+        return $this->redirect('degustation_preleve', $this->degustation);
+
+    }
+
     public function executeUpdateLotLogement(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->lot = $request->getParameter('lot');
@@ -439,12 +461,6 @@ class degustationActions extends sfActions {
 
         if (!$this->form->isValid()) {
             return sfView::SUCCESS;
-        }
-
-        if ($request->isXmlHttpRequest()) {
-          $this->degustation = $this->getRoute()->getDegustation();
-          $this->form->save();
-          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
         }
 
         $this->form->save();

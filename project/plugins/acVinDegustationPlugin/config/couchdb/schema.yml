@@ -32,6 +32,7 @@ Degustation:
                   numero_archive: { }
                   numero_logement_operateur: { }
                   numero_anonymat: { }
+                  document_ordre: {  }
                   millesime: { }
                   elevage: { }
                   volume: { type: float }
@@ -60,7 +61,6 @@ Degustation:
                   observation: {}
                   email_envoye: { }
                   nombre_degustation: {required: false}
-                  a_redeguster: {}
                   doc_ordre: {}
                   affectable: {}
                   recours_oc: {}

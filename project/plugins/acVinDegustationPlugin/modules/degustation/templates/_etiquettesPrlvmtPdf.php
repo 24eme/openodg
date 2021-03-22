@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Lot') ?>
 <style>
 </style>
     <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: right;">
@@ -43,10 +44,9 @@
                   <tr style="line-height:12px;">
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:7px;">
                       <?php echo tdStart() ?>
-                      <?php if ($lotInfo->lot->details): ?>
-                      <strong><?php echo $lotInfo->lot->details;  ?></strong>
-                    <?php else: echo (""); ?>
-                      <?php endif; ?>
+
+                      <strong><?php echo showOnlyCepages($lotInfo->lot) ?></strong>
+
                     </td>
                   </tr>
                   <tr>

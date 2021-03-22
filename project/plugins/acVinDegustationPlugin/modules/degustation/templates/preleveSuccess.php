@@ -19,7 +19,7 @@
   </div>
 
   <div class="col-xs-2">
-    <button class="btn btn-block btn-success" id="btn-preleve-all">
+    <button class="btn btn-block btn-default" id="btn-preleve-all">
       <i class="glyphicon glyphicon-ok-sign"></i>
       Tout prélever
     </button>
@@ -36,12 +36,13 @@
     <table class="table table-bordered table-condensed table-striped" id="table_prelevements">
         <thead>
             <tr>
-                <th class="col-xs-3">Opérateur</th>
+                <th class="col-xs-2">Opérateur</th>
                 <th class="col-xs-1">Provenance</th>
                 <th class="col-xs-1">Logement</th>
                 <th class="col-xs-3">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">Prélevé</th>
+                <th class="col-xs-1"></th>
             </tr>
         </thead>
 		<tbody>
@@ -79,6 +80,11 @@
                   </div>
               </div>
       	</td>
+        <td class="edit text-center">
+          <span>
+            <a class="text-muted" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le logement <?php echo $lot->numero_logement_operateur.' de '.$lot->volume."hl" ?> ?');" title="Supprimer le logement" href="<?php echo url_for('degustation_supprimer_lot_non_preleve', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-trash"></i></a>
+          </span>
+        </td>
       </tr>
     <?php endforeach; ?>
     </tbody>

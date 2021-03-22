@@ -208,25 +208,30 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
             $lot->updateDocumentDependances();
             $lot->updateSpecificiteWithDegustationNumber();
-            switch($lot->statut) {
+			$statut = $lot->statut;
+            switch($statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
 
                 case Lot::STATUT_RECOURS_OC:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC));
-
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC,"Degust. OC"));
+                    $statut = Lot::STATUT_NONCONFORME;
                 case Lot::STATUT_CONFORME:
                 case Lot::STATUT_NONCONFORME:
-                    $this->addMouvementLot($lot->buildMouvement($lot->statut));
+                    $detail = $lot->getShortLibelleConformite();
+                    if($statut == Lot::STATUT_NONCONFORME){
+                        $detail .= ($lot->motif)? ": ".$lot->motif : "";
+                    }
+                    $this->addMouvementLot($lot->buildMouvement($statut,$detail));
 
                 case Lot::STATUT_DEGUSTE:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_DEGUSTE));
 
                 case Lot::STATUT_ANONYMISE:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANONYMISE));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANONYMISE,"N° anon. : ".$lot->numero_anonymat));
 
                 case Lot::STATUT_ATTABLE:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE,"Table : ".$lot->getNumeroTableStr()));
 
                 case Lot::STATUT_PRELEVE:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE));
@@ -240,14 +245,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 default:
                     break;
             }
-
-            if ($lot->statut === Lot::STATUT_NONCONFORME && $lot->isAffectable()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, $lot->getNumeroPassage() + 1));
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
-            } elseif ($lot->statut === Lot::STATUT_NONCONFORME && $lot->a_redeguster) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
-
-            } elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
+			if ($lot->isAffecte()) {
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
+			}elseif($lot->isAffectable()) {
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, $lot->getNumeroPassage() + 1));
+			} elseif(in_array($statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
@@ -334,6 +336,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         foreach($lots as $key => $lot) {
             $lot->affectable = false;
+			$lot->document_ordre = null;
             $this->addLot($lot);
         }
 	 }
@@ -1143,6 +1146,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
           $mouvements = array();
 
           foreach($cotisations as $cotisation) {
+			  if(!$cotisation->getConfigCallback()){
+				  continue;
+			  }
               $parameters = array_merge(array($cotisation),$cotisation->getConfigCallbackParameters());
               $mvts = call_user_func_array(array($this, $cotisation->getConfigCallback()), $parameters);
               foreach ($mvts as $identifiant => $mvtsArray) {

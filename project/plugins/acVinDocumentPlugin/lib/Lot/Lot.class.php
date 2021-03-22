@@ -76,6 +76,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_AFFECTABLE => 'Affectable',
         self::STATUT_AFFECTE_SRC_DREV => 'Affecté source drev',
 
+        self::STATUT_CHANGE_DEST => 'Changé dest'
+
     );
 
 
@@ -393,7 +395,6 @@ abstract class Lot extends acCouchdbDocumentTree
         // Regenerer les mouvements
 
         $this->affectable = true;
-        $this->a_redeguster = true;
     }
 
     public function setNumeroTable($numero) {
@@ -655,7 +656,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->numero_dossier = $this->numero_dossier;
         $mouvement->numero_archive = $this->numero_archive;
         $mouvement->libelle = $this->getLibelle();
-        $mouvement->detail = ($detail) ?? null;
+        $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
         $mouvement->region = '';
         $mouvement->version = $this->getVersion();

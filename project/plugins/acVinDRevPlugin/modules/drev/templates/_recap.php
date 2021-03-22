@@ -126,8 +126,11 @@
             <thead>
               <tr>
                 <th class="col-xs-1">Date Rev.</th>
+                <?php if($drev->isValidee()): ?>
+                <th class="col-xs-1">Num. Dossier</th>
+                <?php endif; ?>
                 <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-6">Produit (millesime)</th>
+                <th class="text-center col-xs-5">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
                 <?php if ($sf_user->isAdmin()): ?>
@@ -150,6 +153,11 @@
                           <?php echo $lot->getDateVersionfr(); ?>
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
+                        <?php if($drev->isValidee()): ?>
+                        <td>
+                          <?php echo $lot->numero_dossier; ?>
+                        </td>
+                        <?php endif;?>
                         <td><?php echo $lot->numero_logement_operateur; ?></td>
                         <td>
                           <?php echo showProduitLot($lot) ?>
@@ -166,14 +174,14 @@
                                   <?php if ($sf_user->isAdmin() && !$drev->validation_odg): ?>
                                   	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "drev bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
-                                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
+                                      <?php echo pictoDegustable($lot); ?>
                                   <?php endif; ?>
                                 </div>
                             </div>
                           <?php else: ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
-                                <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
+                                  <?php echo pictoDegustable($lot); ?>
                               </div>
                             </div>
                           <?php endif; ?>
