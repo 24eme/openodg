@@ -81,6 +81,16 @@ EOF;
         $this->convert_products['Nievre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
         $this->convert_products['Sarthe'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/SAR';
         $this->convert_products['Indre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IND';
+
+        // gascogne
+        $this->convert_products['Comté Tolosan'] = 'certifications/IGP/genres/TRANQ/appellations/COT/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Comté Tolosan mousseux'] = 'certifications/IGP/genres/EFF/appellations/COT/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Comté Tolosan surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/COT/mentions/SURMURI/lieux/DEFAUT';
+        $this->convert_products['Côtes de Gascogne'] = 'certifications/IGP/genres/TRANQ/appellations/CDG/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Côtes de Gascogne Condomois'] = 'certifications/IGP/genres/TRANQ/appellations/CDG/mentions/DEFAUT/lieux/CON';
+        $this->convert_products['Côtes de Gascogne surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/CDG/mentions/SURMURI/lieux/DEFAUT';
+        $this->convert_products['Gers'] = 'certifications/IGP/genres/TRANQ/appellations/GER/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Gers surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/GER/mentions/SURMURI/lieux/DEFAUT';
     }
 
     protected function execute($arguments = array(), $options = array())
