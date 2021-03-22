@@ -215,7 +215,7 @@ EOF;
             $lot->volume = $volume;
             $lot->destination_type = null;
             $lot->elevage = false;
-            $lot->prelevable = $prelevable;
+            $lot->affectable = $prelevable;
 
             if (!$data[self::CSV_DESTINATION]) {
                 $data[self::CSV_DESTINATION] = $data[self::CSV_TYPE];
