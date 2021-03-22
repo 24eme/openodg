@@ -126,8 +126,11 @@
             <thead>
               <tr>
                 <th class="col-xs-1">Date Rev.</th>
+                <?php if($drev->isValidee()): ?>
+                <th class="col-xs-1">Num. Dossier</th>
+                <?php endif; ?>
                 <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-6">Produit (millesime)</th>
+                <th class="text-center col-xs-5">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
                 <?php if ($sf_user->isAdmin()): ?>
@@ -150,6 +153,11 @@
                           <?php echo $lot->getDateVersionfr(); ?>
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
+                        <?php if($drev->isValidee()): ?>
+                        <td>
+                          <?php echo $lot->numero_dossier; ?>
+                        </td>
+                        <?php endif;?>
                         <td><?php echo $lot->numero_logement_operateur; ?></td>
                         <td>
                           <?php echo showProduitLot($lot) ?>
