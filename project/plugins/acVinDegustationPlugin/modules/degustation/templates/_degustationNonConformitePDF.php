@@ -27,7 +27,12 @@
   </tr>
   <br/>
   <tr>
-    <td>Réf : <?php echo $etablissement->cvi[0];echo $etablissement->cvi[1] .' '. $etablissement->cvi[2],$etablissement->cvi[3],$etablissement->cvi[4].' '.$etablissement->cvi[5],$etablissement->cvi[6],$etablissement->cvi[7],$etablissement->cvi[8],$etablissement->cvi[9] ?></td>
+    <td>
+      Réf :
+      <?php if($etablissement->cvi):?>
+        <?php echo $etablissement->cvi[0];echo $etablissement->cvi[1] .' '. $etablissement->cvi[2],$etablissement->cvi[3],$etablissement->cvi[4].' '.$etablissement->cvi[5],$etablissement->cvi[6],$etablissement->cvi[7],$etablissement->cvi[8],$etablissement->cvi[9] ?>
+      <?php endif; ?>
+    </td>
   </tr>
 </table>
 <br/>
@@ -92,7 +97,7 @@
 
 <table border="1" style="text-align:center;padding:10px;">
   <tr><td>FICHE DE NON CONFORMIT&Eacute;</td></tr>
-  <tr><td>Lot non conforme à la dégustation, <strong><?php echo $lot->getTextPassage(); ?></strong> passage</td></tr>
+  <tr><td>Lot non conforme à la dégustation, <strong><?php echo $lot->getTextPassage(); ?></strong></td></tr>
   <tr><td>N° : NC - Bouches du Rhône - AIX 1312</td></tr>
 </table>
 

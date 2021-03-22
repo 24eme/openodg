@@ -7,7 +7,6 @@
 <div class="page-header no-border">
     <h2>Liste des lots à prélever : <span class=""><?= count($lotsPrelevables) ?></span></h2>
 </div>
-<div class="row">
 <table class="table table-condensed table-striped">
 <thead>
     <th class="col-sm-1">Date</th>
@@ -30,4 +29,3 @@
 <?php endforeach; ?>
 </tbody>
 </table>
-</div>

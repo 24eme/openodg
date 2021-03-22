@@ -2,7 +2,6 @@
 
 function showProduitLot($lot)
 {
-  $fromView = ($lot instanceof stdClass);
 
   $text = $lot->produit_libelle." <small>";
   $text .= ($lot->millesime) ? $lot->millesime : "";
@@ -12,22 +11,32 @@ function showProduitLot($lot)
   }
 
   $text .= "</small>";
-  if (!$fromView && isset($lot["cepages"])) {
+  $fromView = ($lot instanceof stdClass);
+  if(!$fromView){
 
-      if(count((array)$lot->cepages)) {
-
-        foreach ($lot->cepages as $cepage => $pourcentage_volume) {
-          $text .= " <small class='text-muted'> ".$cepage."</small>";
-        }
-      }
-  } else {
-      if(!$fromView && $lot->exist("details")) {
-        $text .= " <small class='text-muted'>".$lot->details."</small>";
-      }
+    $text .= showOnlyCepages($lot);
   }
 
   return $text;
 
+}
+
+function showOnlyCepages($lot){
+  $text = null;
+    if (isset($lot["cepages"])) {
+
+        if(count((array)$lot->cepages)) {
+
+          foreach ($lot->cepages as $cepage => $pourcentage_volume) {
+            $text .= " <small class='text-muted'>$pourcentage_volume% ".$cepage."</small>";
+          }
+        }
+    } else {
+        if($lot->exist("details")) {
+          $text .= " <small class='text-muted'>".$lot->details."</small>";
+        }
+    }
+    return $text;
 }
 
 function showDetailMvtLot($mvtLot){
