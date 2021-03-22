@@ -36,11 +36,11 @@
                       <td><?= $lots[0]->declarant_nom ?></td>
                       <td style="line-height: 2.5rem">
                         <?php foreach ($lots as $lot): ?>
-                        <span data-toggle="tooltip"
+                        <a href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne, 'numero_dossier' => $lot->numero_dossier, 'numero_archive' => $lot->numero_archive));  ?>" data-toggle="tooltip"
                               data-html="true"
                               title="<?= showProduitLot($lot) . "<br>" . $lot->getShortLibelleConformite() ?>"
                               class="label label-<?= ($lot->isNonConforme()) ? 'danger' : 'success'?>"
-                        ><span class="glyphicon glyphicon-<?= ($lot->isNonConforme()) ? 'remove' : 'ok' ?>"></span></span>&nbsp;
+                        ><span class="glyphicon glyphicon-<?= ($lot->isNonConforme()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>
                       </td>
                       <td>
