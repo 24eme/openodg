@@ -135,11 +135,6 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
         $this->add('mouvements');
     }
 
-		public function getVolumeFacturable($produitFilter = null)
-		{
-			return $this->getTotalValeur("15");
-		}
-
     /**** FIN DES MOUVEMENTS ****/
 
 	public function hasVersion() {

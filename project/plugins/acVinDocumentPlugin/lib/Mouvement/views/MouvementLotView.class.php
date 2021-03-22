@@ -35,7 +35,7 @@ class MouvementLotView extends acCouchdbView
         return count($mouvements->rows);
     }
 
-    public function getNombreDegustationAvantMoi($lot)
+    public function getDegustationAvantMoi($lot)
     {
         $mouvements = $this->client
                            ->startkey([
@@ -51,8 +51,12 @@ class MouvementLotView extends acCouchdbView
                                $lot->id_document
                            ])
                            ->getView($this->design, $this->view);
+         return $mouvements;
+     }
 
-        return count($mouvements->rows);
+    public function getNombreDegustationAvantMoi($lot)
+    {
+        return count($this->getDegustationAvantMoi($lot)->rows);
     }
 
     public function find($identifiant, $query) {

@@ -148,24 +148,20 @@ $drev->save();
 $t->ok(count($drev->mouvements),"La Drev a maintenant des mouvements facturables");
 
 $templatesFactures = TemplateFactureClient::getInstance()->findAll();
-$t->ok(count($templatesFactures),"Il existe plusieurs template de facture");
+$t->ok(count($templatesFactures),"Il existe au moins un template de facture");
 
-$cm = new CampagneManager(date('m-d'),CampagneManager::FORMAT_PREMIERE_ANNEE);
-$uniqueTemplateFactureName = FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrentPrevious());
-
-$templateFactureAttendu = TemplateFactureClient::getInstance()->findByCampagne($drev->campagne);
-
-$t->is($uniqueTemplateFactureName,$templateFactureAttendu->_id,"Le template de facture est : $uniqueTemplateFactureName");
+$templateFacture = TemplateFactureClient::getInstance()->findByCampagne($drev->campagne);
 
 
-$form = new FacturationDeclarantForm(array(), array('modeles' => $templatesFactures,'uniqueTemplateFactureName' => $uniqueTemplateFactureName));
+$t->ok($templateFacture->_id,"Le template de facture est : $templateFacture->_id");
+
+$form = new FacturationDeclarantForm(array(), array('modeles' => $templatesFactures,'uniqueTemplateFactureName' => $templateFacture));
 $defaults = $form->getDefaults();
 
 $valuesRev['date_facturation'] = "01/01/".($drev->getCampagne()+1);
 $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
 
-$templateFacture = TemplateFactureClient::getInstance()->find($uniqueTemplateFactureName);
 
 $socCompte = $viti->getMasterCompte();
 $generation = FactureClient::getInstance()->createFactureByTemplateWithGeneration($templateFacture, $socCompte->_id, $valuesRev['date_facturation'], null, $templateFacture->arguments->toArray(true, false));
