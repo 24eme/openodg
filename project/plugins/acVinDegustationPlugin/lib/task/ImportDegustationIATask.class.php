@@ -125,6 +125,15 @@ EOF;
           $degustation->save();
         }
 
+        foreach(DegustationClient::getInstance()->getLotsPrelevables() as $lot) {
+            if(!preg_match("/^CHGT/", $lot->id_document)) {
+                continue;
+            }
+            $doc = ChgtDenomClient::getInstance()->find($lot->id_document);
+            $doc->getLot($lot->unique_id)->affectable = false;
+            $doc->save();
+        }
+
       }
 
     public function formatDate($date){
