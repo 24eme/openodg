@@ -11,7 +11,7 @@ function showProduitLot($lot)
 
   $text .= "</small>";
 
-  if (isset($lot["cepages"])) {
+  if (isset($lot->cepages)) {
 
       if(count((array)$lot->cepages)) {
 
