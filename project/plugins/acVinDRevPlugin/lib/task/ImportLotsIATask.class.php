@@ -182,8 +182,11 @@ EOF;
                   $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
             }
-            $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
-            $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
+            $periode = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
+            if($periode < 2016) {
+                continue;
+            }
+            $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $periode;
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroLot = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
@@ -193,7 +196,7 @@ EOF;
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
 
            $previousdoc = $document;
-           $document = $this->getDocument($type, $document, $etablissement, $campagne, $date, $numeroDossier);
+           $document = $this->getDocument($type, $document, $etablissement, $periode, $date, $numeroDossier);
 
             if($previousdoc && $document->_id != $previousdoc->_id) {
                 try {
@@ -277,6 +280,7 @@ EOF;
       $key = str_replace('PAYS-DES-', '', $key);
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
       $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
+      $key = str_replace('NORD-', '', $key);
       return $key;
     }
 
