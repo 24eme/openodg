@@ -284,12 +284,12 @@ EOF;
     }
 
     protected function identifyCepage($key) {
-      if (isset($this->cepages[KeyInflector::slugify(trim($key))])) {
-        return $this->cepages[KeyInflector::slugify(trim($key))];
-      } else {
-        $correspondances = self::$correspondancesCepages;
-        return (isset($correspondances[trim($key)]))? $correspondances[trim($key)] : null;
+      $key = trim($key);
+      if (isset($this->cepages[KeyInflector::slugify($key)])) {
+        return $this->cepages[KeyInflector::slugify($key)];
       }
+      $correspondances = self::$correspondancesCepages;
+      return (isset($correspondances[$key]))? $correspondances[$key] : strtoupper(str_replace(' ', '.', $key));
     }
 
     protected function identifyEtablissement($data) {
