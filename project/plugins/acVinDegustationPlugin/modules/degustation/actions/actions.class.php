@@ -529,9 +529,9 @@ class degustationActions extends sfActions {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
         $this->forward404Unless($this->etablissement);
-        $this->periode = $request->getParameter('periode',ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1 );
+        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
 
-        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant)->rows;
+        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
     }
 
     public function executeLot(sfWebRequest $request) {

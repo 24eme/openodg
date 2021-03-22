@@ -39,9 +39,9 @@ class MouvementLotHistoryView extends acCouchdbView
                 ->getView($this->design, $this->view);
     }
 
-    public function getMouvementsByDeclarant($declarant,$level = 4)
+    public function getMouvementsByDeclarant($declarant,$campagne,$level = 4)
     {
-        $keys = array($declarant);
+        $keys = array($declarant, $campagne);
 
         return $this->client
                     ->endkey($keys)

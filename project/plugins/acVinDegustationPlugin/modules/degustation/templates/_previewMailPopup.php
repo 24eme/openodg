@@ -3,9 +3,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title"><?php echo $subject; ?></h4>
-        <h5>Destinataire : <?php echo $email ?></h5>
-        <h5>Copie : <?php echo $cc ?></h5>
+        <h3 class="modal-title"><?php echo $subject; ?></h3>
+        <h4><span style="text-decoration: underlined dotted 1px black">Destinataire :</span> <?php echo $email ?></h4>
+        <h4>Copie : <?php echo $cc ?></h4>
       </div>
       <div class="modal-body">
         <div class="row">

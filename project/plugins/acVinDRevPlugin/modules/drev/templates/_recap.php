@@ -139,10 +139,8 @@
               <?php
               $firstRow = true;
               $totalVolume = 0;
-              foreach ($lots as $couleur => $lotsByCouleur) :
                 $volume = 0;
-                if(count($lotsByCouleur)):
-                  foreach ($lotsByCouleur as $lot) :
+                  foreach ($drev->getLotsByDate(true) as $lot) :
                     $totalVolume+=$lot->volume;
                     ?>
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
@@ -185,9 +183,7 @@
                       </tr>
                       <?php
                       $firstRow=false;
-                    endforeach;
-                  endif; ?>
-                <?php endforeach; ?>
+                    endforeach; ?>
                 <tr>
                   <td></td>
                   <td></td>
