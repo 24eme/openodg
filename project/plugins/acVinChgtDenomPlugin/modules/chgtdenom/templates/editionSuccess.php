@@ -11,7 +11,7 @@
       <h3><small></small></h3>
     </div>
 
-    <?php include_partial('infoLotOrigine', array('chgtDenom' => $chgtDenom, 'opacity' => false)); ?>
+    <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => false)); ?>
 
     <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom, 'key' => $chgtDenom->getLotKey())) ?>" method="post" class="form-horizontal" id="form_drev_lots">
 
