@@ -138,7 +138,7 @@ EOF;
               $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
               if (strlen($cvi) < 10) {
                   for($i = 0 ; $i < ( 10 - strlen($cvi) ) ;  $i++) {
-                    $cvi .= $cvi."0";
+                    $cvi = $cvi."0";
                   }
               }
             }
