@@ -50,7 +50,7 @@ EOF;
 
           $campagne = str_replace("/", "-", trim($data[self::CSV_CAMPAGNE]));
 
-          if($campagne < "2016-2017") {
+          if($campagne < "2019-2020") {
               continue;
           }
 

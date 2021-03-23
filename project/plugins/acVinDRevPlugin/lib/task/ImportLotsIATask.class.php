@@ -183,7 +183,7 @@ EOF;
               }
             }
             $periode = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
-            if($periode < 2016) {
+            if($periode < 2019) {
                 continue;
             }
             $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $periode;
