@@ -664,7 +664,7 @@ class degustationActions extends sfActions {
 
     public function executeEtiquettesPrlvmtPdf(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationEtiquettesPrlvmtPDF($degustation, $request->getParameter('anonymat4labo', true), $request->getParameter('output', 'pdf'), false);
+      $this->document = new ExportDegustationEtiquettesPrlvmtPDF($degustation, $request->getParameter('anonymat4labo', false), $request->getParameter('output', 'pdf'), false);
       return $this->mutualExcecutePDF($request);
     }
 
