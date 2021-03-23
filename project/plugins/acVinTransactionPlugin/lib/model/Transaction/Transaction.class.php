@@ -11,6 +11,9 @@ class Transaction extends BaseTransaction
             $this->date = date("Y-m-d");
         }
         $idDate = str_replace('-', '', $this->date);
+        if (strlen($idDate) < 8) {
+            throw new sfException(" mauvaise date pour une transaction");
+        }
         $id = 'TRANSACTION-' . $this->identifiant . '-' . $idDate;
         if($this->version) {
             $id .= "-".$this->version;
