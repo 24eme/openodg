@@ -64,6 +64,7 @@ Degustation:
                   doc_ordre: {}
                   affectable: {}
                   recours_oc: {}
+                  a_redeguster: {required: false}
       mouvements_lots:
         type: collection
         definition:
@@ -102,6 +103,7 @@ Degustation:
                         motif: { required: false }
                         nombre_degustation: { required: false }
                         affectable: { required: false }
+                        a_redeguster: {required: false}
                         recours_oc: { required: false }
       mouvements:
         type: collection
