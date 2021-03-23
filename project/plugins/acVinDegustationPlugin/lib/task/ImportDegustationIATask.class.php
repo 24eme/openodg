@@ -50,7 +50,7 @@ EOF;
 
           $campagne = str_replace("/", "-", trim($data[self::CSV_CAMPAGNE]));
 
-          if($campagne < "2016-2017") {
+          if($campagne < "2019-2020") {
               continue;
           }
 
@@ -126,7 +126,7 @@ EOF;
         }
 
         foreach(DegustationClient::getInstance()->getLotsPrelevables() as $lot) {
-            if(!preg_match("/^CHGT/", $lot->id_document) && $lot->date >= '2020-11-01') {
+            if(!preg_match("/^CHGT/", $lot->id_document)) {
                 continue;
             }
             $doc = DeclarationClient::getInstance()->find($lot->id_document);

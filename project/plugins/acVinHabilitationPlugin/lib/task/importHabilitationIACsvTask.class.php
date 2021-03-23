@@ -3,15 +3,25 @@
 class importHabilitationIACsvTask extends sfBaseTask
 {
 
-  const CSV_RS = 0;
-  const CSV_CVI = 1;
-  const CSV_PRODUIT = 2;
-  const CSV_ACTIVITES = 3;
-  const CSV_STATUT = 4;
-  const CSV_ADRESSE = 5;
-  const CSV_COMPLEMENT = 6;
-  const CSV_CP = 7;
-  const CSV_VILLE = 8;
+  const CSV_HABILITATION_RS = 0;
+  const CSV_HABILITATION_CVI = 1;
+  const CSV_HABILITATION_PRODUIT = 2;
+  const CSV_HABILITATION_ACTIVITES = 3;
+  const CSV_HABILITATION_STATUT = 4;
+  const CSV_HABILITATION_ADRESSE = 5;
+  const CSV_HABILITATION_COMPLEMENT = 6;
+  const CSV_HABILITATION_CP = 7;
+  const CSV_HABILITATION_VILLE = 8;
+
+  const CSV_DI_RAISONSOCIALE = 0;
+  const CSV_DI_CVI = 1;
+  const CSV_DI_IGP = 2;
+  const CSV_DI_STATUT = 3;
+  const CSV_DI_DATEDEMANDE = 4;
+  const CSV_DI_NOTIFIEEOC = 5;
+  const CSV_DI_DATEDECISION = 6;
+  const CSV_DI_DATESAISIEODG = 7;
+
 
   protected $date;
   protected $convert_statut;
@@ -21,7 +31,8 @@ class importHabilitationIACsvTask extends sfBaseTask
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('fichier_habilitations', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('fichier_habilitations', sfCommandArgument::REQUIRED, "Fichier csv pour l'import des habilitations"),
+            new sfCommandArgument('fichier_di', sfCommandArgument::REQUIRED, "Fichier csv pour l'import de DI"),
         ));
 
         $this->addOptions(array(
@@ -35,8 +46,6 @@ class importHabilitationIACsvTask extends sfBaseTask
         $this->briefDescription = 'Import des habilitation (via un csv)';
         $this->detailedDescription = <<<EOF
 EOF;
-
-        $this->date = '2020-08-01';
 
         $this->convert_statut = array();
         $this->convert_statut['Habilité'] = HabilitationClient::STATUT_HABILITE;
@@ -58,7 +67,8 @@ EOF;
         $this->convert_products['Comtés Rhodaniens'] = 'certifications/IGP/genres/TRANQ/appellations/CDR';
         $this->convert_products["Ardèche - Coteaux de l'Ardèche"] = 'certifications/IGP/genres/TRANQ/appellations/ARD/mentions/DEFAUT/lieux/CDA';
         $this->convert_products['Mediterranee'] = 'certifications/IGP/genres/TRANQ/appellations/MED';
-        $this->convert_products['Pays des Bouches du Rhône'] = 'certifications/IGP/genres/TRANQ/appellations/D13';
+        $this->convert_products['Pays des Bouches du Rhône'] = 'certifications/IGP/genres/TRANQ/appellations/D13/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['IGP BdR-Terre de Camargue'] = 'certifications/IGP/genres/TRANQ/appellations/D13/mentions/DEFAUT/lieux/TDC';
         $this->convert_products['Var'] = 'certifications/IGP/genres/TRANQ/appellations/VAR';
         $this->convert_products['Mont Caume'] = 'certifications/IGP/genres/TRANQ/appellations/MCA';
         $this->convert_products['Maures'] = 'certifications/IGP/genres/TRANQ/appellations/MAU';
@@ -77,6 +87,17 @@ EOF;
         $this->convert_products['Nievre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
         $this->convert_products['Sarthe'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/SAR';
         $this->convert_products['Indre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IND';
+
+        // gascogne
+        $this->convert_products['Comté Tolosan'] = 'certifications/IGP/genres/TRANQ/appellations/COT/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Comté Tolosan mousseux'] = 'certifications/IGP/genres/EFF/appellations/COT/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Comté Tolosan surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/COT/mentions/SURMURI/lieux/DEFAUT';
+        $this->convert_products['Côtes de Gascogne'] = 'certifications/IGP/genres/TRANQ/appellations/CDG/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Côtes de Gascogne Condomois'] = 'certifications/IGP/genres/TRANQ/appellations/CDG/mentions/DEFAUT/lieux/CON';
+        $this->convert_products['Côtes de Gascogne surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/CDG/mentions/SURMURI/lieux/DEFAUT';
+        $this->convert_products['Gers'] = 'certifications/IGP/genres/TRANQ/appellations/GER/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Gers surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/GER/mentions/SURMURI/lieux/DEFAUT';
+
         $this->convert_products['Indre et Loire'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IDL';
         $this->convert_products["Calvados"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CALV/mentions/DEFAUT/lieux/DEFAUT';
         $this->convert_products["Coteaux de Tannay"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CTXT/mentions/DEFAUT/lieux/DEFAUT';
@@ -92,6 +113,29 @@ EOF;
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
 
+        $cvi2di = array();
+        foreach(file($arguments['fichier_di']) as $line) {
+            $line = str_replace("\n", "", $line);
+            $data = str_getcsv($line, ';');
+            $cvi = $data[self::CSV_DI_CVI];
+            $cvi2di[$cvi] = array();
+            foreach(explode(', ', $data[self::CSV_DI_IGP]) as $produit) {
+                $cvi2di[$cvi][$produit] = array();
+                if ($data[self::CSV_DI_DATEDEMANDE]) {
+                    $cvi2di[$cvi][$produit]["DATEDEMANDE"] = preg_replace('/(\d+)\/(\d+)\/(\d+)/', '$3-$2-$1', $data[self::CSV_DI_DATEDEMANDE]);
+                }
+                if ($data[self::CSV_DI_NOTIFIEEOC]) {
+                    $cvi2di[$cvi][$produit]["NOTIFIEEOC"] = preg_replace('/(\d+)\/(\d+)\/(\d+)/', '$3-$2-$1', $data[self::CSV_DI_NOTIFIEEOC]);
+                }
+                if ($data[self::CSV_DI_DATEDECISION]) {
+                    $cvi2di[$cvi][$produit]["DATEDECISION"] = preg_replace('/(\d+)\/(\d+)\/(\d+)/', '$3-$2-$1', $data[self::CSV_DI_DATEDECISION]);
+                }
+                if ($data[self::CSV_DI_DATESAISIEODG]) {
+                    $cvi2di[$cvi][$produit]["DATESAISIEODG"] = preg_replace('/(\d+)\/(\d+)\/(\d+)/', '$3-$2-$1', $data[self::CSV_DI_DATESAISIEODG]);
+                }
+            }
+        }
+
         $datas = array();
         foreach(file($arguments['fichier_habilitations']) as $line) {
             $line = str_replace("\n", "", $line);
@@ -105,30 +149,47 @@ EOF;
                  continue;
              }
 
-             $produitKey = (isset($this->convert_products[trim($data[self::CSV_PRODUIT])]))? trim($this->convert_products[trim($data[self::CSV_PRODUIT])]) : null;
+             $produitKey = (isset($this->convert_products[trim($data[self::CSV_HABILITATION_PRODUIT])]))? trim($this->convert_products[trim($data[self::CSV_HABILITATION_PRODUIT])]) : null;
 
              if (!$produitKey) {
                  echo "WARNING: produit non trouvé ".$line." : pas d'import\n";
                  continue;
              }
 
-            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $this->date);
+             $date = '2000-08-01';
+             if (isset($cvi2di[$data[self::CSV_HABILITATION_CVI]]) &&
+                    isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]]) &&
+                    isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]]['DATEDECISION'])
+                ) {
+                    $date = $cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]]['DATEDECISION'];
+             }
+
+            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $date);
             $produit = $habilitation->addProduit($produitKey);
             if (!$produit) {
-                echo "WARNING: produit $produitKey (".$data[self::CSV_PRODUIT].") non trouvé : ligne non importée\n";
+                echo "WARNING: produit $produitKey (".$data[self::CSV_HABILITATION_PRODUIT].") non trouvé : ligne non importée\n";
                 continue;
             }
             $hab_activites = $produit->add('activites');
 
-            $statut = $this->convert_statut[trim($data[self::CSV_STATUT])];
+            $statut = $this->convert_statut[trim($data[self::CSV_HABILITATION_STATUT])];
 
             if (!$produitKey) {
                 echo "WARNING: statut non trouvé ".$line." : pas d'import\n";
                 continue;
             }
-
-            $this->updateHabilitationStatut($hab_activites, $data, $statut, $this->date);
-
+            if (($statut == HabilitationClient::STATUT_HABILITE) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]]) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]])) {
+                $di = $cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]];
+                if (isset($di['DATEDEMANDE'])) {
+                    $this->updateHabilitationStatut($hab_activites, $data, HabilitationClient::STATUT_DEMANDE_HABILITATION, $di['DATEDEMANDE']);
+                }
+                if (isset($di['NOTIFIEEOC'])) {
+                    $this->updateHabilitationStatut($hab_activites, $data, HabilitationClient::STATUT_ATTENTE_HABILITATION, $di['NOTIFIEEOC']);
+                }
+                $this->updateHabilitationStatut($hab_activites, $data, HabilitationClient::STATUT_HABILITE, $date);
+            }else{
+                $this->updateHabilitationStatut($hab_activites, $data, $statut, $date);
+            }
             $habilitation->save(true);
             //echo "SUCCESS: ".$habilitation->_id."\n";
         }
@@ -136,15 +197,15 @@ EOF;
 
     protected function identifyEtablissement($data) {
         foreach ($this->etablissements as $etab) {
-            if (isset($data[self::CSV_CVI]) && trim($data[self::CSV_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_CVI])) {
+            if (isset($data[self::CSV_HABILITATION_CVI]) && trim($data[self::CSV_HABILITATION_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_HABILITATION_CVI])) {
                 return EtablissementClient::getInstance()->find($etab->id);
                 break;
             }
-            if (isset($data[self::CSV_RS]) && trim($data[self::CSV_RS]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_RS]))) {
+            if (isset($data[self::CSV_HABILITATION_RS]) && trim($data[self::CSV_HABILITATION_RS]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_HABILITATION_RS]))) {
                 return EtablissementClient::getInstance()->find($etab->id);
                 break;
             }
-            if (isset($data[self::CSV_RS]) && trim($data[self::CSV_RS]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_RS]))) {
+            if (isset($data[self::CSV_HABILITATION_RS]) && trim($data[self::CSV_HABILITATION_RS]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_HABILITATION_RS]))) {
                 return EtablissementClient::getInstance()->find($etab->id);
                 break;
             }
@@ -153,7 +214,7 @@ EOF;
     }
 
     protected function updateHabilitationStatut($hab_activites,$data,$statut,$date){
-        foreach (explode(",",$data[self::CSV_ACTIVITES]) as $act) {
+        foreach (explode(",",$data[self::CSV_HABILITATION_ACTIVITES]) as $act) {
             if ($activite = $this->convert_activites[trim($act)]) {
                 $hab_activites->add($activite)->updateHabilitation($statut, null, $date);
             }
