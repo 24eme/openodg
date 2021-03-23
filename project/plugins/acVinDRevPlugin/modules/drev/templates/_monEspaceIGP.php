@@ -20,11 +20,12 @@
                     <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
                     <?php if ($sf_user->isAdmin()): ?>
                     <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
-                    <?php else: ?>
-                        <a class="btn btn-xs btn-default btn-block invisble">&nbsp;</a>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
+        </div>
+        <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drev')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
     </div>
 </div>

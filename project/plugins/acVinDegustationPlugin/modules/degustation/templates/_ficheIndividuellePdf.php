@@ -15,7 +15,7 @@
               <strong>Millesime :</strong><br>
           </td>
           <td><?php echo tdStart() ?><br>
-            <strong>Lieu: <?php echo $degustation->lieu; ?></strong>
+            <strong>Lieu : <?php echo $degustation->getLieuNom(); ?></strong>
           </td>
         </tr>
       </table>

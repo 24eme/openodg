@@ -5,7 +5,7 @@
 <?php endif; ?>
 <?php if (class_exists("DRClient") && ($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR  || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel panel-info">
+    <div class="block_declaration panel <?php if($dr):?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">DR  <?php echo $periode; ?></h3>
         </div>
@@ -17,8 +17,11 @@
                     <?php else: ?>
                         <a class="btn btn-primary btn-block" href="<?php echo url_for('get_fichier', array('id' => $dr->_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Télécharger la DR</a>
                 	<?php endif; ?>
-                    <a class="btn btn-xs btn-block btn-default" href="<?php echo ($dr)? url_for('edit_fichier', $dr) : url_for('new_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)); ?>"><?php echo ($dr)? ($dr->exist('donnees'))? 'Poursuivre les modifications' : 'Modifier la déclaration' : 'Saisir la déclaration'; ?></a>
+                    <a class="btn btn-xs btn-block btn-default" href="<?php echo ($dr)? url_for('edit_fichier', $dr) : url_for('new_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)); ?>"><span class="glyphicon glyphicon-pencil"></span> <?php echo ($dr)? ($dr->exist('donnees'))? 'Poursuivre les modifications' : 'Modifier la déclaration' : 'Saisir la déclaration'; ?></a>
                 </div>
+            </div>
+            <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'dr')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
     </div>
 </div>
