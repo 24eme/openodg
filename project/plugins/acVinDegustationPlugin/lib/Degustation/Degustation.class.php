@@ -710,7 +710,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 
-				if($free && is_null($lot->numero_table))  {
+				if($free && !$lot->numero_table)  {
 					$lots[] = $lot;
 					continue;
 				}
@@ -1239,7 +1239,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
                 $create = false;
-                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot)->rows as $deg) {
+
+                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot) as $deg) {
                     $create = ($deg->id != $this->_id);
                 }
 
