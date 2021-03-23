@@ -53,7 +53,7 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        return sprintf("%s     %s - %s  %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone']);
+        return sprintf("%s     %s - %s  %s    %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone'], $this->adresse['email']);
     }
 
     protected function getHeaderSubtitle() {
