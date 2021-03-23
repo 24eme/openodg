@@ -6,12 +6,14 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     protected $etablissement = null;
     protected $lot = null;
     protected $adresse;
+    protected $responsable;
 
     public function __construct($degustation, $lot, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->lot = $lot;
         $this->etablissement = $lot->getEtablissement();
         $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
+        $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
@@ -23,7 +25,7 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     }
 
     public function create() {
-      $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot )));
+      $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot, 'responsable' => $this->responsable)));
       $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page2', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot )));
     }
 

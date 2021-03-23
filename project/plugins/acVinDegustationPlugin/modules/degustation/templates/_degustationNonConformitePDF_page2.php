@@ -1,8 +1,10 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Lot'); ?>
+<?php use_helper('TemplatingPDF'); ?>
 
 <?php $adresse = sfConfig::get('app_degustation_courrier_adresse'); ?>
 <style>
+    <?php echo style(); ?>
     table {
         font-size: 12px;
     }
@@ -52,9 +54,11 @@
 <table border="1">
   <tr>
     <td>
-      <span>Description de l'anomalie (<?php echo $lot->getTextPassage(); ?>)</span><br/><br/>
-      <strong>Gravité : <?php echo Lot::$libellesConformites[$lot->conformite] ?></strong><br/>
-      <strong>Défauts constatés : <?php ($lot->observation) ?? 'NC' ?></strong>
+      <strong>Description de l'anomalie (<?php echo $lot->getTextPassage(); ?>)</strong><br/><br/>
+      <strong>Gravité :</strong> <?php echo Lot::$libellesConformites[$lot->conformite] ?><br/>
+      <strong>Motif :</strong> <?php echo $lot->motif ?><br/>
+      <strong>Observations constatées :</strong> <?php echo $lot->observation ?>
+      <br/>
     </td>
   </tr>
   <tr>
@@ -78,16 +82,16 @@
 <p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner à l'ODG.</strong></p>
 
 <table border="1">
-  <tr>
-    <td style="padding: 25px 0px">
-      Déclassement
+  <tr style="text-align: center;">
+    <td>
+      <br/><?php echo tdStart() ?> <?php echo echoCheck('Déclassement', false) ?><br/>
     </td>
-    <td style="padding: 25px 0px">
-      Nouvelle dégustation
+    <td>
+      <br/><?php echo tdStart() ?> <?php echo echoCheck('Nouvelle dégustation', false) ?><br/>
     </td>
   </tr>
   <tr style="height: 250px">
-    <td>Date :</td>
-    <td>Signature opérateur :</td>
+    <td> Date :<br/><br/><br/><br/><br/><br/></td>
+    <td> Signature opérateur :<br/><br/><br/><br/><br/><br/></td>
   </tr>
 </table>
