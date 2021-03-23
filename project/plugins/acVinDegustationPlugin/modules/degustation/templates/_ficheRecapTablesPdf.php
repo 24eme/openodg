@@ -23,7 +23,7 @@ th {
 
           </td>
           <td style="width:33%">
-            <p>Lieu : <?php echo $degustation->lieu; ?> </p>
+            <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
           </td>
         </tr>
       </table>

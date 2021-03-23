@@ -61,12 +61,16 @@ p, div {
     </td>
   </tr>
   <tr>
-    <td style="width:90%;">
-      <br/><br/>
+    <br/><br/>
+    <td style="width:30%;">
       <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prélèvement&nbsp;date : _ _ _ _ </span>
-      <span>&nbsp;&nbsp;Heure : _ _ _ _</span>
-      <span>&nbsp;&nbsp;&nbsp;&nbsp;Lieu : <?php echo $degustation->lieu; ?> </span>
       <br/>
+    </td>
+    <td style="width:20%;">
+      <span>&nbsp;&nbsp;Heure : _ _ _ _</span>
+    </td>
+    <td style="width:50%; text-align: center;">
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;Lieu : <?php echo $degustation->getLieuNom(); ?> </span>
     </td>
   </tr>
   <tr>

@@ -79,7 +79,7 @@ th {
             <small><?php echo count($lots[$numDossier]); ?>&nbsp;lot(s) <?php echo $lotTypesNb['Cond'] > 0 ? $lotTypesNb['Cond'].' Cond' : null  ?><?php echo $lotTypesNb['DRev'] > 0 ? $lotTypesNb['DRev'].' DRev' : null;  ?></small>
           </td>
           <td><?php echo tdStart() ?>
-            <small><?php //echo $degustation->laboratoire; ?></small>
+            <small><?php echo $degustation->getLieuNom(); ?></small>
           </td>
           <td><?php echo tdStart() ?>
 
