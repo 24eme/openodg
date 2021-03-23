@@ -244,6 +244,7 @@ class fichierActions extends sfActions
 			$drev = DRevClient::getInstance()->find("DREV-".$this->etablissement->identifiant."-".$this->periode);
 			if ($fichiers && $drev) {
 				$drev->importFromDocumentDouanier();
+                $drev->generateMouvementsFactures();
                 $drev->save();
 			}
 			return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
