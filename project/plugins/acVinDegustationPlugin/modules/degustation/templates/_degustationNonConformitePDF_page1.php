@@ -32,7 +32,7 @@
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Lors de la séance de dégustation du <strong><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?></strong>, certains de vos vins dont la liste figure dans les fiches de non conformité ci-jointes ont été ajournés.</td></tr>
+  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, certains de vos vins dont la liste figure dans les fiches de non conformité ci-jointes ont été ajournés.</td></tr>
   <tr><td>Compte tenu de ce résultat, vous pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
