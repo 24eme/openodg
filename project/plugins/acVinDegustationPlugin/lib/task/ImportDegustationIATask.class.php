@@ -35,6 +35,7 @@ EOF;
         $ligne=0;
         $degustation = null;
         foreach(file($arguments['csv']) as $line) {
+            break;
           $ligne++;
           $line = str_replace("\n", "", $line);
           $data = str_getcsv($line,';');
@@ -133,9 +134,7 @@ EOF;
             $doc->getLot($lot->unique_id)->affectable = false;
             $doc->save();
         }
-
-      }
-
+    }
     public function formatDate($date){
         if(!$date) {
             return null;
