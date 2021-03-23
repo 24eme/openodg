@@ -1,8 +1,5 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!$hasLots): ?>
-    <?php return; ?>
-<?php endif; ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel panel-default">
         <div class="panel-heading">
