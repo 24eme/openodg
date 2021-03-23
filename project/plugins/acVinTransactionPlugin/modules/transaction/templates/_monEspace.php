@@ -12,14 +12,14 @@
             <div class="panel-body">
                 <p>Votre déclaration de vrac export a été validée aujourd'hui.</p>
                 <div style="margin-top: 76px;">
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_visualisation', $transaction) ?>">Voir la déclaration</a>
+                    <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_visualisation', $transaction) ?>">Visualiser la déclaration</a>
                 </div>
             </div>
         <?php elseif ($transaction): ?>
             <div class="panel-body">
                 <p>Reprendre la déclaration de vrac export du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?>.</p>
                 <div style="margin-top: 50px;">
-                    <a class="btn btn-block btn-primary" href="<?php echo url_for('transaction_edit', $transaction) ?>"><?php if($transaction->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Reprendre le vrac export papier<?php else: ?>Reprendre la télédéclaration<?php endif; ?></a>
+                    <a class="btn btn-block btn-primary" href="<?php echo url_for('transaction_edit', $transaction) ?>"><span class="glyphicon glyphicon-pencil"></span> Reprendre la saisie</a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('transaction_delete', $transaction) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </div>
             </div>
@@ -29,10 +29,13 @@
                 <div style="margin-top: 50px;">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
                     <?php if ($sf_user->isAdmin() || $sf_user->hasTransactionAdmin()): ?>
-                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('transaction_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir le vrac export papier</a>
+                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('transaction_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
                     <?php endif; ?>
                 </div>
             </div>
         <?php endif; ?>
+        <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'transaction')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+        </div>
     </div>
 </div>
