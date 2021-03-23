@@ -37,6 +37,9 @@ class MouvementLotView extends acCouchdbView
 
     public function getDegustationAvantMoi($lot)
     {
+        if($lot->isLeurre()){
+            return array();
+        }
         $mouvements = $this->client
                            ->startkey([
                                Lot::STATUT_AFFECTE_SRC,
@@ -51,12 +54,12 @@ class MouvementLotView extends acCouchdbView
                                $lot->id_document
                            ])
                            ->getView($this->design, $this->view);
-         return $mouvements;
+         return $mouvements->rows;
      }
 
     public function getNombreDegustationAvantMoi($lot)
     {
-        return count($this->getDegustationAvantMoi($lot)->rows);
+        return count($this->getDegustationAvantMoi($lot));
     }
 
     public function find($identifiant, $query) {
