@@ -14,6 +14,8 @@
                 <div style="<?php if($dr): ?>margin-top: 76px;<?php else: ?>margin-top: 47px;<?php endif; ?>">
                     <?php if(!$dr): ?>
                     <a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
+                    <?php else: ?>
+                        <a class="btn btn-primary btn-block" href="<?php echo url_for('get_fichier', array('id' => $dr-_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Télécharger la DR</a>
                 	<?php endif; ?>
                     <a class="btn btn-xs btn-block btn-default" href="<?php echo ($dr)? url_for('edit_fichier', $dr) : url_for('new_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)); ?>"><?php echo ($dr)? ($dr->exist('donnees'))? 'Poursuivre les modifications' : 'Modifier la déclaration' : 'Saisir la déclaration'; ?></a>
                 </div>
