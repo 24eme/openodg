@@ -20,8 +20,11 @@
       <div class="panel-body">
 
         <div class="row row-condensed">
+          <div class="col-xs-4 col-xs-offset-8">
+              <a class="pull-right btn btn-success" href="<?= url_for('degustation_all_notification_pdf', ['id' => $degustation->_id]) ?>"><i class="glyphicon glyphicon-file"></i> Télécharger toutes les notifications</a>
+          </div>
           <div class="col-xs-12">
-          <h3>Échantillons par opérateurs <span class="pull-right"><a href="<?= url_for('degustation_all_notification_pdf', ['id' => $degustation->_id]) ?>">Télécharger toutes les notifications</a></span></h3>
+          <h3>Échantillons par opérateurs</h3>
             <table class="table table-bordered table-condensed">
               <thead>
                 <tr>
