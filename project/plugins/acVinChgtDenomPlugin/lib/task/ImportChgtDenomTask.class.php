@@ -80,7 +80,7 @@ EOF;
 
             $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
-            if($dateDeclaration < "2016-01-01") {
+            if($dateDeclaration < "2019-01-01") {
                 continue;
             }
 
