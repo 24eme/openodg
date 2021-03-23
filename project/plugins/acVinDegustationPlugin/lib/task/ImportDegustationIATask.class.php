@@ -35,6 +35,7 @@ EOF;
         $ligne=0;
         $degustation = null;
         foreach(file($arguments['csv']) as $line) {
+            break;
           $ligne++;
           $line = str_replace("\n", "", $line);
           $data = str_getcsv($line,';');
@@ -50,7 +51,7 @@ EOF;
 
           $campagne = str_replace("/", "-", trim($data[self::CSV_CAMPAGNE]));
 
-          if($campagne < "2016-2017") {
+          if($campagne < "2019-2020") {
               continue;
           }
 
@@ -126,16 +127,14 @@ EOF;
         }
 
         foreach(DegustationClient::getInstance()->getLotsPrelevables() as $lot) {
-            if(!preg_match("/^CHGT/", $lot->id_document) && $lot->date >= '2020-11-01') {
+            if(!preg_match("/^CHGT/", $lot->id_document)) {
                 continue;
             }
             $doc = DeclarationClient::getInstance()->find($lot->id_document);
             $doc->getLot($lot->unique_id)->affectable = false;
             $doc->save();
         }
-
-      }
-
+    }
     public function formatDate($date){
         if(!$date) {
             return null;
