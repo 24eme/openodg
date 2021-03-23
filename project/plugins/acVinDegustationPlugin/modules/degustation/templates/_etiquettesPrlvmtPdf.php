@@ -10,7 +10,7 @@
                 <table cellspacing=0 cellpadding=0 style="font-size:8px;">
                   <tr style="line-height:8px;">
                     <td style="overflow-wrap:break-word;">
-                      <?php echo tdStart() ?>&nbsp;&nbsp;<strong style="font-size:10px;"><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
+                      <?php echo tdStart() ?>&nbsp;N°ODG:<strong style="font-size:10px;"><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
                     </td>
                     <td style="overflow-wrap:break-word;text-align: right;">
                       <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
