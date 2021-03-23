@@ -12,7 +12,7 @@
             <?php if ($enCours): ?>
             <p>Votre déclaration de changement de dénomination / déclassement a été débutée sans avoir été validée.</p>
             <div style="margin-top: 50px;">
-                <a class="btn btn-block btn-primary" href="<?php echo url_for('chgtdenom_edition', $enCours) ?>"><?php if($enCours->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer le changement papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
+                <a class="btn btn-block btn-primary" href="<?php echo url_for('chgtdenom_edition', $enCours) ?>"><span class="glyphicon glyphicon-pencil"></span> Reprendre la saisie</a>
                 <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('chgtdenom_delete', $enCours) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
             </div>
             <?php else: ?>
@@ -20,10 +20,13 @@
             <div style="margin-top: 50px;">
                 <a class="btn btn-block btn-default" href="<?php echo url_for('chgtdenom_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
                 <?php if ($sf_user->isAdmin()): ?>
-                <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('chgtdenom_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir le changement papier</a>
+                <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('chgtdenom_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
+        </div>
+        <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'chgtdenom')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
     </div>
 </div>
