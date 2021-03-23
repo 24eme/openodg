@@ -42,16 +42,6 @@ degustation_prelevements_etape:
   requirements:
     sf_method: [get]
 
-degustation_convocations_etape:
-  url: /degustation/:id/convocations
-  param: { module: degustation, action: convocationsEtape }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get]
-
 degustation_tables_etape:
   url: /degustation/:id/tables
   param: { module: degustation, action: tablesEtape }

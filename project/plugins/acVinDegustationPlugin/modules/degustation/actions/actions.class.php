@@ -195,15 +195,6 @@ class degustationActions extends sfActions {
         }
     }
 
-    public function executeConvocationsEtape(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->redirectIfIsAnonymized();
-        $this->infosDegustation = $this->degustation->getInfosDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
-            $this->degustation->save();
-        }
-    }
-
     public function executeTablesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
