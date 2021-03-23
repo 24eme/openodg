@@ -54,9 +54,11 @@
 <table border="1">
   <tr>
     <td>
-      <span>Description de l'anomalie (<?php echo $lot->getTextPassage(); ?>)</span><br/><br/>
-      <strong>Gravité : <?php echo Lot::$libellesConformites[$lot->conformite] ?></strong><br/>
-      <strong>Défauts constatés : <?php ($lot->observation) ?? 'NC' ?></strong>
+      <strong>Description de l'anomalie (<?php echo $lot->getTextPassage(); ?>)</strong><br/><br/>
+      <strong>Gravité :</strong> <?php echo Lot::$libellesConformites[$lot->conformite] ?><br/>
+      <strong>Motif :</strong> <?php echo $lot->motif ?><br/>
+      <strong>Observations constatées :</strong> <?php echo $lot->observation ?>
+      <br/>
     </td>
   </tr>
   <tr>
