@@ -1,8 +1,10 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Lot'); ?>
+<?php use_helper('TemplatingPDF'); ?>
 
 <?php $adresse = sfConfig::get('app_degustation_courrier_adresse'); ?>
 <style>
+    <?php echo style(); ?>
     table {
         font-size: 12px;
     }
@@ -78,16 +80,16 @@
 <p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner à l'ODG.</strong></p>
 
 <table border="1">
-  <tr>
+  <tr style="text-align: center">
     <td style="padding: 25px 0px">
-      Déclassement
+      <?php echo tdStart() ?><span class="zap">o</span> Déclassement
     </td>
     <td style="padding: 25px 0px">
-      Nouvelle dégustation
+      <?php echo tdStart() ?><span class="zap">o</span> Nouvelle dégustation
     </td>
   </tr>
   <tr style="height: 250px">
-    <td>Date :</td>
-    <td>Signature opérateur :</td>
+    <td><?php echo tdStart() ?> Date :</td>
+    <td><?php echo tdStart() ?> Signature opérateur :</td>
   </tr>
 </table>
