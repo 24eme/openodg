@@ -19,6 +19,7 @@
         </h2>
       </div>
       <div class="panel-body">
+        <?php if ($degustation->getLotsNonAttables()): ?>
         <div class="row">
             <div class="col-xs-12 text">
               <p class="alert alert-warning">
@@ -26,6 +27,7 @@
               </p>
             </div>
         </div>
+        <?php endif ?>
         <div class="row">
             <?php if($degustation->isAnonymized()): ?>
               <div class="col-xs-12">
