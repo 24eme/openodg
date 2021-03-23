@@ -24,7 +24,7 @@
 </thead>
 <tbody>
 <?php foreach($manquements as $keyLot => $m):
-    $words = json_encode([$m->produit_libelle,$m->declarant_identifiant,Lot::$libellesConformites[$m->conformite],$m->declarant_nom,$m->numero_dossier], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+    $words = json_encode([$m->produit_libelle,$m->declarant_identifiant,Lot::$libellesConformites[$m->conformite],$m->declarant_nom,$m->numero_dossier,$m->millesime], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
     ?>
     <tr class="<?php if($m->recours_oc): ?>list-group-item-warning<?php endif;?> hamzastyle-item" data-words='<?= $words ?>' >
         <td><span class="text-muted"><?php echo $m->numero_dossier; ?></span></td>
