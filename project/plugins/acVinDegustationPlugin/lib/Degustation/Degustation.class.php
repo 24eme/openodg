@@ -894,6 +894,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degustateurs;
 		}
 
+		public function getLotsNonAttables(){
+			$non_attables = array();
+			foreach ($this->getLotsPreleves() as $lot) {
+				if($lot->numero_table)
+					continue;
+				$non_attables[$lot->unique_id] = $lot;
+			}
+			return $non_attables;
+		}
+
 		public function hasAllDegustateursConfirmation(){
 			$confirmation = true;
 			foreach ($this->getDegustateurs() as $collegeKey => $degustateursCollege) {
