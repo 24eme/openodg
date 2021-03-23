@@ -54,3 +54,10 @@
   <tr><td>Pour toutes informations, merci de nous contacter.</td></tr><br/>
 </table>
 
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<table style="width:1100px;padding-left:400px;" >
+  <tr><td><?php echo $responsable ?>,</td></tr>
+  <tr><td>SIGNATURE</td></tr>
+</table>
