@@ -9,7 +9,7 @@ all:
   organisme:
     nom: "Syndicat des Producteurs de Vins de Pays des Bouches-du-Rhône"
   societe:
-    format_identifiant: "13%06d"
+    format_identifiant: "BDR%06d"
   donnees_viticoles:
     regions:
       IGP13: "IGP13"

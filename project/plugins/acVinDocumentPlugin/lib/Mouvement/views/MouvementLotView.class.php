@@ -67,12 +67,12 @@ class MouvementLotView extends acCouchdbView
         unset($query['statut']);
         $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant, $statut);
 
-        $query["numero_logement_operateur"] = KeyInflector::slugify($query["numero_logement_operateur"]);
+        $query["numero_logement_operateur"] = KeyInflector::slugify(str_replace(" ", "", $query["numero_logement_operateur"]));
 
         $mouvement = null;
         foreach ($mouvements->rows as $mouvement) {
 
-            $mouvement->value->numero_logement_operateur = KeyInflector::slugify($mouvement->value->numero_logement_operateur);
+            $mouvement->value->numero_logement_operateur = KeyInflector::slugify(str_replace(" ", "",$mouvement->value->numero_logement_operateur));
 
             $match = true;
             foreach($query as $key => $value) {

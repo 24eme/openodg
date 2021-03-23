@@ -9,7 +9,7 @@ all:
     default_decimal_format: 2
     max_decimal_authorized: 4
   societe:
-    format_identifiant: "84%05d"
+    format_identifiant: "VCL%06d"
   donnees_viticoles:
     regions:
       IGPVAUCLUSE: "IGPVAUCLUSE"

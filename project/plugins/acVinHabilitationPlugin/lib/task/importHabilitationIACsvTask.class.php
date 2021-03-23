@@ -71,10 +71,6 @@ EOF;
         $this->convert_products['Maine et Loire'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/MEL';
         $this->convert_products['Loir et Cher'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/LEC';
         $this->convert_products['Vendée'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/VEN';
-        $this->convert_products['Cotes de la Charité'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
-        $this->convert_products['Indre et Loire'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IDL';
-        $this->convert_products["Coteaux du Cher et de l'Arnon"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/CHE';
-        $this->convert_products["Coteaux de Tannay"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
         $this->convert_products['Cher'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/CHE';
         $this->convert_products['Allier'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/ALL';
         $this->convert_products['Vienne'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/VIE';
@@ -91,6 +87,12 @@ EOF;
         $this->convert_products['Côtes de Gascogne surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/CDG/mentions/SURMURI/lieux/DEFAUT';
         $this->convert_products['Gers'] = 'certifications/IGP/genres/TRANQ/appellations/GER/mentions/DEFAUT/lieux/DEFAUT';
         $this->convert_products['Gers surmûri'] = 'certifications/IGP/genres/TRANQ/appellations/GER/mentions/SURMURI/lieux/DEFAUT';
+
+        $this->convert_products['Indre et Loire'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IDL';
+        $this->convert_products["Calvados"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CALV/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products["Coteaux de Tannay"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CTXT/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products["Coteaux du Cher et de l'Arnon"] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CHERAR/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Cotes de la Charité'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/CDLC/mentions/DEFAUT/lieux/DEFAUT';
     }
 
     protected function execute($arguments = array(), $options = array())

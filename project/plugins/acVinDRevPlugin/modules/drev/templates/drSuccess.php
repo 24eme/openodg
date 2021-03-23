@@ -21,7 +21,9 @@
     </form>
     <?php else: ?>
         <p class="text-center" style="margin-top: 20px; padding: 150px;">Les données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?> ont correctement été importées <?php if($sf_user->isAdmin()): ?><small>(<a href="<?php echo url_for('drev_dr_upload', array('sf_subject' => $drev, 'force' => true)) ?>">changer le fichier</a>)</small><?php endif; ?>. </p>
-
+        <div class="col-xs-offset-6 col-xs-6 text-right">
+            <a href="<?php echo url_for('drev_revendication_superficie', $drev) ?>" class="btn btn-primary btn-upper">Valider et continuer  <span class="glyphicon glyphicon-chevron-right"></span></a>
+        </div>
     <?php endif; ?>
 </div>
 <?php if (!$drev->hasDocumentDouanier()): ?>
