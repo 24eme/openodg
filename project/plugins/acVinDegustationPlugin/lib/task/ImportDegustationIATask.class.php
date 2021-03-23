@@ -134,9 +134,7 @@ EOF;
             $doc->getLot($lot->unique_id)->affectable = false;
             $doc->save();
         }
-
-      }
-
+    }
     public function formatDate($date){
         if(!$date) {
             return null;
