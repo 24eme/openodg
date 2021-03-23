@@ -80,16 +80,16 @@
 <p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner à l'ODG.</strong></p>
 
 <table border="1">
-  <tr style="text-align: center">
-    <td style="padding: 25px 0px">
-      <?php echo tdStart() ?><span class="zap">o</span> Déclassement
+  <tr style="text-align: center;">
+    <td>
+      <br/><?php echo tdStart() ?> <?php echo echoCheck('Déclassement', false) ?><br/>
     </td>
-    <td style="padding: 25px 0px">
-      <?php echo tdStart() ?><span class="zap">o</span> Nouvelle dégustation
+    <td>
+      <br/><?php echo tdStart() ?> <?php echo echoCheck('Nouvelle dégustation', false) ?><br/>
     </td>
   </tr>
   <tr style="height: 250px">
-    <td><?php echo tdStart() ?> Date :</td>
-    <td><?php echo tdStart() ?> Signature opérateur :</td>
+    <td> Date :<br/><br/><br/><br/><br/><br/></td>
+    <td> Signature opérateur :<br/><br/><br/><br/><br/><br/></td>
   </tr>
 </table>
