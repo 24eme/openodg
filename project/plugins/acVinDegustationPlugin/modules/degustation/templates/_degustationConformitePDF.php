@@ -24,7 +24,7 @@
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-<table><tr><td><strong>Objet :</strong> Résultats contrôle interne,<strong><?php if (count($lots) > 1): ?>lots conformes<?php else: ?>lot conforme<?php endif ?></strong></td></tr></table>
+<table><tr><td><strong>Objet :</strong> Résultats contrôle interne, <strong><?php if (count($lots) > 1): ?>lots conformes<?php else: ?>lot conforme<?php endif ?></strong></td></tr></table>
 <br/><br/>
 
 
