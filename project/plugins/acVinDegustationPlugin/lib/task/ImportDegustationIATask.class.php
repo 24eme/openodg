@@ -126,10 +126,10 @@ EOF;
         }
 
         foreach(DegustationClient::getInstance()->getLotsPrelevables() as $lot) {
-            if(!preg_match("/^CHGT/", $lot->id_document)) {
+            if(!preg_match("/^CHGT/", $lot->id_document) && $lot->date >= '2020-11-01') {
                 continue;
             }
-            $doc = ChgtDenomClient::getInstance()->find($lot->id_document);
+            $doc = DeclarationClient::getInstance()->find($lot->id_document);
             $doc->getLot($lot->unique_id)->affectable = false;
             $doc->save();
         }
