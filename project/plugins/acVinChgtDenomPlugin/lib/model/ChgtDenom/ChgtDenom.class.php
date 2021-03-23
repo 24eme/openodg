@@ -223,31 +223,24 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
 
       if (!$this->isChgtTotal()) {
-        $lot->volume -= $this->changement_volume;
-        $lotBis = clone $lot;
-        $lot->numero_archive .= 'a';
-        $lotBis->numero_archive .= 'b';
-        $lotBis->volume = $this->changement_volume;
-        $lotBis->produit_hash = $this->changement_produit;
-        $lotBis->produit_libelle = $this->changement_produit_libelle;
-        $lotBis->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
-        foreach($this->getPourcentagesCepages() as $cep => $pc) {
-            $lotBis->details .= $cep.' ('.$pc.'%) ';
-        }
-        $lots[] = $lot;
-        $lots[] = $lotBis;
-      } else {
-        $lot->produit_hash = $this->changement_produit;
-        $lot->produit_libelle = $this->changement_produit_libelle;
-        $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
-        if (count($this->changement_cepages->toArray(true, false))) {
+        $lotOrig = clone $lot;
+        $lotOrig->volume -= $this->changement_volume;
+        $lotOrig->numero_archive .= 'a';
+        $lot->numero_archive .= 'b';
+        $lots[] = $lotOrig;
+      }
+      $lot->produit_hash = $this->changement_produit;
+      $lot->produit_libelle = $this->changement_produit_libelle;
+      $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
+      $lot->cepages = $this->changement_cepages;
+      if (count($this->changement_cepages->toArray(true, false))) {
           $lot->details = '';
           foreach($this->getPourcentagesCepages() as $cep => $pc) {
               $lot->details .= $cep.' ('.$pc.'%) ';
           }
-        }
-        $lots[] = $lot;
       }
+      $lots[] = $lot;
+
       foreach($lots as $l) {
         $l->affectable = true;
         $lot = $this->lots->add(null, $l);
