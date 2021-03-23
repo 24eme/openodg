@@ -710,7 +710,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 
-				if($free && is_null($lot->numero_table))  {
+				if($free && !$lot->numero_table)  {
 					$lots[] = $lot;
 					continue;
 				}
