@@ -121,7 +121,6 @@
           ],
           "callback": "getFirstChgtDenomFacturable",
           "callback_parameters": [
-            "/appellations/MED"
           ]
         }
       }
@@ -143,7 +142,6 @@
           ],
           "callback": "getSecondChgtDenomFacturable",
           "callback_parameters": [
-            "/appellations/MED"
           ]
         }
       }
