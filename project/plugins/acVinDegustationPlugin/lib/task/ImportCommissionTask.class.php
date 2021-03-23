@@ -108,7 +108,7 @@ EOF;
                   $this->saveDegustation($degustation);
               }
               $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
-              if($degustation) { $degustation->delete(); $degustation = null; }
+              //if($degustation) { $degustation->delete(); $degustation = null; }
           }
 
           if(!$degustation) {
