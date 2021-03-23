@@ -284,9 +284,13 @@ class degustationActions extends sfActions {
             }
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1, 'tri' => $this->tri));
         }
+
         $this->numero_table = $request->getParameter('numero_table');
 
         if (!$request->getParameter('tri')) {
+            if(!$this->tri){
+                $this->tri = 'Couleur|Genre|Appellation';
+            }
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $this->tri));
         }
         $this->tri_array = explode('|', strtolower($this->tri));
@@ -399,6 +403,7 @@ class degustationActions extends sfActions {
         if ($table == null) {
             $table = 0;
         }
+
         return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $table));
     }
 
