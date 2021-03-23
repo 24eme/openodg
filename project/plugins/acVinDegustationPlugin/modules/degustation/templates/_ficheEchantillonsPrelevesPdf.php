@@ -27,7 +27,7 @@
               <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
             </td>
             <td style="width:33%">
-              <p>Lieu : <?php echo $degustation->lieu; ?> </p>
+              <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
             </td>
           </tr>
 

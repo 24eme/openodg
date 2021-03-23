@@ -61,7 +61,6 @@
                 </table>
             </td>
           <?php endfor; ?>
-        </tr>
-        <tr style="line-height:30px;"><td></td></tr>
+        </tr>        
     <?php endforeach; ?>
     </table>
