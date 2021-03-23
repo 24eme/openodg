@@ -21,7 +21,6 @@ class TemplateFacture extends BaseTemplateFacture
 				$cotisations[$cotisation->getHash()] = $cotisation;
 			}
 		}
-
 		return $cotisations;
 	}
 
@@ -29,7 +28,7 @@ class TemplateFacture extends BaseTemplateFacture
 		$mouvements = array();
 		foreach ($this->docs as $docModele) {
 			$documents = $this->getDocumentFacturable($docModele, $compteIdentifiant, $this->getCampagne());
-			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsFacturesByDocs($compteIdentifiant, $documents));
+			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsFacturesByDocs($compteIdentifiant, $documents,$force));
 		}
 
 		return $mouvements;

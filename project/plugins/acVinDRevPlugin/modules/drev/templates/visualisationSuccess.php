@@ -71,7 +71,7 @@
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
             </a>
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default">
-                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
+                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;DRev
             </a>
         </div>
     </div>
@@ -80,9 +80,9 @@
         <div class="btn-group">
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)):
                 if (!$drev->validation_odg): ?>
-                    <a class="btn btn-default" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+                    <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
             <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin()): ?>
-                    <a class="btn btn-warning" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+                    <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
             <?php elseif ($drev->isFactures()): ?>
                 <span class="text-muted">DRev facturée</span>
             <?php endif; ?>
