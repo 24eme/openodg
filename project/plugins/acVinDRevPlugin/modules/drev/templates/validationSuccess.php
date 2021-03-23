@@ -60,7 +60,7 @@
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
                 </a>
                 <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;DRev
                 </a>
             </div>
         </div>
