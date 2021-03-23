@@ -194,13 +194,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getPourcentagesCepages() {
-      $total = 0;
+      $volume_total = 0;
       $cepages = array();
-      foreach($this->changement_cepages as $pc) {
-        $total += $pc;
+      foreach($this->changement_cepages as $volume) {
+        $volume_total += $volume;
       }
-      foreach($this->changement_cepages as $cep => $pc) {
-        $cepages[$cep] += round(($pc/$total) * 100);
+      foreach($this->changement_cepages as $cep => $volume) {
+        $cepages[$cep] += round(($volume/$volume_total) * 100);
       }
       return $cepages;
     }
