@@ -15,4 +15,8 @@ class drevComponents extends sfComponents {
         $this->drevsHistory = DRevClient::getInstance()->getHistory($this->etablissement->identifiant);
     }
 
+    public function executeMonEspaceIGP(sfWebRequest $request) {
+        $this->drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->etablissement->identifiant, $this->periode);
+    }
+
 }
