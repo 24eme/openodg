@@ -710,7 +710,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 
-				if($free && is_null($lot->numero_table))  {
+				if($free && !$lot->numero_table)  {
 					$lots[] = $lot;
 					continue;
 				}
@@ -892,6 +892,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $degustateurs;
+		}
+
+		public function getLotsNonAttables(){
+			$non_attables = array();
+			foreach ($this->getLotsPreleves() as $lot) {
+				if($lot->numero_table)
+					continue;
+				$non_attables[$lot->unique_id] = $lot;
+			}
+			return $non_attables;
 		}
 
 		public function hasAllDegustateursConfirmation(){
@@ -1206,7 +1216,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Fonctions de facturation ****/
 
-        public function creationMouvementFacture($cotisation){
+        public function creationMouvementFactureFromLot($cotisation, $lot){
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
             $mouvement->fillFromCotisation($cotisation);
@@ -1229,7 +1239,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
                 $create = false;
-                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot)->rows as $deg) {
+
+                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot) as $deg) {
                     $create = ($deg->id != $this->_id);
                 }
 
@@ -1237,7 +1248,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
 
-                $mouvements[$lot->declarant_identifiant][md5($lot->getNombrePassage())] = $this->creationMouvementFacture($cotisation);
+                $mouvements[$lot->declarant_identifiant][md5($lot->getNombrePassage())] = $this->creationMouvementFactureFromLot($cotisation, $lot);
 
             }
 
@@ -1253,12 +1264,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
 
-                $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFacture($cotisation);
+                $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFactureFromLot($cotisation,$lot);
             }
 
             return $mouvements;
         }
 
+
+        public function getFacturationNonConforme($cotisation,$filters)
+        {
+            $mouvements = array();
+            $keyCumul = $cotisation->getDetailKey();
+            foreach ($this->getLots() as $lot) {
+                if($lot->conformite && ($lot->conformite != Lot::CONFORMITE_CONFORME)){
+                    if(isset($mouvements[$lot->declarant_identifiant]) && $mouvements[$lot->declarant_identifiant][$keyCumul]){
+                        $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
+                        continue;
+                    }
+                }
+                $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFactureFromLot($cotisation, $lot);
+            }
+
+            return $mouvements;
+        }
 
 
         /** Mis à jour par la degustation du volume d'un lot de DRev **/

@@ -92,7 +92,7 @@ EOF;
               $campagne = str_replace('/', '-', trim($data[self::CSV_CAMPAGNE]));
           }
 
-          if($campagne < "2016-2017") {
+          if($campagne < "2019-2020") {
               continue;
           }
 
@@ -108,7 +108,7 @@ EOF;
                   $this->saveDegustation($degustation);
               }
               $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
-              if($degustation) { $degustation->delete(); $degustation = null; }
+              //if($degustation) { $degustation->delete(); $degustation = null; }
           }
 
           if(!$degustation) {
@@ -173,10 +173,6 @@ EOF;
 
           if(!$lot) {
               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE));
-          }
-
-          if(!$lot) {
-              $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'statut' => Lot::STATUT_AFFECTABLE));
           }
 
           if(!$lot) {

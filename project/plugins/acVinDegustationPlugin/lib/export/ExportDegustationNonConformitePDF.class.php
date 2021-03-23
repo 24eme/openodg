@@ -5,11 +5,15 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     protected $degustation = null;
     protected $etablissement = null;
     protected $lot = null;
+    protected $adresse;
+    protected $responsable;
 
     public function __construct($degustation, $lot, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->lot = $lot;
         $this->etablissement = $lot->getEtablissement();
+        $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
+        $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
@@ -21,8 +25,8 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     }
 
     public function create() {
-      $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF',
-      array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot )));
+      $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot, 'responsable' => $this->responsable)));
+      $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page2', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot )));
     }
 
 
@@ -45,12 +49,11 @@ class ExportDegustationNonConformitePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-      $title = sprintf("Syndicat des Vins IGP des Bouches du Rhône- Antenne d'Aix");
-        return $title;
+        return '';
     }
 
     protected function getFooterText() {
-        return "";
+        return sprintf("%s     %s - %s  %s    %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone'], $this->adresse['email']);
     }
 
     protected function getHeaderSubtitle() {

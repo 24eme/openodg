@@ -27,8 +27,8 @@ function showOnlyCepages($lot){
 
         if(count((array)$lot->cepages)) {
 
-          foreach ($lot->cepages as $cepage => $pourcentage_volume) {
-            $text .= " <small class='text-muted'>$pourcentage_volume% ".$cepage."</small>";
+          foreach ($lot->cepages as $cepage => $volume_cepage) {
+            $text .= " <small class='text-muted'>".$volume_cepage * 100 / $lot->volume."% ".$cepage."</small>";
           }
         }
     } else {

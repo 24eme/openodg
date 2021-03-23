@@ -55,8 +55,11 @@
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
 <div class="row">
-    <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && !DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php endif; ?>
+    <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
+        <?php include_component('drev', 'monEspaceIGP', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("DRevMarc")): ?>
     <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>

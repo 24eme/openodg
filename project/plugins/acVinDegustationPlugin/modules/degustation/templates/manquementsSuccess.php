@@ -5,8 +5,16 @@
 <div class="page-header no-border">
     <h2>Liste des manquements à traiter</h2>
 </div>
+
 <div class="row">
-<table class="table table-condensed">
+    <div class="form-group col-xs-10">
+      <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un filtre" data-hamzastyle-container=".table_manquements" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
+    </div>
+</div>
+<br/>
+
+<div class="row">
+<table class="table table-condensed table_manquements" >
 <thead>
     <th>Num. dossier</th>
     <th>Déclarant</th>
@@ -15,8 +23,10 @@
     <th>Traitement</th>
 </thead>
 <tbody>
-<?php foreach($manquements as $keyLot => $m): ?>
-    <tr class="<?php if($m->recours_oc): ?>list-group-item-warning<?php endif;?>">
+<?php foreach($manquements as $keyLot => $m):
+    $words = json_encode([$m->produit_libelle,$m->declarant_identifiant,Lot::$libellesConformites[$m->conformite],$m->declarant_nom,$m->numero_dossier,$m->millesime], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+    ?>
+    <tr class="<?php if($m->recours_oc): ?>list-group-item-warning<?php endif;?> hamzastyle-item" data-words='<?= $words ?>' >
         <td><span class="text-muted"><?php echo $m->numero_dossier; ?></span></td>
         <td><?php echo $m->declarant_nom; ?></td>
         <td><?php echo showProduitLot($m->getRawValue()) ?><small> - <span class="text-right"><?php echo formatFloat($m->volume); ?>&nbsp;hl</span></small></td>
@@ -46,3 +56,4 @@
 </tbody>
 </table>
 </div>
+<?php use_javascript('hamza_style.js'); ?>

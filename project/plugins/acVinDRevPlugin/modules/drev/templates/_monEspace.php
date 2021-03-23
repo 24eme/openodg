@@ -8,18 +8,19 @@
         <div class="panel-heading">
             <h3 class="panel-title">Revendication&nbsp;des&nbsp;produits&nbsp;<?php echo $periode; ?></h3>
         </div>
+        <?php if(DRevConfiguration::getInstance()->isRevendicationParLots())
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication a été validée pour cette année.</p>
                 <div style="margin-top: 76px;">
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Voir la DRev</a>
+                    <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser la déclaration</a>
                 </div>
             </div>
         <?php elseif ($drev && (DRevClient::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasDrevAdmin())): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication de cette année a été débutée sans avoir été validée.</p>
                 <div style="margin-top: 50px;">
-                    <a class="btn btn-block btn-primary" href="<?php echo url_for('drev_edit', $drev) ?>"><?php if($drev->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer la drev papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
+                    <a class="btn btn-block btn-primary" href="<?php echo url_for('drev_edit', $drev) ?>"><span class="glyphicon glyphicon-pencil"></span> Reprendre la saisie</a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('drev_delete', $drev) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </div>
             </div>
@@ -33,7 +34,7 @@
                 <?php if ($sf_user->isAdmin()): ?>
                 <div style="margin-top: 50px;">
                     <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
-                    <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la drev papier</a>
+                    <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -43,7 +44,7 @@
                 <div style="margin-top: 50px;">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
                     <?php if ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()): ?>
-                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la drev papier</a>
+                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
                     <?php endif; ?>
                 </div>
             </div>
