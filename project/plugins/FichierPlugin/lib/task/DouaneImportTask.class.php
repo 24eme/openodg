@@ -46,6 +46,10 @@ EOF;
                 $cvi = $cviParts[0];
                 $campagne = $cviParts[1];
                 $type = $cviParts[2];
+                if (!$cvi) {
+                    echo "$type;ERREUR;pas de CVI pour cette ligne\n";
+                    continue;
+                }
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi,true);
 
