@@ -140,7 +140,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       public function save() {
           $this->superficies_facturables = $this->calculSurfaceFacturable();
-          parent::save();
+          return parent::save();
       }
 
       protected function doSave() {
