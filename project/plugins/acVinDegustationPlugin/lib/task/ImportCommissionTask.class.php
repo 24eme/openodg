@@ -14,6 +14,7 @@ class ImportCommissionIATask extends ImportLotsIATask
     const CSV_TYPE_LIGNE = 9;
     const CSV_RAISON_SOCIALE = 10;
     const CSV_NOM = 10;
+    const CSV_COLLEGE = 11;
     const CSV_APPELLATION = 11;
     const CSV_COULEUR = 12;
     const CSV_VOLUME = 14;
@@ -50,6 +51,12 @@ EOF;
         $this->initProduitsCepages();
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        $degustateurs =  array();
+
+        foreach(CompteTagsView::getInstance()->listByTags('automatique', 'degustateur') as $row) {
+            $compte = CompteClient::getInstance()->find($row->id);
+            $degustateurs[$compte->nom." ".$compte->prenom] = $compte;
+        }
 
         $degustation = null;
         $ligne=0;
@@ -85,6 +92,10 @@ EOF;
               $campagne = str_replace('/', '-', trim($data[self::CSV_CAMPAGNE]));
           }
 
+          if($campagne < "2019-2020") {
+              continue;
+          }
+
           $newDegustation = new Degustation();
           $newDegustation->date=$date;
           $newDegustation->lieu = $data[self::CSV_LIEU_NOM]." — ".$data[self::CSV_LIEU_ADRESSE]." ".$data[self::CSV_LIEU_CODE_POSTAL]." ".$data[self::CSV_LIEU_COMMUNE];
@@ -94,11 +105,10 @@ EOF;
 
           if(!$degustation || $newDegustation->_id != $degustation->_id) {
               if($degustation) {
-                  $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
-                  $degustation->save();
+                  $this->saveDegustation($degustation);
               }
               $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
-              if($degustation) { $degustation->delete(); $degustation = null; }
+              //if($degustation) { $degustation->delete(); $degustation = null; }
           }
 
           if(!$degustation) {
@@ -106,6 +116,28 @@ EOF;
           }
 
           if($data[self::CSV_TYPE_LIGNE] == "JURY") {
+
+              if(!isset($degustateurs[$data[self::CSV_RAISON_SOCIALE]])) {
+                  echo "WARNING;Dégustateur non trouvé;".$line."\n";
+                  continue;
+              }
+
+              if($data[self::CSV_COLLEGE] == "Porteur de mémoire") {
+                  $college = "degustateur_porteur_de_memoire";
+              }
+
+              if($data[self::CSV_COLLEGE] == "Technicien") {
+                  $college = "degustateur_technicien";
+              }
+
+              if($data[self::CSV_COLLEGE] == "Usager du produit") {
+                  $college = "degustateur_usager_du_produit";
+              }
+
+              $degustateur = $degustation->degustateurs->add($college)->add($degustateurs[$data[self::CSV_RAISON_SOCIALE]]->_id);
+              $degustateur->add('libelle', $degustateurs[$data[self::CSV_RAISON_SOCIALE]]->nom_a_afficher);
+              $degustateur->add('confirmation', true);
+
               continue;
           }
 
@@ -126,6 +158,7 @@ EOF;
                continue;
             }
 
+          $alphas = range('A', 'Z');
           $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
           $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
           $numeroTable = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[0]);
@@ -149,7 +182,8 @@ EOF;
 
           $lot = $degustation->addLot($lot, false);
           $lot->numero_table = $numeroTable;
-          $lot->numero_anonymat = $numeroAnonymat;
+          $lot->numero_anonymat = $alphas[((int)$numeroTable)-1].$numeroAnonymat;
+          $lot->email_envoye = $date;
 
           if($data[self::CSV_RESULTAT] == "C") {
              $lot->statut = Lot::STATUT_CONFORME;
@@ -168,10 +202,18 @@ EOF;
         }
 
         if($degustation) {
-            $degustation->etape = DegustationEtapes::ETAPE_RESULTATS;
-            $degustation->save();
+            $this->saveDegustation($degustation);
         }
       }
+
+    public function saveDegustation($degustation) {
+        if($degustation->date > date('Y-m-d H:i:s')) {
+            $degustation->etape = DegustationEtapes::ETAPE_LOTS;
+        } else {
+            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
+        }
+        $degustation->save();
+    }
 
     public function formatDate($date){
         if(!$date) {

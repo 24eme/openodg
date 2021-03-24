@@ -182,8 +182,11 @@ EOF;
                   $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
             }
-            $campagne = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
-            $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
+            $periode = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
+            if($periode < 2019) {
+                continue;
+            }
+            $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $periode;
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroLot = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
@@ -193,7 +196,7 @@ EOF;
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
 
            $previousdoc = $document;
-           $document = $this->getDocument($type, $document, $etablissement, $campagne, $date, $numeroDossier);
+           $document = $this->getDocument($type, $document, $etablissement, $periode, $date, $numeroDossier);
 
             if($previousdoc && $document->_id != $previousdoc->_id) {
                 try {
@@ -239,9 +242,8 @@ EOF;
                 $destinationDate = $date;
             }
             $lot->destination_date = $destinationDate;
+            $lot->affectable = $prelevable;
             $lot->date = $date;
-            //$lot->affectable = $prelevable;
-            $lot->affectable = true;
             $lot->specificite = null;
 
             if ($data[self::CSV_TYPE] == self::TYPE_CONDITIONNEMENT) {
@@ -278,16 +280,17 @@ EOF;
       $key = str_replace('PAYS-DES-', '', $key);
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
       $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
+      $key = str_replace('NORD-', '', $key);
       return $key;
     }
 
     protected function identifyCepage($key) {
-      if (isset($this->cepages[KeyInflector::slugify(trim($key))])) {
-        return $this->cepages[KeyInflector::slugify(trim($key))];
-      } else {
-        $correspondances = self::$correspondancesCepages;
-        return (isset($correspondances[trim($key)]))? $correspondances[trim($key)] : null;
+      $key = trim($key);
+      if (isset($this->cepages[KeyInflector::slugify($key)])) {
+        return $this->cepages[KeyInflector::slugify($key)];
       }
+      $correspondances = self::$correspondancesCepages;
+      return (isset($correspondances[$key]))? $correspondances[$key] : strtoupper(str_replace(' ', '.', $key));
     }
 
     protected function identifyEtablissement($data) {
@@ -360,7 +363,7 @@ EOF;
         $newDrev->validation = $date;
         $newDrev->validation_odg = $date;
         $newDrev->numero_archive = $numeroDossier;
-
+        $newDrev->add('date_degustation_voulue', $date);
         if(!$drev || $newDrev->_id != $drev->_id) {
           $drev = DRevClient::getInstance()->find($newDrev->_id, acCouchdbClient::HYDRATE_JSON);
 

@@ -606,8 +606,8 @@
                   "rendement_vci_total": null
                 }
               },
-              "NAR": {
-                "libelle": "Nord Ardèche",
+              "ARD": {
+                "libelle": "Ardèche",
                 "format_libelle": "",
                 "code": "",
                 "code_produit": null,

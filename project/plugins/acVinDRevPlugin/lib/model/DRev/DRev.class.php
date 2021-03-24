@@ -219,6 +219,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lots;
     }
 
+    public function getLotsByDate($desc = false)
+    {
+        if (! $this->exist('lots')) {
+            return [];
+        }
+
+        $lots = $this->_get('lots')->toArray(1,1);
+        uasort($lots, "DRev::compareLots");
+
+        if ($desc) {
+            $lots = array_reverse($lots);
+        }
+
+        return $lots;
+    }
+
     public static function compareLots($lotA, $lotB){
         $dateA = $lotA->getDate();
         $dateB = $lotB->getDate();
@@ -1396,6 +1412,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     /**** FIN DES MOUVEMENTS ****/
+
+    /**** FCT de FACTURATION ****/
+
+    public function getForfaitDRev(){
+        return ($this->declarant->famille != EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR);
+    }
+
+    public function getForfaitDRevNegociantVini(){
+        return ($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR);
+    }
 
     /**** MOUVEMENTS LOTS ****/
 

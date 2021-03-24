@@ -1,5 +1,9 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Lot') ?>
 <style>
+  .font-1-3em{
+    font-size: 1.3em;
+  }
 </style>
     <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php foreach($plancheLots as $lotInfo): ?>
@@ -9,7 +13,7 @@
                 <table cellspacing=0 cellpadding=0 style="font-size:8px;">
                   <tr style="line-height:8px;">
                     <td style="overflow-wrap:break-word;">
-                      <?php echo tdStart() ?>&nbsp;&nbsp;<strong style="font-size:10px;"><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
+                      <?php echo tdStart() ?>&nbsp;N°ODG:<strong style="font-size:10px;"><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
                     </td>
                     <td style="overflow-wrap:break-word;text-align: right;">
                       <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
@@ -43,18 +47,17 @@
                   <tr style="line-height:12px;">
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:7px;">
                       <?php echo tdStart() ?>
-                      <?php if ($lotInfo->lot->details): ?>
-                      <strong><?php echo $lotInfo->lot->details;  ?></strong>
-                    <?php else: echo (""); ?>
-                      <?php endif; ?>
+
+                      <strong><?php echo showOnlyCepages($lotInfo->lot) ?></strong>
+
                     </td>
                   </tr>
                   <tr>
                     <td style="overflow-wrap:break-word;line-height:12px; width:75%;">
                       <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
-                      &nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_logement_operateur.$centilisation;  ?></strong>
+                      &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo $lotInfo->lot->numero_logement_operateur.$centilisation;  ?></strong>
                     </td>
-                    <td style="text-align: right; width:25%;">
+                    <td class="font-1-3em" style="text-align: right; width:25%;">
                       <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
@@ -62,6 +65,5 @@
             </td>
           <?php endfor; ?>
         </tr>
-        <tr style="line-height:30px;"><td></td></tr>
     <?php endforeach; ?>
     </table>

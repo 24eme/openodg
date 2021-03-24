@@ -122,7 +122,7 @@ EOF;
             } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
               $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
             } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-              $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+              $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
             } else {
               $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
             }
@@ -136,6 +136,11 @@ EOF;
             }
             if (isset($data[self::CSV_CVI])){
               $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
+              if (strlen($cvi) < 10) {
+                  for($i = 0 ; $i < ( 10 - strlen($cvi) ) ;  $i++) {
+                    $cvi = $cvi."0";
+                  }
+              }
             }
             $etablissement->cvi = ($cvi) ? str_pad($cvi, 10, "0", STR_PAD_LEFT) : null;
             $societe->pushAdresseTo($etablissement);
@@ -154,7 +159,7 @@ EOF;
             echo "Établissement cooperative non identifié :".$acheteur."\n";
             return;
         }
-        echo $etablissement->_id.":".$acheteur."\n";
+
         $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteurId);
         $etablissement->save();
     }

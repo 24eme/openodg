@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(38);
+$t = new lime_test(50);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -66,6 +66,7 @@ $lot->id_document = $drev->_id;
 $lot->millesime = $campagne;
 $lot->numero_logement_operateur = $i;
 $lot->volume = 50;
+$lot->affectable = true;
 $lot->destination_type = null;
 $lot->destination_date = ($campagne+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d", 1);
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
@@ -114,27 +115,42 @@ $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
 $t->is(count($lots), 3, "3 mouvements disponibles au changement de dénomination");
 
 $lot = current($lots);
+$t->is($lot->statut, Lot::STATUT_NONCONFORME, 'le lot sélectionné de la dégust est bien NON CONFORME');
 $volume = $lot->volume;
 $autreLot = next($lots);
 
-$t->comment("Création d'un Chgt de Denom Total");
+$t->comment("Création d'un Changement de Denom Total");
 
 $chgtDenom->setLotOrigine($lot);
 $chgtDenom->changement_produit = $autreLot->produit_hash;
 $chgtDenom->changement_volume = $volume;
+$chgtDenom->changement_cepages = array('CABERNET' => $volume);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
 
-$t->is(count($chgtDenom->lots), 1, "1 lot généré");
+$t->is(count($chgtDenom->lots), 1, "1 seul lot généré");
 $chgtDenom->generateMouvementsLots(1);
 $chgtDenom->save();
 
-$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d'archive correctement postfixés : ".$lot->numero_archive.'a');
+$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive, "Le numéro d'archive n'a pas changé");
 $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
-$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot conforme");
-$t->ok($chgtDenom->getLotOrigine(), "récupération du mouvement de lot");
-$t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE), "statut origine changé");
+$t->ok($chgtDenom->isChgtTotal(), "Le changement est bien indiqué comme total");
+$lot = $chgtDenom->lots->get(0);
+$t->is($lot->produit_hash, $chgtDenom->changement_produit, "Le produit est bien le nouveau dans le lot");
+$t->is($lot->volume, $chgtDenom->changement_volume, "Le volume est bien le nouveau dans le lot");
+$t->is($lot->produit_libelle, $chgtDenom->changement_produit_libelle, "Le libellé du produit est bien le nouveau dans le lot");
+$t->is($lot->cepages->toArray(), array('CABERNET' => $volume), "Le 100% cepage est bien appliqué dans dans le lot");
+
+$t->is(count($chgtDenom->lots->get(0)->getMouvements()), 3, "3 mouvements de lots");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "statut du lot change dest");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_REVENDIQUE), "statut du lot revendique");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_AFFECTABLE), "statut du lot affectable");
+$degustProvenance = $chgtDenom->lots->get(0)->getLotProvenance();
+$t->is($degustProvenance->getDocument()->_id, $degustation->_id, 'la provenance du chgt est bien la dégustation '.$degustation->_id);
+$t->ok($degustProvenance->getMouvement(Lot::STATUT_REVENDIQUE_CHANGE), "statut du lot de la degust est à 'revendiqué changé'");
+$t->ok(!$degustProvenance->getMouvement(Lot::STATUT_REVENDIQUE), "plus de statut 'revendiqué' dans le lot de la degust");
+$t->ok($degustProvenance->getMouvement(Lot::STATUT_CHANGE_SRC), "statut du lot de la degust à 'revendiqué changé'");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -151,8 +167,8 @@ $t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d
 $t->is($chgtDenom->lots[1]->numero_archive, $lot->numero_archive.'b', "numeros d'archive correctement postfixés : ".$lot->numero_archive.'b');
 $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
-$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_NONCONFORME, "statut du lot conforme");
-$t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE), "statut origine changé");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_NONCONFORME, "statut du lot orginel est bien non conforme");
+$t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE), "le lot originel a bien un mouvement au statut changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -162,14 +178,14 @@ $chgtDenom->setLotOrigine($lot);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = $volume;
 $chgtDenom->generateLots();
-$t->is(count($chgtDenom->lots), 1, "1 lot généré");
+$t->ok($chgtDenom->isChgtTotal(), "Le changement qui a un volume identique est bien un changement total");
+$t->is(count($chgtDenom->lots), 1, "Ce changement total ne génère plus que 1 lot");
 $chgtDenom->generateMouvementsLots(1);
-$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive, "Un chgm total ne change pas le numero d'archive");
 $t->is($chgtDenom->changement_produit, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
-$t->is(count($chgtDenom->lots), 0, "Pas lot dans un declassement total");
-$t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_DECLASSE), "statut origine déclassé");
+$t->is(count($chgtDenom->lots), 1, "Dans un declassement total, on a bien un seul lot");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -181,10 +197,11 @@ $chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->generateLots();
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
 $chgtDenom->generateMouvementsLots();
-$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "numeros d'archive correctement postfixés");
+$t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "Pour le déclassement, le 1er lot est postfixé par a");
+$t->is($chgtDenom->lots[1]->numero_archive, $lot->numero_archive.'b', "Pour le déclassement, le 2d lot est postfixé par b");
 $t->is($chgtDenom->changement_produit, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
-$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CONFORME), "statut du lot d'origine conforme");
-$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "statut du nouveau lot affectable");
-$t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE), "statut origine changé");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONCONFORME), "le mouvement du lot d'origine a bien toujours un statut non conforme");
+$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "statut des mvt nouveau lot a bien un affectable");
+$t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE), "statut des mvt du lot origine a bien un changé");

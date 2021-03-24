@@ -444,10 +444,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function updateLdap($verbose = 0) {
         $ldap = new CompteLdap();
+        try {
         if ($this->isActif())
             $ldap->saveCompte($this, $verbose);
         else
-            $ldap->deleteCompte($this, $verbose);
+            @$ldap->deleteCompte($this, $verbose);
+        } catch(Exception $e) {
+            echo $this->_id." save ldap : ".$e->getMessage()."\n";
+        }
     }
 
     public function buildDroits($removeAll = false) {

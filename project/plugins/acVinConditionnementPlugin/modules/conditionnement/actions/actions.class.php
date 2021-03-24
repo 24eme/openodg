@@ -8,7 +8,7 @@ class conditionnementActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_CONDITIONNEMENT, $etablissement);
 
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant);
         $conditionnement->save();
 
         return $this->redirect('conditionnement_edit', $conditionnement);

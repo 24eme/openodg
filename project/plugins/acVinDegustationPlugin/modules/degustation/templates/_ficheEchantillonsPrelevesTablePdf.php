@@ -36,7 +36,7 @@
               <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
             </td>
             <td style="width:33%">
-              <p>Lieu : <?php echo $degustation->lieu; ?> </p>
+              <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
             </td>
           </tr>
 
@@ -73,7 +73,7 @@
        <?php $firstDisplay = true; $class = "bg-tab$numTab"?>
         <?php foreach ($lotTable as $numero_dossier => $lotInfo): ?>
           <?php $firstDisplayTab = true; $firstDisplayOp = true; ?>
-          <?php foreach ($lotInfo as $numAnonyme => $lot): ?>
+          <?php foreach ($lotInfo as $uniqueId => $lot): ?>
 
             <tr class="<?php echo $class; ?>" >
               <?php if($firstDisplayTab == true ): ?>
@@ -85,7 +85,7 @@
               <?php $firstDisplayOp= false; endif; ?>
 
               <td><small><?php echo $lot->numero_archive ?></small></td>
-              <td><small><?php echo $numAnonyme ?></small></td>
+              <td><small><?php echo $lot->numero_anonymat ?></small></td>
               <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
               <td style="text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
               <td><small><?php echo $lot->produit_libelle ?></small></td>

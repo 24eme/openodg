@@ -81,16 +81,14 @@ php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
 echo "Import des Changements de denomination"
 
-zip $DATA_DIR/changement_denom.xlsx $DATA_DIR/changement_denom.xls
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/changement_denom.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/changement_denom.csv
+cat $DATA_DIR/changement_denom.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' > $DATA_DIR/changement_denom.csv
 php symfony import:chgt-denom-ia $DATA_DIR/changement_denom.csv --application="$ODG" --trace
 
 echo "Import des Degustations"
-# trie des lots par date de commission pour dire qu'une date correspond à une degustation.
-#sort -t";" -k32.7,32.10 -k32.4,32.5 -k32.1,32.2 $DATA_DIR/lots.csv  > $DATA_DIR/lots_sort_by_date.csv
-#php symfony import:degustations-ia $DATA_DIR/lots_sort_by_date.csv --application="$ODG" --trace
+
 sed -i 's/\xC2\xA0//g' $DATA_DIR/commissions.csv
 php symfony import:commissions-ia $DATA_DIR/commissions.csv --application="$ODG" --trace
+php symfony import:degustations-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/gestion_nc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/gestion_nc.csv
 #php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace
@@ -103,7 +101,8 @@ php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --applicatio
 echo "Habilitations"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
-php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xls | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
+php symfony import:habilitation-ia $DATA_DIR/habilitations.csv $DATA_DIR/historique_DI.csv --application="$ODG" --trace
 
 echo "Contacts"
 

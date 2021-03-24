@@ -17,28 +17,41 @@ class MouvementLotHistoryView extends acCouchdbView
         return acCouchdbManager::getView('mouvement', 'lotHistory');
     }
 
-    public function getMouvements($declarant, $campagne, $dossier, $archive, $documentOrdre = null)
+    public function getMouvements($declarant, $campagne, $dossier, $archive, $documentOrdre = null, $statut = null, $descending = false)
     {
         $keys = array($declarant, $campagne, $dossier, $archive);
         if($documentOrdre) {
             $keys[] = $documentOrdre;
         }
 
+        if($statut) {
+            $keys[] = $statut;
+        }
+
+        if ($descending)
+            return $this->client
+                ->endkey($keys)
+                ->startkey(array_merge($keys, array(array())))
+                ->descending(true)
+                ->reduce(false)
+                ->getView($this->design, $this->view);
+
         return $this->client
-                    ->startkey($keys)
-                    ->endkey(array_merge($keys, array(array())))
-                    ->reduce(false)
-                    ->getView($this->design, $this->view);
+                ->startkey($keys)
+                ->endkey(array_merge($keys, array(array())))
+                ->reduce(false)
+                ->getView($this->design, $this->view);
     }
 
-    public function getMouvementsByDeclarant($declarant,$level = 4)
+    public function getMouvementsByDeclarant($declarant,$campagne,$level = 4)
     {
-        $keys = array($declarant);
+        $keys = array($declarant, $campagne);
 
         return $this->client
-                    ->startkey($keys)
-                    ->endkey(array_merge($keys, array(array())))
+                    ->endkey($keys)
+                    ->startkey(array_merge($keys, array(array())))
                     ->reduce(true)->group_level($level)
+                    ->descending(true)
                     ->getView($this->design, $this->view);
     }
 

@@ -32,7 +32,7 @@
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
     <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
-	<?php  if (!$drev->isPapier() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
@@ -60,7 +60,7 @@
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
                 </a>
                 <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;DRev
                 </a>
             </div>
         </div>

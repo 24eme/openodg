@@ -140,6 +140,9 @@ EOF;
               if(preg_match('/Porteur de mémoire/', $data[self::CSV_COLLEGE])) {
                   $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
               }
+              if(preg_match('/Observateur/', $data[self::CSV_COLLEGE])) {
+                  $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
+              }
               if(preg_match('/Technicien/', $data[self::CSV_COLLEGE])) {
                   $compte->add('droits')->add(null, 'degustateur:technicien');
               }
@@ -147,8 +150,15 @@ EOF;
                   $compte->add('droits')->add(null, 'degustateur:usager_du_produit');
               }
             }
+            if ($data[self::CSV_FORMATION] == "Oui") {
+                $compte->tags->add("manuel")->add("degustateur:formation");
+            }
+            if ($data[self::CSV_COMPETENCES]) {
+                $competence = trim($data[self::CSV_COMPETENCES]);
+                $competence = "degustateur:competence_".preg_replace('/[\(\) ]/', '_', $competence);
+                $compte->tags->add("manuel")->add(null, $competence);
+            }
             $compte->save();
-
         }
     }
 }

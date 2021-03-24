@@ -19,6 +19,15 @@
         </h2>
       </div>
       <div class="panel-body">
+        <?php if(count($degustation->getLotsNonAttables())): ?>
+        <div class="row">
+            <div class="col-xs-12 text">
+              <p class="alert alert-warning">
+                  <span class="glyphicon glyphicon-warning-sign"> Vous avez <strong><?php echo count($degustation->getLotsNonAttables()); ?> lot(s)</strong> qui ne sont pas attablé(s).</span>
+              </p>
+            </div>
+        </div>
+      <?php endif; ?>
         <div class="row">
             <?php if($degustation->isAnonymized()): ?>
               <div class="col-xs-12">

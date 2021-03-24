@@ -194,13 +194,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getPourcentagesCepages() {
-      $total = 0;
+      $volume_total = 0;
       $cepages = array();
-      foreach($this->changement_cepages as $pc) {
-        $total += $pc;
+      foreach($this->changement_cepages as $volume) {
+        $volume_total += $volume;
       }
-      foreach($this->changement_cepages as $cep => $pc) {
-        $cepages[$cep] += round(($pc/$total) * 100);
+      foreach($this->changement_cepages as $cep => $volume) {
+        $cepages[$cep] += round(($volume/$volume_total) * 100);
       }
       return $cepages;
     }
@@ -223,32 +223,24 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
 
       if (!$this->isChgtTotal()) {
-        $lot->volume -= $this->changement_volume;
-        $lotBis = clone $lot;
-        $lot->numero_archive .= 'a';
-        $lotBis->numero_archive .= 'b';
-        $lotBis->volume = $this->changement_volume;
-        $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
-        $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lotBis->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
-        foreach($this->getPourcentagesCepages() as $cep => $pc) {
-            $lotBis->details .= $cep.' ('.$pc.'%) ';
-        }
-        $lots[] = $lot;
-        $lots[] = $lotBis;
-      } else {
-        $lot->numero_archive .= 'a';
-        $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
-        $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
-        if (count($this->changement_cepages->toArray(true, false))) {
+        $lotOrig = clone $lot;
+        $lotOrig->volume -= $this->changement_volume;
+        $lotOrig->numero_archive .= 'a';
+        $lot->numero_archive .= 'b';
+        $lots[] = $lotOrig;
+      }
+      $lot->produit_hash = $this->changement_produit;
+      $lot->produit_libelle = $this->changement_produit_libelle;
+      $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
+      $lot->cepages = $this->changement_cepages;
+      if (count($this->changement_cepages->toArray(true, false))) {
           $lot->details = '';
           foreach($this->getPourcentagesCepages() as $cep => $pc) {
               $lot->details .= $cep.' ('.$pc.'%) ';
           }
-        }
-        $lots[] = $lot;
       }
+      $lots[] = $lot;
+
       foreach($lots as $l) {
         $l->affectable = true;
         $lot = $this->lots->add(null, $l);
@@ -334,10 +326,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $lot->updateDocumentDependances();
 
             if($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST));
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
             }
 
-            if($lot->affectable && $this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT) {
+            if($lot->affectable) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
             }
         }
@@ -350,11 +343,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lot = $this->getLotOrigine();
       $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
       $libelle .= ($this->isChgtTotal())? '' : ' partiel';
-      $libelle .= ' du logement n°'.$lot->numero_logement_operateur;
+      $libelle .= ' lot de '.$lot->produit_libelle.' '.$lot->millesime;
+      $libelle .= ' (logement '.$lot->numero_logement_operateur.')';
       $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->validation,
+    		'date_depot' => preg_replace('/T.*/', '', $this->validation),
     		'libelle' => $libelle,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
@@ -417,7 +411,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $mouvement->fillFromCotisation($cotisation);
           $mouvement->facture = 0;
           $mouvement->facturable = 1;
-          $mouvement->date = $this->getCampagne().'-12-10';
+          $mouvement->date = $this->validation_odg;
           $mouvement->date_version = $this->validation;
           $mouvement->version = $this->version;
 
@@ -474,6 +468,35 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     /**** FIN DES MOUVEMENTS ****/
+
+    public function getFirstChgtDenomFacturable()
+    {
+
+        $views = ChgtDenomClient::getInstance()->getHistoryCampagne($this->identifiant,substr($this->campagne,0,4));
+
+        foreach ($views as $id => $view) {
+            if($id == $this->_id){
+                return 1;
+            }
+            return 0;
+        }
+    }
+
+    public function getSecondChgtDenomFacturable()
+    {
+        $views = ChgtDenomClient::getInstance()->getHistoryCampagne($this->identifiant,substr($this->campagne,0,4));
+        $first = true;
+        foreach ($views as $id => $view) {
+            if($first){
+                $first = false;
+                continue;
+            }
+            if($id == $this->_id){
+                return 1;
+            }
+        }
+        return 0;
+    }
 
 
     public function getVolumeFacturable($produitFilter = null)

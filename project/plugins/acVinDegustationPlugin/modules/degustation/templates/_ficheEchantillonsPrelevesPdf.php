@@ -27,7 +27,7 @@
               <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
             </td>
             <td style="width:33%">
-              <p>Lieu : <?php echo $degustation->lieu; ?> </p>
+              <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
             </td>
           </tr>
 
@@ -64,14 +64,14 @@
      <?php  foreach($lots as $numero_dossier => $lotInfo):  ?>
        <?php $firstDisplay = true; ?>
 
-        <?php foreach ($lotInfo as $numAnonyme => $lot): ?>
+        <?php foreach ($lotInfo as $uniqueId => $lot): ?>
           <tr>
             <?php if($firstDisplay == true): ?>
               <td rowspan="<?php echo count($lotInfo); ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
               <td rowspan="<?php echo count($lotInfo); ?>" style="vertical-align: middle;"><small><?php echo $lot->declarant_nom."<br>".$lot->declarant_identifiant;?></small></td>
             <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
-            <td><small><?php echo $numAnonyme ?></small></td>
+            <td><small><?php echo $lot->numero_anonymat ?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
             <td><small><?php echo $lot->produit_libelle ?></small></td>

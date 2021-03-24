@@ -27,7 +27,11 @@
           <div class="col-xs-12">
               <a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a>
               <a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des lots à prélever</a>
-              <a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes de prélèvement (avec anonymat labo)</a>
+              <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
+                  <a href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'anonymat4labo' => true]) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes de prélèvement (avec anonymat labo)</a>
+              <?php else : ?>
+                  <a href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes de prélèvement</a>
+              <?php endif ?>
               <a href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des lots pour labo</a>
               <br/>
               <br/>

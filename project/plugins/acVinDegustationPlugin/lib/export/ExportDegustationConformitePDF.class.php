@@ -5,11 +5,13 @@ class ExportDegustationConformitePDF extends ExportPDF {
     protected $degustation = null;
     protected $etablissement = null;
     protected $adresse;
+    protected $responsable;
 
     public function __construct($degustation,$etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
         $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
+        $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -28,7 +30,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
                 $lots[] = $lot;
             }
         }
-        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots )));
+        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots, 'responsable' => $this->responsable)));
       }
 
 
@@ -51,12 +53,12 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-      $title = sprintf($this->adresse['raison_sociale']);
+        $title = '';
         return $title;
     }
 
     protected function getFooterText() {
-        return sprintf("%s     %s - %s  %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone']);
+        return sprintf("%s     %s - %s  %s    %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone'], $this->adresse['email']);
     }
 
     protected function getHeaderSubtitle() {

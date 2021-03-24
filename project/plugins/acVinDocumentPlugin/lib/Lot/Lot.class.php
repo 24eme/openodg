@@ -16,22 +16,26 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CONFORME = "08_CONFORME";
     const STATUT_AFFECTE_SRC = "07_AFFECTE_SRC";
     const STATUT_NONCONFORME = "08_NON_CONFORME";
+    const STATUT_MANQUEMENT_EN_ATTENTE = "01_MANQUEMENT_EN_ATTENTE";
     const STATUT_RECOURS_OC = "09_RECOURS_OC";
     const STATUT_CONFORME_APPEL = "10_CONFORME_APPEL";
+    const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
 
     const STATUT_CHANGE = "CHANGE";
     const STATUT_DECLASSE = "DECLASSE";
     const STATUT_ELEVAGE = "ELEVAGE";
 
+    const STATUT_CHANGE_DEST = "02_CHANGE_DEST";
+
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
+    const STATUT_REVENDIQUE_CHANGE = "01_REVENDIQUE_CHANGE";
     const STATUT_ENLEVE = "01_ENLEVE";
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
     const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
-
-    const STATUT_MANQUEMENT_EN_ATTENTE = "01_MANQUEMENT_EN_ATTENTE";
+    const STATUT_CHANGE_SRC = "05_CHANGE_SRC";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -55,6 +59,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_DEGUSTE => 'Dégusté',
         self::STATUT_CONFORME => 'Conforme',
         self::STATUT_NONCONFORME => 'Non conforme',
+        self::STATUT_NONCONFORME_LEVEE => 'Non conformité levée',
         self::STATUT_RECOURS_OC => 'En recours OC',
         self::STATUT_CONFORME_APPEL => 'Conforme en appel',
         self::STATUT_AFFECTE_SRC => 'Affecte src',
@@ -71,6 +76,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_NONAFFECTABLE => 'Non affectable',
         self::STATUT_AFFECTABLE => 'Affectable',
         self::STATUT_AFFECTE_SRC_DREV => 'Affecté source drev',
+
+        self::STATUT_CHANGE_DEST => 'Changé dest'
 
     );
 
@@ -137,7 +144,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getDefaults() {
         $defaults = array();
-        $defaults['millesime'] = $this->getDocument()->campagne;
+        $defaults['millesime'] = $this->millesime;
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
           $defaults['specificite'] = self::SPECIFICITE_UNDEFINED;
         }
@@ -560,16 +567,31 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getCepagesLibelle($withRepartition = true) {
         $libelle = null;
-        foreach($this->cepages as $cepage => $repartition) {
+        foreach($this->getPourcentagesCepages() as $cepage => $repartition) {
             if($libelle) {
                 $libelle .= ", ";
             }
             $libelle .= $cepage;
             if($withRepartition) {
-                $libelle .= " (".$repartition."%)";
+                $libelle .= " (".number_format($repartition, 2, ',', ' ')."%)";
             }
         }
         return $libelle;
+    }
+
+    public function getPourcentagesCepages() {
+      $volume_total = 0;
+      $cepages = array();
+      foreach($this->cepages as $volume) {
+        $volume_total += $volume;
+      }
+      foreach($this->cepages as $cep => $volume) {
+        if (!isset($cepages[$cep])) {
+            $cepages[$cep] = 0;
+        }
+        $cepages[$cep] += round(($volume/$volume_total) * 100);
+      }
+      return $cepages;
     }
 
     public function getNumeroLogementOperateur() {
@@ -650,7 +672,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->numero_dossier = $this->numero_dossier;
         $mouvement->numero_archive = $this->numero_archive;
         $mouvement->libelle = $this->getLibelle();
-        $mouvement->detail = ($detail) ?? null;
+        $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
         $mouvement->region = '';
         $mouvement->version = $this->getVersion();

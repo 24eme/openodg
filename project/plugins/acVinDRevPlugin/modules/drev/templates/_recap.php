@@ -126,8 +126,11 @@
             <thead>
               <tr>
                 <th class="col-xs-1">Date Rev.</th>
+                <?php if($drev->isValidee()): ?>
+                <th class="col-xs-1">Num. Dossier</th>
+                <?php endif; ?>
                 <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-6">Produit (millesime)</th>
+                <th class="text-center col-xs-5">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
                 <?php if ($sf_user->isAdmin()): ?>
@@ -139,10 +142,8 @@
               <?php
               $firstRow = true;
               $totalVolume = 0;
-              foreach ($lots as $couleur => $lotsByCouleur) :
                 $volume = 0;
-                if(count($lotsByCouleur)):
-                  foreach ($lotsByCouleur as $lot) :
+                  foreach ($drev->getLotsByDate(true) as $lot) :
                     $totalVolume+=$lot->volume;
                     ?>
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
@@ -152,6 +153,11 @@
                           <?php echo $lot->getDateVersionfr(); ?>
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
+                        <?php if($drev->isValidee()): ?>
+                        <td>
+                          <?php echo $lot->numero_dossier; ?>
+                        </td>
+                        <?php endif;?>
                         <td><?php echo $lot->numero_logement_operateur; ?></td>
                         <td>
                           <?php echo showProduitLot($lot) ?>
@@ -168,14 +174,14 @@
                                   <?php if ($sf_user->isAdmin() && !$drev->validation_odg): ?>
                                   	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "drev bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
-                                      <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
+                                      <?php echo pictoDegustable($lot); ?>
                                   <?php endif; ?>
                                 </div>
                             </div>
                           <?php else: ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
-                                <span class="<?php if($lot->affectable):?> glyphicon glyphicon-ok-sign <?php else:?>glyphicon glyphicon-ban-circle <?php endif; ?>"></span>
+                                  <?php echo pictoDegustable($lot); ?>
                               </div>
                             </div>
                           <?php endif; ?>
@@ -185,9 +191,7 @@
                       </tr>
                       <?php
                       $firstRow=false;
-                    endforeach;
-                  endif; ?>
-                <?php endforeach; ?>
+                    endforeach; ?>
                 <tr>
                   <td></td>
                   <td></td>
@@ -205,7 +209,7 @@
             <?php
                 if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
                 <div class="col-xs-12" style="margin-bottom: 20px;">
-                  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
+                  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
                 </div>
               <?php endif; ?>
 

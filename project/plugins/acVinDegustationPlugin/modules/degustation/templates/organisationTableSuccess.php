@@ -38,7 +38,16 @@
           		</tbody>
           	</table>
           </div>
-
+          <div class="row">
+            <div class="col-xs-10"></div>
+            <div class="col-xs-2">
+              <button class="btn btn-block btn-default" id="btn-preleve-all">
+                  <i class="glyphicon glyphicon-ok-sign"></i>
+                  Tout prélever
+              </button>
+              <br/>
+            </div>
+          </div>
           	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri)) ?>" method="post" class="form-horizontal degustation table">
           		<?php echo $form->renderHiddenFields(); ?>
           		<div class="bg-danger">
@@ -61,7 +70,7 @@
           					if (isset($form[$name])):
           						?>
           						<tr class="vertical-center cursor-pointer">
-                        <td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>">
+                        <td class="edit text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>">
                           <?php if ($numero_table == $lot->numero_table): ?>
                           <a href="<?php echo url_for('degustation_position_lot_up', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-up"></span></a>
                           <a href="<?php echo url_for('degustation_position_lot_down', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-down"></span></a>
@@ -83,7 +92,7 @@
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>
           									<div class="col-xs-12">
-          										<?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                              <?php echo $form[$name]->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
           									</div>
           								</div>
           							</td>

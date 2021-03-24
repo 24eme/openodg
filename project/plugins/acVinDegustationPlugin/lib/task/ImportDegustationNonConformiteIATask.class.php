@@ -3,6 +3,8 @@
 class ImportDegustationNonConformiteIATask extends ImportLotsIATask
 {
 
+    const CSV_CODE_NC = 0;
+    const CSV_STATUT = 1;
     const CSV_DATE = 2;
     const CSV_DEFAUTS = 3;
     const CSV_GRAVITE = 4;
@@ -10,10 +12,16 @@ class ImportDegustationNonConformiteIATask extends ImportLotsIATask
     const CSV_COULEUR = 6;
     const CSV_MILLESIME = 7;
     const CSV_VOLUME = 8;
+    const CSV_CUVE = 9;
     const CSV_NUM_LOT_OPERATEUR = 10;
     const CSV_RAISON_SOCIALE = 11;
     const CSV_NOM = 11;
     const CSV_CVI = 12;
+    const CSV_ADRESSE_1 = 13;
+    const CSV_ADRESSE_2 = 14;
+    const CSV_CODE_POSTAL = 15;
+    const CSV_VILLE = 16;
+    const CSV_FACTURE = 17;
 
     protected function configure()
     {
@@ -44,7 +52,6 @@ EOF;
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
 
         $config = ConfigurationClient::getCurrent();
-        $commissions = DegustationConfiguration::getInstance()->getCommissions();
         $degustation = null;
         $ligne=0;
         foreach(file($arguments['csv']) as $line) {
@@ -62,9 +69,10 @@ EOF;
              continue;
           }
 
+          $date = preg_replace('|([0-9]+)/([0-9]+)/([0-9]+)|', '\3-\2-\1', $data[self::CSV_DATE]);
+
           $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
           $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
-          $date = new DateTime(preg_replace('|([0-9]+)/([0-9]+)/([0-9]+)|', '\3-\2-\1', $data[self::CSV_DATE]));
           $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
           $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
           if (!isset($this->produits[$produitKey])) {
@@ -73,28 +81,35 @@ EOF;
           }
           $produit = $this->produits[$produitKey];
 
-          $mouvements = MouvementLotView::getInstance()->getByIdentifiant($etablissement->identifiant);
+          $mouvementsvue = MouvementLotView::getInstance()->getByIdentifiant($etablissement->identifiant, Lot::STATUT_NONCONFORME);
 
-          $mouvement = null;
-          foreach ($mouvements->rows as $key => $mvt) {
+          $mouvements = array();
+          foreach ($mouvementsvue->rows as $key => $mvt) {
               if(!preg_match("/^DEGUSTATION/", $mvt->id)) {
                   continue;
               }
-
               if($mvt->value->millesime != $millesime) {
-                  unset($mouvements->rows[$key]);
                   continue;
               }
               if($mvt->value->produit_hash != $produit->getHash()) {
-                  unset($mouvements->rows[$key]);
                   continue;
               }
               if($mvt->value->volume != $volume && $mvt->value->numero_logement_operateur != $numero) {
                   continue;
               }
 
-              $mouvement = $mvt;
-              break;
+              $mouvements[] = $mvt;
+          }
+
+          $mouvement = null;
+          if (count($mouvements) == 1) {
+              $mouvement = $mouvements[0];
+          }elseif (count($mouvements) > 0) {
+              foreach($mouvements as $mouvement) {
+                  if (preg_replace('/ .*/', '', $mouvement->value->date) == $date) {
+                      break;
+                  }
+              }
           }
 
           if(!$mouvement) {
@@ -112,30 +127,52 @@ EOF;
               continue;
           }
 
-          if($data[self::CSV_GRAVITE] == "mineure") {
-              $lot->statut = Lot::STATUT_NONCONFORME;
-              $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
-              $lot->motif = trim($data[self::CSV_DEFAUTS]);
-          } else {
-              echo "WARNING;Gravité non géré;".$line."\n";
-              continue;
+          switch ($data[self::CSV_GRAVITE]) {
+              case 'mineure':
+                $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
+                break;
+            case 'Majeure':
+                $lot->conformite = Lot::CONFORMITE_NONCONFORME_MAJEUR;
+                break;
+            case 'Grave':
+                $lot->conformite = Lot::CONFORMITE_NONCONFORME_GRAVE;
+                break;
           }
+          $lot->motif = trim($data[self::CSV_DEFAUTS]);
+
+          $lot->statut = Lot::STATUT_NONCONFORME;
+          switch ($data[self::CSV_STATUT]) {
+              case 'Constatée':
+              case 'Notifiée':
+                break;
+              case 'Déclassement du lot':
+                $lot->statut = Lot::STATUT_DECLASSE;
+                break;
+              case 'Deuxième Passage':
+                $lot->statut = Lot::STATUT_NONCONFORME;
+                $lot->affectable = true;
+                break;
+              case 'Deuxième Passage - Commission':
+                $lot->statut = Lot::STATUT_NONCONFORME;
+                $lot->affectable = true;
+                $lot->id_document_provenance = "DEGUSTATIONXXX";
+                break;
+              case 'Levée':
+                $lot->statut = Lot::STATUT_NONCONFORME_LEVEE;
+                break;
+              case 'Traitée OC':
+                $lot->statut = Lot::STATUT_CONFORME_APPEL;
+                break;
+              case 'Transmise OC':
+                $lot->statut = Lot::STATUT_RECOURS_OC;
+                break;
+          }
+
 
           $degustation->generateMouvementsLots();
           $degustation->save();
         }
       }
-
-    public function formatDate($date){
-        if(!$date) {
-            return null;
-        }
-      $jour=$date[0].$date[1];
-      $mois=$date[3].$date[4];
-      $annee=$date[6].$date[7].$date[8].$date[9];
-      $d= $annee.'-'.$mois.'-'.$jour." 01:00";
-      return $d;
-    }
 
     protected function identifyEtablissement($data) {
         foreach ($this->etablissements as $etab) {

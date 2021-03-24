@@ -55,18 +55,15 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
                 $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $lot->key[4] + 1); // clé détail
             }
 	    }
-        uasort($lots, function ($lot1, $lot2) {
-            $date1 = DateTime::createFromFormat('Y-m-d', $lot1->date);
-            $date2 = DateTime::createFromFormat('Y-m-d', $lot2->date);
-
-            if ($date1 == $date2) {
-                return 0;
-            }
-            return ($date1 < $date2) ? -1 : 1;
-        });
+        uasort($lots, array("DegustationClient", "sortLotByDate"));
 
         return $lots;
 	}
+
+    public static function sortLotByDate($lot1, $lot2) {
+
+        return $lot1->date > $lot2->date;
+    }
 
     public static function getNumeroTableStr($numero_table){
       $alphas = range('A', 'Z');
@@ -83,6 +80,8 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $campagne) {
+        // TODO : A optimiser : aujourd'hui on doit récuperer toutes les Degustations du declarant
+
         $lotsView = MouvementLotView::getInstance()->getByIdentifiant($identifiant)->rows;
 
         $facturables = array();
