@@ -54,7 +54,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
+        $titre = $this->degustation->getNomOrganisme();
 
         return $titre;
     }
@@ -68,7 +68,7 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
 
 
     protected function getFooterText() {
-        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
+        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
         return $footer;
     }
 
