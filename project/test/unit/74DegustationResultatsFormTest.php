@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(10);
+$t = new lime_test(13);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -139,6 +139,37 @@ foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');
   $t->is($lot->observation, $obs, 'L\'observation de non conformité est "'.$obs.'"');
 }
+
+$doc = DegustationClient::getInstance()->find($doc->_id);
+$form = new DegustationResultatsForm($doc, $options);
+$defaults = $form->getDefaults();
+
+$motif = "Terne";
+$obs = "A diluer";
+$valuesRev = array(
+    '_revision' => $doc->_rev,
+    'conformite_0' => "NONCONFORME_MINEUR",
+    'conformite_1' => "CONFORME",
+    'conformite_2' => "CONFORME",
+    'motif_0' => $motif,
+    'observation_0' => $obs
+);
+
+$form->bind($valuesRev);
+$form->save();
+
+$lotConformes = $doc->getLotsConformesOrNot();
+$lotNonConformes = $doc->getLotsConformesOrNot(false);
+
+$t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
+$t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
+
+foreach ($lotNonConformes as $lot) {
+  $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');
+  $t->is($lot->observation, $obs, 'L\'observation de non conformité est "'.$obs.'"');
+}
+
+
 $etbIdentifiant = $viti->identifiant;
 $t->comment('Envoie de mail de notification à '.$etbIdentifiant);
 
@@ -151,3 +182,19 @@ $mailEnvoye = $doc->isMailEnvoyeEtablissement($etbIdentifiant);
 $t->ok($mailEnvoye, 'Le mail de resultats a été envoyé');
 
 $doc->save();
+
+$lotNonConforme = current($lotNonConformes);
+$t->is(count(DegustationClient::getInstance()->getManquements()), 1, 'Il apparait en manquement');
+
+$lotNonConforme->recours_oc = true;
+$lotNonConforme->statut = Lot::STATUT_RECOURS_OC;
+$doc->save();
+
+$t->ok($lotNonConforme->getMouvement(Lot::STATUT_RECOURS_OC), 'Le lot a le mouvement de recours');
+
+try {
+    $lotNonConforme->setConformite(Lot::CONFORMITE_CONFORME);
+    $t->fail('Exception si on change un lot en recours oc');
+} catch (sfException $e) {
+    $t->pass('Exception si on change un lot en recours oc');
+}
