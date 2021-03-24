@@ -62,4 +62,8 @@ class Transaction extends BaseTransaction
 
         return Lot::STATUT_ENLEVE;
     }
+
+    public function getMillesime(){
+      return explode('-', $this->getCampagne())[0];
+    }
 }
