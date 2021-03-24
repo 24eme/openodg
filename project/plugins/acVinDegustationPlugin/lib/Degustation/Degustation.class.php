@@ -1137,7 +1137,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getNbLotByTypeForNumDossier($numDossier){
 			$lots = array();
 			foreach ($this->getLotsByNumDossierNumLogementOperateur()[$numDossier] as $numCuve => $lot) {
-				$lots[$lot->getTypeLot()] +=1;
+				$lots[$lot->getProvenance()] +=1;
 			}
 			return $lots;
 		}

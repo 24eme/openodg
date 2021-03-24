@@ -76,7 +76,12 @@ th {
           <td><?php echo tdStart() ?>
             <?php $lotTypesNb = $degustation->getNbLotByTypeForNumDossier($numDossier); ?>
             n°&nbsp;<?php echo $numDossier; ?><br/>
-            <?php echo count($lots[$numDossier]); ?>&nbsp;lot(s) <?php echo $lotTypesNb['Cond'] > 0 ? $lotTypesNb['Cond'].' Cond' : null  ?><?php echo $lotTypesNb['DRev'] > 0 ? $lotTypesNb['DRev'].' DRev' : null;  ?>
+            <small>
+            <?php $text=''; foreach ($lotTypesNb as $provenance => $nb) {
+              echo $nb." ".$provenance." ";
+
+            }?>
+          </small>
           </td>
           <td><?php echo tdStart() ?>
             <small><?php echo $degustation->getLieuNom(); ?></small>
