@@ -17,7 +17,9 @@
     </span></p>
 
     <form action="<?php echo url_for('drev_scrape_dr', $drev); ?>" method="get" id="form">
-
+        <div class="col-xs-6 col-xs-offset-6 text-right">
+            <input type="submit" class="btn btn-primary btn-upper" id="submit-dr" value="Lancer la récupération" />
+        </div>
     </form>
     <?php else: ?>
         <p class="text-center" style="margin-top: 20px; padding: 150px;">Les données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?> ont correctement été importées <?php if($sf_user->isAdmin()): ?><small>(<a href="<?php echo url_for('drev_dr_upload', array('sf_subject' => $drev, 'force' => true)) ?>">changer le fichier</a>)</small><?php endif; ?>. </p>
@@ -28,6 +30,6 @@
 </div>
 <?php if (!$drev->hasDocumentDouanier()): ?>
 <script type="text/javascript">
-	setTimeout(function(){document.getElementById("form").submit();}, 500);
+	setTimeout(function(){document.getElementById("form").submit();document.getElementById("submit-dr").setAttribute('disabled', 'disabled');document.getElementById("submit-dr").setAttribute('value', 'Import en cours ;)');}, 500);
 </script>
 <?php endif; ?>

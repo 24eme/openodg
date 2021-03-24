@@ -84,7 +84,7 @@ $b->click('button[type="submit"]')->followRedirect();
 $b->isForwardedTo('drev', 'dr');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape dr scrapping");
 
-$b->click('button[type="submit"]')->followRedirect();
+$b->click('input[type="submit"]')->followRedirect();
 $b->isForwardedTo('drev', 'drUpload');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape dr upload");
 
