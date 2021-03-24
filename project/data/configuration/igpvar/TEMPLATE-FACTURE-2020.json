@@ -8,24 +8,25 @@
         "DR","DRev"
     ],
     "cotisations": {
-        "surfaceDR": {
+        "superficie": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Var",
             "code_comptable": "706100",
             "details": {
-                "surfaceDR": {
+                "superficie": {
                     "modele": "CotisationVariable",
                     "prix": 10,
                     "tva": 0.2,
                     "unite": "ha",
-                    "libelle": "Surface",
+                    "libelle": "Superficie",
                     "complement_libelle": "",
                     "docs": [
                         "DR"
                     ],
-                    "callback": "getSurfaceFacturable",
+                    "callback": "calcul",
                     "callback_parameters": [
+                      "L4"
                     ]
                 }
             }
