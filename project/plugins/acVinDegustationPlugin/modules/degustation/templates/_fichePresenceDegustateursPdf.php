@@ -21,10 +21,10 @@
 
           <tr>
             <td style="width:33%;">
-              <p>Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></p>
+              <p>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></p>
             </td>
             <td style="width:33%;">
-              <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
+              <p>Heure : <?php echo $date->format("H:i"); ?></p>
             </td>
             <td style="width:33%">
               <p>Lieu : <?php echo $degustation->lieu; ?> </p>
