@@ -139,6 +139,7 @@ DRev:
                   statut: {}
                   specificite: { }
                   affectable: { }
+                  document_ordre: {}
                   document_fils: { required: false  }
                   cepages:
                     type: collection

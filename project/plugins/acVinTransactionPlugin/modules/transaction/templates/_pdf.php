@@ -44,7 +44,7 @@
     <tr>
         <th class="th" style="text-align: left; width: 400px;">Produit</th>
         <th class="th" style="text-align: center; width: 137px;">Superficie revendiquée</th>
-        <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI</th>
+        <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->getMillesime() ?> issu du VCI</th>
         <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->campagne ?></th>
         <th class="th" style="text-align: center; width: 137px;">Volume revendiqué net total <?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small><?php endif; ?></th>
     </tr>
@@ -64,7 +64,7 @@
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 247px;">Produit</th>
-        <th class="th" style="text-align: center; width: 100px;">Stock <?php echo ($drev->campagne - 1) ?></th>
+        <th class="th" style="text-align: center; width: 100px;">Stock <?php echo ($drev->getMillesime()) ?></th>
         <th class="th" style="text-align: center; width: 100px;">Rafraichi</th>
         <th class="th" style="text-align: center; width: 100px;">Complément</th>
         <th class="th" style="text-align: center; width: 100px;">A détruire</th>
