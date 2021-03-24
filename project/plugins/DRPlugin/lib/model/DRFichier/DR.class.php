@@ -52,10 +52,11 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
           return array();
       }
 
-			$drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->getCampagne());
-			if($this->getTotalValeur("15") && !$drev){
+	  $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->getCampagne());
+      // TODO : pour l'instant cela est géré avec le critère isRevendication par lot
+	  if($this->getTotalValeur("15") && !$drev && !DRevConfiguration::getInstance()->isRevendicationParLots()){
 			 	throw new FacturationPassException("L15 et pas de Drev : ".$this->_id." on skip la facture");
-			}
+	  }
 
       $cotisations = $templateFacture->generateCotisations($this);
 
