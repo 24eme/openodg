@@ -138,9 +138,13 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         $this->superficies_facturables = null;
       }
 
+      public function save() {
+          $this->superficies_facturables = $this->calculSurfaceFacturable();
+          parent::save();
+      }
+
       protected function doSave() {
         $this->piece_document->generatePieces();
-        $this->superficies_facturables = $this->calculSurfaceFacturable();
       }
 
       public function isStockUtiliseEntierement() {
