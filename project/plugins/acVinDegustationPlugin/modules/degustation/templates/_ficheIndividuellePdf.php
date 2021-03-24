@@ -102,7 +102,7 @@
         <?php if(DegustationConfiguration::getInstance()->hasSpecificiteLotPdf() && DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
         <br/><small style="color: #777777;font-size :14px"><?php echo " ($lotInfo->specificite)";?></small>
       <?php endif ?>
-      &nbsp;<?php echo $lotInfo->millesime; ?>
+      &nbsp;<?php echo $lotInfo->getMillesime(); ?>
       </td>
       <td><?php echo tdStart() ?><?php echo showOnlyCepages($lotInfo) ?></td>
       <td><?php echo tdStart() ?></td>
