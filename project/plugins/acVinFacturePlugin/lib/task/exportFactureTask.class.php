@@ -9,6 +9,7 @@ class exportFactureTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('factureid', null, sfCommandOption::PARAMETER_REQUIRED, 'L\'id de la facture', null),
             // add your own options here
         ));
 
@@ -37,16 +38,23 @@ EOF;
         $classExportFactureCsv = 'ExportFactureCSV_'.$app;
 
         echo $classExportFactureCsv::getHeaderCsv();
-        $all_factures = acCouchdbManager::getClient()
+        $ids = array();
+        if (!$options['factureid']) {
+            $all_factures = acCouchdbManager::getClient()
                     ->startkey(array("Facture"))
                     ->endkey(array("Facture", array()))
                     ->reduce(false)
                     ->getView('declaration', 'export')->rows;
-        foreach($all_factures as $vfacture) {
-
-          $facture = FactureClient::getInstance()->find($vfacture->id);
+            foreach($all_factures as $vfacture) {
+                $ids[] = $vfacture->id;
+            }
+        }else{
+            $ids[] = $options['factureid'];
+        }
+        foreach($ids as $id) {
+          $facture = FactureClient::getInstance()->find($id);
           if(!$facture) {
-              throw new sfException(sprintf("Document %s introuvable", $vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]));
+              throw new sfException(sprintf("Document %s introuvable", $id));
           }
           $export = new $classExportFactureCsv($facture, false);
           echo $export->exportFacture();
