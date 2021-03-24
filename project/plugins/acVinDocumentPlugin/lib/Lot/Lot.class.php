@@ -144,7 +144,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getDefaults() {
         $defaults = array();
-        $defaults['millesime'] = $this->getDocument()->campagne;
+        $defaults['millesime'] = $this->millesime;
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
           $defaults['specificite'] = self::SPECIFICITE_UNDEFINED;
         }
@@ -567,16 +567,31 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getCepagesLibelle($withRepartition = true) {
         $libelle = null;
-        foreach($this->cepages as $cepage => $repartition) {
+        foreach($this->getPourcentagesCepages() as $cepage => $repartition) {
             if($libelle) {
                 $libelle .= ", ";
             }
             $libelle .= $cepage;
             if($withRepartition) {
-                $libelle .= " (".$repartition."%)";
+                $libelle .= " (".number_format($repartition, 2, ',', ' ')."%)";
             }
         }
         return $libelle;
+    }
+
+    public function getPourcentagesCepages() {
+      $volume_total = 0;
+      $cepages = array();
+      foreach($this->cepages as $volume) {
+        $volume_total += $volume;
+      }
+      foreach($this->cepages as $cep => $volume) {
+        if (!isset($cepages[$cep])) {
+            $cepages[$cep] = 0;
+        }
+        $cepages[$cep] += round(($volume/$volume_total) * 100);
+      }
+      return $cepages;
     }
 
     public function getNumeroLogementOperateur() {

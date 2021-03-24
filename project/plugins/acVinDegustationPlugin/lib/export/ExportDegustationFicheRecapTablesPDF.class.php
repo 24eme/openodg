@@ -14,16 +14,21 @@ class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
     }
 
     public function create() {
-      foreach ($this->degustation->getLotsTablesByUniqId() as $numTab => $lotsAnom) {
-        @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheRecapTablesPdf',
-          array(
-            'degustation' => $this->degustation,
-            'lots' => $lotsAnom,
-            'numTab' => $numTab
-          )
-        ));
+        $lotsByTable = array();
+      foreach ($this->degustation->getLotsSortByTables() as $lot) {
+          $lotsByTable[$lot->numero_table][$lot->numero_anonymat] = $lot;
       }
+
+      foreach($lotsByTable as $numeroTable => $lots) {
+          @$this->printable_document->addPage(
+            $this->getPartial('degustation/ficheRecapTablesPdf',
+            array(
+              'degustation' => $this->degustation,
+              'lots' => $lots,
+              'numTab' => $numeroTable
+            )
+          ));
+        }
     }
 
 

@@ -66,8 +66,7 @@
                     </tr>
               </thead>
               <tbody>
-              <?php foreach ($degustation->getLotsTablesByUniqId() as $numTab => $lotsAno): ?>
-                <?php foreach ($lotsAno as $numAnonyme => $lot): ?>
+              <?php foreach ($degustation->getLotsSortByTables() as $lot): ?>
                 <?php $name = $form->getWidgetNameFromLot($lot);
                 if (isset($form[$name])): ?>
                 <tr class="vertical-center cursor-pointer">
@@ -92,7 +91,6 @@
                         </td>
                       </tr>
                   <?php  endif; ?>
-                  <?php endforeach; ?>
                 <?php endforeach; ?>
                 </tbody>
               </table>
