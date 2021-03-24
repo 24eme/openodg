@@ -1,6 +1,9 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot') ?>
 <style>
+  .font-1-3em{
+    font-size: 1.3em;
+  }
 </style>
     <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php foreach($plancheLots as $lotInfo): ?>
@@ -52,15 +55,15 @@
                   <tr>
                     <td style="overflow-wrap:break-word;line-height:12px; width:75%;">
                       <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
-                      &nbsp;Lgt&nbsp;:&nbsp;<strong><?php echo $lotInfo->lot->numero_logement_operateur.$centilisation;  ?></strong>
+                      &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo $lotInfo->lot->numero_logement_operateur.$centilisation;  ?></strong>
                     </td>
-                    <td style="text-align: right; width:25%;">
+                    <td class="font-1-3em" style="text-align: right; width:25%;">
                       <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
                 </table>
             </td>
           <?php endfor; ?>
-        </tr>        
+        </tr>
     <?php endforeach; ?>
     </table>
