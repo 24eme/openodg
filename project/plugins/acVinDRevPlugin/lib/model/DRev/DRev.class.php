@@ -1425,12 +1425,30 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     /**** FCT de FACTURATION ****/
 
-    public function getForfaitDRev(){
-        return ($this->declarant->famille != EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR);
-    }
+    public function isDeclarantFamille($familleFilter = null){
+        if(!$familleFilter){
 
-    public function getForfaitDRevNegociantVini(){
-        return ($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR);
+            return false;
+        }
+        if(!$this->declarant->famille){
+
+            return false;
+        }
+        $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
+		$exclude = (bool) $exclude;
+        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+
+        if(!$exclude && preg_match($regexpFilter, $this->declarant->famille)) {
+
+			return true;
+		}
+
+        if($exclude && !preg_match($regexpFilter, $this->declarant->famille)) {
+
+			return true;
+		}
+
+        return false;
     }
 
     /**** MOUVEMENTS LOTS ****/

@@ -809,12 +809,12 @@ abstract class Lot extends acCouchdbDocumentTree
 		$produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
 
-		if($produitFilter && !$produitExclude && preg_match($regexpFilter, $this->getProduitHash())) {
+		if(!$produitExclude && preg_match($regexpFilter, $this->getProduitHash())) {
 
 			return $this->volume;
 		}
 
-        if($produitFilter && $produitExclude && !preg_match($regexpFilter, $this->getProduitHash())) {
+        if($produitExclude && !preg_match($regexpFilter, $this->getProduitHash())) {
 			return $this->volume;
 		}
         return 0.0;
