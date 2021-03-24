@@ -27,7 +27,7 @@
               </p>
             </div>
         </div>
-      <?php endif; ?>
+        <?php endif ?>
         <div class="row">
             <?php if($degustation->isAnonymized()): ?>
               <div class="col-xs-12">

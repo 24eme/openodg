@@ -8,18 +8,90 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test();
+$t = new lime_test(10);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
 $docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
-$doc = acCouchdbManager::getClient()->find($docid);
+
+//Suppression des docs précédents
+foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $drev = DRevClient::getInstance()->find($k);
+    $drev->delete(false);
+}
+
+foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = ConditionnementClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+
+foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = TransactionClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+
+foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $degustation = DegustationClient::getInstance()->find($k);
+    $degustation->delete(false);
+}
+
+foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $chgtdenom = ChgtDenomClient::getInstance()->find($k);
+    $chgtdenom->delete(false);
+}
+
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev->constructId();
+$drev->storeDeclarant();
+
+$produits = $drev->getConfigProduits();
+$nbProduit = 0;
+foreach($produits as $produit) {
+    if(!$produit->isRevendicationParLots()) {
+        continue;
+    }
+    $drev->addProduit($produit->getHash());
+    $nbProduit++;
+    if ($nbProduit == 2) {
+      break;
+    }
+}
+$i=1;
+foreach($drev->lots as $lot) {
+$lot->id_document = $drev->_id;
+$lot->millesime = $campagne;
+$lot->numero_logement_operateur = $i;
+$lot->volume = 50;
+$lot->affectable = true;
+$lot->destination_type = null;
+$lot->destination_date = ($campagne+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d", 1);
+$lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
+$i++;
+}
+$drev->validate();
+$drev->validateOdg();
+$drev->save();
+
+$lots = [];
+foreach ($drev->lots as $lotdrev) {
+    $lots[$lotdrev->getUniqueId()] = $lotdrev;
+}
+
+$doc = new Degustation();
+$doc->save();
+$doc->setLots($lots);
+
+foreach ($doc->getLots() as $lot) {
+    $lot->numero_table = 1;
+}
+$doc->addLeurre($doc->lots[0]->getProduitHash(), null, 1);
 
 $t->comment('Résultat de conformité / non conformité');
 $lotConformes = $doc->getLotsConformesOrNot();
 $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
+$t->is(count($doc->getLots()), 3, "Il y a 3 lots");
 $t->is(count($lotConformes), 0, 'Aucun lot n\'est considéré comme "CONFORME"');
 $t->is(count($lotNonConformes), 0, 'Aucun lot n\'est considéré comme "NON CONFORME"');
 
@@ -39,9 +111,7 @@ $form->save();
 
 $lotConformes = $doc->getLotsConformesOrNot();
 $t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
-$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a 16 mouvements de lot');
 
-$doc = acCouchdbManager::getClient()->find($docid);
 $form = new DegustationResultatsForm($doc, $options);
 $defaults = $form->getDefaults();
 
@@ -50,10 +120,10 @@ $obs = "A requalifier";
 $valuesRev = array(
     '_revision' => $doc->_rev,
     'conformite_0' => "CONFORME",
-    'conformite_1' => "CONFORME",
-    'conformite_2' => "NONCONFORME_MAJEUR",
-    'motif_2' => $motif,
-    'observation_2' => $obs
+    'conformite_1' => "NONCONFORME_MAJEUR",
+    'conformite_2' => "CONFORME",
+    'motif_1' => $motif,
+    'observation_1' => $obs
 );
 
 $form->bind($valuesRev);
@@ -64,8 +134,6 @@ $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
-
-$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 17, 'Il y a toujours 16 mouvements de lot');
 
 foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');
