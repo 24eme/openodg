@@ -197,14 +197,21 @@ class EtablissementClient extends acCouchdbClient {
           return null;
       }
 
+      $etblsmt = array();
       foreach ($rows as $r) {
           $e = $this->find($r->id);
           if (!$with_suspendu && $e->isSuspendu()) {
               continue;
           }
-          return $e;
+          $etblsmt[] = $e;
       }
-      return null;
+      if (!count($etblsmt)) {
+          return null;
+      }
+      if (count($etblsmt) == 1) {
+          return $etblsmt[0];
+      }
+      return $etblsmt;
     }
 
     public function getId($id_or_identifiant) {
