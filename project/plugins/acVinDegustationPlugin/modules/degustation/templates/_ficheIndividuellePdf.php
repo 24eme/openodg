@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Lot') ?>
 <style>
 <?php echo style(); ?>
 
@@ -6,13 +7,12 @@
       <table>
         <tr>
           <td><?php echo tdStart() ?><br>
-              <strong>Date : <?php echo substr($degustation->date,0,10); ?></strong><br>
-              <strong>Heure : <?php echo substr($degustation->date,11,16); ?></strong><br>
-              <strong>Commission: <?php echo $lots[0]->getNumeroTableStr(); ?></strong><br>
+              <strong>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></strong><br>
+              <strong>Heure : <?php echo $date->format("H:i"); ?></strong>
           </td>
           <td><?php echo tdStart() ?><br>
               <strong>Campagne : <?php echo $degustation->campagne ?></strong><br>
-              <strong>Millesime :</strong><br>
+              <strong>Commission: <?php echo $lots[0]->getNumeroTableStr(); ?></strong>
           </td>
           <td><?php echo tdStart() ?><br>
             <strong>Lieu : <?php echo $degustation->getLieuNom(); ?></strong>
@@ -36,7 +36,7 @@
   <tr style="line-height:20px;">
      <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
      <th class="topempty bg-white" style="width:10%; "><?php echo tdStart() ?><strong>Couleur</strong></th>
-     <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>IGP</strong></th>
+     <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>IGP/ Millesime</strong></th>
      <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>Cépage</strong></th>
     <th colspan="4"style="width:16%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
      <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
@@ -94,7 +94,7 @@
        </tr>
    <?php endif;?>
 
-    <tr style="line-height:11px;">
+    <tr style="line-height:13px;">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
       <td><?php echo tdStart() ?>
@@ -102,8 +102,9 @@
         <?php if(DegustationConfiguration::getInstance()->hasSpecificiteLotPdf() && DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
         <br/><small style="color: #777777;font-size :14px"><?php echo " ($lotInfo->specificite)";?></small>
       <?php endif ?>
+      &nbsp;<?php echo $lotInfo->millesime; ?>
       </td>
-      <td><?php echo tdStart() ?>&nbsp;<small><?php echo $lotInfo->details;?></small></td>
+      <td><?php echo tdStart() ?><?php echo showOnlyCepages($lotInfo) ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
