@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test();
+$t = new lime_test(10);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -111,9 +111,7 @@ $form->save();
 
 $lotConformes = $doc->getLotsConformesOrNot();
 $t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
-$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 16, 'Il y a 16 mouvements de lot');
 
-$doc = acCouchdbManager::getClient()->find($docid);
 $form = new DegustationResultatsForm($doc, $options);
 $defaults = $form->getDefaults();
 
@@ -122,10 +120,10 @@ $obs = "A requalifier";
 $valuesRev = array(
     '_revision' => $doc->_rev,
     'conformite_0' => "CONFORME",
-    'conformite_1' => "CONFORME",
-    'conformite_2' => "NONCONFORME_MAJEUR",
-    'motif_2' => $motif,
-    'observation_2' => $obs
+    'conformite_1' => "NONCONFORME_MAJEUR",
+    'conformite_2' => "CONFORME",
+    'motif_1' => $motif,
+    'observation_1' => $obs
 );
 
 $form->bind($valuesRev);
@@ -136,8 +134,6 @@ $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
-
-$t->is(count($doc->mouvements_lots->{$doc->lots[0]->declarant_identifiant}), 17, 'Il y a toujours 16 mouvements de lot');
 
 foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');
