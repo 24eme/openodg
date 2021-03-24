@@ -1313,6 +1313,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
+    public function getVolumeLotsFacturables($produitFilter = null){
+      $total = 0;
+      foreach($this->getLots() as $lot) {
+
+         $total += $lot->getVolumeFacturable($produitFilter);
+      }
+      return $total;
+    }
+
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
@@ -1328,6 +1337,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
+
       $templateFacture = $this->getTemplateFacture();
       if(!$templateFacture) {
           return array();

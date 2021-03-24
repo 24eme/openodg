@@ -790,4 +790,34 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->exist('id_document_affectation') && $this->id_document_affectation;
     }
 
+    /**
+    * Fct de facturation d'un lot facturable avec filtre
+    */
+
+    public function getVolumeFacturable($produitFilter = null){
+
+        if(!$this->getProduitHash()){
+            return 0.0;
+        }
+
+        if(!$produitFilter){
+
+            return $this->volume;
+        }
+
+        $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+		$produitExclude = (bool) $produitExclude;
+        $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
+
+		if($produitFilter && !$produitExclude && preg_match($regexpFilter, $this->getProduitHash())) {
+
+			return $this->volume;
+		}
+
+        if($produitFilter && $produitExclude && !preg_match($regexpFilter, $this->getProduitHash())) {
+			return $this->volume;
+		}
+        return 0.0;
+    }
+
 }
