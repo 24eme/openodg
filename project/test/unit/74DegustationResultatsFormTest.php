@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(13);
+$t = new lime_test(17);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
