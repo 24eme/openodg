@@ -151,11 +151,11 @@ EOF;
               }
             }
             if ($data[self::CSV_FORMATION] == "Oui") {
-                $compte->tags->add("manuel")->add("degustateur:formation");
+                $compte->tags->add("manuel")->add("degustateur_formation");
             }
             if ($data[self::CSV_COMPETENCES]) {
                 $competence = trim($data[self::CSV_COMPETENCES]);
-                $competence = "degustateur:competence_".preg_replace('/[\(\) ]/', '_', $competence);
+                $competence = "degustateur_competence_".preg_replace('/[\(\) ]/', '_', $competence);
                 $compte->tags->add("manuel")->add(null, $competence);
             }
             $compte->save();

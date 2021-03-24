@@ -64,7 +64,7 @@
                         <small class="text-mutted"><?php echo $compte->getLibelleWithAdresse() ?></small>
                         <?php if ($compte->tags->exist('manuel')) foreach ($compte->tags->manuel as $tag) {
                             if (preg_match('/^degustateur:/', $tag)) {
-                                echo "<span class='btn btn-xs btn-default'>".preg_replace('/^degustateur:/', '', $tag)."</span> ";
+                                echo "<span class='btn btn-xs btn-default'>".preg_replace('/^degustateur./', '', $tag)."</span> ";
                             }
                         }
                         ?>
