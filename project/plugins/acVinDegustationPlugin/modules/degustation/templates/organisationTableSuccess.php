@@ -39,11 +39,10 @@
           	</table>
           </div>
           <div class="row">
-            <div class="col-xs-10"></div>
-            <div class="col-xs-2">
+            <div class="col-sm-offset-8 col-sm-4 col-xs-offset-6 col-xs-6">
               <button class="btn btn-block btn-default" id="btn-preleve-all">
                   <i class="glyphicon glyphicon-ok-sign"></i>
-                  Tout prélever
+                  Tous sur la table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?>
               </button>
               <br/>
             </div>
