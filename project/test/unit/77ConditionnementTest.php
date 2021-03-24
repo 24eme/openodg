@@ -49,7 +49,7 @@ foreach ($produits as $key => $produit) {
 }
 $t->comment("création du lot 1");
 $lot1 = $conditionnement->addLot();
-$t->is($lot1->millesime, $conditionnement->campagne, "Le millésime est intialisé avec la campagne");
+$t->is($lot1->millesime, $year, "Le millésime est intialisé à $year d'après la campagne");
 $t->is($lot1->specificite, Lot::SPECIFICITE_UNDEFINED, "La spécificité est nul à la création du lot");
 $t->ok($lot1->isEmpty(), "Le lot est vide sans numéro et sans produit");
 $lot1->add('numero_logement_operateur', "1");
