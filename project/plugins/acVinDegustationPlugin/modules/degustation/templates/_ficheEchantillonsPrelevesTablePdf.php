@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Lot') ?>
 <style>
 <?php echo style(); ?>
 .bg-white{
@@ -30,10 +31,10 @@
 
           <tr>
             <td style="width:33%;">
-              <p>Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></p>
+              <p>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></p>
             </td>
             <td style="width:33%;">
-              <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
+              <p>Heure : <?php echo $date->format("H:i"); ?></p>
             </td>
             <td style="width:33%">
               <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
@@ -42,10 +43,7 @@
 
           <tr>
             <td style="width:33%;">
-              <p>Campagne: <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></p>
-            </td>
-            <td style="width:33%;">
-              <p>Millésime: <?php echo $degustation->campagne; ?></p>
+              <p>Campagne: <?php echo $degustation->campagne; ?></p>
             </td>
             <td style="width:33%">
             </td>
@@ -66,7 +64,7 @@
         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N°Anon</small></strong></th>
         <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
         <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><strong><small>Vol (hl)</small></strong></th>
-        <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>IGP/Couleur</small></strong></th>
+        <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>IGP/Couleur/Millésime</small></strong></th>
         <th class="bg-white" style="width:15%;"><?php echo tdStart() ?><strong><small>Cepage</small></strong></th>
       </tr>
      <?php  foreach($lots as $numTab => $lotTable):  ?>
@@ -88,8 +86,8 @@
               <td><small><?php echo $lot->numero_anonymat ?></small></td>
               <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
               <td style="text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
-              <td><small><?php echo $lot->produit_libelle ?></small></td>
-              <td><small><?php echo $lot->details ?></small></td>
+              <td><small><?php echo $lot->produit_libelle." ".$lot->getMillesime(); ?></small></td>
+              <td><small><?php echo showOnlyCepages($lot); ?></small></td>
             </tr>
           <?php endforeach; ?>
         <?php endforeach; ?>
