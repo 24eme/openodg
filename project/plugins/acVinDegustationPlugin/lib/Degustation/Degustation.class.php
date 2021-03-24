@@ -1001,12 +1001,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lotsBySlice;
 		}
 
-		public function getLotsByNumDossier(){
+		public function getLotsByNumDossier(){ //Incompréhensible
 			$lots = array();
-			foreach ($this->getLotsTablesByUniqId() as $numTab => $lotTable) {
-				foreach ($lotTable as $numAnonyme => $lot) {
-					$lots[$lot->numero_dossier][$numAnonyme] = $lot;
-				}
+			foreach ($this->getLotsSortByTables() as $numTab => $lot) {
+					$lots[$lot->numero_dossier][$lot->numero_anonymat] = $lot;
 			}
 
 			return $lots;
@@ -1056,14 +1054,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return sfConfig::get('sf_app');
 		}
 
-		public function getLotsTablesByUniqId(){
+		public function getLotsSortByTables(){
 			$lots = array();
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
 				$table = chr($numTab+64);
 
 				foreach ($this->getLotsByTable($numTab) as $key => $lot) {
 
-					$lots[$numTab][$lot->unique_id] = $lot;
+					$lots[] = $lot;
 				}
 			}
 
