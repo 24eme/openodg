@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(90);
+$t = new lime_test(91);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -132,11 +132,23 @@ $t->is($pseudoapp[2]->getLibelle(), 'AOC Crémant d\'Alsace', "Bon pseudo produi
 $t->is(count($pseudoapp), 3, "Pas de double pseudo produit pour le Crémant");
 $t->is($registre->lignes[7]->produit_libelle, 'AOC Crémant d\'Alsace', 'libelle crémant du mouvement est OK');
 
-$registre->superficies_facturables = 5;
 $registre->save();
 
 $t->is($registre->getStockPrecedentTotal(), 0, "Le stock total précédent est de 0");
 $t->is($registre->getStockFinalTotal(), 10, "Le stock final total est de 10");
+
+$t->comment("Superficie de VCI");
+
+$surfacesTotal = 0;
+foreach($registre->getProduitsWithPseudoAppelations() as $p) {
+    if (!$p->isPseudoAppellation()) {
+         continue;
+     }
+     $surfacesTotal += $p->getSuperficieFromDrev();
+}
+$registre->getSurfaceFacturable();
+$registre->save();
+$t->is($registre->getSurfaceFacturable(), 3.5, "Superficie facturable");
 
 $t->comment("Export CSV");
 

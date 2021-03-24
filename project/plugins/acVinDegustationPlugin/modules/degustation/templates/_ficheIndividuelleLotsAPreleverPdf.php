@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Lot') ?>
 <style>
 <?php echo style(); ?>
 .bg-white{
@@ -133,11 +134,11 @@ p, div {
        </td>
        <td><?php echo tdStart() ?>
          <small>
-         <?php echo $lot->details;?><br/>
+         <?php echo showOnlyCepages($lot);?><br/>
         </small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->millesime; ?></small>
+        <small><?php echo $lot->getMillesime(); ?></small>
       </td>
       <td><?php echo tdStart() ?>
         <small><?php echo $lot->volume; ?></small>
@@ -146,10 +147,10 @@ p, div {
         <small><?php echo $lot->numero_logement_operateur ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false)." passage" : $lot->getTextPassage(false)." passage $lot->specificite"; ?></small>
+        <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false) : $lot->getTextPassage(false)." $lot->specificite"; ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->getTypeLot(); ?><?php echo tdStart() ?></small>
+        <small><?php echo $lot->getProvenance(); ?><?php echo tdStart() ?></small>
       </td>
       <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
       <td><?php echo tdStart() ?>

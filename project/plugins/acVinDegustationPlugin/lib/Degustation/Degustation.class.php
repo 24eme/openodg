@@ -1054,6 +1054,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return sfConfig::get('sf_app');
 		}
 
+		public function getNomOrganisme(){
+			return sfConfig::get('app_organisme_nom', array());
+		}
+
 		public function getLotsSortByTables(){
 			$lots = array();
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
@@ -1133,7 +1137,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getNbLotByTypeForNumDossier($numDossier){
 			$lots = array();
 			foreach ($this->getLotsByNumDossierNumLogementOperateur()[$numDossier] as $numCuve => $lot) {
-				$lots[$lot->getTypeLot()] +=1;
+				$lots[$lot->getProvenance()] +=1;
 			}
 			return $lots;
 		}
