@@ -1326,6 +1326,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return count($this->getLots());
     }
 
+    public function getNbLieuxPrelevements(){
+        return 1;
+    }
+
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
