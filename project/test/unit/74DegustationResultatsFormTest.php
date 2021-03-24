@@ -193,7 +193,7 @@ $doc->save();
 $t->ok($lotNonConforme->getMouvement(Lot::STATUT_RECOURS_OC), 'Le lot a le mouvement de recours');
 
 try {
-    $lotNonConforme->setConformite(Lot::CONFORMITE_CONFORME);
+    $lotNonConforme->setConformiteLot(Lot::CONFORMITE_CONFORME);
     $t->fail('Exception si on change un lot en recours oc');
 } catch (sfException $e) {
     $t->pass('Exception si on change un lot en recours oc');

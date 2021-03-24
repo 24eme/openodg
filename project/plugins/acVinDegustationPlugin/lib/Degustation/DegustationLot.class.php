@@ -73,7 +73,7 @@ class DegustationLot extends BaseDegustationLot {
         $this->getDocument()->generateMouvementsLots();
     }
 
-    public function setConformite($conformite, $motif = null, $observation = null)
+    public function setConformiteLot($conformite, $motif = null, $observation = null)
     {
         if ($this->conformiteEditable() === false) {
             throw new sfException('Impossible de changer la conformité du lot '.$this->getUniqueId());
