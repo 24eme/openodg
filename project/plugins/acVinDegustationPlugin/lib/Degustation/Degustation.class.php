@@ -1253,7 +1253,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
 	    }
 
-        public function getFacturationLotDeguste($cotisation,$filters){
+        public function getFacturationLotRedeguste($cotisation,$filters){
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {

@@ -1322,6 +1322,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $total;
     }
 
+    public function getNbLotsFacturables(){
+        return count($this->getLots());
+    }
+
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
