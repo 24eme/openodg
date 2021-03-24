@@ -1054,6 +1054,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return sfConfig::get('sf_app');
 		}
 
+		public function getNomOrganisme(){
+			return sfConfig::get('app_organisme_nom', array());
+		}
+
 		public function getLotsSortByTables(){
 			$lots = array();
 			for($numTab=1; $numTab <= $this->getLastNumeroTable(); $numTab++) {
