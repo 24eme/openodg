@@ -5,16 +5,16 @@
     "template": "IGP",
     "libelle": "2020 - IGP Var",
     "docs": [
-        "DRev"
+        "DR","DRev"
     ],
     "cotisations": {
-        "surfaceDrev": {
+        "surfaceDR": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Var",
             "code_comptable": "706100",
             "details": {
-                "surfaceDrev": {
+                "surfaceDR": {
                     "modele": "CotisationVariable",
                     "prix": 10,
                     "tva": 0.2,
@@ -22,7 +22,7 @@
                     "libelle": "Surface",
                     "complement_libelle": "",
                     "docs": [
-                        "DRev"
+                        "DR"
                     ],
                     "callback": "getSurfaceFacturable",
                     "callback_parameters": [
@@ -30,7 +30,7 @@
                 }
             }
         },
-        "odg_forfait": {
+        "forfait": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Var",
@@ -46,13 +46,14 @@
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getForfaitDRev",
+                    "callback": "isDeclarantFamille",
                     "callback_parameters": [
+                        "NOT NEGOCIANT_VINIFICATEUR"
                     ]
                 }
             }
         },
-        "odg_forfait_negociant": {
+        "forfaitnegociant": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Var",
@@ -63,21 +64,22 @@
                     "prix": 200,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "Forfait sur DRev",
+                    "libelle": "Forfait sur DRev négociant",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getForfaitDRevNegociantVini",
+                    "callback": "isDeclarantFamille",
                     "callback_parameters": [
+                        "NEGOCIANT_VINIFICATEUR"
                     ]
                 }
             }
         },
-        "cotisation_oi": {
+        "oi": {
             "modele": "CotisationsCollection",
             "callback": "",
-            "libelle": "OI",
+            "libelle": "Cotisation reversée à l'OI",
             "code_comptable": "706102",
             "details": {
                 "cotisation": {
@@ -89,7 +91,7 @@
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getVolumeFacturable"
+                    "callback": "getVolumeLotsFacturables"
                 }
             }
         },
@@ -108,7 +110,7 @@
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getVolumeFacturable"
+                    "callback": "getVolumeLotsFacturables"
                 }
             }
         },
@@ -122,14 +124,13 @@
                     "modele": "CotisationVariable",
                     "prix": 0.7,
                     "tva": 0.2,
-                    "libelle": "Promotion",
+                    "libelle": "",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getVolumeFacturable",
+                    "callback": "getVolumeLotsFacturables",
                     "callback_parameters": [
-                        "NOT /appellations/APL,/appellations/MED"
                     ]
                 }
 
@@ -138,21 +139,21 @@
         "controleIgp":{
             "modele": "CotisationsCollection",
             "callback": "",
-            "libelle": "Controle IGP",
+            "libelle": "Contrôle IGP",
             "code_comptable": "706102",
             "details": {
                 "cotisation": {
                     "modele": "CotisationVariable",
                     "prix": 0.7,
                     "tva": 0.2,
-                    "libelle": "Cotisation controle IGP",
+                    "libelle": "Contrôle lots IGP",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getVolumeFacturable",
+                    "callback": "getVolumeLotsFacturables",
                     "callback_parameters": [
-                        "NOT /appellations/APL,/appellations/MED"
+                        "NOT /appellations/MED"
                     ]
                 }
 
@@ -166,14 +167,14 @@
             "details": {
                 "cotisation": {
                     "modele": "CotisationVariable",
-                    "prix": 0.15,
+                    "prix": 0.09,
                     "tva": 0,
-                    "libelle": "Revendication",
+                    "libelle": "Contrôle lots Méditerrannée",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getVolumeFacturable",
+                    "callback": "getVolumeLotsFacturables",
                     "callback_parameters": [
                         "/appellations/MED"
                     ]
