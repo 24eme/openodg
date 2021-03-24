@@ -130,9 +130,6 @@ EOF;
             if (!isset($totalappellation['VOLUME']) || !(sprintf('%0.2f', $totalappellation['VOLUME_TOTAL']) === sprintf('%0.2f', $totalappellation['VOLUME']))) {
               $nonsolvable = 1;
             }
-            if (isset($totalappellation['SUPERFICIE'])) {
-              $registre->superficies_facturables += $totalappellation['SUPERFICIE'];
-            }
             foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
               if ($lieu == 'TOTAL') {
                 continue;
@@ -168,13 +165,8 @@ EOF;
               continue;
           }
 
-          if($registre->getTotalMouvement(RegistreVCIClient::MOUVEMENT_CONSTITUE) < 1) {
-              $registre->superficies_facturables = 0;
-          }
-
-          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
-
           $registre->save();
+          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
           echo $registre->_id." savé\n";
         }
     }
