@@ -2,7 +2,7 @@
 <?php use_helper('Date') ?>
 <div class="page-header">
     <h2>Changement de dénomination / Déclassement</h2>
-    <p class="text-muted">Selectionnez, ci-dessous, le lot souhaitez changer</p>
+    <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
     <?php if(!count($lots)): ?>
     <p>Aucun lot pour la campagne <?php echo $chgtDenom->campagne ?></p>
     <?php else: ?>
