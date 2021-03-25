@@ -38,30 +38,22 @@ $t->comment($degust->_id);
 $t->is($degust->hasFreeLots(), true, 'Il y a des lots non assignés');
 
 $t->comment('On attribue le lot à la première table');
-$lot1->attributionTable(1);
+$lot1->numero_table = 1;
 $t->is(count($degust->getLotsTableOrFreeLots(1)), 1, 'La table 1 à un lot');
 $t->is($degust->hasFreeLots(), false, "Il n'y a plus de lot non assigné");
 
 $degust->generateMouvementsLots();
 $t->is(count($degust->mouvements_lots->{$lot1->declarant_identifiant}), 4, 'La génération de mouvement a généré 4 lots');
 
-$t->comment('On créé un leurre');
+$t->comment('On créé un leurre à la table 1');
 $produitLeurreHash = $lot1->getProduitHash();
-$produitLeurre = $degust->lots->add();
-$produitLeurre->setProduitHash($produitLeurreHash);
-$produitLeurre->leurre = true;
-$produitLeurre->declarant_nom = 'SARL Leurre';
-$produitLeurre->numero_logement_operateur = '999';
+$produitLeurre = $degust->addLeurre($produitLeurreHash, null, 1);
 
 $t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
 $t->is($produitLeurre->produit_hash, $produitLeurreHash, "Le hash produit est $produitLeurreHash");
-$t->is($produitLeurre->getIntitulePartiel(), 'lot SARL Leurre (999) de Alpilles Rouge', 'Le libellé est correct');
-
-$t->is($degust->hasFreeLots(), true, 'Le leurre n\'est pas assigné');
-
-$t->comment('On assigne le lot à la table 1');
-$produitLeurre->attributionTable(1);
+$t->is($produitLeurre->getIntitulePartiel(), 'lot LEURRE de Alpilles Rouge', 'Le libellé est correct');
 $t->is($degust->hasFreeLots(), false, "Le leurre est assigné");
+
 $t->is(count($degust->getLotsTableOrFreeLots(1)), 2, "Il est assigné à la table 1");
 
 $t->comment('On ajoute une table');

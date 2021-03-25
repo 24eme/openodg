@@ -814,9 +814,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $leurre->leurre = true;
             $leurre->numero_table = $numero_table;
             $leurre->setProduitHash($hash);
-						$leurre->details = $cepages;
-
-						$leurre->statut = Lot::STATUT_NONPRELEVABLE;
+            $leurre->details = $cepages;
+            $leurre->declarant_nom = "LEURRE";
+            $leurre->statut = Lot::STATUT_NONPRELEVABLE;
 
             return $leurre;
         }

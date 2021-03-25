@@ -122,4 +122,11 @@ class DegustationLot extends BaseDegustationLot {
         return DegustationMouvementLots::freeInstance($this->getDocument());
     }
 
+    public function setNumeroTable($n) {
+        if ($n) {
+            $this->statut = Lot::STATUT_ATTABLE;
+        }
+        return $this->_set('numero_table', $n);
+    }
+
 }
