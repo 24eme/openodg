@@ -15,7 +15,7 @@ class TemplateFacture extends BaseTemplateFacture
 				continue;
 			}
 			if($config->isDisabled()) {
-				return array();
+				continue;
 			}
 			foreach ($config->generateCotisations($document) as $cotisation) {
 				if($config->exist('fallback') && $config->fallback){
