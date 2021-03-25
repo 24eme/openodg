@@ -745,24 +745,24 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getLotAffectation()
     {
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+        return $this->getLotDocumentOrdre(intval($this->document_ordre) + 1);
     }
 
     public function getLotFils()
     {
 
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+        return $this->getLotAffectation();
     }
 
     public function getLotProvenance()
     {
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+        return $this->getLotDocumentOrdre(intval($this->document_ordre) - 1);
     }
 
     public function getLotPere()
     {
 
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+        return $this->getLotProvenance();
     }
 
     abstract public function getDocumentOrdre();
