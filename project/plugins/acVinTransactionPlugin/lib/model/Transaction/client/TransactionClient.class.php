@@ -38,7 +38,7 @@ class TransactionClient extends acCouchdbClient {
     }
 
 
-    public function findByIdentifiantAndCampagneAndDateOrCreateIt($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function findByIdentifiantAndDateOrCreateIt($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $doc = $this->findByIdentifiantAndDate($identifiant, $date, $hydrate);
         if (!$doc) {
             $doc = $this->createDoc($identifiant, $date);
