@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(68);
+$t = new lime_test(93);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -69,6 +69,7 @@ $lieu = "Lieu test — adresse lieu test";
 $t->comment("prépartion avec une DRev");
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
+$iddrev = $drev->_id;
 $produit1 = $drev->addProduit($produitconfig_hash1);
 $produit1->superficie_revendique = 200;
 $produit1->recolte->superficie_total = 200;
@@ -87,6 +88,8 @@ $t->ok($drev->lots[0]->numero_archive, "Numéro d'archive du lot 1");
 $t->ok($drev->lots[0]->numero_dossier, "Numéro de dossier du lot 1");
 $t->ok($drev->lots[1]->numero_archive, "Numéro d'archive du lot 2");
 $t->ok($drev->lots[1]->numero_dossier, "Numéro de dossier du lot 2");
+$t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 1 est bien 01");
+$t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 2 est bien 01");
 
 $t->comment($drev->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
@@ -136,14 +139,33 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 2, 'Il y a deux lots dans la dégustation');
 
-$t->ok($degustation->lots[0]->getUniqueId(),  "Le lot 1 à une clé unique");
-$t->ok($degustation->lots[1]->getUniqueId(),  "Le lot 2 à une clé unique");
+$t->ok($degustation->lots[0]->getUniqueId(),  "Le lot 1 de la dégustation a une clé unique");
+$t->ok($degustation->lots[1]->getUniqueId(),  "Le lot 2 de la dégustation a une clé unique");
+
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Il y a une affectation source avant celle-ci pour le lot 1 de la dégustation");
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[1]), 1, "Il y a une affectation source avant celle-ci pour le lot 2 de la dégustation");
+$t->is($degustation->lots[0]->getNombrePassage(), 1, "Le lot 1 de la dégustation a est bien à son premier passage");
+$t->is($degustation->lots[1]->getNombrePassage(), 1, "Le lot 2 de la dégustation a est bien à son premier passage");
+$t->is($degustation->lots[0]->document_ordre, '02', "Le lot 1 de la dégustation a bien 02 comme document d'ordre");
+$t->is($degustation->lots[1]->document_ordre, '02', "Le lot 2 de la dégustation a bien 02 comme document d'ordre");
+$t->is($degustation->lots[0]->id_document_provenance, $drev->_id, "La provenance du lot 1 de la dégustation est bien la DREV ".$drev->_id);
+$t->is($degustation->lots[1]->id_document_provenance, $drev->_id, "La provenance du lot 2 de la dégustation est bien la DREV ".$drev->_id);
+
+$drev = DRevClient::getInstance()->find($iddrev);
+$t->is($drev->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la DREV est bien ".$degustation->_id);
+$t->is($drev->lots[1]->id_document_affectation, $degustation->_id, "L'affectation du lot 2 dans la DREV est bien ".$degustation->_id);
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[0]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 1 dans la DREV");
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[1]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 2 dans la DREV");
 
 $t->is(count($degustation->mouvements_lots->get($drev->identifiant)), 4, "Il y a 4 mouvements");
 $t->is(count($degustation->lots[0]->getMouvements()), 2, "Le lot 1 à deux mouvements");
 $t->is(count($degustation->lots[1]->getMouvements()), 2, "Le lot 2 à deux mouvements");
 $t->ok($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Il a un mouvement attente prelevement");
 $t->ok($degustation->lots[0]->getMouvement(Lot::STATUT_AFFECTE_DEST), "Il a un mouvement affecté destination");
+$t->ok(!$degustation->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Il a un mouvement n'est plus affectable");
+$t->ok($degustation->lots[1]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Il a un mouvement attente prelevement");
+$t->ok($degustation->lots[1]->getMouvement(Lot::STATUT_AFFECTE_DEST), "Il a un mouvement affecté destination");
+$t->ok(!$degustation->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Il a un mouvement n'est plus affectable");
 
 $t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 0, "Il n'y a plus de mouvement prélevable");
 
@@ -164,9 +186,19 @@ $form->bind($valuesRev);
 $form->save();
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
-
 $t->is(count($degustation->lots), 1, 'Il y a un lot dans la dégustation');
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Il y a une affectation source avant celle-ci pour le lot 1");
+$t->is($degustation->lots[0]->getNumeroPassage(), '1', "Le document ordre du seul lot restant est toujours un premier passage");
+$t->is($degustation->lots[0]->document_ordre, '02', "Le document ordre du seul lot restant est bien toujours 02");
+$t->is($degustation->lots[0]->id_document_provenance, $drev->_id, "La provenance du seul lot restant est bien toujours ".$drev->_id);
+$t->is($degustation->lots[0]->getNombrePassage(), 1, "Le numero de passage du lot restant est bien toujours 1");
+
 $t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 1, "Il y a 1 mouvement prélevable");
+
+$drev = DRevClient::getInstance()->find($iddrev);
+$t->is($drev->lots[0]->id_document_affectation, null, "L'affectation du lot 1 dans la DREV n'est plus ".$degustation->_id);
+$t->is($drev->lots[1]->id_document_affectation, $degustation->_id, "L'affectation du lot 2 dans la DREV est bien ".$degustation->_id);
+
 $lotDegustation = $degustation->lots[0];
 $lotDrev = $drev->lots[1];
 
@@ -183,6 +215,7 @@ $t->is($lotDegustation->declarant_nom, $drev->declarant->raison_sociale, 'Le lot
 $t->is($lotDegustation->produit_hash, $lotDrev->produit_hash, 'Le lot a la bonne hash produit');
 $t->is($lotDegustation->produit_libelle, $lotDrev->produit_libelle, 'Le lot a le bon libellé produit');
 $t->is($lotDegustation->specificite, $lotDrev->specificite, 'Le lot a le bonne spécificité');
+
 $t->is($lotDegustation->millesime, $lotDrev->millesime, 'Le lot a le bon millésoùe');
 $t->is($lotDegustation->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, 'Le lot a le bon statut');
 $t->is($lotDegustation->id_document_provenance, $drev->_id, 'La provenance du lot est la drev');
