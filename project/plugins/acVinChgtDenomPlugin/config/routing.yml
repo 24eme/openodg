@@ -1,15 +1,5 @@
-chgtdenom_selection_lot:
-  url: /changement-denomination/select/:identifiant/:periode
-  param: { module: chgtdenom, action: selectionLot }
-  class: EtablissementRoute
-  options:
-    model:    Etablissement
-    type:     object
-  requirements:
-    sf_method: [get]
-
 chgtdenom_create_lot:
-  url: /changement-denomination/creation-lot/:identifiant
+  url: /changement-denomination/:identifiant/creation-lot/:lot
   param: { module: chgtdenom, action: createLot }
   class: EtablissementRoute
   options:
@@ -30,11 +20,11 @@ chgtdenom_create_papier:
     sf_method: [get]
 
 chgtdenom_lots:
-  url: /changement-denomination/lots/:id
+  url: /changement-denomination/lots/:identifiant/:periode
   param: { module: chgtdenom, action: lots }
-  class: ChgtDenomRoute
+  class: EtablissementRoute
   options:
-    model:    ChgtDenom
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get, post]

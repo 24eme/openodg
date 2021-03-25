@@ -1,18 +1,7 @@
 <?php
 
-class chgtdenomActions extends sfActions {
-
-
-    public function executeCreate(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
-
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
-        $chgtDenom->save();
-
-        return $this->redirect('chgtdenom_lots', $chgtDenom);
-    }
-
+class chgtdenomActions extends sfActions
+{
     public function executeCreateLot(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $lot = $request->getParameter('lot');
@@ -37,9 +26,8 @@ class chgtdenomActions extends sfActions {
     }
 
     public function executeLots(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getChgtDenom();
-        $this->secureIsValide($this->chgtDenom);
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->chgtDenom->identifiant);
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
     }
 
     public function executeEdition(sfWebRequest $request) {
