@@ -12,8 +12,7 @@
         <td class="col-sm-2"><?php echo $d->date; ?></td>
         <td class="col-sm-"><?php echo $d->lieu; ?></td>
         <td class="col-sm-2">
-            <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span> -
-            <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
+            <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span>
         </td>
         <td class="col-sm-1 text-right">
             <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-default"><?= ($d->etape)? DegustationEtapes::$libelles_short[$d->etape] : 'Lots'  ?></a>
