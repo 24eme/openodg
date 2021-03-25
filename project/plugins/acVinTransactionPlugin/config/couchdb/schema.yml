@@ -85,7 +85,7 @@ Transaction:
                   specificite: {  }
                   pays: { }
                   affectable: { }
-                  document_fils: {  }
+                  document_fils: { required: false }
                   cepages:
                     type: collection
                     definition:

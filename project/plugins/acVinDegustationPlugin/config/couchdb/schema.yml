@@ -43,7 +43,7 @@ Degustation:
                   declarant_identifiant: { }
                   declarant_nom: { }
                   origine_mouvement: {}
-                  document_fils: {  }
+                  document_fils: { required: false }
                   cepages:
                     type: collection
                     definition:
@@ -61,7 +61,7 @@ Degustation:
                   observation: {}
                   email_envoye: { }
                   nombre_degustation: {required: false}
-                  doc_ordre: {}
+                  doc_ordre: {required: false}
                   affectable: {}
                   recours_oc: {}
                   a_redeguster: {required: false}
