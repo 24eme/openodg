@@ -127,6 +127,14 @@ if(isset($produit_hash_mutage)) {
     $nbProduits += 1;
 }
 
+if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
+    $drev->addLot();
+    $drev->lots[0]->numero_logement_operateur = '1';
+    $drev->lots[0]->produit_hash = $produit->getHash();
+    $drev->lots[0]->volume = 100;
+}
+
+
 $drev->save();
 
 if(isset($produit_hash_mutage)) {
@@ -219,6 +227,13 @@ $produit1M1->vci->rafraichi = 20;
 $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_revendique'), "La superficie vinifiee est marquée comme modifié par rapport à la précedente");
 
 $t->comment("Validation de la modificatrice");
+
+if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
+    $drevM1->addLot();
+    $drevM1->lots[1]->numero_logement_operateur = '2';
+    $drevM1->lots[1]->produit_hash = $produit->getHash();
+    $drevM1->lots[1]->volume = 50;
+}
 
 $drevM1->save();
 $drevM1->validate();
