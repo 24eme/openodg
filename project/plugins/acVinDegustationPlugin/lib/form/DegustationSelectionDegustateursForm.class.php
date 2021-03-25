@@ -71,7 +71,9 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
                     }
                     $this->degustateurs = $result;
                 }
-            ksort($this->degustateurs);
+                uasort($this->degustateurs, function ($deg1, $deg2) {
+                    return strcasecmp($deg1->nom, $deg2->nom);
+                });
         }
         return $this->degustateurs;
     }
