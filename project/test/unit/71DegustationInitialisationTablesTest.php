@@ -61,7 +61,7 @@ $t->is($degust->getLastNumeroTable(), 1, 'La table courante est la 1');
 $degust->lots->add();
 $degust->lots[2] = clone $lot1;
 $degust->lots[2]->numero_logement_operateur = $lot1->numero_logement_operateur + 1;
-$degust->lots[2]->attributionTable(2);
+$degust->lots[2]->numero_table = 2;
 $t->is($degust->getLastNumeroTable(), 2, 'La dernière table est la 2');
 
 $t->comment('On ajoute un leurre à la table 2');

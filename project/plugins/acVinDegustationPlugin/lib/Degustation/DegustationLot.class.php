@@ -45,12 +45,6 @@ class DegustationLot extends BaseDegustationLot {
     }
   }
 
-    public function attributionTable($table)
-    {
-        $this->numero_table = $table;
-        $this->statut = Lot::STATUT_ATTABLE;
-    }
-
     public function isAnonymisable(){
         return !is_null($this->numero_table);
     }
@@ -126,7 +120,7 @@ class DegustationLot extends BaseDegustationLot {
         if ($n) {
             $this->statut = Lot::STATUT_ATTABLE;
         }
-        return $this->_set('numero_table', $n);
+        return parent::setNumeroTable($n);
     }
 
 }
