@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(28);
+$t = new lime_test(36);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';

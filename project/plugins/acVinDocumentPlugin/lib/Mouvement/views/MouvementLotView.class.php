@@ -37,7 +37,7 @@ class MouvementLotView extends acCouchdbView
 
     public function getDegustationAvantMoi($lot)
     {
-        if($lot->isLeurre()){
+        if((get_class($lot) == 'stdClass' && isset($lot->leurre) && $lot->leurre) || (get_class($lot) != 'stdClass' && $lot->isLeurre())) {
             return array();
         }
         $mouvements = $this->client
