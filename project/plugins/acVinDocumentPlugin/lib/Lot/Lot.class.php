@@ -46,8 +46,6 @@ abstract class Lot extends acCouchdbDocumentTree
 
     const TYPE_ARCHIVE = 'Lot';
 
-    const TEXTE_PASSAGE = '%dème dégustation';
-
     public static $libellesStatuts = array(
         self::STATUT_AFFECTE_DEST => 'Affecte dest',
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
@@ -343,12 +341,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isSecondPassage()
     {
-        return $this->exist('nombre_degustation') && $this->nombre_degustation > 1;
+        return $this->getNumeroPassage() > 1;
     }
 
     public function getTextPassage()
     {
-        $nb = $this->isSecondPassage() ? $this->nombre_degustation.'ème' : '1er';
+        $nb = $this->isSecondPassage() ? $this->getNumeroPassage().'ème' : '1er';
         return $nb." passage";
     }
 
@@ -366,13 +364,10 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         $specificite = $lot->specificite;
 
-        if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
-            // il y a déjà un passage dans la spécificité
-            $specificite = preg_replace('/[0-9]+'.str_replace('%d', '', self::TEXTE_PASSAGE).'/', sprintf(self::TEXTE_PASSAGE, $nb), $specificite);
-        } else {
-            $specificite = (empty($specificite))
-                            ? sprintf(self::TEXTE_PASSAGE, $nb)
-                            : $specificite . ', '. sprintf(self::TEXTE_PASSAGE, $nb);
+        $specificite = preg_replace('/, \d(er|ème) dégustation/', '', $specificite);
+
+        if ($nb > 1) {
+            $specificite .=  sprintf(', %dème dégustation', $nb);
         }
 
         return $specificite;
@@ -385,8 +380,6 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($nombrePassage < 1) {
             return;
         }
-
-        $nombrePassage++;
 
         $this->specificite = self::generateTextePassage($this, $nombrePassage);
     }
