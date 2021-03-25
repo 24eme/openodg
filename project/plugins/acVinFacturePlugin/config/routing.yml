@@ -22,6 +22,16 @@ facturation_pdf:
   requirements:
     sf_method: [get]
 
+facturation_pdf_auth:
+  url: /facturation/pdf/:id/:auth
+  param: { module: facturation, action: getFactureWithAuth }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get]
+
 facturation_edition:
   url: /facturation/edition/:id
   param: { module: facturation, action: edition }
