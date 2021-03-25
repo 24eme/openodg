@@ -56,7 +56,7 @@
                   $compte = $form->getCompteByIdentifiant($idCompte);
                   $words = json_encode(array_merge(
                     explode(' ', strtolower($compte->getNomAAfficher())), explode(' ', $compte->getAdresse()), explode(' ', $compte->getAdresseComplementaire()),
-                    [$compte->getCommune(), $compte->getCodePostal(), $compte->identifiant]
+                    [$compte->getCommune(), $compte->getCodePostal(), $compte->identifiant], $compte->getTagsDegustateur()
                   ), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
                   ?>
                   <tr class="vertical-center cursor-pointer hamzastyle-item" data-words='<?= $words ?>'>
