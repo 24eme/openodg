@@ -1,12 +1,5 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
-<style>
-  ul{
-    list-style: none;
-    display: flex;
-  }
-</style>
-
 <div class="page-header no-border">
     <h2>Création d'une dégustation</h2>
 </div>
