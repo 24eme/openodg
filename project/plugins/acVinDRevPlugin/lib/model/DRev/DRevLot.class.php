@@ -114,7 +114,7 @@ class DRevLot extends BaseDRevLot
     }
 
     public function getDocumentOrdre() {
-
+        $this->_set('document_ordre', '01');
         return "01";
     }
 
