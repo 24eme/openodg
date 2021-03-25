@@ -11,7 +11,7 @@ th {
     <tr>
       <td style="width:100%;">
         <p><small>
-          <span>&nbsp;&nbsp;Code Commission : _ _ _ _ _ _</span>
+          <span>Code Commission : <?= $degustation->_id ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;Campagne : <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;Millésime : <?php echo $degustation->campagne; ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></span>

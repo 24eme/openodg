@@ -15,7 +15,7 @@ th {
           <td style="width:33%;">
             <p>Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></p>
             <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
-            <p>Code Commission: <?php echo DegustationClient::getNumeroTableStr($numTab); ?></p>
+            <p>Code Commission: <?php echo $degustation->_id; ?></p>
           </td>
           <td style="width:33%;">
             <p>Campagne: <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></p>

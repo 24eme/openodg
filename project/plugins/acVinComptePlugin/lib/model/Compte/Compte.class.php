@@ -778,4 +778,18 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return $this->getSociete()->getCodeComptable();
     }
 
+    public function getTagsDegustateur()
+    {
+        $tags = [];
+
+        if ($this->tags->exist('manuel')) {
+            foreach ($this->tags->manuel as $tag) {
+                if (strpos($tag, 'degustateur:') === 0) {
+                    $tags[] = substr($tag, strlen('degustateur:'));
+                }
+            }
+        }
+
+        return $tags;
+    }
 }

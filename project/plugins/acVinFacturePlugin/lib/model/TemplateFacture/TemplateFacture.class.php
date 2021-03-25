@@ -14,6 +14,9 @@ class TemplateFacture extends BaseTemplateFacture
 			if(!$config->isForType($document->getType())) {
 				continue;
 			}
+			if($config->isDisabled()) {
+				continue;
+			}
 			foreach ($config->generateCotisations($document) as $cotisation) {
 				if($config->exist('fallback') && $config->fallback){
 					continue;
