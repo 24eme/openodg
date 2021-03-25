@@ -31,7 +31,7 @@ Conditionnement:
       denomination_auto: { required: false }
       date_degustation_voulue: { required: false }
       type_archive: { required: false }
-      version: {  }
+      version: { required: false }
       numero_archive: {  }
       declarant:
         type: collection
