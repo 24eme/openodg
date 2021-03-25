@@ -71,10 +71,13 @@
         </div>
 
         <div style="margin-top: 20px;" class="row row-margin row-button">
-            <div class="col-xs-6">
-                <a tabindex="-1" href="<?php echo url_for('chgtdenom_lots', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+            <div class="col-xs-4">
+                <a tabindex="-1" href="<?php echo url_for('chgtdenom_lots', ['identifiant' => $chgtDenom->identifiant, 'campagne' => $chgtDenom->campagne]) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
             </div>
-            <div class="col-xs-6 text-right">
+            <div class="col-xs-4 text-center">
+                <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Supprimer la déclaration</a>
+            </div>
+            <div class="col-xs-4 text-right">
                 <button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button>
             </div>
         </div>
