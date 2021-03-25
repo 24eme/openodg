@@ -36,7 +36,19 @@ class degustationActions extends sfActions {
 
     public function executeListeDeclarant(sfWebRequest $request)
     {
-        $campagne = $request->getParameter('campagne');
+        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
+        $this->etablissement = $request->getParameter('identifiant');
+        $this->degustations = [];
+
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->etablissement, $this->campagne)->rows;
+
+        foreach ($mouvements as $lot) {
+            if (in_array($lot->value->document_id, $this->degustations)) {
+                continue;
+            }
+
+            $this->degustations[$lot->value->document_id] = DegustationClient::getInstance()->find($lot->value->document_id, acCouchdbClient::HYDRATE_JSON);
+        }
     }
 
     public function executePrelevables(sfWebRequest $request)
