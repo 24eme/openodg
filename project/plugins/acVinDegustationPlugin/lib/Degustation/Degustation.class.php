@@ -79,7 +79,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         parent::save();
 
-		$this->fillDocToSaveFromLots();
         $this->saveDocumentsDependants();
     }
 
@@ -177,6 +176,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
     public function saveDocumentsDependants() {
+        $this->fillDocToSaveFromLots();
         foreach($this->docToSave as $docId) {
             (acCouchdbManager::getClient()->find($docId))->save();
         }
