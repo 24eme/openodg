@@ -82,12 +82,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $this->saveDocumentsDependants();
     }
 
-    public function delete() {
-        $this->fillDocToSaveFromLots();
-        parent::delete();
-        $this->saveDocumentsDependants();
-    }
-
 	public function storeEtape($etape) {
 	    if ($etape == $this->etape) {
 
