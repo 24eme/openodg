@@ -10,26 +10,44 @@ if ($application != 'igp13') {
 
 $t = new lime_test();
 
-$campagne = (date('Y')-1)."";
-$degust_date = $campagne.'-09-01 12:45';
-$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
+$annee = (date('Y')-1)."";
+$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
+$degust_date = $annee.'-09-01 12:45';
+$degustid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
+$degust = DegustationClient::getInstance()->find($degustid);
+if ($degust) {
+    $degust->delete();
+}
 
-$doc = acCouchdbManager::getClient()->find($docid);
-$lot1 = $doc->getLots()[0];
+$degust = DegustationClient::getInstance()->createDoc($degust_date);
+$lot1 = $degust->addLot(
+    json_decode('{"date":"2020-09-01 12:45:00","id_document":"DEGUSTATION-202009011245","unique_id":"00001-00002",
+        "id_document_provenance":"DREV-'.$viti->identifiant.'-2020","id_document_affectation":null,"campagne":"2020-2021",
+        "numero_dossier":"00001","numero_archive":"00002","numero_logement_operateur":3,"position":"01000",
+        "document_ordre":"02","volume":2,"declarant_identifiant":"'.$viti->identifiant.'","declarant_nom":"SARL ACTUALYS JEAN",
+        "produit_hash":"\/declaration\/certifications\/IGP\/genres\/TRANQ\/appellations\/APL\/mentions\/DEFAUT\/lieux\/DEFAUT\/couleurs\/rouge\/cepages\/DEFAUT",
+        "produit_libelle":"Alpilles Rouge","statut":"03_PRELEVE"}' )
+);
+$lot1->statut = Lot::STATUT_PRELEVE;
+$degust->generateMouvementsLots();
+$degust->save();
+$t->is($lot1->statut, Lot::STATUT_PRELEVE, 'Le lot 1 est bien prelevé');
+$t->is($degust->getLots()[0]->statut, Lot::STATUT_PRELEVE, 'Le lot 1 est bien prelevé');
 
-$t->is($doc->hasFreeLots(), true, 'Il y a des lots non assignés');
+$t->comment($degust->_id);
+$t->is($degust->hasFreeLots(), true, 'Il y a des lots non assignés');
 
 $t->comment('On attribue le lot à la première table');
 $lot1->attributionTable(1);
-$t->is(count($doc->getLotsTableOrFreeLots(1)), 1, 'La table 1 à un lot');
-$t->is($doc->hasFreeLots(), false, "Il n'y a plus de lot non assigné");
+$t->is(count($degust->getLotsTableOrFreeLots(1)), 1, 'La table 1 à un lot');
+$t->is($degust->hasFreeLots(), false, "Il n'y a plus de lot non assigné");
 
-$doc->generateMouvementsLots();
-$t->is(count($doc->mouvements_lots->{$lot1->declarant_identifiant}), 4, 'La génération de mouvement a généré 4 lots');
+$degust->generateMouvementsLots();
+$t->is(count($degust->mouvements_lots->{$lot1->declarant_identifiant}), 4, 'La génération de mouvement a généré 4 lots');
 
 $t->comment('On créé un leurre');
 $produitLeurreHash = $lot1->getProduitHash();
-$produitLeurre = $doc->lots->add();
+$produitLeurre = $degust->lots->add();
 $produitLeurre->setProduitHash($produitLeurreHash);
 $produitLeurre->leurre = true;
 $produitLeurre->declarant_nom = 'SARL Leurre';
@@ -39,30 +57,30 @@ $t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
 $t->is($produitLeurre->produit_hash, $produitLeurreHash, "Le hash produit est $produitLeurreHash");
 $t->is($produitLeurre->getIntitulePartiel(), 'lot SARL Leurre (999) de Alpilles Rouge', 'Le libellé est correct');
 
-$t->is($doc->hasFreeLots(), true, 'Le leurre n\'est pas assigné');
+$t->is($degust->hasFreeLots(), true, 'Le leurre n\'est pas assigné');
 
 $t->comment('On assigne le lot à la table 1');
 $produitLeurre->attributionTable(1);
-$t->is($doc->hasFreeLots(), false, "Le leurre est assigné");
-$t->is(count($doc->getLotsTableOrFreeLots(1)), 2, "Il est assigné à la table 1");
+$t->is($degust->hasFreeLots(), false, "Le leurre est assigné");
+$t->is(count($degust->getLotsTableOrFreeLots(1)), 2, "Il est assigné à la table 1");
 
 $t->comment('On ajoute une table');
-$t->is($doc->getLastNumeroTable(), 1, 'La table courante est la 1');
-$doc->lots->add();
-$doc->lots[2] = clone $lot1;
-$doc->lots[2]->numero_logement_operateur = $lot1->numero_logement_operateur + 1;
-$doc->lots[2]->attributionTable(2);
-$t->is($doc->getLastNumeroTable(), 2, 'La dernière table est la 2');
+$t->is($degust->getLastNumeroTable(), 1, 'La table courante est la 1');
+$degust->lots->add();
+$degust->lots[2] = clone $lot1;
+$degust->lots[2]->numero_logement_operateur = $lot1->numero_logement_operateur + 1;
+$degust->lots[2]->attributionTable(2);
+$t->is($degust->getLastNumeroTable(), 2, 'La dernière table est la 2');
 
 $t->comment('On ajoute un leurre à la table 2');
-$leurreTable2 = $doc->addLeurre($produitLeurreHash, 'Cepage leurre', 2);
+$leurreTable2 = $degust->addLeurre($produitLeurreHash, 'Cepage leurre', 2);
 $t->is($leurreTable2->leurre, true, 'C\'est un leurre');
 $t->is($leurreTable2->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
 $t->is($leurreTable2->numero_table, 2, 'Le numéro de table est le 2');
 $t->is($leurreTable2->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
-$doc->lots->remove(3);
-$doc->save();
+$degust->lots->remove(3);
+$degust->save();
 
 $t->comment('puis on la retire');
-$doc->lots->remove(2);
-$t->is($doc->getLastNumeroTable(), 1, 'La dernière table est la 1');
+$degust->lots->remove(2);
+$t->is($degust->getLastNumeroTable(), 1, 'La dernière table est la 1');
