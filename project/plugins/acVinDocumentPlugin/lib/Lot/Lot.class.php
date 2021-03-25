@@ -742,6 +742,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function updateDocumentDependances() {
         $this->id_document_affectation = null;
+        $this->id_document_provenance = null;
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
             $this->id_document_affectation = $lotAffectation->getDocument()->_id;
@@ -765,7 +766,6 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getLotProvenance()
     {
-
         return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
     }
 
