@@ -62,12 +62,9 @@
                   <tr class="vertical-center cursor-pointer hamzastyle-item" data-words='<?= $words ?>'>
                     <td>
                         <small class="text-mutted"><?php echo $compte->getLibelleWithAdresse() ?></small>
-                        <?php if ($compte->tags->exist('manuel')) foreach ($compte->tags->manuel as $tag) {
-                            if (preg_match('/^degustateur:/', $tag)) {
-                                echo "<span class='btn btn-xs btn-default'>".preg_replace('/^degustateur./', '', $tag)."</span> ";
-                            }
-                        }
-                        ?>
+                        <?php foreach ($compte->getTagsDegustateur() as $tag) : ?>
+                            <span class='btn btn-xs btn-default'><?= $tag ?></span>
+                        <?php endforeach ?>
                     </td>
                     <td class="text-center">
                       <div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
