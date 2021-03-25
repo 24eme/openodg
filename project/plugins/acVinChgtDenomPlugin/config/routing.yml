@@ -1,5 +1,5 @@
 chgtdenom_create_lot:
-  url: /changement-denomination/:identifiant/creation-lot/:lot
+  url: /changement-denomination/:identifiant/creation-lot/:lot/:campagne
   param: { module: chgtdenom, action: createLot }
   class: EtablissementRoute
   options:
@@ -20,7 +20,7 @@ chgtdenom_create_papier:
     sf_method: [get]
 
 chgtdenom_lots:
-  url: /changement-denomination/lots/:identifiant/:periode
+  url: /changement-denomination/lots/:identifiant/:campagne
   param: { module: chgtdenom, action: lots }
   class: EtablissementRoute
   options:

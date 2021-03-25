@@ -9,9 +9,11 @@ class chgtdenomActions extends sfActions
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
         $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $chgtDenom->changement_origine_document_id = strtok($lot, ':');
+        $chgtDenom->changement_origine_lot_unique_id = strtok(':');
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id, 'key' => $lot));
+        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id));
     }
 
     public function executeCreatePapier(sfWebRequest $request) {
@@ -28,16 +30,12 @@ class chgtdenomActions extends sfActions
     public function executeLots(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
+        $this->campagne = $request->getParameter('campagne');
     }
 
     public function executeEdition(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
-
-        if($request->getParameter("key")) {
-            $this->chgtDenom->changement_origine_document_id = preg_replace("/:.+/", "", $request->getParameter("key"));
-            $this->chgtDenom->changement_origine_lot_unique_id = preg_replace("/.+:/", "", $request->getParameter("key"));
-        }
 
         if(!$this->chgtDenom->getLotOrigine()) {
 
