@@ -29,7 +29,7 @@
             <td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
-            <td><a href="<?php echo url_for("chgtdenom_create_lot", array("sf_subject" => $etablissement, 'lot' => $lot->id_document.":".$lot->unique_id, 'campagne' => $campagne)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
+            <td><a href="<?php echo url_for("chgtdenom_create_lot", array("sf_subject" => $etablissement, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
         </tr>
         <?php endforeach; ?>
         </tbody>

@@ -5,10 +5,9 @@ class chgtdenomActions extends sfActions
     public function executeCreateLot(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $lot = $request->getParameter('lot');
-        $campagne = $request->getParameter('campagne');
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
         $chgtDenom->changement_origine_document_id = strtok($lot, ':');
         $chgtDenom->changement_origine_lot_unique_id = strtok(':');
         $chgtDenom->save();
@@ -29,8 +28,8 @@ class chgtdenomActions extends sfActions
 
     public function executeLots(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
         $this->campagne = $request->getParameter('campagne');
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
     }
 
     public function executeEdition(sfWebRequest $request) {
