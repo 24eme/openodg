@@ -14,11 +14,11 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_ANONYMISE = "05_ANONYMISE";
     const STATUT_DEGUSTE = "06_DEGUSTE";
     const STATUT_CONFORME = "08_CONFORME";
-    const STATUT_AFFECTE_SRC = "07_AFFECTE_SRC";
     const STATUT_NONCONFORME = "08_NON_CONFORME";
-    const STATUT_MANQUEMENT_EN_ATTENTE = "01_MANQUEMENT_EN_ATTENTE";
-    const STATUT_RECOURS_OC = "09_RECOURS_OC";
-    const STATUT_CONFORME_APPEL = "10_CONFORME_APPEL";
+    const STATUT_AFFECTE_SRC = "10_AFFECTE_SRC";
+    const STATUT_MANQUEMENT_EN_ATTENTE = "09_MANQUEMENT_EN_ATTENTE";
+    const STATUT_RECOURS_OC = "11_RECOURS_OC";
+    const STATUT_CONFORME_APPEL = "12_CONFORME_APPEL";
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
 
     const STATUT_CHANGE = "CHANGE";
@@ -34,7 +34,6 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
-    const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
     const STATUT_CHANGE_SRC = "05_CHANGE_SRC";
 
     const CONFORMITE_CONFORME = "CONFORME";
@@ -75,8 +74,6 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Non affectable',
         self::STATUT_AFFECTABLE => 'Affectable',
-        self::STATUT_AFFECTE_SRC_DREV => 'Affecté source drev',
-
         self::STATUT_CHANGE_DEST => 'Changé dest'
 
     );

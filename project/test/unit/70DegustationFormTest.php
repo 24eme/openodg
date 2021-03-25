@@ -201,7 +201,7 @@ $t->ok($lotProvenance->getDocument()->_id, $drev->_id, "Récupération du docume
 $t->ok($lotProvenance->getUniqueId(), $lotDrev->getUniqueId(), "Récupération du lot père");
 $t->is($lotProvenance->id_document_affectation, $degustation->_id, "Dans la drev le lot est relié à la dégustation");
 $t->ok(!$lotProvenance->getMouvement(Lot::STATUT_AFFECTABLE), "Pas de mouvement affectable dans la drev");
-$t->ok($lotProvenance->getMouvement(Lot::STATUT_AFFECTE_SRC_DREV), "Mouvement affecte dans la drev");
+$t->ok($lotProvenance->getMouvement(Lot::STATUT_AFFECTE_SRC), "Mouvement affecte dans la drev");
 
 $t->comment("Prélévé");
 

@@ -595,7 +595,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
               }
 
               if($lot->isAffecte()) {
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC_DREV));
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
                   continue;
               }
 
