@@ -51,10 +51,14 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
             $societe = null;
-            $idSociete=sprintf(SocieteClient::getSocieteFormatIdentifiant(),preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]));
+            $id_ia = preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]) * 1;
+            if (!$id_ia) {
+                continue;
+            }
+            $idSociete=sprintf(SocieteClient::getSocieteFormatIdentifiant(), $id_ia);
             $societe = SocieteClient::getInstance()->find('SOCIETE-'.$idSociete);
             if(!$societe) {
-                $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, $idSociete);
+                $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, $id_ia);
                 if (isset($data[self::CSV_ADRESSE_1])){
                   $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
                 }

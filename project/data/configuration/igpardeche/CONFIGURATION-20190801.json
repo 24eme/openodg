@@ -1148,7 +1148,7 @@
                                 "code": "",
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "3R831",
+                                "code_douane": "3R004",
                                 "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -1185,7 +1185,7 @@
                                 "code": "",
                                 "code_produit": "",
                                 "code_comptable": "",
-                                "code_douane": "3S831",
+                                "code_douane": "3S004",
                                 "cepages_autorises": [
                                   "ABOURIOU N",
                                   "ALEATICO N",
@@ -1349,7 +1349,7 @@
                                 "code": "",
                                 "code_produit": "",
                                 "code_comptable": "",
-                                "code_douane": "3B831",
+                                "code_douane": "3B004",
                                 "cepages_autorises": [
                                   "ABONDANT B",
                                   "ABOURIOU N",

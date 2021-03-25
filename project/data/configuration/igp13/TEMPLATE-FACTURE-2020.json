@@ -5,7 +5,9 @@
   "template": "IGP",
   "libelle": "2020 - IGP13",
   "docs": [
-    "DRev","ChgtDenom","Degustation"
+    "DRev",
+    "ChgtDenom",
+    "Degustation"
   ],
   "cotisations": {
     "igp13": {
@@ -24,10 +26,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "NOT /appellations/APL,/appellations/MED"
-          ]
+          "callback": "getVolumeLotsFacturables"
         },
         "cotisation": {
           "modele": "CotisationVariable",
@@ -39,10 +38,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "NOT /appellations/APL,/appellations/MED"
-          ]
+          "callback": "getVolumeLotsFacturables"
         },
         "controleexterne": {
           "modele": "CotisationVariable",
@@ -54,10 +50,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "NOT /appellations/APL,/appellations/MED"
-          ]
+          "callback": "getVolumeLotsFacturables"
         },
         "controleinterne": {
           "modele": "CotisationVariable",
@@ -69,10 +62,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "NOT /appellations/APL,/appellations/MED"
-          ]
+          "callback": "getVolumeLotsFacturables"
         }
       }
     },
@@ -91,31 +81,9 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/APL"
-          ]
-        }
-      }
-    },
-    "mediterrannee": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Cotisation Méditerrannée",
-      "code_comptable": "706102",
-      "details": {
-        "cotisation": {
-          "modele": "CotisationVariable",
-          "prix": 0.15,
-          "tva": 0,
-          "libelle": "Revendication",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "/appellations/MED"
           ]
         }
       }
@@ -135,7 +103,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable"
+          "callback": "getVolumeLotsFacturables"
         }
       }
     },
@@ -147,20 +115,20 @@
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
-          "prix": 0.03,
-          "tva": 0,
+          "prix": 0.15,
+          "tva": 0.2,
           "libelle": "vers Méditerrannée",
           "complement_libelle": "",
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "getVolumeFacturable",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/MED"
           ]
         }
       }
-  },
+    },
     "redegustation": {
       "modele": "CotisationsCollection",
       "callback": "",
@@ -169,20 +137,20 @@
       "details": {
         "forfait": {
           "modele": "Cotisation",
-            "prix": 70,
-            "tva": 0.2,
-            "unite": "",
-            "libelle": "",
-            "complement_libelle": "",
-            "docs": [
-              "Degustation"
-            ],
-            "callback": "getRedegustationForfait",
-            "callback_parameters": [
-              "NOT /appellations/APL,/appellations/MED"
-            ]
-          }
+          "prix": 70,
+          "tva": 0.2,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getRedegustationForfait",
+          "callback_parameters": [
+            "NOT /appellations/APL,/appellations/MED"
+          ]
         }
       }
+    }
   }
 }

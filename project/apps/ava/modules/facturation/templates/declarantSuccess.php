@@ -75,6 +75,9 @@
             <th style="witdth: 0;"></th>
             <?php endif; ?>
             <th style="witdth: 0;"></th>
+            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <th style="witdth: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span</th>
+            <?php endif; ?>
         </tr>
     </thead>
     <tbody>
@@ -137,6 +140,9 @@
             <td class="text-right">
                 <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
             </td>
+            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                <td><span style="opacity: 0.8;" data-toggle="tooltip" title="La facture a été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-open <?php if(!$facture->isTelechargee()): ?>invisible<?php endif; ?>"></span></td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </tbody>

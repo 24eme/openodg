@@ -35,7 +35,6 @@ class ChgtDenomValidationForm extends acCouchdbForm
 
        if($this->getDocument()->isValidee()){
          $this->getDocument()->validateOdg();
-         $this->getDocument()->generateMouvementsFactures();
        }
       }
 

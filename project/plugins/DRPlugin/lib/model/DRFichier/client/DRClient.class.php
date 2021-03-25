@@ -38,7 +38,10 @@ class DRClient extends acCouchdbClient implements FacturableClient, DouaneClient
 
 	public function findFacturable($identifiant, $campagne) {
     	$dr = $this->find('DR-'.$identifiant.'-'.$campagne);
-
+        if($dr && DRevConfiguration::getInstance()->isRevendicationParLots()){
+            $dr->generateDonnees();
+            return $dr;
+        }
         if($dr && !$dr->exist('donnees')) {
 
             return null;
