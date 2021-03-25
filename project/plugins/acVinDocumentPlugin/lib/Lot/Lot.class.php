@@ -354,12 +354,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getNumeroPassage()
     {
-        return MouvementLotView::getInstance()->getNombreDegustationAvantMoi($this);
+        return $this->getNombrePassage();
     }
 
     public function getNombrePassage()
     {
-        return MouvementLotView::getInstance()->getNombrePassage($this);
+        return MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($this);
     }
 
     public static function generateTextePassage($lot, $nb)

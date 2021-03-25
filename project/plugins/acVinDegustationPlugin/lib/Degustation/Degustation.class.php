@@ -1242,7 +1242,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 }
                 $create = false;
 
-                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot) as $deg) {
+                foreach (MouvementLotView::getInstance()->getAffecteSourceAvantMoi($this) as $deg) {
                     $create = ($deg->id != $this->_id);
                 }
 
