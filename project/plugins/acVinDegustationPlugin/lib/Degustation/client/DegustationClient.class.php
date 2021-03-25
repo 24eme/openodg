@@ -52,7 +52,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
             $lots[$lot->value->unique_id]->id_document_provenance = $lot->id;
             $lots[$lot->value->unique_id]->provenance = substr($lot->id, 0, 4);
             if ($lot->key[4]) {
-                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], intval($lot->key[4]) + 1); // clé détail
+                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], intval($lot->key[MouvementLotView::KEY_DOCUMENT_ORDRE]) - 1); // clé détail
             }
 	    }
         uasort($lots, array("DegustationClient", "sortLotByDate"));

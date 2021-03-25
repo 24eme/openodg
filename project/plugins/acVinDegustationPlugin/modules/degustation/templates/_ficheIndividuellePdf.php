@@ -12,7 +12,7 @@
           </td>
           <td><?php echo tdStart() ?><br>
               <strong>Campagne : <?php echo $degustation->campagne ?></strong><br>
-              <strong>Commission: <?php echo $lots[0]->getNumeroTableStr(); ?></strong>
+              <strong>Commission: <?php echo $degustation->_id; ?></strong>
           </td>
           <td><?php echo tdStart() ?><br>
             <strong>Lieu : <?php echo $degustation->getLieuNom(); ?></strong>

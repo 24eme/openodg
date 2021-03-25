@@ -79,7 +79,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         parent::save();
 
-		$this->fillDocToSaveFromLots();
         $this->saveDocumentsDependants();
     }
 
@@ -177,6 +176,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
     public function saveDocumentsDependants() {
+        $this->fillDocToSaveFromLots();
         foreach($this->docToSave as $docId) {
             (acCouchdbManager::getClient()->find($docId))->save();
         }
@@ -252,7 +252,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			if ($lot->isAffecte()) {
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
 			}elseif($lot->isAffectable()) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, "Passage ".($lot->getNumeroPassage() + 1)));
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, "Passage ".($lot->getNumeroPassage())));
 			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
@@ -340,7 +340,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         foreach($lots as $key => $lot) {
             $lot->affectable = false;
-			$lot->document_ordre = null;
+			$lot->document_ordre = sprintf('%02', intval($lot->document_ordre) + 1);
             $this->addLot($lot);
         }
 	 }
@@ -814,9 +814,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $leurre->leurre = true;
             $leurre->numero_table = $numero_table;
             $leurre->setProduitHash($hash);
-						$leurre->details = $cepages;
-
-						$leurre->statut = Lot::STATUT_NONPRELEVABLE;
+            $leurre->details = $cepages;
+            $leurre->declarant_nom = "LEURRE";
+            $leurre->statut = Lot::STATUT_NONPRELEVABLE;
 
             return $leurre;
         }
@@ -1242,7 +1242,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 }
                 $create = false;
 
-                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot) as $deg) {
+                foreach (MouvementLotView::getInstance()->getAffecteSourceAvantMoi($this) as $deg) {
                     $create = ($deg->id != $this->_id);
                 }
 

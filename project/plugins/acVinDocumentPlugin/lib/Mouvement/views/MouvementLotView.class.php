@@ -3,7 +3,12 @@
 class MouvementLotView extends acCouchdbView
 {
     const KEY_STATUT = 0;
-    const IDENTIFIANT = 1;
+    const KEY_DECLARANT_IDENTIFIANT = 1;
+    const KEY_CAMPAGNE = 2;
+    const KEY_LOT_UNIQUE_ID = 3;
+    const KEY_DOCUMENT_ORDRE = 4;
+    const KEY_DOC_ID = 5;
+    const KEY_DETAIL = 6;
 
     public static function getInstance() {
 
@@ -25,41 +30,46 @@ class MouvementLotView extends acCouchdbView
                             ->getView($this->design, $this->view);
     }
 
-    public function getNombrePassage($lot)
-    {
-        $mouvements = $this->client
-                           ->startkey([Lot::STATUT_AFFECTE_DEST, $lot->declarant_identifiant, $lot->unique_id])
-                           ->endkey([Lot::STATUT_AFFECTE_DEST, $lot->declarant_identifiant, $lot->unique_id, []])
-                           ->getView($this->design, $this->view);
 
-        return count($mouvements->rows);
-    }
-
-    public function getDegustationAvantMoi($lot)
+    public function getAffecteSourceAvantMoi($lot)
     {
-        if($lot->isLeurre()){
+        if((get_class($lot) == 'stdClass' && isset($lot->leurre) && $lot->leurre) || (get_class($lot) != 'stdClass' && $lot->isLeurre())) {
             return array();
         }
         $mouvements = $this->client
                            ->startkey([
                                Lot::STATUT_AFFECTE_SRC,
                                $lot->declarant_identifiant,
+                               $lot->campagne,
                                $lot->unique_id,
-                               ""
                            ])
                            ->endkey([
                                Lot::STATUT_AFFECTE_SRC,
                                $lot->declarant_identifiant,
+                               $lot->campagne,
                                $lot->unique_id,
-                               $lot->id_document
+                               array()
                            ])
                            ->getView($this->design, $this->view);
-         return $mouvements->rows;
+         $mvts_rows = array();
+         $document_id = null;
+         if (get_class($lot) != 'stdClass') {
+             $document_id = $lot->getDocument()->_id;
+         }elseif (isset($lot->document_id)) {
+             $document_id = $lot->document_id;
+         }
+         foreach($mouvements->rows as $r) {
+             if ($document_id && ($r->id == $document_id)) {
+                 break;
+             }
+             $mvts_rows[] = $r;
+         }
+         return $mvts_rows;
      }
 
-    public function getNombreDegustationAvantMoi($lot)
+    public function getNombreAffecteSourceAvantMoi($lot)
     {
-        return count($this->getDegustationAvantMoi($lot));
+        return count($this->getAffecteSourceAvantMoi($lot));
     }
 
     public function find($identifiant, $query) {

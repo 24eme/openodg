@@ -20,7 +20,7 @@
       <table style="line-height:15px;">
           <tr>
             <td style="width:33%;">
-              <p>Code Commission: _ _ _ _ </p>
+              <p>Code Commission: <?= $degustation->_id ?></p>
             </td>
             <td style="width:60%;">
               <p>Responsable : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
