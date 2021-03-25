@@ -8,7 +8,6 @@
         <div class="panel-heading">
             <h3 class="panel-title">Revendication&nbsp;des&nbsp;produits&nbsp;<?php echo $periode; ?></h3>
         </div>
-        <?php if(DRevConfiguration::getInstance()->isRevendicationParLots())
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication a été validée pour cette année.</p>
