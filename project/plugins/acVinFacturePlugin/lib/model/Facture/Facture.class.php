@@ -644,4 +644,30 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return Anonymization::hideIfNeeded($this->_get('total_taxe'));
     }
 
+    public function isTelechargee() {
+        if(!$this->exist('date_telechargement')) {
+
+            return false;
+        }
+
+        return (bool) $this->telechargee;
+    }
+
+    public function setTelechargee($date = null)
+    {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+
+        if ($this->exist('date_telechargement') && $this->date_telechargement) {
+            return;
+        }
+
+        if (! $this->exist('date_telechargement')) {
+            $this->add('date_telechargement');
+        }
+
+        $this->_set('date_telechargement', $date);
+    }
+
 }

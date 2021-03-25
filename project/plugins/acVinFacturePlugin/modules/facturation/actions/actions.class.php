@@ -243,10 +243,31 @@ class facturationActions extends sfActions
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
 
-        if(!$this->getUser()->isAdmin() && !$this->facture->exist('date_telechargement')) {
-            $this->facture->add('date_telechargement', date('Y-m-d'));
+        if(!$this->getUser()->isAdmin()) {
+            $this->facture->setTelechargee();
             $this->facture->save();
         }
+        exit;
+    }
+
+    public function executeGetFactureWithAuth(sfWebRequest $request) {
+        $auth = $request->getParameter('auth');
+        $id = $request->getParameter('id');
+
+        $key = FactureClient::generateAuthKey($id);
+        $auth = substr($auth, 0, strlen($key));
+
+        if ($auth !== $key) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+
+        $facture = FactureClient::getInstance()->find($id);
+        $facture->setTelechargee();
+        $facture->save();
+
+        $latex = new FactureLatex($facture);
+        $latex->echoWithHTTPHeader();
+
         exit;
     }
 
