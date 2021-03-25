@@ -1,6 +1,6 @@
-chgtdenom_create:
-  url: /changement-denomination/creation/:identifiant
-  param: { module: chgtdenom, action: create }
+chgtdenom_selection_lot:
+  url: /changement-denomination/select/:identifiant/:periode
+  param: { module: chgtdenom, action: selectionLot }
   class: EtablissementRoute
   options:
     model:    Etablissement
