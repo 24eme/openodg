@@ -27,8 +27,12 @@ class FactureLignes extends BaseFactureLignes {
     public function cleanLignes() {
         $lignesToDelete = array();
 
+        $template = $this->getDocument()->getTemplate();
         foreach($this as $ligne) {
             $ligne->cleanDetails();
+            if($template && $template->cotisations->exist($ligne->getKey()) && $template->cotisations->get($ligne->getKey())->isRequired()) {
+                continue;
+            }
             if(!count($ligne->details)) {
                 $lignesToDelete[$ligne->getKey()] = $true;
             }

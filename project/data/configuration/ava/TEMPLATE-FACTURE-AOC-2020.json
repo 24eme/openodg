@@ -57,13 +57,14 @@
        "ava_syndicale": {
            "modele": "CotisationsCollectionCondition",
            "required": true,
+           "disabled": true,
            "callback": "isAdherentSyndicat",
            "libelle": "Cotisation AVA Syndicale",
            "code_comptable": "751100",
            "details": {
                "syndicale_fixe": {
                    "modele": "CotisationFixe",
-                   "prix": 0,
+                   "prix": 8.12,
                    "tva": 0,
                    "libelle": "Fixe",
                    "complement_libelle": "",
@@ -71,6 +72,20 @@
                    "docs": [
                        "DRev"
                    ]
+               },
+               "syndicale_tranche": {
+                   "modele": "CotisationTranche",
+                   "prix": 2.69,
+                   "tva": 0,
+                   "depart": 1,
+                   "complement": 0,
+                   "libelle": "Tranche de %tranche% ares (%callback% ares) à partir du %complement_libelle%ème are",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "tranche": 50,
+                   "complement_libelle": "51",
+                   "callback": "getSurfaceFacturable"
                }
            }
        },

@@ -339,18 +339,18 @@ EOF;
       }
     }
 
-    public function getDocument($type, $previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
+    public function getDocument($type, $previousdoc, $etablissement, $periode, $date, $numeroDossier) {
         if ($type == self::TYPE_REVENDIQUE) {
-            return $this->getDocumentDRev($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+            return $this->getDocumentDRev($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_CONDITIONNEMENT) {
-            return $this->getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+            return $this->getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier);
         }
         if ($type == self::TYPE_TRANSACTION_VRAC_FRANCE) {
-            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier);
         }
         if ($type == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
-            return $this->getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier);
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier);
         }
     }
 
@@ -376,8 +376,8 @@ EOF;
         return $drev;
     }
 
-    public function getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
-        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
+    public function getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier) {
+        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
         $newCond->constructId();
         $newCond->storeDeclarant();
         $newCond->validation = $date;
@@ -391,8 +391,9 @@ EOF;
         return $newCond;
     }
 
-    public function getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
-        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndCampagneAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
+    public function getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier) {
+        var_dump($date);
+        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
         $newTrans->constructId();
         $newTrans->storeDeclarant();
         $newTrans->validation = $date;
