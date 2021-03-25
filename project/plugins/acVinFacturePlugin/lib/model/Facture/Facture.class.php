@@ -650,7 +650,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             return false;
         }
 
-        return (bool) $this->telechargee;
+        return (bool) $this->date_telechargement;
     }
 
     public function setTelechargee($date = null)
