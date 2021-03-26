@@ -355,6 +355,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function generateMouvementsLots()
     {
         $this->clearMouvementsLots();
+        if(!count($this->lots)) {
+            return;
+        }
+
+        if($this->isDeclassement()) {
+            $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE));
+        }
 
         foreach ($this->lots as $lot) {
             $lot->updateDocumentDependances();
