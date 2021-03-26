@@ -35,17 +35,14 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
     }
 
     public function save() {
-		if(!DRevConfiguration::getInstance()->isRevendicationParLots()){
+		if(class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()){
 
-			parent::save();
-			return;
+    		if(!$this->exist('donnees') || !count($this->donnees)) {
+    	           $this->generateDonnees();
+    	    }
 
-		}
-		if(!$this->exist('donnees') || !count($this->donnees)) {
-	           $this->generateDonnees();
-	    }
-
-	    $this->generateMouvementsFactures();
+    	    $this->generateMouvementsFactures();
+        }
 
         parent::save();
 
