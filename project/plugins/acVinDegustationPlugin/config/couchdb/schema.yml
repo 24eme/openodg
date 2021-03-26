@@ -42,7 +42,7 @@ Degustation:
                   produit_libelle: { }
                   declarant_identifiant: { }
                   declarant_nom: { }
-                  origine_mouvement: {}
+                  origine_mouvement: { required: false}
                   document_fils: { required: false }
                   cepages:
                     type: collection

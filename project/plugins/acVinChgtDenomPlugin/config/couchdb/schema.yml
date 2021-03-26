@@ -72,7 +72,7 @@ ChgtDenom:
                   produit_libelle: { }
                   declarant_identifiant: { }
                   declarant_nom: { }
-                  origine_mouvement: {}
+                  origine_mouvement: { required: false }
                   details: {}
                   statut: {}
                   specificite: {}
