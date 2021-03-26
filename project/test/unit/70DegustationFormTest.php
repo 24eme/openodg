@@ -187,11 +187,11 @@ $form->save();
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is(count($degustation->lots), 1, 'Il y a un lot dans la dégustation');
-$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Il y a une affectation source avant celle-ci pour le lot 1");
-$t->is($degustation->lots[0]->getNumeroPassage(), '1', "Le document ordre du seul lot restant est toujours un premier passage");
-$t->is($degustation->lots[0]->document_ordre, '02', "Le document ordre du seul lot restant est bien toujours 02");
-$t->is($degustation->lots[0]->id_document_provenance, $drev->_id, "La provenance du seul lot restant est bien toujours ".$drev->_id);
 $t->is($degustation->lots[0]->getNombrePassage(), 1, "Le numero de passage du lot restant est bien toujours 1");
+$t->is($degustation->lots[0]->id_document, $degustation->_id, "Le doc id du seul lot restant est bien ".$degustation->_id);
+$t->is($degustation->lots[0]->id_document_provenance, $drev->_id, "La provenance du seul lot restant est bien toujours ".$drev->_id);
+$t->is($degustation->lots[0]->document_ordre, '02', "Le document ordre du seul lot restant est bien toujours 02");
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Le lot qui reste dans la dégut a bien une affectation source");
 
 $t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 1, "Il y a 1 mouvement prélevable");
 
