@@ -16,10 +16,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-        foreach ($this->object->lots as $lot) {
-            $this->lots[$lot->unique_id] = $lot;
-        }
-
+        $this->lots = $this->object->getLotsFromProvenance();
         uasort($this->lots, array("DegustationClient", "sortLotByDate"));
 
         foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {
