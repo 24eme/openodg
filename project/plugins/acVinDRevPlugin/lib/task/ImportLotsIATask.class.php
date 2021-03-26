@@ -369,9 +369,7 @@ EOF;
         $newDrev->numero_archive = $numeroDossier;
         $newDrev->add('date_degustation_voulue', $date);
         if(!$drev || $newDrev->_id != $drev->_id) {
-          $drev = DRevClient::getInstance()->find($newDrev->_id, acCouchdbClient::HYDRATE_JSON);
-
-          if($drev) { DRevClient::getInstance()->deleteDoc($drev); $drev = null; }
+          $drev = DRevClient::getInstance()->find($newDrev->_id, acCouchdbClient::HYDRATE_DOCUMENT);
         }
 
         if(!$drev) {
@@ -381,6 +379,8 @@ EOF;
     }
 
     public function getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier) {
+        $cond = $previousdoc;
+
         $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
         $newCond->constructId();
         $newCond->storeDeclarant();
@@ -388,15 +388,18 @@ EOF;
         $newCond->validation_odg = $date;
         $newCond->numero_archive = $numeroDossier;
         $newCond->add('date_degustation_voulue', $date);
-        if (!$previousdoc || $previousdoc->_id != $newCond->_id) {
-            $newCond->remove('lots');
-            $newCond->add('lots');
+        if(!$cond || $newCond->_id != $cond->_id) {
+          $cond = ConditionnementClient::getInstance()->find($newCond->_id, acCouchdbClient::HYDRATE_DOCUMENT);
         }
-        return $newCond;
+        if(!$cond) {
+            $cond = $newCond;
+        }
+        return $cond;
     }
 
     public function getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier) {
-        var_dump($date);
+        $trans = $newTrans;
+
         $newTrans = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
         $newTrans->constructId();
         $newTrans->storeDeclarant();
@@ -404,11 +407,13 @@ EOF;
         $newTrans->validation_odg = $date;
         $newTrans->numero_archive = $numeroDossier;
         $newTrans->add('date_degustation_voulue', $date);
-        if (!$previousdoc || $previousdoc->_id != $newTrans->_id) {
-            $newTrans->remove('lots');
-            $newTrans->add('lots');
+        if(!$trans || $newTrans->_id != $cond->_id) {
+          $trans = TransactionClient::getInstance()->find($newTrans->_id, acCouchdbClient::HYDRATE_DOCUMENT);
         }
-        return $newTrans;
+        if(!$trans) {
+            $trans = $newTrans;
+        }
+        return $trans;
     }
 
 
