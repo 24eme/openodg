@@ -4,7 +4,7 @@ require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 const path = require('path');
-var nightmare = Nightmare({ show: true, timeoutDownloadBeforeStart: 30000, maxDownloadRequestWait: 30000, webPreferences: { preload: path.resolve("pre.js") }});
+var nightmare = Nightmare({ show: true, waitTimeout: 1800000, timeoutDownloadBeforeStart: 1800000, maxDownloadRequestWait: 1800000, webPreferences: { preload: path.resolve("pre.js") }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
@@ -18,7 +18,7 @@ nightmare
   .click('#identification')
   .wait('.menu')
   //fin authentification
-  .then(function() {
+ .then(function() {
       var uri = baseUri+"/operateur/ListeOperateur.aspx";
       var exportFilename = destination_file+'operateurs.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -122,6 +122,36 @@ nightmare
        .refresh()
   })
   .then(function() {
+      var uri = baseUri+"/Declaration/LstLots.aspx";
+      var exportFilename = destination_file+'lots_changements.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri)
+       .select('#ddlCamp','')
+       .select('#ddlDecl', 'C')
+       .click('#btnRech')
+       .wait(20000)
+       .click('#btnEE')
+       .wait(4000)
+       .download(exportFilename)
+       .refresh()
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDeclaRev.aspx";
+      var exportFilename = destination_file+'revendication_vin_apte_au_controle.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri)
+       .click('#btnRech')
+       .wait(6000)
+       .click('#btn_Excel')
+       .wait(2000)
+       .download(exportFilename)
+       .refresh()
+  })
+  .then(function() {
       var uri = baseUri+"/Declaration/LstChangDen.aspx";
       var exportFilename = destination_file+'changement_denom.xls';
       console.log("export " + uri + ": " + exportFilename);
@@ -134,7 +164,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntheseDeclassement.aspx";
-      var exportFilename = destination_file+'declassements.xls';
+      var exportFilename = destination_file+'synthese_declassements.xls';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -143,14 +173,246 @@ nightmare
       .download(exportFilename)
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=10";
-      var exportFilename = destination_file+'changement_denom_autre_igp.xlsx';
+      var uri = baseUri+"/Declaration/SyntOpRev.aspx";
+      var exportFilename = destination_file+'synthese_revendication_apte_controle.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpRev.aspx";
+      var exportFilename = destination_file+'synthese_revendication_apte_controle_changement.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .select('#ddlRevend','C')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=1";
+      var exportFilename = destination_file+'declaration_conditionnement.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
       .select('#ddlCampagne','')
       .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=1";
+      var exportFilename = destination_file+'synthese_conditionnement.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=2";
+      var exportFilename = destination_file+'declaration_revendication_1.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=2";
+      var exportFilename = destination_file+'synthese_revendication_1.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=3";
+      var exportFilename = destination_file+'declaration_intention_changement_denomination.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=3";
+      var exportFilename = destination_file+'synthese_intention_changement_denomination.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=4";
+      var exportFilename = destination_file+'declaration_transaction_vrac_hors_france.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=4";
+      var exportFilename = destination_file+'synthese_transaction_vrac_hors_france.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=5";
+      var exportFilename = destination_file+'declaration_recolte.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=5";
+      var exportFilename = destination_file+'synthese_recolte.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=6";
+      var exportFilename = destination_file+'declaration_transaction_vrac_france.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=6";
+      var exportFilename = destination_file+'synthese_transaction_vrac_france.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=7";
+      var exportFilename = destination_file+'declaration_revendication_2.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=7";
+      var exportFilename = destination_file+'synthese_revendication_2.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=9";
+      var exportFilename = destination_file+'declaration_changement_denomination_negociant_igp_non_geree.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=9";
+      var exportFilename = destination_file+'synthese_changement_denomination_negociant_igp_non_geree.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=10";
+      var exportFilename = destination_file+'declaration_changement_denomination_autre_igp.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=10";
+      var exportFilename = destination_file+'synthese_changement_denomination_autre_igp.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=11";
+      var exportFilename = destination_file+'declaration_changement_denomination_negociant_med.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btnExcel')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=11";
+      var exportFilename = destination_file+'synthese_changement_denomination_negociant_medp.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#btn_Excel')
       .download(exportFilename)
   })
   .then(function() {
@@ -251,18 +513,114 @@ nightmare
        return nightmare;
   })
   .then(function() {
+      var uri = baseUri+"/Facture/SuiviReglement.aspx";
+      var exportFilename = destination_file+'reglements_remises.pdf';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(2000)
+      .select('#ddlCampagne','')
+      .click('#rblRemise_0')
+      .click('#btnRechercher')
+      .wait(6000)
+      .click('#gvFactureAExporter_CheckAll')
+      .wait(10000)
+      .click('#btnRemiseCheque')
+      .wait(20000)
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/commission/DefraiementJures.aspx";
+       nightmare
+        .goto(uri)
+        .wait('body')
+        .exists("#ddlCampagne")
+        .then(function (result) {
+            if (!result) {
+                return nightmare;
+            }
+
+            for(var i = 2016; i <= 2020; i++) {
+               var exportFilename = destination_file+'defraiement_jures'+i+'.xlsx';
+               console.log("export " + uri + ": " + exportFilename);
+
+               nightmare
+               .goto(uri+"?campagne="+i)
+               .select('#ddlCampagne',i+"")
+               .wait(3000)
+               .click('#btnExportExcel')
+               .download(exportFilename)
+               .refresh()
+               .wait(2000)
+            }
+        });
+
+       return nightmare;
+  })
+  .then(function() {
       var uri = baseUri+"/Facture/LstFacture.aspx";
-      var exportFilename = destination_file+'gestion_factures.xlsx';
+      var exportFilename = destination_file+'factures.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
       .wait('#ddlCampagne')
       .select('#ddlCampagne','')
-      .wait("#BtnRech")
+      .wait(3000)
       .click('#BtnRech')
+      .wait(6000)
+      .click('#btnExport')
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Facture/LstFacture.aspx";
+      var exportFilename = destination_file+'factures.pdf';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait('#ddlCampagne')
+      .select('#ddlCampagne','')
+      .wait(3000)
+      .click('#BtnRech')
+      .wait(6000)
+      .click('#gvFactureAExporter_CheckAll')
+      .wait(10000)
+      .click('#btnEditPdf2')
+      .wait(20000)
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Facture/SuiviReglement.aspx";
+      var exportFilename = destination_file+'reglements_factures.pdf';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
       .wait(2000)
-      .wait('#btnExport')
+      .select('#ddlCampagne','')
+      .click('#rblRemise_0')
+      .click('#btnRechercher')
+      .wait(6000)
+      .click('#gvFactureAExporter_CheckAll')
+      .wait(10000)
+      .click('#btnEditPdf2')
+      .wait(20000)
+      .download(exportFilename)
+  })
+  .then(function() {
+      var uri = baseUri+"/Facture/SuiviReglement.aspx";
+      var exportFilename = destination_file+'reglements.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(2000)
+      .select('#ddlCampagne','')
+      .click('#rblRemise_0')
+      .click('#btnRechercher')
+      .wait(6000)
       .click('#btnExport')
       .download(exportFilename)
   })
