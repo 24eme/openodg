@@ -9,6 +9,8 @@ var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
 
+mkdirp(destination_file+'commissions')
+
 nightmare
 
   //authentification
@@ -17,7 +19,7 @@ nightmare
   .type('#PasswordPhp',config.user_password)
   .click('#identification')
   .wait('.menu')
-  .viewport(1400, 8000)
+  .viewport(1400, 4000)
   //fin authentification
  .then(function() {
       var uri = baseUri+"/operateur/ListeOperateur.aspx";
@@ -494,7 +496,7 @@ nightmare
         for (key in ids) {
           var id = ids[key];
           var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-          var exportFilename = destination_file + "commission_"+id+".html";
+          var exportFilename = destination_file + "commissions/commission_"+id+".html";
           console.log("export " + uri + ": " + exportFilename);
 
           nightmare
