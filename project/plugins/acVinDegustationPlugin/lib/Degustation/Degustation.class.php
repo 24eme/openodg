@@ -76,7 +76,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function save() {
         $this->generateMouvementsLots();
-        $this->generateMouvementsFactures();
 
         parent::save();
 
@@ -660,6 +659,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 
             $this->generateMouvementsLots();
+            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
+			$this->generateMouvementsFactures();
 		}
 
 		public function desanonymize(){
@@ -676,6 +677,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 
             $this->generateMouvementsLots();
+			$this->clearMouvementsFactures();
 		}
 
 		public function isAnonymized(){
@@ -1234,13 +1236,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
 	    public function getRedegustationForfait($cotisation,$filters){
-
             $mouvements = array();
 			foreach ($this->getLots() as $lot) {
-                if($lot->getNombrePassage() < 2){
+                if(!$lot->isSecondPassage()){
                     continue;
                 }
-                $mouvements[$lot->declarant_identifiant][md5($lot->getNombrePassage())] = $this->creationMouvementFactureFromLot($cotisation, $lot);
+                $mouvements[$lot->declarant_identifiant]["NUMERO_PASSAGE_".$lot->getNombrePassage()] = $this->creationMouvementFactureFromLot($cotisation, $lot);
             }
             return $mouvements;
 	    }
@@ -1253,7 +1254,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
                     continue;
                 }
-
                 $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFactureFromLot($cotisation,$lot);
             }
 
