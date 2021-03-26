@@ -10,8 +10,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         $id = $object->_id;
         $this->object = $object;
-        strtok($id, '-');
-        $this->date_degustation = DateTime::createFromFormat('YmdHi', strtok('-'))->format('Ymd');
+        $this->date_degustation = $object->getDateFormat('Ymd');
 
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }

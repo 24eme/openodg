@@ -18,9 +18,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
 
-		public function getDateStdr() {
-			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
-		}
+    public function getDateFormat($format = 'Y-m-d') {
+        if (!$this->date) {
+            return date($format);
+        }
+        return date ($format, strtotime($this->date));
+    }
 
 		public function getMaster() {
 			return $this;
@@ -31,7 +34,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
 		public function getCampagneByDate() {
-			return $this->cm->getCampagneByDate($this->getDateStdr());
+			return $this->cm->getCampagneByDate($this->getDateFormat());
 		}
 
     public function __clone() {
@@ -45,7 +48,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function getConfiguration() {
-        return ConfigurationClient::getInstance()->getConfiguration($this->getDateStdr());
+        return ConfigurationClient::getInstance()->getConfiguration($this->getDateFormat());
     }
 
     public function constructId() {
