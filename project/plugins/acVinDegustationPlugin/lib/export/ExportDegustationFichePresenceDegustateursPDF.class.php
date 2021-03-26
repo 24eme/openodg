@@ -14,15 +14,10 @@ class ExportDegustationFichePresenceDegustateursPDF extends ExportPDF {
     }
 
     public function create() {
-      @$this->printable_document->addPage(
-        $this->getPartial('degustation/fichePresenceDegustateursPdf',
-        array(
-          'degustation' => $this->degustation,
-          'degustateursATable' => $this->degustation->getDegustateursConfirmes(),
-          'degustateursByCollegeComptes' => $this->degustation->getComptesDegustateurs()
-
-        )
-      ));
+        @$this->printable_document->addPage($this->getPartial('degustation/fichePresenceDegustateursPdf', [
+            'degustation' => $this->degustation,
+            'degustateurs' => $this->degustation->getComptesDegustateurs()
+        ]));
     }
 
 
@@ -51,7 +46,7 @@ class ExportDegustationFichePresenceDegustateursPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."Feuille de présence";
+        $header_subtitle = sprintf("%s\n", $this->degustation->lieu)."Feuille de présence";
         return $header_subtitle;
     }
 
