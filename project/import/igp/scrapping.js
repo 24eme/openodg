@@ -569,7 +569,6 @@ nightmare
       .click('#gvFactureAExporter_CheckAll')
       .wait(10000)
       .click('#btnRemiseCheque')
-      .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -636,7 +635,6 @@ nightmare
       .click('#gvFactureAExporter_CheckAll')
       .wait(10000)
       .click('#btnEditPdf2')
-      .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -658,7 +656,6 @@ nightmare
       .click('#gvFactureAExporter_CheckAll')
       .wait(10000)
       .click('#btnEditPdf2')
-      .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
