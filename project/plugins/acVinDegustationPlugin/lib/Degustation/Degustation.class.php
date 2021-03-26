@@ -76,6 +76,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function save() {
         $this->generateMouvementsLots();
+        $this->generateMouvementsFactures();
 
         parent::save();
 
@@ -1235,25 +1236,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    public function getRedegustationForfait($cotisation,$filters){
 
             $mouvements = array();
-
 			foreach ($this->getLots() as $lot) {
                 if($lot->getNombrePassage() < 2){
                     continue;
                 }
-                $create = false;
-
-                foreach (MouvementLotView::getInstance()->getDegustationAvantMoi($lot) as $deg) {
-                    $create = ($deg->id != $this->_id);
-                }
-
-                if(!$create){
-                    continue;
-                }
-
                 $mouvements[$lot->declarant_identifiant][md5($lot->getNombrePassage())] = $this->creationMouvementFactureFromLot($cotisation, $lot);
-
             }
-
             return $mouvements;
 	    }
 

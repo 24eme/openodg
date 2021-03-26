@@ -1322,7 +1322,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $total;
     }
 
+    public function isVolumeLotsFacturablesInRange($min = null,$max = null){
+      $total = $this->getMaster()->getVolumeLotsFacturables();
+      if($total < 0){ return false; }
+      if(!$max && $total > $min){ return true; }
+      if($total > $min && $total <= $max){ return true; }
+      return false;
+    }
+
     public function getNbLotsFacturables(){
+        return count($this->getLots());
+    }
+
+    public function getNbLotsPreleves(){
         return count($this->getLots());
     }
 
