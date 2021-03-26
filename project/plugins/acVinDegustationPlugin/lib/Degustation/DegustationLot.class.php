@@ -93,6 +93,30 @@ class DegustationLot extends BaseDegustationLot {
         return true;
     }
 
+    public function setConformite($conformite){
+        if(!$this->_get("conformite")){
+
+            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
+            $this->getDocument()->clearMouvementsFactures();
+            $this->getDocument()->generateMouvementsFactures();
+
+            return $this->_set("conformite",$conformite);
+        }
+
+        if(!in_array(Lot::STATUT_CONFORME,array($this->_get("conformite"), $conformite))){
+            return $this->_set("conformite",$conformite);
+        }
+
+        if($this->_get("conformite") != $conformite){
+
+            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
+            $this->getDocument()->clearMouvementsFactures();
+            $this->getDocument()->generateMouvementsFactures();
+        }
+        return $this->_set("conformite",$conformite);
+
+    }
+
     public function getDocumentType() {
 
         return DegustationClient::TYPE_MODEL;
