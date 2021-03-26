@@ -39,7 +39,7 @@ class ChgtDenomValidation extends DocumentValidation
   }
 
   protected function getLotDocById_unique($lot){
-    $doc_origine = acCouchdbManager::getClient()->find($this->document->changement_origine_document_id);
+    $doc_origine = acCouchdbManager::getClient()->find($this->document->changement_origine_id_document);
     foreach ($doc_origine->lots as $key => $lot_origine) {
       if($lot->unique_id == $lot_origine->unique_id)
         return $lot_origine;

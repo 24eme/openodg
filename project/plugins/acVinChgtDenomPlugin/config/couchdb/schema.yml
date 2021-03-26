@@ -12,7 +12,7 @@ ChgtDenom:
       validation_odg: {  }
       identifiant: {  }
       papier: { required: false, type: integer }
-      changement_origine_document_id: {}
+      changement_origine_id_document: {}
       changement_origine_lot_unique_id: {}
       changement_type: {}
       changement_produit_hash: {}

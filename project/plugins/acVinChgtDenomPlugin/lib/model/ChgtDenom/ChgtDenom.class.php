@@ -132,16 +132,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function setLotOrigine($lot) {
-        $this->changement_origine_document_id = $lot->id_document;
+        $this->changement_origine_id_document = $lot->id_document;
         $this->changement_origine_lot_unique_id = $lot->unique_id;
     }
 
     public function getLotOrigine() {
-        if(!$this->changement_origine_document_id) {
+        if(!$this->changement_origine_id_document) {
             return null;
         }
 
-        $doc = acCouchdbManager::getClient()->find($this->changement_origine_document_id);
+        $doc = acCouchdbManager::getClient()->find($this->changement_origine_id_document);
 
         if(!$doc) {
 
@@ -153,7 +153,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getLotKey() {
 
-      return $this->changement_origine_document_id.":".$this->changement_origine_lot_unique_id;
+      return $this->changement_origine_id_document.":".$this->changement_origine_lot_unique_id;
     }
 
 	protected function doSave() {
