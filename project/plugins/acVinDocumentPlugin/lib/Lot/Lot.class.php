@@ -729,15 +729,17 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function updateDocumentDependances() {
-        $this->id_document_affectation = null;
-        $this->id_document_provenance = null;
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
             $this->id_document_affectation = $lotAffectation->getDocument()->_id;
+        }else {
+            $this->id_document_affectation = null;
         }
         $lotProvenance = $this->getLotProvenance();
         if($lotProvenance) {
             $this->id_document_provenance = $lotProvenance->getDocument()->_id;
+        }else{
+            $this->id_document_provenance = null;
         }
     }
 
