@@ -51,7 +51,6 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
           $name = $this->getWidgetNameFromLot($lot);
           $lot->setConformiteLot($values['conformite_'.$name], $values['motif_'.$name], $values['observation_'.$name]);
         }
-        $this->getObject()->generateMouvementsLots();
     }
 
     protected function updateDefaultsFromObject() {
