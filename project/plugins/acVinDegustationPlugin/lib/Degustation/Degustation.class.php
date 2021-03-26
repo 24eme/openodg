@@ -330,7 +330,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->id_document = $this->_id;
         $lot->affectable = false;
         $lot->numero_anonymat = null;
-        if ($lotOrig->document_ordre) {
+        if (isset($lotOrig->document_ordre) && $lotOrig->document_ordre) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
         }
         if($update) {
