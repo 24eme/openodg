@@ -1261,7 +1261,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
-                if(isset($mouvements[$lot->declarant_identifiant]) && $mouvements[$lot->declarant_identifiant][$keyCumul]){
+                if(isset($mouvements[$lot->declarant_identifiant]) && isset($mouvements[$lot->declarant_identifiant][$keyCumul])){
                     $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
                     continue;
                 }
@@ -1278,12 +1278,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLots() as $lot) {
                 if($lot->conformite && ($lot->conformite != Lot::CONFORMITE_CONFORME)){
-                    if(isset($mouvements[$lot->declarant_identifiant]) && $mouvements[$lot->declarant_identifiant][$keyCumul]){
+                    if(isset($mouvements[$lot->declarant_identifiant]) && isset($mouvements[$lot->declarant_identifiant][$keyCumul])){
                         $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
                         continue;
                     }
+					$mouvements[$lot->declarant_identifiant] = array();
+                    $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFactureFromLot($cotisation, $lot);
                 }
-                $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFactureFromLot($cotisation, $lot);
             }
 
             return $mouvements;
