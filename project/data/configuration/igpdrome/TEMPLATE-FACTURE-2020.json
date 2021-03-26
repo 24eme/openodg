@@ -1,0 +1,193 @@
+{
+  "_id": "TEMPLATE-FACTURE-2020",
+  "type": "TemplateFacture",
+  "campagne": 2020,
+  "template": "IGP",
+  "libelle": "2020 - IGP Drôme",
+  "docs": [
+    "DRev"
+  ],
+  "cotisations": {
+    "forfaitBas": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "IGP Drôme forfait",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 100,
+          "tva": 0.2,
+          "libelle": "Cotisation sur volume DRev",
+          "callback": "isVolumeLotsFacturablesInRange",
+          "callback_parameters": [
+            0,
+            1000
+          ],
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ]
+        }
+      }
+    },
+    "forfaitMoyen": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "IGP Drôme forfait",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 150,
+          "tva": 0.2,
+          "libelle": "Cotisation sur volume DRev",
+          "callback": "isVolumeLotsFacturablesInRange",
+          "callback_parameters": [
+            1000,
+            5000
+          ],
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ]
+        }
+      }
+    },
+    "forfaitHaut": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "IGP Drôme forfait",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 200,
+          "tva": 0.2,
+          "libelle": "Cotisation sur volume DRev",
+          "callback": "isVolumeLotsFacturablesInRange",
+          "callback_parameters": [
+            5000,
+            null
+          ],
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ]
+        }
+      }
+    },
+    "cotisationODG": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "706100",
+      "details": {
+        "revendicationDRev": {
+          "modele": "CotisationVariable",
+          "prix": 0.05,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Volume lots DRev",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": []
+        },
+        "controleinterne": {
+          "modele": "CotisationVariable",
+          "prix": 0.21,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle interne",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": []
+        },
+        "controleexterne": {
+          "modele": "CotisationVariable",
+          "prix": 0.1,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle externe",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": []
+        },
+        "lots": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Nombre lots preleves DRev",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbLotsPreleves",
+          "callback_parameters": []
+        },
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "libelle": "Cotisation reversée à l'INAO",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        }
+      }
+    },
+    "cotisationMed": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "libelle": "Cotisation Igp méditerrannée",
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "/appellations/MED"
+          ],
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ]
+        }
+      }
+    },
+    "cotisationModificatrice": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Modification",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 25,
+          "tva": 0.2,
+          "libelle": "Cotisation sur modification DRev",
+          "callback": "isModificative",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -122,7 +122,7 @@
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeDestFacturable",
           "callback_parameters": [
             "/appellations/MED"
           ]
