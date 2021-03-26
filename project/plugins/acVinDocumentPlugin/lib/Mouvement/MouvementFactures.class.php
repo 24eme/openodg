@@ -2,11 +2,27 @@
 
 abstract class MouvementFactures extends acCouchdbDocumentTree implements InterfaceMouvementFactures
 {
-    /*const TYPE_HASH_CONTRAT_VRAC = 'vrac_details';
-    const TYPE_HASH_CONTRAT_RAISIN = VracClient::TYPE_TRANSACTION_RAISINS;
-    const TYPE_HASH_CONTRAT_MOUT = VracClient::TYPE_TRANSACTION_MOUTS;*/
 
     protected $origines = array();
+
+    public function createFromCotisationAndDoc($cotisation,$doc) {
+        $this->fillFromCotisation($cotisation);
+        $this->facture = 0;
+        $this->facturable = 1;
+        $this->date = ($doc->exist('validation_odg'))? $doc->validation_odg : null;
+        $this->date_version = ($doc->exist('validation'))? $doc->validation : null;
+        $this->version = $doc->version;
+        $this->type = $doc->type;
+        $this->campagne = ($doc->exist('campagne'))? $doc->campagne : null;
+        /*
+        produit_hash: {  }
+        produit_libelle: {  }
+        type_hash: {  }
+        type_libelle: {  }
+        detail_identifiant: {  }
+        detail_libelle: {  } */
+
+    }
 
     public function fillFromCotisation($cotisation) {
         $this->categorie = $cotisation->getCollectionKey();
@@ -78,14 +94,10 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
       return $this->_set('volume', $v);
     }
 
-    public function setCVO($cvo) {
-      if ($this->cvo === 0 && $cvo) {
-	throw new sfException('PB Facturable : plus capable de savoir si le mouvement est facturable ou non');
-      }
-      if (!$cvo)
-	$this->facturable = 0;
-      return $this->_set('cvo', $cvo);
-    }
+/**
+*   TODO : A partir d'ici les fonctions semblent servir pour Giilda => beaucoup de code à nettoyer
+*/
+
 
     public function isVrac() {
 
