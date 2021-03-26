@@ -245,7 +245,7 @@ class fichierActions extends sfActions
 			if ($fichiers && $drev) {
 				$drev->importFromDocumentDouanier();
                 //TODO: réactiver generateMouvementsFactures
-                //$drev->generateMouvementsFactures();
+                $drev->generateMouvementsFactures();
                 $drev->save();
 			}
 			return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
