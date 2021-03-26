@@ -174,6 +174,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function save() {
+        $this->generateLots();
         $this->generateMouvementsLots();
 
         parent::save();
@@ -219,11 +220,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $this->clearLots();
 
       $lots = array();
-      $lot = $this->getLotOrigine()->getData();
-
+      $lot = $this->getLotOrigine();
+      if (!$lot) {
+          return;
+      }
 
       $lotDef = ChgtDenomLot::freeInstance($this);
-      foreach($lot as $key => $value) {
+      foreach($lot->getData() as $key => $value) {
           if($lotDef->getDefinition()->exist($key)) {
               continue;
           }
