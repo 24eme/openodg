@@ -7,11 +7,11 @@ function (doc) {
       var mouvement = doc.mouvements_lots[identifiant][key];
       var lot = doc.lots[mouvement.lot_hash.replace("/lots/", "")*1];
       emit([
-        mouvement.statut, mouvement.declarant_identifiant, mouvement.lot_unique_id, doc._id, mouvement.detail
+        mouvement.statut, mouvement.declarant_identifiant, mouvement.campagne, mouvement.lot_unique_id, mouvement.document_ordre, doc._id, mouvement.detail
       ], lot);
 
       emit([
-        null, mouvement.declarant_identifiant, mouvement.lot_unique_id, doc._id, mouvement.detail
+        null, mouvement.declarant_identifiant, mouvement.campagne, mouvement.lot_unique_id, mouvement.document_ordre, doc._id, doc._id, mouvement.detail
       ], lot);
     }
   }

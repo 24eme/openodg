@@ -45,12 +45,6 @@ class DegustationLot extends BaseDegustationLot {
     }
   }
 
-    public function attributionTable($table)
-    {
-        $this->numero_table = $table;
-        $this->statut = Lot::STATUT_ATTABLE;
-    }
-
     public function isAnonymisable(){
         return !is_null($this->numero_table);
     }
@@ -105,10 +99,11 @@ class DegustationLot extends BaseDegustationLot {
     }
 
     public function getDocumentOrdre() {
-        if(is_null($this->_get('document_ordre'))) {
-            $this->_set('document_ordre', sprintf("%02d", 2 + $this->getNumeroPassage()));
+        $nb_passage = $this->getNumeroPassage();
+        if ($nb_passage < 2) {
+            $nb_passage = 1;
         }
-
+        $this->_set('document_ordre', sprintf("%02d", 1 + $nb_passage));
         return $this->_get('document_ordre');
     }
 
@@ -120,6 +115,13 @@ class DegustationLot extends BaseDegustationLot {
     public function getMouvementFreeInstance() {
 
         return DegustationMouvementLots::freeInstance($this->getDocument());
+    }
+
+    public function setNumeroTable($n) {
+        if ($n) {
+            $this->statut = Lot::STATUT_ATTABLE;
+        }
+        return parent::setNumeroTable($n);
     }
 
 }

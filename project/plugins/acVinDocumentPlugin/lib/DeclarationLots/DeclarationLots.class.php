@@ -1,8 +1,7 @@
 <?php
-abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVersionDocument, InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument
+abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument
 {
       protected $declarant_document = null;
-      protected $version_document = null;
       protected $piece_document = null;
       protected $archivage_document = null;
       protected $etablissement = null;
@@ -19,7 +18,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
 
       protected function initDocuments() {
           $this->declarant_document = new DeclarantDocument($this);
-          $this->version_document = new VersionDocument($this);
           $this->piece_document = new PieceDocument($this);
           $this->archivage_document = new ArchivageDocument($this);
       }
@@ -387,137 +385,28 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
         return strtolower($this->type);
       }
 
-      public static function buildVersion($rectificative, $modificative) {
-          return VersionDocument::buildVersion($rectificative, $modificative);
-      }
-
-      public static function buildRectificative($version) {
-          return VersionDocument::buildRectificative($version);
-      }
-
-      public static function buildModificative($version) {
-          return VersionDocument::buildModificative($version);
-      }
-
-      public function getVersion() {
-          return $this->_get('version');
-      }
-
-      public function hasVersion() {
-          return $this->version_document->hasVersion();
-      }
-
-      public function isVersionnable() {
-          if (!$this->validation) {
-              return false;
-          }
-          return $this->version_document->isVersionnable();
-      }
-
-      public function getRectificative() {
-          return $this->version_document->getRectificative();
-      }
-
-      public function isRectificative() {
-          return $this->version_document->isRectificative();
-      }
-
-      public function isRectifiable() {
-          return false;
-      }
-
-      public function getModificative() {
-          return $this->version_document->getModificative();
-      }
-
-      public function isModificative() {
-          return $this->version_document->isModificative();
-      }
-
-      public function isModifiable() {
-          return $this->version_document->isModifiable();
-      }
-
       public function isTeledeclare() {
           return !$this->isPapier();
       }
 
-      public function getPreviousVersion() {
-          return $this->version_document->getPreviousVersion();
-      }
-
-      public function getMasterVersionOfRectificative() {
-          throw new sfException("Not implemented");
-      }
-
-      public function needNextVersion() {
-          return $this->version_document->needNextVersion() || !$this->isSuivanteCoherente();
-      }
-
-      public function getMaster() {
-          return $this->version_document->getMaster();
-      }
-
       public function isMaster() {
-          return $this->version_document->isMaster();
+
+          return true;
       }
 
-      public function getMother() {
-          return $this->version_document->getMother();
-      }
+      public function isModificative() {
 
-      public function motherGet($hash) {
-          return $this->version_document->motherGet($hash);
-      }
-
-      public function motherExist($hash) {
-          return $this->version_document->motherExist($hash);
-      }
-
-      public function motherHasChanged() {
           return false;
       }
 
-      public function getDiffWithMother() {
-          return $this->version_document->getDiffWithMother();
+      public function getMother() {
+
+          return null;
       }
 
-      public function isModifiedMother($hash_or_object, $key = null) {
-          return $this->version_document->isModifiedMother($hash_or_object, $key);
-      }
+      public function getVersion() {
 
-      public function generateRectificative() {
-          return $this->version_document->generateRectificative();
-      }
-
-      public function generateModificative() {
-          $doc = $this->version_document->generateModificative();
-          $doc->cleanMouvementsLots();
-          return $doc;
-      }
-
-      public function generateNextVersion() {
-          throw new sfException("Not implemented");
-      }
-
-      public function listenerGenerateVersion($document) {
-          $document->constructId();
-          $document->clearMouvementsLots();
-          $document->clearMouvementsFactures();
-          $document->devalidate();
-          foreach ($document->getProduitsLots() as $produit) {
-            if($produit->exist("validation_odg") && $produit->validation_odg){
-              $produit->validation_odg = null;
-            }
-          }
-      }
-
-      public function listenerGenerateNextVersion($document) {
-
-      }
-
-      public function getSuivante() {
-          throw new sfException("Not implemented");
+          return null;
       }
 
       public function isValidee() {
@@ -595,7 +484,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceVer
               }
 
               if($lot->isAffecte()) {
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC_DREV));
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
                   continue;
               }
 

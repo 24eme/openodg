@@ -5,6 +5,20 @@ degustation:
     sf_method: [get]
   class: DegustationGeneralRoute
 
+degustation_liste:
+  url: /degustation/all/:campagne
+  param: { module: degustation, action: liste }
+  requirements:
+    sf_method: [get]
+  class: DegustationGeneralRoute
+
+degustation_liste_declarant:
+  url: /degustation/all/:identifiant/:campagne
+  param: { module: degustation, action: listeDeclarant }
+  requirements:
+    sf_method: [get]
+  class: DegustationGeneralRoute
+
 degustation_prelevables:
   url: /degustation/prelevables
   param: { module: degustation, action: prelevables }

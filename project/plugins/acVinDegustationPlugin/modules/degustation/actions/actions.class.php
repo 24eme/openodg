@@ -8,6 +8,8 @@ class degustationActions extends sfActions {
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
 
+        $this->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+
         $this->degustations = DegustationClient::getInstance()->getHistory();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -24,6 +26,29 @@ class degustationActions extends sfActions {
         $degustation = $this->form->save();
 
         return $this->redirect('degustation_prelevement_lots', $degustation);
+    }
+
+    public function executeListe(sfWebRequest $request)
+    {
+        $this->campagne = $request->getParameter('campagne');
+        $this->degustations = DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_JSON);
+    }
+
+    public function executeListeDeclarant(sfWebRequest $request)
+    {
+        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
+        $this->etablissement = $request->getParameter('identifiant');
+        $this->degustations = [];
+
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->etablissement, $this->campagne)->rows;
+
+        foreach ($mouvements as $lot) {
+            if (in_array($lot->value->document_id, $this->degustations)) {
+                continue;
+            }
+
+            $this->degustations[$lot->value->document_id] = DegustationClient::getInstance()->find($lot->value->document_id, acCouchdbClient::HYDRATE_JSON);
+        }
     }
 
     public function executePrelevables(sfWebRequest $request)

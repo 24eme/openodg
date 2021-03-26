@@ -14,11 +14,11 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_ANONYMISE = "05_ANONYMISE";
     const STATUT_DEGUSTE = "06_DEGUSTE";
     const STATUT_CONFORME = "08_CONFORME";
-    const STATUT_AFFECTE_SRC = "07_AFFECTE_SRC";
     const STATUT_NONCONFORME = "08_NON_CONFORME";
-    const STATUT_MANQUEMENT_EN_ATTENTE = "01_MANQUEMENT_EN_ATTENTE";
-    const STATUT_RECOURS_OC = "09_RECOURS_OC";
-    const STATUT_CONFORME_APPEL = "10_CONFORME_APPEL";
+    const STATUT_AFFECTE_SRC = "10_AFFECTE_SRC";
+    const STATUT_MANQUEMENT_EN_ATTENTE = "09_MANQUEMENT_EN_ATTENTE";
+    const STATUT_RECOURS_OC = "11_RECOURS_OC";
+    const STATUT_CONFORME_APPEL = "12_CONFORME_APPEL";
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
 
     const STATUT_CHANGE = "CHANGE";
@@ -34,7 +34,6 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
-    const STATUT_AFFECTE_SRC_DREV = "04_AFFECTE_SRC";
     const STATUT_CHANGE_SRC = "05_CHANGE_SRC";
 
     const CONFORMITE_CONFORME = "CONFORME";
@@ -46,8 +45,6 @@ abstract class Lot extends acCouchdbDocumentTree
     const SPECIFICITE_UNDEFINED = "UNDEFINED";
 
     const TYPE_ARCHIVE = 'Lot';
-
-    const TEXTE_PASSAGE = '%dème dégustation';
 
     public static $libellesStatuts = array(
         self::STATUT_AFFECTE_DEST => 'Affecte dest',
@@ -75,8 +72,6 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Non affectable',
         self::STATUT_AFFECTABLE => 'Affectable',
-        self::STATUT_AFFECTE_SRC_DREV => 'Affecté source drev',
-
         self::STATUT_CHANGE_DEST => 'Changé dest'
 
     );
@@ -286,7 +281,11 @@ abstract class Lot extends acCouchdbDocumentTree
 
 
     public function getIntitulePartiel(){
-      $libelle = 'lot '.$this->declarant_nom.' ('.$this->numero_logement_operateur.') de '.$this->produit_libelle;
+      $libelle = 'lot '.$this->declarant_nom;
+      if ($this->numero_logement_operateur) {
+          $libelle .= ' ('.$this->numero_logement_operateur.')';
+      }
+      $libelle .= ' de '.$this->produit_libelle;
       if ($this->millesime){
         $libelle .= ' ('.$this->millesime.')';
       }
@@ -342,36 +341,33 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isSecondPassage()
     {
-        return $this->exist('nombre_degustation') && $this->nombre_degustation > 1;
+        return $this->getNumeroPassage() > 1;
     }
 
     public function getTextPassage()
     {
-        $nb = $this->isSecondPassage() ? $this->nombre_degustation.'ème' : '1er';
+        $nb = $this->isSecondPassage() ? $this->getNumeroPassage().'ème' : '1er';
         return $nb." passage";
     }
 
     public function getNumeroPassage()
     {
-        return MouvementLotView::getInstance()->getNombreDegustationAvantMoi($this);
+        return $this->getNombrePassage();
     }
 
     public function getNombrePassage()
     {
-        return MouvementLotView::getInstance()->getNombrePassage($this);
+        return MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($this);
     }
 
     public static function generateTextePassage($lot, $nb)
     {
         $specificite = $lot->specificite;
 
-        if (strpos($specificite, str_replace('%d', '', self::TEXTE_PASSAGE)) !== false) {
-            // il y a déjà un passage dans la spécificité
-            $specificite = preg_replace('/[0-9]+'.str_replace('%d', '', self::TEXTE_PASSAGE).'/', sprintf(self::TEXTE_PASSAGE, $nb), $specificite);
-        } else {
-            $specificite = (empty($specificite))
-                            ? sprintf(self::TEXTE_PASSAGE, $nb)
-                            : $specificite . ', '. sprintf(self::TEXTE_PASSAGE, $nb);
+        $specificite = preg_replace('/, \d(er|ème) dégustation/', '', $specificite);
+
+        if ($nb > 1) {
+            $specificite .=  sprintf(', %dème dégustation', $nb);
         }
 
         return $specificite;
@@ -384,8 +380,6 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($nombrePassage < 1) {
             return;
         }
-
-        $nombrePassage++;
 
         $this->specificite = self::generateTextePassage($this, $nombrePassage);
     }
@@ -738,6 +732,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function updateDocumentDependances() {
         $this->id_document_affectation = null;
+        $this->id_document_provenance = null;
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
             $this->id_document_affectation = $lotAffectation->getDocument()->_id;
@@ -750,25 +745,24 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getLotAffectation()
     {
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+        return $this->getLotDocumentOrdre(intval($this->document_ordre) + 1);
     }
 
     public function getLotFils()
     {
 
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 + 1);
+        return $this->getLotAffectation();
     }
 
     public function getLotProvenance()
     {
-
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+        return $this->getLotDocumentOrdre(intval($this->document_ordre) - 1);
     }
 
     public function getLotPere()
     {
 
-        return $this->getLotDocumentOrdre($this->document_ordre * 1 - 1);
+        return $this->getLotProvenance();
     }
 
     abstract public function getDocumentOrdre();

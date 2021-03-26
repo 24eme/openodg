@@ -1,28 +1,18 @@
 <?php
 
-class chgtdenomActions extends sfActions {
-
-
-    public function executeCreate(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
-
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
-        $chgtDenom->save();
-
-        return $this->redirect('chgtdenom_lots', $chgtDenom);
-    }
-
+class chgtdenomActions extends sfActions
+{
     public function executeCreateLot(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $lot = $request->getParameter('lot');
-        $campagne = $request->getParameter('campagne');
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
+        $chgtDenom->changement_origine_document_id = strtok($lot, ':');
+        $chgtDenom->changement_origine_lot_unique_id = strtok(':');
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id, 'key' => $lot));
+        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id));
     }
 
     public function executeCreatePapier(sfWebRequest $request) {
@@ -37,19 +27,14 @@ class chgtdenomActions extends sfActions {
     }
 
     public function executeLots(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getChgtDenom();
-        $this->secureIsValide($this->chgtDenom);
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->chgtDenom->identifiant);
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->campagne = $request->getParameter('campagne');
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
     }
 
     public function executeEdition(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
-
-        if($request->getParameter("key")) {
-            $this->chgtDenom->changement_origine_document_id = preg_replace("/:.+/", "", $request->getParameter("key"));
-            $this->chgtDenom->changement_origine_lot_unique_id = preg_replace("/.+:/", "", $request->getParameter("key"));
-        }
 
         if(!$this->chgtDenom->getLotOrigine()) {
 
