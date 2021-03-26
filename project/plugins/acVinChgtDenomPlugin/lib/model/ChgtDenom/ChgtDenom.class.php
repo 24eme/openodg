@@ -350,7 +350,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST));
             if($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
                 if (!$lot->isChange()) {
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
                 }else{
