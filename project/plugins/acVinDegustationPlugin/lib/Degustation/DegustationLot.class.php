@@ -102,8 +102,7 @@ class DegustationLot extends BaseDegustationLot {
 
             return $this->_set("conformite",$conformite);
         }
-
-        if(!in_array(Lot::STATUT_CONFORME,array($this->_get("conformite"), $conformite))){
+        if(!in_array(Lot::CONFORMITE_CONFORME,array($this->_get("conformite"), $conformite))){
             return $this->_set("conformite",$conformite);
         }
 

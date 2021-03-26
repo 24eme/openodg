@@ -878,6 +878,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $etapeOriginal != $this->etape;
     }
 
+    public function getDateValidationFormat($format = 'Y-m-d') {
+        if (!$this->validation) {
+            return "";
+        }
+        return date ($format, strtotime($this->validation));
+    }
+
     public function validate($date = null) {
         if(is_null($date)) {
             $date = date('c');
@@ -1377,12 +1384,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
       foreach($cotisations as $cotisation) {
           $mouvement = DRevMouvementFactures::freeInstance($this);
-          $mouvement->fillFromCotisation($cotisation);
-          $mouvement->facture = 0;
-          $mouvement->facturable = 1;
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
           $mouvement->date = $this->getPeriode().'-12-10';
-          $mouvement->date_version = $this->validation;
-          $mouvement->version = $this->version;
+          $mouvement->date_version = $this->getDateValidationFormat();
 
           if(isset($cotisationsPrec[$cotisation->getHash()])) {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();

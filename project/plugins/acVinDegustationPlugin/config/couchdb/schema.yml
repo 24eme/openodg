@@ -137,6 +137,8 @@ Degustation:
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+                        type: {  }
+                        campagne: {  }
       degustateurs:
         type: collection
         definition:

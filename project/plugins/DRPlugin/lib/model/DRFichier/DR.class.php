@@ -7,8 +7,10 @@
 class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
 
 	protected $mouvement_document = null;
+    protected $isRevendicationParLots = null;
 
 	public function __construct() {
+        $this->isRevendicationParLots = (class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots());
 		parent::__construct();
 	}
 
@@ -35,13 +37,15 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
     }
 
     public function save() {
-		if(class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()){
+		if($this->isRevendicationParLots){
 
     		if(!$this->exist('donnees') || !count($this->donnees)) {
     	           $this->generateDonnees();
     	    }
 
-    	    $this->generateMouvementsFactures();
+            if(!count($this->mouvements)){
+                $this->generateMouvementsFactures();
+            }
         }
 
         parent::save();
@@ -68,10 +72,12 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
       }
 
 	  $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->getCampagne());
+
       // TODO : pour l'instant cela est géré avec le critère isRevendication par lot
-	  if($this->getTotalValeur("15") && !$drev && !DRevConfiguration::getInstance()->isRevendicationParLots()){
-			 	throw new FacturationPassException("L15 et pas de Drev : ".$this->_id." on skip la facture");
-	  }
+      if($this->getTotalValeur("15") && !$drev && !$this->isRevendicationParLots){
+          throw new FacturationPassException("L15 et pas de Drev : ".$this->_id." on skip la facture");
+      }
+
 
       $cotisations = $templateFacture->generateCotisations($this);
 
@@ -87,12 +93,9 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
 
       foreach($cotisations as $cotisation) {
           $mouvement = DRMouvementFactures::freeInstance($this);
-          $mouvement->fillFromCotisation($cotisation);
-          $mouvement->facture = 0;
-          $mouvement->facturable = 1;
+          $mouvement->createFromCotisationAndDoc($cotisation,$this);
           $mouvement->date = $this->getCampagne().'-12-10';
-          $mouvement->date_version = $mouvement->date;
-          $mouvement->version = $this->version;
+          $mouvement->date_version = $this->getCampagne().'-12-10';
 
           if(isset($cotisationsPrec[$cotisation->getHash()])) {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
@@ -110,7 +113,7 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
       }
 
       if($rienAFacturer) {
-          return array($identifiantCompte => array());
+          return array();
 
       }
 

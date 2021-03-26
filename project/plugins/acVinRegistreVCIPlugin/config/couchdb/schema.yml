@@ -92,6 +92,8 @@ RegistreVCI:
                         date: {  }
                         date_version: {  }
                         version: {  }
+                        type: {  }
+                        campagne: {  }
       pieces:
         type: array_collection
         definition:

@@ -113,6 +113,8 @@ ChgtDenom:
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+                        type: {  }
+                        campagne: {  }
       mouvements_lots:
         type: collection
         definition:
