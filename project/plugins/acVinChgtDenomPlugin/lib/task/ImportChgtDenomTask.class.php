@@ -120,7 +120,7 @@ EOF;
             $chgtDenom->constructId();
             $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
             $chgtDenom->setLotOrigine($mouvementLot);
-            $chgtDenom->changement_produit = $produitFinal->getHash();
+            $chgtDenom->changement_produit_hash = $produitFinal->getHash();
             $chgtDenom->changement_volume = $volumeConcerne;
             $chgtDenom->generateLots();
             if (!$chgtDenom->isChgtTotal()) {

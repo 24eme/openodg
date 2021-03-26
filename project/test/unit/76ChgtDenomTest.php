@@ -122,22 +122,24 @@ $autreLot = next($lots);
 $t->comment("Création d'un Changement de Denom Total");
 
 $chgtDenom->setLotOrigine($lot);
-$chgtDenom->changement_produit = $autreLot->produit_hash;
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
+$chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_volume = $volume;
 $chgtDenom->changement_cepages = array('CABERNET' => $volume);
-$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
-$chgtDenom->generateLots();
+$chgtDenom->save();
 
 $t->is(count($chgtDenom->lots), 1, "1 seul lot généré");
 $chgtDenom->generateMouvementsLots(1);
 $chgtDenom->save();
 
 $t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive, "Le numéro d'archive n'a pas changé");
+$t->is($chgtDenom->lots[0]->numero_dossier, $lot->numero_dossier, "Le numéro de dossier n'a pas changé");
+
 $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 $t->ok($chgtDenom->isChgtTotal(), "Le changement est bien indiqué comme total");
 $lot = $chgtDenom->lots->get(0);
-$t->is($lot->produit_hash, $chgtDenom->changement_produit, "Le produit est bien le nouveau dans le lot");
+$t->is($lot->produit_hash, $chgtDenom->changement_produit_hash, "Le produit est bien le nouveau dans le lot");
 $t->is($lot->volume, $chgtDenom->changement_volume, "Le volume est bien le nouveau dans le lot");
 $t->is($lot->produit_libelle, $chgtDenom->changement_produit_libelle, "Le libellé du produit est bien le nouveau dans le lot");
 $t->is($lot->cepages->toArray(), array('CABERNET' => $volume), "Le 100% cepage est bien appliqué dans dans le lot");
@@ -157,7 +159,7 @@ $chgtDenom->clearLots();
 
 $t->comment("Création d'un Chgt de Denom Partiel");
 $chgtDenom->setLotOrigine($lot);
-$chgtDenom->changement_produit = $autreLot->produit_hash;
+$chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
@@ -182,7 +184,7 @@ $t->ok($chgtDenom->isChgtTotal(), "Le changement qui a un volume identique est b
 $t->is(count($chgtDenom->lots), 1, "Ce changement total ne génère plus que 1 lot");
 $chgtDenom->generateMouvementsLots(1);
 $t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive, "Un chgm total ne change pas le numero d'archive");
-$t->is($chgtDenom->changement_produit, null, "Pas de produit");
+$t->is($chgtDenom->changement_produit_hash, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
 $t->is(count($chgtDenom->lots), 1, "Dans un declassement total, on a bien un seul lot");
@@ -199,7 +201,7 @@ $t->is(count($chgtDenom->lots), 2, "2 lot généré");
 $chgtDenom->generateMouvementsLots();
 $t->is($chgtDenom->lots[0]->numero_archive, $lot->numero_archive.'a', "Pour le déclassement, le 1er lot est postfixé par a");
 $t->is($chgtDenom->lots[1]->numero_archive, $lot->numero_archive.'b', "Pour le déclassement, le 2d lot est postfixé par b");
-$t->is($chgtDenom->changement_produit, null, "Pas de produit");
+$t->is($chgtDenom->changement_produit_hash, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONCONFORME), "le mouvement du lot d'origine a bien toujours un statut non conforme");

@@ -15,7 +15,7 @@ ChgtDenom:
       changement_origine_document_id: {}
       changement_origine_lot_unique_id: {}
       changement_type: {}
-      changement_produit: {}
+      changement_produit_hash: {}
       changement_produit_libelle: { }
       changement_cepages:
         type: collection

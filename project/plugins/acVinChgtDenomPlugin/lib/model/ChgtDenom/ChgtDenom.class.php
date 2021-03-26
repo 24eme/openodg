@@ -116,19 +116,19 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function setChangementType($type) {
         if($type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
-            $this->changement_produit = null;
+            $this->changement_produit_hash = null;
         }
 
         return $this->_set('changement_type', $type);
     }
 
-    public function setChangementProduit($hash) {
+    public function setChangementProduitHash($hash) {
         $this->changement_produit_libelle = null;
         if($hash) {
             $this->changement_produit_libelle = $this->getConfiguration()->get($hash)->getLibelleComplet();
         }
 
-        return $this->_set('changement_produit', $hash);
+        return $this->_set('changement_produit_hash', $hash);
     }
 
     public function setLotOrigine($lot) {
@@ -233,7 +233,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot->numero_archive .= 'b';
         $lots[] = $lotOrig;
       }
-      $lot->produit_hash = $this->changement_produit;
+      $lot->produit_hash = $this->changement_produit_hash;
       $lot->produit_libelle = $this->changement_produit_libelle;
       $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
       $lot->cepages = $this->changement_cepages;
@@ -474,7 +474,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** FIN DES MOUVEMENTS ****/
 
     public function getVolumeDestFacturable($produitFilter = null){
-      if(preg_match("#$produitFilter#",$this->changement_produit)){
+      if(preg_match("#$produitFilter#",$this->changement_produit_hash)){
           return $this->changement_volume;
       }
       return 0.0;
@@ -515,10 +515,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
 			$produitExclude = (bool) $produitExclude;
 			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
-			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $this->changement_produit)) {
+			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $this->changement_produit_hash)) {
 					return;
 			}
-			if($produitFilter && $produitExclude && preg_match($regexpFilter, $this->changement_produit)) {
+			if($produitFilter && $produitExclude && preg_match($regexpFilter, $this->changement_produit_hash)) {
 					return;
 			}
 
