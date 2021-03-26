@@ -114,8 +114,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function setChangementType($type) {
-        if($type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+    public function setChangementType($type, $external_call = true) {
+        if($external_call && ($type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT)) {
             $this->changement_produit_hash = null;
         }
 
@@ -126,9 +126,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->changement_produit_libelle = null;
         if($hash) {
             $this->changement_produit_libelle = $this->getConfiguration()->get($hash)->getLibelleComplet();
-            $this->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
+            $this->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, false);
         }else{
-            $this->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+            $this->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, false);
         }
 
         $ret =  $this->_set('changement_produit_hash', $hash);
