@@ -27,7 +27,7 @@ class DegustationEtapes extends Etapes {
     public static $libelles = array(
         self::ETAPE_LOTS => 'Lots',
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
-        self::ETAPE_PRELEVEMENTS => 'Prélévements / Convocations',
+        self::ETAPE_PRELEVEMENTS => 'Prélévements / Confirmation',
         self::ETAPE_TABLES => 'Tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_COMMISSION => 'Commission',

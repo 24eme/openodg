@@ -341,23 +341,25 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isSecondPassage()
     {
-        return $this->getNumeroPassage() > 1;
+        return $this->getNombrePassage() > 1;
     }
 
     public function getTextPassage()
     {
-        $nb = $this->isSecondPassage() ? $this->getNumeroPassage().'ème' : '1er';
+        $nb = $this->isSecondPassage() ? $this->getNombrePassage().'ème' : '1er';
         return $nb." passage";
-    }
-
-    public function getNumeroPassage()
-    {
-        return $this->getNombrePassage();
     }
 
     public function getNombrePassage()
     {
-        return MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($this);
+        //On passe par le lot précédent pour connaitre son nombre d'affecté
+        //car dans on est appelé depuis le save on n'est pas encore sauvé et la vue n'est donc pas à jour
+        //alors que le prédécesseur est sauvé
+        $lotProvenance = $this->getLotProvenance();
+        if (!$lotProvenance) {
+            return 0;
+        }
+        return MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotProvenance) + 1;
     }
 
     public static function generateTextePassage($lot, $nb)
@@ -375,12 +377,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function updateSpecificiteWithDegustationNumber()
     {
-        $nombrePassage = $this->getNumeroPassage();
-
-        if ($nombrePassage < 1) {
-            return;
-        }
-
+        $nombrePassage = $this->getNombrePassage();
         $this->specificite = self::generateTextePassage($this, $nombrePassage);
     }
 
@@ -602,13 +599,13 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->_set('numero_logement_operateur', $numero);
     }
 
-    public function getProvenance()
+    public function getTypeDocument()
     {
-        if(!$this->id_document_provenance) {
+        return substr($this->id_document, 0, 4);
+    }
 
-            return null;
-        }
-
+    public function getTypeProvenance()
+    {
         return substr($this->id_document_provenance, 0, 4);
     }
 

@@ -49,10 +49,10 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 	    $lots = array();
 	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $lot) {
 	        $lots[$lot->value->unique_id] = $lot->value;
-            $lots[$lot->value->unique_id]->id_document_provenance = $lot->id;
-            $lots[$lot->value->unique_id]->provenance = substr($lot->id, 0, 4);
-            if ($lot->key[4]) {
-                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], intval($lot->key[MouvementLotView::KEY_DOCUMENT_ORDRE]) - 1); // clé détail
+            $lots[$lot->value->unique_id]->type_document = substr($lot->id, 0, 4);
+            $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;
+            if ($nb_passage > 1) {
+                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $nb_passage);
             }
 	    }
         uasort($lots, array("DegustationClient", "sortLotByDate"));
@@ -70,13 +70,25 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
       return $alphas[$numero_table-1];
     }
 
-    public function getManquements() {
+    public function getManquements($campagne = null) {
         $manquements = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
             $item->value->id_document = $item->id;
             $manquements[$item->value->unique_id] = $item->value;
         }
-        return $manquements;
+
+        $manquements_tries = $manquements;
+        if ($campagne) {
+            $manquements_tries = array_filter($manquements, function ($manquement) use ($campagne) {
+                return $manquement->campagne === $campagne;
+            });
+        }
+
+        uasort($manquements_tries, function ($manquement1, $manquement2) {
+            return !strcmp($manquement1->campagne, $manquement2->campagne);
+        });
+
+        return $manquements_tries;
     }
 
     public function findFacturable($identifiant, $campagne) {

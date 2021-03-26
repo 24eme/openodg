@@ -183,6 +183,11 @@ class fichierActions extends sfActions
 
 	public function executeEdit(sfWebRequest $request) {
     	$this->fichier = $this->getRoute()->getFichier();
+
+        if ($this->fichier->isFactures()) {
+            throw new Exception($this->fichier->getType().' déjà facturée');
+        }
+
         $this->etablissement = $this->fichier->getEtablissementObject();
 
         $this->fichier->generateDonnees();

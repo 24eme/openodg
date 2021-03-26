@@ -123,11 +123,6 @@ class DegustationLot extends BaseDegustationLot {
     }
 
     public function getDocumentOrdre() {
-        $nb_passage = $this->getNumeroPassage();
-        if ($nb_passage < 2) {
-            $nb_passage = 1;
-        }
-        $this->_set('document_ordre', sprintf("%02d", 1 + $nb_passage));
         return $this->_get('document_ordre');
     }
 

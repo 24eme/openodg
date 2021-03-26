@@ -17,4 +17,9 @@ then
         echo "IGP13;ERROR;La Dégustation 20-16 n'a pas 18 lots"
     fi
 
+    if test $(curl -s localhost:5984/openodg_import/_design/mouvement/_view/lot | grep "03_PRELEVE" | grep "DEGUSTATION-2021022" | wc -l) != 48
+    then
+        echo "IGP13;ERROR;La Dégustation 20-13 n'a pas 48 lots"
+    fi
+
 fi

@@ -10,17 +10,13 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         $id = $object->_id;
         $this->object = $object;
-        strtok($id, '-');
-        $this->date_degustation = DateTime::createFromFormat('YmdHi', strtok('-'))->format('Ymd');
+        $this->date_degustation = $object->getDateFormat('Ymd');
 
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }
 
     public function configure() {
-        foreach ($this->object->lots as $lot) {
-            $this->lots[$lot->unique_id] = $lot;
-        }
-
+        $this->lots = $this->object->getLotsFromProvenance();
         uasort($this->lots, array("DegustationClient", "sortLotByDate"));
 
         foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {

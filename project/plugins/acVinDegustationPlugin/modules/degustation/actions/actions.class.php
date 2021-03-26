@@ -567,7 +567,13 @@ class degustationActions extends sfActions {
 
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
-      $this->manquements = DegustationClient::getInstance()->getManquements();
+      $this->manquements = DegustationClient::getInstance()->getManquements($request->getParameter('campagne', null));
+      $this->campagnes = [];
+      foreach ($this->manquements as $manquement) {
+          if (in_array($manquement->campagne, $this->campagnes) === false) {
+            $this->campagnes[] = $manquement->campagne;
+          }
+      }
     }
 
     public function executeElevages(sfWebRequest $request) {

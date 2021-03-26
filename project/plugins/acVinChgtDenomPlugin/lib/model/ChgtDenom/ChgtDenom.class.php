@@ -35,13 +35,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->piece_document = new PieceDocument($this);
     }
 
-		public function getDateStdr() {
-			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
-		}
+        public function getDateFormat($format = 'Y-m-d') {
+            if (!$this->date) {
+                return date($format);
+            }
+            return date ($format, strtotime($this->date));
+        }
 
-		private function getCampagneByDate() {
-			return $this->cm->getCampagneByDate($this->getDateStdr());
-		}
+        private function getCampagneByDate() {
+            return $this->cm->getCampagneByDate($this->getDateFormat());
+        }
 
         public function getPeriode() {
             return preg_replace('/-.*/', '', $this->campagne);

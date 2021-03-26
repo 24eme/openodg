@@ -1,8 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin() || !$sf_user->hasDrevAdmin())): ?>
-    <?php return; ?>
-<?php endif; ?>
+<?php if ($drev || $sf_user->isAdmin() || $sf_user->hasDrevAdmin() || EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV)): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($drev): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
@@ -29,3 +27,4 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
