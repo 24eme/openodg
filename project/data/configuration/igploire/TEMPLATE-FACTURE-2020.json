@@ -43,24 +43,12 @@
           "modele": "CotisationVariable",
           "prix": 0.43,
           "tva": 0.2,
-          "libelle": "Cotisation reversée à l'INAO",
+          "libelle": "Volume revendiqué",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables"
-        },
-        "forfait": {
-          "modele": "CotisationFixe",
-          "prix": 52,
-          "tva": 0.2,
-          "libelle": "Forfait sur DRev",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": ""
-
         },
         "inao": {
           "modele": "CotisationVariable",
@@ -75,6 +63,25 @@
         }
       }
   },
+    "forfait": {
+    "modele": "CotisationsCollection",
+    "callback": "",
+    "libelle": "Cotisation ODG",
+    "code_comptable": "",
+    "details": {
+          "forfait": {
+            "modele": "CotisationFixe",
+            "prix": 52,
+            "tva": 0.2,
+            "libelle": "Forfait sur DRev",
+            "complement_libelle": "",
+            "docs": [
+              "DRev"
+            ],
+            "callback": ""
+          }
+        }
+    },
     "redegustation": {
     "modele": "CotisationsCollection",
     "callback": "",
