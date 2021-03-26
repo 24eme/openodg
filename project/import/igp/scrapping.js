@@ -571,6 +571,9 @@ nightmare
       .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       var uri = baseUri+"/commission/DefraiementJures.aspx";
@@ -635,6 +638,9 @@ nightmare
       .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       var uri = baseUri+"/Facture/SuiviReglement.aspx";
@@ -654,6 +660,9 @@ nightmare
       .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       var uri = baseUri+"/Facture/SuiviReglement.aspx";
@@ -720,7 +729,7 @@ nightmare
        .wait(1000)
        .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/.*([0-9]+).*/, '$1'); })
        .then(function(total) {
-          for(let i=0; i < 8; i++) {
+          for(let i=0; i < total; i++) {
             var exportFilename = destination_file+'fichescontacts/contact_'+i+'html';
             nightmare
             .goto(uri+"?i="+i)
