@@ -253,9 +253,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     break;
             }
 			if ($lot->isAffecte()) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC));
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, ($lot->getNombrePassage() + 1).'ème passage'));
 			}elseif($lot->isAffectable()) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, "Passage ".($lot->getNumeroPassage())));
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, ($lot->getNombrePassage() + 1).'ème passage'));
 			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
