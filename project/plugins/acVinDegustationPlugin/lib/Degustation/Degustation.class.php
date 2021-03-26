@@ -330,7 +330,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->id_document = $this->_id;
         $lot->affectable = false;
         $lot->numero_anonymat = null;
-        if ($lotOrig->document_ordre) {
+        if ((get_class() == 'stdClass' && isset($lotOrig->document_ordre)) || $lotOrig->document_ordre) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
         }
         if($update) {
@@ -674,6 +674,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 
             $this->generateMouvementsLots();
+            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
+			$this->generateMouvementsFactures();
 		}
 
 		public function desanonymize(){
@@ -690,6 +692,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 
             $this->generateMouvementsLots();
+			$this->clearMouvementsFactures();
 		}
 
 		public function isAnonymized(){
@@ -1248,27 +1251,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
 	    public function getRedegustationForfait($cotisation,$filters){
-
             $mouvements = array();
-
 			foreach ($this->getLots() as $lot) {
-                if($lot->getNombrePassage() < 2){
+                if(!$lot->isSecondPassage()){
                     continue;
                 }
-                $create = false;
-
-                foreach (MouvementLotView::getInstance()->getAffecteSourceAvantMoi($this) as $deg) {
-                    $create = ($deg->id != $this->_id);
-                }
-
-                if(!$create){
-                    continue;
-                }
-
-                $mouvements[$lot->declarant_identifiant][md5($lot->getNombrePassage())] = $this->creationMouvementFactureFromLot($cotisation, $lot);
-
+                $mouvements[$lot->declarant_identifiant]["NUMERO_PASSAGE_".$lot->getNombrePassage()] = $this->creationMouvementFactureFromLot($cotisation, $lot);
             }
-
             return $mouvements;
 	    }
 
@@ -1280,7 +1269,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
                     continue;
                 }
-
                 $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFactureFromLot($cotisation,$lot);
             }
 
