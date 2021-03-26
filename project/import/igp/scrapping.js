@@ -726,13 +726,12 @@ nightmare
             .goto(uri+"?i="+i)
             .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
             .click('#ContentPlaceHolder1_btnRechercher')
-            .wait(1000)
+            .wait(1500)
             .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
-            .wait(1000)
+            .wait(1500)
             .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
-            .wait(1000)
+            .wait(1500)
             .html(exportFilename, "HTMLOnly")
-            .screenshot(exportFilename+".png");
           }
 
           return nightmare;
