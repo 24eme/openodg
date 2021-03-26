@@ -86,7 +86,7 @@
                                               </div>
           								</div>
           							</td>
-                                    <td><?= $lot->getProvenance() ?></td>
+                                    <td><?= $lot->getTypeProvenance() ?></td>
           							<td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>" data-hash="<?php echo $lot->getTriHash($tri_array->getRawValue()); ?>" data-libelle-produit="<?php echo $lot->produit_libelle.' <small class=\'text-muted\'>'.$lot->details.'</small>'; echo ($lot->millesime)? ' ('.$lot->millesime.')' : ''; ?>">
           								<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
           									<?php echo $form[$name]->renderError() ?>

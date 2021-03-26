@@ -150,7 +150,7 @@ p, div {
         <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false) : $lot->getTextPassage(false)." $lot->specificite"; ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->getProvenance(); ?><?php echo tdStart() ?></small>
+        <small><?php echo $lot->getTypeProvenance(); ?><?php echo tdStart() ?></small>
       </td>
       <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
       <td><?php echo tdStart() ?>

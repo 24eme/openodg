@@ -79,5 +79,5 @@ $t->ok($lot->numero_archive, "Numéro d'archive");
 $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_ENLEVE), 'Le lot est enlevé');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
-$t->is($lot->getProvenance(), null, "pas de provenance");
+$t->is($lot->getTypeProvenance(), null, "pas de provenance");
 
