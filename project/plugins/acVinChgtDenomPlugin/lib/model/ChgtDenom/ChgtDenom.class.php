@@ -260,9 +260,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       if (!$this->isChgtTotal()) {
         $lotOrig = clone $lot;
         $lotOrig->volume -= $this->changement_volume;
-        $lotOrig->numero_archive .= 'a';
         $lots[] = $lotOrig;
-        $lot->numero_archive .= 'b';
       }
       $lot->produit_hash = $this->changement_produit_hash;
       $lot->produit_libelle = $this->changement_produit_libelle;
