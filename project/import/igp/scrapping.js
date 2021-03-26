@@ -524,7 +524,7 @@ nightmare
       .download(exportFilename)
       .screenshot(exportFilename+".png")
   })
-  .then(function() {
+/*  .then(function() {
       var uri = baseUri+"/commission/JuresConv.aspx";
        nightmare
         .goto(uri)
@@ -554,7 +554,7 @@ nightmare
         });
 
        return nightmare;
-  })
+  })*/
   .then(function() {
       var uri = baseUri+"/Facture/SuiviReglement.aspx";
       var exportFilename = destination_file+'reglements_remises.pdf';
