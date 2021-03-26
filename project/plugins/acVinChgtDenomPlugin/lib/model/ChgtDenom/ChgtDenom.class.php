@@ -428,7 +428,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
 
       if($rienAFacturer) {
-          return array($identifiantCompte => array());
+          return array();
 
       }
 
@@ -470,12 +470,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getVolumeLotsFacturables($produitFilter = null){
-      $total = 0;
-      foreach($this->getLots() as $lot) {
-         $total = $lot->getVolumeFacturable($produitFilter);
+    public function getVolumeDestFacturable($produitFilter = null){
+      if(preg_match("#$produitFilter#",$this->changement_produit)){
+          return $this->changement_volume;
       }
-      return $total;
+      return 0.0;
     }
 
     public function getFirstChgtDenomFacturable()

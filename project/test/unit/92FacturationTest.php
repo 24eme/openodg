@@ -24,15 +24,23 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     if($sv11) { SV11Client::getInstance()->deleteDoc($sv11); }
 }
 
+//Suppression des ChgtDenom précédents
+foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $chgtdenom = ChgtDenomClient::getInstance()->find($k);
+    $chgtdenom->delete(false);
+}
+
 //Suppression des factures précédentes
 foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
     FactureClient::getInstance()->delete($f);
 }
-
+//Suppression des dégustation précédentes
 foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
     $degustation->delete(false);
 }
+
+
 
 // Selection des produits
 $path = dirname(__FILE__).'/../data/facturation_produits_'.$application.'.csv';
@@ -52,34 +60,18 @@ $produit2 = null;
 $produit3 = null;
 $produit4 = null;
 $produit5 = null;
-$i = 0;
-$appelation = $appelations[0];
-foreach($config->getProduits() as $hash => $produit) {
-    if($produit->getRendement() <= 0 || !$appelation) {
-        continue;
-    }
-    if(!$produit1 && !strpos($hash,$appelation)) {
-        $produit1 = $produit;
-        $appelation = $appelations[$i++];
-        continue;
-    } elseif(!$produit2 && !strpos($hash,$appelation)) {
-        $produit2 = $produit;
-        $appelation = $appelations[$i++];
-        continue;
-    }elseif(!$produit3 && !strpos($hash,$appelation)) {
-        $produit3 = $produit;
-        $appelation = $appelations[$i++];
-        continue;
-    }elseif(!$produit4 && !strpos($hash,$appelation)) {
-        $produit4 = $produit;
-        $appelation = $appelations[$i++];
-        continue;
-    }elseif(!$produit5 && !strpos($hash,$appelation)) {
-        $produit5 = $produit;
-        $appelation = $appelations[$i++];
-        break;
+
+for ($i=0; $i < 5 ; $i++) {
+    $appelation = $appelations[$i];
+    foreach($config->getProduits() as $hash => $produit) {
+        $p = ${"produit".($i+1)};
+        if(!$p && strpos($hash,$appelation)) {
+            ${"produit".($i+1)} = $produit;
+            break;
+        }
     }
 }
+
 /*
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane_facturation.csv');
 
@@ -111,6 +103,12 @@ for ($i=0; $i < 5 ; $i++) {
     $drev->addLot();
     $produit = ${"produit".($i+1)};
     $produit_hash = $produit->getHash();
+    if(preg_match("/MED/",$produit_hash)){
+        $produit_hash_med = $produit_hash;
+    }
+    if(preg_match("/D13/",$produit_hash)){
+        $produit_hash_d13 = $produit_hash;
+    }
     $t->comment("=> ".$produit_hash);
     $drev->lots[$i]->numero_logement_operateur = 'CUVE '.$i;
     $drev->lots[$i]->produit_hash = $produit_hash;
@@ -270,3 +268,62 @@ $degustation2->anonymize();
 $degustation2->save();
 
 $t->is(count($degustation2->getMouvementsFactures()), 1, "Degustation 2 : on a bien le mouvement de facture de la redegustation");
+
+
+
+$t->comment("Conformité du lot de la degustation 2 ");
+$degustation2->lots[0]->statut = Lot::STATUT_CONFORME;
+$degustation2->save();
+
+$t->comment('Création chgt Deno vers D13');
+
+$dateDeno = $campagne.'-12-15 11:00:00';
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $dateDeno);
+$chgtDenom->constructId();
+$chgtDenom->save();
+$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
+
+$lot = current($lots);
+$chgtDenom->setLotOrigine($lot);
+$chgtDenom->changement_produit = $produit_hash_d13;
+$chgtDenom->changement_volume = $lot->volume-0.5;
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
+$chgtDenom->generateLots();
+$chgtDenom->generateMouvementsLots(1);
+$chgtDenom->save();
+
+$t->ok(!count($chgtDenom->getMouvementsFactures())," Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
+
+$chgtDenom->validate();
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+
+$t->ok(!count($chgtDenom->getMouvementsFactures())," Changement Deno : on a pas de mouvement de facture parce qu'on fait un chgt vers D13");
+
+$t->comment('Création chgt Deno vers MED');
+
+$dateDeno = $campagne.'-12-25 12:00:00';
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $dateDeno);
+$chgtDenom->constructId();
+$chgtDenom->save();
+
+$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
+
+$lot = current($lots);
+$chgtDenom->setLotOrigine($lot);
+$chgtDenom->changement_produit = $produit_hash_med;
+$chgtDenom->changement_volume = $lot->volume-0.5;
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
+$chgtDenom->generateLots();
+$chgtDenom->generateMouvementsLots(1);
+$chgtDenom->save();
+
+$t->ok(!count($chgtDenom->getMouvementsFactures())," Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
+
+$chgtDenom->validate();
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+
+$t->ok(count($chgtDenom->getMouvementsFactures())," Changement Deno : on a un mouvement de facture car on est valideOdg et MED");
