@@ -231,9 +231,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       if (!$lot) {
           return;
       }
+      $lot = $lot->getData();
+      unset($lot->numero_anonymat);
 
       $lotDef = ChgtDenomLot::freeInstance($this);
-      foreach($lot->getData() as $key => $value) {
+      foreach($lot as $key => $value) {
           if($lotDef->getDefinition()->exist($key)) {
               continue;
           }
