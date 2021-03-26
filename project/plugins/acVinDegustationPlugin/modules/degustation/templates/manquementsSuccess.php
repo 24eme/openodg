@@ -11,6 +11,16 @@
       <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un filtre" data-hamzastyle-container=".table_manquements" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
     </div>
 </div>
+
+<div class="row">
+    <?php if (sfContext::getInstance()->getRequest()->getParameter('campagne')): ?>
+    <a class="label label-default" href="<?php echo url_for('degustation_manquements') ?>">Toutes les campagnes</a>
+    <?php else: ?>
+        <?php foreach ($campagnes as $campagne): ?>
+            <a class="label label-default" href="?campagne=<?= $campagne ?>"><?= $campagne ?></a>
+        <?php endforeach ?>
+    <?php endif; ?>
+</div>
 <br/>
 
 <div class="row">

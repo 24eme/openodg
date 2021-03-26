@@ -70,13 +70,25 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
       return $alphas[$numero_table-1];
     }
 
-    public function getManquements() {
+    public function getManquements($campagne = null) {
         $manquements = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
             $item->value->id_document = $item->id;
             $manquements[$item->value->unique_id] = $item->value;
         }
-        return $manquements;
+
+        $manquements_tries = $manquements;
+        if ($campagne) {
+            $manquements_tries = array_filter($manquements, function ($manquement) use ($campagne) {
+                return $manquement->campagne === $campagne;
+            });
+        }
+
+        uasort($manquements_tries, function ($manquement1, $manquement2) {
+            return !strcmp($manquement1->campagne, $manquement2->campagne);
+        });
+
+        return $manquements_tries;
     }
 
     public function findFacturable($identifiant, $campagne) {
