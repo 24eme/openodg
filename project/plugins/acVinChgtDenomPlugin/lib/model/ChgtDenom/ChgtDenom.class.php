@@ -104,6 +104,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('c');
         }
         $this->validation_odg = $date;
+        $this->generateMouvementsFactures();
     }
 
     public function getEtablissementObject() {
@@ -468,6 +469,14 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     /**** FIN DES MOUVEMENTS ****/
+
+    public function getVolumeLotsFacturables($produitFilter = null){
+      $total = 0;
+      foreach($this->getLots() as $lot) {
+         $total = $lot->getVolumeFacturable($produitFilter);
+      }
+      return $total;
+    }
 
     public function getFirstChgtDenomFacturable()
     {
