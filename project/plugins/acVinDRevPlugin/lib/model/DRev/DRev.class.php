@@ -1400,7 +1400,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       if($rienAFacturer) {
-          return array($identifiantCompte => array());
+          return array();
 
       }
 
