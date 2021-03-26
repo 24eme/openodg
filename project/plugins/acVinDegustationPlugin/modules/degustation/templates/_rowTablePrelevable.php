@@ -1,7 +1,7 @@
 <td><?php echo $lot->declarant_nom; ?></td>
 <td>
   <a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>">
-    <?php echo $lot->provenance ?>
+    <?php echo $lot->type_document; ?>
   </a>
 </td>
 <td><?php echo $lot->numero_logement_operateur; ?></td>

@@ -24,7 +24,7 @@
             <td class="text-center"><?php echo format_date($lot->date, 'dd/MM/yyyy'); ?></td>
             <td><?php echo $lot->numero_dossier; ?></td>
             <td><?php echo $lot->numero_archive; ?></td>
-            <td><a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>"><?php echo $lot->provenance; ?></a></td>
+            <td><a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>"><?php echo $lot->type_document; ?></a></td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
             <td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo $lot->details; ?></small></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>

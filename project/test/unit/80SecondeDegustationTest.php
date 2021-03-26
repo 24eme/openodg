@@ -20,13 +20,14 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(39);
+$t = new lime_test(45);
 
 $campagne = (date('Y')-1)."";
-$degust_date = $campagne.'-09-01 12:45';
-$degust_date_fr = '01/09/'.$campagne;
-$degust_date_fr2 = '02/09/'.$campagne;
-$degust_time_fr = '12:45';
+$degust1_date_fr = '09/09/'.$campagne;
+$degust2_date_fr = '11/11/'.$campagne;
+$degust1_time_fr = '09:09';
+$degust2_time_fr = '11:11';
+$degust1_date = $campagne.'-09-01 '.$degust1_time_fr;
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
 
@@ -55,8 +56,6 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $chgtdenom = ChgtDenomClient::getInstance()->find($k);
     $chgtdenom->delete(false);
 }
-
-$docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date))."-SYNDICAT-VIGNERONS-ARLES";
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
@@ -98,12 +97,12 @@ $lotsEnManquement = DegustationClient::getInstance()->getManquements();
 $t->is(count($lotsPrelevables), 2, "Il y a 2 mouvements prélevables");
 $t->is(count($lotsEnManquement), 0, "Il y a 0 mouvement en manquement");
 $t->is($drev->lots[1]->document_ordre, '01', "le numéro d'ordre du lot de la DREV est bien 01");
-$t->is($drev->lots[1]->getNumeroPassage(), 0, 'Le numero de passage est bien 0');
+$t->is($drev->lots[1]->getNombrePassage(), 0, 'Le numero de passage est bien 0');
 
 $t->comment("Création d'une première degustation");
 $degustation1 = new Degustation();
 $form = new DegustationCreationForm($degustation1);
-$values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => $commissions[0]);
+$values = array('date' => $degust1_date_fr, 'time' => $degust1_time_fr, 'lieu' => $commissions[0]);
 $form->bind($values);
 $degustation1 = $form->save();
 $iddegust1 = $degustation1->_id;
@@ -126,25 +125,24 @@ $degustation1->lots[1]->statut = Lot::STATUT_NONCONFORME;
 $degustation1->save();
 
 $degustation1 = DegustationClient::getInstance()->find($iddegust1);
-$t->is($degustation1->lots[0]->getNumeroPassage(), 1, 'Le numero de passage du lot 1 de la degustation 1 est bien 1');
-$t->is($degustation1->lots[1]->getNumeroPassage(), 1, 'Le numero de passage du lot 2 de la degustation 1 est bien 1');
+$t->is($degustation1->lots[0]->getNombrePassage(), 1, 'Le numero de passage du lot 1 de la degustation 1 est bien 1');
+$t->is($degustation1->lots[1]->getNombrePassage(), 1, 'Le numero de passage du lot 2 de la degustation 1 est bien 1');
 
-$lot = $degustation1->lots[1];
-$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est non conforme");
-$t->ok($lot->getMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE), 'Le lot à un manquement en attente');
-$t->is($lot->getNumeroPassage(), 0, "Pas encore de degustation précédente");
+$lot_degust1 = $degustation1->lots[1];
+$t->ok($lot_degust1->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est non conforme");
+$t->ok($lot_degust1->getMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE), 'Le lot à un manquement en attente');
 
 $t->comment("On enresgistre une redégustation");
-$lot->redegustation();
+$lot_degust1->redegustation();
 $degustation1->save();
 
-$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est toujours non conforme");
-$t->ok(! $lot->getMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE), "Le lot n'est plus en manquement en attente");
-$t->ok($lot->affectable, "Le lot est affectable");
-$t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot a un mouvement affectable");
-$t->ok(!$lot->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot n'a pas encore de mouvement affecte source");
+$t->ok($lot_degust1->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est toujours non conforme");
+$t->ok(! $lot_degust1->getMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE), "Le lot n'est plus en manquement en attente");
+$t->ok($lot_degust1->affectable, "Le lot est affectable");
+$t->ok($lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot a un mouvement affectable");
+$t->ok(!$lot_degust1->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot n'a pas encore de mouvement affecte source");
 
-$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->detail, 'Passage 1', "Mouvement : C'est la première affectation du lot");
+$t->is($lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE)->detail, '2ème passage', "Le mouvement en attente de redégustation provenant de la 1ère dégustation est indiqué comme en attente de 2ème dégustation");
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $lotsEnManquement = DegustationClient::getInstance()->getManquements();
@@ -153,15 +151,19 @@ $t->is(count($lotsPrelevables), 1, "Il y a 1 mouvement prélevable");
 $t->is(count($lotsEnManquement), 0, "Il y a 0 mouvement en manquement");
 
 $lotPrelevable = current($lotsPrelevables);
-$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotPrelevable), 0, "Le lot prélevable sait qu'il a une dégust précédente");
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotPrelevable), 1, "Le lot prélevable sait qu'il a une dégust précédente");
 $t->is($lotPrelevable->specificite, Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation", "La spécificité du lot prélevable est : ".Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation");
+$t->is($lotPrelevable->id_document, $degustation1->_id, "Le lot prélevable de la degust 1 a été généré par ".$degustation1->_id);
+$t->is($lotPrelevable->id_document_provenance, $drev->_id, "Le lot prélevable de la degust 1 a pour origine ".$drev->_id);
+$t->is($lotPrelevable->id_document_affectation, null, "Le lot prélevable de la degust 1 n'est pas encore affecté");
 
 $t->comment('Deuxième degustation');
 $degustation2 = new Degustation();
 $form = new DegustationCreationForm($degustation2);
-$values = array('date' => $degust_date_fr2, 'time' => $degust_time_fr, 'lieu' => $commissions[1]);
+$values = array('date' => $degust2_date_fr, 'time' => $degust2_time_fr, 'lieu' => $commissions[1]);
 $form->bind($values);
 $degustation2 = $form->save();
+$t->comment($degustation2->_id);
 
 $t->comment("Sélection du lot dans la 2de dégustation");
 $form = new DegustationPrelevementLotsForm($degustation2);
@@ -176,30 +178,35 @@ $degustation1 = DegustationClient::getInstance()->find($degustation1->_id);
 $degustation2 = DegustationClient::getInstance()->find($degustation2->_id);
 
 $t->is(count($degustation2->lots), 1, "La nouvelle degust à 1 lot");
-$lot2 = $degustation2->lots[0];
+$lot_degust1 = $degustation1->lots[1];
+$lot_degust2 = $degustation2->lots[0];
+$drev = DRevClient::getInstance()->find($drev->_id);
 
-$t->is(count($lot2->getMouvements()), 2, "Le lot a deux mouvements");
-$t->ok($lot2->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Le lot a le mouvement ".Lot::STATUT_ATTENTE_PRELEVEMENT);
-$t->ok($lot2->getMouvement(Lot::STATUT_AFFECTE_DEST), "Le lot a le mouvement ".Lot::STATUT_AFFECTE_DEST);
-$t->is($lot->id_document_affectation, $degustation2->_id, "Le lot de la degust 1 est bien affecté à la degustation 2 ".$degustation2->_id);
-$t->ok($lot->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot de la degust 1 est bien en affecte_src");
-$t->is($lot->document_ordre, '02', "Le numéro d'ordre du lot 1 est bien 02");
-$t->is($lot2->document_ordre, '03', "Le numéro d'ordre du lot 2 est bien 03");
-$t->is($lot2->id_document_provenance, $degustation1->_id, "Le lot affecté a bien un document de provenance indiqué comme ".$degustation1->_id);
+$t->is(count($lot_degust2->getMouvements()), 2, "Le lot a deux mouvements");
+$t->is($lot_degust2->numero_archive, $lot_degust1->numero_archive, "Le numero archive de la dégustation 2 n'a pas changé par rapport à la dégustation 1");
+$t->is($lot_degust2->numero_dossier, $lot_degust1->numero_dossier, "Le numero dossier de la dégustation 2 n'a pas changé à la dégustation 1");
 
-$lot = $degustation1->lots[1];
-$t->ok($lot->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot dans la 1ère dégustation est en ".Lot::STATUT_AFFECTE_SRC);
-$t->ok(!$lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot dans la 1ère dégustation n'est plus affectable / ".Lot::STATUT_AFFECTABLE);
+$t->is($lot_degust2->id_document, $degustation2->_id, "L'id du doc du mouvement est la même degustation");
+$t->ok($lot_degust2->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Le lot a le mouvement ".Lot::STATUT_ATTENTE_PRELEVEMENT);
+$t->ok($lot_degust2->getMouvement(Lot::STATUT_AFFECTE_DEST), "Le lot a le mouvement ".Lot::STATUT_AFFECTE_DEST);
+$t->ok(!$lot_degust2->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot n'a pas de mouvement ".Lot::STATUT_AFFECTABLE);
+$t->is($lot_degust2->id_document_provenance, $degustation1->_id, "Le lot affecté a bien un document de provenance indiqué comme ".$degustation1->_id);
+$t->is($lot_degust2->document_ordre, '03', "Le numéro d'ordre du lot de la 2d dégustation est bien 03");
+$t->is($lot_degust2->getNombrePassage(), 2, "Le lot de la deuxième degust a comme numero de passage 2");
+$t->ok($lot_degust2->isSecondPassage(), "Le lot de la deuxième degust est bien en isSecondPassage()");
+$t->is($lot_degust2->affectable, false, "Le lot de la 2d dégustation n'est plus affectable");
+$t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot_degust2), 2, "Il y a deux affecte source avant le lot de la 2de dégustation");
+$t->is($lot_degust2->specificite, Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation", "La spécificité du lot attribué à la 2de dégustation est : ".Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation");
 
-$t->is($lot->getNumeroPassage(), 0, "Le lot de la première degust n'a pas de passage précédent");
-$t->is($lot2->getNumeroPassage(), 1, "Le lot de la deuxième degust a un passage précédent");
-$t->is($lot2->affectable, false, "Le lot n'est plus affectable");
-$t->is($lot2->specificite, Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation", "La spécificité du lot prélevé est : ".Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation");
+$t->is($lot_degust1->document_ordre, '02', "Le numéro d'ordre du lot de la degustation 1 est bien 02");
+$t->is($lot_degust1->id_document_affectation, $degustation2->_id, "Le lot de la degust 1 est bien affecté à la degustation 2 ".$degustation2->_id);
+$t->is($lot_degust1->id_document_provenance, $drev->_id, "Le lot de la degust 1 vient bien toujours de la drev ".$drev->_id);
+$t->ok($lot_degust1->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot de la degust 1 est bien en affecte_src");
+$t->ok(!$lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot dans la 1ère dégustation n'est plus affectable / ".Lot::STATUT_AFFECTABLE);
+$t->is($lot_degust1->getNombrePassage(), 1, "Le lot de la première degust a toujours comme numero de passage 1");
+
+$t->is($drev->lots[0]->id_document_affectation, $degustation1->_id, "Le lot de la drev est resté affecté à la degustation 1 ".$degustation1->_id);
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 0, "Il y a 0 mouvement prélevable");
 $t->is(count(DegustationClient::getInstance()->getManquements()), 0, "Il y a 0 mouvement en manquement");
-
-$t->is($lot2->id_document, $degustation2->_id, "L'id du doc du mouvement est la même degustation");
-$t->is($lot2->numero_archive, $lot->numero_archive, "Le numero archive n'a pas changé");
-$t->is($lot2->numero_dossier, $lot->numero_dossier, "Le numero dossier n'a pas changé");

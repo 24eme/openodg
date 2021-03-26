@@ -58,8 +58,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
                 continue;
             }
             $lots[$lot->value->unique_id] = $lot->value;
-            $lots[$lot->value->unique_id]->id_document_provenance = $lot->id;
-            $lots[$lot->value->unique_id]->provenance = substr($lot->id, 0, 4);
+            $lots[$lot->value->unique_id]->document_type = substr($lot->id_document, 0, 4);
         }
 
         return $lots;

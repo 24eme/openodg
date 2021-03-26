@@ -13,11 +13,6 @@ class TransactionLot extends BaseTransactionLot
         return "01";
     }
 
-    public function getLibelle() {
-
-        return "";
-    }
-
     public function getMouvementFreeInstance() {
 
         return TransactionMouvementLots::freeInstance($this->getDocument());

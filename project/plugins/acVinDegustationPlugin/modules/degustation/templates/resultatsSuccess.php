@@ -55,7 +55,7 @@
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
                         <td class="text-right"><?php echo $lot->getNumeroAnonymat() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
-                        <td><?= $lot->getProvenance() ?></td>
+                        <td><?= $lot->getTypeProvenance() ?></td>
                         <td class="text-left">
                             <?php echo showProduitLot($lot) ?>
                         </td>
