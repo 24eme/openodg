@@ -257,7 +257,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lots[] = $lot;
 
       foreach($lots as $l) {
-        $l->affectable = true;
         $lot = $this->lots->add(null, $l);
         $lot->id_document = $this->_id;
         $lot->updateDocumentDependances();
@@ -347,6 +346,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
             if($lot->affectable) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+            }else{
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
             }
         }
     }
