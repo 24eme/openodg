@@ -541,7 +541,9 @@ nightmare
 
                nightmare
                .goto(uri+"?campagne="+i)
+               .wait(2000)
                .select('#ddlCampagne',i+"")
+               .click('#btnResearch')
                .wait(3000)
                .click('#btnExportExcel')
                .download(exportFilename)
