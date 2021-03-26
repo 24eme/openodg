@@ -1,6 +1,6 @@
 <?php
 
-class MouvementfactureFacturationView extends acCouchdbView
+class MouvementFactureView extends acCouchdbView
 {
 
     const KEYS_FACTURE = 0;
@@ -11,7 +11,7 @@ class MouvementfactureFacturationView extends acCouchdbView
 
     public static function getInstance() {
 
-        return acCouchdbManager::getView('mouvementfacture', 'facturation');
+        return acCouchdbManager::getView('mouvement', 'facture');
     }
 
 
