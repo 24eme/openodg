@@ -14,9 +14,25 @@ class ExportDegustationFichePresenceDegustateursPDF extends ExportPDF {
     }
 
     public function create() {
+        $degustateurs = [];
+
+        foreach ($this->degustation->degustateurs as $college => $degustateurs_college) {
+            foreach ($degustateurs_college as $degustateur) {
+                $degustateurs[] = [
+                    'degustateur' => CompteClient::getInstance()->findByIdentifiant($degustateur->getKey()),
+                    'college' => $college,
+                    'confirme' => $degustateur->exist('confirmation') && $degustateur->confirmation
+                ];
+            }
+        }
+
+        uasort($degustateurs, function ($d1, $d2) {
+            return strcmp($d1['degustateur']->nom, $d2['degustateur']->nom);
+        });
+
         @$this->printable_document->addPage($this->getPartial('degustation/fichePresenceDegustateursPdf', [
             'degustation' => $this->degustation,
-            'degustateurs' => $this->degustation->getComptesDegustateurs()
+            'degustateurs' => $degustateurs
         ]));
     }
 

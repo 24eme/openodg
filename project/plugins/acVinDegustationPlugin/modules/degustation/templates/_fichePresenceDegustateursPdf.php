@@ -41,19 +41,17 @@
       </tr>
       </thead>
       <tbody>
-        <?php foreach ($degustateurs as $college => $degustateurs_college): ?>
-          <?php foreach ($degustateurs_college as $degustateur): ?>
-          <?php if ($degustation->degustateurs->{$college}->{$degustateur->_id}->exist('confirmation') && $degustation->degustateurs->{$college}->{$degustateur->_id}->confirmation): ?>
+        <?php foreach ($degustateurs as $degustateur): ?>
+          <?php if ($degustateur['confirme']): ?>
             <tr>
                 <td style="width: 60%">
                     <?php echo tdStart() ?>
-                    <?php echo $degustateur->nom_a_afficher ?> <small><?php echo $degustateur->telephone_bureau; echo ($degustateur->telephone_bureau && $degustateur->telephone_mobile) ? ' / ' : ''; echo $degustateur->telephone_mobile ?></small>
+                    <?php echo $degustateur['degustateur']->nom_a_afficher ?>
                 </td>
-                <td style="width: 20%"><?= DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
+                <td style="width: 20%"><?= DegustationConfiguration::getInstance()->getLibelleCollege($degustateur['college']) ?></td>
                 <td style="width: 20%"></td>
             </tr>
           <?php endif ?>
-          <?php endforeach ?>
         <?php endforeach ?>
       </tbody>
     </table>
