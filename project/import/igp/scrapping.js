@@ -4,12 +4,13 @@ require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 const path = require('path');
-var nightmare = Nightmare({ show: true, waitTimeout: 180000, gotoTimeout: 180000, executionTimeout: 180000, timeoutDownloadBeforeStart: 180000, maxDownloadRequestWait: 180000, webPreferences: { preload: path.resolve("pre.js") }});
+var nightmare = Nightmare({ show: true, typeInterval: 1, waitTimeout: 180000, gotoTimeout: 180000, executionTimeout: 180000, timeoutDownloadBeforeStart: 180000, maxDownloadRequestWait: 180000, webPreferences: { preload: path.resolve("pre.js") }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
 
 mkdirp(destination_file+'commissions')
+mkdirp(destination_file+'fichescontacts')
 
 nightmare
 
@@ -19,7 +20,7 @@ nightmare
   .type('#PasswordPhp',config.user_password)
   .click('#identification')
   .wait('.menu')
-  .viewport(1400, 4000)
+  .viewport(1400, 2000)
   //fin authentification
  .then(function() {
       var uri = baseUri+"/operateur/ListeOperateur.aspx";
@@ -708,6 +709,36 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+      var uri = baseUri+"/Administration/FicheContact.aspx";
+       var exportFilename = destination_file+'operateurs.xlsx';
+       console.log("export " + uri + ": " + exportFilename);
+
+       return nightmare
+       .goto(uri)
+       .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
+       .click('#ContentPlaceHolder1_btnRechercher')
+       .wait(1000)
+       .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/.*([0-9]+).*/, '$1'); })
+       .then(function(total) {
+          for(let i=0; i < 8; i++) {
+            var exportFilename = destination_file+'fichescontacts/contact_'+i+'html';
+            nightmare
+            .goto(uri+"?i="+i)
+            .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
+            .click('#ContentPlaceHolder1_btnRechercher')
+            .wait(1000)
+            .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
+            .wait(1000)
+            .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
+            .wait(1000)
+            .html(exportFilename, "HTMLOnly")
+            .screenshot(exportFilename+".png");
+          }
+
+          return nightmare;
+       })
+   })
+  .then(function() {
        var uri = baseUri+"/odg/LstAOC.aspx";
        var exportFilename = destination_file+'aoc.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -730,6 +761,5 @@ nightmare
   .then(function() {
       return nightmare.end()
   })
-
 
 
