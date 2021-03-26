@@ -298,15 +298,21 @@ class facturationActions extends sfActions
         $this->values = array();
         $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
         $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
-        $this->form = new FacturationDeclarantForm(array(), array('modeles' => $this->templatesFactures,'uniqueTemplateFactureName' => $this->uniqueTemplateFactureName));
 
         $this->mouvements = array();
 
-        try {
-          foreach ($this->templatesFactures as $key => $templateFacture) {
-            $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant),$this->mouvements);
-          }
-        } catch (FacturationPassException $e) { }
+        $this->isRevendicationParLot = (class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots());
+        if(!$this->isRevendicationParLot){
+            $this->form = new FacturationDeclarantForm(array(), array('modeles' => $this->templatesFactures,'uniqueTemplateFactureName' => $this->uniqueTemplateFactureName));
+            try {
+              foreach ($this->templatesFactures as $key => $templateFacture) {
+                $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant),$this->mouvements);
+                }
+            } catch (FacturationPassException $e) { }
+        }else{
+            $this->form = new FactureGenerationForm();
+            $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->compte->getSociete(),0, 1);
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

@@ -1,10 +1,13 @@
 <?php
 
 class FactureGenerationForm extends BaseForm {
-    
+
+
+    const TYPE_DOCUMENT_TOUS = "TOUS";
+
     public function __construct($defaults = array(), $options = array(), $CSRFSecret = null) {
         $defaults['date_facturation'] = date('d/m/Y');
-        $defaults['type_document'] = FactureClient::FACTURE_LIGNE_ORIGINE_TYPE_DRM;
+        $defaults['type_document'] = FactureGenerationMasseForm::TYPE_DOCUMENT_TOUS;
         parent::__construct($defaults, $options, $CSRFSecret);
     }
 
@@ -15,12 +18,12 @@ class FactureGenerationForm extends BaseForm {
         $this->setWidget('date_mouvement', new sfWidgetFormInput());
         $this->setWidget('date_facturation', new sfWidgetFormInput());
         $this->setWidget('message_communication', new sfWidgetFormTextarea());
-        
+
         $this->setValidator('type_document', new sfValidatorChoice(array('choices' => array_keys($this->getTypesDocument()), 'required' => true)));
         $this->setValidator('date_mouvement', new sfValidatorString());
         $this->setValidator('date_facturation', new sfValidatorString());
         $this->setValidator('message_communication', new sfValidatorString(array('required' => false)));
-        
+
         $this->widgetSchema->setLabels(array(
             'type_document' => "Type de document :",
             'message_communication' => 'Cadre de communication :',
@@ -28,10 +31,10 @@ class FactureGenerationForm extends BaseForm {
             'date_facturation' => 'Date de facturation :'
         ));
         $this->widgetSchema->setNameFormat('facture_generation[%s]');
-    }     
+    }
 
     public function getTypesDocument() {
 
-        return FactureGenerationMasseForm::$types_document;
+        return array_merge(array(self::TYPE_DOCUMENT_TOUS => 'Tous'), FactureClient::$origines);
     }
 }
