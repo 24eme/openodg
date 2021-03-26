@@ -95,8 +95,8 @@ $t->comment($drev->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $lotPrelevable = current($lotsPrelevables);
 $t->is(count($lotsPrelevables), 2, 'on a au moins un mouvement de lot prélevable');
-$t->is($lotPrelevable->id_document_provenance, $drev->_id, "L'id du document de provenance est la DRev");
-$t->is($lotPrelevable->provenance, "DREV", "La provenance est DREV");
+$t->is($lotPrelevable->id_document_provenance, null, "L'id du document de provenance est null vu que le lot est un lot DRev");
+$t->is($lotPrelevable->type_document, "DREV", "Le type de document du lot est DREV");
 
 $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
@@ -219,7 +219,7 @@ $t->is($lotDegustation->specificite, $lotDrev->specificite, 'Le lot a le bonne s
 $t->is($lotDegustation->millesime, $lotDrev->millesime, 'Le lot a le bon millésoùe');
 $t->is($lotDegustation->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, 'Le lot a le bon statut');
 $t->is($lotDegustation->id_document_provenance, $drev->_id, 'La provenance du lot est la drev');
-$t->is($lotDegustation->getProvenance(), "DREV", 'La provenance est DRev');
+$t->is($lotDegustation->getTypeProvenance(), "DREV", 'La provenance est DRev');
 
 $t->is(count($degustation->mouvements_lots->get($drev->identifiant)->toArray(true, false)), 2, 'La génération de mouvement a généré 2 mouvements');
 $t->ok($lotDegustation->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Mouvement de lot en attente de prelevement présent");

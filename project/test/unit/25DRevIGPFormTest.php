@@ -179,7 +179,7 @@ $t->is($drev->lots[0]->id_document_provenance, null, "Le lot n'a pas de provenan
 $t->is($drev->lots[0]->id_document_affectation, null, "Le lot n'a pas de fils");
 $t->ok($drev->lots[0]->isAffectable(), "Le lot est affectable");
 $t->ok(!$drev->lots[0]->isAffecte(), "Le lot n'est pas affecté");
-$t->is($drev->lots[0]->getProvenance(), null, "pas de provenance");
+$t->is($drev->lots[0]->getTypeProvenance(), null, "pas de provenance");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
     $drev->save();
