@@ -47,25 +47,47 @@ function showDetailMvtLot($mvtLot){
     return '<span class="label label-success">'.$mvtLot->value->detail.'</span>';
 }
 
-function getUrlEtapeFromMvtLot($mvtLot){
+function getUrlEtapeFromMvtLot($mvtLot)
+{
+    $documentId = $mvtLot->value->document_id;
+
+    if ($mvtLot->value->statut === Lot::STATUT_AFFECTABLE) {
+        return url_for('degustation_prelevables');
+    }
+
     if($mvtLot->value->document_type != DegustationClient::TYPE_MODEL){
 
-        return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $mvtLot->value->document_id));
+        return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $documentId));
     }
 
     switch ($mvtLot->value->statut) {
+        case Lot::STATUT_MANQUEMENT_EN_ATTENTE:
+            return url_for('degustation_manquements');
+
         case Lot::STATUT_NONCONFORME :
         case Lot::STATUT_CONFORME :
-            return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $mvtLot->value->document_id));
-
-        case Lot::STATUT_ANONYMISE :
-            return url_for('degustation_anonymats_etape', array('id' => $mvtLot->value->document_id));
+            return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $documentId));
 
         case Lot::STATUT_DEGUSTE :
-            return url_for('degustation_resultats_etape', array('id' => $mvtLot->value->document_id));
+            return url_for('degustation_resultats_etape', array('id' => $documentId));
 
+        case Lot::STATUT_ANONYMISE :
+            return url_for('degustation_anonymats_etape', array('id' => $documentId));
+
+        case Lot::STATUT_ATTABLE:
+            return url_for('degustation_organisation_table', [
+                'id' => $documentId,
+                'numero_table' => ord(substr($mvtLot->value->detail, -1)) - 64
+            ]);
+
+        case Lot::STATUT_PRELEVE:
+        case Lot::STATUT_ATTENTE_PRELEVEMENT:
+            return url_for('degustation_preleve', ['id' => $documentId]);
+
+        case Lot::STATUT_AFFECTE_DEST:
+            return url_for('degustation_prelevement_lots', ['id' => $documentId]);
     }
-    return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $mvtLot->value->document_id));
+    return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $documentId));
 }
 
 function pictoDegustable($lot) {
