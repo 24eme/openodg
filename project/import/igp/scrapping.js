@@ -4,7 +4,7 @@ require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 const path = require('path');
-var nightmare = Nightmare({ show: true, waitTimeout: 1800000, timeoutDownloadBeforeStart: 1800000, maxDownloadRequestWait: 1800000, webPreferences: { preload: path.resolve("pre.js") }});
+var nightmare = Nightmare({ show: true, waitTimeout: 180000, gotoTimeout: 180000, executionTimeout: 180000, timeoutDownloadBeforeStart: 180000, maxDownloadRequestWait: 180000, webPreferences: { preload: path.resolve("pre.js") }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
@@ -17,6 +17,7 @@ nightmare
   .type('#PasswordPhp',config.user_password)
   .click('#identification')
   .wait('.menu')
+  .viewport(1400, 8000)
   //fin authentification
  .then(function() {
       var uri = baseUri+"/operateur/ListeOperateur.aspx";
@@ -29,6 +30,7 @@ nightmare
       .wait(10000)
       .click('#Button2')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
 
   })
   .then(function() {
@@ -43,6 +45,7 @@ nightmare
       .wait('body')
       .on('will-download', function() { console.log('test')})
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/operateur/Adresses.aspx";
@@ -53,7 +56,8 @@ nightmare
         .goto(uri)
         .wait('#Button2')
         .click('#Button2')
-        .download(exportFilename);
+        .download(exportFilename)
+        .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/operateur/ListeOpCessation.aspx";
@@ -69,7 +73,8 @@ nightmare
               if (result) {
                   nightmare
                   .click('#btnExportExcel')
-                  .download(exportFilename);
+                  .download(exportFilename)
+                  .screenshot(exportFilename+".png")
               }
           });
   })
@@ -82,7 +87,8 @@ nightmare
       .goto(uri)
       .wait('#ContentPlaceHolder1_btnExcel')
       .click('#ContentPlaceHolder1_btnExcel')
-      .download(exportFilename);
+      .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Habilitation/HistHab.aspx";
@@ -94,6 +100,7 @@ nightmare
         .wait('#btnExcel')
         .click('#btnExcel')
         .download(exportFilename)
+        .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Habilitation/SuiviHab.aspx";
@@ -105,6 +112,7 @@ nightmare
       .wait('#btExportExcel')
       .click('#btExportExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstLots.aspx";
@@ -119,6 +127,7 @@ nightmare
        .click('#btnEE')
        .wait(4000)
        .download(exportFilename)
+       .screenshot(exportFilename+".png")
        .refresh()
   })
   .then(function() {
@@ -135,6 +144,7 @@ nightmare
        .click('#btnEE')
        .wait(4000)
        .download(exportFilename)
+       .screenshot(exportFilename+".png")
        .refresh()
   })
   .then(function() {
@@ -149,6 +159,7 @@ nightmare
        .click('#btn_Excel')
        .wait(2000)
        .download(exportFilename)
+       .screenshot(exportFilename+".png")
        .refresh()
   })
   .then(function() {
@@ -161,6 +172,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#Button1')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntheseDeclassement.aspx";
@@ -171,6 +183,7 @@ nightmare
       .goto(uri)
       .click('#Button2')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpRev.aspx";
@@ -182,6 +195,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpRev.aspx";
@@ -194,6 +208,7 @@ nightmare
       .select('#ddlRevend','C')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=1";
@@ -205,6 +220,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=1";
@@ -216,6 +232,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=2";
@@ -227,6 +244,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=2";
@@ -238,6 +256,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=3";
@@ -249,6 +268,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=3";
@@ -260,6 +280,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=4";
@@ -271,6 +292,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=4";
@@ -282,6 +304,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=5";
@@ -293,6 +316,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=5";
@@ -304,6 +328,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=6";
@@ -315,6 +340,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=6";
@@ -326,6 +352,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=7";
@@ -337,6 +364,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=7";
@@ -348,6 +376,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=9";
@@ -359,6 +388,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=9";
@@ -370,6 +400,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=10";
@@ -381,6 +412,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=10";
@@ -392,6 +424,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=11";
@@ -403,6 +436,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btnExcel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=11";
@@ -414,6 +448,7 @@ nightmare
       .select('#ddlCampagne','')
       .click('#btn_Excel')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstLotRecolte.aspx";
@@ -430,6 +465,7 @@ nightmare
           .wait(2000)
           .click('#btnExport')
           .download(exportFilename)
+          .screenshot(exportFilename+".png")
           .refresh()
           .wait(2000)
       }
@@ -465,6 +501,7 @@ nightmare
                 .goto(uri)
                 .wait('body')
                 .html(exportFilename, "HTMLOnly")
+                .screenshot(exportFilename+".png")
                 .refresh()
                 .wait(1000)
         }
@@ -482,7 +519,7 @@ nightmare
       .wait('#btnE')
       .click('#btnE')
       .download(exportFilename)
-      .catch(error => {console.error('Search failed:', error)});
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/commission/JuresConv.aspx";
@@ -505,6 +542,7 @@ nightmare
                .wait(3000)
                .click('#btnExportExcel')
                .download(exportFilename)
+               .screenshot(exportFilename+".png")
                .refresh()
                .wait(2000)
             }
@@ -529,6 +567,7 @@ nightmare
       .click('#btnRemiseCheque')
       .wait(20000)
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/commission/DefraiementJures.aspx";
@@ -551,6 +590,7 @@ nightmare
                .wait(3000)
                .click('#btnExportExcel')
                .download(exportFilename)
+               .screenshot(exportFilename+".png")
                .refresh()
                .wait(2000)
             }
@@ -572,6 +612,7 @@ nightmare
       .wait(6000)
       .click('#btnExport')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Facture/LstFacture.aspx";
@@ -590,6 +631,7 @@ nightmare
       .click('#btnEditPdf2')
       .wait(20000)
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Facture/SuiviReglement.aspx";
@@ -608,6 +650,7 @@ nightmare
       .click('#btnEditPdf2')
       .wait(20000)
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Facture/SuiviReglement.aspx";
@@ -623,6 +666,7 @@ nightmare
       .wait(6000)
       .click('#btnExport')
       .download(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/commission/LstMembre.aspx";
@@ -636,6 +680,7 @@ nightmare
       .click('#Button2')
       .wait('#Button2')
       .download(destination_file+'membres.xlsx')
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/commission/LstNonMembre.aspx";
@@ -648,25 +693,37 @@ nightmare
       .click('#Button1')
       .wait('#gvMembre')
       .html(exportFilename, "MHTML")
-      .catch(error => {console.error('Search failed:', error)});
+      .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+       var uri = baseUri+"/odg/FicheODG.aspx";
+       var exportFilename = destination_file+'fiche_odg.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .html(exportFilename, "HTMLOnly")
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
        var uri = baseUri+"/odg/LstAOC.aspx";
+       var exportFilename = destination_file+'aoc.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .html(exportFilename, "HTMLOnly")
+      .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+       var uri = baseUri+"/odg/LstCepage.aspx";
        var exportFilename = destination_file+'cepages.html';
        console.log("export " + uri + ": " + exportFilename);
 
-       return nightmare
+      return nightmare
       .goto(uri)
-      .wait('body')
-      .exists("#btnCepage")
-      .then(function (result) {
-          if (result) {
-              nightmare
-              .click('#btnCepage')
-              .wait('#ContentPlaceHolder1_gvCepage')
-              .html(exportFilename, "MHTML");
-          }
-      });
+      .html(exportFilename, "HTMLOnly")
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       return nightmare.end()
