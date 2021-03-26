@@ -34,6 +34,23 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
     	return ($admin)? true : false;
     }
 
+    public function save() {
+		if(!DRevConfiguration::getInstance()->isRevendicationParLots()){
+
+			parent::save();
+			return;
+
+		}
+		if(!$this->exist('donnees') || !count($this->donnees)) {
+	           $this->generateDonnees();
+	    }
+
+	    $this->generateMouvementsFactures();
+
+        parent::save();
+
+    }
+
 	/**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
@@ -46,6 +63,7 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
     }
 
     public function getMouvementsFacturesCalcule() {
+
       $templateFacture = $this->getTemplateFacture();
 
       if(!$templateFacture) {
