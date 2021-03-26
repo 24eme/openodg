@@ -126,6 +126,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->changement_produit_libelle = null;
         if($hash) {
             $this->changement_produit_libelle = $this->getConfiguration()->get($hash)->getLibelleComplet();
+            $this->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
+        }else{
+            $this->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
         }
 
         return $this->_set('changement_produit_hash', $hash);
