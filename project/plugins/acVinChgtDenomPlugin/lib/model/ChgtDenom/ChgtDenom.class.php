@@ -134,6 +134,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function setLotOrigine($lot) {
         $this->changement_origine_id_document = $lot->id_document;
         $this->changement_origine_lot_unique_id = $lot->unique_id;
+        $this->changement_millesime = $lot->millesime;
+        $this->changement_volume = $lot->volume;
     }
 
     public function getLotOrigine() {

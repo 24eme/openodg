@@ -17,6 +17,7 @@ ChgtDenom:
       changement_type: {}
       changement_produit_hash: {}
       changement_produit_libelle: { }
+      changement_millesime: { }
       changement_cepages:
         type: collection
         definition:
