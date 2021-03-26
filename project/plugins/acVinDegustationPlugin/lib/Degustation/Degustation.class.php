@@ -314,6 +314,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function addLot($lotOrig, $update = true)
     {
+        if (!$this->_id) {
+            throw new sfException("Pour ajouter un lot, il faut avoir un id à notre degustation");
+        }
         $lotDef = DegustationLot::freeInstance($this);
         foreach($lotOrig as $key => $value) {
             if($lotDef->getDefinition()->exist($key)) {
