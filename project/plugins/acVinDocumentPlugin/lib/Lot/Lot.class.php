@@ -70,7 +70,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_ENLEVE => 'Enlevé',
         self::STATUT_CONDITIONNE => 'Conditionné',
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
-        self::STATUT_NONAFFECTABLE => 'Non affectable',
+        self::STATUT_NONAFFECTABLE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
         self::STATUT_CHANGE_DEST => 'Changé dest'
 
