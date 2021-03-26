@@ -104,6 +104,7 @@
                 </div>
             </div>
           <?php endif; ?>
+            <?php if(isset($form["date_facturation"])): ?>
             <div class="form-group <?php if($form["date_facturation"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date_facturation"]->renderError(); ?>
                 <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-4 control-label")); ?>
@@ -116,6 +117,47 @@
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
+
+            <?php if(isset($form["date_mouvement"])): ?>
+            <div class="form-group <?php if($form["date_mouvement"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["date_mouvement"]->renderError(); ?>
+                <?php echo $form["date_mouvement"]->renderLabel("Date de mouvements", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                    <div class="input-group date-picker-week">
+                        <?php echo $form["date_mouvement"]->render(array("class" => "form-control", "placeholder" => "Date de prise en compte des mouvements")); ?>
+                        <div class="input-group-addon">
+                            <span class="glyphicon-calendar glyphicon"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if(isset($form["message_communication"])): ?>
+            <div class="form-group <?php if($form["message_communication"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["message_communication"]->renderError(); ?>
+                <?php echo $form["message_communication"]->renderLabel("Message de communication", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                    <div class="">
+                        <?php echo $form["message_communication"]->render(array("class" => "form-control", "placeholder" => "Message")); ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if(isset($form["type_document"])): ?>
+            <div class="form-group <?php if($form["type_document"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["type_document"]->renderError(); ?>
+                <?php echo $form["type_document"]->renderLabel("Type de document", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                    <div class="">
+                        <?php echo $form["type_document"]->render(array("class" => "form-control", "placeholder" => "Message")); ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <div class="form-group text-right">
                 <div class="col-xs-6 col-xs-offset-6">
                     <button class="btn btn-default btn-block btn-upper" type="submit">Générer la facture</button>
@@ -131,8 +173,7 @@
   <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-1">Document</th>
-            <th class="col-xs-1">Version</th>
+            <th class="col-xs-2">Document / Version</th>
             <th class="col-xs-1">Campagne</th>
             <th class="col-xs-4">Cotisation</th>
             <th class="col-xs-1">Quantite</th>
@@ -143,16 +184,17 @@
     </thead>
     <tbody>
 
-  <?php foreach ($mouvements as $keyMvt => $mvt): ?>
+  <?php foreach ($mouvements as $keyMvt => $mvt):
+      $valueMvt = $mvt->value;
+       ?>
     <tr>
-        <td><?php echo $mvt->getDocument()->getType();?></td>
-        <td><?php echo $mvt->getDocument()->getVersion();?></td>
-        <td><?php echo format_date($mvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
-        <td><?php echo ucfirst($mvt->categorie); ?> <?php echo $mvt->type_libelle; ?></td>
-        <td class="text-right"><?php echo echoFloat($mvt->quantite); ?></td>
-        <td class="text-right"><?php echo echoFloat($mvt->taux); ?></td>
-        <td class="text-right"><?php echo echoFloat($mvt->tva); ?>&nbsp;%</td>
-        <td class="text-right"><?php echo echoFloat($mvt->taux * $mvt->quantite); ?>&nbsp;€</td>
+        <td><a href="<?php echo url_for("declaration_doc", array("id" => $mvt->id))?>" ><?php echo $valueMvt->type;?><?php echo "&nbsp;".$valueMvt->version;?> <?php echo "&nbsp;".$valueMvt->campagne;?></a></td>
+        <td><?php echo format_date($valueMvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
+        <td><?php echo ucfirst($valueMvt->categorie); ?> <?php echo $valueMvt->type_libelle; ?></td>
+        <td class="text-right"><?php echo echoFloat($valueMvt->quantite); ?></td>
+        <td class="text-right"><?php echo echoFloat($valueMvt->taux); ?></td>
+        <td class="text-right"><?php echo echoFloat($valueMvt->tva); ?>&nbsp;%</td>
+        <td class="text-right"><?php echo echoFloat($valueMvt->taux * $valueMvt->quantite); ?>&nbsp;€</td>
     </tr>
   <?php endforeach; ?>
   </tbody>

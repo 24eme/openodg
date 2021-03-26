@@ -453,12 +453,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       foreach($cotisations as $cotisation) {
           $mouvement = ChgtDenomMouvementFactures::freeInstance($this);
-          $mouvement->fillFromCotisation($cotisation);
-          $mouvement->facture = 0;
-          $mouvement->facturable = 1;
-          $mouvement->date = $this->validation_odg;
-          $mouvement->date_version = $this->validation;
-          $mouvement->version = $this->version;
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
           if(!$mouvement->quantite) {
               continue;

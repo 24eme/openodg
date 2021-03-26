@@ -13,7 +13,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Gascogne",
-            "code_comptable": "706100",
+            "code_comptable": "",
             "details": {
                 "forfait": {
                     "modele": "CotisationFixe",
@@ -34,7 +34,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Gascogne",
-            "code_comptable": "706100",
+            "code_comptable": "",
             "details": {
                 "forfaitOdg": {
                     "modele": "CotisationFixe",
@@ -54,7 +54,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Gascogne",
-            "code_comptable": "706100",
+            "code_comptable": "",
             "details": {
                 "revendication": {
                     "modele": "CotisationVariable",
@@ -89,7 +89,7 @@
             }
           }
         },
-        "non_conformite": {
+        "nonConformite": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Forfait sur lot non conforme",
@@ -107,7 +107,6 @@
                     ],
                     "callback": "getFacturationNonConforme",
                     "callback_parameters": [
-                        "NOT /appellations/APL,/appellations/MED"
                     ]
                 }
             }

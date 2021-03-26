@@ -134,23 +134,6 @@ nightmare
        .refresh()
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/LstLots.aspx";
-      var exportFilename = destination_file+'lots_changements.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-       .goto(uri)
-       .select('#ddlCamp','')
-       .select('#ddlDecl', 'C')
-       .click('#btnRech')
-       .wait(20000)
-       .click('#btnEE')
-       .wait(4000)
-       .download(exportFilename)
-       .screenshot(exportFilename+".png")
-       .refresh()
-  })
-  .then(function() {
       var uri = baseUri+"/Declaration/LstDeclaRev.aspx";
       var exportFilename = destination_file+'revendication_vin_apte_au_controle.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -164,6 +147,22 @@ nightmare
        .download(exportFilename)
        .screenshot(exportFilename+".png")
        .refresh()
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/LstLots.aspx";
+      var exportFilename = destination_file+'lots_changements.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri)
+       .wait(1000)
+       .select('#ddlCamp','')
+       .select('#ddlDecl', 'C')
+       .click('#btnRech')
+       .wait(10000)
+       .click('#btnEE')
+       .download(exportFilename)
+       .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstChangDen.aspx";
@@ -570,7 +569,6 @@ nightmare
       .click('#gvFactureAExporter_CheckAll')
       .wait(10000)
       .click('#btnRemiseCheque')
-      .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -637,7 +635,6 @@ nightmare
       .click('#gvFactureAExporter_CheckAll')
       .wait(10000)
       .click('#btnEditPdf2')
-      .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -659,7 +656,6 @@ nightmare
       .click('#gvFactureAExporter_CheckAll')
       .wait(10000)
       .click('#btnEditPdf2')
-      .wait(20000)
       .download(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -705,8 +701,8 @@ nightmare
       .goto(uri)
       .wait('#Button1')
       .click('#Button1')
-      .wait('#gvMembre')
-      .html(exportFilename, "MHTML")
+      .wait(5000)
+      .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
   })
   .then(function() {
