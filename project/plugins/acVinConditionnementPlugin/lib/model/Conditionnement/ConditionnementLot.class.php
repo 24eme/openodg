@@ -32,11 +32,6 @@ class ConditionnementLot extends BaseConditionnementLot
         return "01";
     }
 
-    public function getLibelle() {
-
-        return "";
-    }
-
     public function getMouvementFreeInstance() {
 
         return ConditionnementMouvementLots::freeInstance($this->getDocument());
