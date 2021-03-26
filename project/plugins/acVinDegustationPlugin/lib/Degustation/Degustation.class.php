@@ -1240,8 +1240,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
             $mouvement->createFromCotisationAndDoc($cotisation, $this);
-            $mouvement->date = $this->date;
-            $mouvement->date_version = $this->date;
+            $mouvement->date = $this->getDateFormat();
+            $mouvement->date_version = $this->getDateFormat();
             $mouvement->detail_identifiant = $lot->unique_id;
             return $mouvement;
         }
