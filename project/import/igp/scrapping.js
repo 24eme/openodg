@@ -726,9 +726,10 @@ nightmare
        .goto(uri)
        .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
        .click('#ContentPlaceHolder1_btnRechercher')
-       .wait(1000)
-       .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/.*([0-9]+).*/, '$1'); })
+       .wait(2000)
+       .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
        .then(function(total) {
+          console.log("Export des " + total + " fiches ayant des identifiants de connexion");
           for(let i=0; i < total; i++) {
             var exportFilename = destination_file+'fichescontacts/contact_'+i+'html';
             nightmare
