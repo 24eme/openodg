@@ -228,13 +228,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           unset($lot->{$key});
       }
 
+      $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
       if (!$this->isChgtTotal()) {
         $lotOrig = clone $lot;
         $lotOrig->volume -= $this->changement_volume;
         $lotOrig->numero_archive .= 'a';
+        $lotOrig->document_ordre = $ordre;
         $lot->numero_archive .= 'b';
         $lots[] = $lotOrig;
       }
+      $lot->document_ordre = $ordre;
       $lot->produit_hash = $this->changement_produit_hash;
       $lot->produit_libelle = $this->changement_produit_libelle;
       $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;

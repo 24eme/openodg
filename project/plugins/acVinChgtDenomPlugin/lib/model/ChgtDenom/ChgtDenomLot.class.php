@@ -9,7 +9,7 @@ class ChgtDenomLot extends BaseChgtDenomLot
 
     public function getDocumentOrdre() {
 
-        return "03";
+        return $this->_get('document_ordre');
     }
 
     public function getLibelle() {
