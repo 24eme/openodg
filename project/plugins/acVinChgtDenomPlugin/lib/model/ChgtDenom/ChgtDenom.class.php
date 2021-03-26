@@ -122,6 +122,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->_set('changement_type', $type);
     }
 
+    private function setWithGenerateLots($key, $value) {
+        $ret =  $this->_set($key, $value);
+        $this->generateLots();
+        return $ret;
+    }
+
+    public function setChangementCepage($cepage) {
+        return $this->setWithGenerateLots('changement_cepage', $cepage);
+    }
+
+    public function setChangementVolume($v) {
+        return $this->setWithGenerateLots('changement_volume', $v);
+    }
+
     public function setChangementProduitHash($hash) {
         $this->changement_produit_libelle = null;
         if($hash) {
@@ -130,10 +144,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }else{
             $this->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, false);
         }
-
-        $ret =  $this->_set('changement_produit_hash', $hash);
-        $this->generateLots();
-        return $ret;
+        return $this->setWithGenerateLots('changement_produit_hash', $hash);
     }
 
     public function setLotOrigine($lot) {
