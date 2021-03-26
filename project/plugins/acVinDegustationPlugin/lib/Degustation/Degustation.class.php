@@ -311,22 +311,28 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
-    public function addLot($lot, $update = true)
+    public function addLot($lotOrig, $update = true)
     {
         $lotDef = DegustationLot::freeInstance($this);
-        foreach($lot as $key => $value) {
+        foreach($lotOrig as $key => $value) {
             if($lotDef->getDefinition()->exist($key)) {
                 continue;
             }
 
-            unset($lot->{$key});
+            unset($lotOrig->{$key});
         }
-        $lot = $this->lots->add(null, $lot);
+        $this->docToSave[$lotOrig->id_document] = $lotOrig->id_document;
+        $lot = $this->lots->add(null, $lotOrig);
         $lot->date = $this->date;
         $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+        $lot->id_document_provenance = $lotOrig->id_document;
+        $lot->id_document_affectation = null;
         $lot->id_document = $this->_id;
         $lot->affectable = false;
         $lot->numero_anonymat = null;
+        if ($lotOrig->document_ordre) {
+            $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
+        }
         if($update) {
             $lot->updateSpecificiteWithDegustationNumber();
             $lot->updateDocumentDependances();
@@ -342,8 +348,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 $this->add('lots');
 
         foreach($lots as $key => $lot) {
-            $lot->affectable = false;
-			$lot->document_ordre = sprintf('%02', intval($lot->document_ordre) + 1);
             $this->addLot($lot);
         }
 	 }
