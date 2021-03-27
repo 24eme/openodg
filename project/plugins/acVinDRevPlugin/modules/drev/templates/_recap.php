@@ -127,14 +127,15 @@
               <tr>
                 <th class="col-xs-1">Date Rev.</th>
                 <?php if($drev->isValidee()): ?>
-                <th class="col-xs-1">Num. Dossier</th>
+                <th class="col-xs-1 text-center">Num. Dossier</th>
+                <th class="col-xs-1 text-center">Num. ODG</th>
                 <?php endif; ?>
-                <th class="col-xs-1">Lot</th>
+                <th class="col-xs-1 text-right">Lgmt</th>
                 <th class="text-center col-xs-5">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-3">Destination (date)</th>
                 <?php if ($sf_user->isAdmin()): ?>
-                  <th class="text-center col-xs-3">Dégustable</th>
+                  <th class="text-center col-xs-1">Ctrole</th>
                 <?php endif;?>
               </tr>
             </thead>
@@ -154,11 +155,10 @@
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
                         <?php if($drev->isValidee()): ?>
-                        <td>
-                          <?php echo $lot->numero_dossier; ?>
-                        </td>
+                        <td class="text-center"><?php echo $lot->numero_dossier; ?></td>
+                        <td class="text-center"><?php echo $lot->numero_archive; ?></td>
                         <?php endif;?>
-                        <td><?php echo $lot->numero_logement_operateur; ?></td>
+                        <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>
                         <td>
                           <?php echo showProduitLot($lot) ?>
                           <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
@@ -193,8 +193,13 @@
                       $firstRow=false;
                     endforeach; ?>
                 <tr>
-                  <td></td>
-                  <td></td>
+                <?php
+                    $colspan = 2;
+                    if ($drev->isValidee()) {
+                        $colspan += 2;
+                    }
+                ?>
+                  <td colspan="<?php echo $colspan; ?>"></td>
                   <td class="text-right">Total : </td>
                   <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                   <td></td>
