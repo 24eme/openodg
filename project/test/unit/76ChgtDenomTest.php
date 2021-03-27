@@ -210,7 +210,7 @@ $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libe
 $t->ok($chgtDenom->isTotal(), "Le changement est bien indiqué comme total");
 
 $lotFromChgmt = $chgtDenom->lots->get(0);
-$t->is($lotFromChgmt->numero_archive, $lotFromDegust->numero_archive, "Le numéro d'archive n'a pas changé");
+$t->is($lotFromChgmt->numero_archive, $lotFromDegust->numero_archive.'a', "Le numéro d'archive n'a pas changé");
 $t->is($lotFromChgmt->numero_dossier, $lotFromDegust->numero_dossier, "Le numéro de dossier n'a pas changé");
 $t->is($lotFromChgmt->produit_hash, $chgtDenom->changement_produit_hash, "Le produit est bien le nouveau dans le lot");
 $t->is($lotFromChgmt->volume, $chgtDenom->changement_volume, "Le volume est bien le nouveau dans le lot");
@@ -265,7 +265,7 @@ $chgtDenom->validate();
 $t->ok($chgtDenom->isTotal(), "Le changement qui a un volume identique est bien un changement total");
 $t->is(count($chgtDenom->lots), 1, "Ce changement total ne génère plus que 1 lot");
 $chgtDenom->generateMouvementsLots(1);
-$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive, "Un chgm total ne change pas le numero d'archive");
+$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive.'a', "Un chgm total ne change pas le numero d'archive");
 $t->is($chgtDenom->changement_produit_hash, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");

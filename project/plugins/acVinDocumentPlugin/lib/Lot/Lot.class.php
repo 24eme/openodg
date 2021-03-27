@@ -657,12 +657,16 @@ abstract class Lot extends acCouchdbDocumentTree
         $this->getUniqueId();
     }
 
-    public function buildMouvement($statut, $detail = null) {
+    public function buildMouvement($statut, $detail = null, $numero_archive_incremente = false) {
         $mouvement = $this->getMouvementFreeInstance();
 
         $mouvement->date = $this->date;
         $mouvement->numero_dossier = $this->numero_dossier;
-        $mouvement->numero_archive = $this->numero_archive;
+        if (!$numero_archive_incremente) {
+            $mouvement->numero_archive = $this->numero_archive;
+        }else{
+            $mouvement->numero_archive = substr($this->numero_archive, 0, -1);
+        }
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
@@ -710,8 +714,13 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getDocument()->get($hash);
     }
 
-    public function getLotDocumentOrdre($documentOrdre) {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
+    public function getLotDocumentOrdre($documentOrdre, $numero_archive_incremente = false) {
+        if ($numero_archive_incremente) {
+            $numero_archive = substr($this->numero_archive, 0, -1);
+        }else{
+            $numero_archive = $this->numero_archive;
+        }
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $numero_archive, sprintf("%02d", $documentOrdre));
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;

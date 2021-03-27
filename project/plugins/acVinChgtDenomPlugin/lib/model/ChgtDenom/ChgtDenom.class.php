@@ -260,7 +260,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       if (!$this->isTotal()) {
         $lotOrig = clone $lot;
         $lotOrig->volume -= $this->changement_volume;
+        $lotOrig->numero_archive .= 'a';
         $lots[] = $lotOrig;
+        $lot->numero_archive .= 'b';
+      }else{
+          $lot->numero_archive .= 'a';
       }
       $lot->produit_hash = $this->changement_produit_hash;
       $lot->produit_libelle = $this->changement_produit_libelle;
@@ -357,24 +361,23 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return;
         }
 
-        if($this->isDeclassement()) {
-            if ($this->isTotal()) {
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Total"));
+        if($this->isTotal()) {
+            if ($this->isDeclassement()) {
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Total", true));
             }else{
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE), "Partiel : ".$lot->volume." hl");
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Total : ".$this->lots[0]->getLibelle(), true));
+            }
+
+        }else{
+            if ($this->isDeclassement()) {
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl", true));
+                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé pour ".$this->lots[1]->volume." hl", true));
+            }else{
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non changée de ".$this->lots[0]->volume." hl", true));
+                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partiel : ".$this->lots[1]->getLibelle().", ".$this->lots[1]->volume." hl", true));
+
             }
         }
-
-        foreach ($this->lots as $lot) {
-            $lot->updateDocumentDependances();
-            if ($this->isDeclassement()) {
-                continue;
-            }
-            if ($this->isTotal()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST, "Total : ".$lot->getLibelle()));
-            }else{
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partiel : ".$lot->getLibelle().", ".$lot->volume." hl"));
-            }
 
             //On gère l'avenir du lot changé
             if ($lot->isChange()) {
