@@ -151,8 +151,7 @@ EOF;
               if (!$cep1) {
                 echo "WARNING;cepage_1 non trouvé ".$data[self::CSV_CEPAGE_1].";$line\n";
               } else {
-                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_1]) * 1;
-                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
+                  $pourcentage = str_replace(',', '.', trim($data[self::CSV_POURCENT_CEPAGE_1])) * 1 / 100;
                   $cepages[$cep1] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
               }
             }
@@ -161,9 +160,11 @@ EOF;
               if (!$cep2) {
                 echo "WARNING;cepage_2 non trouvé ".$data[self::CSV_CEPAGE_2].";$line\n";
               } else {
-                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_2]) * 1;
-                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-                  $cepages[$cep2] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
+                  $pourcentage = str_replace(',', '.', trim($data[self::CSV_POURCENT_CEPAGE_2])) * 1 / 100;
+                  if ($pourcentage > 0) {
+                      $cepages[$cep2] = round($volume * $pourcentage, 2);
+                  }
+
               }
             }
             if (trim($data[self::CSV_CEPAGE_3])) {
@@ -171,9 +172,10 @@ EOF;
               if (!$cep3) {
                 echo "WARNING;cepage_3 non trouvé ".$data[self::CSV_CEPAGE_3].";$line\n";
               } else {
-                  $pourcentage = trim($data[self::CSV_POURCENT_CEPAGE_3]) * 1;
-                  $pourcentage = ($pourcentage > 1)? round($pourcentage/100, 2) : $pourcentage;
-                  $cepages[$cep3] = ($pourcentage > 0)? round($volume * $pourcentage, 2) : $volume;
+                  $pourcentage = str_replace(',', '.', trim($data[self::CSV_POURCENT_CEPAGE_3])) * 1 / 100;
+                  if ($pourcentage > 0) {
+                      $cepages[$cep3] = round($volume * $pourcentage, 2);
+                  }
               }
             }
             $periode = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
