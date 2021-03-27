@@ -164,14 +164,6 @@ EOF;
                     $date = $cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]]['DATEDECISION'];
              }
 
-            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $date);
-            $produit = $habilitation->addProduit($produitKey);
-            if (!$produit) {
-                echo "WARNING: produit $produitKey (".$data[self::CSV_HABILITATION_PRODUIT].") non trouvé : ligne non importée\n";
-                continue;
-            }
-            $hab_activites = $produit->add('activites');
-
             $statut = $this->convert_statut[trim($data[self::CSV_HABILITATION_STATUT])];
 
             if (!$produitKey) {
@@ -181,17 +173,15 @@ EOF;
             if (($statut == HabilitationClient::STATUT_HABILITE) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]]) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]])) {
                 $di = $cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]];
                 if (isset($di['DATEDEMANDE'])) {
-                    $this->updateHabilitationStatut($hab_activites, $data, HabilitationClient::STATUT_DEMANDE_HABILITATION, $di['DATEDEMANDE']);
+                    $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, HabilitationClient::STATUT_DEMANDE_HABILITATION, $di['DATEDEMANDE']);
                 }
                 if (isset($di['NOTIFIEEOC'])) {
-                    $this->updateHabilitationStatut($hab_activites, $data, HabilitationClient::STATUT_ATTENTE_HABILITATION, $di['NOTIFIEEOC']);
+                    $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, HabilitationClient::STATUT_ATTENTE_HABILITATION, $di['NOTIFIEEOC']);
                 }
-                $this->updateHabilitationStatut($hab_activites, $data, HabilitationClient::STATUT_HABILITE, $date);
+                $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, HabilitationClient::STATUT_HABILITE, $date);
             }else{
-                $this->updateHabilitationStatut($hab_activites, $data, $statut, $date);
+                $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, $statut, $date);
             }
-            $habilitation->save(true);
-            //echo "SUCCESS: ".$habilitation->_id."\n";
         }
     }
 
@@ -213,11 +203,20 @@ EOF;
         return null;
     }
 
-    protected function updateHabilitationStatut($hab_activites,$data,$statut,$date){
+    protected function updateHabilitationStatut($identifiant,$produitKey,$data,$statut,$date){
+        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+        $produit = $habilitation->addProduit($produitKey);
+        if (!$produit) {
+            echo "WARNING: produit $produitKey (".$data[self::CSV_HABILITATION_PRODUIT].") non trouvé : ligne non importée\n";
+            return;
+        }
+        $hab_activites = $produit->add('activites');
         foreach (explode(",",$data[self::CSV_HABILITATION_ACTIVITES]) as $act) {
             if ($activite = $this->convert_activites[trim($act)]) {
                 $hab_activites->add($activite)->updateHabilitation($statut, null, $date);
             }
         }
+        $habilitation->save(true);
+        //echo "SUCCESS: ".$habilitation->_id."\n";
     }
 }
