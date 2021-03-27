@@ -30,7 +30,7 @@
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
   <?php endif; ?>
     <div class="col-xs-7">
-        <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong></h4>
+        <h4>Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong></h4>
     </div>
     <div class="col-xs-5 text-right">
     <?php if ($chgtDenom->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT && !$chgtDenom->validation_odg && isset($form['lots']) && $sf_user->isAdmin()): ?>

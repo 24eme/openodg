@@ -1,5 +1,5 @@
 <div class="alert col-sm-12" role="alert" style="background-color: #f8f8f8; border: 1px solid #e7e7e7; <?php if($opacity): ?>opacity: 0.7;<?php endif; ?>">
-  <h4>Dossier n°<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°<strong><?php echo $lot->numero_archive; ?></strong></h4>
+  <h4>Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong></h4>
   <table class="table table-condensed" style="margin: 0;">
     <tbody>
       <tr>
