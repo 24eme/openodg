@@ -161,8 +161,8 @@ EOF;
           $alphas = range('A', 'Z');
           $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
           $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
-          $numeroTable = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[0]);
-          $numeroAnonymat = trim(explode(".", $data[self::CSV_NUMERO_ANONYMAT])[1]);
+          $numeroTable = explode(".", str_replace(' ', '', $data[self::CSV_NUMERO_ANONYMAT]))[0];
+          $numeroAnonymat = explode(".", str_replace(' ', '', $data[self::CSV_NUMERO_ANONYMAT]))[1];
           $resultat = $data[self::CSV_RESULTAT];
 
           $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE));
@@ -185,8 +185,16 @@ EOF;
           }
 
           $lot = $degustation->addLot($lot, false);
-          $lot->numero_table = $numeroTable;
-          $lot->numero_anonymat = $alphas[((int)$numeroTable)-1].$numeroAnonymat;
+          if (intval($numeroTable) > 0) {
+              $lot->numero_table = intval($numeroTable);
+          }else{
+              echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." => $numeroTable/$numeroAnonymat\n";
+          }
+          if (intval($numeroTable) > 0 && $lot->numero_table) {
+              $lot->numero_anonymat = $alphas[$lot->numero_table].$numeroAnonymat;
+          }else{
+              echo "WARNING: table $numeroTable non trouvée\n";
+          }
           $lot->email_envoye = $date;
 
           if($data[self::CSV_RESULTAT] == "C") {
