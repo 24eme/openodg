@@ -193,7 +193,7 @@ EOF;
               }
           }
           if (intval($numeroTable) > 0 && $lot->numero_table) {
-              $lot->numero_anonymat = $alphas[$lot->numero_table].$numeroAnonymat;
+              $lot->numero_anonymat = $alphas[$lot->numero_table - 1].$numeroAnonymat;
           }
           $lot->email_envoye = $date;
 
