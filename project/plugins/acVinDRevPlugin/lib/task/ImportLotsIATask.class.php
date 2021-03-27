@@ -56,13 +56,6 @@ class ImportLotsIATask extends sfBaseTask
       self::TYPE_CHANGEMENT_DE_DENOMINATION_NEGOCIANT,
   );
 
-  const STATUT_PRELEVE = "PRELEVE";
-  const STATUT_DEGUSTE = "DEGUSTE";
-  const STATUT_CONFORME = "CONFORME";
-  const STATUT_NONCONFORME = "NON_CONFORME";
-  const STATUT_CHANGE = "CHANGE";
-  const STATUT_DECLASSE = "DECLASSE";
-
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
