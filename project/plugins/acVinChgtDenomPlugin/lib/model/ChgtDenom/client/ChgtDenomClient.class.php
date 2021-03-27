@@ -53,9 +53,9 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     public function getLotsChangeable($identifiant) {
         $lots = array();
-        foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant, Lot::STATUT_CHANGEABLE)->rows as $lot) {
-            $lots[$lot->value->unique_id] = $lot->value;
-            $lots[$lot->value->unique_id]->document_type = substr($lot->id_document, 0, 4);
+        foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant, Lot::STATUT_CHANGEABLE)->rows as $row_lot) {
+            $lots[$row_lot->value->unique_id] = $row_lot->value;
+            $lots[$row_lot->value->unique_id]->type_document = substr($row_lot->value->id_document, 0, 4);
         }
         return $lots;
     }
