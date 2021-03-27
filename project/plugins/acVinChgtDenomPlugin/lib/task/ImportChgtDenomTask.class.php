@@ -114,8 +114,99 @@ EOF;
             $numeroArchive = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
 
-            $mouvementLot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volumeInitial, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produitInitial->getHash(), 'statut' => Lot::STATUT_AFFECTABLE));
+            $mouvementsRealOrigLot = MouvementLotView::getInstance()->getMouvements($etablissement->identifiant,
+                     array(
+//                            'volume' => $volumeInitial,
+                            'produit_hash' => $produitInitial->getHash(),
+                            'statut' => Lot::STATUT_CHANGEABLE
+                          )
+            );
+            $mouvementsOrigLot = $mouvementsRealOrigLot;
+            $mouvementsLot = array();
+            //On exclue de changement antérieure à la revendication
+            foreach($mouvementsOrigLot as $mvt) {
+                $date = preg_replace('/(\d+)\/(\d+)\/(\d+)/', '$3-$2-$1', $data[self::CSV_DATE_DECLARATION]);
+                if ($date < $mvt->date) {
+                    continue;
+                }
+                $mouvementsLot[] = $mvt;
+            }
+            $mouvementsOrigLot = $mouvementsLot;
+            //On excluse les cépages non identiques
+            if (count($mouvementsLot) > 1) {
+                $mouvementsLot = array();
+                foreach($mouvementsOrigLot as $mvt) {
+                    if (!$data[self::CSV_CEPAGE]) {
+                        $pas_de_cepage = true;
+                        foreach($mvt->cepages as $cepage => $volume) {
+                            $pas_de_cepage = false;
+                            continue;
+                        }
+                        if ($pas_de_cepage) {
+                            $mouvementsLot[] = $mvt;
+                        }
+                    }else {
+                        foreach($mvt->cepages as $cepage => $volume) {
+                            if (strtolower($cepage)  == strtolower($data[self::CSV_CEPAGE])) {
+                                $mouvementsLot[] = $mvt;
+                                break 1;
+                            }
+                        }
+                    }
+                }
+                if (count($mouvementsLot) > 1) {
+                    $mouvementsOrigLot = $mouvementsLot;
+                }
+            }
+            if (!count($mouvementsLot)) {
+                echo "Warning: Pas de mouvement trouvé (cépage & date antérieures exclus)\n";
+                echo "\t".implode(', ', $data)."\n";
+                continue;
+            }
+            //Comparaison des volumes
+            if (count($mouvementsLot) > 1) {
+                $mouvementsLot = array();
+                foreach($mouvementsOrigLot as $mvt) {
+                    if ($volumeInitial == $mvt->volume) {
+                        $mouvementsLot[] = $mvt;
+                    }
+                }
+            }
+            //Logements opérateurs
+            if (count($mouvementsLot) != 1) {
+                $mouvementsLot = array();
+                foreach($mouvementsOrigLot as $mvt) {
+                    if ($this->clearLogement($mvt->numero_logement_operateur) == $this->clearLogement($data[self::CSV_NUM_LOT_OPERATEUR])) {
+                        $mouvementsLot[] = $mvt;
+                    }
+                }
+            }
+            //Comparaison volume ET logement
+            if (count($mouvementsLot) != 1) {
+                $mouvementsLot = array();
+                foreach($mouvementsOrigLot as $mvt) {
+                    if (($volumeInitial == $mvt->volume) && ($this->clearLogement($mvt->numero_logement_operateur) == $this->clearLogement($data[self::CSV_NUM_LOT_OPERATEUR]))) {
+                        $mouvementsLot[] = $mvt;
+                    }
+                }
+            }
 
+            if ((count($mouvementsLot) > 1) || !count($mouvementsLot)) {
+                echo "WARNING: Pas de mouvements trouvés\n";
+                echo "\t$line\n";
+/*
+                echo "========================\n";
+                echo "Résultat : \n";
+                print_r($mouvementsRealOrigLot);
+                if (count($mouvementsLot) > 1) {
+                    echo "======= Trop  Trouvé ======\n";
+                }else{
+                    echo "======== Pas Trouvé =======\n";
+                }
+                */
+                continue;
+            }
+            $mouvementLot = $mouvementsLot[0];
             if(!$mouvementLot) {
                 echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
                 continue;
@@ -123,7 +214,6 @@ EOF;
 
             $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration." ".sprintf("%02d", rand(0,23)).":".sprintf("%02d", rand(0,59)).":".sprintf("%02d", rand(0,59)), true);
             $chgtDenom->constructId();
-            $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
             $chgtDenom->setLotOrigine($mouvementLot);
             $chgtDenom->changement_produit_hash = $produitFinal->getHash();
             $chgtDenom->changement_volume = $volumeConcerne;
@@ -147,6 +237,10 @@ EOF;
                 echo "ERROR;".$chgtDenom->_id.";".$e->getMessage()."\n";
             }
         }
+    }
+
+    protected function clearLogement($s) {
+        return preg_replace('/[^0-9a-z]/', '', strtolower($s));
     }
 
     protected function clearProduitKey($key) {

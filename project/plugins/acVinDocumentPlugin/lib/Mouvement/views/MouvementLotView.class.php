@@ -73,6 +73,14 @@ class MouvementLotView extends acCouchdbView
     }
 
     public function find($identifiant, $query) {
+        $mvts = $this->getMouvements($identifiant, $query);
+        if (!count($mvts)) {
+            return null;
+        }
+        return $mvts[0];
+    }
+
+    public function getMouvements($identifiant, $query) {
         $statut = null;
         if(isset($query['statut'])) {
             $statut = $query['statut'];
@@ -80,9 +88,11 @@ class MouvementLotView extends acCouchdbView
         unset($query['statut']);
         $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant, $statut);
 
-        $query["numero_logement_operateur"] = KeyInflector::slugify(str_replace(" ", "", $query["numero_logement_operateur"]));
+        if (isset($query["numero_logement_operateur"])) {
+            $query["numero_logement_operateur"] = KeyInflector::slugify(str_replace(" ", "", $query["numero_logement_operateur"]));
+        }
 
-        $mouvement = null;
+        $res_mouvements = array();
         foreach ($mouvements->rows as $mouvement) {
 
             $mouvement->value->numero_logement_operateur = KeyInflector::slugify(str_replace(" ", "",$mouvement->value->numero_logement_operateur));
@@ -99,10 +109,10 @@ class MouvementLotView extends acCouchdbView
                 continue;
             }
 
-            return $mouvement->value;
+            $res_mouvements[] = $mouvement->value;
         }
 
-        return null;
+        return $res_mouvements;
     }
 
 
