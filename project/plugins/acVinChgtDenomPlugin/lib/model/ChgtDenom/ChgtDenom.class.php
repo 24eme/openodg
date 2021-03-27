@@ -84,6 +84,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('Y-m-d');
         }
         $this->validation = $date;
+        $this->generateLots();
     }
 
     public function isPapier() {
@@ -124,7 +125,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     private function setWithGenerateLots($key, $value) {
         $ret =  $this->_set($key, $value);
-        $this->generateLots();
         return $ret;
     }
 
@@ -155,9 +155,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->changement_millesime = $lot->millesime;
         $this->changement_volume = $lot->volume;
 
-        $this->generateLots();
-
-        $this->fillDocToSaveFromLots();
     }
 
     public function getLotOrigine() {
@@ -196,16 +193,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->generateMouvementsLots();
 
         parent::save();
-        $this->fillDocToSaveFromLots();
-        $this->saveDocumentsDependants();
+        if (count($this->lots)) {
+            $this->fillDocToSaveFromLots();
+            $this->saveDocumentsDependants();
+        }
     }
 
     public function fillDocToSaveFromLots() {
-        foreach ($this->lots as $lot) {
-            if(!$lot->id_document_provenance) {
-                continue;
-            }
-            $this->docToSave[$lot->id_document_provenance] = $lot->id_document_provenance;
+        if ($this->changement_origine_id_document) {
+            $this->docToSave[$this->changement_origine_id_document] = $this->changement_origine_id_document;
         }
     }
 

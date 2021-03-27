@@ -98,6 +98,7 @@ $t->comment("Changement de dénom sur DREV");
 
 $date = $year.'-10-10 10:10:10';
 $chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
+$chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 $t->comment($chgtDenomFromDrev->_id);
 
@@ -109,6 +110,7 @@ $t->is($chgtDenomFromDrev->periode, $year, "le chgt de denom a la bonne periode 
 $lotFromDrev = array_shift($lots);
 $chgtDenomFromDrev->setLotOrigine($lotFromDrev);
 $chgtDenomFromDrev->changement_produit_hash = $drev->lots[1]->produit_hash;
+$chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 
 $t->is($chgtDenomFromDrev->changement_origine_id_document, $drev->_id, "Le changement a bien comme document d'origine ".$drev->_id);
@@ -135,6 +137,7 @@ $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le changement a bi
 
 $t->comment("On transforme le changement en déclassement");
 $chgtDenomFromDrev->changement_produit_hash = null;
+$chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Le type est déclassement");
 $t->ok(!$chgtDenomFromDrev->lots[0]->affectable, "Le lot du changement n'est pas affectable");
@@ -144,6 +147,7 @@ $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le c
 
 $t->comment("on remet et un produit et on rend le lot affectable");
 $chgtDenomFromDrev->changement_produit_hash = $lotFromDrev->produit_hash;
+$chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->lots[0]->affectable = true;
 $chgtDenomFromDrev->save();
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Le type est redevenu un changement de denom");
@@ -196,6 +200,7 @@ $t->comment("Création d'un Changement de Denom Total");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->changement_cepages = array('CABERNET' => $volume);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
+$chgtDenom->validate();
 $chgtDenom->save();
 
 $t->is(count($chgtDenom->lots), 1, "1 seul lot généré");
@@ -230,6 +235,7 @@ $t->comment("Création d'un Chgt de Denom Partiel");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_volume = round($volume / 2, 2);
+$chgtDenom->validate();
 $chgtDenom->save();
 
 $t->is($chgtDenom->changement_origine_id_document, $degustation->_id, "Le changement a bien comme origine ".$degustation->_id);
@@ -254,6 +260,7 @@ $t->comment("Création d'un Declassement Total");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = $volume;
+$chgtDenom->validate();
 
 $t->ok($chgtDenom->isTotal(), "Le changement qui a un volume identique est bien un changement total");
 $t->is(count($chgtDenom->lots), 1, "Ce changement total ne génère plus que 1 lot");
@@ -274,6 +281,7 @@ $t->comment("Création d'un Declassement Partiel");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = round($volume / 2, 2);
+$chgtDenom->validate();
 $chgtDenom->save();
 
 $t->ok(!$chgtDenom->isTotal(), "Le changement est bien partiel vu qu'il porte sur ".round($volume / 2, 2)." hl");
