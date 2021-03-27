@@ -32,9 +32,9 @@ endforeach;
         <th class="col-sm-1"></th>
       </thead>
       <tbody>
-        <?php foreach($mouvements as $lotKey => $mouvement): ?>
-        <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
-        <?php $urlEtape = getUrlEtapeFromMvtLot($mouvement); ?>
+        <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
+          <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
+          <?php $urlEtape = getUrlEtapeFromMvtLot($mouvement); ?>
               <tr>
                 <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
                 <td>
@@ -48,7 +48,7 @@ endforeach;
                     <a href="<?php echo $urlEtape; ?>" class="btn btn-default btn-xs">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
                 </td>
             </tr>
-                <?php endforeach; ?>
+        <?php endif; endforeach; ?>
             <tbody>
             </table>
           <?php endif; ?>
