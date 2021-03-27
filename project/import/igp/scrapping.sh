@@ -23,9 +23,7 @@ mkdir -p $DATADIR
 if test "$DISPLAY"; then
   node scrapping.js $CONFIGFILE
 else
-  xvfb-run -a --server-args="-screen 0 1400x2000x24" node scrapping.js $CONFIGFILE
+  xvfb-run -a --server-args="-screen 0 1400x1800x24" node scrapping.js $CONFIGFILE
 fi
 
-#bash script_verify.sh $CONFIGFILE
-
-bash commission2csv.sh $DATADIR
+bash commission2csv.sh $DATADIR/04_controles_produits
