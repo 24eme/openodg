@@ -74,11 +74,16 @@ EOF;
             $ligne++;
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line, ';');
-            if (!$data) {
+            if ( !$data || !isset($data[self::CSV_DATE_DECLARATION]) ) {
               continue;
             }
 
-            $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            if ($data[self::CSV_DATE_DECLARATION]) {
+                $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            }else{
+                echo "WARNING: pas de date de Déclaration trouvée : ".$data[self::CSV_DATE_DECLARATION]."\n";
+                continue;
+            }
 
             if($dateDeclaration < "2019-01-01") {
                 continue;
