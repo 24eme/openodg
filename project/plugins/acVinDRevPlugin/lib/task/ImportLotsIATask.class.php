@@ -392,7 +392,7 @@ EOF;
     }
 
     public function getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier) {
-        $trans = $newTrans;
+        $trans = $previousdoc;
 
         $newTrans = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
         $newTrans->constructId();
@@ -401,7 +401,7 @@ EOF;
         $newTrans->validation_odg = $date;
         $newTrans->numero_archive = $numeroDossier;
         $newTrans->add('date_degustation_voulue', $date);
-        if(!$trans || $newTrans->_id != $cond->_id) {
+        if(!$trans || $newTrans->_id != $trans->_id) {
           $trans = TransactionClient::getInstance()->find($newTrans->_id, acCouchdbClient::HYDRATE_DOCUMENT);
         }
         if(!$trans) {
