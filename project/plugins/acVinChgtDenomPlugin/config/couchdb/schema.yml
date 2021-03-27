@@ -12,11 +12,12 @@ ChgtDenom:
       validation_odg: {  }
       identifiant: {  }
       papier: { required: false, type: integer }
-      changement_origine_document_id: {}
+      changement_origine_id_document: {}
       changement_origine_lot_unique_id: {}
       changement_type: {}
-      changement_produit: {}
+      changement_produit_hash: {}
       changement_produit_libelle: { }
+      changement_millesime: { }
       changement_cepages:
         type: collection
         definition:
@@ -60,6 +61,7 @@ ChgtDenom:
                   campagne: {}
                   numero_dossier: {  }
                   numero_archive: {  }
+                  document_ordre: {  }
                   numero_logement_operateur: { }
                   millesime: { }
                   elevage: { }
@@ -70,7 +72,7 @@ ChgtDenom:
                   produit_libelle: { }
                   declarant_identifiant: { }
                   declarant_nom: { }
-                  origine_mouvement: {}
+                  origine_mouvement: { required: false }
                   details: {}
                   statut: {}
                   specificite: {}

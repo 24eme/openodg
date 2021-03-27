@@ -22,19 +22,20 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
 
     const STATUT_CHANGE = "CHANGE";
-    const STATUT_DECLASSE = "DECLASSE";
     const STATUT_ELEVAGE = "ELEVAGE";
 
     const STATUT_CHANGE_DEST = "02_CHANGE_DEST";
 
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
-    const STATUT_REVENDIQUE_CHANGE = "01_REVENDIQUE_CHANGE";
     const STATUT_ENLEVE = "01_ENLEVE";
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
+
     const STATUT_CHANGE_SRC = "05_CHANGE_SRC";
+    const STATUT_CHANGEABLE = "00_CHANGEABLE";
+    const STATUT_DECLASSE = "10_DECLASSE";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -728,15 +729,17 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function updateDocumentDependances() {
-        $this->id_document_affectation = null;
-        $this->id_document_provenance = null;
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
             $this->id_document_affectation = $lotAffectation->getDocument()->_id;
+        }else {
+            $this->id_document_affectation = null;
         }
         $lotProvenance = $this->getLotProvenance();
         if($lotProvenance) {
             $this->id_document_provenance = $lotProvenance->getDocument()->_id;
+        }else{
+            $this->id_document_provenance = null;
         }
     }
 
@@ -778,7 +781,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffecte() {
 
-        return $this->exist('id_document_affectation') && $this->id_document_affectation;
+        return preg_match('/^DEGUST/', $this->id_document_affectation);
+    }
+
+    public function isChange() {
+
+        return preg_match('/^CHGTDENOM/', $this->id_document_affectation);
     }
 
     /**

@@ -18,8 +18,8 @@ class ChgtDenomForm extends acCouchdbObjectForm
         $this->setWidget('changement_volume', new bsWidgetFormInputFloat());
         $this->setValidator('changement_volume', new sfValidatorNumber(array('required' => false)));
 
-        $this->setWidget('changement_produit', new bsWidgetFormChoice(array('choices' => $produits)));
-        $this->setValidator('changement_produit', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
+        $this->setWidget('changement_produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
+        $this->setValidator('changement_produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
         $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
         $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
         for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
@@ -36,8 +36,8 @@ class ChgtDenomForm extends acCouchdbObjectForm
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
       	$this->getObject()->changement_type = $values['changement_type'];
-        if ($values['changement_produit']) {
-            $this->getObject()->changement_produit = $values['changement_produit'];
+        if ($values['changement_produit_hash']) {
+            $this->getObject()->changement_produit_hash = $values['changement_produit_hash'];
         }
         $this->getObject()->remove('changement_cepages');
         $this->getObject()->add('changement_cepages');
@@ -46,7 +46,7 @@ class ChgtDenomForm extends acCouchdbObjectForm
                 continue;
             }
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
-        }      
+        }
 
         $this->getObject()->generateLots();
     }

@@ -22,7 +22,7 @@
               <div class="col-md-8">
                   <div class="form-group">
                       <?php echo $form['changement_type']->renderLabel("Type de modification", array('class' => "col-sm-4 control-label")); ?>
-                      <div class="col-sm-8 bloc_condition" data-condition-cible="#bloc_changement_produit">
+                      <div class="col-sm-8 bloc_condition" data-condition-cible="#bloc_changement_produit_hash">
                             <span class="error text-danger"><?php echo $form['changement_type']->renderError() ?></span>
                             <?php echo $form['changement_type']->render(); ?>
                       </div>
@@ -30,13 +30,13 @@
               </div>
         </div>
 
-        <div class="row" id="bloc_changement_produit" data-condition-value="<?php echo ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT; ?>">
+        <div class="row" id="bloc_changement_produit_hash" data-condition-value="<?php echo ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT; ?>">
           <div class="col-md-8">
               <div class="form-group">
-                  <?php echo $form['changement_produit']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
+                  <?php echo $form['changement_produit_hash']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
                   <div class="col-sm-8">
-                      <span class="error text-danger"><?php echo $form['changement_produit']->renderError() ?></span>
-                      <?php echo $form['changement_produit']->render(array("data-placeholder" => "Sélectionnez un nouveau produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                      <span class="error text-danger"><?php echo $form['changement_produit_hash']->renderError() ?></span>
+                      <?php echo $form['changement_produit_hash']->render(array("data-placeholder" => "Sélectionnez un nouveau produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                   </div>
               </div>
           </div>

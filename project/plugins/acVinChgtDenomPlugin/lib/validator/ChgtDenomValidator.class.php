@@ -20,8 +20,8 @@ class ChgtDenomValidator extends sfValidatorSchema
 			$errorSchema = new sfValidatorErrorSchema($this);
     	$hasError = false;
 
-    	if ($values['changement_type'] == 'CHGT' && !$values['changement_produit']) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_produit');
+    	if ($values['changement_type'] == 'CHGT' && !$values['changement_produit_hash']) {
+    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_produit_hash');
     	    $hasError = true;
     	}
 

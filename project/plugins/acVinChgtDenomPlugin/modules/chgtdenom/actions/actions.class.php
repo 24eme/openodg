@@ -8,7 +8,7 @@ class chgtdenomActions extends sfActions
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
         $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
-        $chgtDenom->changement_origine_document_id = strtok($lot, ':');
+        $chgtDenom->changement_origine_id_document = strtok($lot, ':');
         $chgtDenom->changement_origine_lot_unique_id = strtok(':');
         $chgtDenom->save();
 
