@@ -362,21 +362,31 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         if($this->isDeclassement()) {
-            $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE));
+            if ($this->isTotal()) {
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Total"));
+            }else{
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE), "Partiel : ".$lot->volume." hl");
+            }
         }
 
         foreach ($this->lots as $lot) {
             $lot->updateDocumentDependances();
-
-            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST));
-            if($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT) {
-                if (!$lot->isChange()) {
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
-                }else{
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC));
-                }
+            if ($this->isDeclassement()) {
+                continue;
+            }
+            if ($this->isTotal()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST, "Total : ".$lot->getLibelle()));
+            }else{
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partiel : ".$lot->getLibelle().", ".$lot->volume." hl"));
             }
 
+            //On gère l'avenir du lot changé
+            if ($lot->isChange()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+                continue;
+            }
+            //Si le lot changé n'a pas été lui même de nouveau changé, on peut le changer et le déguster ou non
+            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
             if($lot->isAffectable()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
             }else{

@@ -231,7 +231,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     }
                     $this->addMouvementLot($lot->buildMouvement($statut,$detail));
                     if ($lot->isChange()) {
-                        $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC));
+                        $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
                     }else{
                         $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
                     }

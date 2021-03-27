@@ -24,7 +24,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CHANGE = "CHANGE";
     const STATUT_ELEVAGE = "ELEVAGE";
 
-    const STATUT_CHANGE_DEST = "02_CHANGE_DEST";
+    const STATUT_CHANGE_DEST = "01_CHANGE_DEST";
 
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
     const STATUT_ENLEVE = "01_ENLEVE";
@@ -33,7 +33,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
 
-    const STATUT_CHANGE_SRC = "05_CHANGE_SRC";
+    const STATUT_CHANGE_SRC = "99_CHANGE_SRC";
     const STATUT_CHANGEABLE = "00_CHANGEABLE";
     const STATUT_DECLASSE = "10_DECLASSE";
 
@@ -62,6 +62,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CONFORME_APPEL => 'Conforme en appel',
         self::STATUT_AFFECTE_SRC => 'Affecte src',
         self::STATUT_CHANGE => 'Changé',
+        self::STATUT_CHANGE_SRC => 'Changé (source)',
+        self::STATUT_CHANGE_DEST => 'Changé (destination)',
         self::STATUT_DECLASSE => 'Déclassé',
         self::STATUT_ELEVAGE => 'En élevage',
 
@@ -73,8 +75,6 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
-        self::STATUT_CHANGE_DEST => 'Changé dest'
-
     );
 
 
