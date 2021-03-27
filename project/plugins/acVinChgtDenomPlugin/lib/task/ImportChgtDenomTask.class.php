@@ -123,12 +123,12 @@ EOF;
             $chgtDenom->changement_produit_hash = $produitFinal->getHash();
             $chgtDenom->changement_volume = $volumeConcerne;
             $chgtDenom->generateLots();
-            if (!$chgtDenom->isChgtTotal()) {
+            if (!$chgtDenom->isTotal()) {
                 $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[1]->numero_archive = $numeroArchive;
                 $chgtDenom->lots[1]->affectable = true;
                 $chgtDenom->lots[0]->affectable = false;
-            } elseif($chgtDenom->isChgtTotal()) {
+            } elseif($chgtDenom->isTotal()) {
                 $chgtDenom->lots[0]->numero_dossier = $numeroDossier;
                 $chgtDenom->lots[0]->numero_archive = $numeroArchive;
                 $chgtDenom->lots[0]->affectable = true;

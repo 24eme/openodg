@@ -215,9 +215,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function isDeclassement() {
-      return $this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+      return ($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
     }
-    public function isChgtTotal() {
+    public function isChgtDenomination() {
+        return !$this->isDeclassement();
+    }
+
+    public function isTotal() {
       return ($this->changement_volume == $this->getLotOrigine()->volume);
     }
 
@@ -257,7 +261,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
       $lot->document_ordre = $ordre;
       $lot->id_document_provenance = $this->changement_origine_id_document;
-      if (!$this->isChgtTotal()) {
+      if (!$this->isTotal()) {
         $lotOrig = clone $lot;
         $lotOrig->volume -= $this->changement_volume;
         $lots[] = $lotOrig;
@@ -387,7 +391,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function getAllPieces() {
       $lot = $this->getLotOrigine();
       $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
-      $libelle .= ($this->isChgtTotal())? '' : ' partiel';
+      $libelle .= ($this->isTotal())? '' : ' partiel';
       $libelle .= ' lot de '.$lot->produit_libelle.' '.$lot->millesime;
       $libelle .= ' (logement '.$lot->numero_logement_operateur.')';
       $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';

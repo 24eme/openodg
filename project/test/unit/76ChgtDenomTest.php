@@ -202,7 +202,7 @@ $t->is(count($chgtDenom->lots), 1, "1 seul lot généré");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 $t->is($chgtDenom->changement_volume, $volume, "Le changement est bien sur $volume hl");
 $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit est bien ".$autreLot->produit_libelle);
-$t->ok($chgtDenom->isChgtTotal(), "Le changement est bien indiqué comme total");
+$t->ok($chgtDenom->isTotal(), "Le changement est bien indiqué comme total");
 
 $lotFromChgmt = $chgtDenom->lots->get(0);
 $t->is($lotFromChgmt->numero_archive, $lotFromDegust->numero_archive, "Le numéro d'archive n'a pas changé");
@@ -255,7 +255,7 @@ $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = $volume;
 
-$t->ok($chgtDenom->isChgtTotal(), "Le changement qui a un volume identique est bien un changement total");
+$t->ok($chgtDenom->isTotal(), "Le changement qui a un volume identique est bien un changement total");
 $t->is(count($chgtDenom->lots), 1, "Ce changement total ne génère plus que 1 lot");
 $chgtDenom->generateMouvementsLots(1);
 $t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive, "Un chgm total ne change pas le numero d'archive");
@@ -276,7 +276,7 @@ $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->save();
 
-$t->ok(!$chgtDenom->isChgtTotal(), "Le changement est bien partiel vu qu'il porte sur ".round($volume / 2, 2)." hl");
+$t->ok(!$chgtDenom->isTotal(), "Le changement est bien partiel vu qu'il porte sur ".round($volume / 2, 2)." hl");
 
 $t->is($chgtDenom->changement_origine_id_document, $degustation->_id, "changement_origine_id_document est bien ".$degustation->_id);
 $t->is($chgtDenom->changement_produit_hash, null, "Pas de produit");
