@@ -189,7 +189,12 @@ EOF;
               $lot->numero_table = intval($numeroTable);
           }else{
               if ($data[self::CSV_NUMERO_ANONYMAT] != '.') {
-                  echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." => $numeroTable/$numeroAnonymat\n";
+                  if ($numeroAnonymat) {
+                      echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (Table 1 attribuée)\n";
+                      $lot->numero_table = '1';
+                  }else{
+                      echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (pas de table attribuée)\n";
+                  }
               }
           }
           if (intval($numeroTable) > 0 && $lot->numero_table) {
