@@ -188,12 +188,12 @@ EOF;
           if (intval($numeroTable) > 0) {
               $lot->numero_table = intval($numeroTable);
           }else{
-              echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." => $numeroTable/$numeroAnonymat\n";
+              if ($data[self::CSV_NUMERO_ANONYMAT] != '.') {
+                  echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." => $numeroTable/$numeroAnonymat\n";
+              }
           }
           if (intval($numeroTable) > 0 && $lot->numero_table) {
               $lot->numero_anonymat = $alphas[$lot->numero_table].$numeroAnonymat;
-          }else{
-              echo "WARNING: table $numeroTable non trouvée\n";
           }
           $lot->email_envoye = $date;
 
