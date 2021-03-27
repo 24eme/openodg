@@ -51,8 +51,9 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
             $societe = null;
-            $id_ia = preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]) * 1;
+            $id_ia = intval(preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]));
             if (!$id_ia) {
+                echo "WARNING: societe non trouvée : ".$data[self::CSV_NUM_SOCIETE]."\n";
                 continue;
             }
             $idSociete=sprintf(SocieteClient::getSocieteFormatIdentifiant(), $id_ia);
