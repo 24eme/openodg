@@ -1255,7 +1255,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvement;
         }
 
-	    public function getRedegustationForfait($cotisation,$filters){
+	    public function getRedegustationForfait($cotisation,$filters = null){
             $mouvements = array();
 			foreach ($this->getLots() as $lot) {
                 if(!$lot->isSecondPassage()){
@@ -1266,7 +1266,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
 	    }
 
-        public function getFacturationLotRedeguste($cotisation,$filters){
+        public function getFacturationLotRedeguste($cotisation,$filters = null){
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
@@ -1281,7 +1281,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
 
-        public function getFacturationNonConforme($cotisation,$filters)
+        public function getFacturationNonConforme($cotisation,$filters = null)
         {
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
