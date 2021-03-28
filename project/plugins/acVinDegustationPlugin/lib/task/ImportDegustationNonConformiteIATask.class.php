@@ -135,7 +135,11 @@ EOF;
                 $declassmt->constructId();
                 $declassmt->validate();
                 $declassmt->validateOdg();
-                $declassmt->save();
+                try(
+                    $declassmt->save();
+                } catch(Exception $e) {
+                    echo "ERROR;save error ".$e->getMessage().";$line\n";
+                }
                 continue;
             }elseif (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_RECOURS_OC) {
                 $lot->recoursOc();
