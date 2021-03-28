@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(106);
+$t = new lime_test(110);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -82,14 +82,20 @@ $t->is(count($drev->lots), 3, "3 lots ont automatiquement été créés");
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le 1er lot est affectable");
 $t->ok($drev->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Le 2ème lot est affectable");
 $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_NONAFFECTABLE), "Le 3ème lot est non affectable");
-$t->ok(!$drev->lots[2]->isChange(), "Le lot changeable dans la DREV n'est pas isChange()");
+
+$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 n'est pas changeable");
+$t->ok(!$drev->lots[1]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 2 non plus");
+$t->ok($drev->lots[2]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 3 étant non affectable est donc CHANGEABLE");
+
+$t->ok(!$drev->lots[0]->isChange(), "Le lot changeable dans la DREV n'est pas isChange()");
 $t->ok(!$drev->lots[1]->isChange(), "un lot non changeable dans la DREV n'est pas isChange()");
+$t->ok(!$drev->lots[2]->isChange(), "Le lot changeable dans la DREV n'est pas isChange()");
 
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 2, "2 mouvements de lot prelevables ont été générés");
 $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
-$t->is(count($lots), 1, "un seul des 3 lots de la DREV est changeables");
+$t->is(count($lots), 1, "seul le lot réputé conforme (non affectable) des 3 lots de la DREV est changeable");
 
 $year = date('Y') - 1;
 $campagne = $year.'-'.($year + 1);
