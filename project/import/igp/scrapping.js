@@ -10,7 +10,7 @@ var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
 
 mkdirp(destination_file+'01_operateurs')
-mkdirp(destination_file+'01_operateurs/fiches_contact_connexion')
+mkdirp(destination_file+'01_operateurs/fiches_contacts_connexion')
 mkdirp(destination_file+'02_recoltes')
 mkdirp(destination_file+'03_declarations')
 mkdirp(destination_file+'04_controles_produits')
@@ -827,7 +827,7 @@ nightmare
       .click('#Button1')
       .click('#Button2')
       .wait('#Button2')
-      .download(destination_file+'membres.xlsx')
+      .download(exportFilename)
       .screenshot(exportFilename+".png")
   })
   .then(function() {
@@ -866,6 +866,7 @@ nightmare
           console.log("Export des " + total + " fiches ayant des identifiants de connexion");
           for(let i=0; i < total; i++) {
             var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
+            console.log("export " + uri + ": " + exportFilename);
             nightmare
             .goto(uri+"?i="+i)
             .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
