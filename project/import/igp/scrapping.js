@@ -750,10 +750,13 @@ nightmare
       .select('#ddlCampagne','')
       .wait(3000)
       .click('#BtnRech')
-      .wait(6000)
+      .wait(8000)
       .click('#btnExport')
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       var uri = baseUri+"/Facture/LstFacture.aspx";
