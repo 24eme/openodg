@@ -128,7 +128,15 @@ EOF;
             $lot->conformite = self::$libelle2gravite[strtolower($data[self::CSV_GRAVITE])];
 
             if (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_DECLASSE) {
-                echo "Déclassé\n";
+                $degust->save();
+                $declassmt = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $statut_date, true);
+                $declassmt->setLotOrigine($lot);
+                $declassmt->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
+                $declassmt->constructId();
+                $declassmt->validate();
+                $declassmt->validateOdg();
+                $declassmt->save();
+                continue;
             }elseif (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_RECOURS_OC) {
                 $lot->recoursOc();
                 $degust->generateMouvementsLots();
