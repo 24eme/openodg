@@ -883,18 +883,45 @@ nightmare
        })
    })
   .then(function() {
-       var uri = baseUri+"/odg/LstAOC.aspx";
-       var exportFilename = destination_file+'06_administration/aoc.html';
+       var uri = baseUri+"/odg/LstCepage.aspx";
+       var exportFilename = destination_file+'06_administration/cepages.html';
        console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
-      .html(exportFilename, "HTMLOnly")
-      .screenshot(exportFilename+".png")
+      .wait('#ContentPlaceHolder1_ddlAOC')
+      .evaluate(function() {
+        var keys = [];
+        document.querySelectorAll('#ContentPlaceHolder1_ddlAOC option').forEach(
+          function(option) {
+            if(!option.value) {
+              return;
+            }
+            keys.push(option.value);
+          }
+        )
+        return keys;
+      })
+      .then(function(keys) {
+        console.log(keys);
+        for (key in keys) {
+          var key = keys[key];
+          var exportFilename = destination_file + "06_administration/cepages_"+key+".html";
+          console.log("export " + uri + ": " + exportFilename);
+
+          nightmare
+                .goto(uri+"?uniq="+key)
+                .wait(1000)
+                .select('#ContentPlaceHolder1_ddlAOC', key)
+                .wait(2000)
+                .html(exportFilename, "HTMLOnly")
+                .screenshot(exportFilename+".png");
+        }
+      });
   })
   .then(function() {
-       var uri = baseUri+"/odg/LstCepage.aspx";
-       var exportFilename = destination_file+'06_administration/cepages.html';
+       var uri = baseUri+"/odg/LstAOC.aspx";
+       var exportFilename = destination_file+'06_administration/aoc.html';
        console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
