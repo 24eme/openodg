@@ -231,6 +231,88 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+      var uri = baseUri+"/GestionMail/GestGroupes.aspx";
+      var exportFilename = destination_file+'01_operateurs/operateurs_groupes.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+     return nightmare
+     .goto(uri)
+     .wait(1500)
+     .html(exportFilename, 'HTMLOnly')
+     .screenshot(exportFilename+".png")
+     .evaluate(function() {
+       var ids = [];
+       document.querySelectorAll('tr td input').forEach(
+         function(input) {
+           if(input.value != "Excel") {
+              return;
+           }
+           ids.push(input.id);
+         }
+       )
+       return ids;
+     })
+     .then(function(ids) {
+       var i = 0;
+       for (key in ids) {
+         var id = ids[key];
+         var exportFilename = destination_file+'01_operateurs/operateurs_groupes_'+i+'.xslx';
+         console.log("export " + uri + ": " + exportFilename);
+         i++;
+
+         nightmare
+               .goto(uri+"?uniq="+id)
+               .wait(1500)
+               .click('#'+id)
+               .download(exportFilename);
+       }
+     })
+     .catch(error => {
+       console.error('Search failed:', error)
+     })
+  })
+  .then(function() {
+      var uri = baseUri+"/GestionMail/gestionGroupesR.aspx";
+      var exportFilename = destination_file+'01_operateurs/contacts_groupes.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+     return nightmare
+     .goto(uri)
+     .wait(1500)
+     .html(exportFilename, 'HTMLOnly')
+     .screenshot(exportFilename+".png")
+     .evaluate(function() {
+       var ids = [];
+       document.querySelectorAll('tr td input').forEach(
+         function(input) {
+           if(input.value != "Excel") {
+              return;
+           }
+           ids.push(input.id);
+         }
+       )
+       return ids;
+     })
+     .then(function(ids) {
+       var i = 0;
+       for (key in ids) {
+         var id = ids[key];
+         var exportFilename = destination_file+'01_operateurs/contacts_groupes_'+i+'.xslx';
+         console.log("export " + uri + ": " + exportFilename);
+         i++;
+
+         nightmare
+               .goto(uri+"?uniq="+id)
+               .wait(1500)
+               .click('#'+id)
+               .download(exportFilename);
+       }
+     })
+     .catch(error => {
+       console.error('Search failed:', error)
+     })
+  })
+  .then(function() {
       var uri = baseUri+"/GestionMail/BounceMail.aspx";
       var exportFilename = destination_file+'01_operateurs/mails_erreurs.html';
       console.log("export " + uri + ": " + exportFilename);
