@@ -1,13 +1,14 @@
 <?php
 
-function showProduitLot($lot)
+function showProduitLot($lot, $specificite_protection = true)
 {
 
   $text = $lot->produit_libelle." <small>";
   $text .= ($lot->millesime) ? $lot->millesime : "";
-
-  if(DrevConfiguration::getInstance()->hasSpecificiteLot() && $lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
-     $text .= ' - '.$lot->specificite;
+  if (!$specificite_protection || DrevConfiguration::getInstance()->hasSpecificiteLot()) {
+      if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
+          $text .= ' - '.$lot->specificite;
+      }
   }
 
   $text .= "</small>";

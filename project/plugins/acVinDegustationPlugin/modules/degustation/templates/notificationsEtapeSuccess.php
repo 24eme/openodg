@@ -41,7 +41,7 @@
                         <?php foreach ($lots as $lot): ?>
                         <a href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne, 'numero_dossier' => $lot->numero_dossier, 'numero_archive' => $lot->numero_archive));  ?>" data-toggle="tooltip"
                               data-html="true"
-                              title="<?= showProduitLot($lot) . "<br>" . $lot->getShortLibelleConformite() ?>"
+                              title="<?= $lot->getLibelle() . "<br>" . $lot->getShortLibelleConformite() ?>"
                               class="label label-<?= ($lot->isNonConforme()) ? 'danger' : 'success'?>"
                         ><span class="glyphicon glyphicon-<?= ($lot->isNonConforme()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>

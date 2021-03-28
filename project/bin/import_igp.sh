@@ -88,7 +88,7 @@ echo "Import des Degustations"
 
 sed -i 's/\xC2\xA0//g' $DATA_DIR/commissions.csv
 php symfony import:commissions-ia $DATA_DIR/commissions.csv --application="$ODG" --trace
-php symfony import:degustations-ia $DATA_DIR/lots.csv --application="$ODG" --trace
+#php symfony import:degustations-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/gestion_nc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/gestion_nc.csv
 #php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace

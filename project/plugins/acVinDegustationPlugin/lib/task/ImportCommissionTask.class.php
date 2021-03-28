@@ -103,18 +103,16 @@ EOF;
           $newDegustation->constructId();
           $newDegustation->validation = $degustation_date;
 
-          if(!$degustation || $newDegustation->_id != $degustation->_id) {
-              if($degustation) {
-                  $this->saveDegustation($degustation);
-              }
-              $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
-              if($degustation) { $degustation->delete(); $degustation = null; }
+          if($degustation && $newDegustation->_id != $degustation->_id) {
+              $this->saveDegustation($degustation);
+              $degustation = null;
           }
-
+          if (!$degustation) {
+              $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
+          }
           if(!$degustation) {
               $degustation = $newDegustation;
           }
-
           if($data[self::CSV_TYPE_LIGNE] == "JURY") {
 
               if(!isset($degustateurs[$data[self::CSV_RAISON_SOCIALE]])) {
@@ -180,24 +178,31 @@ EOF;
           }
 
           if(!$lot) {
+              $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'campagne' => $campagne, 'statut' => Lot::STATUT_MANQUEMENT_EN_ATTENTE));
+          }
+
+          if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
               continue;
           }
 
+          if ($lot->date > $date) {
+              echo "ERROR: La Date d'un lot (".$lot->date.") ne peut être suppérieure à la date de dégustation ($date);$line\n";
+              continue;
+          }
+
           $lot = $degustation->addLot($lot, false);
-          if (intval($numeroTable) > 0) {
-              $lot->numero_table = intval($numeroTable);
-          }else{
-              if ($data[self::CSV_NUMERO_ANONYMAT] != '.') {
-                  if ($numeroAnonymat) {
-                      echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (Table 1 attribuée)\n";
-                      $lot->numero_table = '1';
-                  }else{
-                      echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (pas de table attribuée)\n";
-                  }
+          if ( (intval($numeroTable) < 1) && ($data[self::CSV_NUMERO_ANONYMAT] != '.') ) {
+              if ($numeroAnonymat) {
+                  $numeroTable = 1;
+              }else{
+                  echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (pas de table attribuée)\n";
               }
           }
-          if (intval($numeroTable) > 0 && $lot->numero_table) {
+          if (intval($numeroTable)) {
+              $lot->numero_table = intval($numeroTable);
+          }
+          if ($lot->numero_table) {
               $lot->numero_anonymat = $alphas[$lot->numero_table - 1].$numeroAnonymat;
           }
           $lot->email_envoye = $date;

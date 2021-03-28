@@ -627,6 +627,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lots = array();
             foreach($this->getLots() as $lot) {
                 $lots[$lot->unique_id] = $lot->getLotProvenance();
+				$lots[$lot->unique_id]->specificite = $lot->specificite;
+				$lots[$lot->unique_id]->statut = $lot->statut;
             }
             return $lots;
         }
