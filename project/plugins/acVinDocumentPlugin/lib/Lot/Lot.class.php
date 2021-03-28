@@ -371,7 +371,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
         if ($nb > 1) {
             if ($specificite) {
-                return sprintf('$specificite, %dème dégustation', $nb);
+                return sprintf('%s, %dème dégustation', $specificite, $nb);
             }
             return sprintf('%dème dégustation', $nb);
         }
