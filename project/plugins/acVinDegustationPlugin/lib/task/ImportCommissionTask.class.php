@@ -186,6 +186,11 @@ EOF;
               continue;
           }
 
+          if ($lot->date > $date) {
+              echo "ERROR: La Date d'un lot (".$lot->date.") ne peut être suppérieure à la date de dégustation ($date);$line\n";
+              continue;
+          }
+
           $lot = $degustation->addLot($lot, false);
           if ( (intval($numeroTable) < 1) && ($data[self::CSV_NUMERO_ANONYMAT] != '.') ) {
               if ($numeroAnonymat) {
