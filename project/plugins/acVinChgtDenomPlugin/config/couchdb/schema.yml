@@ -18,12 +18,23 @@ ChgtDenom:
       changement_produit_hash: {}
       changement_produit_libelle: { }
       changement_millesime: { }
+      changement_specificite: { }
       changement_cepages:
         type: collection
         definition:
           fields:
             '*': { type: float }
       changement_volume: { type: float }
+      origine_produit_hash: {}
+      origine_produit_libelle: { }
+      origine_millesime: { }
+      origine_specificite: { }
+      origine_cepages:
+        type: collection
+        definition:
+          fields:
+            '*': { type: float }
+      origine_volume: { type: float }
       declarant:
         type: collection
         class: ChgtDenomDeclarant
