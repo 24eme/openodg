@@ -91,7 +91,12 @@ php symfony import:commissions-ia $DATA_DIR/commissions.csv --application="$ODG"
 #php symfony import:degustations-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/gestion_nc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/gestion_nc.csv
-#php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace
+sed -i 's/4+CF100;3/4+CF100,3/' $DATA_DIR/gestion_nc.csv
+sed -i 's/Event ; Oxydé/Event , Oxydé/' $DATA_DIR/gestion_nc.csv
+sed -i 's/Maigre ; Oxydé ; /Maigre , Oxydé/' $DATA_DIR/gestion_nc.csv
+sed -i 's/Oxydé ; Event ; Usé/Oxydé , Event , Usé/' $DATA_DIR/gestion_nc.csv
+sed -i 's/Pas net ; pharmaceutique (camphre), oxydatif/Pas net , pharmaceutique (camphre), oxydatif/' $DATA_DIR/gestion_nc.csv
+php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace
 
 echo "Apporteurs de raisins"
 
