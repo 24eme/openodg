@@ -187,19 +187,17 @@ EOF;
           }
 
           $lot = $degustation->addLot($lot, false);
-          if (intval($numeroTable) > 0) {
-              $lot->numero_table = intval($numeroTable);
-          }else{
-              if ($data[self::CSV_NUMERO_ANONYMAT] != '.') {
-                  if ($numeroAnonymat) {
-                      echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (Table 1 attribuée)\n";
-                      $lot->numero_table = '1';
-                  }else{
-                      echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (pas de table attribuée)\n";
-                  }
+          if ( (intval($numeroTable) < 1) && ($data[self::CSV_NUMERO_ANONYMAT] != '.') ) {
+              if ($numeroAnonymat) {
+                  $numeroTable = 1;
+              }else{
+                  echo "WARNING: pas de numéro de table trouvé : ".$data[self::CSV_NUMERO_ANONYMAT]." : $numeroTable/$numeroAnonymat (pas de table attribuée)\n";
               }
           }
-          if (intval($numeroTable) > 0 && $lot->numero_table) {
+          if (intval($numeroTable)) {
+              $lot->numero_table = intval($numeroTable);
+          }
+          if ($lot->numero_table) {
               $lot->numero_anonymat = $alphas[$lot->numero_table - 1].$numeroAnonymat;
           }
           $lot->email_envoye = $date;
