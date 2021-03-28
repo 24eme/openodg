@@ -5,8 +5,8 @@ class ImportDegustationNonConformiteIATask extends ImportLotsIATask
 
     const CSV_CODE_NC = 0;
     const CSV_STATUT = 1;
-    const CSV_DATE = 2;
-    const CSV_DEFAUTS = 3;
+    const CSV_DATE_STATUT = 2;
+    const CSV_DEFAUT = 3;
     const CSV_GRAVITE = 4;
     const CSV_APPELLATION = 5;
     const CSV_COULEUR = 6;
@@ -15,13 +15,33 @@ class ImportDegustationNonConformiteIATask extends ImportLotsIATask
     const CSV_CUVE = 9;
     const CSV_NUM_LOT_OPERATEUR = 10;
     const CSV_RAISON_SOCIALE = 11;
-    const CSV_NOM = 11;
     const CSV_CVI = 12;
     const CSV_ADRESSE_1 = 13;
     const CSV_ADRESSE_2 = 14;
     const CSV_CODE_POSTAL = 15;
     const CSV_VILLE = 16;
     const CSV_FACTURE = 17;
+
+    const STATUT_DECLASSE = 'declassé';
+    const STATUT_RECOURS_OC = 'recours_oc';
+    const STATUT_LEVEE = "levée";
+
+    protected static $statut_libelle = array(
+        "Constatée" => null,
+        "Déclassement du lot" => self::STATUT_DECLASSE,
+        "Deuxième Passage" => null,
+        "Deuxième Passage - Commission" => null,
+        "Levée" => self::STATUT_LEVEE,
+        "Notifiée" => null,
+        "Traitée OC" => self::STATUT_RECOURS_OC,
+        "Transmise OC" => self::STATUT_RECOURS_OC,
+    );
+
+    protected static $libelle2gravite = array(
+        "grave" => Lot::CONFORMITE_NONCONFORME_GRAVE,
+        "majeure" => Lot::CONFORMITE_NONCONFORME_MAJEUR,
+        "mineure" => Lot::CONFORMITE_NONCONFORME_MINEUR
+    );
 
     protected function configure()
     {
@@ -51,155 +71,124 @@ EOF;
 
         $this->etablissements = EtablissementAllView::getInstance()->getAll();
 
-        $config = ConfigurationClient::getCurrent();
-        $degustation = null;
-        $ligne=0;
         foreach(file($arguments['csv']) as $line) {
-          $ligne++;
-          $line = str_replace("\n", "", $line);
-          $data = str_getcsv($line,';');
-          if (!$data) {
-            continue;
-          }
+            $line = str_replace("\n", "", $line);
+            $data = str_getcsv($line,';');
+            if (!$data) {
+                continue;
+            }
 
-          $etablissement = $this->identifyEtablissement($data);
+            $produitKey=null;
+            if (isset($data[self::CSV_APPELLATION])){
+                $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
+            }
 
-          if (!$etablissement) {
-             echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
-             continue;
-          }
+            if (!isset($this->produits[$produitKey])) {
+                echo "WARNING;produit non trouvé;pas d'import;$line\n";
+                continue;
+            }
+            $produit = $this->produits[$produitKey];
 
-          $date = preg_replace('|([0-9]+)/([0-9]+)/([0-9]+)|', '\3-\2-\1', $data[self::CSV_DATE]);
+            $etablissement = $this->identifyEtablissement($data);
+            if (!$etablissement) {
+                echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
+                continue;
+            }
 
-          $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
-          $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
-          $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $campagne;
-          $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
-          if (!isset($this->produits[$produitKey])) {
-            echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR].";pas d'import;$line\n";
-            continue;
-          }
-          $produit = $this->produits[$produitKey];
+            $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
+            $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
+            $statut_date = $this->formatDate($data[self::CSV_DATE_STATUT]);
 
-          $mouvementsvue = MouvementLotView::getInstance()->getByIdentifiant($etablissement->identifiant, Lot::STATUT_NONCONFORME);
+            $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONCONFORME));
 
-          $mouvements = array();
-          foreach ($mouvementsvue->rows as $key => $mvt) {
-              if(!preg_match("/^DEGUSTATION/", $mvt->id)) {
-                  continue;
-              }
-              if($mvt->value->millesime != $millesime) {
-                  continue;
-              }
-              if($mvt->value->produit_hash != $produit->getHash()) {
-                  continue;
-              }
-              if($mvt->value->volume != $volume && $mvt->value->numero_logement_operateur != $numero) {
-                  continue;
-              }
-
-              $mouvements[] = $mvt;
-          }
-
-          $mouvement = null;
-          if (count($mouvements) == 1) {
-              $mouvement = $mouvements[0];
-          }elseif (count($mouvements) > 0) {
-              foreach($mouvements as $mouvement) {
-                  if (preg_replace('/ .*/', '', $mouvement->value->date) == $date) {
-                      break;
-                  }
-              }
-          }
-
-          if(!$mouvement) {
-              echo "WARNING;Mouvement de lot non trouvé dans la dégustation;".$line."\n";
-              continue;
-          }
-
-          $degustation = DegustationClient::getInstance()->find($mouvement->id);
+            if(!$lot) {
+                $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONCONFORME));
+            }
+            if(!$lot) {
+                $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_CONFORME));
+            }
+            if(!$lot) {
+                $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_CONFORME));
+            }
 
 
-          $lot = $degustation->getLot($mouvement->value->unique_id);
+            if(!$lot) {
+                echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
+                continue;
+            }
 
-          if(!$lot) {
-              echo "WARNING;Lot non trouvé dans la dégustation;".$line."\n";
-              continue;
-          }
+            if ($lot->date > $statut_date) {
+                echo "ERROR: La Date d'un lot (".$lot->date.") ne peut être suppérieure à la date de dégustation ($statut_date);$line\n";
+                continue;
+            }
 
-          switch ($data[self::CSV_GRAVITE]) {
-              case 'mineure':
-                $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
-                break;
-            case 'Majeure':
-                $lot->conformite = Lot::CONFORMITE_NONCONFORME_MAJEUR;
-                break;
-            case 'Grave':
-                $lot->conformite = Lot::CONFORMITE_NONCONFORME_GRAVE;
-                break;
-          }
-          $lot->motif = trim($data[self::CSV_DEFAUTS]);
+            $degust = DegustationClient::getInstance()->find($lot->id_document);
+            $lot = $degust->getLot($lot->unique_id);
+            $lot->motif = $data[self::CSV_DEFAUT];
+            $lot->conformite = self::$libelle2gravite[strtolower($data[self::CSV_GRAVITE])];
 
-          $lot->statut = Lot::STATUT_NONCONFORME;
-          switch ($data[self::CSV_STATUT]) {
-              case 'Constatée':
-              case 'Notifiée':
-                break;
-              case 'Déclassement du lot':
-                $lot->statut = Lot::STATUT_DECLASSE;
-                break;
-              case 'Deuxième Passage':
-                $lot->statut = Lot::STATUT_NONCONFORME;
-                $lot->affectable = true;
-                break;
-              case 'Deuxième Passage - Commission':
-                $lot->statut = Lot::STATUT_NONCONFORME;
-                $lot->affectable = true;
-                $lot->id_document_provenance = "DEGUSTATIONXXX";
-                break;
-              case 'Levée':
-                $lot->statut = Lot::STATUT_NONCONFORME_LEVEE;
-                break;
-              case 'Traitée OC':
-                $lot->statut = Lot::STATUT_CONFORME_APPEL;
-                break;
-              case 'Transmise OC':
-                $lot->statut = Lot::STATUT_RECOURS_OC;
-                break;
-          }
+            if (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_DECLASSE) {
+                echo "Déclassé\n";
+            }elseif (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_RECOURS_OC) {
+                $lot->recoursOc();
+                $degust->generateMouvementsLots();
+            }elseif (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_LEVEE) {
+                $lot->conformeAppel();
+                $degust->generateMouvementsLots();
+            }
 
-
-          $degustation->generateMouvementsLots();
-          $degustation->save();
+            $degust->save();
         }
-      }
+    }
+
+    public function saveDegustation($degustation) {
+        if($degustation->date > date('Y-m-d H:i:s')) {
+            $degustation->etape = DegustationEtapes::ETAPE_LOTS;
+        } else {
+            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
+        }
+        $degustation->save();
+    }
+
+    public function formatDate($date){
+        if(!$date) {
+            return null;
+        }
+        if(!isset($date[9])) {
+            return null;
+        }
+        $jour=$date[0].$date[1];
+        $mois=$date[3].$date[4];
+        $annee=$date[6].$date[7].$date[8].$date[9];
+        $d= $annee.'-'.$mois.'-'.$jour;
+        return $d;
+    }
 
     protected function identifyEtablissement($data) {
+
+        $key = KeyInflector::slugify(str_replace(" ", "", (isset($data[self::CSV_CVI]) ? $data[self::CSV_CVI] : "").$data[self::CSV_RAISON_SOCIALE]));
+
+        if(isset($this->etablissementsCache[$key])) {
+            return $this->etablissementsCache[$key];
+        }
+
         foreach ($this->etablissements as $etab) {
             if (isset($data[self::CSV_CVI]) && trim($data[self::CSV_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_CVI])) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
             }
             if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
-            }
-            if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
-            }
-            if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                return EtablissementClient::getInstance()->find($etab->id);
-                break;
+                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
+                return $this->etablissementsCache[$key];
             }
         }
         return null;
     }
-
 
 
 }
