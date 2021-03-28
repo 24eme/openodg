@@ -988,6 +988,17 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+       var uri = baseUri+"/odg/Defraiement.aspx";
+       var exportFilename = destination_file+'06_administration/comptabilite_parametrage.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(1000)
+      .html(exportFilename, "HTMLOnly")
+      .screenshot(exportFilename+".png")
+  })
+  .then(function() {
        var uri = baseUri+"/Administration/ParamManq.aspx";
        var exportFilename = destination_file+'06_administration/manquements.html';
        console.log("export " + uri + ": " + exportFilename);
