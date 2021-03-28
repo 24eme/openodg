@@ -551,7 +551,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=9";
-      var exportFilename = destination_file+'03_declarations/03_declarations/synthese_changement_denomination_negociant_igp_non_geree.xlsx';
+      var exportFilename = destination_file+'03_declarations/synthese_changement_denomination_negociant_igp_non_geree.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
