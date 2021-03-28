@@ -178,6 +178,10 @@ EOF;
           }
 
           if(!$lot) {
+              $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'campagne' => $campagne, 'statut' => Lot::STATUT_MANQUEMENT_EN_ATTENTE));
+          }
+
+          if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
               continue;
           }
