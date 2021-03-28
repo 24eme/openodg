@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(117);
+$t = new lime_test(121);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -217,8 +217,8 @@ $t->comment("DRev Validée ODG");
 
 $drev->validateOdg();
 $drev->save();
-
-$t->is(count($drev->mouvements_lots->get($drev->identifiant)->toArray(true, false)), 2, "La DRev validée contient le mouvement correspondant au lot saisi");
+echo "print ";
+$t->is(count($drev->mouvements_lots->get($drev->identifiant)->toArray(true, false)), 3, "La DRev validée contient le mouvement correspondant au lot saisi");
 
 $t->comment("Génération d'un mouvement à partir d'un lot");
 
@@ -227,8 +227,9 @@ $lot = $mouvement->getLot();
 
 $t->is($lot->id_document_provenance, null, "Le lot n'a pas de provenance");
 $t->is($lot->id_document_affectation, null, "Le lot n'a pas de fils");
-$t->is(count($lot->getMouvements()), 2, "Le lot à deux mouvements");
+$t->is(count($lot->getMouvements()), 3, "Le lot à 3 mouvements");
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot à un mouvement affectable");
+$t->ok($lot->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot à un mouvement changeable");
 $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), "Le lot à un mouvement revendique");
 $t->is($mouvement->getUnicityKey(), $lot->getUnicityKey()."-".KeyInflector::slugify(Lot::STATUT_REVENDIQUE), "Clé unique des mouvements");
 $t->is($mouvement->date, $lot->date, "Mouvement date");
@@ -257,9 +258,10 @@ $t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_max'], 208.2, "On 
 $t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_restant'], 200, "On a le bon volume restant en synthèse des lots");
 
 $t->comment("Historique de mouvements");
-$t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
+$t->is(count($lot->getMouvements()), 3, "3 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), 'Le lot est revendiqué');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
+$t->ok($lot->getMouvement(Lot::STATUT_CHANGEABLE), 'Le lot est changeable');
 
 $t->comment("Modificatrice ".$drev->_id."-M01");
 $drev_modif = $drev->generateModificative();
@@ -287,8 +289,9 @@ $drev_modif = $drev->findMaster();
 $drev_modif->devalidate();
 $drev_modif->save();
 $drev = $drev_modif->getMother();
-$t->is(count($drev->lots[0]->getMouvements()), 2, "2 mouvements pour le lot");
+$t->is(count($drev->lots[0]->getMouvements()), 3, "3 mouvements pour le lot");
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot de la drev d'origine est affectable");
+$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot de la drev d'origine est affectable");
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_REVENDIQUE), "Le lot de la drev d'origine est revendiqué");
 
 $drev_modif = $drev->findMaster();
@@ -303,8 +306,9 @@ $t->comment("Suppression de la drev modif ".$drev_modif->_id);
 $drev_modif = $drev->findMaster();
 $drev_modif->delete();
 $drev = DRevClient::getInstance()->find($drev->_id);
-$t->is(count($drev->lots[0]->getMouvements()), 2, "2 mouvements pour le lot");
+$t->is(count($drev->lots[0]->getMouvements()), 3, "3 mouvements pour le lot");
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot de la drev d'origine est affectable");
+$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot de la drev d'origine est affectable");
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_REVENDIQUE), "Le lot de la drev d'origine est revendiqué");
 
 $t->comment("Ajout de lots");
