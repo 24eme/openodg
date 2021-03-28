@@ -135,7 +135,7 @@ EOF;
                 $declassmt->constructId();
                 $declassmt->validate();
                 $declassmt->validateOdg();
-                try(
+                try {
                     $declassmt->save();
                 } catch(Exception $e) {
                     echo "ERROR;save error ".$e->getMessage().";$line\n";
