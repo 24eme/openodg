@@ -103,18 +103,16 @@ EOF;
           $newDegustation->constructId();
           $newDegustation->validation = $degustation_date;
 
-          if(!$degustation || $newDegustation->_id != $degustation->_id) {
-              if($degustation) {
-                  $this->saveDegustation($degustation);
-              }
-              $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
-              if($degustation) { $degustation->delete(); $degustation = null; }
+          if($degustation && $newDegustation->_id != $degustation->_id) {
+              $this->saveDegustation($degustation);
+              $degustation = null;
           }
-
+          if (!$degustation) {
+              $degustation = acCouchdbManager::getClient()->find($newDegustation->_id);
+          }
           if(!$degustation) {
               $degustation = $newDegustation;
           }
-
           if($data[self::CSV_TYPE_LIGNE] == "JURY") {
 
               if(!isset($degustateurs[$data[self::CSV_RAISON_SOCIALE]])) {
