@@ -12,7 +12,7 @@
         if (file_exists($img_path.$douane2app.'.gif')): ?>
         <img src="../../images/<?= $douane2app ?>.gif" alt="Chargement en cours..." />
     <?php else: ?>
-        <img src="../../images/douane2.gif" alt="Chargement en cours..." /><img src="../../images/<?= $douane2app ?>.png"/>
+        <img src="/images/douane2.gif" alt="Chargement en cours..." /><img width="150" src="/images/<?= $douane2app ?>.png"/>
     <?php endif; ?>
     </span></p>
 
