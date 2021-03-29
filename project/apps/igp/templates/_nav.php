@@ -32,7 +32,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" style="padding: 0;" href="<?php echo url_for('accueil') ?>"><img style="height:50px;" src="/images/logo_<?php echo sfConfig::get('sf_app') ?>.png" /></a>
+          <a class="navbar-brand" style="padding: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><img style="height:50px;" src="/images/logo_<?php echo sfConfig::get('sf_app') ?>.png" /></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
