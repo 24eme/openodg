@@ -116,6 +116,7 @@ $t->is($chgtDenomFromDrev->periode, $year, "le chgt de denom a la bonne periode 
 $lotFromDrev = array_shift($lots);
 $chgtDenomFromDrev->setLotOrigine($lotFromDrev);
 $chgtDenomFromDrev->changement_produit_hash = $drev->lots[1]->produit_hash;
+$chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 
@@ -143,6 +144,7 @@ $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le changement a bi
 
 $t->comment("On transforme le changement en déclassement");
 $chgtDenomFromDrev->changement_produit_hash = null;
+$chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
 $chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Le type est déclassement");
@@ -153,6 +155,7 @@ $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le 
 
 $t->comment("on remet et un produit et on rend le lot affectable");
 $chgtDenomFromDrev->changement_produit_hash = $lotFromDrev->produit_hash;
+$chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->lots[0]->affectable = true;
 $chgtDenomFromDrev->save();
@@ -206,6 +209,7 @@ $t->comment("Création d'un Changement de Denom Total");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->changement_cepages = array('CABERNET' => $volume);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenom->validate();
 $chgtDenom->save();
 
@@ -240,6 +244,7 @@ $chgtDenom->clearLots();
 $t->comment("Création d'un Chgt de Denom Partiel");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenom->changement_volume = round($volume / 2, 2);
 $chgtDenom->validate();
 $chgtDenom->save();
