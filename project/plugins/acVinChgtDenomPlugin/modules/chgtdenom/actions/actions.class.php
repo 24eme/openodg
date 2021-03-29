@@ -172,6 +172,21 @@ class chgtdenomActions extends sfActions
         }
     }
 
+    public function executeDeclassementPDF(sfWebRequest $request)
+    {
+        $chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $chgtDenom->getEtablissement());
+
+        $this->document = new ExportChgtDenomDeclassementPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+        $this->document->generate();
+        $this->document->addHeaders($this->getResponse());
+        return $this->renderText($this->document->output());
+    }
+
     protected function secureIsValide($chgtDenom) {
       if ($chgtDenom->isValide()) {
         return $this->redirect('chgtdenom_visualisation', $chgtDenom);
