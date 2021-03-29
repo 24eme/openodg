@@ -41,6 +41,9 @@ function styleDRev() {
     .h3Alt {
         background-color: #f3c3d3; color: #c75268; font-weight: bold;
     }
+    .font-size-16-pt{
+      font-size:16pt;
+    }
 ";
 }
 
