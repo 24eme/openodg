@@ -25,7 +25,7 @@ class EtablissementFamilles
     const SOUS_FAMILLE_VINIFICATEUR = "VINIFICATEUR";
 
     public static $familles = array(
-    	self::FAMILLE_PRODUCTEUR => "Producteur",
+    	self::FAMILLE_PRODUCTEUR => "Producteur de raisins",
         self::FAMILLE_COOPERATIVE => "Coopérative",
     	self::FAMILLE_NEGOCIANT => "Négociant",
     	self::FAMILLE_NEGOCIANT_VINIFICATEUR => "Négociant Vinificateur",

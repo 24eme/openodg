@@ -185,13 +185,31 @@ EOF;
               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'campagne' => $campagne, 'statut' => Lot::STATUT_MANQUEMENT_EN_ATTENTE));
           }
 
+          if (!$lot) {
+            $data[self::CSV_MILLESIME] = $data[self::CSV_MILLESIME] - 1;
+          }
+
+          if (!$lot) {
+            $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE));
+          }
+
+          if(!$lot) {
+               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONAFFECTABLE));
+          }
+
+          if(!$lot) {
+               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_MANQUEMENT_EN_ATTENTE));
+          }
+
+
+
           if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
               continue;
           }
-
-          if ($lot->date > $date) {
-              echo "ERROR: La Date d'un lot (".$lot->date.") ne peut être suppérieure à la date de dégustation ($date);$line\n";
+          $date_lot_securite =  date("Y-m-d",strtotime($lot->date." -6 months"));
+          if ($date_lot_securite > $date) {
+              echo "ERROR: La Date d'un lot (".$lot->date." - $date_lot_securite) ne peut être suppérieure à la date de dégustation ($date);$line\n";
               continue;
           }
 
