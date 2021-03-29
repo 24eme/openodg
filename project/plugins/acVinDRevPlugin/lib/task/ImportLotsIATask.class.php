@@ -402,10 +402,10 @@ EOF;
         return $drev;
     }
 
-    public function getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier) {
+    public function getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
         $cond = $previousdoc;
 
-        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
+        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
         $newCond->constructId();
         $newCond->storeDeclarant();
         $newCond->validation = $date;
@@ -421,10 +421,10 @@ EOF;
         return $cond;
     }
 
-    public function getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier) {
+    public function getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
         $trans = $previousdoc;
 
-        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
+        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
         $newTrans->constructId();
         $newTrans->storeDeclarant();
         $newTrans->validation = $date;
