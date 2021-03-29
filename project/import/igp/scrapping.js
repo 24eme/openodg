@@ -252,7 +252,7 @@ nightmare
        )
        return ids;
      })
-     .then(function(ids) {
+     .then(async function(ids) {
        var i = 0;
        for (key in ids) {
          var id = ids[key];
@@ -260,7 +260,7 @@ nightmare
          console.log("export " + uri + ": " + exportFilename);
          i++;
 
-         nightmare
+         await nightmare
                .goto(uri+"?uniq="+id)
                .wait(1500)
                .click('#'+id)
@@ -293,7 +293,7 @@ nightmare
        )
        return ids;
      })
-     .then(function(ids) {
+     .then(async function(ids) {
        var i = 0;
        for (key in ids) {
          var id = ids[key];
@@ -301,7 +301,7 @@ nightmare
          console.log("export " + uri + ": " + exportFilename);
          i++;
 
-         nightmare
+         await nightmare
                .goto(uri+"?uniq="+id)
                .wait(1500)
                .click('#'+id)
@@ -323,13 +323,13 @@ nightmare
       .html(exportFilename, 'HTMLOnly')
       .screenshot(exportFilename+".png")
   })
-  .then(function() {
+  .then(async function() {
       var uri = baseUri+"/Declaration/LstLotRecolte.aspx";
 
       for(var i = 2016; i <= 2020; i++) {
           var exportFilename = destination_file+'02_recoltes/recoltes_details_'+i+'.xlsx';
           console.log("export " + uri + ": " + exportFilename);
-          nightmare
+          await nightmare
           .goto(uri+"?annee="+i)
           .wait(2000)
           .select('#ddlAnnee',i+"")
@@ -709,14 +709,14 @@ nightmare
         )
         return ids;
       })
-      .then(function(ids) {
+      .then(async function(ids) {
         for (key in ids) {
           var id = ids[key];
           var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
           var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
           console.log("export " + uri + ": " + exportFilename);
 
-          nightmare
+          await nightmare
                 .goto(uri)
                 .wait('body')
                 .html(exportFilename, "HTMLOnly")
@@ -834,7 +834,7 @@ nightmare
         .goto(uri)
         .wait('body')
         .exists("#ddlCampagne")
-        .then(function (result) {
+        .then(async function (result) {
             if (!result) {
                 return nightmare;
             }
@@ -843,7 +843,7 @@ nightmare
                var exportFilename = destination_file+'05_facturation/defraiement_jures'+i+'.xlsx';
                console.log("export " + uri + ": " + exportFilename);
 
-               nightmare
+               await nightmare
                .goto(uri+"?campagne="+i)
                .select('#ddlCampagne',i+"")
                .wait(3000)
@@ -953,12 +953,12 @@ nightmare
        .click('#ContentPlaceHolder1_btnRechercher')
        .wait(2000)
        .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
-       .then(function(total) {
+       .then(async function(total) {
           console.log("Export des " + total + " fiches ayant des identifiants de connexion");
           for(let i=0; i < total; i++) {
             var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
             console.log("export " + uri + ": " + exportFilename);
-            nightmare
+            await nightmare
             .goto(uri+"?i="+i)
             .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
             .click('#ContentPlaceHolder1_btnRechercher')
@@ -993,14 +993,14 @@ nightmare
         )
         return keys;
       })
-      .then(function(keys) {
+      .then(async function(keys) {
         console.log(keys);
         for (key in keys) {
           var key = keys[key];
           var exportFilename = destination_file + "06_administration/cepages_"+key+".html";
           console.log("export " + uri + ": " + exportFilename);
 
-          nightmare
+          await nightmare
                 .goto(uri+"?uniq="+key)
                 .wait(1000)
                 .select('#ContentPlaceHolder1_ddlAOC', key)
