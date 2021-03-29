@@ -914,46 +914,46 @@ nightmare
         console.error('Search failed:', error)
       })
   })
-    .then(function() {
-        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
-
-        return nightmare
-        .goto(uri)
-        .wait('#ddlCommission')
-        .evaluate(function() {
-          var ids = [];
-          document.querySelectorAll('#ddlCommission option').forEach(
-            function(option) {
-              if(!option.value) {
-                return;
-              }
-              ids.push(option.value.replace(/ .*$/, ''));
-            }
-          )
-          return ids;
-        })
-      .then(async function(ids) {
-        for (key in ids) {
-          var id = ids[key];
-          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
-          console.log("export " + uri + ": " + exportFilename);
-
-          await nightmare
-                .goto(uri)
-                .wait('body')
-                .html(exportFilename, "HTMLOnly")
-                .screenshot(exportFilename+".png")
-                .wait(1000)
-                .click('#btnPVDegust')
-                .download(exportFilename.replace(".html", "")+"_pv.pdf")
-                .refresh()
-                .catch(error => {
-                  console.error('Search failed:', error)
-                })
-        }
-      })
-    })
+    // .then(function() {
+    //     var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+    //
+    //     return nightmare
+    //     .goto(uri)
+    //     .wait('#ddlCommission')
+    //     .evaluate(function() {
+    //       var ids = [];
+    //       document.querySelectorAll('#ddlCommission option').forEach(
+    //         function(option) {
+    //           if(!option.value) {
+    //             return;
+    //           }
+    //           ids.push(option.value.replace(/ .*$/, ''));
+    //         }
+    //       )
+    //       return ids;
+    //     })
+    //   .then(async function(ids) {
+    //     for (key in ids) {
+    //       var id = ids[key];
+    //       var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+    //       var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
+    //       console.log("export " + uri + ": " + exportFilename);
+    //
+    //       await nightmare
+    //             .goto(uri)
+    //             .wait('body')
+    //             .html(exportFilename, "HTMLOnly")
+    //             .screenshot(exportFilename+".png")
+    //             .wait(1000)
+    //             .click('#btnPVDegust')
+    //             .download(exportFilename.replace(".html", "")+"_pv.pdf")
+    //             .refresh()
+    //             .catch(error => {
+    //               console.error('Search failed:', error)
+    //             })
+    //     }
+    //   })
+    // })
     .then(function() {
         var uri = baseUri+"/Analyse/ListeProdNC.aspx";
 
@@ -1209,35 +1209,35 @@ nightmare
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
   })
-  .then(function() {
-      var uri = baseUri+"/Administration/FicheContact.aspx";
-
-      return nightmare
-       .goto(uri)
-       .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
-       .click('#ContentPlaceHolder1_btnRechercher')
-       .wait(2000)
-       .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
-       .then(async function(total) {
-          console.log("Export des " + total + " fiches ayant des identifiants de connexion");
-          for(let i=0; i < total; i++) {
-            var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
-            console.log("export " + uri + ": " + exportFilename);
-            await nightmare
-            .goto(uri+"?i="+i)
-            .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
-            .click('#ContentPlaceHolder1_btnRechercher')
-            .wait(1500)
-            .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
-            .wait(1500)
-            .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
-            .wait(1500)
-            .html(exportFilename, "HTMLOnly")
-          }
-
-          return nightmare;
-       })
-   })
+  // .then(function() {
+  //     var uri = baseUri+"/Administration/FicheContact.aspx";
+  //
+  //     return nightmare
+  //      .goto(uri)
+  //      .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
+  //      .click('#ContentPlaceHolder1_btnRechercher')
+  //      .wait(2000)
+  //      .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
+  //      .then(async function(total) {
+  //         console.log("Export des " + total + " fiches ayant des identifiants de connexion");
+  //         for(let i=0; i < total; i++) {
+  //           var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
+  //           console.log("export " + uri + ": " + exportFilename);
+  //           await nightmare
+  //           .goto(uri+"?i="+i)
+  //           .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
+  //           .click('#ContentPlaceHolder1_btnRechercher')
+  //           .wait(1500)
+  //           .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
+  //           .wait(1500)
+  //           .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
+  //           .wait(1500)
+  //           .html(exportFilename, "HTMLOnly")
+  //         }
+  //
+  //         return nightmare;
+  //      })
+  //  })
   .then(function() {
     if(regroupement) {
       return;
