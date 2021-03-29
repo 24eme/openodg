@@ -724,6 +724,9 @@ nightmare
                 .wait(1000)
                 .click('#btnPVDegust')
                 .download(exportFilename.replace(".html", "")+"_pv.pdf")
+                .catch(error => {
+                  console.error('Search failed:', error)
+                })
         }
       });
   })
