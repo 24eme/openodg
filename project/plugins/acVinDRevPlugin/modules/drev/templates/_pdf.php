@@ -1,12 +1,14 @@
 <?php use_helper('TemplatingPDF');
  use_helper('Float');
  use_helper('Compte');
- use_helper("Date"); ?>
+ use_helper("Date");
+ use_helper('Lot'); ?>
+
 <style>
 <?php echo styleDRev(); ?>
 </style>
 
-<span class="h3Alt">&nbsp;Entreprise&nbsp;</span><br/>
+<span class="h3">&nbsp;Entreprise&nbsp;</span><br/>
 <table class="tableAlt"><tr><td>
 <table border="0" >
   <tr>
@@ -98,20 +100,20 @@ Les produits déclarés sont du millésime du VCI
 <div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
 <?php if (count($drev->getLotsRevendiques())): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
-    <tr>
-        <th class="th" style="text-align: left; width: 80px">&nbsp;Date</th>
-        <th class="th" style="text-align: left; width: 50px">&nbsp;Lot</th>
-        <th class="th" style="text-align: left; width: 430px">&nbsp;Produit (millésime)</th>
-        <th class="th" style="text-align: center; width: 150px">Volume</th>
-        <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
+    <tr style="line-height:20em;">
+        <th class="th" style="text-align: left; width: 9%">&nbsp;Date</th>
+        <th class="th" style="text-align: left; width: 13%">&nbsp;Lot</th>
+        <th class="th" style="text-align: left; width: 50%">&nbsp;Produit (millésime)</th>
+        <th class="th" style="text-align: center; width: 8%">Volume</th>
+        <th class="th" style="text-align: center; width: 20%">&nbsp;Destination (date)</th>
     </tr>
-<?php foreach($drev->getLotsRevendiques() as $lot): ?>
+<?php foreach($drev->getLotsByDate(true) as $lot): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_logement_operateur ?></td>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)<?php if(count($lot->cepages)): echo "&nbsp;<small>".$lot->getCepagesToStr()."</small>"; endif; ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo showProduitLot($lot) ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-        <td class="td" style="text-align: center;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
+        <td class="td" style="text-align: center; font-size: 8pt;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
     </tr>
 <?php endforeach; ?>
 </table>

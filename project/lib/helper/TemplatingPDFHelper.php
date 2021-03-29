@@ -11,7 +11,7 @@ function styleDRev() {
     }
 
     .th {
-        font-weight: normal; border: 1px solid #c75268; background-color: #f7dce5; color: #c75268;
+        font-weight: normal; border: 1px solid #c75268; background-color: #f7dce5; color: black;
     }
 
     .td {
