@@ -26,6 +26,9 @@
 	<td>
 		<?php include_partial('itemNoeud', array('produit' => $produit, 'noeud' => $produit->getCepage(), 'cvo' => $cvo)) ?>
 	</td>
+    <td class="text-center">
+        <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getNoeudCepagesAutorises()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>"><?php echo count($produit->getCepagesAutorises()); ?></a>
+    </td>
 	<?php if(!isset($notDisplayDroit)): ?>
    	<td class="center">
      <?php if ($cvo) : ?>

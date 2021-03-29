@@ -249,6 +249,12 @@ Configuration:
                           definition:
                             fields:
                               '*': {  }
+                        cepages_autorises:
+                          type: array_collection
+                          required: false
+                          definition:
+                            fields:
+                              '*': {  }
                         interpro:
                           type: collection
                           definition:
