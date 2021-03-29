@@ -231,6 +231,88 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+      var uri = baseUri+"/GestionMail/GestGroupes.aspx";
+      var exportFilename = destination_file+'01_operateurs/operateurs_groupes.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+     return nightmare
+     .goto(uri)
+     .wait(1500)
+     .html(exportFilename, 'HTMLOnly')
+     .screenshot(exportFilename+".png")
+     .evaluate(function() {
+       var ids = [];
+       document.querySelectorAll('tr td input').forEach(
+         function(input) {
+           if(input.value != "Excel") {
+              return;
+           }
+           ids.push(input.id);
+         }
+       )
+       return ids;
+     })
+     .then(function(ids) {
+       var i = 0;
+       for (key in ids) {
+         var id = ids[key];
+         var exportFilename = destination_file+'01_operateurs/operateurs_groupes_'+i+'.xslx';
+         console.log("export " + uri + ": " + exportFilename);
+         i++;
+
+         nightmare
+               .goto(uri+"?uniq="+id)
+               .wait(1500)
+               .click('#'+id)
+               .download(exportFilename);
+       }
+     })
+     .catch(error => {
+       console.error('Search failed:', error)
+     })
+  })
+  .then(function() {
+      var uri = baseUri+"/GestionMail/gestionGroupesR.aspx";
+      var exportFilename = destination_file+'01_operateurs/contacts_groupes.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+     return nightmare
+     .goto(uri)
+     .wait(1500)
+     .html(exportFilename, 'HTMLOnly')
+     .screenshot(exportFilename+".png")
+     .evaluate(function() {
+       var ids = [];
+       document.querySelectorAll('tr td input').forEach(
+         function(input) {
+           if(input.value != "Excel") {
+              return;
+           }
+           ids.push(input.id);
+         }
+       )
+       return ids;
+     })
+     .then(function(ids) {
+       var i = 0;
+       for (key in ids) {
+         var id = ids[key];
+         var exportFilename = destination_file+'01_operateurs/contacts_groupes_'+i+'.xslx';
+         console.log("export " + uri + ": " + exportFilename);
+         i++;
+
+         nightmare
+               .goto(uri+"?uniq="+id)
+               .wait(1500)
+               .click('#'+id)
+               .download(exportFilename);
+       }
+     })
+     .catch(error => {
+       console.error('Search failed:', error)
+     })
+  })
+  .then(function() {
       var uri = baseUri+"/GestionMail/BounceMail.aspx";
       var exportFilename = destination_file+'01_operateurs/mails_erreurs.html';
       console.log("export " + uri + ": " + exportFilename);
@@ -639,10 +721,43 @@ nightmare
                 .wait('body')
                 .html(exportFilename, "HTMLOnly")
                 .screenshot(exportFilename+".png")
-                .refresh()
                 .wait(1000)
+                .click('#btnPVDegust')
+                .download(exportFilename.replace(".html", "")+"_pv.pdf")
         }
       });
+  })
+ .then(function() {
+     var uri = baseUri+"/commission/SuiviCommission.aspx";
+     var exportFilename = destination_file+'04_controles_produits/commissions_prevues.html';
+     console.log("export " + uri + ": " + exportFilename);
+
+     return nightmare
+     .goto(uri)
+     .wait(5000)
+     .select('#ddlAnnee', '')
+     .wait(1000)
+     .click('#Button1')
+     .wait(5000)
+     .html(exportFilename)
+     .screenshot(exportFilename+".png")
+ })
+  .then(function() {
+      var uri = baseUri+"/commission/SuiviCommission.aspx";
+      var exportFilename = destination_file+'04_controles_produits/commissions_terminees.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(5000)
+      .click('#BntTermine')
+      .wait(5000)
+      .select('#ddlAnnee', '')
+      .wait(1000)
+      .click('#Button1')
+      .wait(5000)
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
@@ -817,33 +932,6 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
-      var uri = baseUri+"/commission/LstMembre.aspx";
-      var exportFilename = destination_file+'06_administration/membres.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .wait('#Button1')
-      .click('#Button1')
-      .click('#Button2')
-      .wait('#Button2')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-  })
-  .then(function() {
-      var uri = baseUri+"/commission/LstNonMembre.aspx";
-      var exportFilename = destination_file+'06_administration/membres_inactifs.html';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .wait('#Button1')
-      .click('#Button1')
-      .wait(5000)
-      .html(exportFilename, "HTMLOnly")
-      .screenshot(exportFilename+".png")
-  })
-  .then(function() {
        var uri = baseUri+"/odg/FicheODG.aspx";
        var exportFilename = destination_file+'06_administration/fiche_odg.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -883,27 +971,159 @@ nightmare
        })
    })
   .then(function() {
-       var uri = baseUri+"/odg/LstAOC.aspx";
-       var exportFilename = destination_file+'06_administration/aoc.html';
-       console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .html(exportFilename, "HTMLOnly")
-      .screenshot(exportFilename+".png")
-  })
-  .then(function() {
        var uri = baseUri+"/odg/LstCepage.aspx";
        var exportFilename = destination_file+'06_administration/cepages.html';
        console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
+      .wait('#ContentPlaceHolder1_ddlAOC')
+      .evaluate(function() {
+        var keys = [];
+        document.querySelectorAll('#ContentPlaceHolder1_ddlAOC option').forEach(
+          function(option) {
+            if(!option.value) {
+              return;
+            }
+            keys.push(option.value);
+          }
+        )
+        return keys;
+      })
+      .then(function(keys) {
+        console.log(keys);
+        for (key in keys) {
+          var key = keys[key];
+          var exportFilename = destination_file + "06_administration/cepages_"+key+".html";
+          console.log("export " + uri + ": " + exportFilename);
+
+          nightmare
+                .goto(uri+"?uniq="+key)
+                .wait(1000)
+                .select('#ContentPlaceHolder1_ddlAOC', key)
+                .wait(2000)
+                .html(exportFilename, "HTMLOnly")
+                .screenshot(exportFilename+".png");
+        }
+      });
+  })
+  .then(function() {
+     var uri = baseUri+"/odg/LstLogin.aspx";
+     var exportFilename = destination_file+'06_administration/personnes.html';
+     console.log("export " + uri + ": " + exportFilename);
+
+    return nightmare
+    .goto(uri)
+    .wait(1000)
+    .html(exportFilename, "HTMLOnly")
+    .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+       var uri = baseUri+"/odg/LstAOC.aspx";
+       var exportFilename = destination_file+'06_administration/aoc.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(1000)
+      .html(exportFilename, "HTMLOnly")
+      .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+     var uri = baseUri+"/odg/ParamODG.aspx";
+     var exportFilename = destination_file+'06_administration/parametrage.html';
+     console.log("export " + uri + ": " + exportFilename);
+
+    return nightmare
+    .goto(uri)
+    .wait(1000)
+    .html(exportFilename, "HTMLOnly")
+    .screenshot(exportFilename+".png")
+  })
+    .then(function() {
+        var uri = baseUri+"/commission/LstMembre.aspx";
+        var exportFilename = destination_file+'06_administration/membres.xlsx';
+        console.log("export " + uri + ": " + exportFilename);
+
+        return nightmare
+        .goto(uri)
+        .wait(2000)
+        .click('#Button1')
+        .wait(2000)
+        .click('#Button2')
+        .download(exportFilename)
+        .screenshot(exportFilename+".png")
+    })
+    .then(function() {
+        var uri = baseUri+"/commission/CourrierMembre.aspx";
+        var exportFilename = destination_file+'06_administration/membres_courrier.xlsx';
+        console.log("export " + uri + ": " + exportFilename);
+
+        return nightmare
+        .goto(uri)
+        .wait(2000)
+        .click('#btnExcel')
+        .download(exportFilename)
+        .screenshot(exportFilename+".png")
+    })
+    .then(function() {
+        var uri = baseUri+"/commission/LstNonMembre.aspx";
+        var exportFilename = destination_file+'06_administration/membres_inactifs.html';
+        console.log("export " + uri + ": " + exportFilename);
+
+        return nightmare
+        .goto(uri)
+        .wait(1000)
+        .click('#Button1')
+        .wait(3000)
+        .html(exportFilename)
+        .screenshot(exportFilename+".png")
+    })
+  .then(function() {
+       var uri = baseUri+"/commission/LstLieu.aspx";
+       var exportFilename = destination_file+'06_administration/commissions_lieux.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(1000)
+      .html(exportFilename, "HTMLOnly")
+      .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+       var uri = baseUri+"/Analyse/GestionLaboratoire.aspx";
+       var exportFilename = destination_file+'06_administration/laboratoires.xlsx';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(1000)
+      .click('#Button2')
+      .download(exportFilename)
+      .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+       var uri = baseUri+"/odg/Defraiement.aspx";
+       var exportFilename = destination_file+'06_administration/comptabilite_parametrage.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(1000)
+      .html(exportFilename, "HTMLOnly")
+      .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+       var uri = baseUri+"/Administration/ParamManq.aspx";
+       var exportFilename = destination_file+'06_administration/manquements.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(1000)
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
   })
   .then(function() {
       return nightmare.end()
   })
-
-
