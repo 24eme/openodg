@@ -14,11 +14,7 @@ if ! test "$ODG"; then
     exit 1;
 fi
 
-if [ -d $DATADIR ]; then
-  #rm -r $DATADIR;
-fi
 mkdir -p $DATADIR 2> /dev/null
-
 
 if test "$DISPLAY"; then
   node scrapping.js $CONFIGFILE
