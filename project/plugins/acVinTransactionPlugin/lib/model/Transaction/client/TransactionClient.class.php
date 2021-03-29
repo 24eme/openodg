@@ -36,10 +36,10 @@ class TransactionClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function createDoc($identifiant, $date, $papier = false)
+    public function createDoc($identifiant, $campagne, $date = null, $papier = false)
     {
         $doc = new Transaction();
-        $doc->initDoc($identifiant, $date);
+        $doc->initDoc($identifiant, $campagne, $date);
 
         $doc->storeDeclarant();
 
@@ -61,7 +61,7 @@ class TransactionClient extends acCouchdbClient {
     }
 
     public function getIds($periode) {
-        $ids = $this->startkey_docid(sprintf("TRANSACTION-%s-%s", "0000000000", "0"))
+        $ids = $this->startkey_docid(sprintf("TRANSACTION-%s-%s", "0000000000", "00000000"))
                     ->endkey_docid(sprintf("TRANSACTION-%s-%s", "ZZZZZZZZZZ", "99999999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
@@ -100,8 +100,8 @@ class TransactionClient extends acCouchdbClient {
     }
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = "0000";
-        $campagne_to = "9999";
+        $campagne_from = "00000000";
+        $campagne_to = "99999999";
 
         return $this->startkey(sprintf("TRANSACTION-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("TRANSACTION-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
