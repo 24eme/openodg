@@ -35,8 +35,9 @@ class ChgtDenomForm extends acCouchdbObjectForm
 
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
-      	$this->getObject()->changement_type = $values['changement_type'];
-        if ($values['changement_produit_hash']) {
+        $this->getObject()->changement_type = $values['changement_type'];
+        $this->getObject()->changement_produit_hash = null;
+        if ($values['changement_produit_hash'] && !$this->getObject()->isDeclassement()) {
             $this->getObject()->changement_produit_hash = $values['changement_produit_hash'];
         }
         $this->getObject()->remove('changement_cepages');
