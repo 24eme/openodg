@@ -82,6 +82,7 @@ Transaction:
                   produit_libelle: { }
                   elevage: { }
                   statut: {}
+                  adresse_logement: {}
                   specificite: {  }
                   pays: { }
                   affectable: { }

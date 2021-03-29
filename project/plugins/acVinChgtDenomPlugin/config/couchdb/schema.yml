@@ -86,6 +86,7 @@ ChgtDenom:
                   origine_mouvement: { required: false }
                   details: {}
                   statut: {}
+                  adresse_logement: {}
                   specificite: {}
                   affectable: { }
                   document_fils: { required: false }

@@ -35,11 +35,13 @@ class ImportLotsIATask extends sfBaseTask
   const CSV_STATUT = 30;
   const CSV_DATE_COMMISSION = 31;
   const CSV_DATE_VALIDATION = 32;
+
   const CSV_NOM_SITE = 33;
   const CSV_ADRESSE_1_SITE = 34;
   const CSV_ADRESSE_2_SITE = 35;
   const CSV_CODE_POSTAL_SITE = 36;
   const CSV_VILLE_SITE = 37;
+
   const CSV_EMAIL = 38;
 
   const TYPE_REVENDIQUE = 'R';
@@ -251,6 +253,14 @@ EOF;
             if ($data[self::CSV_TYPE] == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
                 $lot->pays = "Export : données du pays non importée";
             }
+
+            $lot->adresse_logement = "";
+            $lot->adresse_logement .= (isset($data[self::CSV_NOM_SITE]) && $data[self::CSV_NOM_SITE])? trim($data[self::CSV_NOM_SITE]) : "";
+            $lot->adresse_logement .= (isset($data[self::CSV_ADRESSE_1_SITE]) && $data[self::CSV_ADRESSE_1_SITE])? " ".trim($data[self::CSV_ADRESSE_1_SITE]) : "";
+            $lot->adresse_logement .= (isset($data[self::CSV_ADRESSE_2_SITE]) && $data[self::CSV_ADRESSE_2_SITE])? " ".trim($data[self::CSV_ADRESSE_2_SITE]) : "";
+            $lot->adresse_logement .= (isset($data[self::CSV_CODE_POSTAL_SITE]) && $data[self::CSV_CODE_POSTAL_SITE])? " ".trim($data[self::CSV_CODE_POSTAL_SITE]) : "";
+            $lot->adresse_logement .= (isset($data[self::CSV_VILLE_SITE]) && $data[self::CSV_VILLE_SITE])? " ".trim($data[self::CSV_VILLE_SITE]) : "";
+
 
             $deleted = array();
             foreach($document->lots as $k => $l) {

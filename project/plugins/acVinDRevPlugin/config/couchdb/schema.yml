@@ -137,6 +137,7 @@ DRev:
                   produit_libelle: { }
                   elevage: { }
                   statut: {}
+                  adresse_logement: {}
                   specificite: { }
                   affectable: { }
                   document_ordre: {}
