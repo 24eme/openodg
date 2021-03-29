@@ -15,6 +15,7 @@ var regroupement = true;
 mkdirp(destination_file+'01_operateurs')
 mkdirp(destination_file+'01_operateurs/fiches_contacts_connexion')
 mkdirp(destination_file+'02_recoltes')
+mkdirp(destination_file+'02_recoltes/syntheses')
 mkdirp(destination_file+'03_declarations')
 mkdirp(destination_file+'04_controles_produits')
 mkdirp(destination_file+'04_controles_produits/commissions')
@@ -385,15 +386,52 @@ nightmare
       return nightmare;
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/SyntheseRecolte.aspx";
-      var exportFilename = destination_file+'02_recoltes/recoltes_syntheses.html';
+      var uri = baseUri+"/Declaration/LstLotRecolteNC.aspx";
+      var exportFilename = destination_file+'02_recoltes/recoltes_non_conforme.html';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
-      .goto(uri)
-      .wait(1000)
-      .html(exportFilename, 'HTMLOnly')
-      .screenshot(exportFilename+".png")
+       .goto(uri)
+       .click('#Button1')
+       .wait(2000)
+       .html(exportFilename, 'HTMLOnly')
+       .screenshot(exportFilename+".png")
+       .refresh()
+  })
+  .then(async function() {
+      var uri = baseUri+"/Declaration/SyntheseRecolte.aspx";
+       await nightmare
+        .goto(uri)
+        .wait('body')
+        .exists("#ddlAnnee")
+        .then(async function (result) {
+            if (!result) {
+                return nightmare;
+            }
+
+            for(var i = 2016; i <= 2020; i++) {
+                var exportFilename = destination_file+'02_recoltes/syntheses/recoltes_syntheses_'+i+'.html';
+                console.log("export " + uri + ": " + exportFilename);
+
+               await nightmare
+               .goto(uri+"?uniqid="+i)
+               .wait(1000)
+               .select('#ddlAnnee',i+"")
+               .wait(1000)
+               .click('#Button1')
+               .wait(3000)
+               .html(exportFilename)
+               .screenshot(exportFilename+".png")
+               .refresh()
+               .catch(error => {
+                 console.error('Search failed:', error)
+               })
+            }
+
+            return nightmare;
+        });
+
+       return nightmare;
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstLots.aspx";
