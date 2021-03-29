@@ -100,8 +100,8 @@ class ConditionnementClient extends acCouchdbClient {
     }
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = "0000";
-        $campagne_to = "9999-9999";
+        $campagne_from = "00000000";
+        $campagne_to = "99999999";
 
         return $this->startkey(sprintf("CONDITIONNEMENT-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("CONDITIONNEMENT-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))

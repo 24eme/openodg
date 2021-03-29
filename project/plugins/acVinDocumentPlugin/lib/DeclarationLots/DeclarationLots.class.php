@@ -22,13 +22,13 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           $this->archivage_document = new ArchivageDocument($this);
       }
 
-      public function initDoc($identifiant, $date = null) {
+      public function initDoc($identifiant, $campagne, $date = null) {
           $this->identifiant = $identifiant;
           $this->date = $date;
           if (!$this->date) {
               $this->date = date("Y-m-d");
           }
-          $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
+          $this->campagne = $campagne;
           $etablissement = $this->getEtablissementObject();
           $this->constructId();
       }

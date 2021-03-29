@@ -302,6 +302,10 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->exist('leurre') && $this->leurre;
     }
 
+    public function isDeclasse() {
+        return !($this->produit_hash);
+    }
+
     public function getUnicityKey(){
         return KeyInflector::slugify($this->numero_dossier.'-'.$this->numero_archive);
     }
