@@ -806,6 +806,21 @@ class degustationActions extends sfActions {
       }
     }
 
+    public function executeGetCourrierWithAuth(sfWebRequest $request) {
+        $auth = $request->getParameter('auth');
+        $id = $request->getParameter('id');
+        $identifiant = $request->getParameter('identifiant', null);
+        $lot_dossier = $request->getParameter('lot_dossier', null);
+        $lot_archive = $request->getParameter('lot_archive', null);
+        $type = $request->getParameter('type');
 
+        $key = DegustationClient::generateAuthKey($id, $type);
+        $auth = substr($auth, 0, strlen($key));
 
+        if ($auth !== $key) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+
+        $this->forward('degustation', 'degustation'.$type.'PDF');
+    }
 }
