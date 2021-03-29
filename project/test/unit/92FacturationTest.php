@@ -286,7 +286,7 @@ $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
 
 $lot = current($lots);
 $chgtDenom->setLotOrigine($lot);
-$chgtDenom->changement_produit = $produit_hash_d13;
+$chgtDenom->changement_produit_hash = $produit_hash_d13;
 $chgtDenom->changement_volume = $lot->volume-0.5;
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
@@ -313,8 +313,8 @@ $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
 
 $lot = current($lots);
 $chgtDenom->setLotOrigine($lot);
-$chgtDenom->changement_produit = $produit_hash_med;
-$chgtDenom->changement_volume = $lot->volume-0.5;
+$chgtDenom->changement_produit_hash = $produit_hash_med;
+$chgtDenom->changement_volume = $lot->volume-0.1;
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
 $chgtDenom->generateMouvementsLots(1);
