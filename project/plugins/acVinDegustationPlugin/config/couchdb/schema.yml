@@ -51,6 +51,7 @@ Degustation:
                         '*': { type: float }
                   details: {}
                   statut: {}
+                  adresse_logement: {}
                   numero_table: {}
                   position: {}
                   leurre: {}

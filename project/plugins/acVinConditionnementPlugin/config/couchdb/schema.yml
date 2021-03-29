@@ -82,6 +82,7 @@ Conditionnement:
                   produit_libelle: { }
                   elevage: { }
                   statut: {}
+                  adresse_logement: {}
                   specificite: { }
                   centilisation: { required: false }
                   affectable: { }
