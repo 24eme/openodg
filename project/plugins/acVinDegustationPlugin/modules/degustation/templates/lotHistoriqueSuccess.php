@@ -28,8 +28,8 @@ endforeach;
         <th class="col-sm-1">Date</th>
         <th class="col-sm-2">Document</th>
         <th class="col-sm-3">Etape</th>
-        <th class="col-sm-5">Détail</th>
-        <th class="col-sm-1"></th>
+        <th class="col-sm-4">Détail</th>
+        <th class="col-sm-2"></th>
       </thead>
       <tbody>
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
@@ -45,6 +45,22 @@ endforeach;
                 <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
                 <td><?php echo showDetailMvtLot($mouvement);  ?></td>
                 <td class="text-right">
+                    <?php if ($mouvement->value->statut === Lot::STATUT_MANQUEMENT_EN_ATTENTE): ?>
+                    <div class="dropdown" style="display: inline-block">
+                      <button class="btn btn-primary dropdown-toggle btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Traiter
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_redeguster', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id, 'back' => 'degustation_manquements')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
+                        <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
+                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_recours_oc', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  >Recours OC</a></li>
+                        <li class="<?php if(!$mouvement->value->recours_oc): ?> disabled <?php endif; ?>" ><a class="dropdown-item" href="<?php echo url_for('degustation_lot_conforme_appel', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  onclick="return confirm('Confirmez vous la mise en conformité de ce lot en appel ?')" >Conforme en appel</a></li>
+                        <li>&nbsp;</li>
+                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $mouvement->value->declarant_identifiant, 'campagne' => $mouvement->value->campagne, 'numero_dossier' => $mouvement->value->numero_dossier, 'numero_archive' => $mouvement->value->numero_archive)) ?>">Historique</a></li>
+                      </ul>
+                    </div>
+                    <?php endif ?>
                     <a href="<?php echo $urlEtape; ?>" class="btn btn-default btn-xs">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
                 </td>
             </tr>
