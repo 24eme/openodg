@@ -802,10 +802,30 @@ class degustationActions extends sfActions {
 
     private function redirectIfIsAnonymized(){
       if ($this->degustation->isAnonymized()) {
-          return $this->redirect($this->getRouteEtape($this->degustation->etape),$this->degustation);
+          $etape = $this->getRouteEtape($this->degustation->etape);
+          if (DegustationEtapes::$etapes[$this->degustation->etape] < DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
+              return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS),$this->degustation);
+          } else {
+              return $this->redirect($etape, $this->degustation);
+          }
       }
     }
 
+    public function executeGetCourrierWithAuth(sfWebRequest $request) {
+        $auth = $request->getParameter('auth');
+        $id = $request->getParameter('id');
+        $identifiant = $request->getParameter('identifiant', null);
+        $lot_dossier = $request->getParameter('lot_dossier', null);
+        $lot_archive = $request->getParameter('lot_archive', null);
+        $type = $request->getParameter('type');
 
+        $key = DegustationClient::generateAuthKey($id, $type);
+        $auth = substr($auth, 0, strlen($key));
 
+        if ($auth !== $key) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+
+        $this->forward('degustation', 'degustation'.$type.'PDF');
+    }
 }

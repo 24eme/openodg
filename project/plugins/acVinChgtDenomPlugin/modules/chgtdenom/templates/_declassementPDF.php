@@ -31,7 +31,7 @@
 
 <p>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du déclassement de votre lot :</p>
 
-<p style="text-align: center; font-weight: bold"><?php showProduitLot($chgtDenom->lots[0]) ?></p>
+<p style="text-align: center; font-weight: bold"><?php showProduitLot($chgtdenom->getLotOrigine()) ?></p>
 
 <table border="0.5" class="" cellspacing=0 cellpadding=0 style="width:100%;text-align:center;">
   <tr>
@@ -42,13 +42,13 @@
     <th style="width: 20%">Observation</th>
   </tr>
     <?php $totalVolume = 0 ?>
-    <?php foreach($chgtDenom->lots as $lot): ?>
+    <?php foreach($chgtdenom->lots as $lot): ?>
     <tr>
       <td><?php echo $lot->numero_dossier ?> / <?php echo $lot->numero_archive ?></td>
       <td><?php echo $lot->numero_logement_operateur?></td>
       <td><?php echo showProduitLot($lot) ?></td>
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lot->volume); ?></td>
-      <td><?php echo $lot->observation ?></td>
+      <td><?php echo ($lot->observation) ?? '' ?></td>
     </tr>
     <?php $totalVolume = $totalVolume + $lot->volume; ?>
     <?php endforeach; ?>
@@ -59,7 +59,7 @@
 
 <table class="" border="0.5" cellspacing=1 cellpadding=0 style="">
   <tr>
-    <td>&nbsp;Nombre de lots Total : <?php echo count($lots) ?> </td>
+    <td>&nbsp;Nombre de lots Total : <?php echo count($chgtdenom->lots) ?> </td>
     <td>&nbsp;Volume Total (hl) : <?php echo sprintf("%.2f", $totalVolume) ?> </td>
   </tr>
 </table>

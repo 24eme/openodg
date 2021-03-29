@@ -140,3 +140,4 @@ all:
     regions:
       "": ""
   export_webpath: null
+  secret: mon_code_secret # 32 caracteres
