@@ -15,9 +15,9 @@ if ! test "$ODG"; then
 fi
 
 if [ -d $DATADIR ]; then
-  rm -r $DATADIR;
+  #rm -r $DATADIR;
 fi
-mkdir -p $DATADIR
+mkdir -p $DATADIR 2> /dev/null
 
 
 if test "$DISPLAY"; then
