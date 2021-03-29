@@ -14,6 +14,16 @@ class DegustationLot extends BaseDegustationLot {
     return ($this->statut == Lot::STATUT_NONCONFORME);
   }
 
+  public function isRecoursOC()
+  {
+    return $this->statut === Lot::STATUT_RECOURS_OC;
+  }
+
+  public function isManquement()
+  {
+    return $this->isRecoursOC() || $this->isNonConforme();
+  }
+
   public function isConformeObs(){
     return ($this->statut == Lot::STATUT_CONFORME) && $this->exist('observation') && $this->observation;
   }
