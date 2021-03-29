@@ -131,8 +131,17 @@ EOF;
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $etablissement->statut = EtablissementClient::STATUT_SUSPENDU;
             }
-            if (isset($data[self::CSV_NOM]) && isset($data[self::CSV_RAISON_SOCIALE])){
-              $etablissement->nom = ($data[self::CSV_NOM]) ? $data[self::CSV_NOM] : $data[self::CSV_RAISON_SOCIALE];
+            if (isset($data[self::CSV_NOM]) || isset($data[self::CSV_RAISON_SOCIALE])){
+                $nom = '';
+                if ($data[self::CSV_RAISON_SOCIALE]) {
+                    $nom = $data[self::CSV_RAISON_SOCIALE];
+                    if (($data[self::CSV_RAISON_SOCIALE] != $data[self::CSV_NOM]) && $data[self::CSV_NOM]) {
+                        $nom .= ' - '.$data[self::CSV_NOM];
+                    }
+                }elseif($data[self::CSV_NOM]) {
+                    $nom = $data[self::CSV_NOM];
+                }
+              $etablissement->nom = $nom;
             }
             if (isset($data[self::CSV_CVI])){
               $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
