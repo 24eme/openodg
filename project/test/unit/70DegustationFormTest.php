@@ -42,8 +42,8 @@ foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acC
     $conditionnement->delete(false);
 }
 foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
-    $conditionnement = TransactionClient::getInstance()->find($k);
-    $conditionnement->delete(false);
+    $transaction = TransactionClient::getInstance()->find($k);
+    $transaction->delete(false);
 }
 foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
