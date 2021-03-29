@@ -19,8 +19,8 @@ Vos lots sont NON CONFORMES.
 <?php endif; ?>
 
 <?php if(count($lotsConformes)): ?>
-Vous trouverez ci-dessous le lien vers le courrier confirmant la conformité des lot(s) présenté(s) (<?= count($lotsConformes) ?>) : <a href="<?php echo url_for('degustation_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $identifiant), true); ?>">
-<?php echo url_for('degustation_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $identifiant), true); ?>
+Vous trouverez ci-dessous le lien vers le courrier confirmant la conformité des lot(s) présenté(s) (<?= count($lotsConformes) ?>) : <a href="<?php echo url_for('degustation_get_courrier_auth', ['id' => $degustation->_id, 'auth' => DegustationClient::generateAuthKey($degustation->_id, 'Conformite'), 'type' => 'Conformite', 'identifiant' => $identifiant], true) ?>">
+<?php echo url_for('degustation_get_courrier_auth', ['id' => $degustation->_id, 'auth' => DegustationClient::generateAuthKey($degustation->_id, 'Conformite'), 'type' => 'Conformite', 'identifiant' => $identifiant], true) ?>
 </a>
 
 <?php endif; ?>
@@ -32,8 +32,8 @@ Par ailleurs, certains de vos vins dont la liste figure dans les fiches de non c
 Vous trouverez en cliquant sur les liens ci-dessous le courrier concernant chacun des lots présentant une non conformité :
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
 * <?= showProduitLot($lotNonConforme) . ", non conformité de type : " . $lotNonConforme->getShortLibelleConformite() ?>
-<a href="<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>">
-<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>
+<a href="<?php echo url_for('degustation_get_courrier_auth', array('id' => $degustation->_id, 'auth' => DegustationClient::generateAuthKey($degustation->_id, 'NonConformite'), 'type' => 'NonConformite', 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>">
+<?php echo url_for('degustation_get_courrier_auth', array('id' => $degustation->_id, 'auth' => DegustationClient::generateAuthKey($degustation->_id, 'NonConformite'), 'type' => 'NonConformite', 'lot_dossier' => $lotNonConforme->numero_dossier ,'lot_archive' => $lotNonConforme->numero_archive), true); ?>
 </a>
 <?php endforeach; ?>
 

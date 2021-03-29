@@ -67,7 +67,7 @@ EOF;
 
             $raisonSociale = $data[self::CSV_RAISON_SOCIALE];
             if(!$raisonSociale) {
-                $raisonSociale = trim($civilite." ".$data[self::CSV_NOM]." ".$data[self::CSV_PRENOM]);
+                $raisonSociale = trim($civilite." ".trim($data[self::CSV_NOM])." ".trim($data[self::CSV_PRENOM]));
             }
 
             $resultat = SocieteClient::matchSociete($societes, $raisonSociale, 1);
@@ -107,22 +107,22 @@ EOF;
             $compte->civilite = $civilite;
 
             if (isset($data[self::CSV_NOM])){
-              $compte->nom = $data[self::CSV_NOM];
+              $compte->nom = trim($data[self::CSV_NOM]);
             }
             if (isset($data[self::CSV_PRENOM])){
-              $compte->prenom = $data[self::CSV_PRENOM];
+              $compte->prenom = trim($data[self::CSV_PRENOM]);
             }
             if (isset($data[self::CSV_ADRESSE_1])){
-              $compte->adresse = $data[self::CSV_ADRESSE_1];
+              $compte->adresse = trim($data[self::CSV_ADRESSE_1]);
             }
             if (isset($data[self::CSV_ADRESSE_2])){
-              $compte->adresse_complementaire = $data[self::CSV_ADRESSE_2];
+              $compte->adresse_complementaire = trim($data[self::CSV_ADRESSE_2]);
             }
             if (isset($data[self::CSV_CODE_POSTAL])){
-              $compte->code_postal = $data[self::CSV_CODE_POSTAL];
+              $compte->code_postal = trim($data[self::CSV_CODE_POSTAL]);
             }
             if (isset($data[self::CSV_VILLE])){
-              $compte->commune = $data[self::CSV_VILLE];
+              $compte->commune = trim($data[self::CSV_VILLE]);
             }
             if (isset($data[self::CSV_TELEPHONE])){
               $compte->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);

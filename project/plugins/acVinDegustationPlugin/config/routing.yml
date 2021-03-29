@@ -506,3 +506,13 @@ degustation_desanonymize:
         type:     object
     requirements:
     sf_method: [get]
+
+degustation_get_courrier_auth:
+  url: /degustation/get/:id/:auth/:type
+  param: {module: degustation, action: getCourrierWithAuth}
+  class: DegustationRoute
+  options:
+    model: Degustation
+    type: object
+  requirements:
+    sf_method: [get]

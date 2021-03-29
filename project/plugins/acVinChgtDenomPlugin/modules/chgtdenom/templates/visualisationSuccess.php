@@ -52,7 +52,7 @@
             <a tabindex="-1" href="<?php echo url_for("declaration_etablissement", array('identifiant' => $chgtDenom->identifiant, 'campagne' => $chgtDenom->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
         </div>
         <div class="col-xs-6">
-            <a href="<?php echo url_for('chgtdenom_declassement_pdf', $chgtDenom->_id) ?>" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Voir le PDF</a>
+            <a href="<?php echo url_for('chgtdenom_declassement_pdf', ['id' => $chgtDenom->_id]) ?>" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Voir le PDF</a>
         </div>
     </div>
     <?php endif; ?>

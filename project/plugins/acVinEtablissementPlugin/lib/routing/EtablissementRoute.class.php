@@ -30,8 +30,10 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         return $this->etablissement;
     }
 
-    protected function doConvertObjectToArray($object = null) {
-
+    protected function doConvertObjectToArray($object) {
+        if (!$object) {
+            throw new sfException("object from parameter should not be null");
+        }
         return array("identifiant" => $object->getIdentifiant());
     }
 

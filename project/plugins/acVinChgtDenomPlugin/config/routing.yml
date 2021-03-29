@@ -80,7 +80,7 @@ chgtdenom_delete:
     sf_method: [get]
 
 chgtdenom_declassement_pdf:
-  url: /changement-denomination/:identifiant/declassement-pdf
+  url: /changement-denomination/:id/declassement-pdf
   param: { module: chgtdenom, action: declassementPDF }
   class: ChgtDenomRoute
   options:

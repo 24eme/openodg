@@ -24,7 +24,7 @@ class ExportChgtDenomDeclassementPDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('chgtdenom/declassementPDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'responsable' => $this->responsable)));
+        $this->printable_document->addPage($this->getPartial('chgtdenom/declassementPDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'responsable' => $this->responsable, 'adresse' => $this->adresse, 'responsable' => $this->responsable)));
       }
 
 

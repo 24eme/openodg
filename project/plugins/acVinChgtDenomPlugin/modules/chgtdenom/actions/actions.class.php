@@ -175,9 +175,9 @@ class chgtdenomActions extends sfActions
     public function executeDeclassementPDF(sfWebRequest $request)
     {
         $chgtDenom = $this->getRoute()->getChgtDenom();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $chgtDenom->getEtablissement());
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $chgtDenom->getEtablissementObject());
 
-        $this->document = new ExportChgtDenomDeclassementPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
+        $this->document = new ExportChgtDenomDeclassementPDF($chgtDenom, $chgtDenom->getEtablissementObject(), $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
         if ($request->getParameter('force')) {
             $this->document->removeCache();
