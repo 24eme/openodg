@@ -227,11 +227,25 @@ class ConfigurationCepage extends BaseConfigurationCepage {
         return $this->getGenre()->getKey() == "VDN";
     }
 
+    public function getNoeudCepagesAutorises() {
+        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
+
+            return $this->getCertification();
+        }
+
+        return $this;
+    }
+
     public function hasCepagesAutorises(){
-        return $this->exist('cepages_autorises') && count($this->cepages_autorises);
+        return $this->exist('cepages_autorises') && count($this->_get('cepages_autorises')->toArray(true, false));
     }
 
     public function getCepagesAutorises() {
+        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
+
+            return $this->getCertification()->getCepagesAutorises();
+        }
+
         return $this->_get('cepages_autorises');
     }
 

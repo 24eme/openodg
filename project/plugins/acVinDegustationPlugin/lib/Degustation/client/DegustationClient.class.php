@@ -85,9 +85,10 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         }
 
         uasort($manquements_tries, function ($manquement1, $manquement2) {
-            return !strcmp($manquement1->campagne, $manquement2->campagne);
+            $a_millesime = substr($manquement1->destination_date, 0, 4);
+            $b_millesime = substr($manquement2->destination_date, 0, 4);
+            return strcmp($a_millesime, $b_millesime);
         });
-
         return $manquements_tries;
     }
 

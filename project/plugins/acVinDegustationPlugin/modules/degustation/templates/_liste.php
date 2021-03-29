@@ -9,7 +9,7 @@
 <tbody>
 <?php foreach($degustations as $d): ?>
     <tr>
-        <td class="col-sm-2"><?php echo $d->date; ?></td>
+        <td class="col-sm-2"><?php echo format_date($d->date, 'dd/MM/yyyy HH:mm:ss', 'fr_FR'); ?></td>
         <td class="col-sm-"><?php echo $d->lieu; ?></td>
         <td class="col-sm-2">
             <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span>
