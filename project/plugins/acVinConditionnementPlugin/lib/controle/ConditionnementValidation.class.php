@@ -20,7 +20,6 @@ class ConditionnementValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Les informations du lot sont incomplètes (millésime, numéro de lot, centilisation, produit, volume, spécificité)");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "La date du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
-        $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->campagne-1));
         /*
          * Engagement
          */
@@ -76,10 +75,6 @@ class ConditionnementValidation extends DocumentValidation
           if(!$lot->exist('destination_date') || !$lot->destination_date){
             $this->addPoint(self::TYPE_WARNING, 'lot_a_completer', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
             continue;
-          }
-
-          if($lot->millesime && $lot->millesime < ($this->document->campagne - 1)){
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('conditionnement_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
 
 

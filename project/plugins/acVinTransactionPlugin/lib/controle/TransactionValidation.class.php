@@ -23,7 +23,6 @@ class TransactionValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
-        $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->getMillesime()));
         /*
          * Engagement
          */
@@ -63,9 +62,6 @@ class TransactionValidation extends DocumentValidation
             continue;
           }
           $volume = sprintf("%01.02f",$lot->getVolume());
-          if($lot->millesime && $lot->millesime < ($this->document->getMillesime())){
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
-          }
           if(!$lot->exist('destination_type') || !$lot->destination_type){
               $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('transaction_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }

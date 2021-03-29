@@ -15,9 +15,9 @@ if ! test "$ODG"; then
 fi
 
 if [ -d $DATADIR ]; then
-  rm -r $DATADIR;
+  #rm -r $DATADIR;
 fi
-mkdir -p $DATADIR
+mkdir -p $DATADIR 2> /dev/null
 
 
 if test "$DISPLAY"; then
@@ -27,3 +27,4 @@ else
 fi
 
 bash commission2csv.sh $DATADIR/04_controles_produits
+bash cepage2csv.sh $DATADIR/06_administration

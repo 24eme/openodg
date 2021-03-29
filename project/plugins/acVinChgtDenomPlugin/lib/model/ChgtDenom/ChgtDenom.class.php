@@ -87,6 +87,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->generateLots();
     }
 
+    public function devalidate() {
+        $this->validation = null;
+        $this->validation_odg = null;
+        if($this->exist('etape')) {
+            $this->etape = null;
+        }
+        if($this->exist("envoi_oi")){
+         $this->envoi_oi = null;
+        }        
+    }
+
     public function isPapier() {
         return $this->exist('papier') && $this->get('papier');
     }

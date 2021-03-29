@@ -1,13 +1,13 @@
 <?php
 
-class TransactionClient extends acCouchdbClient {
+class ConditionnementClient extends acCouchdbClient {
 
-    const TYPE_MODEL = "Transaction";
-    const TYPE_COUCHDB = "TRANSACTION";
+    const TYPE_MODEL = "Conditionnement";
+    const TYPE_COUCHDB = "CONDITIONNEMENT";
 
     public static function getInstance()
     {
-        return acCouchdbManager::getClient("Transaction");
+        return acCouchdbManager::getClient("Conditionnement");
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -38,7 +38,7 @@ class TransactionClient extends acCouchdbClient {
 
     public function createDoc($identifiant, $campagne, $date = null, $papier = false)
     {
-        $doc = new Transaction();
+        $doc = new Conditionnement();
         $doc->initDoc($identifiant, $campagne, $date);
 
         $doc->storeDeclarant();
@@ -61,8 +61,8 @@ class TransactionClient extends acCouchdbClient {
     }
 
     public function getIds($periode) {
-        $ids = $this->startkey_docid(sprintf("TRANSACTION-%s-%s", "0000000000", "00000000"))
-                    ->endkey_docid(sprintf("TRANSACTION-%s-%s", "ZZZZZZZZZZ", "99999999"))
+        $ids = $this->startkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "0000000000", "00000000"))
+                    ->endkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "ZZZZZZZZZZ", "99999999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
         $ids_periode = array();
@@ -79,13 +79,13 @@ class TransactionClient extends acCouchdbClient {
     }
 
     public function getDateOuvertureDebut() {
-        $dates = sfConfig::get('app_dates_ouverture_transaction');
+        $dates = sfConfig::get('app_dates_ouverture_conditionnement');
 
         return $dates['debut'];
     }
 
     public function getDateOuvertureFin() {
-        $dates = sfConfig::get('app_dates_ouverture_transaction');
+        $dates = sfConfig::get('app_dates_ouverture_conditionnement');
 
         return $dates['fin'];
     }
@@ -103,20 +103,20 @@ class TransactionClient extends acCouchdbClient {
         $campagne_from = "00000000";
         $campagne_to = "99999999";
 
-        return $this->startkey(sprintf("TRANSACTION-%s-%s", $identifiant, $campagne_from))
-                    ->endkey(sprintf("TRANSACTION-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
+        return $this->startkey(sprintf("CONDITIONNEMENT-%s-%s", $identifiant, $campagne_from))
+                    ->endkey(sprintf("CONDITIONNEMENT-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 
-    public function findTransactionsByCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-      $allTransaction = TransactionClient::getInstance()->getHistory($identifiant);
-      $transactions = array();
-      foreach ($allTransaction as $key => $transaction) {
-        if($transaction->campagne == $campagne){
-          $transactions[] = $transaction;
+    public function findConditionnementsByCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+      $allConditionnement = ConditionnementClient::getInstance()->getHistory($identifiant);
+      $conditionnements = array();
+      foreach ($allConditionnement as $key => $conditionnement) {
+        if($conditionnement->campagne == $campagne){
+          $conditionnements[] = $conditionnement;
         }
       }
-      return $transactions;
+      return $conditionnements;
     }
 
 }

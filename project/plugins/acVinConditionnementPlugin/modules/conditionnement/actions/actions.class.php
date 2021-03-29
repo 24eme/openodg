@@ -9,6 +9,7 @@ class conditionnementActions extends sfActions {
 
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+
         $conditionnement->save();
 
         return $this->redirect('conditionnement_edit', $conditionnement);
@@ -20,6 +21,7 @@ class conditionnementActions extends sfActions {
 
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, null, true);
+
         $conditionnement->save();
 
         return $this->redirect('conditionnement_edit', $conditionnement);

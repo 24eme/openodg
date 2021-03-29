@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(110);
+$t = new lime_test(113);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -317,3 +317,11 @@ $t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_DECLASSE), "le mouveme
 $t->is($chgtDenom->getLotOrigine()->id_document_affectation, $chgtDenom->_id, "le lot d'origine a bien l'affectation du changement ".$chgtDenom->_id);
 $t->ok($chgtDenom->getLotOrigine()->isChange(), "statut des mvt du lot origine a bien isChange()");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE_SRC), "statut des mvt du lot origine a bien un mouvement changé src");
+
+$t->comment("Dévalivation d'un ChgtDenom");
+$t->ok(!$chgtDenom->isApprouve(), "Le changement n'est pas approuvé.");
+$chgtDenom->validateOdg();
+$t->ok($chgtDenom->isApprouve(), "Le changement est bien validé et approuvé : ".$chgtDenom->validation_odg);
+$chgtDenom->devalidate();
+$chgtDenom->save();
+$t->ok(!$chgtDenom->isValidee(), "Le changement est maintenant dévalidé.");

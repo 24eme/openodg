@@ -13,11 +13,11 @@ class Search {
 	    $text_final = "";
 
 	    foreach($words_term as $key_term => $word_term) {
-	      $matcher = "/".self::normalize($word_term)."/i";
+	      $matcher = "~".self::normalize(str_replace(array("(", ")"), array('\(', '\)'), $word_term))."~i";
 	      $find = false;
 	      foreach($words_text as $key_text => $word_text) {
 	        if(preg_match($matcher, $word_text)) {
-                    
+
 	          $find = true;
 	          unset($words_text[$key_text]);
 	          break;
@@ -67,7 +67,7 @@ class Search {
 
     public static function getWords($value) {
         $words = array();
-        $expressions = preg_split('/([,; \|()])/', $value);
+        $expressions = preg_split('~([,; \|()])~', $value);
         $words_mandatories = array("ac");
         foreach($expressions as $exp) {
             if(preg_match('/[\wû]{3,}/', $exp) || in_array(strtolower($exp), $words_mandatories)) {

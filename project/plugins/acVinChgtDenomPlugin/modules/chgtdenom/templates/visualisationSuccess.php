@@ -48,11 +48,16 @@
       <?php include_partial('chgtdenom/popupConfirmationApprobation'); ?>
     <?php else: ?>
     <div style="margin-top: 20px;" class="row row-margin row-button">
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <a tabindex="-1" href="<?php echo url_for("declaration_etablissement", array('identifiant' => $chgtDenom->identifiant, 'campagne' => $chgtDenom->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('chgtdenom_declassement_pdf', ['id' => $chgtDenom->_id]) ?>" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Voir le PDF</a>
+        </div>
+        <div class="col-xs-4 text-right">
+          <?php if ($chgtDenom->validation_odg && ChgtDenomSecurity::getInstance($sf_user, $chgtDenom->getRawValue())->isAuthorized(ChgtDenomSecurity::DEVALIDATION)):?>
+              <a class="btn btn-default" href="<?php echo url_for('chgtdenom_devalidation', $chgtDenom) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider ce Changement de dénomination ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+          <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
