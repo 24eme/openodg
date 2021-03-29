@@ -1101,6 +1101,9 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getCepagesAutorises() {
+        if($this->hasCepagesAutorises()) {
+            return $this->_get('cepages_autorises');
+        }
         $produits = array();
         foreach($this->getProduits() as $p) {
             $produits = array_merge($produits, $p->getCepage()->getCepagesAutorises()->toArray());

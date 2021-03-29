@@ -7,6 +7,7 @@
 	<th rowspan="2">Lieu</th>
 	<th rowspan="2">Couleur</th>
 	<th rowspan="2">Cépage</th>
+	<th rowspan="2">Cépag. Autor.</th>
 	<?php if(!isset($notDisplayDroit)): ?>
 	<th rowspan="2" style="width:80px;" class="text-center">CVO</th>
 	<th rowspan="2" style="width:10px;" class="text-center">Douane</th>
