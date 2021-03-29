@@ -8,7 +8,7 @@ all:
       mention_droits: "Vos droits concernant le présent mandat sont expliqués dans un document que vous pouvez obtenir auprès de votre banque."
       creancier:
         identifiant_ics: "** ID ICS **"
-        nom: "Syndicat des Vins IGP"
-        adresse: "22 Avenue Henri Pontier"
-        code_postal: "13626"
-        commune: "Aix-en-Provence"
+        nom: "Syndicat Vins Côtes de Gascogne"
+        adresse: "BPZ"
+        code_postal: "32800"
+        commune: "EAUZE"
