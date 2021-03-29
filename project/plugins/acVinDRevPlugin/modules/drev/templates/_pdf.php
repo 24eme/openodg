@@ -107,7 +107,7 @@ Les produits déclarés sont du millésime du VCI
         <th class="th" style="text-align: center; width: 8%">Volume</th>
         <th class="th" style="text-align: center; width: 20%">&nbsp;Destination (date)</th>
     </tr>
-<?php foreach($drev->getLotsRevendiques() as $lot): ?>
+<?php foreach($drev->getLotsByDate(true) as $lot): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_logement_operateur ?></td>
