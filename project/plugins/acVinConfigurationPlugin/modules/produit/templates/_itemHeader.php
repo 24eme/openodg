@@ -1,12 +1,13 @@
 <tr>
-	<th style="<?php if(!isset($notDisplayDroit)): ?>width:170px;<?php else: ?>width: 260px;<?php endif; ?>" class="center"><strong>Libellé</strong></th>
-	<th style="width:30px;"><strong>Cat.</strong></th>
-	<th><strong>Genre</strong></th>
-	<th><strong>Dénom.</strong></th>
-	<th><strong>Mention</strong></th>
-	<th><strong>Lieu</strong></th>
-	<th><strong>Couleur</strong></th>
-	<th><strong>Cépage</strong></th>
+	<th rowspan="2" style="<?php if(!isset($notDisplayDroit)): ?>width:170px;<?php else: ?>width: 260px;<?php endif; ?>">Libellé</th>
+	<th rowspan="2" style="width:30px;">Cat.</th>
+	<th rowspan="2">Genre</th>
+	<th rowspan="2">Dénom.</th>
+	<th rowspan="2">Mention</th>
+	<th rowspan="2">Lieu</th>
+	<th rowspan="2">Couleur</th>
+	<th rowspan="2">Cépage</th>
+	<th rowspan="2">Cépag. Autor.</th>
 	<?php if(!isset($notDisplayDroit)): ?>
 	<th style="width:80px;" class="center"><strong>CVO</strong></th>
 	<th style="width:10px;" class="center"><strong>Douane</strong></th>
