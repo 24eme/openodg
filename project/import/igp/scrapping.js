@@ -721,10 +721,43 @@ nightmare
                 .wait('body')
                 .html(exportFilename, "HTMLOnly")
                 .screenshot(exportFilename+".png")
-                .refresh()
                 .wait(1000)
+                .click('#btnPVDegust')
+                .download(exportFilename.replace(".html", "")+"_pv.pdf")
         }
       });
+  })
+ .then(function() {
+     var uri = baseUri+"/commission/SuiviCommission.aspx";
+     var exportFilename = destination_file+'04_controles_produits/commissions_prevues.html';
+     console.log("export " + uri + ": " + exportFilename);
+
+     return nightmare
+     .goto(uri)
+     .wait(5000)
+     .select('#ddlAnnee', '')
+     .wait(1000)
+     .click('#Button1')
+     .wait(5000)
+     .html(exportFilename)
+     .screenshot(exportFilename+".png")
+ })
+  .then(function() {
+      var uri = baseUri+"/commission/SuiviCommission.aspx";
+      var exportFilename = destination_file+'04_controles_produits/commissions_terminees.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(5000)
+      .click('#BntTermine')
+      .wait(5000)
+      .select('#ddlAnnee', '')
+      .wait(1000)
+      .click('#Button1')
+      .wait(5000)
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
@@ -1043,7 +1076,7 @@ nightmare
         .wait(1000)
         .click('#Button1')
         .wait(3000)
-        .html(exportFilename, "MHTML")
+        .html(exportFilename)
         .screenshot(exportFilename+".png")
     })
   .then(function() {
