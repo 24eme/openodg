@@ -28,7 +28,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           if (!$this->date) {
               $this->date = date("Y-m-d");
           }
-          $this->campagne = $campagne;
+          $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($campagne);
           $etablissement = $this->getEtablissementObject();
           $this->constructId();
       }
