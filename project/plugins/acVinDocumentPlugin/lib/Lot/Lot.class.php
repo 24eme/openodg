@@ -307,7 +307,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getUnicityKey(){
-        return KeyInflector::slugify($this->numero_dossier.'-'.$this->numero_archive);
+        return $this->getUniqueId();
     }
 
     public function getTriHash(array $tri = null) {
@@ -642,10 +642,18 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getUniqueId(){
         if(is_null($this->_get('unique_id'))) {
-            $this->set('unique_id', KeyInflector::slugify($this->numero_dossier.'-'.$this->numero_archive));
+            $this->set('unique_id', KeyInflector::slugify($this->campagne."-".$this->numero_dossier.'-'.$this->numero_archive));
         }
 
         return $this->_get('unique_id');
+    }
+
+    public function setCampagne($campagne) {
+        $this->unique_id = null;
+
+        $this->_set('campagne', $campagne);
+
+        $this->getUniqueId();
     }
 
     public function setNumeroArchive($numeroArchive) {
