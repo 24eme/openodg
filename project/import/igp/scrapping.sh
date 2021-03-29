@@ -27,3 +27,4 @@ else
 fi
 
 bash commission2csv.sh $DATADIR/04_controles_produits
+bash cepage2csv.sh $DATADIR/06_administration
