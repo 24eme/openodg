@@ -21,7 +21,7 @@ class ValidatorIban extends sfValidatorBase
 
     private function isValidIBAN ($iban) {
 
-      $iban = strtolower($iban);
+      $iban = str_replace(' ', '', strtolower($iban));
       $Countries = array(
         'al'=>28,'ad'=>24,'at'=>20,'az'=>28,'bh'=>22,'be'=>16,'ba'=>20,'br'=>29,'bg'=>22,'cr'=>21,'hr'=>21,'cy'=>28,'cz'=>24,
         'dk'=>18,'do'=>28,'ee'=>20,'fo'=>18,'fi'=>18,'fr'=>27,'ge'=>22,'de'=>22,'gi'=>23,'gr'=>27,'gl'=>18,'gt'=>28,'hu'=>28,
