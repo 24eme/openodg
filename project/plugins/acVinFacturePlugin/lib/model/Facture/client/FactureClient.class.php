@@ -4,18 +4,6 @@ class FactureClient extends acCouchdbClient {
     const TYPE_MODEL = "Facture";
     const TYPE_COUCHDB = "FACTURE";
 
-    const FACTURE_ORIGINE_DREV = DRevClient::TYPE_MODEL;
-    const FACTURE_ORIGINE_DR = DRClient::TYPE_MODEL;
-    const FACTURE_ORIGINE_DEGUSTATION = DegustationClient::TYPE_MODEL;
-    const FACTURE_ORIGINE_CHGTDENOM = ChgtDenomClient::TYPE_MODEL;
-
-    const FACTURE_LIGNE_MOUVEMENT_TYPE_PROPRIETE = "propriete";
-    const FACTURE_LIGNE_MOUVEMENT_TYPE_CONTRAT = "contrat";
-    const FACTURE_LIGNE_PRODUIT_TYPE_VINS = "contrat_vins";
-    const FACTURE_LIGNE_PRODUIT_TYPE_MOUTS = "contrat_mouts";
-    const FACTURE_LIGNE_PRODUIT_TYPE_RAISINS = "contrat_raisins";
-    const FACTURE_LIGNE_PRODUIT_TYPE_ECART = "ecart";
-
     const STATUT_REDRESSEE = 'REDRESSE';
     const STATUT_NONREDRESSABLE = 'NON_REDRESSABLE';
 
@@ -25,10 +13,11 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
 
 
-    public static $origines = array(self::FACTURE_ORIGINE_DREV => self::FACTURE_ORIGINE_DREV,
-                                    self::FACTURE_ORIGINE_DR => self::FACTURE_ORIGINE_DR,
-                                    self::FACTURE_ORIGINE_DEGUSTATION => self::FACTURE_ORIGINE_DEGUSTATION,
-                                    self::FACTURE_ORIGINE_CHGTDENOM => self::FACTURE_ORIGINE_CHGTDENOM);
+    public static $origines = array(DRevClient::TYPE_MODEL => DRevClient::TYPE_MODEL,
+                                    'DR' => 'DR',
+                                    'Degustation' => 'Degustation',
+                                    'ChgtDenom' => 'ChgtDenom'
+                                    );
 
     public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
 
@@ -393,17 +382,6 @@ class FactureClient extends acCouchdbClient {
         return $generation;
     }
 
-    private function ttc($p) {
-        return $p + $p * 0.196;
-    }
-
-    public function getTypes() {
-        return array(FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_VINS,
-            FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_RAISINS,
-            FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_ECART,
-            FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_MOUTS);
-    }
-
     public function getProduitsFromTypeLignes($lignes) {
         $produits = array();
         foreach ($lignes as $ligne) {
@@ -423,25 +401,6 @@ class FactureClient extends acCouchdbClient {
 
     public function isRedressable($factureview){
       return !$this->isRedressee($factureview) && $factureview->value[FactureSocieteView::VALUE_STATUT] != self::STATUT_NONREDRESSABLE;
-    }
-
-    public function getTypeLignePdfLibelle($typeLibelle) {
-      if ($typeLibelle == self::FACTURE_LIGNE_MOUVEMENT_TYPE_PROPRIETE)
-	return 'Sorties de propriété';
-      switch ($typeLibelle) {
-      case self::FACTURE_LIGNE_PRODUIT_TYPE_MOUTS:
-	return 'Sorties de contrats moûts';
-
-      case self::FACTURE_LIGNE_PRODUIT_TYPE_RAISINS:
-	return 'Sorties de contrats raisins';
-
-      case self::FACTURE_LIGNE_PRODUIT_TYPE_VINS:
-	return 'Sorties de contrats vins';
-
-      case self::FACTURE_LIGNE_PRODUIT_TYPE_ECART:
-	return 'Sorties raisins et moûts';
-      }
-      return '';
     }
 
     public function createAvoir(Facture $f) {
