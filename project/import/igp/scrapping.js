@@ -17,6 +17,7 @@ mkdirp(destination_file+'04_controles_produits')
 mkdirp(destination_file+'04_controles_produits/commissions')
 mkdirp(destination_file+'05_facturation')
 mkdirp(destination_file+'06_administration')
+mkdirp(destination_file+'06_administration/cepages')
 
 nightmare
 
@@ -997,7 +998,7 @@ nightmare
         console.log(keys);
         for (key in keys) {
           var key = keys[key];
-          var exportFilename = destination_file + "06_administration/cepages_"+key+".html";
+          var exportFilename = destination_file + "06_administration/cepages/cepages_"+key+".html";
           console.log("export " + uri + ": " + exportFilename);
 
           await nightmare
@@ -1005,7 +1006,7 @@ nightmare
                 .wait(1000)
                 .select('#ContentPlaceHolder1_ddlAOC', key)
                 .wait(2000)
-                .html(exportFilename, "HTMLOnly")
+                .html(exportFilename)
                 .screenshot(exportFilename+".png");
         }
       });
