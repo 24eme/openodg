@@ -802,7 +802,12 @@ class degustationActions extends sfActions {
 
     private function redirectIfIsAnonymized(){
       if ($this->degustation->isAnonymized()) {
-          return $this->redirect($this->getRouteEtape($this->degustation->etape),$this->degustation);
+          $etape = $this->getRouteEtape($this->degustation->etape);
+          if (DegustationEtapes::$etapes[$this->degustation->etape] < DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
+              return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS),$this->degustation);
+          } else {
+              return $this->redirect($etape, $this->degustation);
+          }
       }
     }
 
