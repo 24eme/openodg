@@ -597,6 +597,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=2";
       var exportFilename = destination_file+'03_declarations/synthese_revendication_1.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -627,6 +630,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=3";
       var exportFilename = destination_file+'03_declarations/synthese_intention_changement_denomination.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -657,6 +663,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=4";
       var exportFilename = destination_file+'03_declarations/synthese_transaction_vrac_hors_france.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -687,6 +696,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=5";
       var exportFilename = destination_file+'03_declarations/synthese_recolte.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -717,6 +729,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=6";
       var exportFilename = destination_file+'03_declarations/synthese_transaction_vrac_france.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -747,6 +762,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=7";
       var exportFilename = destination_file+'03_declarations/synthese_revendication_2.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -777,6 +795,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=9";
       var exportFilename = destination_file+'03_declarations/synthese_changement_denomination_negociant_igp_non_geree.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -807,6 +828,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=10";
       var exportFilename = destination_file+'03_declarations/synthese_changement_denomination_autre_igp.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -837,6 +861,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=11";
       var exportFilename = destination_file+'03_declarations/synthese_changement_denomination_negociant_medp.xlsx';
       console.log("export " + uri + ": " + exportFilename);
