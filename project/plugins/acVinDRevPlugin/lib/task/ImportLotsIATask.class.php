@@ -369,16 +369,16 @@ EOF;
             return $this->getDocumentDRev($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_CONDITIONNEMENT) {
-            return $this->getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentConditionnement($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_CHANGEMENT_DE_DENOMINATION_NEGOCIANT) {
-            return $this->getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentConditionnement($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_TRANSACTION_VRAC_FRANCE) {
-            return $this->getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
-            return $this->getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
     }
 
