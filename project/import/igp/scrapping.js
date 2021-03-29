@@ -15,6 +15,7 @@ var regroupement = true;
 mkdirp(destination_file+'01_operateurs')
 mkdirp(destination_file+'01_operateurs/fiches_contacts_connexion')
 mkdirp(destination_file+'02_recoltes')
+mkdirp(destination_file+'02_recoltes/syntheses')
 mkdirp(destination_file+'03_declarations')
 mkdirp(destination_file+'04_controles_produits')
 mkdirp(destination_file+'04_controles_produits/commissions')
@@ -385,15 +386,52 @@ nightmare
       return nightmare;
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/SyntheseRecolte.aspx";
-      var exportFilename = destination_file+'02_recoltes/recoltes_syntheses.html';
+      var uri = baseUri+"/Declaration/LstLotRecolteNC.aspx";
+      var exportFilename = destination_file+'02_recoltes/recoltes_non_conforme.html';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
-      .goto(uri)
-      .wait(1000)
-      .html(exportFilename, 'HTMLOnly')
-      .screenshot(exportFilename+".png")
+       .goto(uri)
+       .click('#Button1')
+       .wait(2000)
+       .html(exportFilename, 'HTMLOnly')
+       .screenshot(exportFilename+".png")
+       .refresh()
+  })
+  .then(async function() {
+      var uri = baseUri+"/Declaration/SyntheseRecolte.aspx";
+       await nightmare
+        .goto(uri)
+        .wait('body')
+        .exists("#ddlAnnee")
+        .then(async function (result) {
+            if (!result) {
+                return nightmare;
+            }
+
+            for(var i = 2016; i <= 2020; i++) {
+                var exportFilename = destination_file+'02_recoltes/syntheses/recoltes_syntheses_'+i+'.html';
+                console.log("export " + uri + ": " + exportFilename);
+
+               await nightmare
+               .goto(uri+"?uniqid="+i)
+               .wait(1000)
+               .select('#ddlAnnee',i+"")
+               .wait(1000)
+               .click('#Button1')
+               .wait(3000)
+               .html(exportFilename)
+               .screenshot(exportFilename+".png")
+               .refresh()
+               .catch(error => {
+                 console.error('Search failed:', error)
+               })
+            }
+
+            return nightmare;
+        });
+
+       return nightmare;
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstLots.aspx";
@@ -405,23 +443,6 @@ nightmare
        .select('#ddlCamp','')
        .click('#btnRech')
        .wait(20000)
-       .click('#btnEE')
-       .wait(4000)
-       .download(exportFilename)
-       .screenshot(exportFilename+".png")
-       .refresh()
-  })
-  .then(function() {
-      var uri = baseUri+"/Declaration/LstLots.aspx";
-      var exportFilename = destination_file+'03_declarations/lots_primeur.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-       .goto(uri+"?uniqid=primeur")
-       .select('#ddlCamp','')
-       .select('#ddlPrimeur','true')
-       .click('#btnRech')
-       .wait(10000)
        .click('#btnEE')
        .wait(4000)
        .download(exportFilename)
@@ -466,26 +487,6 @@ nightmare
        .screenshot(exportFilename+".png")
   })
   .then(function() {
-      if(regroupement) {
-        return;
-      }
-      var uri = baseUri+"/Declaration/LstLots.aspx";
-      var exportFilename = destination_file+'03_declarations/lots_changements_primeur.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-       .goto(uri+"?uniqid=primeur")
-       .wait(1000)
-       .select('#ddlCamp','')
-       .select('#ddlDecl', 'C')
-       .select('#ddlPrimeur','true')
-       .click('#btnRech')
-       .wait(10000)
-       .click('#btnEE')
-       .download(exportFilename)
-       .screenshot(exportFilename+".png")
-  })
-  .then(function() {
       var uri = baseUri+"/Declaration/LstChangDen.aspx";
       var exportFilename = destination_file+'03_declarations/changement_denomination.xls';
       console.log("export " + uri + ": " + exportFilename);
@@ -501,6 +502,22 @@ nightmare
       })
   })
   .then(function() {
+      var uri = baseUri+"/Declaration/LstLots.aspx";
+      var exportFilename = destination_file+'03_declarations/lots_primeur.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri+"?uniqid=primeur")
+       .select('#ddlCamp','')
+       .select('#ddlPrimeur','true')
+       .click('#btnRech')
+       .wait(5000)
+       .click('#btnEE')
+       .download(exportFilename)
+       .screenshot(exportFilename+".png")
+       .refresh()
+  })
+  .then(function() {
       var uri = baseUri+"/Declaration/SyntheseDeclassement.aspx";
       var exportFilename = destination_file+'03_declarations/synthese_declassements.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -513,6 +530,26 @@ nightmare
       .catch(error => {
         console.error('Search failed:', error)
       })
+  })
+  .then(function() {
+      if(regroupement) {
+        return;
+      }
+      var uri = baseUri+"/Declaration/LstLots.aspx";
+      var exportFilename = destination_file+'03_declarations/lots_changements_primeur.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri+"?uniqid=primeur")
+       .wait(1000)
+       .select('#ddlCamp','')
+       .select('#ddlDecl', 'C')
+       .select('#ddlPrimeur','true')
+       .click('#btnRech')
+       .wait(5000)
+       .click('#btnEE')
+       .download(exportFilename)
+       .screenshot(exportFilename+".png")
   })
   .then(function() {
     if(regroupement) {
@@ -878,24 +915,24 @@ nightmare
         console.error('Search failed:', error)
       })
   })
-  .then(function() {
-      var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+    .then(function() {
+        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
 
-      return nightmare
-      .goto(uri)
-      .wait('#ddlCommission')
-      .evaluate(function() {
-        var ids = [];
-        document.querySelectorAll('#ddlCommission option').forEach(
-          function(option) {
-            if(!option.value) {
-              return;
+        return nightmare
+        .goto(uri)
+        .wait('#ddlCommission')
+        .evaluate(function() {
+          var ids = [];
+          document.querySelectorAll('#ddlCommission option').forEach(
+            function(option) {
+              if(!option.value) {
+                return;
+              }
+              ids.push(option.value.replace(/ .*$/, ''));
             }
-            ids.push(option.value.replace(/ .*$/, ''));
-          }
-        )
-        return ids;
-      })
+          )
+          return ids;
+        })
       .then(async function(ids) {
         for (key in ids) {
           var id = ids[key];
@@ -911,6 +948,26 @@ nightmare
                 .wait(1000)
                 .click('#btnPVDegust')
                 .download(exportFilename.replace(".html", "")+"_pv.pdf")
+                .refresh()
+                .catch(error => {
+                  console.error('Search failed:', error)
+                })
+        }
+      })
+      .then(async function(ids) {
+        for (key in ids) {
+          var id = ids[key];
+          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
+          console.log("export " + uri + ": " + exportFilename);
+
+          await nightmare
+                .goto(uri+"&uniqid=notif")
+                .wait('body')
+                .click('#gvPrelev_cbxNotifCAll')
+                .wait(1000)
+                .click('#btnImprimer')
+                .download(exportFilename)
                 .catch(error => {
                   console.error('Search failed:', error)
                 })
@@ -1122,6 +1179,9 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/FicheODG.aspx";
        var exportFilename = destination_file+'06_administration/fiche_odg.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -1161,6 +1221,9 @@ nightmare
        })
    })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/LstCepage.aspx";
        var exportFilename = destination_file+'06_administration/cepages.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -1198,6 +1261,9 @@ nightmare
       });
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
      var uri = baseUri+"/odg/LstLogin.aspx";
      var exportFilename = destination_file+'06_administration/personnes.html';
      console.log("export " + uri + ": " + exportFilename);
@@ -1209,6 +1275,9 @@ nightmare
     .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/LstAOC.aspx";
        var exportFilename = destination_file+'06_administration/aoc.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -1293,6 +1362,9 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/Defraiement.aspx";
        var exportFilename = destination_file+'06_administration/comptabilite_parametrage.html';
        console.log("export " + uri + ": " + exportFilename);

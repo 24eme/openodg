@@ -7,8 +7,9 @@ class conditionnementActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_CONDITIONNEMENT, $etablissement);
 
-        $date = $request->getParameter("date", date('Y-m-d'));
-        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $date);
+        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+
         $conditionnement->save();
 
         return $this->redirect('conditionnement_edit', $conditionnement);
@@ -18,8 +19,9 @@ class conditionnementActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $date = $request->getParameter("date", date('Y-m-d'));
-        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $date, true);
+        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, null, true);
+
         $conditionnement->save();
 
         return $this->redirect('conditionnement_edit', $conditionnement);

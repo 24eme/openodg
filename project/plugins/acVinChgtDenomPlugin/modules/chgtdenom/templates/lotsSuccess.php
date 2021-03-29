@@ -4,7 +4,7 @@
     <h2>Changement de dénomination / Déclassement</h2>
     <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
     <?php if(!count($lots)): ?>
-    <p>Aucun lot pour la campagne <?php echo $chgtDenom->campagne ?></p>
+    <p>Aucun lot pour la campagne <?php echo isset($chgtDenom) ? $chgtDenom->campagne : $campagne ?></p>
     <?php else: ?>
       <table class="table table-condensed table-striped">
         <thead>

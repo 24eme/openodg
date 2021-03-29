@@ -312,6 +312,9 @@ EOF;
         for ($i = strlen($data[self::CSV_CVI]) ; $i < 10 ; $i++) {
             $data[self::CSV_CVI] = $data[self::CSV_CVI].'0';
         }
+        if (!intval($data[self::CSV_CVI])) {
+            $data[self::CSV_CVI] = '';
+        }
 
         $key = KeyInflector::slugify(str_replace(" ", "", $data[self::CSV_CVI].$data[self::CSV_RAISON_SOCIALE].$data[self::CSV_NOM]));
 

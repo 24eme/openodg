@@ -157,6 +157,20 @@ class chgtdenomActions extends sfActions
         return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
     }
 
+    public function executeDevalidation(sfWebRequest $request) {
+        $chgtDenom = $this->getRoute()->getChgtDenom();
+        if (!$this->getUser()->isAdmin()) {
+          $this->secure(ChgtDenomSecurity::DEVALIDATION , $chgtDenom);
+        }
+
+        $chgtDenom->devalidate();
+        $chgtDenom->save();
+
+        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+
+        return $this->redirect($this->generateUrl('chgtdenom_edition', $chgtDenom));
+    }
+
     public function executeSuppression(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);

@@ -88,3 +88,13 @@ chgtdenom_declassement_pdf:
     type: object
   requirements:
     sf_method: [get]
+
+chgtdenom_devalidation:
+  url: /changement-denomination/devalidation/:id
+  param: { module: chgtdenom, action: devalidation }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]

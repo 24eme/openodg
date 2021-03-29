@@ -28,7 +28,7 @@ $date = $year.'10-28';
 //Début des tests
 $t->comment("Création d'une Transaction");
 
-$transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $date);
+$transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
 
 $transaction->storeDeclarant();
 $transaction->save();

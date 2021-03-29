@@ -31,7 +31,7 @@ $mydate = $year.'-11-01';
 //Début des tests
 $t->comment("Création d'un Conditionnement");
 
-$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $mydate);
+$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne, $mydate);
 $conditionnement->save();
 
 $t->comment($conditionnement->_id);
