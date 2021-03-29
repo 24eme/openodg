@@ -1160,6 +1160,9 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/FicheODG.aspx";
        var exportFilename = destination_file+'06_administration/fiche_odg.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -1199,6 +1202,9 @@ nightmare
        })
    })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/LstCepage.aspx";
        var exportFilename = destination_file+'06_administration/cepages.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -1236,6 +1242,9 @@ nightmare
       });
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
      var uri = baseUri+"/odg/LstLogin.aspx";
      var exportFilename = destination_file+'06_administration/personnes.html';
      console.log("export " + uri + ": " + exportFilename);
@@ -1247,6 +1256,9 @@ nightmare
     .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/LstAOC.aspx";
        var exportFilename = destination_file+'06_administration/aoc.html';
        console.log("export " + uri + ": " + exportFilename);
@@ -1331,6 +1343,9 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
        var uri = baseUri+"/odg/Defraiement.aspx";
        var exportFilename = destination_file+'06_administration/comptabilite_parametrage.html';
        console.log("export " + uri + ": " + exportFilename);
