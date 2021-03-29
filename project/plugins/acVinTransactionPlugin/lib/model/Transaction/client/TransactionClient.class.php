@@ -1,13 +1,13 @@
 <?php
 
-class ConditionnementClient extends acCouchdbClient {
+class TransactionClient extends acCouchdbClient {
 
-    const TYPE_MODEL = "Conditionnement";
-    const TYPE_COUCHDB = "CONDITIONNEMENT";
+    const TYPE_MODEL = "TRANSACTION";
+    const TYPE_COUCHDB = "TRANSACTION";
 
     public static function getInstance()
     {
-        return acCouchdbManager::getClient("Conditionnement");
+        return acCouchdbManager::getClient("Transaction");
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -61,8 +61,8 @@ class ConditionnementClient extends acCouchdbClient {
     }
 
     public function getIds($periode) {
-        $ids = $this->startkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "0000000000", "00000000"))
-                    ->endkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "ZZZZZZZZZZ", "99999999"))
+        $ids = $this->startkey_docid(sprintf("TRANSACTION-%s-%s", "0000000000", "00000000"))
+                    ->endkey_docid(sprintf("TRANSACTION-%s-%s", "ZZZZZZZZZZ", "99999999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
         $ids_periode = array();
