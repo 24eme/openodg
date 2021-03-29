@@ -25,26 +25,6 @@ class ChgtDenomValidator extends sfValidatorSchema
     	    $hasError = true;
     	}
 
-    	if ($values['changement_quantite'] == 'PART' && !$values['changement_volume']) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_volume');
-    	    $hasError = true;
-    	}
-
-    	if ($values['changement_quantite'] == 'PART' && !$values['changement_numero']) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_numero');
-    	    $hasError = true;
-    	}
-
-    	if ($values['changement_quantite'] == 'PART' && $values['changement_numero'] == $this->obj->getLotOrigine()->numero) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'impossible_numero'), 'changement_numero');
-    	    $hasError = true;
-    	}
-
-    	if ($values['changement_quantite'] == 'PART' && $values['changement_volume'] > $this->obj->getLotOrigine()->volume) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'impossible_volume'), 'changement_volume');
-    	    $hasError = true;
-    	}
-
     	if ($hasError) {
     		throw new sfValidatorErrorSchema($this, $errorSchema);
     	}
