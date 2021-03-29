@@ -121,10 +121,10 @@ EOF;
               $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
             } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE]) && preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
               $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            } elseif(preg_match("/Vinificateur/", $data[self::CSV_ACTIVITE])) {
-              $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-            } else {
+            } elseif(preg_match("/Négociant/", $data[self::CSV_ACTIVITE])) {
               $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+            } else {
+              $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
             }
 
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
