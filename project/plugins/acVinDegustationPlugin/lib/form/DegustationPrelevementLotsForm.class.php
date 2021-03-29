@@ -32,11 +32,11 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         foreach ($this->lots as $key => $lot) {
             $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
 
-            if (array_key_exists($lot->id_document_provenance, $this->dates_degust_drevs) === false) {
-                $doc = acCouchdbManager::getClient()->find($lot->id_document_provenance);
-                $this->dates_degust_drevs[$lot->id_document_provenance] = date('Ymd');
+            if (array_key_exists($lot->id_document, $this->dates_degust_drevs) === false) {
+                $doc = acCouchdbManager::getClient()->find($lot->id_document);
+                $this->dates_degust_drevs[$lot->id_document] = date('Ymd');
                 if($doc->exist("date_degustation_voulue") && DateTime::createFromFormat('Y-m-d', $doc->date_degustation_voulue)){
-                    $this->dates_degust_drevs[$lot->id_document_provenance] = DateTime::createFromFormat('Y-m-d', $doc->date_degustation_voulue)->format('Ymd');
+                    $this->dates_degust_drevs[$lot->id_document] = DateTime::createFromFormat('Y-m-d', $doc->date_degustation_voulue)->format('Ymd');
                 }
             }
         }
@@ -76,7 +76,7 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
                 continue;
             }
 
-            $preleve = ($this->dates_degust_drevs[$lot->id_document_provenance] > $this->getDateDegustation()) ? 0 : 1;
+            $preleve = ($this->dates_degust_drevs[$lot->id_document] > $this->getDateDegustation()) ? 0 : 1;
 
             if(!is_null($this->getObject()->max_lots) && ($this->getObject()->max_lots <= $nbLots)){
                 $preleve = 0;
