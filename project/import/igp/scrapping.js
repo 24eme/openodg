@@ -1,13 +1,16 @@
 var configFile = process.argv.slice(2)[0];
+var regroupement = process.argv.slice(2)[1] == 1;
+
 var Nightmare = require('nightmare');
 require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 const path = require('path');
-var nightmare = Nightmare({ show: true, typeInterval: 1, waitTimeout: 180000, gotoTimeout: 180000, executionTimeout: 180000, timeoutDownloadBeforeStart: 90000, maxDownloadRequestWait: 180000, webPreferences: { preload: path.resolve("pre.js") }});
+var nightmare = Nightmare({ show: true, typeInterval: 1, waitTimeout: 180000, gotoTimeout: 180000, executionTimeout: 180000, timeoutDownloadBeforeStart: 180000, maxDownloadRequestWait: 180000, webPreferences: { preload: path.resolve("pre.js") }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
+var regroupement = true;
 
 mkdirp(destination_file+'01_operateurs')
 mkdirp(destination_file+'01_operateurs/fiches_contacts_connexion')
@@ -67,6 +70,9 @@ nightmare
         .download(exportFilename)
     })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/operateur/AppRaisin.aspx";
       var exportFilename = destination_file+'01_operateurs/apporteurs_de_raisins.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -80,6 +86,9 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/operateur/AppRaisin.aspx?type=etiquettes";
       var exportFilename = destination_file+'01_operateurs/apporteurs_de_raisins_etiquettes.pdf';
       console.log("export " + uri + ": " + exportFilename);
@@ -92,6 +101,9 @@ nightmare
       .download(exportFilename)
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/operateur/AppRaisin.aspx?type=inao";
       var exportFilename = destination_file+'01_operateurs/apporteurs_de_raisins_inao.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -104,6 +116,9 @@ nightmare
       .download(exportFilename)
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/operateur/Adresses.aspx?type=courrier";
       var exportFilename = destination_file+'01_operateurs/addresses_operateurs_courrier.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -116,6 +131,9 @@ nightmare
         .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/operateur/Adresses.aspx?type=facturation";
       var exportFilename = destination_file+'01_operateurs/addresses_operateurs_facturation.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -130,6 +148,9 @@ nightmare
         .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/operateur/Adresses.aspx?type=exploitation";
       var exportFilename = destination_file+'01_operateurs/addresses_operateurs_exploitation.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -144,6 +165,9 @@ nightmare
         .screenshot(exportFilename+".png")
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/operateur/ListeOpCessation.aspx";
       var exportFilename = destination_file+'01_operateurs/operateurs_inactifs.xlsx';
 
@@ -161,6 +185,17 @@ nightmare
                   .screenshot(exportFilename+".png")
               }
           });
+  })
+  .then(function() {
+      var uri = baseUri+"/operateur/SynOperateurR.aspx";
+      var exportFilename = destination_file+'01_operateurs/synthese_operateurs.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+        .goto(uri)
+        .wait(1000)
+        .html(exportFilename, 'HTMLOnly')
+        .screenshot(exportFilename+".png")
   })
   .then(function() {
       var uri = baseUri+"/Administration/FicheContact.aspx";
@@ -325,6 +360,9 @@ nightmare
       .screenshot(exportFilename+".png")
   })
   .then(async function() {
+      if(regroupement) {
+        return;
+      }
       var uri = baseUri+"/Declaration/LstLotRecolte.aspx";
 
       for(var i = 2016; i <= 2020; i++) {
@@ -374,6 +412,26 @@ nightmare
        .refresh()
   })
   .then(function() {
+      var uri = baseUri+"/Declaration/LstLots.aspx";
+      var exportFilename = destination_file+'03_declarations/lots_primeur.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri+"?uniqid=primeur")
+       .select('#ddlCamp','')
+       .select('#ddlPrimeur','true')
+       .click('#btnRech')
+       .wait(10000)
+       .click('#btnEE')
+       .wait(4000)
+       .download(exportFilename)
+       .screenshot(exportFilename+".png")
+       .refresh()
+  })
+  .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/LstDeclaRev.aspx";
       var exportFilename = destination_file+'03_declarations/revendication_vin_apte_au_controle.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -389,6 +447,9 @@ nightmare
        .refresh()
   })
   .then(function() {
+      if(regroupement) {
+        return;
+      }
       var uri = baseUri+"/Declaration/LstLots.aspx";
       var exportFilename = destination_file+'03_declarations/lots_changements.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -398,6 +459,26 @@ nightmare
        .wait(1000)
        .select('#ddlCamp','')
        .select('#ddlDecl', 'C')
+       .click('#btnRech')
+       .wait(10000)
+       .click('#btnEE')
+       .download(exportFilename)
+       .screenshot(exportFilename+".png")
+  })
+  .then(function() {
+      if(regroupement) {
+        return;
+      }
+      var uri = baseUri+"/Declaration/LstLots.aspx";
+      var exportFilename = destination_file+'03_declarations/lots_changements_primeur.xlsx';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri+"?uniqid=primeur")
+       .wait(1000)
+       .select('#ddlCamp','')
+       .select('#ddlDecl', 'C')
+       .select('#ddlPrimeur','true')
        .click('#btnRech')
        .wait(10000)
        .click('#btnEE')
@@ -434,6 +515,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpRev.aspx";
       var exportFilename = destination_file+'03_declarations/synthese_revendication_apte_controle.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -449,6 +533,9 @@ nightmare
       })
   })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/SyntOpRev.aspx";
       var exportFilename = destination_file+'03_declarations/synthese_revendication_apte_controle_changement.xlsx';
       console.log("export " + uri + ": " + exportFilename);
@@ -1017,35 +1104,35 @@ nightmare
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
   })
-  // .then(function() {
-  //     var uri = baseUri+"/Administration/FicheContact.aspx";
-  //
-  //     return nightmare
-  //      .goto(uri)
-  //      .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
-  //      .click('#ContentPlaceHolder1_btnRechercher')
-  //      .wait(2000)
-  //      .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
-  //      .then(async function(total) {
-  //         console.log("Export des " + total + " fiches ayant des identifiants de connexion");
-  //         for(let i=0; i < total; i++) {
-  //           var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
-  //           console.log("export " + uri + ": " + exportFilename);
-  //           await nightmare
-  //           .goto(uri+"?i="+i)
-  //           .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
-  //           .click('#ContentPlaceHolder1_btnRechercher')
-  //           .wait(1500)
-  //           .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
-  //           .wait(1500)
-  //           .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
-  //           .wait(1500)
-  //           .html(exportFilename, "HTMLOnly")
-  //         }
-  //
-  //         return nightmare;
-  //      })
-  //  })
+  .then(function() {
+      var uri = baseUri+"/Administration/FicheContact.aspx";
+
+      return nightmare
+       .goto(uri)
+       .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
+       .click('#ContentPlaceHolder1_btnRechercher')
+       .wait(2000)
+       .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
+       .then(async function(total) {
+          console.log("Export des " + total + " fiches ayant des identifiants de connexion");
+          for(let i=0; i < total; i++) {
+            var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
+            console.log("export " + uri + ": " + exportFilename);
+            await nightmare
+            .goto(uri+"?i="+i)
+            .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
+            .click('#ContentPlaceHolder1_btnRechercher')
+            .wait(1500)
+            .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
+            .wait(1500)
+            .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
+            .wait(1500)
+            .html(exportFilename, "HTMLOnly")
+          }
+
+          return nightmare;
+       })
+   })
   .then(function() {
        var uri = baseUri+"/odg/LstCepage.aspx";
        var exportFilename = destination_file+'06_administration/cepages.html';
