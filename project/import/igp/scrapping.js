@@ -10,7 +10,6 @@ var nightmare = Nightmare({ show: true, typeInterval: 1, waitTimeout: 180000, go
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
-var regroupement = true;
 
 mkdirp(destination_file+'01_operateurs')
 mkdirp(destination_file+'01_operateurs/fiches_contacts_connexion')
@@ -954,6 +953,25 @@ nightmare
                 })
         }
       })
+    })
+    .then(function() {
+        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+
+        return nightmare
+        .goto(uri)
+        .wait('#ddlCommission')
+        .evaluate(function() {
+          var ids = [];
+          document.querySelectorAll('#ddlCommission option').forEach(
+            function(option) {
+              if(!option.value) {
+                return;
+              }
+              ids.push(option.value.replace(/ .*$/, ''));
+            }
+          )
+          return ids;
+        })
       .then(async function(ids) {
         for (key in ids) {
           var id = ids[key];
@@ -962,7 +980,7 @@ nightmare
           console.log("export " + uri + ": " + exportFilename);
 
           await nightmare
-                .goto(uri+"&uniqid=notif")
+                .goto(uri)
                 .wait('body')
                 .click('#gvPrelev_cbxNotifCAll')
                 .wait(1000)
@@ -972,7 +990,7 @@ nightmare
                   console.error('Search failed:', error)
                 })
         }
-      });
+      })
   })
  .then(function() {
      var uri = baseUri+"/commission/SuiviCommission.aspx";
