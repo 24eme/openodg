@@ -8,7 +8,7 @@
 <td><?php echo showProduitLot($lot->getRawValue(), false) ?></td>
 <td class="edit text-right">
   <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
-  <a title="Modifier le volume" href="<?php echo url_for("declaration_doc", ['id' => $lot->id_document_provenance]); ?>">
+  <a title="Modifier le volume" href="<?php echo url_for("declaration_doc", ['id' => $lot->id_document]); ?>">
     <i class="glyphicon glyphicon-share-alt"></i>
   </a>
 </td>
