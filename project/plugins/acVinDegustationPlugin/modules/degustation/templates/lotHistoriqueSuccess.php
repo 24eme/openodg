@@ -32,18 +32,30 @@ endforeach;
         <th class="col-sm-2"></th>
       </thead>
       <tbody>
+        <?php $lastiddate = ''; ?>
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
           <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
+          <?php $class = ($lastiddate == $mouvement->value->document_id.$mouvement->value->date) ? "text-muted": null ; ?>
           <?php $urlEtape = getUrlEtapeFromMvtLot($mouvement); ?>
               <tr>
-                <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
+                <td class="<?php echo $class; ?>">
+                    <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
+                </td>
                 <td>
-                    <a href="<?php echo $url; ?>">
+                    <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
                     <?php echo $mouvement->value->document_type;  ?>
                     </a>
                 </td>
                 <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
-                <td><?php echo showDetailMvtLot($mouvement);  ?></td>
+                <td>
+                    <span class="label label-<?php echo isset(Lot::$statut2label[$mouvement->value->statut]) ? Lot::$statut2label[$mouvement->value->statut] : "default"; ?>">
+                    <?php if ($mouvement->value->detail): ?>
+                        <?php echo $mouvement->value->detail; ?>
+                    <?php else: ?>
+                        <?php echo Lot::$libellesStatuts[$mouvement->value->statut]; ?>
+                    <?php endif; ?>
+                    </span>
+                </td>
                 <td class="text-right">
                     <?php if ($mouvement->value->statut === Lot::STATUT_MANQUEMENT_EN_ATTENTE): ?>
                     <div class="dropdown" style="display: inline-block">
@@ -55,18 +67,18 @@ endforeach;
                         <li><a class="dropdown-item" href="<?php echo url_for('degustation_redeguster', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id, 'back' => 'degustation_manquements')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
                         <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
                         <li><a class="dropdown-item" href="<?php echo url_for('degustation_recours_oc', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  >Recours OC</a></li>
-                        <li class="<?php if(!$mouvement->value->recours_oc): ?> disabled <?php endif; ?>" ><a class="dropdown-item" href="<?php echo url_for('degustation_lot_conforme_appel', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  onclick="return confirm('Confirmez vous la mise en conformité de ce lot en appel ?')" >Conforme en appel</a></li>
-                        <li>&nbsp;</li>
-                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $mouvement->value->declarant_identifiant, 'campagne' => $mouvement->value->campagne, 'numero_dossier' => $mouvement->value->numero_dossier, 'numero_archive' => $mouvement->value->numero_archive)) ?>">Historique</a></li>
+                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_conforme_appel', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  onclick="return confirm('Confirmez vous la mise en conformité de ce lot en appel ?')" >Conforme en appel</a></li>
                       </ul>
                     </div>
-                    <?php endif ?>
-                    <a href="<?php echo $urlEtape; ?>" class="btn btn-default btn-xs">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+                    <?php elseif(!$class): ?>
+                        <a href="<?php echo $urlEtape; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
+                    <?php endif; ?>
+                    <?php $lastiddate = $mouvement->value->document_id.$mouvement->value->date ; ?>
                 </td>
             </tr>
-        <?php endif; endforeach; ?>
-            <tbody>
-            </table>
+            <?php endif; endforeach; ?>
+          <tbody>
+          </table>
           <?php endif; ?>
 
     <div class="row">

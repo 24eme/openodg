@@ -48,7 +48,6 @@ abstract class Lot extends acCouchdbDocumentTree
     const TYPE_ARCHIVE = 'Lot';
 
     public static $libellesStatuts = array(
-        self::STATUT_AFFECTE_DEST => 'Affecte dest',
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
@@ -60,7 +59,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_NONCONFORME_LEVEE => 'Non conformité levée',
         self::STATUT_RECOURS_OC => 'En recours OC',
         self::STATUT_CONFORME_APPEL => 'Conforme en appel',
-        self::STATUT_AFFECTE_SRC => 'Affecte src',
+        self::STATUT_AFFECTE_SRC => 'Affecté à une dégustation',
         self::STATUT_CHANGE => 'Changé',
         self::STATUT_CHANGE_SRC => 'Changé (source)',
         self::STATUT_CHANGE_DEST => 'Changé (destination)',
@@ -77,6 +76,16 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_AFFECTABLE => 'Affectable',
     );
 
+    public static $statut2label = array(
+            Lot::STATUT_REVENDIQUE => "success",
+            Lot::STATUT_CONFORME => "success",
+            Lot::STATUT_PRELEVE => "success",
+            Lot::STATUT_NONCONFORME => "danger",
+            Lot::STATUT_MANQUEMENT_EN_ATTENTE => "primary",
+            Lot::STATUT_RECOURS_OC => "warning",
+            Lot::STATUT_CONFORME_APPEL => "success",
+            Lot::STATUT_DECLASSE => "danger",
+        );
 
     public static $libellesConformites = array(
       self::CONFORMITE_CONFORME => "Conforme",

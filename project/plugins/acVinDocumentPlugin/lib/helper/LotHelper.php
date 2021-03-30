@@ -33,21 +33,6 @@ function showOnlyCepages($lot){
     return $text;
 }
 
-function showDetailMvtLot($mvtLot){
-    $text = "";
-    if(!$mvtLot->value->detail){
-        return '<span class="label label-success">'.Lot::$libellesStatuts[$mvtLot->value->statut].'</span>';
-    }
-    switch ($mvtLot->value->statut) {
-        case Lot::STATUT_NONCONFORME :
-            return '<span class="label label-danger">'.$mvtLot->value->detail.'</span>';
-        case Lot::STATUT_RECOURS_OC :
-            return '<span class="label label-warning">'.$mvtLot->value->detail.'</span>';
-    }
-
-    return '<span class="label label-success">'.$mvtLot->value->detail.'</span>';
-}
-
 function getUrlEtapeFromMvtLot($mvtLot)
 {
     $documentId = $mvtLot->value->document_id;
