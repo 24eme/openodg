@@ -273,19 +273,30 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function getAllPieces() {
     	$pieces = array();
 
-        $libelle = 'Résultat de la dégustation du ' . $this->getDate();
+        $base_libelle = 'Résultat de la dégustation du ' . $this->getDate();
+
+        $declarants = [];
 
         foreach ($this->lots as $lot) {
-            $piece = [
+            if (! $lot->isNonConforme()) {
+                if (in_array($lot->declarant_identifiant, $declarants) === true) {
+                    continue;
+                }
+
+                $declarants[] = $lot->declarant_identifiant;
+                $libelle = $base_libelle . ' - Conformités';
+            } else {
+                $libelle = $base_libelle . ' - Non conformite du lot '. $lot->unique_id;
+            }
+
+            $pieces[] = [
                 'identifiant' => $lot->declarant_identifiant,
                 'date_depot' => $this->validation,
                 'libelle' => $libelle,
                 'mime' => Piece::MIME_PDF,
                 'visibilite' => 1,
-                'source' => null
+                'source' => (! $lot->isNonConforme()) ? 'conforme'.$lot->declarant_identifiant : $lot->unique_id
             ];
-
-            $pieces[] = $piece;
         }
 
     	return $pieces;
@@ -296,7 +307,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function generateUrlPiece($source = null) {
-        return sfContext::getInstance()->getRouting()->generate('degustation_conformite_pdf',  ['id' => $this->_id]);
+        if (strpos($source, 'conforme') === 0) {
+            $url =  'degustation_conformite_pdf' ;
+            $param = ['id' => $this->_id, 'identifiant' => str_replace('conforme', '', $source)];
+        } else {
+            $lot = explode('-', $source);
+            $url = 'degustation_non_conformite_pdf';
+            $param = ['id' => $this->_id, 'lot_dossier' => $lot[2], 'lot_archive' => $lot[3]];
+        }
+        return sfContext::getInstance()->getRouting()->generate($url, $param);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
