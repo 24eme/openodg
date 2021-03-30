@@ -1,0 +1,7 @@
+all:
+  configuration:
+    chgtdenom:
+      specificite_lot: true
+      specificites:
+        bio: "bio"
+        HVE: "HVE"

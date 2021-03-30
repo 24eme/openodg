@@ -368,7 +368,7 @@
     }
 
     $.btn_bsswitch = function() {
-      var switchSelector = '#btn-preleve-all';
+      var switchSelector = '#btn-degustable-all';
       $(switchSelector).bootstrapSwitch();
 
       $(switchSelector).on('switchChange.bootstrapSwitch', function(event, state) {

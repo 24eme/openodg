@@ -24,12 +24,21 @@ function showProduitLot($lot, $specificite_protection = true)
 
 function showOnlyCepages($lot){
   $text = null;
+  if ($lot instanceof stdClass) {
+    $total = $lot->volume;
+    $text .= " <small class='text-muted'>";
+    foreach ($lot->cepages as $cepage => $hl) {
+        $text .= $cepage . ' ' . round(($hl*100)/$total, 2) . "%";
+    }
+    $text .= "</small>";
+  } else {
     if ($lot->cepages) {
       $text .= " <small class='text-muted'>".$lot->getCepagesLibelle()."</small>";
     }
     if($lot->exist("details")) {
         $text .= " <small class='text-muted'>".$lot->details."</small>";
     }
+  }
     return $text;
 }
 

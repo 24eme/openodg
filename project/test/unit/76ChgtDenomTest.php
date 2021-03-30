@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(113);
+$t = new lime_test(114);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -271,6 +271,7 @@ $t->comment("Création d'un Declassement Total");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = $volume;
+$chgtDenom->changement_specificite = "HVE";
 $chgtDenom->validate();
 
 $t->ok($chgtDenom->isTotal(), "Le changement qui a un volume identique est bien un changement total");
@@ -284,6 +285,7 @@ $t->is(count($chgtDenom->lots), 1, "Dans un declassement total, on a bien un seu
 $t->ok(!$chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "le mouvement du lot n'a pas de statut changé dest");
 $t->ok(!$chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGEABLE), "le mouvement de lot n'est pas changeable");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_DECLASSE), "le mouvement de lot indique le déclassement");
+$t->is($chgtDenom->lots->get(0)->specificite, "HVE DECLASSÉ", "le lot a une spécificité HVE DECLASSE");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
