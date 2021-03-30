@@ -1073,84 +1073,84 @@ nightmare
          })
       }
   })
-    // .then(function() {
-    //     var uri = baseUri+"/Analyse/ListeProdNC.aspx";
-    //
-    //     return nightmare
-    //     .goto(uri)
-    //     .wait('#ddlCommission')
-    //     .evaluate(function() {
-    //       var ids = [];
-    //       document.querySelectorAll('#ddlCommission option').forEach(
-    //         function(option) {
-    //           if(!option.value) {
-    //             return;
-    //           }
-    //           ids.push(option.value.replace(/ .*$/, ''));
-    //         }
-    //       )
-    //       return ids;
-    //     })
-    //   .then(async function(ids) {
-    //     for (key in ids) {
-    //       var id = ids[key];
-    //       var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-    //       var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
-    //       console.log("export " + uri + ": " + exportFilename);
-    //
-    //       await nightmare
-    //             .goto(uri)
-    //             .wait('body')
-    //             .html(exportFilename, "HTMLOnly")
-    //             .screenshot(exportFilename+".png")
-    //             .wait(1000)
-    //             .click('#btnPVDegust')
-    //             .download(exportFilename.replace(".html", "")+"_pv.pdf")
-    //             .refresh()
-    //             .catch(error => {
-    //               console.error('Search failed:', error)
-    //             })
-    //     }
-    //   })
-    // })
-  //   .then(function() {
-  //       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
-  //
-  //       return nightmare
-  //       .goto(uri)
-  //       .wait('#ddlCommission')
-  //       .evaluate(function() {
-  //         var ids = [];
-  //         document.querySelectorAll('#ddlCommission option').forEach(
-  //           function(option) {
-  //             if(!option.value) {
-  //               return;
-  //             }
-  //             ids.push(option.value.replace(/ .*$/, ''));
-  //           }
-  //         )
-  //         return ids;
-  //       })
-  //     .then(async function(ids) {
-  //       for (key in ids) {
-  //         var id = ids[key];
-  //         var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-  //         var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
-  //         console.log("export " + uri + ": " + exportFilename);
-  //
-  //         await nightmare
-  //               .goto(uri)
-  //               .wait('body')
-  //               .click('#gvPrelev_cbxNotifCAll')
-  //               .wait(1000)
-  //               .click('#btnImprimer')
-  //               .download(exportFilename)
-  //               .catch(error => {
-  //                 console.error('Search failed:', error)
-  //               })
-  //       }
-  //     })
-  // })
+    .then(function() {
+        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+
+        return nightmare
+        .goto(uri)
+        .wait('#ddlCommission')
+        .evaluate(function() {
+          var ids = [];
+          document.querySelectorAll('#ddlCommission option').forEach(
+            function(option) {
+              if(!option.value) {
+                return;
+              }
+              ids.push(option.value.replace(/ .*$/, ''));
+            }
+          )
+          return ids;
+        })
+      .then(async function(ids) {
+        for (key in ids) {
+          var id = ids[key];
+          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
+          console.log("export " + uri + ": " + exportFilename);
+
+          await nightmare
+                .goto(uri)
+                .wait('body')
+                .html(exportFilename, "HTMLOnly")
+                .screenshot(exportFilename+".png")
+                .wait(1000)
+                .click('#btnPVDegust')
+                .download(exportFilename.replace(".html", "")+"_pv.pdf")
+                .refresh()
+                .catch(error => {
+                  console.error('Search failed:', error)
+                })
+        }
+      })
+    })
+    .then(function() {
+        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+
+        return nightmare
+        .goto(uri)
+        .wait('#ddlCommission')
+        .evaluate(function() {
+          var ids = [];
+          document.querySelectorAll('#ddlCommission option').forEach(
+            function(option) {
+              if(!option.value) {
+                return;
+              }
+              ids.push(option.value.replace(/ .*$/, ''));
+            }
+          )
+          return ids;
+        })
+      .then(async function(ids) {
+        for (key in ids) {
+          var id = ids[key];
+          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
+          console.log("export " + uri + ": " + exportFilename);
+
+          await nightmare
+                .goto(uri)
+                .wait('body')
+                .click('#gvPrelev_cbxNotifCAll')
+                .wait(1000)
+                .click('#btnImprimer')
+                .download(exportFilename)
+                .catch(error => {
+                  console.error('Search failed:', error)
+                })
+        }
+      })
+  })
  .then(function() {
    if(regroupement) {
      return;
