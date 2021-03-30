@@ -142,11 +142,13 @@ EOF;
                 }
                 continue;
             }elseif (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_RECOURS_OC) {
-                $lot->recoursOc();
+                $lot->recoursOc($statut_date);
                 $degust->generateMouvementsLots();
             }elseif (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_LEVEE) {
-                $lot->conformeAppel();
-                $degust->generateMouvementsLots();
+                if (! $lot->id_document_affectation) {
+                    $lot->conformeAppel($statut_date);
+                    $degust->generateMouvementsLots();
+                }
             }
 
             $degust->save();
