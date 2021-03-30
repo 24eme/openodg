@@ -1,6 +1,6 @@
 <?php
 
-class importHabilitationIACsvTask extends sfBaseTask
+class importHabilitationIACsvTask extends importOperateurIACsvTask
 {
 
   const CSV_HABILITATION_RS = 0;
@@ -143,7 +143,7 @@ EOF;
              if (!$data) {
                continue;
              }
-             $eta = $this->identifyEtablissement($data);
+             $eta = $this->identifyEtablissement($data[self::CSV_HABILITATION_RS], $data[self::CSV_HABILITATION_CVI], $data[self::CSV_HABILITATION_CP]);
              if (!$eta) {
                  echo "WARNING: établissement non trouvé ".$line." : pas d'import\n";
                  continue;
@@ -183,45 +183,6 @@ EOF;
                 $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, $statut, $date);
             }
         }
-    }
-
-    protected function identifyEtablissement($data) {
-        $CSV_HABILITATION_CVI = preg_replace('/[^0-9]/', '', $data[self::CSV_HABILITATION_CVI]);
-        for($i = strlen($CSV_HABILITATION_CVI) ; $i < 10 ; $i++) {
-            $CSV_HABILITATION_CVI .= '0';
-        }
-        if (!intval($CSV_HABILITATION_CVI)){
-            $CSV_HABILITATION_CVI = '';
-        }
-        $CSV_HABILITATION_RS = KeyInflector::slugify(trim($data[self::CSV_HABILITATION_RS]));
-        $key_raisonsociale_cvi_codepostal = KeyInflector::slugify($CSV_HABILITATION_RS.$CSV_HABILITATION_CVI.str_replace(' ', '', $data[self::CSV_HABILITATION_CP]));
-        $key_raisonsociale_codepostal = KeyInflector::slugify($CSV_HABILITATION_RS.trim($data[self::CSV_HABILITATION_CP]));
-        foreach ($this->etablissements as $etab) {
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM].$etab->key[EtablissementAllView::KEY_CVI].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_cvi_codepostal) {
-                return EtablissementClient::getInstance()->find($etab->id);
-            }
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::VALUE_RAISON_SOCIALE].$etab->key[EtablissementAllView::KEY_CVI].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_cvi_codepostal) {
-                return EtablissementClient::getInstance()->find($etab->id);
-            }
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_codepostal) {
-                return EtablissementClient::getInstance()->find($etab->id);
-            }
-            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_codepostal) {
-                return EtablissementClient::getInstance()->find($etab->id);
-            }
-        }
-        foreach ($this->etablissements as $etab) {
-            if ($CSV_HABILITATION_CVI && $etab->key[EtablissementAllView::KEY_CVI] == $CSV_HABILITATION_CVI ) {
-                return EtablissementClient::getInstance()->find($etab->id);
-            }
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == $CSV_HABILITATION_RS) {
-                return EtablissementClient::getInstance()->find($etab->id);
-            }
-            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == $CSV_HABILITATION_RS) {
-                return EtablissementClient::getInstance()->find($etab->id);
-            }
-        }
-        return null;
     }
 
     protected function updateHabilitationStatut($identifiant,$produitKey,$data,$statut,$date){
