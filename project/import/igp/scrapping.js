@@ -703,6 +703,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -747,6 +748,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -794,6 +796,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -841,6 +844,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -888,6 +892,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -938,7 +943,7 @@ nightmare
       await nightmare
       .goto(uri)
       .click('#Button1')
-      .wait(1000)
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .refresh()
@@ -954,7 +959,7 @@ nightmare
          .goto(uri+"?uniqid="+i)
          .select('#ddlCampagne',i+"/"+(i+1))
          .click('#Button1')
-         .wait(1000)
+         .wait(2000)
          .html(exportFilename)
          .screenshot(exportFilename+".png")
          .refresh()
@@ -976,7 +981,7 @@ nightmare
          await nightmare
          .goto(uri+"?uniqid="+i)
          .select('#ddlAnnee',i+"/"+(i+1))
-         .wait(1000)
+         .wait(3000)
          .html(exportFilename)
          .screenshot(exportFilename+".png")
          .refresh()
