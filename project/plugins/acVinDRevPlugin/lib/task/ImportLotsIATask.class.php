@@ -220,7 +220,7 @@ EOF;
                 $document->validation = $date;
                 $document->validation_odg = $date;
                 $document->save();
-                echo "Nouvelle modificatrice $previousdoc->_id => $document->_id\n";
+                echo " modificatrice $document->_id créée\n";
             }
 
             if($previousdoc && $document->_id != $previousdoc->_id && !$needModif) {
@@ -338,9 +338,11 @@ EOF;
         if($previousdoc->exist('chais') && ($c = $previousdoc->chais)){
             $chaiStr = $this->constructAddr($c->adresse,$c->code_postal, $c->commune);
             if($chaiStr != $adresse){
+                echo "INFO: adresse de logement $adresse ";
                 return true;
             }
         }
+
         return false;
     }
 

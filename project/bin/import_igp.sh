@@ -78,7 +78,6 @@ xlsx2csv -l '\r\n' -d ";" $DATA_DIR/03_declarations/lots.xlsx | tr -d "\n" | tr 
 sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/03_declarations/lots.csv
 sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/03_declarations/lots.csv
 
-exit;
 php symfony import:lots-ia $DATA_DIR/03_declarations/lots.csv --application="$ODG" --trace
 echo "Import des Changements de denomination"
 
