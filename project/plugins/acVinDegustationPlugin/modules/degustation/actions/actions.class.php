@@ -579,7 +579,7 @@ class degustationActions extends sfActions {
         $lotid = $request->getParameter('lot');
         $back = $request->getParameter('back');
         $this->forward404Unless($back);
-        $doc = acCouchdbManager::getClient()->find($docid);
+        $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
         if (!$lot) {
@@ -594,7 +594,7 @@ class degustationActions extends sfActions {
     public function executeRecoursOc(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
-        $doc = acCouchdbManager::getClient()->find($docid);
+        $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
         if (!$lot) {
@@ -609,7 +609,7 @@ class degustationActions extends sfActions {
     public function executeLotConformeAppel(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
-        $doc = acCouchdbManager::getClient()->find($docid);
+        $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
         if (!$lot) {
