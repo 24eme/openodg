@@ -549,7 +549,7 @@ class degustationActions extends sfActions {
         $this->numero_dossier = $request->getParameter('numero_dossier');
         $this->numero_archive = $request->getParameter('numero_archive');
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissement_identifiant);
-        $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant, $this->campagne, $this->numero_dossier,$this->numero_archive, null, null, true)->rows;
+        $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant, $this->campagne, $this->numero_dossier,$this->numero_archive)->rows;
     }
 
     public function executeList(sfWebRequest $request) {
