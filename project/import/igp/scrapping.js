@@ -230,7 +230,7 @@ nightmare
       return nightmare
         .goto(uri)
         .wait(1000)
-        .html(exportFilename, 'HTMLOnly')
+        .html(exportFilename)
         .screenshot(exportFilename+".png")
         .catch(error => {
           console.error('Search failed:', error)
@@ -310,6 +310,9 @@ nightmare
       })
   })
   .then(function() {
+      if(regroupement) {
+        return;
+      }
       var uri = baseUri+"/Habilitation/SyntheseHab_ODG.aspx";
       var exportFilename = destination_file+'01_operateurs/synthese_habilitations.html';
       console.log("export " + uri + ": " + exportFilename);
@@ -317,7 +320,24 @@ nightmare
       return nightmare
       .goto(uri)
       .wait(1000)
-      .html(exportFilename, 'HTMLOnly')
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
+  })
+  .then(function() {
+      if(!regroupement) {
+        return;
+      }
+      var uri = baseUri+"/operateur/SynHabR.aspx";
+      var exportFilename = destination_file+'01_operateurs/synthese_habilitations.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(1000)
+      .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
         console.error('Search failed:', error)
@@ -455,7 +475,48 @@ nightmare
        .refresh()
   })
   .then(async function() {
+    if(regroupement) {
+      return
+    }
       var uri = baseUri+"/Declaration/SyntheseRecolte.aspx";
+       await nightmare
+        .goto(uri)
+        .wait('body')
+        .exists("#ddlAnnee")
+        .then(async function (result) {
+            if (!result) {
+                return nightmare;
+            }
+
+            for(var i = 2016; i <= 2020; i++) {
+                var exportFilename = destination_file+'02_recoltes/syntheses/recoltes_syntheses_'+i+'.html';
+                console.log("export " + uri + ": " + exportFilename);
+
+               await nightmare
+               .goto(uri+"?uniqid="+i)
+               .wait(1000)
+               .select('#ddlAnnee',i+"")
+               .wait(1000)
+               .click('#Button1')
+               .wait(3000)
+               .html(exportFilename)
+               .screenshot(exportFilename+".png")
+               .refresh()
+               .catch(error => {
+                 console.error('Search failed:', error)
+               })
+            }
+
+            return nightmare;
+        });
+
+       return nightmare;
+  })
+  .then(async function() {
+    if(!regroupement) {
+      return
+    }
+      var uri = baseUri+"/Declaration/SyntheseRecolteR.aspx";
        await nightmare
         .goto(uri)
         .wait('body')
@@ -703,6 +764,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -747,6 +809,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -794,6 +857,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -841,6 +905,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -888,6 +953,7 @@ nightmare
       return nightmare
       .goto(uri)
       .click('#btnRech')
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
@@ -938,7 +1004,7 @@ nightmare
       await nightmare
       .goto(uri)
       .click('#Button1')
-      .wait(1000)
+      .wait(2000)
       .html(exportFilename)
       .screenshot(exportFilename+".png")
       .refresh()
@@ -954,7 +1020,29 @@ nightmare
          .goto(uri+"?uniqid="+i)
          .select('#ddlCampagne',i+"/"+(i+1))
          .click('#Button1')
-         .wait(1000)
+         .wait(2000)
+         .html(exportFilename)
+         .screenshot(exportFilename+".png")
+         .refresh()
+         .catch(error => {
+           console.error('Search failed:', error)
+         })
+      }
+  })
+  .then(async function() {
+    if(!regroupement) {
+      return;
+    }
+      var uri = baseUri+"/Declaration/SyntheseChangDenR.aspx";
+
+      for(var i = 2016; i <= 2020; i++) {
+          var exportFilename = destination_file+'03_declarations/syntheses/changement_denomination_'+i+'.html';
+          console.log("export " + uri + ": " + exportFilename);
+
+         await nightmare
+         .goto(uri+"?uniqid="+i)
+         .select('#ddlAnnee',i+"/"+(i+1))
+         .wait(4000)
          .html(exportFilename)
          .screenshot(exportFilename+".png")
          .refresh()
@@ -976,7 +1064,7 @@ nightmare
          await nightmare
          .goto(uri+"?uniqid="+i)
          .select('#ddlAnnee',i+"/"+(i+1))
-         .wait(1000)
+         .wait(2000)
          .html(exportFilename)
          .screenshot(exportFilename+".png")
          .refresh()
@@ -985,85 +1073,88 @@ nightmare
          })
       }
   })
-    // .then(function() {
-    //     var uri = baseUri+"/Analyse/ListeProdNC.aspx";
-    //
-    //     return nightmare
-    //     .goto(uri)
-    //     .wait('#ddlCommission')
-    //     .evaluate(function() {
-    //       var ids = [];
-    //       document.querySelectorAll('#ddlCommission option').forEach(
-    //         function(option) {
-    //           if(!option.value) {
-    //             return;
-    //           }
-    //           ids.push(option.value.replace(/ .*$/, ''));
-    //         }
-    //       )
-    //       return ids;
-    //     })
-    //   .then(async function(ids) {
-    //     for (key in ids) {
-    //       var id = ids[key];
-    //       var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-    //       var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
-    //       console.log("export " + uri + ": " + exportFilename);
-    //
-    //       await nightmare
-    //             .goto(uri)
-    //             .wait('body')
-    //             .html(exportFilename, "HTMLOnly")
-    //             .screenshot(exportFilename+".png")
-    //             .wait(1000)
-    //             .click('#btnPVDegust')
-    //             .download(exportFilename.replace(".html", "")+"_pv.pdf")
-    //             .refresh()
-    //             .catch(error => {
-    //               console.error('Search failed:', error)
-    //             })
-    //     }
-    //   })
-    // })
-  //   .then(function() {
-  //       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
-  //
-  //       return nightmare
-  //       .goto(uri)
-  //       .wait('#ddlCommission')
-  //       .evaluate(function() {
-  //         var ids = [];
-  //         document.querySelectorAll('#ddlCommission option').forEach(
-  //           function(option) {
-  //             if(!option.value) {
-  //               return;
-  //             }
-  //             ids.push(option.value.replace(/ .*$/, ''));
-  //           }
-  //         )
-  //         return ids;
-  //       })
-  //     .then(async function(ids) {
-  //       for (key in ids) {
-  //         var id = ids[key];
-  //         var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-  //         var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
-  //         console.log("export " + uri + ": " + exportFilename);
-  //
-  //         await nightmare
-  //               .goto(uri)
-  //               .wait('body')
-  //               .click('#gvPrelev_cbxNotifCAll')
-  //               .wait(1000)
-  //               .click('#btnImprimer')
-  //               .download(exportFilename)
-  //               .catch(error => {
-  //                 console.error('Search failed:', error)
-  //               })
-  //       }
-  //     })
-  // })
+    .then(function() {
+        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+
+        return nightmare
+        .goto(uri)
+        .wait('#ddlCommission')
+        .evaluate(function() {
+          var ids = [];
+          document.querySelectorAll('#ddlCommission option').forEach(
+            function(option) {
+              if(!option.value) {
+                return;
+              }
+              ids.push(option.value.replace(/ .*$/, ''));
+            }
+          )
+          return ids;
+        })
+      .then(async function(ids) {
+        for (key in ids) {
+          var id = ids[key];
+          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
+          console.log("export " + uri + ": " + exportFilename);
+
+          await nightmare
+                .goto(uri)
+                .wait('body')
+                .html(exportFilename, "HTMLOnly")
+                .screenshot(exportFilename+".png")
+                .wait(1000)
+                .click('#btnPVDegust')
+                .download(exportFilename.replace(".html", "")+"_pv.pdf")
+                .refresh()
+                .catch(error => {
+                  console.error('Search failed:', error)
+                })
+        }
+      })
+    })
+    .then(function() {
+        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+
+        return nightmare
+        .goto(uri)
+        .wait('#ddlCommission')
+        .evaluate(function() {
+          var ids = [];
+          document.querySelectorAll('#ddlCommission option').forEach(
+            function(option) {
+              if(!option.value) {
+                return;
+              }
+              ids.push(option.value.replace(/ .*$/, ''));
+            }
+          )
+          return ids;
+        })
+      .then(async function(ids) {
+        for (key in ids) {
+          var id = ids[key];
+          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
+          console.log("export " + uri + ": " + exportFilename);
+
+          await nightmare
+                .goto(uri)
+                .wait('body')
+                .click('#gvPrelev_cbxNotifCAll')
+                .wait(1000)
+                .click('#btnImprimer')
+                .download(exportFilename)
+                .catch(error => {
+                  console.error('Search failed:', error)
+                })
+        }
+      })
+  })
  .then(function() {
+   if(regroupement) {
+     return;
+   }
      var uri = baseUri+"/commission/SuiviCommission.aspx";
      var exportFilename = destination_file+'04_controles_produits/commissions_prevues.html';
      console.log("export " + uri + ": " + exportFilename);
@@ -1079,6 +1170,9 @@ nightmare
      .screenshot(exportFilename+".png")
  })
   .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/commission/SuiviCommission.aspx";
       var exportFilename = destination_file+'04_controles_produits/commissions_terminees.html';
       console.log("export " + uri + ": " + exportFilename);
@@ -1095,6 +1189,44 @@ nightmare
       .html(exportFilename)
       .screenshot(exportFilename+".png")
   })
+  .then(function() {
+    if(!regroupement) {
+      return;
+    }
+      var uri = baseUri+"/commission/SuiviCommission_med.aspx";
+      var exportFilename = destination_file+'04_controles_produits/commissions_prevues.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .wait(5000)
+      .select('#ddlAnnee', '')
+      .wait(1000)
+      .click('#Button1')
+      .wait(5000)
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
+  })
+   .then(function() {
+     if(!regroupement) {
+       return;
+     }
+       var uri = baseUri+"/commission/SuiviCommission_med.aspx";
+       var exportFilename = destination_file+'04_controles_produits/commissions_terminees.html';
+       console.log("export " + uri + ": " + exportFilename);
+
+       return nightmare
+       .goto(uri)
+       .wait(5000)
+       .click('#BntTermine')
+       .wait(5000)
+       .select('#ddlAnnee', '')
+       .wait(1000)
+       .click('#Button1')
+       .wait(5000)
+       .html(exportFilename)
+       .screenshot(exportFilename+".png")
+   })
   .then(function() {
       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
       var exportFilename = destination_file+'04_controles_produits/gestion_nc.xlsx';
