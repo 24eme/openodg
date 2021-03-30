@@ -126,7 +126,8 @@ EOF;
             //On exclue de changement antérieure à la revendication
             foreach($mouvementsOrigLot as $mvt) {
                 $date = preg_replace('/(\d+)\/(\d+)\/(\d+)/', '$3-$2-$1', $data[self::CSV_DATE_DECLARATION]);
-                if ($date < $mvt->date) {
+                $date_lot_securite =  date("Y-m-d",strtotime($mvt->date." -6 months"));
+                if ($date < $date_lot_securite) {
                     continue;
                 }
                 $mouvementsLot[] = $mvt;

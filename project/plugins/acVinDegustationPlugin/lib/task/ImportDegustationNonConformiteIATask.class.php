@@ -89,7 +89,7 @@ EOF;
             }
             $produit = $this->produits[$produitKey];
 
-            $etablissement = $this->identifyEtablissement($data);
+            $etablissement = $this->identifyEtablissement($data[self::CSV_RAISON_SOCIALE], $data[self::CSV_CVI], $data[self::CSV_CODE_POSTAL]);
             if (!$etablissement) {
                 echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
                 continue;
@@ -193,32 +193,5 @@ EOF;
         $d= $annee.'-'.$mois.'-'.$jour;
         return $d;
     }
-
-    protected function identifyEtablissement($data) {
-
-        $key = KeyInflector::slugify(str_replace(" ", "", (isset($data[self::CSV_CVI]) ? $data[self::CSV_CVI] : "").$data[self::CSV_RAISON_SOCIALE]));
-
-        if(isset($this->etablissementsCache[$key])) {
-            return $this->etablissementsCache[$key];
-        }
-
-        foreach ($this->etablissements as $etab) {
-            if (isset($data[self::CSV_CVI]) && trim($data[self::CSV_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_CVI])) {
-
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
-                return $this->etablissementsCache[$key];
-            }
-            if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
-                return $this->etablissementsCache[$key];
-            }
-            if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id, acCouchdbClient::HYDRATE_JSON);
-                return $this->etablissementsCache[$key];
-            }
-        }
-        return null;
-    }
-
 
 }
