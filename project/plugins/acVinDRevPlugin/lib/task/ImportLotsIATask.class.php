@@ -376,9 +376,6 @@ EOF;
         for ($i = strlen($data[self::CSV_CVI]) ; $i < 10 ; $i++) {
             $data[self::CSV_CVI] = $data[self::CSV_CVI].'0';
         }
-        if (!intval($data[self::CSV_CVI])) {
-            $data[self::CSV_CVI] = '';
-        }
 
         $key = KeyInflector::slugify(str_replace(" ", "", $data[self::CSV_CVI].$data[self::CSV_RAISON_SOCIALE].$data[self::CSV_NOM]));
 
@@ -436,16 +433,16 @@ EOF;
             return $this->getDocumentDRev($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_CONDITIONNEMENT) {
-            return $this->getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentConditionnement($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_CHANGEMENT_DE_DENOMINATION_NEGOCIANT) {
-            return $this->getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentConditionnement($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_TRANSACTION_VRAC_FRANCE) {
-            return $this->getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
         if ($type == self::TYPE_TRANSACTION_VRAC_HORS_FRANCE) {
-            return $this->getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier);
+            return $this->getDocumentTransaction($previousdoc, $etablissement, $periode, $date, $numeroDossier);
         }
     }
 
@@ -472,10 +469,10 @@ EOF;
         return $drev;
     }
 
-    public function getDocumentConditionnement($previousdoc, $etablissement, $date, $numeroDossier) {
+    public function getDocumentConditionnement($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
         $cond = $previousdoc;
 
-        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
+        $newCond = ConditionnementClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
         $newCond->constructId();
         $newCond->storeDeclarant();
         $newCond->validation = $date;
@@ -491,10 +488,10 @@ EOF;
         return $cond;
     }
 
-    public function getDocumentTransaction($previousdoc, $etablissement, $date, $numeroDossier) {
+    public function getDocumentTransaction($previousdoc, $etablissement, $campagne, $date, $numeroDossier) {
         $trans = $previousdoc;
 
-        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant,  $date);
+        $newTrans = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $date);
         $newTrans->constructId();
         $newTrans->storeDeclarant();
         $newTrans->validation = $date;

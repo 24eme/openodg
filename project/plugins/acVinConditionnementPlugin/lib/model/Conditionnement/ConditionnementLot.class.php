@@ -28,7 +28,7 @@ class ConditionnementLot extends BaseConditionnementLot
     }
 
     public function getDocumentOrdre() {
-
+        $this->_set('document_ordre', '01');
         return "01";
     }
 

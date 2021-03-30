@@ -28,18 +28,18 @@ class ConditionnementClient extends acCouchdbClient {
     }
 
 
-    public function findByIdentifiantAndDateOrCreateIt($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function findByIdentifiantAndDateOrCreateIt($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $doc = $this->findByIdentifiantAndDate($identifiant, $date);
         if (!$doc) {
-            $doc = $this->createDoc($identifiant, $date);
+            $doc = $this->createDoc($identifiant, $campagne, $date);
         }
         return $doc;
     }
 
-    public function createDoc($identifiant, $date, $papier = false)
+    public function createDoc($identifiant, $campagne, $date, $papier = false)
     {
         $doc = new Conditionnement();
-        $doc->initDoc($identifiant, $date);
+        $doc->initDoc($identifiant, $campagne, $date);
 
         $doc->storeDeclarant();
 

@@ -10,15 +10,19 @@ var nightmare = Nightmare({ show: true, typeInterval: 1, waitTimeout: 180000, go
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
 var baseUri = config.web_site_produits.replace("/odg/LstAOC.aspx", "");
-var regroupement = true;
 
 mkdirp(destination_file+'01_operateurs')
 mkdirp(destination_file+'01_operateurs/fiches_contacts_connexion')
 mkdirp(destination_file+'02_recoltes')
 mkdirp(destination_file+'02_recoltes/syntheses')
 mkdirp(destination_file+'03_declarations')
+mkdirp(destination_file+'03_declarations/electroniques')
+mkdirp(destination_file+'03_declarations/traitees')
+mkdirp(destination_file+'03_declarations/syntheses_operateurs')
 mkdirp(destination_file+'04_controles_produits')
 mkdirp(destination_file+'04_controles_produits/commissions')
+mkdirp(destination_file+'04_controles_produits/jures')
+mkdirp(destination_file+'04_controles_produits/tableau_de_bord')
 mkdirp(destination_file+'05_facturation')
 mkdirp(destination_file+'06_administration')
 mkdirp(destination_file+'06_administration/cepages')
@@ -453,8 +457,24 @@ nightmare
     if(regroupement) {
       return;
     }
+      var uri = baseUri+"/Declaration/LstDeclaRevBoth.aspx";
+      var exportFilename = destination_file+'03_declarations/electroniques/revendication_vin_apte_au_controle.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+       .goto(uri)
+       .click('#btnRech')
+       .wait(2000)
+       .html(exportFilename, 'HTMLOnly')
+       .screenshot(exportFilename+".png")
+       .refresh()
+  })
+  .then(function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/Declaration/LstDeclaRev.aspx";
-      var exportFilename = destination_file+'03_declarations/revendication_vin_apte_au_controle.xlsx';
+      var exportFilename = destination_file+'03_declarations/traitees/revendication_vin_apte_au_controle.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -486,9 +506,44 @@ nightmare
        .download(exportFilename)
        .screenshot(exportFilename+".png")
   })
+  .then(async function() {
+      var uri = baseUri+"/Declaration/LstChangDenNT.aspx";
+
+      var statuts = ["En attente", "Validée", "Refusée"];
+      for(key in statuts) {
+         var statut = statuts[key];
+         var exportFilename = destination_file+'03_declarations/electroniques/changement_denomination_'+statut+'.html';
+         console.log("export " + uri + ": " + exportFilename);
+
+         await nightmare
+         .goto(uri+"?campagne="+statut)
+         .wait(1000)
+         .type('#tbNumDos', "' --")
+         .select('#ddlEtatDem',statut)
+         .click('#btnRech')
+         .wait(2000)
+         .html(exportFilename)
+         .screenshot(exportFilename+".png")
+      }
+  })
   .then(function() {
       var uri = baseUri+"/Declaration/LstChangDen.aspx";
-      var exportFilename = destination_file+'03_declarations/changement_denomination.xls';
+      var exportFilename = destination_file+'03_declarations/traitees/changement_denomination.xls';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .select('#ddlCampagne','')
+      .click('#Button1')
+      .download(exportFilename)
+      .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
+  })
+  .then(function() {
+      var uri = baseUri+"/Declaration/SyntOpChangDen.aspx";
+      var exportFilename = destination_file+'03_declarations/synthese_operateurs/changement_denomination.xls';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -556,7 +611,7 @@ nightmare
       return;
     }
       var uri = baseUri+"/Declaration/SyntOpRev.aspx";
-      var exportFilename = destination_file+'03_declarations/synthese_revendication_apte_controle.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/revendication_apte_controle_par_declaration.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -574,7 +629,7 @@ nightmare
       return;
     }
       var uri = baseUri+"/Declaration/SyntOpRev.aspx";
-      var exportFilename = destination_file+'03_declarations/synthese_revendication_apte_controle_changement.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/synthese_revendication_apte_controle_par_changement.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -589,8 +644,22 @@ nightmare
       })
   })
   .then(function() {
+      var uri = baseUri+"/Declaration/LstDeclaNT.aspx?declaId=1";
+      var exportFilename = destination_file+'03_declarations/electroniques/conditionnement.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .click('#btnRech')
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
+  })
+  .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=1";
-      var exportFilename = destination_file+'03_declarations/declaration_conditionnement.xlsx';
+      var exportFilename = destination_file+'03_declarations/traitees/conditionnement.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -605,7 +674,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=1";
-      var exportFilename = destination_file+'03_declarations/synthese_conditionnement.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/conditionnement.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -619,66 +688,14 @@ nightmare
       })
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=2";
-      var exportFilename = destination_file+'03_declarations/declaration_revendication_1.xlsx';
+      var uri = baseUri+"/Declaration/LstDeclaNT.aspx?declaId=4";
+      var exportFilename = destination_file+'03_declarations/electroniques/transaction_vrac_hors_france.html';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btnExcel')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=2";
-      var exportFilename = destination_file+'03_declarations/synthese_revendication_1.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btn_Excel')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=3";
-      var exportFilename = destination_file+'03_declarations/declaration_intention_changement_denomination.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btnExcel')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=3";
-      var exportFilename = destination_file+'03_declarations/synthese_intention_changement_denomination.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btn_Excel')
-      .download(exportFilename)
+      .click('#btnRech')
+      .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
         console.error('Search failed:', error)
@@ -686,7 +703,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=4";
-      var exportFilename = destination_file+'03_declarations/declaration_transaction_vrac_hors_france.xlsx';
+      var exportFilename = destination_file+'03_declarations/traitees/transaction_vrac_hors_france.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -700,11 +717,11 @@ nightmare
       })
   })
   .then(function() {
-    if(regroupement) {
-      return;
-    }
+      if(regroupement) {
+        return;
+      }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=4";
-      var exportFilename = destination_file+'03_declarations/synthese_transaction_vrac_hors_france.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/transaction_vrac_hors_france.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -718,33 +735,14 @@ nightmare
       })
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=5";
-      var exportFilename = destination_file+'03_declarations/declaration_recolte.xlsx';
+      var uri = baseUri+"/Declaration/LstDeclaNT.aspx?declaId=6";
+      var exportFilename = destination_file+'03_declarations/electroniques/transaction_vrac_france.html';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btnExcel')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=5";
-      var exportFilename = destination_file+'03_declarations/synthese_recolte.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btn_Excel')
-      .download(exportFilename)
+      .click('#btnRech')
+      .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
         console.error('Search failed:', error)
@@ -752,7 +750,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=6";
-      var exportFilename = destination_file+'03_declarations/declaration_transaction_vrac_france.xlsx';
+      var exportFilename = destination_file+'03_declarations/traitees/transaction_vrac_france.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -770,7 +768,7 @@ nightmare
       return;
     }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=6";
-      var exportFilename = destination_file+'03_declarations/synthese_transaction_vrac_france.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/transaction_vrac_france.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -784,33 +782,14 @@ nightmare
       })
   })
   .then(function() {
-      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=7";
-      var exportFilename = destination_file+'03_declarations/declaration_revendication_2.xlsx';
+      var uri = baseUri+"/Declaration/LstDeclaNT.aspx?declaId=9";
+      var exportFilename = destination_file+'03_declarations/electroniques/changement_denomination_negociant.html';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btnExcel')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=7";
-      var exportFilename = destination_file+'03_declarations/synthese_revendication_2.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btn_Excel')
-      .download(exportFilename)
+      .click('#btnRech')
+      .html(exportFilename)
       .screenshot(exportFilename+".png")
       .catch(error => {
         console.error('Search failed:', error)
@@ -818,7 +797,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=9";
-      var exportFilename = destination_file+'03_declarations/declaration_changement_denomination_negociant_igp_non_geree.xlsx';
+      var exportFilename = destination_file+'03_declarations/traitees/changement_denomination_negociant.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -836,7 +815,7 @@ nightmare
       return;
     }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=9";
-      var exportFilename = destination_file+'03_declarations/synthese_changement_denomination_negociant_igp_non_geree.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/changement_denomination_negociant.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -850,8 +829,22 @@ nightmare
       })
   })
   .then(function() {
+      var uri = baseUri+"/Declaration/LstDeclaNT.aspx?declaId=10";
+      var exportFilename = destination_file+'03_declarations/electroniques/changement_denomination_autre_igp.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      return nightmare
+      .goto(uri)
+      .click('#btnRech')
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
+  })
+  .then(function() {
       var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=10";
-      var exportFilename = destination_file+'03_declarations/declaration_changement_denomination_autre_igp.xlsx';
+      var exportFilename = destination_file+'03_declarations/traitees/changement_denomination_autre_igp.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -869,7 +862,7 @@ nightmare
       return;
     }
       var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=10";
-      var exportFilename = destination_file+'03_declarations/synthese_changement_denomination_autre_igp.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/changement_denomination_autre_igp.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -882,39 +875,46 @@ nightmare
         console.error('Search failed:', error)
       })
   })
-  .then(function() {
-      var uri = baseUri+"/Declaration/LstDecla.aspx?declaId=11";
-      var exportFilename = destination_file+'03_declarations/declaration_changement_denomination_negociant_med.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btnExcel')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/Declaration/SyntOpDecla.aspx?declaId=11";
-      var exportFilename = destination_file+'03_declarations/synthese_changement_denomination_negociant_medp.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .select('#ddlCampagne','')
-      .click('#btn_Excel')
-      .download(exportFilename)
-      .screenshot(exportFilename+".png")
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
+    // .then(function() {
+    //     var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+    //
+    //     return nightmare
+    //     .goto(uri)
+    //     .wait('#ddlCommission')
+    //     .evaluate(function() {
+    //       var ids = [];
+    //       document.querySelectorAll('#ddlCommission option').forEach(
+    //         function(option) {
+    //           if(!option.value) {
+    //             return;
+    //           }
+    //           ids.push(option.value.replace(/ .*$/, ''));
+    //         }
+    //       )
+    //       return ids;
+    //     })
+    //   .then(async function(ids) {
+    //     for (key in ids) {
+    //       var id = ids[key];
+    //       var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+    //       var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
+    //       console.log("export " + uri + ": " + exportFilename);
+    //
+    //       await nightmare
+    //             .goto(uri)
+    //             .wait('body')
+    //             .html(exportFilename, "HTMLOnly")
+    //             .screenshot(exportFilename+".png")
+    //             .wait(1000)
+    //             .click('#btnPVDegust')
+    //             .download(exportFilename.replace(".html", "")+"_pv.pdf")
+    //             .refresh()
+    //             .catch(error => {
+    //               console.error('Search failed:', error)
+    //             })
+    //     }
+    //   })
+    // })
     .then(function() {
         var uri = baseUri+"/Analyse/ListeProdNC.aspx";
 
@@ -937,32 +937,11 @@ nightmare
         for (key in ids) {
           var id = ids[key];
           var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+".html";
-          console.log("export " + uri + ": " + exportFilename);
-
-          await nightmare
-                .goto(uri)
-                .wait('body')
-                .html(exportFilename, "HTMLOnly")
-                .screenshot(exportFilename+".png")
-                .wait(1000)
-                .click('#btnPVDegust')
-                .download(exportFilename.replace(".html", "")+"_pv.pdf")
-                .refresh()
-                .catch(error => {
-                  console.error('Search failed:', error)
-                })
-        }
-      })
-      .then(async function(ids) {
-        for (key in ids) {
-          var id = ids[key];
-          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
           var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
           console.log("export " + uri + ": " + exportFilename);
 
           await nightmare
-                .goto(uri+"&uniqid=notif")
+                .goto(uri)
                 .wait('body')
                 .click('#gvPrelev_cbxNotifCAll')
                 .wait(1000)
@@ -972,7 +951,7 @@ nightmare
                   console.error('Search failed:', error)
                 })
         }
-      });
+      })
   })
  .then(function() {
      var uri = baseUri+"/commission/SuiviCommission.aspx";
@@ -1020,37 +999,6 @@ nightmare
       .download(exportFilename)
       .screenshot(exportFilename+".png")
   })
-/*  .then(function() {
-      var uri = baseUri+"/commission/JuresConv.aspx";
-       nightmare
-        .goto(uri)
-        .wait('body')
-        .exists("#ddlCampagne")
-        .then(function (result) {
-            if (!result) {
-                return nightmare;
-            }
-
-            for(var i = 2016; i <= 2020; i++) {
-               var exportFilename = destination_file+'jures_convoque_'+i+'.xlsx';
-               console.log("export " + uri + ": " + exportFilename);
-
-               nightmare
-               .goto(uri+"?campagne="+i)
-               .wait(2000)
-               .select('#ddlCampagne',i+"")
-               .click('#btnResearch')
-               .wait(3000)
-               .click('#btnExportExcel')
-               .download(exportFilename)
-               .screenshot(exportFilename+".png")
-               .refresh()
-               .wait(2000)
-            }
-        });
-
-       return nightmare;
-  })*/
   .then(function() {
       var uri = baseUri+"/Facture/SuiviReglement.aspx";
       var exportFilename = destination_file+'05_facturation/reglements_remises.pdf';
@@ -1072,32 +1020,47 @@ nightmare
         console.error('Search failed:', error)
       })
   })
-  .then(function() {
+  .then(async function() {
+    if(regroupement) {
+      return;
+    }
+      var uri = baseUri+"/commission/JuresConv.aspx";
+
+      for(var i = 2016; i <= 2020; i++) {
+         var exportFilename = destination_file+'04_controles_produits/jures/jures_convoque_'+i+'.xlsx';
+         console.log("export " + uri + ": " + exportFilename);
+
+         await nightmare
+         .goto(uri+"?campagne="+i)
+         .wait(2000)
+         .select('#ddlCampagne',i+"")
+         .click('#btnResearch')
+         .wait(3000)
+         .click('#btnExportExcel')
+         .download(exportFilename)
+         .screenshot(exportFilename+".png")
+       }
+  })
+  .then(async function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/commission/DefraiementJures.aspx";
-       nightmare
-        .goto(uri)
-        .wait('body')
-        .exists("#ddlCampagne")
-        .then(async function (result) {
-            if (!result) {
-                return nightmare;
-            }
 
-            for(var i = 2016; i <= 2020; i++) {
-               var exportFilename = destination_file+'05_facturation/defraiement_jures'+i+'.xlsx';
-               console.log("export " + uri + ": " + exportFilename);
+      for(var i = 2016; i <= 2020; i++) {
+         var exportFilename = destination_file+'04_controles_produits/jures/jures_defraiement'+i+'.xlsx';
+         console.log("export " + uri + ": " + exportFilename);
 
-               await nightmare
-               .goto(uri+"?campagne="+i)
-               .select('#ddlCampagne',i+"")
-               .wait(3000)
-               .click('#btnExportExcel')
-               .download(exportFilename)
-               .screenshot(exportFilename+".png")
-               .refresh()
-               .wait(2000)
-            }
-        });
+         await nightmare
+         .goto(uri+"?campagne="+i)
+         .select('#ddlCampagne',i+"")
+         .wait(3000)
+         .click('#btnExportExcel')
+         .download(exportFilename)
+         .screenshot(exportFilename+".png")
+         .refresh()
+         .wait(2000)
+      }
 
        return nightmare;
   })
@@ -1191,35 +1154,35 @@ nightmare
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
   })
-  .then(function() {
-      var uri = baseUri+"/Administration/FicheContact.aspx";
-
-      return nightmare
-       .goto(uri)
-       .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
-       .click('#ContentPlaceHolder1_btnRechercher')
-       .wait(2000)
-       .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
-       .then(async function(total) {
-          console.log("Export des " + total + " fiches ayant des identifiants de connexion");
-          for(let i=0; i < total; i++) {
-            var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
-            console.log("export " + uri + ": " + exportFilename);
-            await nightmare
-            .goto(uri+"?i="+i)
-            .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
-            .click('#ContentPlaceHolder1_btnRechercher')
-            .wait(1500)
-            .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
-            .wait(1500)
-            .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
-            .wait(1500)
-            .html(exportFilename, "HTMLOnly")
-          }
-
-          return nightmare;
-       })
-   })
+  // .then(function() {
+  //     var uri = baseUri+"/Administration/FicheContact.aspx";
+  //
+  //     return nightmare
+  //      .goto(uri)
+  //      .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom --")
+  //      .click('#ContentPlaceHolder1_btnRechercher')
+  //      .wait(2000)
+  //      .evaluate(function() { return document.querySelector('#ContentPlaceHolder1_NbLignes').innerHTML.replace(/[^0-9]*([0-9]+)[^0-9]*/, '$1'); })
+  //      .then(async function(total) {
+  //         console.log("Export des " + total + " fiches ayant des identifiants de connexion");
+  //         for(let i=0; i < total; i++) {
+  //           var exportFilename = destination_file+'01_operateurs/fiches_contacts_connexion/contact_'+i+'html';
+  //           console.log("export " + uri + ": " + exportFilename);
+  //           await nightmare
+  //           .goto(uri+"?i="+i)
+  //           .type('#ContentPlaceHolder1_tbNom', "' AND password != '' ORDER BY Nom OFFSET "+i+" ROWS FETCH NEXT 1 ROWS ONLY --")
+  //           .click('#ContentPlaceHolder1_btnRechercher')
+  //           .wait(1500)
+  //           .click('#ContentPlaceHolder1_gvPersonne_btnModifier_0')
+  //           .wait(1500)
+  //           .goto(baseUri+"/Administration/FichePersonnel.aspx?TP=1")
+  //           .wait(1500)
+  //           .html(exportFilename, "HTMLOnly")
+  //         }
+  //
+  //         return nightmare;
+  //      })
+  //  })
   .then(function() {
     if(regroupement) {
       return;
