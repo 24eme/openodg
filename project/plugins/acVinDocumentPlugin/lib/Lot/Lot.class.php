@@ -675,7 +675,7 @@ abstract class Lot extends acCouchdbDocumentTree
     public function buildMouvement($statut, $detail = null, $date = null, $numero_archive_incremente = false) {
         $mouvement = $this->getMouvementFreeInstance();
 
-        $if (!$date) {
+        if (!$date) {
             $date = $this->date;
         }
         $mouvement->date = $date;
