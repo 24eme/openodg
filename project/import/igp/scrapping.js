@@ -19,6 +19,7 @@ mkdirp(destination_file+'03_declarations')
 mkdirp(destination_file+'03_declarations/electroniques')
 mkdirp(destination_file+'03_declarations/traitees')
 mkdirp(destination_file+'03_declarations/syntheses_operateurs')
+mkdirp(destination_file+'03_declarations/syntheses')
 mkdirp(destination_file+'04_controles_produits')
 mkdirp(destination_file+'04_controles_produits/commissions')
 mkdirp(destination_file+'04_controles_produits/jures')
@@ -574,7 +575,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntheseDeclassement.aspx";
-      var exportFilename = destination_file+'03_declarations/synthese_declassements.xlsx';
+      var exportFilename = destination_file+'03_declarations/syntheses/declassements.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
@@ -875,6 +876,64 @@ nightmare
         console.error('Search failed:', error)
       })
   })
+  .then(async function() {
+    if(regroupement) {
+      return;
+    }
+      var uri = baseUri+"/Declaration/SyntheseChangDen.aspx";
+      var exportFilename = destination_file+'03_declarations/syntheses/changement_denomination_tous.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      await nightmare
+      .goto(uri)
+      .click('#Button1')
+      .wait(1000)
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
+      .refresh()
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
+
+      for(var i = 2016; i <= 2020; i++) {
+          var exportFilename = destination_file+'03_declarations/syntheses/changement_denomination_'+i+'.html';
+          console.log("export " + uri + ": " + exportFilename);
+
+         await nightmare
+         .goto(uri+"?uniqid="+i)
+         .select('#ddlCampagne',i+"/"+(i+1))
+         .click('#Button1')
+         .wait(1000)
+         .html(exportFilename)
+         .screenshot(exportFilename+".png")
+         .refresh()
+         .catch(error => {
+           console.error('Search failed:', error)
+         })
+      }
+  })
+  .then(async function() {
+    if(regroupement) {
+      return;
+    }
+      var uri = baseUri+"/Declaration/BilanAnnuelDeclaratif.aspx";
+
+      for(var i = 2018; i <= 2020; i++) {
+          var exportFilename = destination_file+'03_declarations/syntheses/bilan_annuel'+i+'.html';
+          console.log("export " + uri + ": " + exportFilename);
+
+         await nightmare
+         .goto(uri+"?uniqid="+i)
+         .select('#ddlAnnee',i+"/"+(i+1))
+         .wait(1000)
+         .html(exportFilename)
+         .screenshot(exportFilename+".png")
+         .refresh()
+         .catch(error => {
+           console.error('Search failed:', error)
+         })
+      }
+  })
     // .then(function() {
     //     var uri = baseUri+"/Analyse/ListeProdNC.aspx";
     //
@@ -915,44 +974,44 @@ nightmare
     //     }
     //   })
     // })
-    .then(function() {
-        var uri = baseUri+"/Analyse/ListeProdNC.aspx";
-
-        return nightmare
-        .goto(uri)
-        .wait('#ddlCommission')
-        .evaluate(function() {
-          var ids = [];
-          document.querySelectorAll('#ddlCommission option').forEach(
-            function(option) {
-              if(!option.value) {
-                return;
-              }
-              ids.push(option.value.replace(/ .*$/, ''));
-            }
-          )
-          return ids;
-        })
-      .then(async function(ids) {
-        for (key in ids) {
-          var id = ids[key];
-          var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
-          var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
-          console.log("export " + uri + ": " + exportFilename);
-
-          await nightmare
-                .goto(uri)
-                .wait('body')
-                .click('#gvPrelev_cbxNotifCAll')
-                .wait(1000)
-                .click('#btnImprimer')
-                .download(exportFilename)
-                .catch(error => {
-                  console.error('Search failed:', error)
-                })
-        }
-      })
-  })
+  //   .then(function() {
+  //       var uri = baseUri+"/Analyse/ListeProdNC.aspx";
+  //
+  //       return nightmare
+  //       .goto(uri)
+  //       .wait('#ddlCommission')
+  //       .evaluate(function() {
+  //         var ids = [];
+  //         document.querySelectorAll('#ddlCommission option').forEach(
+  //           function(option) {
+  //             if(!option.value) {
+  //               return;
+  //             }
+  //             ids.push(option.value.replace(/ .*$/, ''));
+  //           }
+  //         )
+  //         return ids;
+  //       })
+  //     .then(async function(ids) {
+  //       for (key in ids) {
+  //         var id = ids[key];
+  //         var uri = baseUri+"/commission/VisuCommission.aspx?IdCommission="+id;
+  //         var exportFilename = destination_file + "04_controles_produits/commissions/commission_"+id+"_notif.pdf";
+  //         console.log("export " + uri + ": " + exportFilename);
+  //
+  //         await nightmare
+  //               .goto(uri)
+  //               .wait('body')
+  //               .click('#gvPrelev_cbxNotifCAll')
+  //               .wait(1000)
+  //               .click('#btnImprimer')
+  //               .download(exportFilename)
+  //               .catch(error => {
+  //                 console.error('Search failed:', error)
+  //               })
+  //       }
+  //     })
+  // })
  .then(function() {
      var uri = baseUri+"/commission/SuiviCommission.aspx";
      var exportFilename = destination_file+'04_controles_produits/commissions_prevues.html';
@@ -1019,6 +1078,40 @@ nightmare
       .catch(error => {
         console.error('Search failed:', error)
       })
+  })
+  .then(async function() {
+    if(regroupement) {
+      return;
+    }
+      var uri = baseUri+"/Analyse/TableauBordControleP.aspx";
+      var exportFilename = destination_file+'04_controles_produits/tableau_de_bord/tous.html';
+      console.log("export " + uri + ": " + exportFilename);
+
+      await nightmare
+      .goto(uri)
+      .wait(1000)
+      .html(exportFilename)
+      .screenshot(exportFilename+".png")
+      .refresh()
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
+
+      for(var i = 2016; i <= 2020; i++) {
+          var exportFilename = destination_file+'04_controles_produits/tableau_de_bord/'+i+'.html';
+          console.log("export " + uri + ": " + exportFilename);
+
+         await nightmare
+         .goto(uri+"?uniqid="+i)
+         .select('#ddlAnnee',i+"/"+(i+1))
+         .wait(1500)
+         .html(exportFilename)
+         .screenshot(exportFilename+".png")
+         .refresh()
+         .catch(error => {
+           console.error('Search failed:', error)
+         })
+      }
   })
   .then(async function() {
     if(regroupement) {
