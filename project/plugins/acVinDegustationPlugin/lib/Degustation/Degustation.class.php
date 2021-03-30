@@ -261,6 +261,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 default:
                     break;
             }
+			if ($lot->isChange()) {
+				continue;
+			}
 			if ($lot->isAffecte()) {
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, ($lot->getNombrePassage() + 1).'ème passage'));
 			}elseif($lot->isAffectable()) {
