@@ -74,11 +74,11 @@ php symfony import:interlocuteur-ia $DATA_DIR/06_administration/membres.csv --ap
 
 echo "Import Lots"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/03_declarations/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 14,14 -k 24,24 > $DATA_DIR/03_declarations/lots.csv # tri identifiant, campagne, type
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/03_declarations/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 14,14 -k 24,24 -k 34,38 > $DATA_DIR/03_declarations/lots.csv # tri identifiant, campagne, type
 sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/03_declarations/lots.csv
 sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/03_declarations/lots.csv
-php symfony import:lots-ia $DATA_DIR/03_declarations/lots.csv --application="$ODG" --trace
 
+php symfony import:lots-ia $DATA_DIR/03_declarations/lots.csv --application="$ODG" --trace
 echo "Import des Changements de denomination"
 
 cat $DATA_DIR/03_declarations/changement_denomination.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' > $DATA_DIR/03_declarations/changement_denomination.csv
