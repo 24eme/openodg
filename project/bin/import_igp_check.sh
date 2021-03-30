@@ -27,6 +27,14 @@ then
         echo "IGP13;ERROR;La Dégustation 20-08 n'a pas 48 lots"
     fi
 
+fi
 
+if test $ODG = "igploire"
+then
+
+    if test $(curl -s localhost:5984/openodg_import/_design/compte/_view/tags | grep negociant | grep ETABLISSEMENT | wc -l) != 128
+    then
+        echo "IGPLOIRE;ERROR;128 négociants"
+    fi
 
 fi
