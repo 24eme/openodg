@@ -8,17 +8,6 @@
             return;
         }
 
-        $('#btn-preleve-all').on('click', function (event) {
-          $('.bsswitch').each(function(index, element) {
-            $(element).bootstrapSwitch('state', true)
-          })
-        })        
-
-        $('#btn-depreleve-all').on('click', function (event) {
-          $('.bsswitch').each(function(index, element) {
-            $(element).bootstrapSwitch('state', false)
-          })
-        })
 
         $('div.checkboxlots input[type="checkbox"]').click(function(e){
           e.preventDefault();
@@ -171,10 +160,27 @@
 
     }
 
+    $.btn_bsswitch = function() {
+      var switchSelector = '#btn-preleve-all';
+      $(switchSelector).bootstrapSwitch();
+       
+      $(switchSelector).on('switchChange.bootstrapSwitch', function(event, state) {
+
+        $('.bsswitch:not("'+switchSelector+'")').each(function(index, element) {
+
+          if(state){
+            $(element).bootstrapSwitch('state', true)
+          }else{
+            $(element).bootstrapSwitch('state', false)
+          }
+        })
+      })
+    }
+
     _doc.ready(function()
     {
         $.initLots();
-
+        $.btn_bsswitch();
     });
 
 })(jQuery);
