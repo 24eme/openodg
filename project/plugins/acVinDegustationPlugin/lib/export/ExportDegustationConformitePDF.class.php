@@ -6,10 +6,12 @@ class ExportDegustationConformitePDF extends ExportPDF {
     protected $etablissement = null;
     protected $adresse;
     protected $responsable;
+    protected $coordonnees;
 
     public function __construct($degustation,$etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
+        $this->coordonnees = $this->degustation->getCoordonnees();
         $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
         $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
 
@@ -30,7 +32,8 @@ class ExportDegustationConformitePDF extends ExportPDF {
                 $lots[] = $lot;
             }
         }
-        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots, 'responsable' => $this->responsable)));
+        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
+        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots, 'responsable' => $this->responsable)));
       }
 
 
@@ -53,12 +56,14 @@ class ExportDegustationConformitePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $title = '';
+        $title = $this->degustation->getNomOrganisme();
         return $title;
     }
 
     protected function getFooterText() {
-        return sprintf("%s     %s - %s  %s    %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone'], $this->adresse['email']);
+        return $this->degustation->getNomOrganisme()." — ".$this->coordonnees['adresse']
+        ." ". $this->coordonnees['ville'] ." ". $this->coordonnees['code_postal']
+         ." ". $this->coordonnees['telephone'] ." ". $this->coordonnees['email'];
     }
 
     protected function getHeaderSubtitle() {

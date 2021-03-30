@@ -1,5 +1,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
+<?php use_helper('Lot') ?>
+
 <div class="page-header">
     <h2>Changement de dénomination / Déclassement</h2>
     <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
@@ -26,7 +28,7 @@
             <td><?php echo $lot->numero_archive; ?></td>
             <td><a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>"><?php echo $lot->type_document; ?></a></td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
-            <td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php foreach($lot->cepages->getRawValue() as $cepage => $hl): echo "$cepage ";  endforeach ?></small></td>
+            <td><?php echo $lot->produit_libelle; ?>&nbsp;<small class="text-muted"><?php echo showOnlyCepages($lot->getRawValue()) ?></small></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
             <td><a href="<?php echo url_for("chgtdenom_create_lot", array("sf_subject" => $etablissement, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
