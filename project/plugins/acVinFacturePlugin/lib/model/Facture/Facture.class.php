@@ -39,7 +39,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $configs = sfConfig::get('app_facture_emetteur');
         $emetteur = new stdClass();
 
-        $this->region = 'IGPGASCOGNE';
+        $this->region = strtoupper(sfConfig::get('sf_app'));
 
         if (!array_key_exists($this->region, $configs))
             throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
