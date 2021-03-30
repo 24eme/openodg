@@ -349,22 +349,13 @@ class conditionnementActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
         $conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::PDF, $conditionnement);
-
-        if (!$conditionnement->validation) {
-            $conditionnement->cleanDoc();
-        }
-
-        $this->document = new ExportConditionnementPdf($conditionnement, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportConditionnementPdf($conditionnement, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
-
         if ($request->getParameter('force')) {
             $this->document->removeCache();
         }
-
         $this->document->generate();
-
         $this->document->addHeaders($this->getResponse());
-
         return $this->renderText($this->document->output());
     }
 

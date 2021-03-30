@@ -345,22 +345,13 @@ class transactionActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
         $transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::PDF, $transaction);
-
-        if (!$transaction->validation) {
-            $transaction->cleanDoc();
-        }
-
-        $this->document = new ExportTransactionPdf($transaction, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportTransactionPdf($transaction, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
-
         if ($request->getParameter('force')) {
             $this->document->removeCache();
         }
-
         $this->document->generate();
-
         $this->document->addHeaders($this->getResponse());
-
         return $this->renderText($this->document->output());
     }
 
