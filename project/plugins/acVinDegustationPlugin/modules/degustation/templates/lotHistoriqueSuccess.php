@@ -70,7 +70,7 @@ endforeach;
                         <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_conforme_appel', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  onclick="return confirm('Confirmez vous la mise en conformité de ce lot en appel ?')" >Conforme en appel</a></li>
                       </ul>
                     </div>
-                    <?php elseif(!$class): ?>
+                    <?php else: ?>
                         <a href="<?php echo $urlEtape; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
                     <?php endif; ?>
                     <?php $lastiddate = $mouvement->value->document_id.$mouvement->value->date ; ?>
