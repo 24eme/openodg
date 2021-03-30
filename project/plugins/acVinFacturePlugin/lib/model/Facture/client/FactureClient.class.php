@@ -184,6 +184,40 @@ class FactureClient extends acCouchdbClient {
         return $facture;
     }
 
+    /** facturation par mvts **/
+    public function createDocFromView($mouvements, $societe, $date_facturation = null, $message_communication = null) {
+        $facture = new Facture();
+        $facture->storeDatesCampagne($date_facturation);
+
+        $compte = $societe->getMasterCompte();
+
+        $facture->constructIds($compte);
+        $facture->storeEmetteur();
+        $facture->storeDeclarant($compte);
+
+        foreach ($mouvements as $identifiant => $mvt) {
+            $facture->storeLignesByMouvementsView($mvt);
+        }
+
+        $facture->updateTotaux();
+
+        if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
+            $facture->add('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
+        }
+        //$facture->arguments = $arguments;
+        if(trim($message_communication)) {
+          $facture->addOneMessageCommunication($message_communication);
+        }
+        if(FactureConfiguration::getInstance()->hasPaiements()){
+          $facture->add("paiements",array());
+        }
+
+        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+          return null;
+        }
+        return $facture;
+    }
+
     public function regenerate($facture_or_id) {
         $facture = $facture_or_id;
 
@@ -263,7 +297,7 @@ class FactureClient extends acCouchdbClient {
           $date_mouvement = Date::getIsoDateFromFrenchDate($parameters['date_mouvement']);
           foreach ($mouvementsBySoc as $identifiant => $mouvements) {
               foreach ($mouvements as $key => $mouvement) {
-                      $farDateMvt = $this->getGreatestDate($mouvement->value[MouvementFactureView::VALUE_DATE]);
+                      $farDateMvt = $this->getGreatestDate($mouvement->key[MouvementFactureView::KEY_DATE]);
                       if(Date::sup($farDateMvt,$date_mouvement)) {
   		                    unset($mouvements[$key]);
                           $mouvementsBySoc[$identifiant] = $mouvements;
@@ -275,7 +309,7 @@ class FactureClient extends acCouchdbClient {
                           $mouvementsBySoc[$identifiant] = $mouvements;
                           continue;
                       }
-
+//TODO : ajouter l'origine mvt dans vue
                       if(isset($parameters['type_document']) && $parameters['type_document'] != $mouvement->key[MouvementFactureView::KEYS_ORIGIN]) {
                         unset($mouvements[$key]);
                         $mouvementsBySoc[$identifiant] = $mouvements;
@@ -283,37 +317,44 @@ class FactureClient extends acCouchdbClient {
                       }
               }
           }
-        }
-        foreach ($mouvementsBySoc as $identifiant => $mouvements) {
-            $somme = 0;
-            foreach ($mouvements as $key => $mouvement) {
-                $prix = $mouvement->value[MouvementFactureView::VALUE_VOLUME] * $mouvement->value[MouvementFactureView::VALUE_CVO];
-                if(!$prix) {
-                  unset($mouvementsBySoc[$identifiant][$key]);
-                  continue;
-                }
-                $somme += $prix;
-            }
-	          $somme = $somme * -1;
-            $somme = $this->ttc($somme);
-
-            if(count($mouvementsBySoc[$identifiant]) == 0) {
-              $mouvementsBySoc[$identifiant] = null;
-            }
-
-            if (isset($parameters['seuil']) && $parameters['seuil']) {
-                if (($somme < $parameters['seuil']) && ($somme >= 0)) {
-                    $mouvementsBySoc[$identifiant] = null;
-                }
-          }
-
       }
       $mouvementsBySoc = $this->cleanMouvementsBySoc($mouvementsBySoc);
       return $mouvementsBySoc;
     }
 
+
+    public function createFacturesBySoc($generationFactures, $date_facturation, $message_communication = null, $generation = null) {
+      if(!$generation){
+          $generation = new Generation();
+          $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+      }
+
+      //$generation->date_emission = date('Y-m-d-H:i');
+      $generation->documents = array();
+      $generation->somme = 0;
+      $cpt = 0;
+
+      foreach ($generationFactures as $societeID => $mouvementsSoc) {
+          $societe = SocieteClient::getInstance()->find($societeID);
+
+          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation,$message_communication);
+          $f->save();
+          $generation->somme += $f->total_ttc;
+          $generation->add('documents')->add($cpt, $f->_id);
+          $cpt++;
+      }
+
+      return $generation;
+  }
+
     public function getComptesIdFilterWithParameters($arguments) {
         $ids = array();
+        if($arguments['compte']){
+
+            //TODO: il faudra gérer le multi etb
+            $ids[] = $arguments['compte'];
+            return $ids;
+        }
         if(!$arguments['requete'] && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
           $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
           foreach($comptes as $compte) {

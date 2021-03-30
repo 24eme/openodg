@@ -144,7 +144,12 @@ class fichierActions extends sfActions
 		$this->societe = $this->etablissement->getSociete();
 		$this->secureEtablissement($this->etablissement);
 
-		$this->year = $request->getParameter('annee', 0);
+		$this->campagne = $request->getParameter('campagne', 0);
+        if ($this->campagne) {
+            $startdate = ($this->campagne) ? substr($this->campagne, 0, 4) : null;
+            $enddate = ($this->campagne) ? substr($this->campagne, -4, 4) : null;
+        }
+
 		$this->category = $request->getParameter('categorie');
 
 		$this->categoriesLimitation = $this->getCategoriesLimitation();
@@ -162,16 +167,24 @@ class fichierActions extends sfActions
 										$piecesSocietes
 									);
 
-		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, $this->year.'-01-01', $this->year.'-12-31', $this->categoriesLimitation) : $allHistory;
+		$this->history = ($this->campagne)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, $startdate.'-08-01', $enddate.'-07-31', $this->categoriesLimitation) : $allHistory;
 
-		$this->years = array();
+		$this->campagnes = array();
 		$this->categories = array();
 		$this->decreases = 0;
 		foreach ($allHistory as $doc) {
-			if (preg_match('/^([0-9]{4})-[0-9]{2}-[0-9]{2}$/', $doc->key[PieceAllView::KEYS_DATE_DEPOT], $m)) {
-				$this->years[$m[1]] = $m[1];
-			}
-			if ($this->year && (!isset($m[1]) || $m[1] != $this->year)) { continue; }
+            $date = DateTime::createFromFormat('Y-m-d', $doc->key[PieceAllView::KEYS_DATE_DEPOT]);
+
+            if ($date < DateTime::createFromFormat('Y-m-d', $date->format('Y').'-08-01')) {
+                $end_campagne = $date->format('Y');
+                $start_campagne = $date->modify('-1 year')->format('Y');
+                $this->campagnes[$start_campagne.'-'.$end_campagne] = $start_campagne.'-'.$end_campagne;
+            } else {
+                $start_campagne = $date->format('Y');
+                $end_campagne = $date->modify('+1 year')->format('Y');
+                $this->campagnes[$start_campagne.'-'.$end_campagne] = $start_campagne.'-'.$end_campagne;
+            }
+
 			$categorie = strtolower($doc->key[PieceAllView::KEYS_CATEGORIE]);
 			if (!isset($this->categories[$categorie])) {
 				$this->categories[$categorie] = 0;
