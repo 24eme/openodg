@@ -50,12 +50,15 @@ class AppUser extends sfBasicSecurityUser {
         if(!$compte) {
           $societe = SocieteClient::getInstance()->findByIdentifiantSociete($login_or_compte);
           if(!$societe){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+              $this->signOut();
+              return false;
+              //throw new sfException("Le compte est nul : ".$login_or_compte);
           }
           $compte = $societe->getMasterCompte();
           $login = $compte->identifiant;
           if(!$compte){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+              $this->signOut();
+              return false;
           }
         }
 
