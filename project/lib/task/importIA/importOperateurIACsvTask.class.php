@@ -174,27 +174,40 @@ EOF;
         $etablissement->save();
     }
 
-    protected function identifyEtablissement($nom) {
-
-        if(!$this->etablissements) {
-            $this->etablissements = EtablissementAllView::getInstance()->getAll();
+    protected function identifyEtablissement($raisonSociale, $cvi = null, $codePostal = null) {
+        $CSV_HABILITATION_CVI = preg_replace('/[^0-9]/', '', $cvi);
+        for($i = strlen($CSV_HABILITATION_CVI) ; $i < 10 ; $i++) {
+            $CSV_HABILITATION_CVI .= '0';
         }
-
-        $key = KeyInflector::slugify($nom);
-
-        if(isset($this->etablissementsCache[$key])) {
-            return $this->etablissementsCache[$key];
+        if (!intval($CSV_HABILITATION_CVI)){
+            $CSV_HABILITATION_CVI = '';
         }
-
+        $CSV_HABILITATION_RS = KeyInflector::slugify(trim($raisonSociale));
+        $key_raisonsociale_cvi_codepostal = KeyInflector::slugify($CSV_HABILITATION_RS.$CSV_HABILITATION_CVI.str_replace(' ', '', $codePostal));
+        $key_raisonsociale_codepostal = KeyInflector::slugify($CSV_HABILITATION_RS.trim($codePostal));
         foreach ($this->etablissements as $etab) {
-            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($nom))) {
-                $this->etablissementsCache[$key] = $etab->id;
-                return $this->etablissementsCache[$key];
+            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM].$etab->key[EtablissementAllView::KEY_CVI].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_cvi_codepostal) {
+                return EtablissementClient::getInstance()->find($etab->id);
             }
-
-            if (KeyInflector::slugify($etab->value[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($nom))) {
-                $this->etablissementsCache[$key] = $etab->id;
-                return $this->etablissementsCache[$key];
+            if (KeyInflector::slugify($etab->key[EtablissementAllView::VALUE_RAISON_SOCIALE].$etab->key[EtablissementAllView::KEY_CVI].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_cvi_codepostal) {
+                return EtablissementClient::getInstance()->find($etab->id);
+            }
+            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_codepostal) {
+                return EtablissementClient::getInstance()->find($etab->id);
+            }
+            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_codepostal) {
+                return EtablissementClient::getInstance()->find($etab->id);
+            }
+        }
+        foreach ($this->etablissements as $etab) {
+            if ($CSV_HABILITATION_CVI && $etab->key[EtablissementAllView::KEY_CVI] == $CSV_HABILITATION_CVI ) {
+                return EtablissementClient::getInstance()->find($etab->id);
+            }
+            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == $CSV_HABILITATION_RS) {
+                return EtablissementClient::getInstance()->find($etab->id);
+            }
+            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == $CSV_HABILITATION_RS) {
+                return EtablissementClient::getInstance()->find($etab->id);
             }
         }
         return null;
