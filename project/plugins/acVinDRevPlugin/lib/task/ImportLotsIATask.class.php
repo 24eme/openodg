@@ -233,6 +233,7 @@ EOF;
             }
             if(preg_match('/E/', $data[self::CSV_DESTINATION])) {
                 $lot->elevage = true;
+                $prelevable = true;
             }
             if(!$destinationDate) {
                 $destinationDate = $date;
