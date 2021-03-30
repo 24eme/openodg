@@ -15,7 +15,7 @@
           <?php if(!$transaction->validation_odg): ?>
           <div class="row text-right">
             <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-preleve-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
             </span>
 
             </div>
