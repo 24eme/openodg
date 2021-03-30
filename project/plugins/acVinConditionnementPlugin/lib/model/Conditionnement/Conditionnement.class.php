@@ -30,6 +30,10 @@ class Conditionnement extends BaseConditionnement
     	));
     }
 
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('conditionnement_export_pdf', $this);
+    }
+
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return sfContext::getInstance()->getRouting()->generate('conditionnement_visualisation', array('id' => $id));
     }

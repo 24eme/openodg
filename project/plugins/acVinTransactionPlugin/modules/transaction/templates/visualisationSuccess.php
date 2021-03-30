@@ -55,11 +55,20 @@
     <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($transaction->date_degustation_voulue)     ? date_format(date_create($transaction->validation), 'd/m/Y') : null;?></p>
 <?php endif ?>
 <div class="row row-margin row-button">
-    <div class="col-xs-6">
+    <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $transaction->identifiant, 'campagne' => $transaction->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
 
-    <div class="col-xs-6 text-right">
+
+    <div class="col-xs-4 text-center">
+        <div class="btn-group">
+            <a href="<?php echo url_for("transaction_export_pdf", $transaction) ?>" class="btn btn-default">
+                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;PDF
+            </a>
+        </div>
+    </div>
+
+    <div class="col-xs-4 text-right">
         <div class="btn-group">
         <?php if ($transaction->validation && TransactionSecurity::getInstance($sf_user, $transaction->getRawValue())->isAuthorized(TransactionSecurity::DEVALIDATION)):
                 if (!$transaction->validation_odg): ?>

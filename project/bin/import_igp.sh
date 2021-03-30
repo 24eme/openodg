@@ -45,7 +45,7 @@ cp $DATA_DIR/01_operateurs/operateurs.xlsx $DATA_DIR/
 cp $DATA_DIR/01_operateurs/operateurs_inactifs.xlsx $DATA_DIR/
 cp $DATA_DIR/06_administration/membres.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/lots.xlsx $DATA_DIR/
-cp $DATA_DIR/03_declarations/changement_denomination.xls $DATA_DIR/
+cp $DATA_DIR/03_declarations/traitees/changement_denomination.xls $DATA_DIR/
 cp $DATA_DIR/04_controles_produits/commissions.csv $DATA_DIR/
 cp $DATA_DIR/04_controles_produits/gestion_nc.xlsx $DATA_DIR/
 cp $DATA_DIR/01_operateurs/apporteurs_de_raisins.xlsx $DATA_DIR/
