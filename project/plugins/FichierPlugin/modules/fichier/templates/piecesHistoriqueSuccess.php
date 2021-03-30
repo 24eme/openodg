@@ -17,10 +17,10 @@
 
 <div class="list-group">
     <form class="pull-right">
-        <select class="form-control select2 select2SubmitOnChange select2autocomplete input-md text-right pull-right" id="year" name="annee">
-            <option value="0">Toutes années</option>
-            <?php foreach ($years as $y): ?>
-            <option value="<?php echo $y ?>"<?php if($y == $year): ?> selected="selected"<?php endif; ?>><?php echo $y ?></option>
+        <select class="form-control select2 select2SubmitOnChange select2autocomplete input-md text-right pull-right" id="year" name="campagne">
+            <option value="0">Toutes campagnes</option>
+            <?php foreach ($campagnes as $c): ?>
+            <option value="<?php echo $c ?>"<?php if($c == $campagne): ?> selected="selected"<?php endif; ?>><?php echo $c ?></option>
             <?php endforeach; ?>
         </select>
     </form>

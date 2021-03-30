@@ -45,7 +45,7 @@
             <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
             <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
-            <td><?php if(!$facture->isAvoir()): ?><?php echo $facture->getTemplate()->libelle ?><?php endif; ?></td>
+            <td><?php if(!$facture->isAvoir()): ?><?php echo ($facture->getTemplate())? $facture->getTemplate()->libelle : $facture->getPieces()[0]->libelle ?><?php endif; ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
             <td class="text-right"><?php echo echoFloat($facture->getMontantPaiement()); ?>&nbsp;€</td>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
@@ -185,7 +185,7 @@
     <tbody>
 
   <?php foreach ($mouvements as $keyMvt => $mvt):
-      $valueMvt = $mvt->value;
+      $valueMvt = (isset($mvt->value))? $mvt->value : $mvt;
        ?>
     <tr>
         <td><a href="<?php echo url_for("declaration_doc", array("id" => $mvt->id))?>" ><?php echo $valueMvt->type;?><?php echo "&nbsp;".$valueMvt->version;?> <?php echo "&nbsp;".$valueMvt->campagne;?></a></td>
