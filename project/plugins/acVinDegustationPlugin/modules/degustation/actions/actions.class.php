@@ -806,13 +806,37 @@ class degustationActions extends sfActions {
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
         $auth = $request->getParameter('auth');
-        $id = $request->getParameter('id');
+        $degustation_id = $request->getParameter('id');
         $identifiant = $request->getParameter('identifiant', null);
         $lot_dossier = $request->getParameter('lot_dossier', null);
         $lot_archive = $request->getParameter('lot_archive', null);
-        $type = $request->getParameter('type');
+        $type = $request->getParameter('type', null);
 
-        $key = DegustationClient::generateAuthKey($id, $type);
+        if (! $type) {
+            throw new sfException('Parametre type n\'est pas défini');
+        }
+
+        $descriminant = '';
+        switch ($type) {
+            case 'NonConformite':
+                if (! $lot_archive || ! $lot_dossier) { throw new sfException("Identifiant de lot manquant"); }
+                $discriminant = $lot_dossier.$lot_archive;
+                break;
+
+            case 'Conformite':
+                if (! $identifiant) { throw new sfException("Identifiant de compte manquant"); }
+                $discriminant = $identifiant;
+                break;
+
+            default:
+                break;
+        }
+
+        if (empty($discriminant)) {
+            throw new sfException('Discriminant vide');
+        }
+
+        $key = DegustationClient::generateAuthKey($degustation_id, $discriminant);
         $auth = substr($auth, 0, strlen($key));
 
         if ($auth !== $key) {
