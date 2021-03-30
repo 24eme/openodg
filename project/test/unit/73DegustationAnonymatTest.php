@@ -84,9 +84,10 @@ $t->is($lot3->numero_archive, '00003', "le numéro d'archive du lot 3 est bien 0
 $t->is($lot3->unique_id, $campagne.'-00001-00003', "le numéro d'archive du lot 3 est bien $campagne-00001-00003");
 $degust->generateMouvementsLots();
 $degust->save();
+$degustid = $degust->_id;
+$t->comment($degustid);
 
 $degust = DegustationClient::getInstance()->find($degustid);
-
 $t->comment("On attable les 2 1er lot mais pas le 3ème");
 $degust->lots[0]->numero_table = 1;
 $degust->lots[2]->numero_table = 1;

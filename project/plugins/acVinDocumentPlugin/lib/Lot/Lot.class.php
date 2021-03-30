@@ -672,10 +672,13 @@ abstract class Lot extends acCouchdbDocumentTree
         $this->getUniqueId();
     }
 
-    public function buildMouvement($statut, $detail = null, $numero_archive_incremente = false) {
+    public function buildMouvement($statut, $detail = null, $date = null, $numero_archive_incremente = false) {
         $mouvement = $this->getMouvementFreeInstance();
 
-        $mouvement->date = $this->date;
+        if (!$date) {
+            $date = $this->date;
+        }
+        $mouvement->date = $date;
         $mouvement->numero_dossier = $this->numero_dossier;
         if (!$numero_archive_incremente) {
             $mouvement->numero_archive = $this->numero_archive;

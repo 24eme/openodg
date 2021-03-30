@@ -1233,6 +1233,9 @@ nightmare
       .click('#btnExport')
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
     if(regroupement) {
@@ -1246,6 +1249,9 @@ nightmare
       .goto(uri)
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   // .then(function() {
   //     var uri = baseUri+"/Administration/FicheContact.aspx";

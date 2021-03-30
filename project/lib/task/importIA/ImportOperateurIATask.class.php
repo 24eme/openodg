@@ -145,13 +145,14 @@ EOF;
             }
             if (isset($data[self::CSV_CVI])){
               $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
-              if (strlen($cvi) < 10) {
-                  for($i = 0 ; $i < ( 10 - strlen($cvi) ) ;  $i++) {
-                    $cvi = $cvi."0";
-                  }
+              for($i = strlen($cvi) ; $i < 10 ;  $i++) {
+                  $cvi = $cvi."0";
+              }
+              if(!intval($cvi)) {
+                  $cvi = '';
               }
             }
-            $etablissement->cvi = ($cvi) ? str_pad($cvi, 10, "0", STR_PAD_LEFT) : null;
+            $etablissement->cvi = $cvi;
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);
             $etablissement->save();
