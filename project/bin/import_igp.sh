@@ -53,23 +53,26 @@ cp $DATA_DIR/01_operateurs/habilitations.xlsx $DATA_DIR/
 cp $DATA_DIR/01_operateurs/historique_DI.xlsx $DATA_DIR/
 cp $DATA_DIR/01_operateurs/contacts.xlsx $DATA_DIR/
 
-
 echo "Import des Opérateurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/operateurs.csv
 php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
 echo "Import des Interlocuteurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/membres.csv
 php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" --trace
 
 echo "Import Lots"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 14,14 -k 24,24 -k 34,38 > $DATA_DIR/lots.csv # tri identifiant, campagne, type
+sed -i 's/Choisir Ville//' $DATA_DIR/lots.csv
 sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots.csv
 sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots.csv
 
@@ -98,15 +101,19 @@ php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --app
 echo "Apporteurs de raisins"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/apporteurs_de_raisins.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { acheteur=$4; $4=""; $3=";Producteur de raisin"; print $0 ";;" acheteur }' | sort | uniq > $DATA_DIR/apporteurs_de_raisins.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/apporteurs_de_raisins.csv
 php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --application="$ODG" --trace
 
 echo "Habilitations"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/habilitations.csv
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
 php symfony import:habilitation-ia $DATA_DIR/habilitations.csv $DATA_DIR/historique_DI.csv --application="$ODG" --trace
 
 echo "Contacts"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/contacts.csv
 php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
