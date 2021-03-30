@@ -55,8 +55,6 @@
                 <footer id="footer" class="container hidden-xs hidden-sm text-center mt-5 mb-5" role="contentinfo">
                     <nav role="navigation">
                         <ul class="list-inline" style="font-size: 13px;">
-                            <li><a href="<?php echo url_for('contact') ?>">Contact</a></li>
-                            <li><a href="<?php echo url_for('mentions_legales') ?>">Mentions légales</a></li>
                         </ul>
                     </nav>
                 </footer>

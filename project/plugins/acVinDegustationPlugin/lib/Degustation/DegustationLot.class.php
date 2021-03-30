@@ -65,15 +65,17 @@ class DegustationLot extends BaseDegustationLot {
         $this->statut = Lot::STATUT_ANONYMISE;
     }
 
-    public function recoursOc(){
-
-        $this->recours_oc = true;
+    public function recoursOc($date = null){
+        $date = $date('Y-m-d');
+        $this->recours_oc = $date;
         $this->statut = Lot::STATUT_RECOURS_OC;
     }
 
-    public function conformeAppel()
+    public function conformeAppel($date = null)
     {
+        $date = date('Y-m-d');
         $this->statut = Lot::STATUT_CONFORME_APPEL;
+        $this->conforme_appel = $date;
         $this->getDocument()->generateMouvementsLots();
     }
 

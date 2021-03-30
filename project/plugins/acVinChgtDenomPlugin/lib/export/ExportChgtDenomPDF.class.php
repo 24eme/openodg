@@ -1,15 +1,21 @@
 <?php
 
-class ExportChgtDenomDeclassementPDF extends ExportPDF {
+class ExportChgtDenomPDF extends ExportPDF {
 
     protected $chgtdenom = null;
     protected $etablissement = null;
+    protected $changement = null;
+    protected $total = false;
     protected $adresse;
     protected $responsable;
 
-    public function __construct($chgtdenom, $etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($chgtdenom, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->chgtdenom = $chgtdenom;
-        $this->etablissement = $etablissement;
+        $this->etablissement = $chgtdenom->getEtablissementObject();
+
+        $this->changement = $chgtdenom->getChangementType();
+        $this->total = $chgtdenom->isTotal();
+
         $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
         $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
 
@@ -24,7 +30,7 @@ class ExportChgtDenomDeclassementPDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('chgtdenom/declassementPDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'responsable' => $this->responsable, 'adresse' => $this->adresse, 'responsable' => $this->responsable)));
+        @$this->printable_document->addPage($this->getPartial('chgtdenom/PDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'responsable' => $this->responsable, 'adresse' => $this->adresse, 'changement' => $this->changement, 'total' => (bool) $this->total)));
       }
 
 
