@@ -11,15 +11,6 @@ ODG=$1
 
 EXPORT=$2
 
-if test "$EXPORT"; then
-  if test "$EXPORT" = "-exp"; then
-    echo "Export données";
-    cd $WORKINGDIR/import/igp/;
-    bash scrapping.sh configs/config.$ODG.json;
-    cd $WORKINGDIR;
-  fi
-fi
-
 DATA_DIR=$WORKINGDIR/import/igp/imports/$ODG
 mkdir -p $DATA_DIR 2> /dev/null
 
@@ -31,15 +22,6 @@ if test "$2" = "--delete"; then
     if test "$databasename" = "$COUCHBASE"; then
         curl -sX DELETE http://$COUCHHOST:$COUCHPORT/$COUCHBASE
         echo "Suppression de la base couchdb"
-    fi
-
-    if test "$3"; then
-      if test "$3" = "-exp"; then
-        echo "Export données"
-        cd $WORKINGDIR/import/igp/
-        bash scrapping.sh config_$ODG.json
-        cd $WORKINGDIR
-      fi
     fi
 fi
 
@@ -80,7 +62,6 @@ php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
-exit;
 echo "Import des Interlocuteurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv

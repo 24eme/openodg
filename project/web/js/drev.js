@@ -367,6 +367,23 @@
 
     }
 
+    $.btn_bsswitch = function() {
+      var switchSelector = '#btn-preleve-all';
+      $(switchSelector).bootstrapSwitch();
+
+      $(switchSelector).on('switchChange.bootstrapSwitch', function(event, state) {
+
+        $('.bsswitch:not("'+switchSelector+'")').each(function(index, element) {
+
+          if(state){
+            $(element).bootstrapSwitch('state', true)
+          }else{
+            $(element).bootstrapSwitch('state', false)
+          }
+        })
+      })
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -385,6 +402,7 @@
         $.initRecapEventsAccordion();
         $.initValidationDeclaration();
         $.initSocieteChoixEtablissement();
+        $.btn_bsswitch();
 
     });
 
