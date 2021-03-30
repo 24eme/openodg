@@ -222,6 +222,9 @@ class degustationActions extends sfActions {
 
     public function executeTablesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        if (count($this->degustation->getLotsPreleves()) < 1) {
+            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
+        }
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
@@ -567,13 +570,8 @@ class degustationActions extends sfActions {
 
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
-      $this->manquements = DegustationClient::getInstance()->getManquements($request->getParameter('campagne', null));
-      $this->campagnes = [];
-      foreach ($this->manquements as $manquement) {
-          if (in_array($manquement->campagne, $this->campagnes) === false) {
-            $this->campagnes[] = $manquement->campagne;
-          }
-      }
+      $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
+      $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne);
     }
 
     public function executeElevages(sfWebRequest $request) {

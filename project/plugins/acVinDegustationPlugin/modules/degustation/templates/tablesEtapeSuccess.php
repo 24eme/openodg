@@ -19,6 +19,15 @@
         </h2>
       </div>
       <div class="panel-body">
+          <?php if(!intval($infosDegustation["nbTables"])): ?>
+          <div class="row">
+              <div class="col-xs-12 text">
+                <p class="alert alert-warning">
+                    <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Vous n'avez aucune table de prévue
+                </p>
+              </div>
+          </div>
+      <?php endif; ?>
         <div class="row">
           <div class="col-xs-12">
             <strong>Organisation des tables</strong>

@@ -3,6 +3,21 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
 <div class="page-header no-border">
+    <div class="pull-right">
+      <?php if ($sf_user->hasDrevAdmin()): ?>
+      <form method="GET" class="form-inline" action="">
+          Campagne :
+          <select class="select2SubmitOnChange form-control" name="campagne">
+              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+                  <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i; ?>-<?php echo $i+1 ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+              <?php endfor; ?>
+          </select>
+          <button type="submit" class="btn btn-default">Changer</button>
+      </form>
+      <?php else: ?>
+          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne ?></span>
+      <?php endif; ?>
+    </div>
     <h2>Liste des manquements à traiter</h2>
 </div>
 
@@ -12,15 +27,6 @@
     </div>
 </div>
 
-<div class="row">
-    <?php if (sfContext::getInstance()->getRequest()->getParameter('campagne')): ?>
-    <a class="label label-default" href="<?php echo url_for('degustation_manquements') ?>">Toutes les campagnes</a>
-    <?php else: ?>
-        <?php foreach ($campagnes as $campagne): ?>
-            <a class="label label-default" href="?campagne=<?= $campagne ?>"><?= $campagne ?></a>
-        <?php endforeach ?>
-    <?php endif; ?>
-</div>
 <br/>
 
 <div class="row">

@@ -186,12 +186,12 @@ class chgtdenomActions extends sfActions
         }
     }
 
-    public function executeDeclassementPDF(sfWebRequest $request)
+    public function executeChgtDenomPDF(sfWebRequest $request)
     {
         $chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $chgtDenom->getEtablissementObject());
 
-        $this->document = new ExportChgtDenomDeclassementPDF($chgtDenom, $chgtDenom->getEtablissementObject(), $request->getParameter('output', 'pdf'), false);
+        $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
         if ($request->getParameter('force')) {
             $this->document->removeCache();
