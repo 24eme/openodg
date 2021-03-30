@@ -570,13 +570,8 @@ class degustationActions extends sfActions {
 
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
-      $this->manquements = DegustationClient::getInstance()->getManquements($request->getParameter('campagne', null));
-      $this->campagnes = [];
-      foreach ($this->manquements as $manquement) {
-          if (in_array($manquement->campagne, $this->campagnes) === false) {
-            $this->campagnes[] = $manquement->campagne;
-          }
-      }
+      $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
+      $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne);
     }
 
     public function executeElevages(sfWebRequest $request) {
