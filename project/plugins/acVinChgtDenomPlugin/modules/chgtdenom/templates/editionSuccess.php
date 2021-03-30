@@ -70,6 +70,20 @@
               </div>
         </div>
 
+        <div class="row">
+              <div class="col-md-8">
+                  <div class="form-group">
+                      <?php echo $form['changement_specificite']->renderLabel("Spécificité", array('class' => "col-sm-4 control-label")); ?>
+                      <div class="col-sm-5">
+                          <span class="error text-danger"><?php echo $form['changement_specificite']->renderError() ?></span>
+                          <div class="input-group">
+                              <?php echo $form['changement_specificite']->render(array("placeholder" => "Précisez une spécificité")); ?>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        </div>
+
         <div style="margin-top: 20px;" class="row row-margin row-button">
             <div class="col-xs-4">
                 <a tabindex="-1" href="<?php echo url_for('chgtdenom_lots', ['identifiant' => $chgtDenom->identifiant, 'campagne' => $chgtDenom->campagne]) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>

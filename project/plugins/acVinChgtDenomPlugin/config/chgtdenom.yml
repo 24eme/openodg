@@ -1,3 +1,5 @@
 all:
   configuration:
     chgtdenom:
+      specificite_lot: false
+      specificites:
