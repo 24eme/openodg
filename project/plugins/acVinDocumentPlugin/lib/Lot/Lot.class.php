@@ -380,7 +380,7 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         $specificite = $lot->specificite;
 
-        $specificite = preg_replace('/, \d(er|ème) dégustation/', '', $specificite);
+        $specificite = preg_replace('/(, )?\d(er|ème) dégustation/', '', $specificite);
 
         if ($nb > 1) {
             if ($specificite) {
