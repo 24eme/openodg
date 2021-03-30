@@ -31,7 +31,7 @@ class Search {
 
 	    return $find;
   	}
-        
+
         public static function matchTermLight($term, $text) {
 	    $reg = "/[ ]+/";
 	    $text = self::normalize($text);

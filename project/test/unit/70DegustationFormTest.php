@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(107);
+$t = new lime_test(110);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -72,8 +72,16 @@ $produitconfig_hash1 = $produitconfig1->getHash();
 $lieu = "Lieu test — adresse lieu test";
 
 $t->comment("prépartion avec une DRev");
+
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $annee);
+$chais = $drev->add('chais');
+$chais->adresse = 'adresse Chai Drev';
+$chais->code_postal = 'cp Chai Drev';
+$chais->commune = 'commune Chai Drev';
+$addrCompleteLgtDrev = $drev->getCompleteAdresseLogement();
+
 $drev->save();
+
 $iddrev = $drev->_id;
 $produit1 = $drev->addProduit($produitconfig_hash1);
 $produit1->superficie_revendique = 200;
@@ -96,6 +104,8 @@ $t->ok($drev->lots[1]->numero_dossier, "Numéro de dossier du lot 2");
 $t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 1 est bien 01");
 $t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 2 est bien 01");
 
+$t->is($drev->lots[1]->adresse_logement, $addrCompleteLgtDrev, "Lot drev a l'adresse de chai");
+
 $t->comment($drev->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $lotPrelevable = current($lotsPrelevables);
@@ -105,16 +115,27 @@ $t->is($lotPrelevable->type_document, "DREV", "Le type de document du lot est DR
 
 $t->comment("Création d'un lot de transaction");
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
+
+$chais = $transaction->add('chais');
+$chais->adresse = $adresseLogement;
+$chais->code_postal = $cpLogement;
+$chais->commune = $communeLogement;
+$addrCompleteLgtTrans = $transaction->getCompleteAdresseLogement();
+
+
 $lot_transaction = $transaction->addLot();
 $lot_transaction->produit_hash = $produitconfig_hash1;
 $lot_transaction->volume = 15;
 $lot_transaction->numero_logement_operateur = 'C12';
+
 $transaction->validate();
 $transaction->validateOdg();
 $transaction->save();
 $t->comment($transaction->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 3, 'on a un 3ème lot prélevable');
+
+$t->is($transaction->lots[0]->adresse_logement,$addrCompleteLgtTrans, "Dans la transaction on a l'addresse de logement (depuis le chai)");
 
 $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
@@ -162,6 +183,8 @@ $t->is(count($degustation->lots), 3, 'Il y a 3 lots dans la dégustation');
 $t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00003", "Le lot 1 de la dégustation a bien la clé unique");
 $t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00001-00001", "Le lot 2 de la dégustation a bien la clé unique");
 $t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00001-00002", "Le lot 3 de la dégustation a bien la clé unique");
+
+$t->is($degustation->lots[1]->adresse_logement,$addrCompleteLgtDrev, "Dans la dégustation on a l'addresse de logement depuis la DRev");
 
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Il y a une affectation source avant celle-ci pour le lot 1 (de transaction) de la dégustation");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[1]), 1, "Il y a une affectation source avant celle-ci pour le lot 2 (de la drev) de la dégustation");

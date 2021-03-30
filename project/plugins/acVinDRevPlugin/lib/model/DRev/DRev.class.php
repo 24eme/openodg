@@ -837,6 +837,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot->campagne = $this->getCampagne();
         $lot->declarant_identifiant = $this->identifiant;
         $lot->declarant_nom = $this->declarant->raison_sociale;
+        $lot->adresse_logement = $this->getCompleteAdresseLogement();
         $lot->affectable = true;
         $lot->initDefault();
         return $lot;
@@ -1208,6 +1209,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return ($this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
+    }
+
+    public function getCompleteAdresseLogement(){
+        $completeAdresse = sprintf("%s %s %s",$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+
+        if($this->isAdresseLogementDifferente()){
+            $completeAdresse = sprintf("%s %s %s",$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+        }
+
+
+        return trim(preg_replace('/\s+/', ' ', $completeAdresse));
     }
 
 	protected function doSave() {
