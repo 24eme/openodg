@@ -1535,6 +1535,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
+            if (!$lot->isChange()) {
+                if (!$lot->isAffectable()) {
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+                }
+            }else{
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+            }
+
+            if ($lot->elevage && $lot->isAffecte()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE));
+                continue;
+            }
+
             if($lot->isAffecte()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
                 continue;
@@ -1545,13 +1558,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }else{
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
-            }
-            if (!$lot->isChange()) {
-                if (!$lot->isAffectable()) {
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
-                }
-            }else{
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
             }
         }
     }
