@@ -585,9 +585,11 @@ class degustationActions extends sfActions {
         $this->forward404Unless($lot);
 
         $lot->redegustation();
+
         $doc->generateMouvementsLots();
         $doc->save();
-        return $this->redirect($back);
+
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
     public function executeRecoursOc(sfWebRequest $request) {
@@ -599,9 +601,11 @@ class degustationActions extends sfActions {
         $this->forward404Unless($lot);
 
         $lot->recoursOc();
+
         $doc->generateMouvementsLots();
         $doc->save();
-        return $this->redirect("degustation_manquements");
+
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
     public function executeLotConformeAppel(sfWebRequest $request) {
@@ -613,9 +617,11 @@ class degustationActions extends sfActions {
         $this->forward404Unless($lot);
 
         $lot->conformeAppel();
+
         $doc->generateMouvementsLots();
         $doc->save();
-        return $this->redirect("degustation_manquements");
+
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
     public function executeAnonymize(sfWebRequest $request){
