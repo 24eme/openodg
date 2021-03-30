@@ -6,9 +6,9 @@ class conditionnementActions extends sfActions {
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_CONDITIONNEMENT, $etablissement);
-
+        $date = $request->getParameter("date", date('Y-m-d'));
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date);
 
         $conditionnement->save();
 
