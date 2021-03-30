@@ -50,6 +50,9 @@ nightmare
       .click('#Button2')
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
        var uri = baseUri+"/operateur/ListeOperateur.aspx?type=etiquettes";
@@ -62,6 +65,9 @@ nightmare
        .wait(10000)
        .click('#btnEtiquette')
        .download(exportFilename)
+       .catch(error => {
+         console.error('Search failed:', error)
+       })
    })
    .then(function() {
         var uri = baseUri+"/operateur/ListeOperateur.aspx?type=inao";
@@ -74,6 +80,9 @@ nightmare
         .wait(10000)
         .click('#btnExportINAO')
         .download(exportFilename)
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
     })
   .then(function() {
     if(regroupement) {
@@ -90,6 +99,9 @@ nightmare
       .click('#Button2')
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
     if(regroupement) {
@@ -105,6 +117,9 @@ nightmare
       .wait(10000)
       .click('#btnEtiquette')
       .download(exportFilename)
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
     if(regroupement) {
@@ -120,6 +135,9 @@ nightmare
       .wait(10000)
       .click('#btnExportINAO')
       .download(exportFilename)
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
     if(regroupement) {
@@ -135,6 +153,9 @@ nightmare
         .click('#Button2')
         .download(exportFilename)
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
   })
   .then(function() {
     if(regroupement) {
@@ -152,6 +173,9 @@ nightmare
         .click('#Button2')
         .download(exportFilename)
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
   })
   .then(function() {
     if(regroupement) {
@@ -169,6 +193,9 @@ nightmare
         .click('#Button2')
         .download(exportFilename)
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
   })
   .then(function() {
     if(regroupement) {
@@ -190,7 +217,10 @@ nightmare
                   .download(exportFilename)
                   .screenshot(exportFilename+".png")
               }
-          });
+          })
+          .catch(error => {
+            console.error('Search failed:', error)
+          })
   })
   .then(function() {
       var uri = baseUri+"/operateur/SynOperateurR.aspx";
@@ -202,6 +232,9 @@ nightmare
         .wait(1000)
         .html(exportFilename, 'HTMLOnly')
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
   })
   .then(function() {
       var uri = baseUri+"/Administration/FicheContact.aspx";
@@ -214,6 +247,9 @@ nightmare
       .click('#ContentPlaceHolder1_btnExcel')
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       var uri = baseUri+"/Habilitation/GestionDI.aspx";
@@ -225,6 +261,9 @@ nightmare
         .wait(1000)
         .html(exportFilename, 'HTMLOnly')
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
   })
   .then(function() {
       var uri = baseUri+"/Habilitation/listeHab.aspx";
@@ -236,6 +275,9 @@ nightmare
         .wait(1000)
         .html(exportFilename, 'HTMLOnly')
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
   })
   .then(function() {
       var uri = baseUri+"/Habilitation/HistHab.aspx";
@@ -248,6 +290,9 @@ nightmare
         .click('#btnExcel')
         .download(exportFilename)
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
   })
   .then(function() {
       var uri = baseUri+"/Habilitation/SuiviHab.aspx";
@@ -260,6 +305,9 @@ nightmare
       .click('#btExportExcel')
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       var uri = baseUri+"/Habilitation/SyntheseHab_ODG.aspx";
@@ -271,6 +319,9 @@ nightmare
       .wait(1000)
       .html(exportFilename, 'HTMLOnly')
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       var uri = baseUri+"/GestionMail/GestGroupes.aspx";
