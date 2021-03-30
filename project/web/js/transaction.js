@@ -8,6 +8,18 @@
             return;
         }
 
+        $('#btn-preleve-all').on('click', function (event) {
+          $('.bsswitch').each(function(index, element) {
+            $(element).bootstrapSwitch('state', true)
+          })
+        })        
+
+        $('#btn-depreleve-all').on('click', function (event) {
+          $('.bsswitch').each(function(index, element) {
+            $(element).bootstrapSwitch('state', false)
+          })
+        })
+
         $('div.checkboxlots input[type="checkbox"]').click(function(e){
           e.preventDefault();
         });

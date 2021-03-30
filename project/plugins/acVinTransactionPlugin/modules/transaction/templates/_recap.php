@@ -12,6 +12,17 @@
               <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle col-xs-12">
           </div>
           <br/>
+          <?php if(!$transaction->validation_odg): ?>
+          <div class="row">
+            <div class="col-xs-2 col-xs-offset-10">
+              <a class="btn btn-block btn-default" id="btn-preleve-all">
+                <i class="glyphicon glyphicon-ok-sign"></i>
+                Tout dégustable
+              </a>
+            </div>
+          </div>
+          <br/>
+          <?php endif; ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>

@@ -61,3 +61,4 @@
     </div>
 </form>
 <?php include_partial('transaction/popupConfirmationValidation', array('approuver' => true)); ?>
+<?php use_javascript('transaction.js'); ?>
