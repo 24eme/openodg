@@ -1160,16 +1160,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $etablissements;
 		}
 
-		public function isMailEnvoyeEtablissement($identifiant){
-				return boolval($this->getLotsConformitesOperateur($identifiant)->email_envoye);
+        public function isMailEnvoyeEtablissement($identifiant)
+        {
+            foreach ($this->getLotsByOperateurs($identifiant) as $operateur => $lots) {
+                foreach ($lots as $lot) {
+                    if (! $lot->email_envoye) {
+                        return false;
+                    }
+                }
+            }
+            return true;
 		}
 
 		public function setMailEnvoyeEtablissement($identifiant, $date){
-				foreach ($this->getLotsConformitesOperateur($identifiant)->lots as $conformite => $lots) {
-					foreach ($lots as $lot) {
-						$lot->email_envoye = $date;
-					}
-				}
+            foreach ($this->getLotsByOperateurs($identifiant) as $operateur => $lots) {
+                foreach ($lots as $lot) {
+                    $lot->email_envoye = $date;
+                }
+            }
 		}
 
 		public function getLotsDegustesByAppelation(){

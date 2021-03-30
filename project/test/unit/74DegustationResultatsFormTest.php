@@ -201,6 +201,6 @@ try {
 
 $t->comment('Notifications');
 $doc->setMailEnvoyeEtablissement($etbIdentifiant, 0);
-$t->fail("On remet les mails à non envoyé");
+$t->is($doc->isMailEnvoyeEtablissement($etbIdentifiant), false, 'On remet les mails à non envoyé');
 
 $t->isnt(DegustationClient::generateAuthKey($doc->_id, $etbIdentifiant), DegustationClient::generateAuthKey($doc->_id, "COMPTE-00000"), "La génération de clé diffère pour un compte différent");
