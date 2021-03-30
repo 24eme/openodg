@@ -540,9 +540,10 @@ class degustationActions extends sfActions {
 
     public function executeLotHistorique(sfWebRequest $request){
         $etablissement_identifiant = $request->getParameter('identifiant');
-        $this->campagne = $request->getParameter('campagne');
-        $this->numero_dossier = $request->getParameter('numero_dossier');
-        $this->numero_archive = $request->getParameter('numero_archive');
+        $params = explode('-', $request->getParameter('unique_id'));
+        $this->campagne = $params[0].'-'.$params[1];
+        $this->numero_dossier = $params[2];
+        $this->numero_archive = $params[3];
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissement_identifiant);
         $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant, $this->campagne, $this->numero_dossier,$this->numero_archive)->rows;
     }
@@ -578,46 +579,49 @@ class degustationActions extends sfActions {
         $lotid = $request->getParameter('lot');
         $back = $request->getParameter('back');
         $this->forward404Unless($back);
-        $doc = acCouchdbManager::getClient()->find($docid);
+        $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
-        if (!$lot) {
-          $this->forward404Unless($lot);
-        }
+        $this->forward404Unless($lot);
+
         $lot->redegustation();
+
         $doc->generateMouvementsLots();
         $doc->save();
-        return $this->redirect($back);
+
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
     public function executeRecoursOc(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
-        $doc = acCouchdbManager::getClient()->find($docid);
+        $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
-        if (!$lot) {
-          $this->forward404Unless($lot);
-        }
+        $this->forward404Unless($lot);
+
         $lot->recoursOc();
+
         $doc->generateMouvementsLots();
         $doc->save();
-        return $this->redirect("degustation_manquements");
+
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
     public function executeLotConformeAppel(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
-        $doc = acCouchdbManager::getClient()->find($docid);
+        $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
-        if (!$lot) {
-          $this->forward404Unless($lot);
-        }
+        $this->forward404Unless($lot);
+
         $lot->conformeAppel();
+
         $doc->generateMouvementsLots();
         $doc->save();
-        return $this->redirect("degustation_manquements");
+
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
     public function executeAnonymize(sfWebRequest $request){

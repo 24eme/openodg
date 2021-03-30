@@ -35,6 +35,10 @@ class Transaction extends BaseTransaction
     	));
     }
 
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('transaction_export_pdf', $this);
+    }
+
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return sfContext::getInstance()->getRouting()->generate('transaction_visualisation', array('id' => $id));
     }

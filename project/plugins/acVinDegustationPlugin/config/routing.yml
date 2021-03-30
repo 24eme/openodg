@@ -41,7 +41,7 @@ degustation_etablissement_list:
     type:     object
 
 degustation_lot_historique:
-  url: /historique/:identifiant/:campagne/:numero_dossier/:numero_archive
+  url: /historique/:identifiant/:unique_id
   param: { module: degustation, action: lotHistorique }
   requirements:
     sf_method: [get]

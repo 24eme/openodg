@@ -100,6 +100,7 @@ EOF;
           $newDegustation->date=$date;
           $newDegustation->lieu = $data[self::CSV_LIEU_NOM]." — ".$data[self::CSV_LIEU_ADRESSE]." ".$data[self::CSV_LIEU_CODE_POSTAL]." ".$data[self::CSV_LIEU_COMMUNE];
           $newDegustation->campagne=$campagne;
+          $newDegustation->max_lots = 1;
           $newDegustation->constructId();
           $newDegustation->validation = $degustation_date;
 
