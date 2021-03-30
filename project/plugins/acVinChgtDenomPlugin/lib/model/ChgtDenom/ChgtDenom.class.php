@@ -95,7 +95,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
-        }        
+        }
     }
 
     public function isPapier() {
@@ -268,6 +268,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->numero_archive .= 'a';
       }
       $lot->volume = $this->changement_volume;
+      $lot->specificite = $this->changement_specificite;
       if ($this->isChgtDenomination()) {
           $lot->produit_hash = $this->changement_produit_hash;
           $lot->produit_libelle = $this->changement_produit_libelle;

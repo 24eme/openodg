@@ -29,6 +29,11 @@ class ChgtDenomForm extends acCouchdbObjectForm
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
 
+        if(ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()){
+          $this->setWidget('changement_specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
+          $this->setValidator('changement_specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
+        }
+
         $this->validatorSchema->setPostValidator(new ChgtDenomValidator($this->getObject()));
         $this->widgetSchema->setNameFormat('chgt_denom[%s]');
     }
@@ -57,6 +62,9 @@ class ChgtDenomForm extends acCouchdbObjectForm
       $defaults = $this->getDefaults();
       $defaults['changement_type'] = $this->getObject()->changement_type;
       $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
+      if (ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()) {
+        $defaults['changement_specificite'] = $this->getObject()->changement_specificite;
+      }
       $i=0;
       foreach($this->getObject()->changement_cepages as $cepage => $repartition) {
           $defaults['cepage_'.$i] = $cepage;
@@ -81,5 +89,10 @@ class ChgtDenomForm extends acCouchdbObjectForm
     public function getCepages()
     {
         return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
+    }
+
+    public function getSpecificites()
+    {
+        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  ChgtDenomConfiguration::getInstance()->getSpecificites());
     }
 }

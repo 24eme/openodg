@@ -3,6 +3,11 @@
 <?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_TRANSACTION) && (!$transaction || !$sf_user->isAdmin() || !$sf_user->hasCondtionnementAdmin())): ?>
     <?php return; ?>
 <?php endif; ?>
+
+<?php if ($campagne !== ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent()): ?>
+    <?php return ?>
+<?php endif ?>
+
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($transaction && $transaction->validation): ?>panel-success<?php elseif($transaction): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
