@@ -79,9 +79,9 @@ chgtdenom_delete:
   requirements:
     sf_method: [get]
 
-chgtdenom_declassement_pdf:
-  url: /changement-denomination/:id/declassement-pdf
-  param: { module: chgtdenom, action: declassementPDF }
+chgtdenom_pdf:
+  url: /changement-denomination/:id/pdf
+  param: { module: chgtdenom, action: chgtDenomPDF }
   class: ChgtDenomRoute
   options:
     model: ChgtDenom
