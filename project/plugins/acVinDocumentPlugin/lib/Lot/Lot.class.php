@@ -85,6 +85,7 @@ abstract class Lot extends acCouchdbDocumentTree
             Lot::STATUT_RECOURS_OC => "warning",
             Lot::STATUT_CONFORME_APPEL => "success",
             Lot::STATUT_DECLASSE => "danger",
+            Lot::STATUT_ELEVAGE => "warning",
         );
 
     public static $libellesConformites = array(
