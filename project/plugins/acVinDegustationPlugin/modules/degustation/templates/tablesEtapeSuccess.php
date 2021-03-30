@@ -19,6 +19,15 @@
         </h2>
       </div>
       <div class="panel-body">
+          <?php if(!intval($infosDegustation["nbTables"])): ?>
+          <div class="row">
+              <div class="col-xs-12 text">
+                <p class="alert alert-warning">
+                    <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Vous n'avez aucune table de prévue
+                </p>
+              </div>
+          </div>
+      <?php endif; ?>
         <div class="row">
           <div class="col-xs-12">
             <strong>Organisation des tables</strong>
@@ -52,5 +61,9 @@
   <div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape",$degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
   <div class="col-xs-4 text-center">
   </div>
-  <div class="col-xs-4 text-right"><a class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_anonymats_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
+  <div class="col-xs-4 text-right">
+    <a class="btn btn-primary btn-upper" <?php echo (!intval($infosDegustation["nbTables"]))? 'disabled="disabled"' : ''; ?>
+         href="<?php echo (intval($infosDegustation["nbTables"]))? url_for('degustation_anonymats_etape', $degustation) : "#"; ?>">Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+
+  </div>
 </div>

@@ -544,7 +544,7 @@ nightmare
   })
   .then(function() {
       var uri = baseUri+"/Declaration/SyntOpChangDen.aspx";
-      var exportFilename = destination_file+'03_declarations/synthese_operateurs/changement_denomination.xls';
+      var exportFilename = destination_file+'03_declarations/syntheses_operateurs/changement_denomination.xls';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
