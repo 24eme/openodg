@@ -582,9 +582,8 @@ class degustationActions extends sfActions {
         $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
-        if (!$lot) {
-          $this->forward404Unless($lot);
-        }
+        $this->forward404Unless($lot);
+
         $lot->redegustation();
         $doc->generateMouvementsLots();
         $doc->save();
@@ -597,9 +596,8 @@ class degustationActions extends sfActions {
         $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
-        if (!$lot) {
-          $this->forward404Unless($lot);
-        }
+        $this->forward404Unless($lot);
+
         $lot->recoursOc();
         $doc->generateMouvementsLots();
         $doc->save();
@@ -612,9 +610,8 @@ class degustationActions extends sfActions {
         $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
-        if (!$lot) {
-          $this->forward404Unless($lot);
-        }
+        $this->forward404Unless($lot);
+
         $lot->conformeAppel();
         $doc->generateMouvementsLots();
         $doc->save();
