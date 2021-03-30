@@ -540,9 +540,10 @@ class degustationActions extends sfActions {
 
     public function executeLotHistorique(sfWebRequest $request){
         $etablissement_identifiant = $request->getParameter('identifiant');
-        $this->campagne = $request->getParameter('campagne');
-        $this->numero_dossier = $request->getParameter('numero_dossier');
-        $this->numero_archive = $request->getParameter('numero_archive');
+        $params = explode('-', $request->getParameter('unique_id'));
+        $this->campagne = $params[0].'-'.$params[1];
+        $this->numero_dossier = $params[2];
+        $this->numero_archive = $params[3];
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissement_identifiant);
         $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant, $this->campagne, $this->numero_dossier,$this->numero_archive)->rows;
     }

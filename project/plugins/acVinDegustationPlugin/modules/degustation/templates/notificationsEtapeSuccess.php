@@ -39,7 +39,7 @@
                       <td><?= $lots[0]->declarant_nom ?></td>
                       <td style="line-height: 2.5rem">
                         <?php foreach ($lots as $lot): ?>
-                        <a href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne, 'numero_dossier' => $lot->numero_dossier, 'numero_archive' => $lot->numero_archive));  ?>" data-toggle="tooltip"
+                        <a href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id));  ?>" data-toggle="tooltip"
                               data-html="true"
                               title="<?= $lot->getLibelle() . ' - ' . $lot->volume . "hl<br>" . $lot->getShortLibelleConformite() ?>"
                               class="label label-<?= ($lot->isManquement()) ? 'danger' : 'success'?>"

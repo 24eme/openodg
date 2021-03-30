@@ -13,7 +13,8 @@ function (doc) {
         mouvement.numero_archive,
         mouvement.document_ordre,
         mouvement.statut,
-        mouvement.document_id
+        mouvement.document_id,
+        mouvement.unique_id
       ], mouvement);
     }
   }
