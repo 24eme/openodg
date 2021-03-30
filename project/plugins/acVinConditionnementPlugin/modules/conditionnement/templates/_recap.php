@@ -13,6 +13,16 @@
               <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle col-xs-12">
           </div>
           <br/>
+          <<?php if(!$conditionnement->validation_odg): ?>
+          <div class="row text-right">
+            <div class="col-xs-3 col-xs-offset-9">
+              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-preleve-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+            </span>
+
+            </div>
+          </div>
+          <br/>
+          <?php endif; ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
@@ -101,3 +111,4 @@
 
           <?php endif; ?>
 <?php use_javascript('hamza_style.js'); ?>
+<?php use_javascript('conditionnement.js'); ?>
