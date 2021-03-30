@@ -217,10 +217,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$statut = Lot::STATUT_NONCONFORME;
 			}
             switch($statut) {
-                case Lot::STATUT_CONFORME_APPEL:
+                case $lot->conforme_appel:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL));
 
-                case Lot::STATUT_RECOURS_OC:
+                case $lot->recours_oc:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC));
                     $statut = Lot::STATUT_NONCONFORME;
                 case Lot::STATUT_CONFORME:

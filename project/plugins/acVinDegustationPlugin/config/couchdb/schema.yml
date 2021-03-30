@@ -65,6 +65,7 @@ Degustation:
                   doc_ordre: {required: false}
                   affectable: {}
                   recours_oc: {}
+                  conforme_appel: {}
                   a_redeguster: {required: false}
       mouvements_lots:
         type: collection
