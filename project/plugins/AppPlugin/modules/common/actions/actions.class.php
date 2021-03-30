@@ -38,7 +38,7 @@ class commonActions extends sfActions {
             return $this->redirect('habilitation');
         }
 
-        if(!$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()) {
+        if($this->getUser()->getCompte() && !$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()) {
 
             return $this->forwardSecure();
         }
@@ -48,7 +48,11 @@ class commonActions extends sfActions {
             return $this->redirect('pieces_historique', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
         }
 
-        return $this->redirect('declaration_etablissement', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
+        if ($this->getUser()->getCompte()) {
+            return $this->redirect('declaration_etablissement', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
+        }
+
+        return $this->redirect('/logout');
     }
 
     public function executeContact(sfWebRequest $request) {
