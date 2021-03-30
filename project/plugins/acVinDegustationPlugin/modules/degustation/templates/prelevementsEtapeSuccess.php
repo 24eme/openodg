@@ -18,6 +18,15 @@
         </h2>
       </div>
       <div class="panel-body">
+          <?php if(!intval($infosDegustation["nbLotsPrelevesSansLeurre"])): ?>
+          <div class="row">
+              <div class="col-xs-12 text">
+                <p class="alert alert-warning">
+                    <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Vous n'avez aucun prélèvements effectués
+                </p>
+              </div>
+          </div>
+      <?php endif; ?>
         <div class="row">
           <div class="col-xs-12">
             <strong>Organisation des prélèvements</strong>
