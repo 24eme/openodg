@@ -303,24 +303,6 @@ EOF;
         }
     }
 
-    protected function clearProduitKey($key) {
-      $key = str_replace('PAYS-DES-', '', $key);
-      $key = str_replace('VAR-VAR-', 'VAR-', $key);
-      $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
-      $key = str_replace('NORD-', '', $key);
-      $key = preg_replace('/^LOIRE-ATLANTIQUE/', 'VAL-DE-LOIRE-LOIRE-ATLANTIQUE', $key);
-      $key = preg_replace('/^INDRE-ET-LOIRE/', 'VAL-DE-LOIRE-INDRE-ET-LOIRE', $key);
-      $key = preg_replace('/^MAINE-ET-LOIRE/', 'VAL-DE-LOIRE-MAINE-ET-LOIRE', $key);
-      $key = preg_replace('/^LOIR-ET-CHER/', 'VAL-DE-LOIRE-LOIR-ET-CHER', $key);
-      $key = preg_replace('/^CHER/', 'VAL-DE-LOIRE-CHER', $key);
-      $key = preg_replace('/^SARTHE/', 'VAL-DE-LOIRE-SARTHE', $key);
-      $key = preg_replace('/^VENDEE/', 'VAL-DE-LOIRE-VENDEE', $key);
-      $key = preg_replace('/^VIENNE/', 'VAL-DE-LOIRE-VIENNE', $key);
-      $key = preg_replace('/^ALLIER/', 'VAL-DE-LOIRE-ALLIER', $key);
-      return $key;
-    }
-
-
     protected function needModificatrice($previousdoc, $etablissement, $periode , $nom_logt, $addr_logt, $cp_logt, $commune_logt){
         if(!$previousdoc){
             return false;
