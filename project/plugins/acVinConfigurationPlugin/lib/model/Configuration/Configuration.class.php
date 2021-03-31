@@ -49,6 +49,7 @@ class Configuration extends BaseConfiguration {
 
     public function getCepagesAutorises($date = null, $attributes = array()) {
     	$cepages = array();
+
     	foreach($this->declaration->getProduits($date, "INTERPRO-declaration", null, $attributes) as $produit) {
     		$cepages_autorises = $produit->cepages_autorises->toArray();
     		foreach ($cepages_autorises as $ca) {

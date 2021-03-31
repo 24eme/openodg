@@ -69,8 +69,6 @@ EOF;
 
         $this->initProduitsCepages();
 
-        $this->etablissements = EtablissementAllView::getInstance()->getAll();
-
         foreach(file($arguments['csv']) as $line) {
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line,';');

@@ -216,6 +216,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 100,
                   "rendement_dr_l5": 100,
                   "rendement_dr_l15": 90
                 }
@@ -393,6 +394,7 @@
                         "code_comptable": null,
                         "code_douane": null,
                         "attributs": {
+                          "rendement": 100,
                           "rendement_dr_l5": 100,
                           "rendement_dr_l15": 90
                         },
@@ -834,14 +836,6 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr_l5": null,
-                                  "rendement_dr_l15": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -893,6 +887,7 @@
           }
         },
         "attributs": {
+          "rendement": 120,
           "rendement_dr_l5": 130,
           "rendement_dr_l15": 120
         },

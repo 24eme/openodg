@@ -26,7 +26,6 @@ class importHabilitationIACsvTask extends importOperateurIACsvTask
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
-  protected $etablissements;
 
     protected function configure()
     {
@@ -87,6 +86,10 @@ EOF;
         $this->convert_products['Nievre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/NIE';
         $this->convert_products['Sarthe'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/SAR';
         $this->convert_products['Indre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IND';
+        $this->convert_products['Drome'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Drome - Comte de Grignan'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/COG';
+        $this->convert_products['Drome - Coteaux de Montelimar'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/COM';
+        $this->convert_products['Coteaux de Baronnie'] = 'certifications/IGP/genres/TRANQ/appellations/COB/mentions/DEFAUT/lieux/DEFAUT';
 
         // gascogne
         $this->convert_products['Comté Tolosan'] = 'certifications/IGP/genres/TRANQ/appellations/COT/mentions/DEFAUT/lieux/DEFAUT';
@@ -110,8 +113,6 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-
-        $this->etablissements = EtablissementAllView::getInstance()->getAll();
 
         $cvi2di = array();
         foreach(file($arguments['fichier_di']) as $line) {

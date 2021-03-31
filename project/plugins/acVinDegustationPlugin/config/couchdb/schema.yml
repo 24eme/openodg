@@ -66,6 +66,7 @@ Degustation:
                   recours_oc: {}
                   conforme_appel: {}
                   a_redeguster: {required: false}
+                  preleve: {}
       mouvements_lots:
         type: collection
         definition:

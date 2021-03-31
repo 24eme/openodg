@@ -27,7 +27,7 @@ class importOperateurIACsvTask extends sfBaseTask
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
-  protected $etablissements;
+  protected $etablissements = null;
   protected $etablissementsCache = array();
 
     protected function configure()
@@ -176,6 +176,11 @@ EOF;
     }
 
     protected function identifyEtablissement($raisonSociale, $cvi = null, $codePostal = null, $hydrate = acCouchdbClient::HYDRATE_JSON) {
+        if(!$this->etablissements) {
+            echo "allview\n";
+            $this->etablissements = EtablissementAllView::getInstance()->getAll();
+        }
+
         $CSV_HABILITATION_CVI = preg_replace('/[^0-9]/', '', $cvi);
         for($i = strlen($CSV_HABILITATION_CVI) ; $i < 10 ; $i++) {
             $CSV_HABILITATION_CVI .= '0';

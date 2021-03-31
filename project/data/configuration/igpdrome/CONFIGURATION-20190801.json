@@ -1125,6 +1125,7 @@
                                   }
                                 },
                                 "attributs": {
+                                  "rendement": 90,
                                   "rendement_dr_l5": 100,
                                   "rendement_dr_l15": 90
                                 }
@@ -1166,6 +1167,7 @@
                                   }
                                 },
                                 "attributs": {
+                                  "rendement": 110,
                                   "rendement_dr_l5": 120,
                                   "rendement_dr_l15": 110
                                 }
@@ -1207,6 +1209,7 @@
                                   }
                                 },
                                 "attributs": {
+                                  "rendement": 90,
                                   "rendement_dr_l5": 100,
                                   "rendement_dr_l15": 90
                                 }
@@ -1412,6 +1415,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 80,
                   "rendement_dr_l5": 85,
                   "rendement_dr_l15": 80
                 }
@@ -1602,6 +1606,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 90,
                   "rendement_dr_l5": 95,
                   "rendement_dr_l15": 90
                 }
@@ -1609,7 +1614,7 @@
             }
           },
           "EFF": {
-            "libelle": "Effervescent",
+            "libelle": "Mousseux",
             "format_libelle": "%a% %g% %m% %l% %co% %ce%",
             "code": "EFF",
             "code_produit": null,
@@ -2136,6 +2141,7 @@
           }
         },
         "attributs": {
+          "rendement": 120,
           "rendement_dr_l5": 130,
           "rendement_dr_l15": 120
         }
