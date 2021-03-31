@@ -235,7 +235,6 @@ EOF;
     }
 
     public function clearProduitKey($key) {
-      $key = str_replace('PAYS-DES-', '', $key);
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
       $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
       $key = str_replace('NORD-', '', $key);
