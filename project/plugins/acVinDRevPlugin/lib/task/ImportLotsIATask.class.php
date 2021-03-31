@@ -140,7 +140,8 @@ EOF;
                continue;
             }
 
-            $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
+            $produit_alias = $this->alias($data[self::CSV_APPELLATION], $data[self::CSV_COULEUR]);
+            $produitKey = $this->clearProduitKey(KeyInflector::slugify($produit_alias));
             if (!isset($this->produits[$produitKey])) {
               echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR].";pas d'import;$line\n";
               continue;
@@ -295,6 +296,16 @@ EOF;
       $key = preg_replace('/^VIENNE/', 'VAL-DE-LOIRE-VIENNE', $key);
       $key = preg_replace('/^ALLIER/', 'VAL-DE-LOIRE-ALLIER', $key);
       return $key;
+    }
+
+    protected function alias($appellation, $couleur) {
+        $appellation = trim($appellation);
+        $couleur = trim($couleur);
+
+        $appellation = str_replace('Principaute Orange', "Vaucluse Principauté d'Orange", $appellation);
+        $appellation = str_replace('Aigues', "Vaucluse Aigues", $appellation);
+
+        return $appellation." ".$couleur;
     }
 
     protected function identifyCepage($key) {
