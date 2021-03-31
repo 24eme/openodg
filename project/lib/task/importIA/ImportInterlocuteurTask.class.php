@@ -98,7 +98,7 @@ EOF;
                   $societe->fax = Phone::format($data[self::CSV_FAX]);
                 }
                 if (isset($data[self::CSV_EMAIL])){
-                  $societe->email = $data[self::CSV_EMAIL];
+                  $societe->email = KeyInflector::unaccent($data[self::CSV_EMAIL]);
                 }
                 $societe->save();
             }
@@ -134,7 +134,7 @@ EOF;
               $compte->fax = Phone::format($data[self::CSV_FAX]);
             }
             if (isset($data[self::CSV_EMAIL])){
-              $compte->email = $data[self::CSV_EMAIL];
+              $compte->email = KeyInflector::unaccent($data[self::CSV_EMAIL]);
             }
             if (isset($data[self::CSV_COLLEGE])){
               if(preg_match('/Porteur de mémoire/', $data[self::CSV_COLLEGE])) {
