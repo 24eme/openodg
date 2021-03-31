@@ -140,7 +140,8 @@ EOF;
                continue;
             }
 
-            $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_APPELLATION])." ".trim($data[self::CSV_COULEUR])));
+            $produit_alias = $this->alias($data[self::CSV_APPELLATION], $data[self::CSV_COULEUR]);
+            $produitKey = $this->clearProduitKey(KeyInflector::slugify($produit_alias));
             if (!isset($this->produits[$produitKey])) {
               echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR].";pas d'import;$line\n";
               continue;
@@ -190,18 +191,49 @@ EOF;
             $destinationDate = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_TRANSACTION_DATE]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
+            $logementNom = (isset($data[self::CSV_NOM_SITE]) && $data[self::CSV_NOM_SITE])? trim($data[self::CSV_NOM_SITE]) : "";
+            $logementNom = ($logementNom)? $logementNom : null;
+
+            $logementAddress = (isset($data[self::CSV_ADRESSE_1_SITE]) && $data[self::CSV_ADRESSE_1_SITE])? " ".trim($data[self::CSV_ADRESSE_1_SITE]) : "";
+            $logementAddress .= (isset($data[self::CSV_ADRESSE_2_SITE]) && $data[self::CSV_ADRESSE_2_SITE])? " ".trim($data[self::CSV_ADRESSE_2_SITE]) : "";
+            $logementAddress = ($logementAddress)? $logementAddress : null;
+
+            $logementCP = (isset($data[self::CSV_CODE_POSTAL_SITE]) && $data[self::CSV_CODE_POSTAL_SITE])? trim($data[self::CSV_CODE_POSTAL_SITE]) : null;
+            $logementCommune = (isset($data[self::CSV_VILLE_SITE]) && $data[self::CSV_VILLE_SITE])? trim($data[self::CSV_VILLE_SITE]) : null;
+
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
 
            $previousdoc = $document;
-           $document = $this->getDocument($type, $document, $etablissement, $periode, $date, $numeroDossier);
-            if($previousdoc && $document->_id != $previousdoc->_id) {
+
+           $document = $this->getDocument($type, $previousdoc, $etablissement, $periode, $date, $numeroDossier);
+
+           $needModif = $this->needModificatrice($previousdoc, $etablissement, $periode, $logementNom, $logementAddress, $logementCP, $logementCommune);
+
+            if($needModif){
                 try {
                     $previousdoc->save();
                 } catch(Exception $e) {
-                    echo "ERROR;".$e->getMessage().";".$document->_id.";".$line."\n";
+                    echo "ERROR;".$e->getMessage().";".$previousdoc->_id.";".$line."\n";
+                }
+                $date = $document->validation;
+                $document = $previousdoc->generateModificative();
+                $document->constructId();
+                $document->storeDeclarant();
+                $document->validation = $date;
+                $document->validation_odg = $date;
+                $document->save();
+                echo " création $document->_id\n";
+            }
+
+            if($previousdoc && $document->_id != $previousdoc->_id && !$needModif) {
+                try {
+                    $previousdoc->save();
+                } catch(Exception $e) {
+                    echo "ERROR;".$e->getMessage().";".$previousdoc->_id.";".$line."\n";
                 }
             }
 
+            $this->storeAddresseLogt($document, $logementNom, $logementAddress, $logementCP, $logementCommune);
             $lot = $document->addLot();
 
             $lot->produit_hash = $produit->getHash();
@@ -253,14 +285,6 @@ EOF;
                 $lot->pays = "Export : données du pays non importée";
             }
 
-            $lot->adresse_logement = "";
-            $lot->adresse_logement .= (isset($data[self::CSV_NOM_SITE]) && $data[self::CSV_NOM_SITE])? trim($data[self::CSV_NOM_SITE]) : "";
-            $lot->adresse_logement .= (isset($data[self::CSV_ADRESSE_1_SITE]) && $data[self::CSV_ADRESSE_1_SITE])? " ".trim($data[self::CSV_ADRESSE_1_SITE]) : "";
-            $lot->adresse_logement .= (isset($data[self::CSV_ADRESSE_2_SITE]) && $data[self::CSV_ADRESSE_2_SITE])? " ".trim($data[self::CSV_ADRESSE_2_SITE]) : "";
-            $lot->adresse_logement .= (isset($data[self::CSV_CODE_POSTAL_SITE]) && $data[self::CSV_CODE_POSTAL_SITE])? " ".trim($data[self::CSV_CODE_POSTAL_SITE]) : "";
-            $lot->adresse_logement .= (isset($data[self::CSV_VILLE_SITE]) && $data[self::CSV_VILLE_SITE])? " ".trim($data[self::CSV_VILLE_SITE]) : "";
-
-
             $deleted = array();
             foreach($document->lots as $k => $l) {
               if ($lot->getUnicityKey() == $l->getUnicityKey() && $lot->getKey() != $k) {
@@ -280,21 +304,64 @@ EOF;
         }
     }
 
-    protected function clearProduitKey($key) {
-      $key = str_replace('PAYS-DES-', '', $key);
-      $key = str_replace('VAR-VAR-', 'VAR-', $key);
-      $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
-      $key = str_replace('NORD-', '', $key);
-      $key = preg_replace('/^LOIRE-ATLANTIQUE/', 'VAL-DE-LOIRE-LOIRE-ATLANTIQUE', $key);
-      $key = preg_replace('/^INDRE-ET-LOIRE/', 'VAL-DE-LOIRE-INDRE-ET-LOIRE', $key);
-      $key = preg_replace('/^MAINE-ET-LOIRE/', 'VAL-DE-LOIRE-MAINE-ET-LOIRE', $key);
-      $key = preg_replace('/^LOIR-ET-CHER/', 'VAL-DE-LOIRE-LOIR-ET-CHER', $key);
-      $key = preg_replace('/^CHER/', 'VAL-DE-LOIRE-CHER', $key);
-      $key = preg_replace('/^SARTHE/', 'VAL-DE-LOIRE-SARTHE', $key);
-      $key = preg_replace('/^VENDEE/', 'VAL-DE-LOIRE-VENDEE', $key);
-      $key = preg_replace('/^VIENNE/', 'VAL-DE-LOIRE-VIENNE', $key);
-      $key = preg_replace('/^ALLIER/', 'VAL-DE-LOIRE-ALLIER', $key);
-      return $key;
+    protected function needModificatrice($previousdoc, $etablissement, $periode , $nom_logt, $addr_logt, $cp_logt, $commune_logt){
+        if(!$previousdoc){
+            return false;
+        }
+        if($previousdoc->type != "DRev"){
+            return false;
+        }
+
+        if($previousdoc->identifiant != $etablissement->identifiant){
+            return false;
+        }
+        if($previousdoc->periode != $periode){
+            return false;
+        }
+
+        $adresse = $nom_logt.$addr_logt.$cp_logt.$commune_logt;
+        if($previousdoc->exist('chais') && ($c = $previousdoc->chais)){
+            $chaiStr = $c->nom.$c->adresse.$c->code_postal.$c->commune;
+            if($chaiStr != $adresse){
+                echo "INFO; addresse logement : [$nom_logt $addr_logt $cp_logt $commune_logt]";
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected function storeAddresseLogt($document, $nom_logt, $addr_logt,$cp_logt,$commune_logt){
+        $chai = $document->add('chais');
+        $chai->nom = $nom_logt;
+        $chai->adresse = $addr_logt;
+        $chai->code_postal = $cp_logt;
+        $chai->commune = $commune_logt;
+    }
+
+    public function fillChaisInfo($data){
+        $res = array();
+        $res[] = (isset($data[self::CSV_NOM_SITE]) && $data[self::CSV_NOM_SITE])? trim($data[self::CSV_NOM_SITE]) : "";
+
+        $adresse = (isset($data[self::CSV_ADRESSE_1_SITE]) && $data[self::CSV_ADRESSE_1_SITE])? " ".trim($data[self::CSV_ADRESSE_1_SITE]) : "";
+        $adresse .= (isset($data[self::CSV_ADRESSE_2_SITE]) && $data[self::CSV_ADRESSE_2_SITE])? " ".trim($data[self::CSV_ADRESSE_2_SITE]) : "";
+        $res[] = ($adresse)? $adresse : null;
+
+        $cp = (isset($data[self::CSV_CODE_POSTAL_SITE]) && $data[self::CSV_CODE_POSTAL_SITE])? " ".trim($data[self::CSV_CODE_POSTAL_SITE]) : "";
+        $res[] = ($cp)? $cp : null;
+
+        $commune = (isset($data[self::CSV_VILLE_SITE]) && $data[self::CSV_VILLE_SITE])? " ".trim($data[self::CSV_VILLE_SITE]) : "";
+        $res[] = ($commune)? $commune : null;
+        return $res;
+    }
+
+    protected function alias($appellation, $couleur) {
+        $appellation = trim($appellation);
+        $couleur = trim($couleur);
+
+        $appellation = str_replace('Principaute Orange', "Vaucluse Principauté d'Orange", $appellation);
+        $appellation = str_replace('Aigues', "Vaucluse Aigues", $appellation);
+
+        return $appellation." ".$couleur;
     }
 
     protected function identifyCepage($key) {
@@ -348,6 +415,9 @@ EOF;
         $newDrev->add('date_degustation_voulue', $date);
         if(!$drev || $newDrev->_id != $drev->_id) {
           $drev = DRevClient::getInstance()->find($newDrev->_id, acCouchdbClient::HYDRATE_DOCUMENT);
+          if($drev){
+               $drev = $drev->getMaster();
+          }
         }
 
         if(!$drev) {

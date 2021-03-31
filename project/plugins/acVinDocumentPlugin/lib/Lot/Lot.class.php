@@ -47,6 +47,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
     const SPECIFICITE_UNDEFINED = "UNDEFINED";
+    const SPECIFICITE_PRIMEUR = "Primeur";
 
     const TYPE_ARCHIVE = 'Lot';
 

@@ -837,7 +837,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lot->campagne = $this->getCampagne();
         $lot->declarant_identifiant = $this->identifiant;
         $lot->declarant_nom = $this->declarant->raison_sociale;
-        $lot->adresse_logement = $this->getCompleteAdresseLogement();
+        $lot->adresse_logement = $this->constructAdresseLogement();
         $lot->affectable = true;
         $lot->initDefault();
         return $lot;
@@ -1203,24 +1203,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function isAdresseLogementDifferente() {
-        if(!$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
+        if(!$this->chais->nom && !$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
 
             return false;
         }
 
-        return ($this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
+        return ($this->chais->nom != $this->declarant->nom || $this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
     }
 
-    public function getCompleteAdresseLogement(){
-        $completeAdresse = sprintf("%s %s %s",$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+    public function constructAdresseLogement(){
+        $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
         if($this->isAdresseLogementDifferente()){
-            $completeAdresse = sprintf("%s %s %s",$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+            $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
         }
 
+        return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
+     }
 
-        return trim(preg_replace('/\s+/', ' ', $completeAdresse));
-    }
 
 	protected function doSave() {
         $this->piece_document->generatePieces();

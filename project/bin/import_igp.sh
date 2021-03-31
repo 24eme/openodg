@@ -45,7 +45,9 @@ cp $DATA_DIR/01_operateurs/operateurs.xlsx $DATA_DIR/
 cp $DATA_DIR/01_operateurs/operateurs_inactifs.xlsx $DATA_DIR/
 cp $DATA_DIR/06_administration/membres.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/lots.xlsx $DATA_DIR/
+cp $DATA_DIR/03_declarations/lots_primeur.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/traitees/changement_denomination.xls $DATA_DIR/
+cp $DATA_DIR/03_declarations/syntheses/declassements.xlsx $DATA_DIR/
 cp $DATA_DIR/04_controles_produits/commissions.csv $DATA_DIR/
 cp $DATA_DIR/04_controles_produits/gestion_nc.xlsx $DATA_DIR/
 cp $DATA_DIR/01_operateurs/apporteurs_de_raisins.xlsx $DATA_DIR/
@@ -78,10 +80,23 @@ sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots.csv
 
 php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
 
+echo "Identification des Lots Primeur"
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_primeur.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 14,14 -k 24,24 -k 34,38 > $DATA_DIR/lots_primeur.csv
+sed -i 's/Choisir Ville//' $DATA_DIR/lots_primeur.csv
+sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots_primeur.csv
+sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots_primeur.csv
+
+php symfony import:lots-primeur-ia $DATA_DIR/lots_primeur.csv --application="$ODG" --trace
+
 echo "Import des Changements de denomination"
 
 cat $DATA_DIR/changement_denomination.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' > $DATA_DIR/changement_denomination.csv
 php symfony import:chgt-denom-ia $DATA_DIR/changement_denomination.csv --application="$ODG" --trace
+
+echo "Import des déclassements"
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/declassements.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 17.7,17.13 -k 17.4,17.5 -k 17.1,17.3 > $DATA_DIR/declassements.csv
+php symfony import:declassement-ia $DATA_DIR/declassements.csv --application="$ODG" --trace
 
 echo "Import des Degustations - Commissions"
 

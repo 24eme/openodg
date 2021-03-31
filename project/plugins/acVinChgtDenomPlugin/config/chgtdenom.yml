@@ -3,3 +3,6 @@ all:
     chgtdenom:
       specificite_lot: false
       specificites:
+        bio: "bio"
+        HVE: "HVE"
+        primeur: "primeur"
