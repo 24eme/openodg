@@ -78,7 +78,7 @@ $chais = $drev->add('chais');
 $chais->adresse = 'adresse Chai Drev';
 $chais->code_postal = 'cp Chai Drev';
 $chais->commune = 'commune Chai Drev';
-$addrCompleteLgtDrev = $drev->getCompleteAdresseLogement();
+$addrCompleteLgtDrev = $drev->constructAdresseLogement();
 
 $drev->save();
 
@@ -120,7 +120,7 @@ $chais = $transaction->add('chais');
 $chais->adresse = $adresseLogement;
 $chais->code_postal = $cpLogement;
 $chais->commune = $communeLogement;
-$addrCompleteLgtTrans = $transaction->getCompleteAdresseLogement();
+$addrCompleteLgtTrans = $transaction->constructAdresseLogement();
 
 
 $lot_transaction = $transaction->addLot();

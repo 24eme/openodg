@@ -244,13 +244,6 @@ EOF;
         return preg_replace('/[^0-9a-z]/', '', strtolower($s));
     }
 
-    protected function clearProduitKey($key) {
-      $key = str_replace('PAYS-DES-', '', $key);
-      $key = str_replace('VAR-VAR-', 'VAR-', $key);
-      $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
-      return $key;
-    }
-
     public function initProduitsCepages() {
       $this->produits = array();
       $this->cepages = array();

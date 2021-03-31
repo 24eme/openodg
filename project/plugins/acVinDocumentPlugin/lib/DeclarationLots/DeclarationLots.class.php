@@ -134,7 +134,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           $lot->declarant_identifiant = $this->identifiant;
           $lot->declarant_nom = $this->declarant->raison_sociale;
           $lot->affectable = true;
-          $lot->adresse_logement = $this->getCompleteAdresseLogement();
+          $lot->adresse_logement = $this->constructAdresseLogement();
 
           $lot->initDefault();
           return $lot;
@@ -281,15 +281,14 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       }
 
 
-      public function getCompleteAdresseLogement(){
-          $completeAdresse = sprintf("%s %s %s",$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+      public function constructAdresseLogement(){
+          $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
           if($this->isAdresseLogementDifferente()){
-              $completeAdresse = sprintf("%s %s %s",$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+              $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
           }
 
-
-              return trim(preg_replace('/\s+/', ' ', $completeAdresse));
+          return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
        }
 
 

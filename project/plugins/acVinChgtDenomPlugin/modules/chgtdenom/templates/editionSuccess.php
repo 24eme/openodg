@@ -69,7 +69,7 @@
                   </div>
               </div>
         </div>
-
+        <?php if(ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()): ?>
         <div class="row">
               <div class="col-md-8">
                   <div class="form-group">
@@ -83,6 +83,7 @@
                   </div>
               </div>
         </div>
+      <?php endif; ?>
 
         <div style="margin-top: 20px;" class="row row-margin row-button">
             <div class="col-xs-4">
