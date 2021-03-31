@@ -1123,6 +1123,10 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement_dr_l5": 100,
+                                  "rendement_dr_l15": 90
                                 }
                               }
                             }
@@ -1162,11 +1166,8 @@
                                   }
                                 },
                                 "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
+                                  "rendement_dr_l5": 120,
+                                  "rendement_dr_l15": 110
                                 }
                               }
                             }
@@ -1206,11 +1207,8 @@
                                   }
                                 },
                                 "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
+                                  "rendement_dr_l5": 100,
+                                  "rendement_dr_l15": 90
                                 }
                               }
                             }
@@ -1414,11 +1412,8 @@
                   }
                 },
                 "attributs": {
-                  "rendement": null,
-                  "rendement_conseille": null,
-                  "rendement_dr": null,
-                  "rendement_vci": null,
-                  "rendement_vci_total": null
+                  "rendement_dr_l5": 85,
+                  "rendement_dr_l15": 80
                 }
               },
               "COB": {
@@ -1607,11 +1602,8 @@
                   }
                 },
                 "attributs": {
-                  "rendement": null,
-                  "rendement_conseille": null,
-                  "rendement_dr": null,
-                  "rendement_vci": null,
-                  "rendement_vci_total": null
+                  "rendement_dr_l5": 95,
+                  "rendement_dr_l15": 90
                 }
               }
             }
@@ -2144,11 +2136,8 @@
           }
         },
         "attributs": {
-          "rendement": 90,
-          "rendement_conseille": null,
-          "rendement_dr": 95,
-          "rendement_vci": null,
-          "rendement_vci_total": null
+          "rendement_dr_l5": 130,
+          "rendement_dr_l15": 120
         }
       }
     }
