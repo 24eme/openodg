@@ -813,7 +813,7 @@
             }
           },
           "EFF": {
-            "libelle": "Effervescent",
+            "libelle": "Mousseux",
             "format_libelle": "%a% %g% %m% %l% %co% %ce%",
             "code": "EFF",
             "code_produit": null,
