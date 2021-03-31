@@ -22,7 +22,10 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
 
     const STATUT_CHANGE = "CHANGE";
-    const STATUT_ELEVAGE = "ELEVAGE";
+
+    const STATUT_ELEVAGE = "02_ELEVAGE_EN_ATTENTE";
+    const STATUT_ELEVAGE_EN_ATTENTE = "02_ELEVAGE_EN_ATTENTE";
+    const STATUT_ELEVE = "03_ELEVE";
 
     const STATUT_CHANGE_DEST = "01_CHANGE_DEST";
 
@@ -30,8 +33,8 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_ENLEVE = "01_ENLEVE";
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
-    const STATUT_NONAFFECTABLE = "02_NON_AFFECTABLE";
-    const STATUT_AFFECTABLE = "03_AFFECTABLE_ENATTENTE";
+    const STATUT_NONAFFECTABLE = "09_NON_AFFECTABLE";
+    const STATUT_AFFECTABLE = "09_AFFECTABLE_ENATTENTE";
 
     const STATUT_CHANGE_SRC = "99_CHANGE_SRC";
     const STATUT_CHANGEABLE = "00_CHANGEABLE";
@@ -65,7 +68,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CHANGE_SRC => 'Changé (source)',
         self::STATUT_CHANGE_DEST => 'Changé (destination)',
         self::STATUT_DECLASSE => 'Déclassé',
-        self::STATUT_ELEVAGE => 'En élevage',
+        self::STATUT_ELEVAGE_EN_ATTENTE => 'En élevage',
+        self::STATUT_ELEVE => 'Fin de l\'élevage',
 
         self::STATUT_MANQUEMENT_EN_ATTENTE => 'Manquement en attente',
 
@@ -86,7 +90,8 @@ abstract class Lot extends acCouchdbDocumentTree
             Lot::STATUT_RECOURS_OC => "warning",
             Lot::STATUT_CONFORME_APPEL => "success",
             Lot::STATUT_DECLASSE => "danger",
-            Lot::STATUT_ELEVAGE => "warning",
+            Lot::STATUT_ELEVAGE_EN_ATTENTE => "warning",
+            Lot::STATUT_ELEVE => "warning",
         );
 
     public static $libellesConformites = array(
@@ -302,6 +307,15 @@ abstract class Lot extends acCouchdbDocumentTree
         $libelle .= ' ('.$this->millesime.')';
       }
       return $libelle;
+    }
+
+    public function eleve($date = null){
+        if(!$date){
+            $date = date('Y-m-d');
+        }
+        $this->elevage = false;
+        $this->eleve = $date;
+        $this->statut = Lot::STATUT_RECOURS_OC;
     }
 
     public function isPreleve(){
@@ -599,7 +613,8 @@ abstract class Lot extends acCouchdbDocumentTree
         if (!isset($cepages[$cep])) {
             $cepages[$cep] = 0;
         }
-        $cepages[$cep] += round(($volume/$volume_total) * 100);
+        $vol = ($volume_total>0)? round(($volume/$volume_total) * 100) : 0;
+        $cepages[$cep] += $vol;
       }
       return $cepages;
     }

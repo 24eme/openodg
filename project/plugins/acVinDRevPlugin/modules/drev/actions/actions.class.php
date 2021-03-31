@@ -831,6 +831,22 @@ class drevActions extends sfActions {
     }
 
 
+        public function executeEleve(sfWebRequest $request) {
+            $docid = $request->getParameter('id');
+            $doc = DRevClient::getInstance()->find($docid);
+            $this->forward404Unless($doc);
+            $lot_unique_id = $request->getParameter('unique_id');
+            $lot = $doc->getLot($lot_unique_id);
+            $this->forward404Unless($lot);
+
+            $lot->eleve();
+
+            $doc->generateMouvementsLots();
+            $doc->save();
+
+            return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
+        }
+
 
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();

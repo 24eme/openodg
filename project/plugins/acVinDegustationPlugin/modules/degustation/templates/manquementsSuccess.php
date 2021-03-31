@@ -28,38 +28,5 @@
 </div>
 
 <br/>
-
-<div class="row">
-<table class="table table-condensed table_manquements" >
-<thead>
-    <th>Num. dossier</th>
-    <th>Déclarant</th>
-    <th>Appellation</th>
-    <th>Manquement</th>
-    <th>Traitement</th>
-</thead>
-<tbody>
-<?php foreach($manquements as $keyLot => $m):
-    $words = json_encode([$m->produit_libelle,$m->declarant_identifiant,Lot::$libellesConformites[$m->conformite],$m->declarant_nom,$m->numero_dossier,$m->millesime], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
-    ?>
-    <tr class="<?php if($m->recours_oc): ?>list-group-item-warning<?php endif;?> hamzastyle-item" data-words='<?= $words ?>' >
-        <td><span class="text-muted"><?php echo $m->numero_dossier; ?></span></td>
-        <td><?php echo $m->declarant_nom; ?></td>
-        <td><?php echo showProduitLot($m->getRawValue()) ?><small> - <span class="text-right"><?php echo formatFloat($m->volume); ?>&nbsp;hl</span></small></td>
-
-        <td><?php echo ($m->conformite) ? Lot::$libellesConformites[$m->conformite] : null; ?><br/><small class="text-muted"><?php echo $m->motif; ?></small>
-            <?php if($m->recours_oc): ?><span class="label label-warning">Dégust. OC</span><?php endif;?></td>
-        <td>
-            <div class="dropdown">
-              <a class="btn btn-default btn-xs" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $m->declarant_identifiant, 'unique_id' => $m->unique_id)) ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
-              </ul>
-            </div>
-        </td>
-        <td>
-        </td>
-    </tr>
-<?php endforeach; ?>
-</tbody>
-</table>
-</div>
+<?php include_partial('degustation/lots', array('lots' => $manquements)); ?>
 <?php use_javascript('hamza_style.js'); ?>

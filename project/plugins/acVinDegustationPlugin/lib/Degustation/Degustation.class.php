@@ -347,14 +347,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if (!$this->_id) {
             throw new sfException("Pour ajouter un lot, il faut avoir un id à notre degustation");
         }
-        $lotDef = DegustationLot::freeInstance($this);
-        foreach($lotOrig as $key => $value) {
-            if($lotDef->getDefinition()->exist($key)) {
-                continue;
-            }
-
-            unset($lotOrig->{$key});
-        }
+        $lotOrig = DegustationClient::getInstance()->cleanLotForDegustation($lotOrig);
         $this->docToSave[$lotOrig->id_document] = $lotOrig->id_document;
         $lot = $this->lots->add(null, $lotOrig);
         $lot->date = $this->date;
@@ -652,7 +645,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getLotsFromProvenance() {
             $lots = array();
             foreach($this->getLots() as $lot) {
-                $lots[$lot->unique_id] = $lot->getLotProvenance();
+                $lots[$lot->unique_id] = DegustationClient::getInstance()->cleanLotForDegustation($lot->getLotProvenance()->getData());
 				$lots[$lot->unique_id]->specificite = $lot->specificite;
 				$lots[$lot->unique_id]->statut = $lot->statut;
             }
@@ -1209,10 +1202,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function getNbLotByTypeForNumDossier($numDossier){
+		public function getNbLotByTypeForNumDossier($numDossier, $adresse){
 			$lots = array();
-			foreach ($this->getLotsByNumDossierNumLogementOperateur()[$numDossier] as $numCuve => $lot) {
-				$lots[$lot->getTypeProvenance()] +=1;
+			foreach ($this->getLotsByNumDossierNumArchive()[$numDossier] as $numCuve => $lot) {
+                if($lot->adresse_logement == $adresse){
+                    $lots[$lot->getTypeProvenance()] +=1;
+                }
 			}
 			return $lots;
 		}

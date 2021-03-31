@@ -96,3 +96,36 @@ function pictoDegustable($lot) {
 
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
+
+function showLotStatusCartouche($statut, $detail = null, $statut_et_detail = false) {
+    if (!isset(Lot::$libellesStatuts[$statut]) && !$detail) {
+        return ;
+    }
+    $text = '';
+    $text .= '<span class="label label-';
+    $text .= isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
+    $text .= '">';
+    if (isset(Lot::$libellesStatuts[$statut]) && ($statut_et_detail || !$detail)) {
+        $text .= Lot::$libellesStatuts[$statut];
+        if (!$statut_et_detail && $detail) {
+            $text .= ' : ';
+        }
+    }
+    $text .= $detail;
+    $text .= '</span>';
+    return $text;
+}
+
+function splitLogementAdresse($adresseLogement){
+    if(!$adresseLogement){
+        return $adresseLogement;
+    }
+
+    $adresseSplit = explode('—',$adresseLogement);
+    $adresse['nom'] = trim($adresseSplit[0]);
+    $adresse['adresse'] = trim($adresseSplit[1]);
+    $adresse['code_postal'] = trim($adresseSplit[2]);
+    $adresse['commune'] = trim($adresseSplit[3]);
+
+    return $adresse;
+}
