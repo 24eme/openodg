@@ -80,7 +80,6 @@ Conditionnement:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
-                  elevage: { }
                   statut: {}
                   adresse_logement: {}
                   specificite: { }
