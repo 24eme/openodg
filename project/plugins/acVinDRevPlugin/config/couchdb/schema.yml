@@ -136,6 +136,7 @@ DRev:
                   produit_hash: { }
                   produit_libelle: { }
                   elevage: { }
+                  eleve: { }
                   statut: {}
                   adresse_logement: {}
                   specificite: { }

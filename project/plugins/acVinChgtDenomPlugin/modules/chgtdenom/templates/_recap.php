@@ -30,11 +30,11 @@
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
   <?php endif; ?>
     <div class="row">
-      <div class="col-xs-8">
+      <div class="col-xs-9">
         <h4>Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong></h4>
       </div>
-      <div class="col-xs-4 text-right">
-      <?php if (($chgtDenom->isChgtDenomination() || $lot->isChangeable()) && !$chgtDenom->validation_odg && isset($form['lots']) && $sf_user->isAdmin()): ?>
+      <div class="col-xs-3 text-right">
+      <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->validation_odg && isset($form['lots']) && $sf_user->isAdmin()): ?>
         <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
           <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
           <div class="col-xs-12">
@@ -45,7 +45,7 @@
         <?php if($chgtDenom->isValidee()): ?>
           <a href="<?php echo url_for('degustation_etablissement_list',array('identifiant' => $lot->declarant_identifiant))."#".$lot->numero_dossier.$lot->numero_archive; ?>" class="btn btn-default btn-xs pull-left" title="visu du lot"><span class="glyphicon glyphicon-chevron-right"></span></a>
         <?php endif; ?>
-        <?php if($chgtDenom->isChgtDenomination() || $lot->isChangeable()): ?>
+        <?php if($chgtDenom->isChgtDenomination()): ?>
           <span>Dgstable :</span>
           <?php echo pictoDegustable($lot); ?>
         <?php endif; ?>

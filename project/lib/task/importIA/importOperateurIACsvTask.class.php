@@ -96,7 +96,7 @@ EOF;
               $societe->fax = Phone::format($data[self::CSV_FAX]);
             }
             if (isset($data[self::CSV_EMAIL])){
-              $societe->email = $data[self::CSV_EMAIL];
+              $societe->email = KeyInflector::unaccent($data[self::CSV_EMAIL]);
             }
             if (isset($data[self::CSV_CODE_COMPTABLE])){
               $societe->code_comptable_client = $data[self::CSV_CODE_COMPTABLE];
