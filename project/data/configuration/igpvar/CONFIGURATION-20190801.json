@@ -1149,6 +1149,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": null,
                   "rendement_dr_l5": null,
                   "rendement_dr_l15": null
                 }
@@ -1339,6 +1340,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 90,
                   "rendement_dr_l5": 100,
                   "rendement_dr_l15": 90
                 }
@@ -1529,6 +1531,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 105,
                   "rendement_dr_l5": 115,
                   "rendement_dr_l15": 105
                 }
@@ -2560,6 +2563,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": null,
                   "rendement_dr_l5": null,
                   "rendement_dr_l15": null
                 }
@@ -2750,6 +2754,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 90,
                   "rendement_dr_l5": 100,
                   "rendement_dr_l15": 90
                 }
@@ -2958,6 +2963,7 @@
           }
         },
         "attributs": {
+          "rendement": 120,
           "rendement_dr_l5": 130,
           "rendement_dr_l15": 120
         }
