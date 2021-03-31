@@ -132,6 +132,18 @@ class DegustationLot extends BaseDegustationLot {
 
     }
 
+    public function setIsPreleve($date = null) {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+        $this->preleve = $date;
+        $this->statut = Lot::STATUT_PRELEVE;
+    }
+
+    public function isPreleve() {
+        return ($this->preleve);
+    }
+
     public function getDocumentType() {
 
         return DegustationClient::TYPE_MODEL;

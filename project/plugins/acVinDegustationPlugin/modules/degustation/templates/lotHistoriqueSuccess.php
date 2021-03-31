@@ -36,7 +36,6 @@ endforeach;
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
           <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
           <?php $class = ($lastiddate == $mouvement->value->document_id.$mouvement->value->date) ? "text-muted": null ; ?>
-          <?php $urlEtape = getUrlEtapeFromMvtLot($mouvement); ?>
               <tr>
                 <td class="<?php echo $class; ?>">
                     <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
@@ -69,7 +68,7 @@ endforeach;
                       </ul>
                     </div>
                     <?php else: ?>
-                        <a href="<?php echo $urlEtape; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
+                        <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
                     <?php endif; ?>
                     <?php $lastiddate = $mouvement->value->document_id.$mouvement->value->date ; ?>
                 </td>

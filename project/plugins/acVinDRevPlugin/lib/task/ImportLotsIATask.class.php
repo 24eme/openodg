@@ -79,17 +79,6 @@ class ImportLotsIATask extends importOperateurIACsvTask
     "Savagnin Blanc B" => "SAVAGN.B",
     "Vermentino B" => "VERMENT.B"
   );
-    public static $correspondancesStatuts = array(
-      "Conforme" => Lot::STATUT_CONFORME,
-      "Déclassé" => Lot::STATUT_DECLASSE,
-      "Non Conforme" => Lot::STATUT_NONCONFORME,
-      "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
-      "Prélevé NA" => Lot::STATUT_PRELEVE,//Prélevé Non Anonimisé
-      "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
-      "Revendiqué C" => Lot::STATUT_REVENDIQUE,
-      "Revendiqué NC" => Lot::STATUT_NONCONFORME
-    );
-
     protected function configure()
     {
         $this->addArguments(array(
@@ -199,6 +188,9 @@ EOF;
             $logementCommune = (isset($data[self::CSV_VILLE_SITE]) && $data[self::CSV_VILLE_SITE])? trim($data[self::CSV_VILLE_SITE]) : null;
 
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
+            if ($data[self::CSV_STATUT] == "Revendiqué C") {
+                $prelevable = false;
+            }
 
            $previousdoc = $document;
 

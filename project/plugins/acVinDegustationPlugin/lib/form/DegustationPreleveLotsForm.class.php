@@ -33,7 +33,7 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
                 continue;
             }
             if(!$this->getDocument()->lots->get($key)->isPreleve()){
-              $this->getDocument()->lots->get($key)->statut = Lot::STATUT_PRELEVE;
+              $this->getDocument()->lots->get($key)->setIsPreleve();
             }
         }
 

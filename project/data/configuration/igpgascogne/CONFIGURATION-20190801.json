@@ -1105,6 +1105,7 @@
           }
         },
         "attributs": {
+          "rendement": 120,
           "rendement_dr_l5": 130,
           "rendement_dr_l15": 120
         }

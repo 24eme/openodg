@@ -714,7 +714,6 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
-        $mouvement->region = '';
         $mouvement->version = $this->getVersion();
         $mouvement->document_ordre = $this->getDocumentOrdre();
         $mouvement->document_type = $this->getDocumentType();
