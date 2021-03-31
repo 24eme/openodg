@@ -613,7 +613,8 @@ abstract class Lot extends acCouchdbDocumentTree
         if (!isset($cepages[$cep])) {
             $cepages[$cep] = 0;
         }
-        $cepages[$cep] += round(($volume/$volume_total) * 100);
+        $vol = ($volume_total>0)? round(($volume/$volume_total) * 100) : 0;
+        $cepages[$cep] += $vol;
       }
       return $cepages;
     }
