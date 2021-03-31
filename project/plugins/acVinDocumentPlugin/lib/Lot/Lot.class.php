@@ -645,7 +645,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     abstract public function getMouvementFreeInstance();
 
-    protected function getLibelle()
+    public function getLibelle()
     {
         $libelle = $this->getProduitLibelle();
 

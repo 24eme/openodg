@@ -4,12 +4,13 @@
  *
  */
 
-class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument {
+class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument, InterfaceArchivageDocument {
 
 	protected $piece_document = null;
 	protected $array_tri = null;
 	protected $cm = null;
     protected $docToSave = array();
+    protected $archivage_document = null;
     protected $mouvement_document = null;
 
     public function __construct() {
@@ -45,6 +46,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     protected function initDocuments() {
         $this->piece_document = new PieceDocument($this);
         $this->mouvement_document = new MouvementFacturesDocument($this);
+        $this->archivage_document = new ArchivageDocument($this);
     }
 
     public function getConfiguration() {
@@ -1292,6 +1294,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
         /**** FIN DES MOUVEMENTS ****/
+
+        /*** ARCHIVAGE ***/
+
+        public function getNumeroArchive() {
+
+            return $this->_get('numero_archive');
+        }
+
+        public function isArchivageCanBeSet() {
+
+            return true;
+        }
+
+		protected function preSave() {
+			$this->archivage_document->preSave();
+		}
+
+        /*** FIN ARCHIVAGE ***/
 
 		/**** Fonctions de facturation ****/
 

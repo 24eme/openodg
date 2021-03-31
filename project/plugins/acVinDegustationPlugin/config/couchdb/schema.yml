@@ -13,6 +13,7 @@ Degustation:
       validation: {  }
       tri : { }
       provenance: { required: false }
+      numero_archive: {  }
       lots:
         type: array_collection
         definition:

@@ -177,7 +177,6 @@ EOF;
 
     protected function identifyEtablissement($raisonSociale, $cvi = null, $codePostal = null, $hydrate = acCouchdbClient::HYDRATE_JSON) {
         if(!$this->etablissements) {
-            echo "allview\n";
             $this->etablissements = EtablissementAllView::getInstance()->getAll();
         }
 
