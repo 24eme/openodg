@@ -88,7 +88,7 @@ class ImportLotsIATask extends importOperateurIACsvTask
       "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
       "Prélevé NA" => Lot::STATUT_PRELEVE,//Prélevé Non Anonimisé
       "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
-      "Revendiqué C" => Lot::STATUT_REVENDIQUE,
+      "Revendiqué C" => Lot::STATUT_NONAFFECTABLE,
       "Revendiqué NC" => Lot::STATUT_NONCONFORME
     );
 
