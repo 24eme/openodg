@@ -88,7 +88,6 @@ Degustation:
                         libelle: {}
                         detail: {}
                         volume: { type: float }
-                        region: {}
                         version: {  }
                         document_ordre: {  }
                         document_type: {  }
