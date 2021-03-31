@@ -44,11 +44,24 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $lieux;
     }
 
+    public function cleanLotForDegustation($lot) {
+        if (get_class($lot) != 'stdClass') {
+            $lot = $lot->toJson();
+        }
+        $lotDef = DegustationLot::freeInstance(new Degustation());
+        foreach($lot as $key => $value) {
+            if($lotDef->getDefinition()->exist($key)) {
+                continue;
+            }
+            unset($lot->{$key});
+        }
+        return $lot;
+    }
 
 	public function getLotsPrelevables() {
 	    $lots = array();
 	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $lot) {
-	        $lots[$lot->value->unique_id] = $lot->value;
+	        $lots[$lot->value->unique_id] = $this->cleanLotForDegustation($lot->value);
             $lots[$lot->value->unique_id]->type_document = substr($lot->id, 0, 4);
             $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;
             if ($nb_passage > 1) {
@@ -74,7 +87,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         $elevages = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows as $item) {
             $item->value->id_document = $item->id;
-            $elevages[$item->value->unique_id] = $item->value;
+            $elevages[$item->value->unique_id] = $this->cleanLotForDegustation($item->value);
         }
         return $elevages;
     }
@@ -84,7 +97,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         $manquements = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
             $item->value->id_document = $item->id;
-            $manquements[$item->value->unique_id] = $item->value;
+            $manquements[$item->value->unique_id] = $this->cleanLotForDegustation($item->value);
         }
 
         $manquements_tries = $manquements;
@@ -110,7 +123,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         $facturables = array();
         foreach ($lotsView as $lotView) {
             if(preg_match("/^".self::TYPE_COUCHDB."-".($campagne+1)."/", $lotView->id) && !array_key_exists($lotView->id,$facturables)){
-                $facturables[$lotView->id] = $this->find($lotView->id);
+                $facturables[$lotView->id] = $this->cleanLotForDegustation($this->find($lotView->id));
             }
         }
         return $facturables;
