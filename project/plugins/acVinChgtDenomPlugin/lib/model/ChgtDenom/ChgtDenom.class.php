@@ -262,10 +262,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lotOrig = clone $lot;
         $lotOrig->volume -= $this->changement_volume;
         $lotOrig->numero_archive .= 'a';
+        $lotOrig->unique_id .= 'a';
         $lots[] = $lotOrig;
         $lot->numero_archive .= 'b';
+        $lot->unique_id .= 'b';
       }else{
           $lot->numero_archive .= 'a';
+          $lot->unique_id .= 'a';
       }
       $lot->volume = $this->changement_volume;
       $lot->specificite = $this->changement_specificite;

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(114);
+$t = new lime_test(116);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -315,7 +315,9 @@ $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "la prove
 $t->is($chgtDenom->lots[1]->id_document_provenance, $degustation->_id, "la provenance du lot 2 est bien ".$degustation->_id);
 
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "le mouvement du lot d'origine a un statut changé dest");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGEABLE), "le mouvement du lot d'origine reste changeable");
 $t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_DECLASSE), "le mouvement du lot partiel a un statut déclassé");
+$t->ok(!$chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_CHANGEABLE), "le mouvement du lot déclassé n'est plus changeable");
 $t->is($chgtDenom->getLotOrigine()->id_document_affectation, $chgtDenom->_id, "le lot d'origine a bien l'affectation du changement ".$chgtDenom->_id);
 $t->ok($chgtDenom->getLotOrigine()->isChange(), "statut des mvt du lot origine a bien isChange()");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE_SRC), "statut des mvt du lot origine a bien un mouvement changé src");
