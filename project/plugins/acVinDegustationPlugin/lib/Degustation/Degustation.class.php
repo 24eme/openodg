@@ -7,7 +7,7 @@
 class Degustation extends BaseDegustation implements InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument, InterfaceArchivageDocument {
 
 	protected $piece_document = null;
-	protected $tri = null;
+	protected $array_tri = null;
 	protected $cm = null;
     protected $docToSave = array();
     protected $archivage_document = null;
@@ -258,7 +258,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
 
                 case Lot::STATUT_AFFECTE_DEST:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_DEST));
+					$ordre = intval($lot->document_ordre) - 1;
+					$detail = sprintf("%dme passage", $ordre);
+					if ($ordre == 1) {
+						$detail = "1er passage";
+					}
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_DEST, $detail));
 
                 default:
                     break;
@@ -585,10 +590,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsPrelevesCustomSort(array $tri = null) {
 			$lots = $this->getLotsPreleves();
 			if (!$tri) {
-				$tri = array('couleur', 'appellation', 'cepage');
+				$tri = explode('|', $this->tri);
 			}
-			$this->tri = $tri;
-			  usort($lots, array($this, "sortLotsByPosition"));
+			$this->array_tri = $tri;
+			usort($lots, array($this, "sortLotsByPosition"));
 	   		uasort($lots, array($this, "sortLotsByThisTri"));
 	   		return $lots;
    	 	}
@@ -661,7 +666,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-			$this->tri = ['numero_anonymat'];
+			$this->array_tri = ['numero_anonymat'];
 			usort($lots, array($this, "sortLotsByPosition"));
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
@@ -693,7 +698,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if (!count($lots)) {
 					break;
 				}
-				$this->tri = ['couleur','appellation','cépage'];
+				if (!$this->tri) {
+					$this->tri = 'Couleur|Appellation|Cépage';
+				}
 				usort($lots, array($this, "sortLotsByPosition"));
 				usort($lots, array($this, 'sortLotsByThisTri'));
 				foreach ($lots as $k => $lot){
@@ -770,7 +777,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsTableOrFreeLotsCustomSort($numero_table, array $tri,  $free = true){
 			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
-			$this->tri = $tri;
+			$this->array_tri = $tri;
 			usort($lots, array($this, "sortLotsByPosition"));
 			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
@@ -837,10 +844,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function sortLotsByThisTri($a, $b){
 			$a_data = '';
 			$b_data = '';
-			foreach($this->tri as $t) {
+			foreach($this->array_tri as $t) {
 				$a_data .= $a->getValueForTri($t);
 				$b_data .= $b->getValueForTri($t);
-				if ( $this->tri == ['numero_anonymat']){
+				if ( $this->array_tri == ['numero_anonymat']){
 					$cmp = $a_data-$b_data;
 					if ($cmp !=0) {
 						return $cmp;

@@ -301,22 +301,24 @@ class degustationActions extends sfActions {
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->tri = $request->getParameter('tri');
+        if(!$this->tri){
+            $this->tri = $this->degustation->tri;
+        }
+        if(!$this->tri){
+            $this->tri = 'Couleur|Genre|Appellation';
+        }
         if(!$request->getParameter('numero_table')) {
-            if(!$this->tri){
-                $this->tri = 'Couleur|Genre|Appellation';
-            }
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1, 'tri' => $this->tri));
         }
 
         $this->numero_table = $request->getParameter('numero_table');
 
-        if (!$request->getParameter('tri')) {
-            if(!$this->tri){
-                $this->tri = 'Couleur|Genre|Appellation';
-            }
+        if(!$this->tri){
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $this->tri));
         }
         $this->tri_array = explode('|', strtolower($this->tri));
+
+        $this->degustation->tri = $this->tri;
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
         $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);
@@ -327,7 +329,6 @@ class degustationActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
@@ -383,6 +384,7 @@ class degustationActions extends sfActions {
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->tri = $request->getParameter('tri');
+        $this->degustation->tri = $this->tri;
         $this->tri_array = explode('|', strtolower($this->tri));
 
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);

@@ -63,7 +63,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_NONCONFORME_LEVEE => 'Non conformité levée',
         self::STATUT_RECOURS_OC => 'En recours OC',
         self::STATUT_CONFORME_APPEL => 'Conforme en appel',
-        self::STATUT_AFFECTE_SRC => 'Affecté à une dégustation',
+        self::STATUT_AFFECTE_DEST => 'Affecté à une dégustation',
         self::STATUT_CHANGE => 'Changé',
         self::STATUT_CHANGE_SRC => 'Changé (source)',
         self::STATUT_CHANGE_DEST => 'Changé (destination)',
