@@ -307,6 +307,8 @@
 
                 vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
             })
+
+            input.dispatchEvent(new Event('change'));
         })
 
         function precision(f) {
