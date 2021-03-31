@@ -6619,7 +6619,8 @@
                 "attributs": {
                   "rendement": 90,
                   "rendement_conseille": null,
-                  "rendement_dr": 95,
+                  "rendement_dr_l5": 95,
+                  "rendement_dr_l15": 90,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -6861,7 +6862,8 @@
                 "attributs": {
                   "rendement": 90,
                   "rendement_conseille": null,
-                  "rendement_dr": 95,
+                  "rendement_dr_l5": 120,
+                  "rendement_dr_l15": 90,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -7101,9 +7103,10 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 90,
+                  "rendement": 80,
                   "rendement_conseille": null,
-                  "rendement_dr": 95,
+                  "rendement_dr_l5": 120,
+                  "rendement_dr_l15": 80,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -7293,6 +7296,14 @@
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_conseille": null,
+                              "rendement_dr_l5": 120,
+                              "rendement_dr_l15": 65,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            },
                             "interpro": {
                               "INTERPRO-inter-loire": {
                                 "labels": [],
@@ -7343,9 +7354,10 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 90,
+                  "rendement": 80,
                   "rendement_conseille": null,
-                  "rendement_dr": 95,
+                  "rendement_dr_l5": 120,
+                  "rendement_dr_l15": 80,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
@@ -7585,22 +7597,16 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 90,
+                  "rendement": 80,
                   "rendement_conseille": null,
-                  "rendement_dr": 95,
+                  "rendement_dr_l5": 120,
+                  "rendement_dr_l15": 80,
                   "rendement_vci": null,
                   "rendement_vci_total": null
                 }
               }
             }
           }
-        },
-        "attributs": {
-          "rendement": null,
-          "rendement_vci": null,
-          "rendement_vci_total": null,
-          "rendement_conseille": null,
-          "rendement_dr": null
         }
       }
     }
