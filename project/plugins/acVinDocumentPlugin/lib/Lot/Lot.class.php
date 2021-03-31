@@ -67,7 +67,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CHANGE_SRC => 'Changé (source)',
         self::STATUT_CHANGE_DEST => 'Changé (destination)',
         self::STATUT_DECLASSE => 'Déclassé',
-        self::STATUT_ELEVAGE => 'En élevage',
+        self::STATUT_ELEVAGE_EN_ATTENTE => 'En élevage',
+        self::STATUT_ELEVE => 'Fin de l\'élevage',
 
         self::STATUT_MANQUEMENT_EN_ATTENTE => 'Manquement en attente',
 
@@ -88,7 +89,8 @@ abstract class Lot extends acCouchdbDocumentTree
             Lot::STATUT_RECOURS_OC => "warning",
             Lot::STATUT_CONFORME_APPEL => "success",
             Lot::STATUT_DECLASSE => "danger",
-            Lot::STATUT_ELEVAGE => "warning",
+            Lot::STATUT_ELEVAGE_EN_ATTENTE => "warning",
+            Lot::STATUT_ELEVE => "warning",
         );
 
     public static $libellesConformites = array(
