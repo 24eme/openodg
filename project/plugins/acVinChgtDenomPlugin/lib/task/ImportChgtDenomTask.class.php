@@ -1,6 +1,6 @@
 <?php
 
-class ImportChgtDenomTask extends sfBaseTask
+class ImportChgtDenomTask extends importOperateurIACsvTask
 {
   const CSV_CVI = 0;
   const CSV_NUM_DOSSIER = 1;
@@ -89,7 +89,7 @@ EOF;
                 continue;
             }
 
-            $etablissement = $this->identifyEtablissement($data);
+            $etablissement = $this->identifyEtablissement($data[self::CSV_RAISON_SOCIALE], $data[self::CSV_CVI], $data[self::CSV_CODE_POSTAL]);
             if (!$etablissement) {
                echo "ERROR;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
                continue;
@@ -249,48 +249,6 @@ EOF;
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
       $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
       return $key;
-    }
-
-    protected function identifyEtablissement($data) {
-        for ($i = strlen($data[self::CSV_CVI]) ; $i < 10 ; $i++) {
-            $data[self::CSV_CVI] = $data[self::CSV_CVI].'0';
-        }
-        if (!intval($data[self::CSV_CVI])) {
-            $data[self::CSV_CVI] = '';
-        }
-        $key = KeyInflector::slugify(str_replace(" ", "", $data[self::CSV_CVI].$data[self::CSV_RAISON_SOCIALE].$data[self::CSV_NOM]));
-
-        if(isset($this->etablissementsCache[$key])) {
-            return $this->etablissementsCache[$key];
-        }
-        foreach ($this->etablissements as $etab) {
-            if (isset($data[self::CSV_CVI]) && trim($data[self::CSV_CVI]) && $etab->key[EtablissementAllView::KEY_CVI] == trim($data[self::CSV_CVI])) {
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
-
-                return $this->etablissementsCache[$key];
-            }
-            if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
-
-                return $this->etablissementsCache[$key];
-            }
-            if (isset($data[self::CSV_RAISON_SOCIALE]) && trim($data[self::CSV_RAISON_SOCIALE]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_RAISON_SOCIALE]))) {
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
-
-                return $this->etablissementsCache[$key];
-            }
-            if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
-
-                return $this->etablissementsCache[$key];
-            }
-            if (isset($data[self::CSV_NOM]) && trim($data[self::CSV_NOM]) && KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == KeyInflector::slugify(trim($data[self::CSV_NOM]))) {
-                $this->etablissementsCache[$key] = EtablissementClient::getInstance()->find($etab->id);
-
-                return $this->etablissementsCache[$key];
-            }
-        }
-        return null;
     }
 
     public function initProduitsCepages() {

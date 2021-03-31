@@ -32,9 +32,9 @@ nightmare
 
   //authentification
   .goto(config.web_site)
-  .type('#LoginPhp',config.user_name)
-  .type('#PasswordPhp',config.user_password)
-  .click('#identification')
+  .type('#TextBox1',config.user_name)
+  .type('#TextBox2',config.user_password)
+  .click('#Button2')
   .wait('.menu')
   .viewport(1400, 1800)
   //fin authentification
@@ -1321,6 +1321,26 @@ nightmare
     if(regroupement) {
       return;
     }
+      var uri = baseUri+"/commission/JuresPres.aspx";
+
+      for(var i = 2016; i <= 2020; i++) {
+         var exportFilename = destination_file+'04_controles_produits/jures/jures_presents_'+i+'.html';
+         console.log("export " + uri + ": " + exportFilename);
+
+         await nightmare
+         .goto(uri+"?campagne="+i)
+         .wait(2000)
+         .select('#ddlCampagne',i+"")
+         .click('#btnResearch')
+         .wait(3000)
+         .html(exportFilename)
+         .screenshot(exportFilename+".png")
+       }
+  })
+  .then(async function() {
+    if(regroupement) {
+      return;
+    }
       var uri = baseUri+"/commission/DefraiementJures.aspx";
 
       for(var i = 2016; i <= 2020; i++) {
@@ -1518,6 +1538,9 @@ nightmare
     .wait(1000)
     .html(exportFilename, "HTMLOnly")
     .screenshot(exportFilename+".png")
+    .catch(error => {
+      console.error('Search failed:', error)
+    })
   })
   .then(function() {
     if(regroupement) {
@@ -1532,6 +1555,9 @@ nightmare
       .wait(1000)
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
      var uri = baseUri+"/odg/ParamODG.aspx";
@@ -1543,6 +1569,9 @@ nightmare
     .wait(1000)
     .html(exportFilename, "HTMLOnly")
     .screenshot(exportFilename+".png")
+    .catch(error => {
+      console.error('Search failed:', error)
+    })
   })
     .then(function() {
         var uri = baseUri+"/commission/LstMembre.aspx";
@@ -1557,6 +1586,9 @@ nightmare
         .click('#Button2')
         .download(exportFilename)
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
     })
     .then(function() {
         var uri = baseUri+"/commission/CourrierMembre.aspx";
@@ -1569,6 +1601,9 @@ nightmare
         .click('#btnExcel')
         .download(exportFilename)
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
     })
     .then(function() {
         var uri = baseUri+"/commission/LstNonMembre.aspx";
@@ -1582,6 +1617,9 @@ nightmare
         .wait(3000)
         .html(exportFilename)
         .screenshot(exportFilename+".png")
+        .catch(error => {
+          console.error('Search failed:', error)
+        })
     })
   .then(function() {
        var uri = baseUri+"/commission/LstLieu.aspx";
@@ -1593,6 +1631,9 @@ nightmare
       .wait(1000)
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
        var uri = baseUri+"/Analyse/GestionLaboratoire.aspx";
@@ -1605,6 +1646,9 @@ nightmare
       .click('#Button2')
       .download(exportFilename)
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
     if(regroupement) {
@@ -1619,6 +1663,9 @@ nightmare
       .wait(1000)
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
        var uri = baseUri+"/Administration/ParamManq.aspx";
@@ -1630,6 +1677,9 @@ nightmare
       .wait(1000)
       .html(exportFilename, "HTMLOnly")
       .screenshot(exportFilename+".png")
+      .catch(error => {
+        console.error('Search failed:', error)
+      })
   })
   .then(function() {
       return nightmare.end()

@@ -28,7 +28,7 @@ class GenerationPDF extends GenerationAbstract {
         $aCompare = preg_replace('/^(facture|avoir)_[0-9]+_/', "", $a);
         $bCompare = preg_replace('/^(facture|avoir)_[0-9]+_/', "", $b);
 
-        return $a < $b;
+        return $aCompare < $bCompare;
     });
 
     $fileres = rand().".pdf";
