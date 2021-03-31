@@ -303,6 +303,15 @@ abstract class Lot extends acCouchdbDocumentTree
       return $libelle;
     }
 
+    public function eleve($date = null){
+        if(!$date){
+            $date = date('Y-m-d');
+        }
+        $this->elevage = false;
+        $this->eleve = $date;
+        $this->statut = Lot::STATUT_RECOURS_OC;
+    }
+
     public function isPreleve(){
       return in_array($this->statut, self::$statuts_preleves);
     }

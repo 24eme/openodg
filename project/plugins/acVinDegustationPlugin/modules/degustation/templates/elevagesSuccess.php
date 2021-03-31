@@ -37,7 +37,7 @@
           <div class="btn-group">
             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><a href="<?php echo url_for('degustation_redeguster', array('id' => $doc, 'index' => $ind, 'back' => 'degustation_elevages')) ?>" onclick="return confirm('Confirmez vous la fin d\'élevage du lot le rendant dégustable ?')">Elever / Déguster</a></li>
+              <li><a href="<?php echo url_for('drev_eleve', array('id' => $doc, 'unique_id' => $lot->unique_id)) ?>" onclick="return confirm('Confirmez vous la fin d\'élevage du lot le rendant dégustable ?')">Elever / Déguster</a></li>
             </ul>
           </div>
         </td>

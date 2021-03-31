@@ -34,7 +34,6 @@ Degustation:
                   numero_anonymat: { }
                   document_ordre: {  }
                   millesime: { }
-                  elevage: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
