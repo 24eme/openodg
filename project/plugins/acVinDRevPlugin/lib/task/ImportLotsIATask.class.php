@@ -188,6 +188,9 @@ EOF;
             $logementCommune = (isset($data[self::CSV_VILLE_SITE]) && $data[self::CSV_VILLE_SITE])? trim($data[self::CSV_VILLE_SITE]) : null;
 
             $prelevable = (strtolower(trim($data[self::CSV_PRELEVE])) == 'oui');
+            if ($data[self::CSV_STATUT] == "Revendiqué C") {
+                $prelevable = false;
+            }
 
            $previousdoc = $document;
 
