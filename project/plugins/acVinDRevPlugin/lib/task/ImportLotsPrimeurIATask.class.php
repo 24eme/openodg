@@ -55,17 +55,17 @@ EOF;
             $numero = trim($data[self::CSV_NUM_LOT_OPERATEUR]);
             $destinationDate = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_TRANSACTION_DATE]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $date = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_VALIDATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-            $document = $this->getDocument($type, $document, $etablissement, $periode, $date, $numeroDossier);
-            if (!$document) {
-                echo "WARNING;document non trouvé ".$type.";pas d'import;$line\n";
-                continue;
-            }
-            $lot = $document->getLotByNumArchive($numeroLot);
-            if (!$lot) {
-                echo "WARNING;lot non trouvé ".$numeroLot." ".$document->_id.";pas d'import;$line\n";
-                continue;
 
+            $mouvementLots = MouvementLotHistoryView::getInstance()->getMouvements($etablissement->identifiant, $periode."-".($periode+1), $numeroDossier, $numeroLot);
+            if(!count($mouvementLots->rows)) {
+                echo "WARNING;lot non trouvé ".$numeroLot.";pas d'import;$line\n";
+                continue;
             }
+
+            $document = DeclarationClient::getInstance()->find($mouvementLots->rows[0]->id);
+
+            $lot = $document->getLot($mouvementLots->rows[0]->value->lot_unique_id);
+
             $lot->specificite = Lot::SPECIFICITE_PRIMEUR;
             $document->save();
         }
