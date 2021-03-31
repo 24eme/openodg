@@ -11,6 +11,7 @@ Degustation:
       max_lots: {  }
       etape: {  }
       validation: {  }
+      tri : { }
       provenance: { required: false }
       lots:
         type: array_collection
