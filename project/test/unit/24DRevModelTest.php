@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(53);
+$t = new lime_test(55);
 
 $igp13 = ($application == 'igp13');
 
@@ -239,6 +239,13 @@ $drevM1->save();
 $drevM1->validate();
 $drevM1->generateMouvementsFactures();
 $drevM1->save();
+
+$t->comment("Test numero dossier/numero archive pour la nouvelle modificatrice");
+
+$t->ok($drevM1->numero_archive !== $drev->numero_archive, sprintf("Le numero d'archive de la Drev (%s) est different de la Drev modificatrice (%s)", $drev->numero_archive, $drevM1->numero_archive));
+$lotDrev = $drevM1->getLots()[0];
+$lotDrevM1 = $drevM1->getLots()[1];
+$t->ok($lotDrev->numero_dossier !== $lotDrevM1->numero_dossier, sprintf("Le numero de dossier %s et numero d'archive %s du lot de la Drev est different du celui du lot numero de dossier %s et numero d'archive %s rajouter dans Drev modificatrice", $lotDrev->numero_dossier, $lotDrev->numero_archive, $lotDrevM1->numero_dossier,$lotDrevM1->numero_archive));
 
 if(FactureConfiguration::getInstance()->isActive() && $nbMvtsAttendu) {
     $t->ok(count($drevM1->mouvements->get($viti->identifiant)) > 0, "La DRev modificatrice a des mouvements");

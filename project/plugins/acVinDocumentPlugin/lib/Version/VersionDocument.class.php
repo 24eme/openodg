@@ -239,6 +239,7 @@ class VersionDocument
 
         $document_modificative->version = $this->buildVersionDocument($this->getRectificative(), $this->getModificative() + 1);
         $this->document->listenerGenerateVersion($document_modificative);
+        $document_modificative->numero_archive = sprintf("%05d", $document_modificative->numero_archive + 1);
 
         return $document_modificative;
     }
