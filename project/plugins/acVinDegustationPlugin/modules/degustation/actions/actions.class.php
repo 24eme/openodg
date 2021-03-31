@@ -577,8 +577,6 @@ class degustationActions extends sfActions {
     public function executeRedeguster(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
-        $back = $request->getParameter('back');
-        $this->forward404Unless($back);
         $doc = DegustationClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
