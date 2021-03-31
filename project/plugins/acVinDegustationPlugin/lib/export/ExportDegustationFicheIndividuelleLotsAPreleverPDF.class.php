@@ -14,21 +14,27 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     public function create() {
-      $etablissement = null;
 
-      foreach ($this->degustation->getLotsByNumDossierNumLogementOperateur() as $numDossier => $lotsEtablissement) {
+      $adresses = array();
+      foreach ($this->degustation->getLots() as $lot) {
+          $adresses[$lot->adresse_logement][$lot->getNumeroArchive()] = $lot;
+      }
+
+      foreach ($adresses as $adresseLogement => $lotsArchive) {
         $volumeLotTotal = 0;
-        foreach ($lotsEtablissement as $key => $lot) {
+        foreach ($lotsArchive as $archive => $lot) {
           $volumeLotTotal += $lot->volume;
         }
-        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
+
+        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsArchive[array_key_first($lotsArchive)]->declarant_identifiant);
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheIndividuelleLotsAPreleverPdf',
           array(
             'degustation' => $this->degustation,
             'etablissement' => $etablissement,
             'volumeLotTotal' => $volumeLotTotal,
-            'lots' => $lotsEtablissement
+            'lots' => $lotsArchive,
+            'adresseLogement' => $adresseLogement
           )
         ));
       }
