@@ -5,7 +5,7 @@ class degustationActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         $this->form = new DegustationCreationForm();
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
-        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE)->rows;
+        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
 
         $this->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
@@ -571,7 +571,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeElevages(sfWebRequest $request) {
-      $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(null, Lot::STATUT_ELEVAGE)->rows;
+      $this->lotsElevages = DegustationClient::getInstance()->getElevages($request->getParameter('campagne'));
     }
 
     public function executeRedeguster(sfWebRequest $request) {
