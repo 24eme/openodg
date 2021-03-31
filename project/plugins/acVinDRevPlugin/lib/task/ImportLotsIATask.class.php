@@ -79,17 +79,6 @@ class ImportLotsIATask extends importOperateurIACsvTask
     "Savagnin Blanc B" => "SAVAGN.B",
     "Vermentino B" => "VERMENT.B"
   );
-    public static $correspondancesStatuts = array(
-      "Conforme" => Lot::STATUT_CONFORME,
-      "Déclassé" => Lot::STATUT_DECLASSE,
-      "Non Conforme" => Lot::STATUT_NONCONFORME,
-      "Prélevé A" => Lot::STATUT_PRELEVE, //Prélevé Anonimisé
-      "Prélevé NA" => Lot::STATUT_PRELEVE,//Prélevé Non Anonimisé
-      "Prévu" => Lot::STATUT_ATTENTE_PRELEVEMENT,
-      "Revendiqué C" => Lot::STATUT_NONAFFECTABLE,
-      "Revendiqué NC" => Lot::STATUT_NONCONFORME
-    );
-
     protected function configure()
     {
         $this->addArguments(array(
