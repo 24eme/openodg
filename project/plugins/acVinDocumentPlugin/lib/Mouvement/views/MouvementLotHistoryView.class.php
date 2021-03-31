@@ -9,6 +9,7 @@ class MouvementLotHistoryView extends acCouchdbView
     const KEY_DOC_ORDRE = 4;
     const KEY_STATUT = 5;
     const KEY_ORIGINE_DOCUMENT_ID = 6;
+    const KEY_UNIQUE_ID = 7;
 
     const VALUE_LOT = 0;
 

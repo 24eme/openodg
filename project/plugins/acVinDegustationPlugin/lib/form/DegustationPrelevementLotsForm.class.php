@@ -58,6 +58,9 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         }
 
         $this->getObject()->setLots($lots);
+        if (!$this->getObject()->max_lots < count($lots)) {
+            $this->getObject()->max_lots = count($lots);
+        }
     }
 
     protected function updateDefaultsFromObject() {

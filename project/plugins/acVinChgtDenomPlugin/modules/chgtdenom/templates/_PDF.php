@@ -4,13 +4,9 @@
 
 <?php $adresse = sfConfig::get('app_degustation_courrier_adresse'); ?>
 <style>
-    <?php echo style() ?>
-    table {
+    <?php echo style(); ?>
+    * {
         font-size: 12px;
-    }
-
-    th {
-        font-weight: bold;
     }
 </style>
 
@@ -33,13 +29,13 @@
 <?php endif ?>
 <br/><br/>
 
-<p>Madame, Monsieur,</p>
+<table><tr><td>Madame, Monsieur,</td></tr></table>
 
-<p>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du <?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>déclassement<?php else: ?>changement de dénomination<?php endif ?> de votre lot :</p>
+<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du <?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>déclassement<?php else: ?>changement de dénomination<?php endif ?> de votre lot :</td></tr></table>
 
-<p style="text-align: center; font-weight: bold"><?php showProduitLot($chgtdenom->getLotOrigine()) ?></p>
+<br/><br/>
 
-<table border=1 cellspacing=0 cellpadding=0 style="width:100%;text-align:center;">
+<table border="1" cellspacing=0 cellpadding=0 style="width:100%;text-align:center;">
   <tr>
     <th style="width: 15%">N° Dos / N° Lot ODG</th>
     <th style="width: 15%">N°Lot OP</th>
@@ -47,7 +43,6 @@
     <th style="width: 10%">Volume<br/>(hl)</th>
     <th style="width: 20%">Observation</th>
   </tr>
-  <tr>
     <?php $lotOrigine = $chgtdenom->getLotOrigine(); ?>
     <tr>
       <td><?php echo $lotOrigine->numero_dossier ?> / <?php echo $lotOrigine->numero_archive ?></td>
@@ -59,28 +54,37 @@
 </table>
 
 <br/>
-<p style="text-align:center">devient</p>
+<p style="text-align:center">qui devient</p>
 
 <br/>
 
-<table>
+<?php $lot = $chgtdenom->lots[0]; ?>
+<table border="1">
+    <tr>
+        <th style="font-size: 14px">Lot n°: <?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></th>
+        <?php if ($total == false): ?>
+          <?php $lot2 = $chgtdenom->lots[1]; ?>
+          <th style="font-size: 14px">Lot n°: <?php echo $lot2->numero_dossier.' / '.$lot2->numero_archive ?></th>
+        <?php endif ?>
+    </tr>
     <tr>
         <td>
-            <?php $lot = $chgtdenom->lots[0]; ?>
-            Dossier : <?php echo $lot->campagne ?> Lot n°: <?php echo $lot->numero_dossier . '-' . $lot->numero_archive ?><br/>
+N° Lot OP : <?php echo $lot->numero_logement_operateur; ?><br/>
             Produit : <?php echo showProduitLot($chgtdenom->lots[0]); ?><br/>
-            Volume : <?php echo $lot->volume ?>hl<br/>
+            Volume : <?php echo sprintf("%.2f", $lot->volume) ?> hl
         </td>
         <?php if ($total == false): ?>
             <td>
-                <?php $lot2 = $chgtdenom->lots[1]; ?>
-                Dossier : <?php echo $lot2->campagne ?> Lot n°: <?php echo $lot2->numero_dossier . '-' . $lot2->numero_archive ?><br/>
-                Produit : <?php echo showProduitLot($lot2); ?><br/>
-                Volume : <?php echo $lot2->volume ?>hl<br/>
+N° Lot OP : <?php echo $lot2->numero_logement_operateur; ?><br/>
+            Produit : <?php echo showProduitLot($lot2); ?><br/>
+            Volume : <?php echo sprintf("%.2f", $lot2->volume) ?> hl
             </td>
         <?php endif; ?>
     </tr>
 </table>
+
+<br/>
+<br/>
 
 <table>
   <tr>
