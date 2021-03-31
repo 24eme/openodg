@@ -131,6 +131,7 @@ EOF;
                   $compte->civilite = "M";
               }
             }
+            $compte->statut = $societe->statut;
             $compte->save();
 
         }

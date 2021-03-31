@@ -1,5 +1,6 @@
 <?php use_helper('Date') ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
@@ -51,7 +52,7 @@
                           <?php echo $mouvement->value->document_type;  ?>
                       </a>
                   </td>
-                  <td><?php  echo str_replace(" ", "&nbsp;", Lot::$libellesStatuts[$mouvement->value->statut]);  ?></td>
+                  <td><?php  echo showLotStatusCartouche($mouvement->value->statut);  ?></td>
                   <td class="text-right"><a class="btn btn-xs btn-default" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
 
               </tr>

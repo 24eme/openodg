@@ -70,6 +70,16 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
       return $alphas[$numero_table-1];
     }
 
+    public function getElevages($campagne = null) {
+        $elevages = array();
+        foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows as $item) {
+            $item->value->id_document = $item->id;
+            $elevages[$item->value->unique_id] = $item->value;
+        }
+        return $elevages;
+    }
+
+
     public function getManquements($campagne = null) {
         $manquements = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
