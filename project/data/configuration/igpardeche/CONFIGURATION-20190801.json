@@ -15,6 +15,11 @@
         "libelle": "IGP",
         "format_libelle": "%a% %m% %l% %co% %ce%",
         "code": "",
+        "attributs": {
+          "rendement": 120,
+          "rendement_dr_l5": 130,
+          "rendement_dr_l15": 120
+        },
         "cepages_autorises": [
           "ABONDANT B",
           "ABOURIOU N",
@@ -462,13 +467,6 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -505,13 +503,6 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -605,13 +596,6 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -648,13 +632,6 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -665,6 +642,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 90,
                   "rendement_dr_l5": 110,
                   "rendement_dr_l15": 90
                 }
@@ -836,13 +814,6 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -853,6 +824,7 @@
                   }
                 },
                 "attributs": {
+                  "rendement": 91,
                   "rendement_dr_l5": 98,
                   "rendement_dr_l15": 91
                 }
