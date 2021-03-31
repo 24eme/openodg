@@ -213,6 +213,7 @@ EOF;
 
             $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration." ".sprintf("%02d", rand(0,23)).":".sprintf("%02d", rand(0,59)).":".sprintf("%02d", rand(0,59)), true);
             $chgtDenom->constructId();
+            $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
             $chgtDenom->setLotOrigine($mouvementLot);
             $chgtDenom->changement_produit_hash = $produitFinal->getHash();
             $chgtDenom->changement_volume = $volumeConcerne;
