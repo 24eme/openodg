@@ -221,7 +221,7 @@ EOF;
                 $document->validation = $date;
                 $document->validation_odg = $date;
                 $document->save();
-                echo " $previousdoc->_id => $document->_id\n";
+                echo " création $document->_id\n";
             }
 
             if($previousdoc && $document->_id != $previousdoc->_id && !$needModif) {
@@ -340,7 +340,7 @@ EOF;
         if($previousdoc->exist('chais') && ($c = $previousdoc->chais)){
             $chaiStr = $c->nom.$c->adresse.$c->code_postal.$c->commune;
             if($chaiStr != $adresse){
-                echo "[$nom_logt $addr_logt $cp_logt $commune_logt]";
+                echo "INFO; addresse logement : [$nom_logt $addr_logt $cp_logt $commune_logt]";
                 return true;
             }
         }
