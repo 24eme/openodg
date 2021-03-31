@@ -137,12 +137,11 @@ DRev:
                   produit_libelle: { }
                   elevage: { }
                   eleve: { }
-                  statut: {}
+                  statut: { }
                   adresse_logement: {}
                   specificite: { }
                   affectable: { }
                   document_ordre: {}
-                  document_fils: { required: false  }
                   cepages:
                     type: collection
                     definition:

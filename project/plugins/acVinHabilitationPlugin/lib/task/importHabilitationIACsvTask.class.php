@@ -26,7 +26,6 @@ class importHabilitationIACsvTask extends importOperateurIACsvTask
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
-  protected $etablissements;
 
     protected function configure()
     {
@@ -110,8 +109,6 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-
-        $this->etablissements = EtablissementAllView::getInstance()->getAll();
 
         $cvi2di = array();
         foreach(file($arguments['fichier_di']) as $line) {
