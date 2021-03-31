@@ -32,9 +32,9 @@ nightmare
 
   //authentification
   .goto(config.web_site)
-  .type('#LoginPhp',config.user_name)
-  .type('#PasswordPhp',config.user_password)
-  .click('#identification')
+  .type('#TextBox1',config.user_name)
+  .type('#TextBox2',config.user_password)
+  .click('#Button2')
   .wait('.menu')
   .viewport(1400, 1800)
   //fin authentification
