@@ -235,9 +235,8 @@ EOF;
     }
 
     public function clearProduitKey($key) {
-      $key = str_replace('PAYS-DES-', '', $key);
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
-      $key = str_replace('IGP-BDR-', 'BOUCHES-DU-RHONE-', $key);
+      $key = str_replace('IGP-BDR-', 'PAYS-DES-BOUCHES-DU-RHONE-', $key);
       $key = str_replace('NORD-', '', $key);
       $key = preg_replace('/^LOIRE-ATLANTIQUE/', 'VAL-DE-LOIRE-LOIRE-ATLANTIQUE', $key);
       $key = preg_replace('/^INDRE-ET-LOIRE/', 'VAL-DE-LOIRE-INDRE-ET-LOIRE', $key);

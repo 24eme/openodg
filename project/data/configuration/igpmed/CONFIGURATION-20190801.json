@@ -653,12 +653,6 @@
                                   }
                                 },
                                 "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr_l5": null,
-                                  "rendement_dr_l15": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -804,12 +798,6 @@
                                   }
                                 },
                                 "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr_l5": null,
-                                  "rendement_dr_l15": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -820,18 +808,12 @@
                   }
                 },
                 "attributs": {
-                  "rendement": null,
-                  "rendement_conseille": null,
-                  "rendement_dr_l5": null,
-                  "rendement_dr_l15": null,
-                  "rendement_vci": null,
-                  "rendement_vci_total": null
                 }
               }
             }
           },
           "EFF": {
-            "libelle": "Effervescent",
+            "libelle": "Mousseux",
             "format_libelle": "%a% %g% %m% %l% %co% %ce%",
             "code": "EFF",
             "code_produit": null,
@@ -1215,12 +1197,6 @@
                                   }
                                 },
                                 "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr_l5": null,
-                                  "rendement_dr_l15": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -1506,12 +1482,6 @@
                                   }
                                 },
                                 "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr_l5": null,
-                                  "rendement_dr_l15": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -1522,32 +1492,16 @@
                   }
                 },
                 "attributs": {
-                  "rendement": null,
-                  "rendement_conseille": null,
-                  "rendement_dr_l5": null,
-                  "rendement_dr_l15": null,
-                  "rendement_vci": null,
-                  "rendement_vci_total": null
                 }
               }
             },
             "attributs": {
-              "rendement": null,
-              "rendement_conseille": null,
-              "rendement_dr_l5": null,
-              "rendement_dr_l15": null,
-              "rendement_vci": null,
-              "rendement_vci_total": null
             }
           }
         },
         "attributs": {
-          "rendement": 90,
-          "rendement_conseille": null,
-          "rendement_dr_l5": 95,
-          "rendement_dr_l15": null,
-          "rendement_vci": null,
-          "rendement_vci_total": null
+          "rendement_dr_l5": 130,
+          "rendement_dr_l15": 120
         }
       }
     }
