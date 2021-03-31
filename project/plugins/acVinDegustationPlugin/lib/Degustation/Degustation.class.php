@@ -250,7 +250,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE,"Table : ".$lot->getNumeroTableStr()));
 
                 case Lot::STATUT_PRELEVE:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
 
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));

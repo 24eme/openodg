@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(110);
+$t = new lime_test(111);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -310,6 +310,7 @@ $form->bind($valuesRev);
 $form->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->lots[0]->statut, Lot::STATUT_PRELEVE, 'Le lot est marqué comme prélevé');
+$t->is($degustation->lots[0]->preleve, date('Y-m-d'), 'Le lot a bien une date de prélèvement à aujourd\'hui');
 
 $degustation->generateMouvementsLots();
 $t->is(count($degustation->mouvements_lots->{$drev->identifiant}), 3, 'La génération a généré 3 mouvements');

@@ -239,7 +239,7 @@ EOF;
              $lot->statut = Lot::STATUT_NONCONFORME;
              $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
           }
-
+          $lot->preleve = $this->formatDate($date);
           $data[self::CSV_OBSERVATION] = trim($data[self::CSV_OBSERVATION]);
           if($data[self::CSV_OBSERVATION]) {
               $lot->observation = $data[self::CSV_OBSERVATION];
