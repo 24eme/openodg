@@ -24,10 +24,7 @@
           <span class="text-muted">Lot opérateur n°&nbsp;<?php echo $lot->numero_logement_operateur; ?></span>
       </td>
       <td>
-          <?php if (isset(Lot::$libellesStatuts[$lot->statut])) : ?>
-          <span class="label label-<?php echo isset(Lot::$statut2label[$lot->statut]) ? Lot::$statut2label[$lot->statut] : "default"; ?>">
-          <?php echo Lot::$libellesStatuts[$lot->statut]; ?>
-          <?php endif; ?>
+          <?php echo showLotStatusCartouche($lot->statut); ?>
       </td>
       <td>
             <a class="btn btn-default btn-xs" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)) ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>

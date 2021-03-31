@@ -48,13 +48,7 @@ endforeach;
                 </td>
                 <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
                 <td>
-                    <span class="label label-<?php echo isset(Lot::$statut2label[$mouvement->value->statut]) ? Lot::$statut2label[$mouvement->value->statut] : "default"; ?>">
-                    <?php if ($mouvement->value->detail): ?>
-                        <?php echo $mouvement->value->detail; ?>
-                    <?php else: ?>
-                        <?php echo Lot::$libellesStatuts[$mouvement->value->statut]; ?>
-                    <?php endif; ?>
-                    </span>
+                    <?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?>
                 </td>
                 <td class="text-right">
                     <?php if ($mouvement->value->statut === Lot::STATUT_MANQUEMENT_EN_ATTENTE): ?>

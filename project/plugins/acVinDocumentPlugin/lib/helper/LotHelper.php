@@ -96,3 +96,22 @@ function pictoDegustable($lot) {
 
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
+
+function showLotStatusCartouche($statut, $detail = null, $statut_et_detail = false) {
+    if (!isset(Lot::$libellesStatuts[$statut]) && !$detail) {
+        return ;
+    }
+    $text = '';
+    $text .= '<span class="label label-';
+    $text .= isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
+    $text .= '">';
+    if (isset(Lot::$libellesStatuts[$statut]) && ($statut_et_detail || !$detail)) {
+        $text .= Lot::$libellesStatuts[$statut];
+        if (!$statut_et_detail && $detail) {
+            $text .= ' : ';
+        }
+    }
+    $text .= $detail;
+    $text .= '</span>';
+    return $text;
+}
