@@ -96,6 +96,7 @@ EOF;
           }
 
           $newDegustation = new Degustation();
+          $newDegustation->numero_archive = sprintf("%05d", preg_replace("/^.*-/", "", $data[self::CSV_ID]));
           $newDegustation->date=$date;
           $newDegustation->lieu = $data[self::CSV_LIEU_NOM]." — ".$data[self::CSV_LIEU_ADRESSE]." ".$data[self::CSV_LIEU_CODE_POSTAL]." ".$data[self::CSV_LIEU_COMMUNE];
           $newDegustation->campagne=$campagne;

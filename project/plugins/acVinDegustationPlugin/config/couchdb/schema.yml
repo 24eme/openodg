@@ -11,7 +11,7 @@ Degustation:
       max_lots: {  }
       etape: {  }
       validation: {  }
-      provenance: { required: false }
+      numero_archive: {  }
       lots:
         type: array_collection
         definition:
