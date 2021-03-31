@@ -96,3 +96,17 @@ function pictoDegustable($lot) {
 
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
+
+function splitLogementAdresse($adresseLogement){
+    if(!$adresseLogement){
+        return $adresseLogement;
+    }
+
+    $adresseSplit = explode('—',$adresseLogement);
+    $adresse['nom'] = trim($adresseSplit[0]);
+    $adresse['adresse'] = trim($adresseSplit[1]);
+    $adresse['code_postal'] = trim($adresseSplit[2]);
+    $adresse['commune'] = trim($adresseSplit[3]);
+
+    return $adresse;
+}

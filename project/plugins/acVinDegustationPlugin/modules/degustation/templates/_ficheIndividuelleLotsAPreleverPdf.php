@@ -1,5 +1,6 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot') ?>
+<?php $adresseLgt = splitLogementAdresse($adresseLogement); ?>
 <style>
 <?php echo style(); ?>
 .bg-white{
@@ -47,18 +48,18 @@ p, div {
     </td>
     <td border="1px" class="border">
         <p>
-          <span><strong>Nom :</strong> <?php echo $etablissement->nom ?></span>
+          <span><strong>Nom :</strong> <?php echo $adresseLgt['nom'] ?></span>
         </p>
         <p>
-          <span><strong>Adresse :</strong> <?php echo $etablissement->adresse ?></span>
+          <span><strong>Adresse :</strong> <?php echo $adresseLgt['adresse'] ?></span>
         </p>
         <p>
-          <span><strong>Code postal : </strong><?php echo $etablissement->code_postal ?></span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ville : <?php echo $etablissement->commune ?></span>
+          <span><strong>Code postal : </strong><?php echo $adresseLgt['code_postal'] ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ville : <?php echo $adresseLgt['commune'] ?></span>
         </p>
         <p>
           <span><strong>Téléphone :</strong> <?php echo $etablissement->telephone_bureau ?></span>
-        </p>
+      </p>
     </td>
   </tr>
   <tr>

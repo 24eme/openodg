@@ -1209,10 +1209,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function getNbLotByTypeForNumDossier($numDossier){
+		public function getNbLotByTypeForNumDossier($numDossier, $adresse){
 			$lots = array();
-			foreach ($this->getLotsByNumDossierNumLogementOperateur()[$numDossier] as $numCuve => $lot) {
-				$lots[$lot->getTypeProvenance()] +=1;
+			foreach ($this->getLotsByNumDossierNumArchive()[$numDossier] as $numCuve => $lot) {
+                if($lot->adresse_logement == $adresse){
+                    $lots[$lot->getTypeProvenance()] +=1;
+                }
 			}
 			return $lots;
 		}
