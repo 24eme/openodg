@@ -97,6 +97,7 @@ Conditionnement:
         type: collection
         definition:
           fields:
+            nom: { }
             adresse: { }
             commune: { }
             code_postal: { }
