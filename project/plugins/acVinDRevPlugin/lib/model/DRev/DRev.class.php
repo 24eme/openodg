@@ -1203,12 +1203,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function isAdresseLogementDifferente() {
-        if(!$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
+        if(!$this->chais->nom && !$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
 
             return false;
         }
 
-        return ($this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
+        return ($this->chais->nom != $this->declarant->nom || $this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
     }
 
     public function constructAdresseLogement(){
@@ -1535,17 +1535,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
+            if ($lot->elevage === true) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
+                continue;
+            }
+            if ($lot->eleve) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
+            }
+
             if (!$lot->isChange()) {
                 if (!$lot->isAffectable()) {
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
                 }
             }else{
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
-            }
-
-            if ($lot->elevage && !$lot->isAffecte()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE));
-                continue;
             }
 
             if($lot->isAffecte()) {
