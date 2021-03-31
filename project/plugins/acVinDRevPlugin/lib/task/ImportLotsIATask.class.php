@@ -61,8 +61,6 @@ class ImportLotsIATask extends importOperateurIACsvTask
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
-  protected $etablissements;
-  protected $etablissementsCache = array();
   protected $produits;
   protected $cepages;
 
@@ -118,7 +116,6 @@ EOF;
 
         $this->initProduitsCepages();
 
-        $this->etablissements = EtablissementAllView::getInstance()->getAll();
         $document = null;
         $ligne = 0;
         foreach(file($arguments['csv']) as $line) {

@@ -50,7 +50,6 @@ EOF;
 
         $this->initProduitsCepages();
 
-        $this->etablissements = EtablissementAllView::getInstance()->getAll();
         $drev = null;
         $ligne = 0;
         foreach(file($arguments['csv']) as $line) {

@@ -50,7 +50,6 @@ EOF;
 
         $this->initProduitsCepages();
 
-        $this->etablissements = EtablissementAllView::getInstance()->getAll();
         $degustateurs =  array();
 
         foreach(CompteTagsView::getInstance()->listByTags('automatique', 'degustateur') as $row) {

@@ -21,7 +21,6 @@ class ImportChgtDenomTask extends importOperateurIACsvTask
   const CSV_CEPAGE = 15;
   const CSV_TYPE_LOT = 16;
 
-  protected $etablissements;
   protected $produits;
   protected $cepages;
 
@@ -67,7 +66,6 @@ EOF;
 
         $this->initProduitsCepages();
 
-        $this->etablissements = EtablissementAllView::getInstance()->getAll();
         $drev = null;
         $ligne = 0;
         foreach(file($arguments['csv']) as $line) {
