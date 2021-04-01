@@ -70,6 +70,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return preg_replace("/[ ]*—.+/", "", $this->lieu);
     }
 
+    public function getLieuAdresse() {
+
+        return preg_replace("/.+—[ ]*/", "", $this->lieu);
+    }
+
     public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->find("ETABLISSEMENT-".$this->identifiant);
