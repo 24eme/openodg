@@ -62,7 +62,7 @@ class degustationActions extends sfActions {
         $this->redirectIfIsAnonymized();
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
-            $this->degustation->save();
+            $this->degustation->save(false);
         }
 
         $this->form = new DegustationPrelevementLotsForm($this->degustation);
@@ -182,7 +182,7 @@ class degustationActions extends sfActions {
         $this->previous_college = ($currentCollegeKey-1 < 0 )? null : $colleges_keys[$currentCollegeKey-1];
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
-            $this->degustation->save();
+            $this->degustation->save(false);
         }
 
         $this->form = new DegustationSelectionDegustateursForm($this->degustation,array(),array('college' => $this->college));
@@ -216,7 +216,7 @@ class degustationActions extends sfActions {
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
-            $this->degustation->save();
+            $this->degustation->save(false);
         }
     }
 
@@ -228,14 +228,14 @@ class degustationActions extends sfActions {
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
-            $this->degustation->save();
+            $this->degustation->save(false);
         }
     }
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ANONYMATS))) {
-            $this->degustation->save();
+            $this->degustation->save(false);
           }
     }
 
@@ -243,7 +243,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_COMMISSION))) {
-            $this->degustation->save();
+            $this->degustation->save(false);
           }
     }
 
@@ -292,7 +292,7 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
       }
       $this->degustation->degustateurs->getOrAdd($college)->getOrAdd($degustateurId)->add('confirmation',false);
-      $this->degustation->save();
+      $this->degustation->save(false);
 
       return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
 
@@ -364,7 +364,7 @@ class degustationActions extends sfActions {
         $this->forward404Unless($degustation->lots->exist($index));
         $lot = $degustation->lots->get($index);
         $lot->upPosition();
-        $degustation->save();
+        $degustation->save(false);
         return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
     }
 
@@ -377,7 +377,7 @@ class degustationActions extends sfActions {
         $this->forward404Unless($degustation->lots->exist($index));
         $lot = $degustation->lots->get($index);
         $lot->downPosition();
-        $degustation->save();
+        $degustation->save(false);
         return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
     }
 

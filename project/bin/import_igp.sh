@@ -91,7 +91,12 @@ php symfony import:lots-primeur-ia $DATA_DIR/lots_primeur.csv --application="$OD
 
 echo "Import des Changements de denomination"
 
+awk -F ";" 'BEGIN { OFS=";"}{print $1 $2 $3 $33 $0}' $DATA_DIR/lots_changements.csv | sort -t ";" -k 1,1 > $DATA_DIR/lots_changements.sort.csv
+
 cat $DATA_DIR/changement_denomination.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' > $DATA_DIR/changement_denomination.csv
+
+
+
 php symfony import:chgt-denom-ia $DATA_DIR/changement_denomination.csv --application="$ODG" --trace
 
 echo "Import des Degustations - Commissions"
