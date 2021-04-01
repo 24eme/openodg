@@ -226,7 +226,7 @@ EOF;
               $lot->numero_table = intval($numeroTable);
           }
           if ($lot->numero_table) {
-              $lot->numero_anonymat = $alphas[$lot->numero_table - 1].$numeroAnonymat;
+              $lot->numero_anonymat = $alphas[$lot->numero_table - 1].sprintf("%02d", $numeroAnonymat);
           }
           $lot->email_envoye = $date;
 
