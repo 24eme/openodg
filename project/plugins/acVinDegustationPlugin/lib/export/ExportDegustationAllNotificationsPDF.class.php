@@ -4,13 +4,13 @@ class ExportDegustationAllNotificationsPDF extends ExportPDF {
 
     protected $degustation = null;
     protected $etablissement = null;
-    protected $adresse;
-    protected $responsable;
+    protected $courrierInfos;
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
-        $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
-        $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $courrierInfos = sfConfig::get('app_facture_emetteur');
+        $this->courrierInfos = $courrierInfos[$app];
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -40,12 +40,12 @@ class ExportDegustationAllNotificationsPDF extends ExportPDF {
 
         foreach ($lots as $declarant => $lots_declarant) {
             if (isset($lots_declarant['conforme']) && count($lots_declarant['conforme'])) {
-                $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], 'lots' => $lots_declarant['conforme'], 'responsable' => $this->responsable)));
+                $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], 'lots' => $lots_declarant['conforme'], 'courrierInfos' => $this->courrierInfos)));
             }
 
             if (isset($lots_declarant['nonconforme']) && count($lots_declarant['nonconforme'])) {
                 foreach ($lots_declarant['nonconforme'] as $lot_nonconforme) {
-                    $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], "lot" => $lot_nonconforme, 'responsable' => $this->responsable)));
+                    $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], "lot" => $lot_nonconforme, 'courrierInfos' => $this->courrierInfos)));
                     $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page2', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], "lot" => $lot_nonconforme)));
                 }
             }
@@ -75,7 +75,7 @@ class ExportDegustationAllNotificationsPDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        return sprintf("%s     %s - %s  %s    %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone'], $this->adresse['email']);
+        return sprintf("\n\n%s     %s - %s - %s   %s    %s\n", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
     }
 
     protected function getHeaderSubtitle() {

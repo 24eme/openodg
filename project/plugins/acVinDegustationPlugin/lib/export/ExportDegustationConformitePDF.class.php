@@ -12,8 +12,12 @@ class ExportDegustationConformitePDF extends ExportPDF {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
         $this->coordonnees = $this->degustation->getCoordonnees();
-        $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
-        $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $courrier = sfConfig::get('app_facture_emetteur');
+        $courrier[$app]['responsable'];
+
+        $this->responsable = $courrier[$app]['responsable'];
+        $this->adresse = $courrier[$app]['adresse'];
 
         if (!$filename) {
             $filename = $this->getFileName(true);
