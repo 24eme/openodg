@@ -122,6 +122,12 @@ EOF;
             }
             $mouvementLot = $mouvementsLot[0];
 
+            if($mouvementLot->volume - $volumeDeclasse < 0) {
+                echo "Volume final négatif\n";
+                echo "\t$line\n";
+                continue;
+            }
+
             $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $dateDeclaration." ".sprintf("%02d", rand(0,23)).":".sprintf("%02d", rand(0,59)).":".sprintf("%02d", rand(0,59)), true);
             $chgtDenom->constructId();
             $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);

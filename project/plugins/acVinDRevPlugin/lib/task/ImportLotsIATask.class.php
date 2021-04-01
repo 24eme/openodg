@@ -64,21 +64,6 @@ class ImportLotsIATask extends importOperateurIACsvTask
   protected $produits;
   protected $cepages;
 
-  public static $correspondancesCepages = array(
-    "Cabernet sauvignon N" => "CAB-SAUV-N",
-    "Chardonnay B" => "CHARDONN.B",
-    "Cinsault N" => "CINSAUT N",
-    "Clairette B" => "CLAIRET.B",
-    "Mourvèdre N" => "MOURVED.N",
-    "Muscat à petits grains B" => "MUS.PT.G.B",
-    "Muscat à petits grains Rs" => "MUS.P.G.RS",
-    "Muscat d'Hambourg N" => "MUS.HAMB.N",
-    "Muscat PG B" => "MUS.PT.G.B",
-    "Nielluccio N" => "NIELLUC.N",
-    "Sauvignon B" => "SAUVIGN.B",
-    "Savagnin Blanc B" => "SAVAGN.B",
-    "Vermentino B" => "VERMENT.B"
-  );
     protected function configure()
     {
         $this->addArguments(array(
@@ -351,27 +336,6 @@ EOF;
         $appellation = str_replace('Aigues', "Vaucluse Aigues", $appellation);
 
         return $appellation." ".$couleur;
-    }
-
-    protected function identifyCepage($key) {
-      $key = trim($key);
-      if (isset($this->cepages[KeyInflector::slugify($key)])) {
-        return $this->cepages[KeyInflector::slugify($key)];
-      }
-      $correspondances = self::$correspondancesCepages;
-      return (isset($correspondances[$key]))? $correspondances[$key] : strtoupper(str_replace(' ', '.', $key));
-    }
-
-    public function initProduitsCepages() {
-      $this->produits = array();
-      $this->cepages = array();
-      $produits = ConfigurationClient::getInstance()->getConfiguration()->declaration->getProduits();
-      foreach ($produits as $key => $produit) {
-        $this->produits[KeyInflector::slugify($produit->getLibelleFormat())] = $produit;
-        foreach($produit->getCepagesAutorises() as $ca) {
-          $this->cepages[KeyInflector::slugify($ca)] = $ca;
-        }
-      }
     }
 
     public function getDocument($type, $previousdoc, $etablissement, $periode, $date, $numeroDossier) {
