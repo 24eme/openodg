@@ -21,8 +21,8 @@
 <tr>
 	<th style="width:15px;" class="text-center" title="Rendement Conseil">Cons.</th>
 	<th style="width:15px;" class="text-center" title="Rendement DREV">DREV</th>
-	<th style="width:15px;" class="text-center" title="Rendement DR L15">L15</th>
-	<th style="width:15px;" class="text-center" title="Rendement DR L5">L5</th>
+	<th style="width:15px;" class="text-center" title="Rendement DR L15">L5</th>
+	<th style="width:15px;" class="text-center" title="Rendement DR L5">L15</th>
 	<th style="width:15px;" class="text-center" title="Rendement VCI">VCI</th>
 	<th style="width:15px;" class="text-center" title="Rendement VCI Total">VCI Tot.</th>
 </tr>
