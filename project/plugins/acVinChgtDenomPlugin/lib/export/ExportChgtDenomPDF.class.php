@@ -6,8 +6,7 @@ class ExportChgtDenomPDF extends ExportPDF {
     protected $etablissement = null;
     protected $changement = null;
     protected $total = false;
-    protected $adresse;
-    protected $responsable;
+    protected $courrierInfos;
 
     public function __construct($chgtdenom, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->chgtdenom = $chgtdenom;
@@ -16,8 +15,8 @@ class ExportChgtDenomPDF extends ExportPDF {
         $this->changement = $chgtdenom->getChangementType();
         $this->total = $chgtdenom->isTotal();
 
-        $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
-        $this->responsable = sfConfig::get('app_degustation_courrier_responsable');
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $this->courrierInfos = sfConfig::get('app_facture_emetteur')[$app];
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -30,7 +29,7 @@ class ExportChgtDenomPDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('chgtdenom/PDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'responsable' => $this->responsable, 'adresse' => $this->adresse, 'changement' => $this->changement, 'total' => (bool) $this->total)));
+        $this->printable_document->addPage($this->getPartial('chgtdenom/PDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'courrierInfos' => $this->courrierInfos, 'changement' => $this->changement, 'total' => (bool) $this->total)));
       }
 
 
@@ -58,7 +57,7 @@ class ExportChgtDenomPDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        return sprintf("%s     %s - %s  %s    %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone'], $this->adresse['email']);
+        return sprintf("\n\n%s     %s - %s - %s   %s    %s\n", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
     }
 
     protected function getHeaderSubtitle() {
@@ -69,7 +68,7 @@ class ExportChgtDenomPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportChgtDenomPDFConfig();
+        return new ExportLotPDFConfig();
     }
 
     public function getFileName($with_rev = false) {

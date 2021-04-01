@@ -2,15 +2,18 @@
 <?php use_helper('Lot'); ?>
 <?php use_helper('TemplatingPDF') ?>
 
-<?php $adresse = sfConfig::get('app_degustation_courrier_adresse'); ?>
 <style>
-    <?php echo style(); ?>
-    * {
+    table {
         font-size: 12px;
+    }
+
+    th {
+        font-weight: bold;
     }
 </style>
 
 <table style="width:1100px;padding-left:400px;" >
+  <tr><td></td></tr>
   <tr><td><?php echo $etablissement->raison_sociale ?></td></tr>
   <tr><td><?php echo $etablissement->adresse ?></td></tr>
   <tr><td><?php echo $etablissement->adresse_complementaire ?></td></tr>
@@ -99,6 +102,5 @@ N° Lot OP : <?php echo $lot2->numero_logement_operateur; ?><br/>
 <br/><br/>
 <br/><br/>
 <table style="width:1100px;padding-left:400px;" >
-  <tr><td><?php echo $responsable ?>,</td></tr>
-  <tr><td>SIGNATURE</td></tr>
+  <tr><td><?php echo $courrierInfos['responsable'] ?></td></tr>
 </table>

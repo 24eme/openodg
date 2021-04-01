@@ -4,20 +4,18 @@ class ExportDegustationConformitePDF extends ExportPDF {
 
     protected $degustation = null;
     protected $etablissement = null;
-    protected $adresse;
-    protected $responsable;
     protected $coordonnees;
+    protected $courrierInfos;
 
     public function __construct($degustation,$etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
         $this->etablissement = $etablissement;
         $this->coordonnees = $this->degustation->getCoordonnees();
-        $app = strtoupper(sfConfig::get('sf_app'));
-        $courrier = sfConfig::get('app_facture_emetteur');
-        $courrier[$app]['responsable'];
 
-        $this->responsable = $courrier[$app]['responsable'];
-        $this->adresse = $courrier[$app]['adresse'];
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $courrierInfos = sfConfig::get('app_facture_emetteur');
+        $this->courrierInfos = $courrierInfos[$app];
+
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -26,6 +24,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
         if($this->printable_document->getPdf()){
           $this->printable_document->getPdf()->setPrintHeader(true);
           $this->printable_document->getPdf()->setPrintFooter(true);
+          $this->printable_document->getPdf()->setHeaderData('',0,'','',array(0,0,0), array(255,255,255) );
         }
     }
 
@@ -37,7 +36,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
             }
         }
         $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
-        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots, 'responsable' => $this->responsable)));
+        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots, 'courrierInfos' => $this->courrierInfos)));
       }
 
 
@@ -78,7 +77,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationConformitePDFConfig();
+        return new ExportLotPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
