@@ -1010,7 +1010,7 @@
                         "attributs": {
                           "rendement": 90,
                           "rendement_conseille": null,
-                          "rendement_dr_l5": null,
+                          "rendement_dr_l5": 100,
                           "rendement_dr_l15": 90,
                           "rendement_vci": null,
                           "rendement_vci_total": null
