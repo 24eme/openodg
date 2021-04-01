@@ -5,13 +5,13 @@
     font-size: 1.3em;
   }
 </style>
-    <table border="" class="" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <table border="1" class="" cellspacing="0" cellpadding="11" style="height: 1122.4px; width: 100%; margin: 0; padding: 0">
     <?php foreach($plancheLots as $lotInfo): ?>
-        <tr>
+        <tr style="height: 140.4px">
           <?php for($i=0; $i <3 ; $i++): ?>
-            <td style="text-align: left;width:245px;">
-                <table cellspacing=0 cellpadding=0 style="font-size:8px;">
-                  <tr style="line-height:8px;">
+            <td>
+                <table cellspacing="0" cellpadding="0" style="font-size:8px;overflow: hidden;white-space: nowrap;">
+                  <tr style="">
                     <td style="overflow-wrap:break-word;">
                       <?php echo tdStart() ?>&nbsp;N°ODG:<strong style="font-size:10px;"><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
                     </td>
@@ -19,11 +19,11 @@
                       <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
                     </td>
                   </tr>
-                  <tr style="line-height:12px;">
+                  <tr style="">
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
                       <?php echo tdStart() ?><strong>&nbsp;
                       <?php if ($i != 2 || !$anonymat4labo): ?>
-                      <?php echo ($lotInfo->lot->declarant_nom)? $lotInfo->lot->declarant_nom : "Leurre";  ?>
+                      <?php echo ($lotInfo->lot->declarant_nom)? substr($lotInfo->lot->declarant_nom, 0, 50) : "Leurre";  ?>
                       <?php endif; ?></strong>
                     </td>
                   </tr>
@@ -41,7 +41,7 @@
                   </tr>
                   <tr style="line-height:12px;">
                     <td colspan="2" style="overflow-wrap:break-word; text-align: center;">
-                      <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo $lotInfo->lot->produit_libelle .' '.  $lotInfo->lot->millesime;  ?></strong>
+                      <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo substr($lotInfo->lot->produit_libelle, 0, 45) .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr style="line-height:12px;">
@@ -52,10 +52,10 @@
 
                     </td>
                   </tr>
-                  <tr>
-                    <td style="overflow-wrap:break-word;line-height:12px; width:75%;">
+                  <tr style="overflow:hidden; text-overflow: ellipsis">
+                    <td style="line-height:12px; width:75%;">
                       <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
-                      &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo $lotInfo->lot->numero_logement_operateur.$centilisation;  ?></strong>
+                      &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo substr($lotInfo->lot->numero_logement_operateur.$centilisation, 0, 25)  ?></strong>
                     </td>
                     <td class="font-1-3em" style="text-align: right; width:25%;">
                       <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
