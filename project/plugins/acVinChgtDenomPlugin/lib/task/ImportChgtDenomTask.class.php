@@ -163,8 +163,8 @@ EOF;
                 }
             }
             if (!count($mouvementsLot)) {
-                echo "Warning: Pas de mouvement trouvé (cépage & date antérieures exclus)\n";
-                echo "\t".implode(', ', $data)."\n";
+                echo "Warning: Pas de mouvement trouvé (cépage & date antérieures exclus)";
+                echo implode(', ', $data)."\n";
                 continue;
             }
 
