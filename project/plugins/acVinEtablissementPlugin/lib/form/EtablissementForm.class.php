@@ -20,6 +20,7 @@ class EtablissementForm extends acCouchdbObjectForm
             "telephone_bureau" => new sfWidgetFormInput(array("label" => "Tél. Bureau")),
 						"telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
             "email" => new sfWidgetFormInput(array("label" => "Email")),
+			"chais_nom" =>  new sfWidgetFormInput(array("label" => "Nom")),
 			"chais_adresse" =>  new sfWidgetFormInput(array("label" => "Adresse")),
 			"chais_commune" =>  new sfWidgetFormInput(array("label" => "Commune")),
 			"chais_code_postal" =>  new sfWidgetFormInput(array("label" => "Code postal")),
@@ -41,12 +42,15 @@ class EtablissementForm extends acCouchdbObjectForm
             'telephone_bureau' => new sfValidatorString(array("required" => false)),
 						'telephone_mobile' => new sfValidatorString(array("required" => false)),
        	    'email' => new sfValidatorEmailStrict(array("required" => false)),
+			'chais_nom' => new sfValidatorString(array("required" => false)),
 			'chais_adresse' => new sfValidatorString(array("required" => false)),
 			'chais_commune' => new sfValidatorString(array("required" => false)),
 			'chais_code_postal' => new sfValidatorString(array("required" => false)),
         ));
 
 		if(!DRevConfiguration::getInstance()->hasLogementAdresse()) {
+			unset($this->widgetSchema['chais_nom']);
+			unset($this->validatorSchema['chais_nom']);
 			unset($this->widgetSchema['chais_adresse']);
 			unset($this->validatorSchema['chais_adresse']);
 			unset($this->widgetSchema['chais_commune']);
@@ -78,6 +82,7 @@ class EtablissementForm extends acCouchdbObjectForm
         $this->getCoordonneesEtablissement();
 
 		if(DRevConfiguration::getInstance()->hasLogementAdresse() && $this->getObject()->getDocument()->isAdresseLogementDifferente()) {
+			$this->setDefault('chais_nom', $this->getObject()->getDocument()->chais->nom);
 			$this->setDefault('chais_adresse', $this->getObject()->getDocument()->chais->adresse);
 			$this->setDefault('chais_commune', $this->getObject()->getDocument()->chais->commune);
 			$this->setDefault('chais_code_postal', $this->getObject()->getDocument()->chais->code_postal);
@@ -99,6 +104,7 @@ class EtablissementForm extends acCouchdbObjectForm
     	}
 		parent::doUpdateObject($values);
         if (DRevConfiguration::getInstance()->hasLogementAdresse() && $this->getObject()->getDocument()->exist('chais')) {
+            $this->getObject()->getDocument()->chais->nom = $values['chais_nom'];
 			$this->getObject()->getDocument()->chais->adresse = $values['chais_adresse'];
 			$this->getObject()->getDocument()->chais->commune = $values['chais_commune'];
 			$this->getObject()->getDocument()->chais->code_postal = $values['chais_code_postal'];

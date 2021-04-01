@@ -94,10 +94,6 @@ echo "Import des Changements de denomination"
 cat $DATA_DIR/changement_denomination.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' > $DATA_DIR/changement_denomination.csv
 php symfony import:chgt-denom-ia $DATA_DIR/changement_denomination.csv --application="$ODG" --trace
 
-echo "Import des déclassements"
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/declassements.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 17.7,17.13 -k 17.4,17.5 -k 17.1,17.3 > $DATA_DIR/declassements.csv
-php symfony import:declassement-ia $DATA_DIR/declassements.csv --application="$ODG" --trace
-
 echo "Import des Degustations - Commissions"
 
 sed -i 's/\xC2\xA0//g' $DATA_DIR/commissions.csv
@@ -112,6 +108,10 @@ sed -i 's/Maigre ; Oxydé ; /Maigre , Oxydé/' $DATA_DIR/gestion_nc.csv
 sed -i 's/Oxydé ; Event ; Usé/Oxydé , Event , Usé/' $DATA_DIR/gestion_nc.csv
 sed -i 's/Pas net ; pharmaceutique (camphre), oxydatif/Pas net , pharmaceutique (camphre), oxydatif/' $DATA_DIR/gestion_nc.csv
 php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace
+
+echo "Import des déclassements"
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/declassements.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 17.7,17.13 -k 17.4,17.5 -k 17.1,17.3 > $DATA_DIR/declassements.csv
+php symfony import:declassement-ia $DATA_DIR/declassements.csv --application="$ODG" --trace
 
 echo "Apporteurs de raisins"
 

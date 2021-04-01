@@ -27,7 +27,13 @@
 		<?php include_partial('itemNoeud', array('produit' => $produit, 'noeud' => $produit->getCepage(), 'cvo' => $cvo)) ?>
 	</td>
     <td class="text-center">
-        <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getNoeudCepagesAutorises()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>"><?php echo count($produit->getCepagesAutorises()); ?></a>
+        <?php if(!count($produit->getNoeudCepagesAutorises()->getCepagesAutorises())): ?>
+            <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getCertification()->getTypeNoeud(), 'hash' => $produit->getCertification()->getHashForKey())) ?>"><?php
+             echo count($produit->getCertification()->getCepagesAutorises()); ?></a>
+        <?php else : ?>
+        <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getNoeudCepagesAutorises()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>"><?php
+         echo count($produit->getCepagesAutorises()); ?></a>
+     <?php endif; ?>
     </td>
 	<?php if(!isset($notDisplayDroit)): ?>
    	<td class="center">

@@ -111,14 +111,14 @@ EOF;
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroArchive = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
-
+            $dataCepage = $this->identifyCepage($data[self::CSV_CEPAGE]);
             $mouvementsRealOrigLot = MouvementLotView::getInstance()->getMouvements($etablissement->identifiant,
                      array(
-//                            'volume' => $volumeInitial,
                             'produit_hash' => $produitInitial->getHash(),
                             'statut' => Lot::STATUT_CHANGEABLE
                           )
             );
+
             $mouvementsOrigLot = $mouvementsRealOrigLot;
             $mouvementsLot = array();
             //On exclue de changement antérieure à la revendication
@@ -146,7 +146,7 @@ EOF;
                         }
                     }else {
                         foreach($mvt->cepages as $cepage => $volume) {
-                            if (strtolower($cepage)  == strtolower($data[self::CSV_CEPAGE])) {
+                            if (KeyInflector::slugify($cepage) == KeyInflector::slugify($dataCepage)) {
                                 $mouvementsLot[] = $mvt;
                                 break 1;
                             }
@@ -219,13 +219,9 @@ EOF;
             $chgtDenom->changement_volume = $volumeConcerne;
             $chgtDenom->generateLots();
             if (!$chgtDenom->isTotal()) {
-                $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
-                $chgtDenom->lots[1]->numero_archive = $numeroArchive;
                 $chgtDenom->lots[1]->affectable = true;
                 $chgtDenom->lots[0]->affectable = false;
             } elseif($chgtDenom->isTotal()) {
-                $chgtDenom->lots[0]->numero_dossier = $numeroDossier;
-                $chgtDenom->lots[0]->numero_archive = $numeroArchive;
                 $chgtDenom->lots[0]->affectable = true;
             }
 
@@ -243,15 +239,4 @@ EOF;
         return preg_replace('/[^0-9a-z]/', '', strtolower($s));
     }
 
-    public function initProduitsCepages() {
-      $this->produits = array();
-      $this->cepages = array();
-      $produits = ConfigurationClient::getInstance()->getConfiguration()->declaration->getProduits();
-      foreach ($produits as $key => $produit) {
-        $this->produits[KeyInflector::slugify($produit->getLibelleFormat())] = $produit;
-        foreach($produit->getCepagesAutorises() as $ca) {
-          $this->cepages[KeyInflector::slugify($ca)] = $ca;
-        }
-      }
-    }
 }
