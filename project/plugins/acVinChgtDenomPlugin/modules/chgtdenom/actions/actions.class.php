@@ -23,7 +23,7 @@ class chgtdenomActions extends sfActions
         $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_lots', $chgtDenom);
+        return $this->redirect('chgtdenom_lots', array('sf_subject' => $etablissement, 'campagne' => $chgtDenom->campagne));
     }
 
     public function executeLots(sfWebRequest $request) {
@@ -37,8 +37,7 @@ class chgtdenomActions extends sfActions
         $this->secureIsValide($this->chgtDenom);
 
         if(!$this->chgtDenom->getLotOrigine()) {
-
-            throw new sfError404Exception("Aucun lot trouvé");
+            return $this->redirect('chgtdenom_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
         }
 
         $this->form = new ChgtDenomForm($this->chgtDenom);
