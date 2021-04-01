@@ -43,7 +43,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         if (!array_key_exists($this->region, $configs))
             throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
-        $this->emetteur = $configs[$this->region];
+        foreach ($configs[$this->region] as $param => $value) {
+            if($this->emetteur->exist($param)){
+                $this->emetteur->$param = $value;
+            }
+        }
+
     }
 
 
