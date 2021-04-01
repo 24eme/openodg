@@ -7,7 +7,7 @@
 </style>
     <table border="1" class="" cellspacing="0" cellpadding="11" style="height: 1122.4px; width: 100%; margin: 0; padding: 0">
     <?php foreach($plancheLots as $lotInfo): ?>
-        <tr style="height: 140.4px">
+        <tr style="height: <?php echo 1122.4/count($plancheLots) ?>px">
           <?php for($i=0; $i <3 ; $i++): ?>
             <td>
                 <table cellspacing="0" cellpadding="0" style="font-size:8px;overflow: hidden;white-space: nowrap;">
