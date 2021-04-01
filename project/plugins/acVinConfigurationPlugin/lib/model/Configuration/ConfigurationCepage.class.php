@@ -237,7 +237,7 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     }
 
     public function hasCepagesAutorises(){
-        return $this->exist('cepages_autorises');
+        return $this->exist('cepages_autorises') && count($this->_get('cepages_autorises')->toArray(true, false));
     }
 
     public function getCepagesAutorises() {
