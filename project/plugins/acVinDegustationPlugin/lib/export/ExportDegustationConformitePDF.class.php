@@ -24,7 +24,6 @@ class ExportDegustationConformitePDF extends ExportPDF {
         if($this->printable_document->getPdf()){
           $this->printable_document->getPdf()->setPrintHeader(true);
           $this->printable_document->getPdf()->setPrintFooter(true);
-          $this->printable_document->getPdf()->setHeaderData('',0,'','',array(0,0,0), array(255,255,255) );
         }
     }
 
