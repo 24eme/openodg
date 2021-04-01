@@ -23,7 +23,7 @@ class chgtdenomActions extends sfActions
         $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_lots', $chgtDenom);
+        return $this->redirect('chgtdenom_lots', array('sf_subject' => $etablissement, 'campagne' => $campagne));
     }
 
     public function executeLots(sfWebRequest $request) {
