@@ -66,7 +66,7 @@ $compteviti = CompteClient::getInstance()->findByIdentifiant($id."01");
 $compteviti->addTag('test', 'test');
 $compteviti->addTag('test', 'test_viti');
 $compteviti->save();
-$t->is($compteviti->tags->automatique->toArray(true, false), array('etablissement','producteur'), "Création d'un etablissement viti met à jour le compte $compteviti->_id");
+$t->is($compteviti->tags->automatique->toArray(true, false), array('etablissement','producteur_raisins'), "Création d'un etablissement viti met à jour le compte $compteviti->_id");
 $t->is($etablissementviti->region, EtablissementClient::REGION_CVO, "L'établissement est en région CVO après le save");
 
 $t->is($compteviti->_get('email'), $etablissementviti->_get('email'), "L'établissement a le même email que le compte");
