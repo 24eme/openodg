@@ -46,6 +46,7 @@ cp $DATA_DIR/01_operateurs/operateurs_inactifs.xlsx $DATA_DIR/
 cp $DATA_DIR/06_administration/membres.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/lots.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/lots_primeur.xlsx $DATA_DIR/
+cp $DATA_DIR/03_declarations/lots_changements.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/traitees/changement_denomination.xls $DATA_DIR/
 cp $DATA_DIR/03_declarations/syntheses/declassements.xlsx $DATA_DIR/
 cp $DATA_DIR/04_controles_produits/commissions.csv $DATA_DIR/
