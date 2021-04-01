@@ -54,4 +54,12 @@ class DegustationOrganisationTableForm extends acCouchdbObjectForm {
         $this->setDefaults($defaults);
     }
 
+
+    protected function doSave($con = null) {
+        $this->updateObject();
+        $this->object->getCouchdbDocument()->save(false);
+    }
+
+
 }
+
