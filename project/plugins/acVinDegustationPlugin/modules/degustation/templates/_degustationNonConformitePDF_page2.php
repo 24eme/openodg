@@ -2,7 +2,6 @@
 <?php use_helper('Lot'); ?>
 <?php use_helper('TemplatingPDF'); ?>
 
-<?php $adresse = sfConfig::get('app_degustation_courrier_adresse'); ?>
 <style>
     <?php echo style(); ?>
     table {
@@ -13,7 +12,8 @@
         font-weight: bold;
     }
 </style>
-
+<br/>
+<br/>
 <table border="1" style="text-align:center;padding:10px;">
   <tr><td>FICHE DE NON CONFORMITÉ</td></tr>
   <tr>

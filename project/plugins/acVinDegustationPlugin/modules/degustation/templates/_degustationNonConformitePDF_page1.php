@@ -12,6 +12,7 @@
 </style>
 
 <table style="width:1100px;padding-left:400px;" >
+  <tr><td></td></tr>
   <tr><td><?php echo $etablissement->raison_sociale ?></td></tr>
   <tr><td><?php echo $etablissement->adresse ?></td></tr>
   <tr><td><?php echo $etablissement->adresse_complementaire ?></td></tr>
