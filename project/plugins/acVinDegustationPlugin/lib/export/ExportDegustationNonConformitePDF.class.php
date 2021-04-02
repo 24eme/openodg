@@ -11,7 +11,7 @@ class ExportDegustationNonConformitePDF extends ExportDeclarationLotsPDF {
         $this->lot = $lot;
         $this->etablissement = $lot->getEtablissement();
 
-        parent::__construct($type, $use_cache, $file_dir, $filename);
+        parent::__construct($degustation,$type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
@@ -20,7 +20,7 @@ class ExportDegustationNonConformitePDF extends ExportDeclarationLotsPDF {
     }
 
     protected function getHeaderTitle() {
-        return "Courrier de non conformité";
+        return "Résultat de lot non conforme";
     }
 
     protected function getHeaderSubtitle() {

@@ -5,6 +5,7 @@ class ExportDeclarationLotsPDF extends ExportPDF {
     protected $courrierInfos = null;
 
     public function __construct($declaration, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+
         $this->declaration = $declaration;
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -13,7 +14,6 @@ class ExportDeclarationLotsPDF extends ExportPDF {
         $app = strtoupper(sfConfig::get('sf_app'));
         $courrierInfos = sfConfig::get('app_facture_emetteur');
         $this->courrierInfos = $courrierInfos[$app];
-
         parent::__construct($type, $use_cache, $file_dir, $filename);
         if($this->printable_document->getPdf()){
           $this->printable_document->getPdf()->setPrintHeader(true);
