@@ -27,15 +27,14 @@ endforeach;
       <thead>
         <th class="col-sm-1">Date</th>
         <th class="col-sm-2">Document</th>
-        <th class="col-sm-3">Etape</th>
-        <th class="col-sm-4">Détail</th>
+        <th class="col-sm-3">Étape / Détail</th>
         <th class="col-sm-2"></th>
       </thead>
       <tbody>
         <?php $lastiddate = ''; ?>
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
           <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
-          <?php $class = ($lastiddate == $mouvement->value->document_id.$mouvement->value->date) ? "text-muted": null ; ?>
+          <?php $class = ($lastiddate == preg_replace("/ .*$/", "", $mouvement->value->document_id.$mouvement->value->date)) ? "text-muted": null ; ?>
               <tr>
                 <td class="<?php echo $class; ?>">
                     <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
@@ -45,9 +44,8 @@ endforeach;
                     <?php echo $mouvement->value->document_type;  ?>
                     </a>
                 </td>
-                <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
+                <td><?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?></td>
                 <td>
-                    <?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?>
                 </td>
                 <td class="text-right">
                     <?php if (in_array($mouvement->value->statut,  array(Lot::STATUT_MANQUEMENT_EN_ATTENTE, Lot::STATUT_ELEVAGE_EN_ATTENTE))): ?>
@@ -70,7 +68,7 @@ endforeach;
                     <?php else: ?>
                         <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
                     <?php endif; ?>
-                    <?php $lastiddate = $mouvement->value->document_id.$mouvement->value->date ; ?>
+                    <?php $lastiddate = $mouvement->value->document_id.preg_replace("/ .*$/", "", $mouvement->value->date) ; ?>
                 </td>
             </tr>
             <?php endif; endforeach; ?>
