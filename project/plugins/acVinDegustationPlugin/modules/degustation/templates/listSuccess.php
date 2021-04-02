@@ -52,7 +52,7 @@
                           <?php echo $mouvement->value->document_type;  ?>
                       </a>
                   </td>
-                  <td><?php  echo showLotStatusCartouche($mouvement->value->statut, null, false, preg_match("/ème dégustation/", $mouvement->value->libelle));  ?></td>
+                  <td><?php  echo showLotStatusCartouche($mouvement->value->statut, null, preg_match("/ème dégustation/", $mouvement->value->libelle));  ?></td>
                   <td class="text-right"><a class="btn btn-xs btn-default" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
 
               </tr>

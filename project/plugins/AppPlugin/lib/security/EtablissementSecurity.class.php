@@ -36,6 +36,11 @@ class EtablissementSecurity implements SecurityInterface {
             return false;
         }
 
+        if(in_array(self::DECLARANT_CONDITIONNEMENT, $droits) && ! in_array($this->etablissement->famille, [EtablissementFamilles::FAMILLE_CONDITIONNEUR, EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR, EtablissementFamilles::FAMILLE_NEGOCIANT, EtablissementFamilles::FAMILLE_COOPERATIVE])) {
+
+            return false;
+        }
+
         return true;
     }
 
