@@ -1,6 +1,5 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('PointsAides');?>
-<?php use_javascript("transaction.js", "last") ?>
 
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php include_partial('transaction/step', array('step' => TransactionEtapes::ETAPE_LOTS, 'transaction' => $transaction, 'ajax' => true)) ?>
