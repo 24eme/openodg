@@ -35,10 +35,9 @@ class DeclarationTousView extends acCouchdbView
 
     public function getByTypeCampagneIdentifiant($typeDoc, $campagne, $identifiant) {
 
-        return $this->client->startkey($typeDoc, "".$campagne, $identifiant)
+        return $this->client->startkey([$typeDoc, "".$campagne, $identifiant])
                             ->endkey(array($typeDoc, "".$campagne, $identifiant, array()))
                             ->reduce(false)
                             ->getView($this->design, $this->view);
     }
-
 }
