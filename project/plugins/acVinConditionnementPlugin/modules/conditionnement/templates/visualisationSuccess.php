@@ -72,7 +72,9 @@
         <?php if ($conditionnement->validation && ConditionnementSecurity::getInstance($sf_user, $conditionnement->getRawValue())->isAuthorized(ConditionnementSecurity::DEVALIDATION)):
                 if (!$conditionnement->validation_odg): ?>
                     <a class="btn btn-default" href="<?php echo url_for('conditionnement_devalidation', $conditionnement) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette Conditionnement ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-            <?php endif; ?>
+                <?php elseif ($sf_user->isAdmin()): ?>
+                        <a class="btn btn-default btn-sm" href="<?php echo url_for('conditionnement_devalidation', $conditionnement) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider ce conditionnement ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+                <?php endif; ?>
         <?php endif; ?>
         <?php if(!$conditionnement->validation): ?>
                 <a href="<?php echo url_for("conditionnement_edit", $conditionnement) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>

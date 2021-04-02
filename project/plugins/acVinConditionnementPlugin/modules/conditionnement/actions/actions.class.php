@@ -58,9 +58,9 @@ class conditionnementActions extends sfActions {
 
         $conditionnement->validation = null;
         $conditionnement->validation_odg = null;
-        foreach ($conditionnement->getProduits() as $produit) {
-          if($produit->exist('validation_odg') && $produit->validation_odg){
-            $produit->validation_odg = null;
+        foreach ($conditionnement->getLots() as $lot) {
+          if($lot->exist('validation_odg') && $lot->validation_odg){
+            $lot->validation_odg = null;
           }
         }
         $conditionnement->add('etape', null);

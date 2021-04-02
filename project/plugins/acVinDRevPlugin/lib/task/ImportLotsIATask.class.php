@@ -181,7 +181,7 @@ EOF;
 
            $document = $this->getDocument($type, $previousdoc, $etablissement, $periode, $date, $numeroDossier);
 
-           $needModif = $this->needModificatrice($previousdoc, $etablissement, $periode, $logementNom, $logementAddress, $logementCP, $logementCommune);
+           $needModif = false;
 
             if($needModif){
                 try {

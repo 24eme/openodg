@@ -175,11 +175,19 @@ EOF;
           }
 
           if(!$lot) {
+               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_ELEVAGE_EN_ATTENTE));
+          }
+
+          if(!$lot) {
               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'campagne' => $campagne, 'statut' => Lot::STATUT_AFFECTABLE));
           }
 
           if(!$lot) {
               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE));
+          }
+
+          if(!$lot) {
+              $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_ELEVAGE_EN_ATTENTE));
           }
 
           if(!$lot) {
@@ -202,6 +210,9 @@ EOF;
                $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_MANQUEMENT_EN_ATTENTE));
           }
 
+          if(!$lot) {
+               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_ELEVAGE_EN_ATTENTE));
+          }
 
 
           if(!$lot) {
@@ -212,6 +223,12 @@ EOF;
           if ($date_lot_securite > $date) {
               echo "ERROR: La Date d'un lot (".$lot->date." - $date_lot_securite) ne peut être suppérieure à la date de dégustation ($date);$line\n";
               continue;
+          }
+
+          if(isset($lot->elevage) && $lot->elevage && !$lot->eleve) {
+              $document = DeclarationClient::getInstance()->find($lot->id_document);
+              $document->getLot($lot->unique_id)->eleve(preg_replace('/ .*/', '', $date));
+              $document->save();
           }
 
           $lot = $degustation->addLot($lot, false);
@@ -226,7 +243,7 @@ EOF;
               $lot->numero_table = intval($numeroTable);
           }
           if ($lot->numero_table) {
-              $lot->numero_anonymat = $alphas[$lot->numero_table - 1].$numeroAnonymat;
+              $lot->numero_anonymat = $alphas[$lot->numero_table - 1].sprintf("%02d", $numeroAnonymat);
           }
           $lot->email_envoye = $date;
 
