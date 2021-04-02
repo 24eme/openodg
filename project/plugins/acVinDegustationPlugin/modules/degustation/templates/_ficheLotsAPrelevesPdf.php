@@ -73,8 +73,9 @@ th {
              <small><?php echo $adresseLogement['adresse']; ?></small><br/>
              <small><?php echo $adresseLogement['code_postal']; ?> <?php echo $adresseLogement['commune']; ?></small><br/>
              <small>
-             <?php echo ($etablissement->telephone_bureau) ? 'Fixe: '.$etablissement->telephone_bureau : '' ?>
-             <?php echo ($etablissement->telephone_perso) ? 'Port: '.$etablissement->telephone_perso : '' ?>
+             <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?>
+             <?php echo ($etablissement->telephone_bureau && $etablissement->telephone_mobile) ? ' / ' : ''; ?>
+             <?php echo ($etablissement->telephone_mobile) ? $etablissement->telephone_mobile : '' ?>
             </small>
 
            </td>
