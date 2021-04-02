@@ -374,6 +374,11 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getNombrePassage() > 1;
     }
 
+    public function hasSpecificitePassage()
+    {
+        return preg_match("/ème dégustation/", $this->specificite);
+    }
+
     public function getTextPassage()
     {
         $nb = $this->isSecondPassage() ? $this->getNombrePassage().'ème' : '1er';
