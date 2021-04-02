@@ -12,6 +12,7 @@ class EtablissementFamilles
     const FAMILLE_COURTIER = "COURTIER";
     const FAMILLE_REPRESENTANT = "REPRESENTANT";
     const FAMILLE_OPERATEUR = "OPERATEUR";
+    const FAMILLE_AUTRE = "AUTRE";
 
     // /!\ cooperative est une pseudo famille, elle est basée sur l'exploitation du champ cooperative
     const PSEUDOFAMILLE_COOPERATIVE = "COOPERATIVE";
@@ -30,12 +31,13 @@ class EtablissementFamilles
     	self::FAMILLE_NEGOCIANT => "Négociant",
     	self::FAMILLE_NEGOCIANT_VINIFICATEUR => "Négociant Vinificateur",
     	self::FAMILLE_PRODUCTEUR_VINIFICATEUR => "Producteur Vinificateur (Cave Particulière)",
+        self::FAMILLE_AUTRE => "Autre etablissement (labo, ...)",
     );
 
     protected static $type_societe_famille = array(
         SocieteClient::TYPE_OPERATEUR => array(self::FAMILLE_PRODUCTEUR, self::FAMILLE_NEGOCIANT, self::FAMILLE_COOPERATIVE, self::FAMILLE_REPRESENTANT),
         SocieteClient::TYPE_COURTIER => array(self::FAMILLE_COURTIER),
-        SocieteClient::TYPE_AUTRE => array(),
+        SocieteClient::TYPE_AUTRE => array(self::FAMILLE_AUTRE),
     );
 
     protected static $sous_familles = array(
@@ -47,7 +49,8 @@ class EtablissementFamilles
                                          self::SOUS_FAMILLE_UNION => "Union",
                                          self::SOUS_FAMILLE_VINIFICATEUR => "Vinificateur"),
     	self::FAMILLE_COURTIER => array(),
-    	self::FAMILLE_REPRESENTANT => array()
+        self::FAMILLE_REPRESENTANT => array(),
+        self::FAMILLE_AUTRE => array(),
     );
 
     protected static $droits = array(

@@ -29,6 +29,9 @@ class EtablissementClient extends acCouchdbClient {
     const TYPE_LIAISON_HEBERGE_TIERS = 'HEBERGE_TIERS'; //Hébergé chez un tiers
     const TYPE_LIAISON_HEBERGE = 'HEBERGE'; //Heberge
 
+    const TYPE_LIAISON_LABO = "LABO";
+    const TYPE_LIAISON_ANALYSE_DE = "ANALYSE_DE";
+
     const STATUT_ACTIF = 'ACTIF'; #'actif';
     const STATUT_SUSPENDU = 'SUSPENDU'; #'suspendu';
     const OUI = 'OUI';
@@ -322,6 +325,10 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_HEBERGE_TIERS => 'Hébergé chez un tiers',
             self::TYPE_LIAISON_HEBERGE => 'Héberge',
 
+            self::TYPE_LIAISON_LABO => 'A pour labo',
+            self::TYPE_LIAISON_ANALYSE_DE => "Analyse les vins de",
+
+
         );
     }
 
@@ -332,7 +339,8 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_COOPERATEUR => self::TYPE_LIAISON_COOPERATIVE,
             self::TYPE_LIAISON_VENDEUR_VRAC => self::TYPE_LIAISON_NEGOCIANT,
             self::TYPE_LIAISON_APPORTEUR_RAISIN => self::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,
-            self::TYPE_LIAISON_HEBERGE => self::TYPE_LIAISON_HEBERGE_TIERS
+            self::TYPE_LIAISON_HEBERGE => self::TYPE_LIAISON_HEBERGE_TIERS,
+            self::TYPE_LIAISON_LABO => self::TYPE_LIAISON_ANALYSE_DE,
         );
     }
 
