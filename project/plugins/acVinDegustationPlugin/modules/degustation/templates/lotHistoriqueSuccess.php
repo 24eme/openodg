@@ -13,15 +13,16 @@ endforeach;
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href="<?php echo url_for('degustation_etablissement_list',array('identifiant' => $etablissement->identifiant)); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
-  <li><a href="" class="active" >N° dossier : <?php echo $numero_dossier ?> - N° archive :<?php echo $numero_archive ?></a></li>
+  <li><a href="" class="active" >N° dossier : <?php echo $numero_dossier ?> - N° archive : <?php echo $numero_archive ?></a></li>
 </ol>
 
+<h2><?php echo $etablissement->getNom(); ?> - Historique du lot n°<?php echo $lot->numero_archive; ?></h2>
 
-<h2>Historique du lot de <?php echo $etablissement->getNom(); ?></h2>
-<br/>
-
+<div class="row">
+    <div class="col-xs-5" style="padding-top: 30px;">
 <?php include_partial('chgtdenom/infoLotOrigine', array('lot' => $lot, 'opacity' => false)); ?>
-
+    </div>
+    <div class="col-xs-7">
 <?php if (count($mouvements)): ?>
     <table class="table table-condensed table-striped">
       <thead>
@@ -75,9 +76,10 @@ endforeach;
           <tbody>
           </table>
           <?php endif; ?>
+      </div>
 
-    <div class="row">
-        <div class="col-xs-12 text-left">
-            <a href="<?php echo url_for('degustation'); ?>" class=" btn btn-default" alt="Retour">Retour</a>
-        </div>
+  </div>
+
+    <div>
+        <a href="<?php echo url_for('degustation'); ?>" class=" btn btn-default" alt="Retour"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
