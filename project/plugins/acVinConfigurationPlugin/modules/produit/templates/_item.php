@@ -28,7 +28,7 @@
 	</td>
     <td class="text-center">
         <?php if(!count($produit->getNoeudCepagesAutorises()->getCepagesAutorises())): ?>
-            <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getCertification()->getTypeNoeud(), 'hash' => $produit->getCertification()->getHashForKey())) ?>"><?php
+            <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getCertification()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>"><?php
              echo count($produit->getCertification()->getCepagesAutorises()); ?></a>
         <?php else : ?>
         <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getNoeudCepagesAutorises()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>"><?php
