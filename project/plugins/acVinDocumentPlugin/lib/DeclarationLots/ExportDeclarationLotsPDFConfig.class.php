@@ -1,6 +1,6 @@
 <?php
 
-class ExportLotPDFConfig extends acTCPDFConfig
+class ExportDeclarationLotsPDFConfig extends acTCPDFConfig
 {
     public function __construct() {
         parent::__construct();
@@ -25,7 +25,7 @@ class ExportLotPDFConfig extends acTCPDFConfig
 
         $this->path_images = sfConfig::get('sf_web_dir').'/images/';
         $this->header_logo = 'pdf/logo_'.strtolower(sfConfig::get('sf_app')).'.jpg';
-        $this->header_logo_width = 80;
+        $this->header_logo_width = 70;
 
     }
 }

@@ -52,7 +52,7 @@ th {
             $adresseLogement = splitLogementAdresse($lot->adresse_logement);
             $currentAdresse = $lot->adresse_logement;
     ?>
-    <?php if(($ligne == 12 && $page == 1) || ($ligne == 14 && $page > 1)): //display 14 Lots on the first page and below 17 Lots all others pages?>
+    <?php if(($ligne == 10 && $page == 1) || ($ligne == 12 && $page > 1)): //display 14 Lots on the first page and below 17 Lots all others pages?>
       </table>
       <br pagebreak="true" />
       <p>Suite des lots<p/>
