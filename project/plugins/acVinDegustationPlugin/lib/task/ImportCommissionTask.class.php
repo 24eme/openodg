@@ -146,7 +146,7 @@ EOF;
           }
 
           if (!isset($this->produits[$produitKey])) {
-            echo "WARNING;produit non trouvé;pas d'import;$line\n";
+            echo "WARNING;produit $produitKey non trouvé;pas d'import;$line\n";
             continue;
           }
           $produit = $this->produits[$produitKey];
