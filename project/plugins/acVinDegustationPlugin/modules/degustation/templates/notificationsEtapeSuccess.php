@@ -39,10 +39,14 @@
                       <td><?= $lots[0]->declarant_nom ?></td>
                       <td style="line-height: 2.5rem">
                         <?php foreach ($lots as $lot): ?>
+                        <?php if($lot->hasSpecificitePassage()): ?>
+                        <span class="label label-danger" style="margin-right: -14px;">&nbsp;</span>
+                        <?php endif; ?>
                         <a href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id));  ?>" data-toggle="tooltip"
                               data-html="true"
                               title="<?= $lot->getLibelle() . ' - ' . $lot->volume . "hl<br>" . $lot->getShortLibelleConformite() ?>"
                               class="label label-<?= ($lot->isManquement()) ? 'danger' : 'success'?>"
+                              style="<?php if($lot->hasSpecificitePassage()): ?>border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;<?php endif; ?>"
                         ><span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>
                       </td>
