@@ -277,6 +277,9 @@ EOF;
     }
 
     public function clearProduitKey($key) {
+      $key = str_replace('MAURE-VAR-', 'MAURE-', $key);
+      $key = str_replace('MONT-CAUME-VAR-', 'MONT-CAUME-', $key);
+      $key = str_replace('MEDITERRANEE-VAR-', 'MEDITERRANEE-', $key);
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
       $key = str_replace('IGP-BDR-', 'PAYS-DES-BOUCHES-DU-RHONE-', $key);
       $key = str_replace('NORD-', '', $key);

@@ -151,7 +151,7 @@ EOF;
               }
             }
             if ($data[self::CSV_FORMATION] == "Oui") {
-                $compte->tags->add("manuel")->add("degustateur_formation");
+                $compte->tags->add("manuel")->add(null, "degustateur_formation");
             }
             if ($data[self::CSV_COMPETENCES]) {
                 $competence = trim($data[self::CSV_COMPETENCES]);

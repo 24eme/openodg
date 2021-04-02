@@ -16,7 +16,7 @@
         <td><?php echo ucfirst(format_date($d->date, "EEEE d MMMM yyyy", "fr_FR")) ?></td>
         <td class="text-center text-muted"><?php echo format_date($d->date, 'HH') ?>h<?php echo format_date($d->date, 'mm') ?></td>
         <td class="text-center"><span class="text-muted"><?php echo substr($d->campagne, 0, 4) ?> - </span><?php echo sprintf("%03d", $d->numero_archive); ?></td>
-        <td><?php echo $d->getLieuNom(); ?> <small class="text-muted"> - <?php echo $d->getLieuAdresse(); ?></small></td>
+        <td><?php echo preg_replace("/[ ]*—.+/", "", $d->lieu); ?> <small class="text-muted"> - <?php echo preg_replace("/.+—[ ]*/", "", $d->lieu); ?></small></td>
         <td class="text-right">
             <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span>
         </td>

@@ -5,6 +5,7 @@
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href=""><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('degustation_etablissement_list',array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne)); ?>" ><?php echo $campagne ?></a>
 </ol>
 
 <div class="page-header no-border">

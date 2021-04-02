@@ -194,6 +194,31 @@ EOF;
               $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'campagne' => $campagne, 'statut' => Lot::STATUT_MANQUEMENT_EN_ATTENTE));
           }
 
+
+        if(!$lot) {
+            $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_CHANGE_SRC), false);
+            $lot = null;
+            if(count($lots) == 1) {
+                $lot = $lots[0];
+            }
+        }
+
+          if(!$lot) {
+              $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE), false);
+              $lot = null;
+              if(count($lots) == 1) {
+                  $lot = $lots[0];
+              }
+           }
+
+           if(!$lot) {
+               $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONAFFECTABLE), false);
+               $lot = null;
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
+
           if (!$lot) {
             $data[self::CSV_MILLESIME] = $data[self::CSV_MILLESIME] - 1;
           }
@@ -213,6 +238,30 @@ EOF;
           if(!$lot) {
                $lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_ELEVAGE_EN_ATTENTE));
           }
+
+          if(!$lot) {
+              $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_CHANGE_SRC), false);
+              $lot = null;
+              if(count($lots) == 1) {
+                  $lot = $lots[0];
+              }
+          }
+
+          if(!$lot) {
+              $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE), false);
+              $lot = null;
+              if(count($lots) == 1) {
+                  $lot = $lots[0];
+              }
+           }
+
+           if(!$lot) {
+               $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONAFFECTABLE), false);
+               $lot = null;
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
 
 
           if(!$lot) {
