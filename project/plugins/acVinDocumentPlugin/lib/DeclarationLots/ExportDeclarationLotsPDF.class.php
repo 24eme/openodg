@@ -1,22 +1,26 @@
 <?php
 class ExportDeclarationLotsPDF extends ExportPDF {
 
-    protected $declarationLot = null;
-    protected $etablissement = null;
-    protected $adresse;
+    protected $declaration = null;
+    protected $courrierInfos = null;
 
-    public function __construct($declarationLot, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
-        $this->declarationLot = $declarationLot;
-        $this->etablissement = $declarationLot->getEtablissementObject();
-        $this->adresse = sfConfig::get('app_degustation_courrier_adresse');
+    public function __construct($declaration, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+
+        $this->declaration = $declaration;
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
+
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $courrierInfos = sfConfig::get('app_facture_emetteur');
+        $this->courrierInfos = $courrierInfos[$app];
         parent::__construct($type, $use_cache, $file_dir, $filename);
         if($this->printable_document->getPdf()){
           $this->printable_document->getPdf()->setPrintHeader(true);
           $this->printable_document->getPdf()->setPrintFooter(true);
         }
+
+
     }
 
     public function output() {
@@ -34,46 +38,31 @@ class ExportDeclarationLotsPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $title = '';
-        return $title;
+        return '';
+    }
+
+
+    protected function getConfig() {
+
+        return new ExportDeclarationLotsPDFConfig();
     }
 
     protected function getFooterText() {
-        return sprintf("%s     %s - %s  %s    %s\n\n", $this->adresse['raison_sociale'], $this->adresse['adresse'], $this->adresse['cp_ville'], $this->adresse['telephone'], $this->adresse['email']);
+        return sprintf("\n%s     %s - %s - %s   %s    %s\n", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
     }
 
     protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->declarationLot->declarant->nom);
-        if (!$this->declarationLot->isPapier() && $this->declarationLot->validation && $this->declarationLot->validation !== true) {
-            $date = new DateTime($this->declarationLot->validation);
-            $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-            if($this->declarationLot->validation_odg) {
-                $dateOdg = new DateTime($this->declarationLot->validation_odg);
-                $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
-            } else {
-                $header_subtitle .= ", en attente de l'approbation par l'ODG";
-            }
-
-        } elseif(!$this->declarationLot->isPapier()) {
-            $header_subtitle .= sprintf("Exemplaire brouillon");
-        }
-
-        if ($this->declarationLot->isPapier() && $this->declarationLot->validation && $this->declarationLot->validation !== true) {
-            $date = new DateTime($this->declarationLot->validation);
-            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
-        }
-        return $header_subtitle;
+        return '';
     }
 
     public function getFileName($with_rev = false) {
-        return self::buildFileName($this->declarationLot, true);
+        return self::buildFileName($this->declaration, true);
     }
 
-    public static function buildFileName($declarationLot, $with_rev = false) {
-        $filename = $declarationLot->_id;
+    public static function buildFileName($declaration, $with_rev = false) {
+        $filename = $declaration->_id;
         if ($with_rev) {
-            $filename .= '_' . $declarationLot->_rev;
+            $filename .= '_' . $declaration->_rev;
         }
         return $filename . '.pdf';
     }

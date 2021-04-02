@@ -1,12 +1,11 @@
 <?php
 
-class ExportChgtDenomPDF extends ExportPDF {
+class ExportChgtDenomPDF extends ExportDeclarationLotsPDF {
 
     protected $chgtdenom = null;
     protected $etablissement = null;
     protected $changement = null;
     protected $total = false;
-    protected $courrierInfos;
 
     public function __construct($chgtdenom, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->chgtdenom = $chgtdenom;
@@ -15,17 +14,7 @@ class ExportChgtDenomPDF extends ExportPDF {
         $this->changement = $chgtdenom->getChangementType();
         $this->total = $chgtdenom->isTotal();
 
-        $app = strtoupper(sfConfig::get('sf_app'));
-        $this->courrierInfos = sfConfig::get('app_facture_emetteur')[$app];
-
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
         parent::__construct($type, $use_cache, $file_dir, $filename);
-        if($this->printable_document->getPdf()){
-          $this->printable_document->getPdf()->setPrintHeader(true);
-          $this->printable_document->getPdf()->setPrintFooter(true);
-        }
     }
 
     public function create() {
@@ -33,53 +22,39 @@ class ExportChgtDenomPDF extends ExportPDF {
       }
 
 
-    public function output() {
-        if($this->printable_document instanceof PageableHTML) {
-
-            return parent::output();
-        }
-
-        return file_get_contents($this->getFile());
-    }
-
-    public function getFile() {
-
-        if($this->printable_document instanceof PageableHTML) {
-            return parent::getFile();
-        }
-
-        return sfConfig::get('sf_cache_dir').'/pdf/'.$this->getFileName(true);
-    }
-
     protected function getHeaderTitle() {
-        $title = '';
-        return $title;
+       return "Changement de dénomination";
     }
 
-    protected function getFooterText() {
-        return sprintf("\n\n%s     %s - %s - %s   %s    %s\n", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
-    }
 
     protected function getHeaderSubtitle() {
+        $header_subtitle = sprintf("%s\n\n", $this->chgtdenom->declarant->nom);
+        if (!$this->chgtdenom->isPapier() && $this->chgtdenom->validation && $this->chgtdenom->validation !== true) {
+            $date = new DateTime($this->chgtdenom->validation);
+            $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+            if($this->chgtdenom->validation_odg) {
+                $dateOdg = new DateTime($this->chgtdenom->validation_odg);
+                $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
+            } else {
+                $header_subtitle .= ", en attente de l'approbation par l'ODG";
+            }
 
-        return "";
+        } elseif(!$this->chgtdenom->isPapier()) {
+            $header_subtitle .= sprintf("Exemplaire brouillon");
+        }
+
+        if ($this->chgtdenom->isPapier() && $this->chgtdenom->validation && $this->chgtdenom->validation !== true) {
+            $date = new DateTime($this->chgtdenom->validation);
+            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
+        }
+        return $header_subtitle;
     }
 
-
-    protected function getConfig() {
-
-        return new ExportLotPDFConfig();
-    }
 
     public function getFileName($with_rev = false) {
-
-        return self::buildFileName($this->chgtdenom, true);
-    }
-
-    public static function buildFileName($chgtdenom, $with_rev = false) {
-        $filename = sprintf("DECLASSEMENT_%s", $chgtdenom->_id);
+        $filename = sprintf("DECLASSEMENT_%s", $this->chgtdenom->_id);
         if ($with_rev) {
-            $filename .= '_' . $chgtdenom->_rev;
+            $filename .= '_' . $this->chgtdenom->_rev;
         }
 
         return $filename . '.pdf';
