@@ -72,11 +72,16 @@ class MouvementLotView extends acCouchdbView
         return count($this->getAffecteSourceAvantMoi($lot));
     }
 
-    public function find($identifiant, $query) {
+    public function find($identifiant, $query, $first = true) {
         $mvts = $this->getMouvements($identifiant, $query);
+        if(!$first) {
+
+            return $mvts;
+        }
         if (!count($mvts)) {
             return null;
         }
+
         return $mvts[0];
     }
 

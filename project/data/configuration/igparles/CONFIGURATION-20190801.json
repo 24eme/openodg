@@ -216,7 +216,7 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 100,
+                  "rendement": 90,
                   "rendement_dr_l5": 100,
                   "rendement_dr_l15": 90
                 }
@@ -394,7 +394,7 @@
                         "code_comptable": null,
                         "code_douane": null,
                         "attributs": {
-                          "rendement": 100,
+                          "rendement": 90,
                           "rendement_dr_l5": 100,
                           "rendement_dr_l15": 90
                         },

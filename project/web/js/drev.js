@@ -322,12 +322,12 @@
         checkBlocsLot();
         checkBlocsLotCepages();
     //    $('#form_drev_lots .modal_lot_cepages').on('hidden.bs.modal', function () { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots select').on('change', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots input').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots select').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots input').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots select').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot; checkBlocsLotCepages; });
+        $('#form_drev_lots select').on('change', function() { checkBlocsLot; checkBlocsLotCepages; });
+        $('#form_drev_lots input').on('focus', function() { checkBlocsLot; checkBlocsLotCepages; });
+        $('#form_drev_lots select').on('focus', function() { checkBlocsLot; checkBlocsLotCepages; });
+        $('#form_drev_lots input').on('blur', function() { checkBlocsLot; checkBlocsLotCepages; });
+        $('#form_drev_lots select').on('blur', function() { checkBlocsLot; checkBlocsLotCepages; });
 
         $('#form_drev_lots input.input-float').on('click', function(e) {
             if (! e.target.readOnly) {

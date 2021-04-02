@@ -122,7 +122,7 @@ class produitActions extends sfActions
     $this->getResponse()->setHttpHeader('Expires', '0');
 
     $inao_fichier = $this->odgInfos["inao"];
-
+    
     return $this->renderText(file_get_contents(sfConfig::get('sf_root_dir').'/'.$inao_fichier));
     }
 
