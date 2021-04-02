@@ -29,7 +29,7 @@ class ChgtDenomValidation extends DocumentValidation
 
       if($this->document->exist('lots')){
         foreach ($this->document->lots as $key => $lot) {
-          $lot_origine = $this->getLotDocById_unique($lot);          
+          $lot_origine = $this->getLotDocById_unique();
           $volume = sprintf("%01.02f",$lot->getVolume());
           if($lot->volume > $lot_origine->volume){
             $this->addPoint(self::TYPE_ERROR, 'lot_volume', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id, "appellation" => $key)));
@@ -38,10 +38,10 @@ class ChgtDenomValidation extends DocumentValidation
     }
   }
 
-  protected function getLotDocById_unique($lot){
+  protected function getLotDocById_unique(){
     $doc_origine = acCouchdbManager::getClient()->find($this->document->changement_origine_id_document);
     foreach ($doc_origine->lots as $key => $lot_origine) {
-      if($lot->unique_id == $lot_origine->unique_id)
+      if($this->document->changement_origine_lot_unique_id == $lot_origine->unique_id)
         return $lot_origine;
     }
   }
