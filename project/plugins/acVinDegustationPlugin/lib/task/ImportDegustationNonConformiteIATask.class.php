@@ -147,8 +147,8 @@ EOF;
                 $declassmt->setLotOrigine($lot);
                 $declassmt->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
                 $declassmt->constructId();
-                $declassmt->validate();
-                $declassmt->validateOdg();
+                $declassmt->validate($statut_date);
+                $declassmt->validateOdg($statut_date);
                 try {
                     $declassmt->save();
                 } catch(Exception $e) {
