@@ -1,6 +1,6 @@
 <?php
 
-class ExportLotPDFConfig extends acTCPDFConfig
+class ExportDeclarationLotsPDFConfig extends acTCPDFConfig
 {
     public function __construct() {
         parent::__construct();

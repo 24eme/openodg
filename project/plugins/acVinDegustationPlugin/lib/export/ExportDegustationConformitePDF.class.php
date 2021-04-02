@@ -76,7 +76,7 @@ class ExportDegustationConformitePDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportLotPDFConfig();
+        return new ExportDeclarationLotsPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
