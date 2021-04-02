@@ -1,5 +1,6 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot') ?>
+<?php use_helper('Float') ?>
 <?php $adresseLgt = splitLogementAdresse($adresseLogement); ?>
 <style>
 <?php echo style(); ?>
@@ -90,14 +91,10 @@ p, div {
   </tr>
 </table>
 <div>
-  <p><strong>(1)</strong> Type de lot : <strong>R</strong> = Revendication, <strong>VF</strong> = Transaction vrac France, <strong>VHF</strong> = Transaction Vrac Hors France, <strong>B</strong> = Conditionnement, <strong>E</strong> = Élevage</p>
   <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
     <tr style="line-height:20px;">
-      <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier ODG</small></th>
-      <th style="width: 7%"><?php echo tdStart() ?><small>N° Lot ODG</small></th>
-      <th style="width: 6%"><?php echo tdStart() ?><small>Couleur</small></th>
-      <th style="width: 10%"><?php echo tdStart() ?><small>Cépage</small></th>
-      <th style="width: 7%"><?php echo tdStart() ?><small>Millésime</small></th>
+      <th style="width: 9%"><?php echo tdStart() ?><small>N° Dossier/Lot</small></th>
+      <th style="width: 29%"><?php echo tdStart() ?><small>Produit/Cépage/Millésime</small></th>
       <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
       <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
       <th style="width: 7%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
@@ -114,11 +111,8 @@ p, div {
        <p><strong>(1)</strong> Type de lot : <strong>R</strong> = Revendication, <strong>VF</strong> = Transaction vrac France, <strong>VHF</strong> = Transaction Vrac Hors France, <strong>B</strong> = Conditionnement, <strong>E</strong> = Élevage</p>
        <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
          <tr style="line-height:20px;">
-           <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier ODG</small></th>
-           <th style="width: 7%"><?php echo tdStart() ?><small>N° Lot ODG</small></th>
-           <th style="width: 6%"><?php echo tdStart() ?><small>Couleur</small></th>
-           <th style="width: 10%"><?php echo tdStart() ?><small>Cépage</small></th>
-           <th style="width: 7%"><?php echo tdStart() ?><small>Millésime</small></th>
+           <th style="width: 9%"><?php echo tdStart() ?><small>N° Dossier/Lot</small></th>
+           <th style="width: 29%"><?php echo tdStart() ?><small>Produit/Cépage/Millésime</small></th>
            <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
            <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
            <th style="width: 7%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
@@ -128,21 +122,12 @@ p, div {
          </tr>
      <?php endif;?>
      <tr style="line-height:17px;">
-       <td><?php echo tdStart() ?><small><?php echo $lot->numero_dossier ?></small></td>
-       <td><?php echo tdStart() ?><small><?php echo $lot->numero_archive  ?></small></td>
+       <td><?php echo tdStart() ?><small><?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></small></td>
        <td><?php echo tdStart() ?>
-         <small><?php echo $lot->getConfig()->getCouleur()->getLibelle(); ?></small>
+         <?php echo showProduitLot($lot); ?>
        </td>
-       <td><?php echo tdStart() ?>
-         <small>
-         <?php echo showOnlyCepages($lot);?><br/>
-        </small>
-      </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->getMillesime(); ?></small>
-      </td>
-      <td><?php echo tdStart() ?>
-        <small><?php echo $lot->volume; ?></small>
+        <small><?php echoFloat($lot->volume); ?></small>
       </td>
       <td><?php echo tdStart() ?>
         <small><?php echo $lot->numero_logement_operateur ?></small>
