@@ -70,6 +70,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return preg_replace("/[ ]*—.+/", "", $this->lieu);
     }
 
+    public function getLieuAdresse() {
+
+        return preg_replace("/.+—[ ]*/", "", $this->lieu);
+    }
+
     public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->find("ETABLISSEMENT-".$this->identifiant);
@@ -79,7 +84,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$this->piece_document->generatePieces();
 	}
 
-    public function save() {
+    public function save($generateMouvements = true) {
+		if(!$generateMouvements) {
+
+			return parent::save();
+		}
+
         $this->generateMouvementsLots();
 
         parent::save();

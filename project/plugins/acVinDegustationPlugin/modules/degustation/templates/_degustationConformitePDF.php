@@ -1,7 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Lot'); ?>
 
-<?php $adresse = sfConfig::get('app_degustation_courrier_adresse'); ?>
 <style>
     table {
         font-size: 12px;
@@ -11,8 +10,9 @@
         font-weight: bold;
     }
 </style>
-
+<br/>
 <table style="width:1100px;padding-left:400px;" >
+  <tr><td></td></tr>
   <tr><td><?php echo $etablissement->raison_sociale ?></td></tr>
   <tr><td><?php echo $etablissement->adresse ?></td></tr>
   <tr><td><?php echo $etablissement->adresse_complementaire ?></td></tr>
@@ -82,6 +82,5 @@
 <br/><br/>
 <br/><br/>
 <table style="width:1100px;padding-left:400px;" >
-  <tr><td><?php echo $responsable ?>,</td></tr>
-  <tr><td>SIGNATURE</td></tr>
+    <tr><td><?php echo $courrierInfos['responsable'] ?></td></tr>
 </table>

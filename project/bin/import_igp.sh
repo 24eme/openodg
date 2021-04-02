@@ -46,6 +46,7 @@ cp $DATA_DIR/01_operateurs/operateurs_inactifs.xlsx $DATA_DIR/
 cp $DATA_DIR/06_administration/membres.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/lots.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/lots_primeur.xlsx $DATA_DIR/
+cp $DATA_DIR/03_declarations/lots_changements.xlsx $DATA_DIR/
 cp $DATA_DIR/03_declarations/traitees/changement_denomination.xls $DATA_DIR/
 cp $DATA_DIR/03_declarations/syntheses/declassements.xlsx $DATA_DIR/
 cp $DATA_DIR/04_controles_produits/commissions.csv $DATA_DIR/
@@ -91,12 +92,13 @@ php symfony import:lots-primeur-ia $DATA_DIR/lots_primeur.csv --application="$OD
 
 echo "Import des Changements de denomination"
 
-cat $DATA_DIR/changement_denomination.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' > $DATA_DIR/changement_denomination.csv
-php symfony import:chgt-denom-ia $DATA_DIR/changement_denomination.csv --application="$ODG" --trace
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_changements.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"}{print substr($33, 7, 4) substr($33, 4, 2) substr($33, 1, 2) sprintf("%05d", $1) sprintf("%05d", $2) ";" $23 ";" $29 ";" $30}' | sort | uniq | sort -t ";" -k 1,1 | grep -E "^[0-9]+" > $DATA_DIR/lots_changements.csv
 
-echo "Import des déclassements"
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/declassements.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 17.7,17.13 -k 17.4,17.5 -k 17.1,17.3 > $DATA_DIR/declassements.csv
-php symfony import:declassement-ia $DATA_DIR/declassements.csv --application="$ODG" --trace
+cat $DATA_DIR/changement_denomination.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' | awk -F ";" 'BEGIN { OFS=";"}{print substr($10, 7, 4) substr($10, 4, 2) substr($10, 1, 2) sprintf("%05d", $2) sprintf("%05d", $3) ";" $0}' | sort -t ";" -k 1,1 > $DATA_DIR/changement_denomination.csv
+
+join -t ";" -1 1 -2 1 -a 1 $DATA_DIR/changement_denomination.csv $DATA_DIR/lots_changements.csv > $DATA_DIR/changement_denomination_millesime.csv
+
+php symfony import:chgt-denom-ia $DATA_DIR/changement_denomination_millesime.csv --application="$ODG" --trace
 
 echo "Import des Degustations - Commissions"
 
@@ -112,6 +114,10 @@ sed -i 's/Maigre ; Oxydé ; /Maigre , Oxydé/' $DATA_DIR/gestion_nc.csv
 sed -i 's/Oxydé ; Event ; Usé/Oxydé , Event , Usé/' $DATA_DIR/gestion_nc.csv
 sed -i 's/Pas net ; pharmaceutique (camphre), oxydatif/Pas net , pharmaceutique (camphre), oxydatif/' $DATA_DIR/gestion_nc.csv
 php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace
+
+echo "Import des déclassements"
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/declassements.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 17.7,17.13 -k 17.4,17.5 -k 17.1,17.3 > $DATA_DIR/declassements.csv
+php symfony import:declassement-ia $DATA_DIR/declassements.csv --application="$ODG" --trace
 
 echo "Apporteurs de raisins"
 

@@ -61,7 +61,7 @@ EOF;
 
         $this->convert_products = array();
         $this->convert_products['Alpilles'] = 'certifications/IGP/genres/TRANQ/appellations/APL';
-        $this->convert_products['Ardèche'] = 'certifications/IGP/genres/TRANQ/appellations/ARD';
+        $this->convert_products['Ardèche'] = 'certifications/IGP/genres/TRANQ/appellations/ARD/mentions/DEFAUT/lieux/DEFAUT';
         $this->convert_products['Collines Rhodaniennes'] = 'certifications/IGP/genres/TRANQ/appellations/CLR';
         $this->convert_products['Comtés Rhodaniens'] = 'certifications/IGP/genres/TRANQ/appellations/CDR';
         $this->convert_products["Ardèche - Coteaux de l'Ardèche"] = 'certifications/IGP/genres/TRANQ/appellations/ARD/mentions/DEFAUT/lieux/CDA';
@@ -87,9 +87,10 @@ EOF;
         $this->convert_products['Sarthe'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/SAR';
         $this->convert_products['Indre'] = 'certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL/mentions/DEFAUT/lieux/IND';
         $this->convert_products['Drome'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/DEFAUT';
-        $this->convert_products['Drome - Comte de Grignan'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/COG';
-        $this->convert_products['Drome - Coteaux de Montelimar'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/COM';
-        $this->convert_products['Coteaux de Baronnie'] = 'certifications/IGP/genres/TRANQ/appellations/COB/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Comté de Grignan'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/COG';
+        $this->convert_products['Coteaux de Montélimar'] = 'certifications/IGP/genres/TRANQ/appellations/DRO/mentions/DEFAUT/lieux/COM';
+        $this->convert_products['Coteaux des Baronnies'] = 'certifications/IGP/genres/TRANQ/appellations/COB/mentions/DEFAUT/lieux/DEFAUT';
+        $this->convert_products['Nord Ardèche'] = 'certifications/IGP/genres/TRANQ/appellations/ARD/mentions/DEFAUT/lieux/DEFAUT';
 
         // gascogne
         $this->convert_products['Comté Tolosan'] = 'certifications/IGP/genres/TRANQ/appellations/COT/mentions/DEFAUT/lieux/DEFAUT';

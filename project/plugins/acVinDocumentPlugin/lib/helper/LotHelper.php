@@ -97,22 +97,32 @@ function pictoDegustable($lot) {
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
 
-function showLotStatusCartouche($statut, $detail = null, $statut_et_detail = false) {
+function showLotStatusCartouche($statut, $detail = null, $secondPassage = false) {
     if (!isset(Lot::$libellesStatuts[$statut]) && !$detail) {
         return ;
     }
+    $labelClass = isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
     $text = '';
-    $text .= '<span class="label label-';
-    $text .= isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
-    $text .= '">';
-    if (isset(Lot::$libellesStatuts[$statut]) && ($statut_et_detail || !$detail)) {
-        $text .= Lot::$libellesStatuts[$statut];
-        if (!$statut_et_detail && $detail) {
-            $text .= ' : ';
-        }
+    if($secondPassage) {
+        $text .= '<span class="label label-danger" style="margin-right: -14px;">&nbsp;&nbsp;</span>';
     }
-    $text .= $detail;
+    $text .= '<span';
+    if($secondPassage) {
+        $text .= ' style="border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;"';
+    }
+    if($detail) {
+        $text .= ' style="border-radius: 0.25em 0 0  0.25em;"';
+    }
+    $text .= ' class="label label-';
+    $text .= $labelClass;
+    $text .= '">';
+    if (isset(Lot::$libellesStatuts[$statut])) {
+        $text .= Lot::$libellesStatuts[$statut];
+    }
     $text .= '</span>';
+    if($detail) {
+        $text .= "<span style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
+    }
     return $text;
 }
 

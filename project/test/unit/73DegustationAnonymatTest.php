@@ -141,7 +141,7 @@ $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
 $t->is(count($degust->mouvements_lots->{$degust->lots[0]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
 
 $numero_anonymats = array();
-$numero_anonymats_attendu = array("A1","A2","A3");
+$numero_anonymats_attendu = array("A01","A02","A03");
 
 foreach ($degust->getLotsByTable(1) as $lot) {
   $numero_anonymats[] = $lot->numero_anonymat;

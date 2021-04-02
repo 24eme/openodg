@@ -2,24 +2,27 @@
 
 class ImportChgtDenomTask extends importOperateurIACsvTask
 {
-  const CSV_CVI = 0;
-  const CSV_NUM_DOSSIER = 1;
-  const CSV_NUM_LOT_ODG = 2;
-  const CSV_NUM_LOT_OPERATEUR = 3;
-  const CSV_RAISON_SOCIALE = 4;
-  const CSV_NOM = 4;
-  const CSV_ADRESSE_1 = 5;
-  const CSV_ADRESSE_2 = 6;
-  const CSV_CODE_POSTAL = 7;
-  const CSV_VILLE = 8;
-  const CSV_DATE_DECLARATION = 9;
-  const CSV_IGP_INITIAL = 10;
-  const CSV_VOLUME_INITIAL = 11;
-  const CSV_VOLUME_CONCERNE = 12;
-  const CSV_IGP_FINAL = 13;
-  const CSV_COULEUR = 14;
-  const CSV_CEPAGE = 15;
-  const CSV_TYPE_LOT = 16;
+  const CSV_ID = 0;
+  const CSV_CVI = 1;
+  const CSV_NUM_DOSSIER = 2;
+  const CSV_NUM_LOT_ODG = 3;
+  const CSV_NUM_LOT_OPERATEUR = 4;
+  const CSV_RAISON_SOCIALE = 5;
+  const CSV_ADRESSE_1 = 6;
+  const CSV_ADRESSE_2 = 7;
+  const CSV_CODE_POSTAL = 8;
+  const CSV_VILLE = 9;
+  const CSV_DATE_DECLARATION = 10;
+  const CSV_IGP_INITIAL = 11;
+  const CSV_VOLUME_INITIAL = 12;
+  const CSV_VOLUME_CONCERNE = 13;
+  const CSV_IGP_FINAL = 14;
+  const CSV_COULEUR = 15;
+  const CSV_CEPAGE = 16;
+  const CSV_TYPE_LOT = 17;
+  const CSV_MILLESIME = 18;
+  const CSV_PRELEVABLE = 19;
+  const CSV_CONFORMITE = 20;
 
   protected $produits;
   protected $cepages;
@@ -111,14 +114,16 @@ EOF;
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroArchive = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
             $numeroCuve = $data[self::CSV_NUM_LOT_OPERATEUR];
+            $dataCepage = $this->identifyCepage($data[self::CSV_CEPAGE]);
 
             $mouvementsRealOrigLot = MouvementLotView::getInstance()->getMouvements($etablissement->identifiant,
                      array(
-//                            'volume' => $volumeInitial,
+                            'millesime' => $data[self::CSV_MILLESIME],
                             'produit_hash' => $produitInitial->getHash(),
                             'statut' => Lot::STATUT_CHANGEABLE
                           )
             );
+
             $mouvementsOrigLot = $mouvementsRealOrigLot;
             $mouvementsLot = array();
             //On exclue de changement antérieure à la revendication
@@ -139,14 +144,14 @@ EOF;
                         $pas_de_cepage = true;
                         foreach($mvt->cepages as $cepage => $volume) {
                             $pas_de_cepage = false;
-                            continue;
+                            continue 1;
                         }
                         if ($pas_de_cepage) {
                             $mouvementsLot[] = $mvt;
                         }
                     }else {
                         foreach($mvt->cepages as $cepage => $volume) {
-                            if (strtolower($cepage)  == strtolower($data[self::CSV_CEPAGE])) {
+                            if (KeyInflector::slugify($cepage) == KeyInflector::slugify($dataCepage)) {
                                 $mouvementsLot[] = $mvt;
                                 break 1;
                             }
@@ -158,10 +163,11 @@ EOF;
                 }
             }
             if (!count($mouvementsLot)) {
-                echo "Warning: Pas de mouvement trouvé (cépage & date antérieures exclus)\n";
-                echo "\t".implode(', ', $data)."\n";
+                echo "Warning: Pas de mouvement trouvé (cépage & date antérieures exclus)";
+                echo implode(', ', $data)."\n";
                 continue;
             }
+
             //Comparaison des volumes
             if (count($mouvementsLot) > 1) {
                 $mouvementsLot = array();
@@ -219,13 +225,9 @@ EOF;
             $chgtDenom->changement_volume = $volumeConcerne;
             $chgtDenom->generateLots();
             if (!$chgtDenom->isTotal()) {
-                $chgtDenom->lots[1]->numero_dossier = $numeroDossier;
-                $chgtDenom->lots[1]->numero_archive = $numeroArchive;
                 $chgtDenom->lots[1]->affectable = true;
                 $chgtDenom->lots[0]->affectable = false;
             } elseif($chgtDenom->isTotal()) {
-                $chgtDenom->lots[0]->numero_dossier = $numeroDossier;
-                $chgtDenom->lots[0]->numero_archive = $numeroArchive;
                 $chgtDenom->lots[0]->affectable = true;
             }
 
@@ -243,15 +245,4 @@ EOF;
         return preg_replace('/[^0-9a-z]/', '', strtolower($s));
     }
 
-    public function initProduitsCepages() {
-      $this->produits = array();
-      $this->cepages = array();
-      $produits = ConfigurationClient::getInstance()->getConfiguration()->declaration->getProduits();
-      foreach ($produits as $key => $produit) {
-        $this->produits[KeyInflector::slugify($produit->getLibelleFormat())] = $produit;
-        foreach($produit->getCepagesAutorises() as $ca) {
-          $this->cepages[KeyInflector::slugify($ca)] = $ca;
-        }
-      }
-    }
 }

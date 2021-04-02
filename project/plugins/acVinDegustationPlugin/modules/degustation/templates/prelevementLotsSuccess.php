@@ -44,28 +44,32 @@
             </tr>
         </thead>
 		<tbody>
-        <?php $dates = $form->getDateDegustParDrev(); foreach ($form['lots'] as $key => $lotForm): ?>
-          <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $form->getLot($key)->numero_dossier ?>">
-            <td><?php echo DateTime::createFromFormat('Ymd', $dates[$form->getLot($key)->id_document])->format('d/m/Y') ?></td>
+        <?php $dates = $form->getDateDegustParDrev();
+            foreach ($form['lots'] as $key => $lotForm):
+                $lot = $form->getLot($key);
+                $lot->type_document = substr($lot->id_document, 0, 4);
+            ?>
+          <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier ?>">
+            <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
             <td><?php echo $lot->declarant_nom; ?></td>
             <td>
-              <a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>">
-                <?php echo $lot->type_document; ?>
+              <a href="<?php echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>">
+                <?php echo ucfirst(strtolower($lot->type_document)); ?>
               </a>
             </td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
-            <td><?php echo showProduitLot($lot->getRawValue(), false) ?></td>
+            <td><?php echo showProduitLot($lot, false) ?></td>
             <td class="edit text-right">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
               <a title="Modifier le volume" href="<?php echo url_for("declaration_doc", ['id' => $lot->id_document]); ?>">
                 <i class="glyphicon glyphicon-share-alt"></i>
               </a>
             </td>
-            <td class="text-center" data-hash="<?php echo $form->getLot($key)->declarant_nom; ?>">
+            <td class="text-center" data-hash="<?php echo $lot->declarant_nom; ?>">
               <div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form['lots'][$key]['preleve']->renderError() ?>
                   <div class="col-xs-12">
-                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => $form->getLot($key)->numero_dossier, "data-preleve-lot" => $form->getLot($key)->numero_logement_operateur, 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => $lot->numero_dossier, "data-preleve-lot" => $lot->numero_logement_operateur, 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                   </div>
               </div>
             </td>

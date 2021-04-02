@@ -83,8 +83,8 @@ $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le 1er lot est aff
 $t->ok($drev->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Le 2ème lot est affectable");
 $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_NONAFFECTABLE), "Le 3ème lot est non affectable");
 
-$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 n'est pas changeable");
-$t->ok(!$drev->lots[1]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 2 non plus");
+$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 est changeable");
+$t->ok($drev->lots[1]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 2 aussi");
 $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 3 étant non affectable est donc CHANGEABLE");
 
 $t->ok(!$drev->lots[0]->isChange(), "Le lot changeable dans la DREV n'est pas isChange()");
@@ -94,8 +94,15 @@ $t->ok(!$drev->lots[2]->isChange(), "Le lot changeable dans la DREV n'est pas is
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 2, "2 mouvements de lot prelevables ont été générés");
-$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
-$t->is(count($lots), 1, "seul le lot réputé conforme (non affectable) des 3 lots de la DREV est changeable");
+$lots = array();
+$t->is(count(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant)), 3, "Les 3 lots sont cheageable");
+
+foreach(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant) as $key => $lot) {
+    if($lot->affectable) {
+        continue;
+    }
+    $lots[] = $lot;
+}
 
 $year = date('Y') - 1;
 $campagne = $year.'-'.($year + 1);
@@ -166,7 +173,7 @@ $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le c
 $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le changement a bien un mouvement changeable");
 
 $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
-$t->is(count($lots), 1, "1 lot disponible au changement de denomination (celui provenant du chgement de denom)");
+$t->is(count($lots), 3, "3 lots disponible au changement de denomination (celui provenant du chgement de denom)");
 
 $t->comment("Test via une desgustation");
 
@@ -262,6 +269,10 @@ $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "Le lot 1
 $t->is($chgtDenom->lots[1]->id_document_provenance, $degustation->_id, "Le lot 2 généré provient bien de la dégustation ".$degustation->_id);
 
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_NONCONFORME, "statut du lot orginel est bien non conforme");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable");
+$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot changé affectable ");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "Mouvement lot restant change dest");
+$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_CHANGE_DEST), "Mouvement lot changé change dest");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE_SRC), "le lot originel a bien un mouvement au statut changé");
 
 $chgtDenom->clearMouvementsLots();

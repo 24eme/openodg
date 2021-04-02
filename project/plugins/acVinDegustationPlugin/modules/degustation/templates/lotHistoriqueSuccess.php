@@ -13,42 +13,41 @@ endforeach;
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href="<?php echo url_for('degustation_etablissement_list',array('identifiant' => $etablissement->identifiant)); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
-  <li><a href="" class="active" >N° dossier : <?php echo $numero_dossier ?> - N° archive :<?php echo $numero_archive ?></a></li>
+  <li><a href="" class="active" >N° dossier : <?php echo $numero_dossier ?> - N° archive : <?php echo $numero_archive ?></a></li>
 </ol>
 
+<h2><?php echo $etablissement->getNom(); ?> - Historique du lot n°<?php echo $lot->numero_archive; ?></h2>
 
-<h2>Historique du lot de <?php echo $etablissement->getNom(); ?></h2>
-<br/>
-
+<div class="row">
+    <div class="col-xs-5" style="padding-top: 30px;">
 <?php include_partial('chgtdenom/infoLotOrigine', array('lot' => $lot, 'opacity' => false)); ?>
-
+    </div>
+    <div class="col-xs-7">
 <?php if (count($mouvements)): ?>
     <table class="table table-condensed table-striped">
       <thead>
+          <th class="col-sm-1">Document</th>
         <th class="col-sm-1">Date</th>
-        <th class="col-sm-2">Document</th>
-        <th class="col-sm-3">Etape</th>
-        <th class="col-sm-4">Détail</th>
-        <th class="col-sm-2"></th>
+        <th class="col-sm-8">Étape / Détail</th>
+        <th class="col-sm-1"></th>
       </thead>
       <tbody>
         <?php $lastiddate = ''; ?>
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
           <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
-          <?php $class = ($lastiddate == $mouvement->value->document_id.$mouvement->value->date) ? "text-muted": null ; ?>
+          <?php $class = ($lastiddate == preg_replace("/ .*$/", "", $mouvement->value->document_id.$mouvement->value->date)) ? "text-muted": null ; ?>
               <tr>
+                  <td>
+                      <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
+                      <?php echo $mouvement->value->document_type;  ?>
+                      </a>
+                  </td>
                 <td class="<?php echo $class; ?>">
                     <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
                 </td>
-                <td>
-                    <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
-                    <?php echo $mouvement->value->document_type;  ?>
-                    </a>
-                </td>
-                <td><?php echo Lot::$libellesStatuts[$mouvement->value->statut];  ?></td>
-                <td>
-                    <?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?>
-                </td>
+
+                <td><?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?></td>
+
                 <td class="text-right">
                     <?php if (in_array($mouvement->value->statut,  array(Lot::STATUT_MANQUEMENT_EN_ATTENTE, Lot::STATUT_ELEVAGE_EN_ATTENTE))): ?>
                     <div class="dropdown" style="display: inline-block">
@@ -70,16 +69,17 @@ endforeach;
                     <?php else: ?>
                         <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
                     <?php endif; ?>
-                    <?php $lastiddate = $mouvement->value->document_id.$mouvement->value->date ; ?>
+                    <?php $lastiddate = $mouvement->value->document_id.preg_replace("/ .*$/", "", $mouvement->value->date) ; ?>
                 </td>
             </tr>
             <?php endif; endforeach; ?>
           <tbody>
           </table>
           <?php endif; ?>
+      </div>
 
-    <div class="row">
-        <div class="col-xs-12 text-left">
-            <a href="<?php echo url_for('degustation'); ?>" class=" btn btn-default" alt="Retour">Retour</a>
-        </div>
+  </div>
+
+    <div>
+        <a href="<?php echo url_for('degustation'); ?>" class=" btn btn-default" alt="Retour"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
