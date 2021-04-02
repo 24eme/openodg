@@ -25,7 +25,7 @@ class ExportDeclarationLotsPDFConfig extends acTCPDFConfig
 
         $this->path_images = sfConfig::get('sf_web_dir').'/images/';
         $this->header_logo = 'pdf/logo_'.strtolower(sfConfig::get('sf_app')).'.jpg';
-        $this->header_logo_width = 80;
+        $this->header_logo_width = 70;
 
     }
 }
