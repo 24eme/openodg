@@ -85,8 +85,8 @@ p, div {
     <td border="1px" class="border"></td>
   </tr>
   <tr>
-    <td><br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nombre des lots à prélever : <?php echo count($lots) ?></td>
-    <td><br/><br/><br/>Volume total : <?php echo $volumeLotTotal ?> hl</td>
+    <td><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nombre des lots à prélever : <?php echo count($lots) ?></td>
+    <td><br/><br/>Volume total : <?php echo $volumeLotTotal ?> hl</td>
 
   </tr>
 </table>
@@ -98,17 +98,15 @@ p, div {
       <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
       <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
       <th style="width: 7%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
-      <th style="width: 6%"><?php echo tdStart() ?><small>Type de lot (1)</small></th>
-      <th style="width: 10%"><?php echo tdStart() ?><small>Contenant<br/>Logement</small></th>
-      <th style="width: 25%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
+      <th style="width: 6%"><?php echo tdStart() ?><small>Type de lot</small></th>
+      <th style="width: 35%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
     </tr>
-    <?php $i = 0;  foreach($lots as $key => $lot): ?>
-     <?php if($i == 2 || $i == 12): ?>
+    <?php $i = 0; foreach($lots as $key => $lot): ?>
+     <?php if($i == 4 || (($i>4) &&  (($i-4)%9) == 0 )): ?>
        </table>
        <br pagebreak="true" />
        <p>Suite des lots<p/>
        <br/>
-       <p><strong>(1)</strong> Type de lot : <strong>R</strong> = Revendication, <strong>VF</strong> = Transaction vrac France, <strong>VHF</strong> = Transaction Vrac Hors France, <strong>B</strong> = Conditionnement, <strong>E</strong> = Élevage</p>
        <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
          <tr style="line-height:20px;">
            <th style="width: 9%"><?php echo tdStart() ?><small>N° Dossier/Lot</small></th>
@@ -116,9 +114,8 @@ p, div {
            <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
            <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
            <th style="width: 7%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
-           <th style="width: 6%"><?php echo tdStart() ?><small>Type de lot (1)</small></th>
-           <th style="width: 10%"><?php echo tdStart() ?><small>Contenant<br/>Logement</small></th>
-           <th style="width: 25%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
+           <th style="width: 6%"><?php echo tdStart() ?><small>Type de lot</small></th>
+           <th style="width: 35%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
          </tr>
      <?php endif;?>
      <tr style="line-height:17px;">
@@ -136,10 +133,9 @@ p, div {
         <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false) : $lot->getTextPassage(false)." $lot->specificite"; ?></small>
       </td>
       <td><?php echo tdStart() ?>
-        <small><?php echo $lot->getTypeProvenance(); ?><?php echo tdStart() ?></small>
+        <small><?php echo substr($lot->getLotDocumentOrdre(1)->id_document,0,4); ?><?php echo tdStart() ?></small>
       </td>
-      <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
-      <td><?php echo tdStart() ?>
+      <td><?php echo tdStart() ?><br/><br/>
       </td>
      </tr>
      <?php $i++; ?>
