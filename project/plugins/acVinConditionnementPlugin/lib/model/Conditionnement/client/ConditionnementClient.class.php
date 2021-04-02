@@ -21,6 +21,18 @@ class ConditionnementClient extends acCouchdbClient {
         return $doc;
     }
 
+    public function findBrouillon($identifiant)
+    {
+        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent(), $identifiant);
+
+        foreach ($docs->rows as $doc) {
+            if ($doc->key[4] == DeclarationTousView::STATUT_BROUILLON) {
+                return $this->find($doc->id);
+            }
+        }
+        return null;
+    }
+
     public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
         $doc = $this->find($docid);

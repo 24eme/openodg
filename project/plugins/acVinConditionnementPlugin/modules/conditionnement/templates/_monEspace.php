@@ -1,12 +1,10 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_CONDITIONNEMENT) && (!$conditionnement || !$sf_user->isAdmin() || !$sf_user->hasCondtionnementAdmin())): ?>
-    <?php return; ?>
-<?php endif; ?>
-
 <?php if ($campagne !== ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent()): ?>
     <?php return ?>
 <?php endif ?>
+
+<?php if ($conditionnement || $sf_user->isAdmin() || $sf_user->hasConditionnementAdmin() || EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_CONDITIONNEMENT)): ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($conditionnement && $conditionnement->validation): ?>panel-success<?php elseif($conditionnement): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
@@ -44,3 +42,4 @@
         </div>
     </div>
 </div>
+<?php endif ?>
