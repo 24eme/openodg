@@ -131,8 +131,9 @@ EOF;
             }else {
                 $lot = $lots[0];
             }
-            if ($lot->date > $statut_date) {
-                echo "ERROR: La Date d'un lot (".$lot->date.") ne peut être suppérieure à la date de dégustation ($statut_date);$line\n";
+            $date_lot_securite =  date("Y-m-d",strtotime($lot->date." -6 months"));
+            if ($date_lot_securite > $statut_date) {
+                echo "ERROR: La Date d'un lot (".$lot->date." - $date_lot_securite) ne peut être suppérieure à la date de dégustation ($statut_date);$line\n";
                 continue;
             }
 
