@@ -48,7 +48,7 @@ class ExportDegustationAllNotificationsPDF extends ExportDeclarationLotsPDF {
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = "\n".sprintf("Dégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+        $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
         return $header_subtitle;
     }
 
