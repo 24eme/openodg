@@ -280,6 +280,7 @@ EOF;
       $key = str_replace('VAR-VAR-', 'VAR-', $key);
       $key = str_replace('IGP-BDR-', 'PAYS-DES-BOUCHES-DU-RHONE-', $key);
       $key = str_replace('NORD-', '', $key);
+      $key = str_replace('PRINCIPAUTE-ORANGE', 'VAUCLUSE-PRINCIPAUTE-D-ORANGE', $key);
       $key = preg_replace('/^COTEAUX-DE-MONTELIMAR/', 'DROME-COTEAUX-DE-MONTELIMAR', $key);
       $key = preg_replace('/^COMTE-DE-GRIGNAN/', 'DROME-COMTE-DE-GRIGNAN', $key);
       $key = preg_replace('/^LOIRE-ATLANTIQUE/', 'VAL-DE-LOIRE-LOIRE-ATLANTIQUE', $key);
