@@ -12,11 +12,7 @@ function showProduitLot($lot, $specificite_protection = true)
   }
 
   $text .= "</small>";
-  $fromView = ($lot instanceof stdClass);
-  if(!$fromView){
-
-    $text .= showOnlyCepages($lot);
-  }
+  $text .= showOnlyCepages($lot);
 
   return $text;
 
@@ -28,7 +24,7 @@ function showOnlyCepages($lot){
     $total = $lot->volume;
     $text .= " <small class='text-muted'>";
     foreach ($lot->cepages as $cepage => $hl) {
-        $text .= $cepage . ' ' . round(($hl*100)/$total, 2) . "%";
+        $text .= $cepage . ' (' . round(($hl*100)/$total, 2) . "%)";
     }
     $text .= "</small>";
   } else {
