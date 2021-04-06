@@ -122,6 +122,11 @@ class myUser extends sfBasicSecurityUser
         return null;
     }
 
+    public function getTeledeclarationConditionnementRegion()
+    {
+        return null;
+    }
+
     public function hasDrevAdmin() {
         return $this->isAdmin();
     }

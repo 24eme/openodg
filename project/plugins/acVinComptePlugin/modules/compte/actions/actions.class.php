@@ -58,7 +58,7 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
 
             throw new sfError403Exception();
         }
@@ -433,13 +433,18 @@ class compteActions extends sfCredentialActions {
       $q->setLimit($res_by_page);
       $q->setFrom($from);
       $this->addTagFacetsToQuerry($q);
+      try {
+          $index = acElasticaManager::getType('COMPTE');
+          $resset = $index->search($q);
+          $this->results = $resset->getResults();
+          $this->nb_results = $resset->getTotalHits();
+          $this->facets = $resset->getFacets();
+      }catch(sfException $e) {
+          $this->results = array();
+          $this->nb_results = 0;
+          $this->facets = array();
+      }
 
-      $index = acElasticaManager::getType('COMPTE');
-      $resset = $index->search($q);
-
-      $this->results = $resset->getResults();
-      $this->nb_results = $resset->getTotalHits();
-      $this->facets = $resset->getFacets();
 
       ksort($this->facets);
 

@@ -12,13 +12,13 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 
 $t->comment("test avec le viti ".$viti->identifiant." (cvi:".$viti->cvi.")");
 
-$campagne = (date('Y')-1)."";
+$periode = (date('Y')-1)."";
 
 $csvDouane = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane_'.$application.'.csv');
 file_put_contents(dirname(__FILE__).'/../data/dr_douane_'.$application.'_converti.csv', $csvDouane->convert());
 $drCsv = new DRCsvFile(dirname(__FILE__).'/../data/dr_douane_'.$application.'_converti.csv');
 $csv = $drCsv->getCsv();
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_TOTAL);
@@ -40,7 +40,7 @@ $nb_produits_csv = count(array_keys($produits));
 $t->is(count($drev->getProduits()), $nb_produits_csv, $nb_produits_csv." produits");
 $drev->delete();
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $csv[0][18] = "vin bio";
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_PARTIEL);
@@ -57,7 +57,7 @@ $t->isnt($firstdetail->denomination_complementaire, DRevClient::DENOMINATION_BIO
 
 $drev->delete();
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_TOTAL);
 }
@@ -77,7 +77,7 @@ if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
 
 $drev->delete();
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_PARTIEL);
 }
@@ -105,6 +105,7 @@ if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $nb_bio = 0;
+if (isset($erreurs['revendication_incomplete_volume']))
 foreach($erreurs['revendication_incomplete_volume'] as $err) {
   if (preg_match('/ '.DRevClient::DENOMINATION_BIO_LIBELLE_AUTO.'/', $err->getInfo()) ) {
     $nb_bio++;

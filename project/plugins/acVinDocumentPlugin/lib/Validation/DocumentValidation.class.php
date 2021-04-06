@@ -82,6 +82,11 @@ abstract class DocumentValidation
         return $points;
     }
 
+    public function getPointsByCode($type, $code){
+      $typesPoints = $this->getPointsByCodes($type);
+      return isset($typesPoints[$code])? $typesPoints[$code] : array();
+    }
+
     public function getEngagements()
     {
         return $this->getPoints('engagement');

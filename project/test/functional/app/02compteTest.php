@@ -61,7 +61,7 @@ $t->comment('En mode stalker');
 
 $b->get('/logout');
 
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array(myUser::CREDENTIAL_STALKER)));
 $b->restart();
 
 $b->get('/compte/search');
@@ -73,7 +73,7 @@ $b->isForwardedTo('compte', 'visualisation');
 testVisualisationLimite($b, $societeIdentifiant, $compte);
 
 $b->get('/compte/'.$compteAutre->getIdentifiant().'/visualisation');
-$t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
+$t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
 
 $t->comment('En mode habilitation');
 

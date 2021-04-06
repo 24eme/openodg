@@ -60,10 +60,11 @@ $t->comment('En mode stalker');
 
 $b->get('/logout');
 
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('stalker')));
+
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array(myUser::CREDENTIAL_STALKER)));
 $b->restart();
 
-$b->get('/');
+$b->get('/')->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil accessible");
 $b->isForwardedTo('compte', 'search');
 

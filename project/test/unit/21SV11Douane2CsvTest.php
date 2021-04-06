@@ -11,7 +11,7 @@ foreach($config->getProduits() as $produit) {
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv11_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg');
-file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao%", "%libelle_produit%"), array("7523700100", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%"), array("7523700100", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
 
 $csv = new SV11DouaneCsvFile($csvTmpFile);
 $csvConvert = $csv->convert();
@@ -28,12 +28,17 @@ foreach($lines as $line) {
     }
     $nb++;
 }
-$t->is($nb, 4, "Le CSV a 4 lignes");
+$t->is($nb, 327, "Le CSV a 4 lignes");
 
 $line = explode(";", $lines[0]);
 
 $t->is($line[SV11CsvFile::CSV_TYPE], "SV11", "Le type de la ligne est SV11");
-$t->is($line[SV11CsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
+$year = date('Y');
+if (date('m') < 8) {
+    $year = $year - 1;
+}
+$campagne = sprintf("%04d-%04d", $year , $year + 1 );
+$t->is($line[SV11CsvFile::CSV_CAMPAGNE], $campagne, "La campagne est ".$campagne);
 $t->is($line[SV11CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_CERTIFICATION], $produit->getCertification()->getKey(), "Certification OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_GENRE], $produit->getGenre()->getKey(), "Genre OK");
@@ -42,7 +47,7 @@ $t->is($line[SV11CsvFile::CSV_PRODUIT_MENTION], $produit->getMention()->getKey()
 $t->is($line[SV11CsvFile::CSV_PRODUIT_LIEU], $produit->getLieu()->getKey(), "Lieu OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_COULEUR], $produit->getCouleur()->getKey(), "Couleur OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_CEPAGE], $produit->getCepage()->getKey(), "Cepage OK");
-$t->is($line[SV11CsvFile::CSV_PRODUIT_INAO], $produit->getCodeDouane(), "Le code inao est OK");
+$t->is($line[SV11CsvFile::CSV_PRODUIT_INAO], $produit->getCodeDouane().'  ', "Le code inao est OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_LIBELLE], $produit->getLibelleComplet(), "Libelle complet OK");
 
 $t->is($line[SV11CsvFile::CSV_LIGNE_CODE], "04", "Code du type de mouvement");

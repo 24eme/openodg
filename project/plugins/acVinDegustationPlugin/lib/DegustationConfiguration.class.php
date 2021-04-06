@@ -20,11 +20,6 @@ class DegustationConfiguration {
         $this->configuration = sfConfig::get('degustation_configuration_degustation', array());
     }
 
-    public function getCommissions() {
-
-        return (isset($this->configuration['commissions']))? $this->configuration['commissions'] : array();
-    }
-
     public function getColleges() {
 
         return (isset($this->configuration['colleges']))? $this->configuration['colleges'] : array();
@@ -37,5 +32,10 @@ class DegustationConfiguration {
 
     public function hasSpecificiteLotPdf(){
       return isset($this->configuration['specificite_lot_pdf']) && boolval($this->configuration['specificite_lot_pdf']);
+    }
+
+    public function hasAnonymat4labo()
+    {
+        return isset($this->configuration['anonymat4labo']) && boolval($this->configuration['anonymat4labo']);
     }
 }

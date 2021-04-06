@@ -39,10 +39,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $configs = sfConfig::get('app_facture_emetteur');
         $emetteur = new stdClass();
 
+        $this->region = strtoupper(sfConfig::get('sf_app'));
 
         if (!array_key_exists($this->region, $configs))
             throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
-        $this->emetteur = $configs[$this->region];
+        foreach ($configs[$this->region] as $param => $value) {
+            if($this->emetteur->exist($param)){
+                $this->emetteur->$param = $value;
+            }
+        }
+
     }
 
 
@@ -224,53 +230,26 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
       }
     }
 
-    private function createLigneOriginesMouvements($ligne, $originesTable) {
-        $origines = array();
-        foreach ($originesTable as $origineFormatted) {
-            $origineKeyValue = explode(':', $origineFormatted);
-            if (count($origineKeyValue) != 2)
-                throw new Exception('Le mouvement est mal formé : %s', print_r($origineKeyValue));
-            $key = $origineKeyValue[0];
-            $value = $origineKeyValue[1];
-            if (!array_key_exists($key, $origines)) {
-                $origines[$key] = array();
-            }
-            $origines[$key][] = $value;
-        }
+    /** facturation par mvts **/
+    public function storeLignesByMouvementsView($mouvement) {
+            $ligne = $this->lignes->add($mouvement->value->categorie);
+            $ligne->libelle = $mouvement->value->type_libelle;
+            $ligne->produit_identifiant_analytique = $configCollection->code_comptable;
+            $document_origine = $mouvement->id;
+            $key_origine = $mouvement->key[MouvementFactureView::KEY_KEY_ORIGIN];
+            $ligne->origine_mouvements->add($document_origine)->add(null, $key_origine);
 
-        return $origines;
+            $d = $ligne->details->add();
+            $d->libelle = $mouvement->value->type_libelle;
+            $d->quantite = $mouvement->value->quantite;
+            $d->prix_unitaire = $mouvement->value->taux;
+            $d->taux_tva = $mouvement->value->tva;
+            if($mouvement->value->unite) {
+                $d->add('unite', $mouvement->value->unite);
+            }
+            $ligne->updateTotaux();
+
     }
-
-    private function createOrigineLibelle($ligne, $transacteur, $famille, $view) {
-        sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
-        if ($ligne->origine_type == FactureClient::FACTURE_LIGNE_ORIGINE_TYPE_SV12) {
-            if ($ligne->produit_type == FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_ECART) {
-                $origine_libelle = " (".$transacteur.") ".SV12Client::getInstance()->getLibelleFromId($ligne->origine_identifiant);
-                return $origine_libelle;
-            }
-            $origine_libelle = 'n° ' . $view->value[MouvementfactureFacturationView::VALUE_DETAIL_LIBELLE];
-            $origine_libelle .= ' (' . $transacteur . ') ';
-            if ($famille == EtablissementFamilles::FAMILLE_NEGOCIANT)
-                $origine_libelle .= SV12Client::getInstance()->getLibelleFromId($ligne->origine_identifiant);
-            return $origine_libelle;
-        }
-
-        if ($ligne->origine_type == FactureClient::FACTURE_LIGNE_ORIGINE_TYPE_DRM) {
-            if ($ligne->produit_type == FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_VINS) {
-                if ($famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
-                    $origine_libelle = 'n° ' . $view->value[MouvementfactureFacturationView::VALUE_DETAIL_LIBELLE];
-                } else {
-                    $origine_libelle = 'n° ' . $view->value[MouvementfactureFacturationView::VALUE_DETAIL_LIBELLE] . ' enlèv. au ' . format_date($view->value[MouvementfactureFacturationView::VALUE_DATE], 'dd/MM/yyyy') . ' ';
-                }
-                $origine_libelle .= ' (' . $transacteur . ') ';
-                if ($famille == EtablissementFamilles::FAMILLE_PRODUCTEUR)
-                    $origine_libelle .= DRMClient::getInstance()->getLibelleFromId($ligne->origine_identifiant);
-                return $origine_libelle;
-            }
-            return DRMClient::getInstance()->getLibelleFromId($ligne->origine_identifiant);
-        }
-    }
-
 
 
     public function storePapillons() {
@@ -297,21 +276,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
           $this->updateEcheance($pvalue["libelle"],$pvalue["libelle_date"],$montant_papillon_str);
         }
       }
-    }
-
-    private function removeCodesEcheances() {
-        foreach ($this->getLignes() as $typeLigne) {
-            foreach ($typeLigne as $ligne){
-                $ligne->echeance_code = null;
-            }
-        }
-    }
-
-    private function isContratPluriannuel($l) {
-        $contrat = VracClient::getInstance()->findByNumContrat($l->contrat_identifiant, acCouchdbClient::HYDRATE_JSON);
-        if (!$contrat->type_contrat)
-            throw new sfException("Le contrat de numéro $l->contrat_identifiant n'est pas valide.");
-        return ($contrat->type_contrat == VracClient::TYPE_CONTRAT_PLURIANNUEL);
     }
 
     public function updateEcheance($echeance_code, $date, $montant_ht) {
@@ -642,6 +606,32 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
     public function getTotalTaxe() {
         return Anonymization::hideIfNeeded($this->_get('total_taxe'));
+    }
+
+    public function isTelechargee() {
+        if(!$this->exist('date_telechargement')) {
+
+            return false;
+        }
+
+        return (bool) $this->date_telechargement;
+    }
+
+    public function setTelechargee($date = null)
+    {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+
+        if ($this->exist('date_telechargement') && $this->date_telechargement) {
+            return;
+        }
+
+        if (! $this->exist('date_telechargement')) {
+            $this->add('date_telechargement');
+        }
+
+        $this->_set('date_telechargement', $date);
     }
 
 }

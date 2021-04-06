@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cheerio": "^1.0.0-rc.5",
     "fs": "^0.0.1-security",
     "mkdirp": "^0.5.5",
     "nightmare": "^3.0.2",

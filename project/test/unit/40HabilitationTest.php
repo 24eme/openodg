@@ -2,6 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if ($application == 'loire') {
+    $t = new lime_test(1);
+    $t->ok(true, "Pas d'habilitation pour loire");
+    return;
+}
 $t = new lime_test(37);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();

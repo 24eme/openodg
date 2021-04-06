@@ -1,0 +1,6 @@
+all:
+  credentials: [ADMIN]
+
+getCourrierWithAuth:
+  is_secure: false
+  credentials: []

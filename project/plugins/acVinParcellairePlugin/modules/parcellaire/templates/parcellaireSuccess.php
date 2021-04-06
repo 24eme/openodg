@@ -1,4 +1,5 @@
 <?php use_helper("Date"); ?>
+<?php use_helper('Float') ?>
 <?php
 $parcellaire_client = ParcellaireClient::getInstance();
 $last = null;
@@ -57,7 +58,7 @@ $list_idu = [];
         <?php if($parcellaire): ?>
             <div class="well">
                 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>            
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -94,7 +95,7 @@ $list_idu = [];
                     <th class="col-xs-1">N° parcelle</th>
                     <th class="col-xs-3">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
-                    <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
+                    <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small">(ha)</span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
                     <?php if(!empty($import)): ?>
@@ -153,7 +154,7 @@ $list_idu = [];
                               $classcepage .= ' text-danger strong';
                             }
                             ?>
-                            <?php 
+                            <?php
                                 $lieu = $detail->lieu;
                                 $compagne = $detail->campagne_plantation;
                                 $section = $detail->section;
@@ -169,7 +170,7 @@ $list_idu = [];
                                 <td class=""><?php echo $num_parcelle; ?></td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
+                                <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie); ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
 
@@ -189,6 +190,40 @@ $list_idu = [];
     <?php endforeach; ?>
         </div>
     </div>
+
+<h3>Synthèse par produits habilités</h3>
+
+<table class="table table-bordered table-condensed table-striped tableParcellaire">
+  <thead>
+    <tr>
+        <th class="col-xs-8">Produit</th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+
+    $synthese = $parcellaire->getSyntheseProduitsCepages();
+    foreach($synthese as $produit_libelle => $sous_synthese):
+        foreach($sous_synthese as $cepage_libelle => $s): ?>
+        <tr>
+            <?php if ($cepage_libelle == 'Total'): ?>
+                <th><?php echo $produit_libelle ; ?></th>
+                <th class="text-right"><?php echoLongFloat($s['superficie_max']); ?></th>
+            <?php endif; ?>
+        </tr>
+<?php
+        endforeach;
+    endforeach;
+?>
+  </tbody>
+</table>
+
+<?php if ($parcellaire->hasParcellairePDF()): ?>
+<div class="text-center">
+<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
+</div>
+<?php endif; ?>
 <?php else: ?>
     <div class="row">
         <div class="col-xs-12">
@@ -208,4 +243,3 @@ $list_idu = [];
 <script type="text/javascript">
     var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
 </script>
-

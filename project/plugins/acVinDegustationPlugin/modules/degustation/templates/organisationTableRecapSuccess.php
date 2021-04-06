@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'tri' => $tri)); ?>
 
@@ -65,22 +66,18 @@
                     </tr>
               </thead>
               <tbody>
-              <?php
-                foreach ($degustation->getLotsPrelevesCustomSort($tri_array->getRawValue()) as $lot):
-                $name = $form->getWidgetNameFromLot($lot);
-                if (isset($form[$name])):
-              ?>
+              <?php foreach ($degustation->getLotsSortByTables() as $lot): ?>
+                <?php $name = $form->getWidgetNameFromLot($lot);
+                if (isset($form[$name])): ?>
                 <tr class="vertical-center cursor-pointer">
                         <td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
                             <div class="row">
                                   <div class="col-xs-4 text-right">
                                       <?php if ($lot->leurre === true): ?><em>Leurre</em> <?php endif ?>
-                                      <?php echo $lot->declarant_nom.' ('.$lot->numero_cuve.')'; ?>
+                                      <?php echo $lot->declarant_nom; echo (!$lot->leurre)? ' ('.$lot->numero_logement_operateur.')' : ''; ?>
                                   </div>
-                                  <div class="col-xs-1 text-center"><?php echo ($lot->millesime)? ' '.$lot->millesime.'' : '';  ?></div>
-                                <div class="col-xs-7 text-left">
-                                    <?php echo $lot->produit_libelle;?>
-                                    <small class="text-muted"><?php echo $lot->details; ?></small>
+                                <div class="col-xs-6">
+                                    <?php echo showProduitLot($lot) ?>
                                 </div>
                             </div>
                         </td>

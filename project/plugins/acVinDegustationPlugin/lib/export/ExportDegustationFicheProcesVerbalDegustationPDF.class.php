@@ -16,7 +16,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     public function create() {
       $etablissements = array();
       $nbLotTotal = 0;
-      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
+      foreach ($this->degustation->getLotsByNumDossierNumLogementOperateur() as $numDossier => $lotsEtablissement) {
 				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
         $nbLotTotal += count($lotsEtablissement);
         $etablissements[$numDossier] = $etablissement;
@@ -57,7 +57,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s PROCÈS VERBAL DE DEGUSTATION", $this->degustation->getOdg());
+        $titre = $this->degustation->getNomOrganisme();
 
         return $titre;
     }
@@ -72,7 +72,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
 
 
     protected function getFooterText() {
-        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
+        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
         return $footer;
     }
 

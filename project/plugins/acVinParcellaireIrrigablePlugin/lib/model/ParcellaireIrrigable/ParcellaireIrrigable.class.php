@@ -44,11 +44,15 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
     }
-  public function initDoc($identifiant, $campagne) {
+  public function initDoc($identifiant, $periode) {
       $this->identifiant = $identifiant;
-      $this->campagne = $campagne;
-      $this->set('_id', ParcellaireIrrigableClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne);
+      $this->campagne = $periode.'-'.($periode + 1);
+      $this->set('_id', ParcellaireIrrigableClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->periode);
       $this->storeDeclarant();
+  }
+
+  public function getPeriode() {
+      return preg_replace('/-.*/', '', $this->campagne);
   }
 
   public function getAcheteursByCVI() {
@@ -76,7 +80,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
   public function getConfiguration() {
 
-      return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-03-01');
+      return ConfigurationClient::getInstance()->getConfiguration($this->periode.'-03-01');
   }
 
   public function storeEtape($etape) {

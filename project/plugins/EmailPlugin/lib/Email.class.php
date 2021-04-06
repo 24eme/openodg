@@ -89,7 +89,7 @@ class Email {
                 continue;
             }
             $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
-            $to = array($email_syndicat);
+            $to = !is_array($email_syndicat) ? array($email_syndicat) : $email_syndicat;
             $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)

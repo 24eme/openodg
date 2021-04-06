@@ -53,3 +53,11 @@ parcellaire_map:
   options:
     model: Etablissement
     type: object
+
+parcellaire_pdf:
+  url: /parcellaire/pdf/:id
+  param: { module: parcellaire, action: parcellairePDF}
+  class: ParcellaireRoute
+  options:
+    model: Etablissement
+    type: object

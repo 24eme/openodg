@@ -5,7 +5,7 @@ L'AVA a développé un espace "Facture" sur son portail de dématérialisation a
 Vous trouverez ainsi sur cet espace les factures suivantes :
 
 <?php foreach($factures as $facture): ?>
-- Votre facture "<?php echo $facture->getTemplate()->libelle ?>" : <?php echo url_for('facturation_pdf', $facture, true); ?>
+- Votre facture "<?php echo $facture->getTemplate()->libelle ?>" : <<?php echo url_for('facturation_pdf_auth', array('id' => $facture->_id, 'auth' => FactureClient::generateAuthKey($facture->_id)), true); ?>>
 
 <?php endforeach; ?>
 

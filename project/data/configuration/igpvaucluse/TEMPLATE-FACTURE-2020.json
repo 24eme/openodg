@@ -1,0 +1,157 @@
+{
+  "_id": "TEMPLATE-FACTURE-2020",
+  "type": "TemplateFacture",
+  "campagne": 2020,
+  "template": "IGP",
+  "libelle": "2020 - IGP Vaucluse",
+  "docs": [
+    "DR",
+    "DRev"
+  ],
+  "cotisations": {
+    "cotisationOdg": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "",
+      "details": {
+        "forfaitLieuxPrelevements": {
+          "modele": "CotisationFixe",
+          "prix": 20,
+          "tva": 0.2,
+          "libelle": "Forfait nombre lieux de prélévement",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbLieuxPrelevements",
+          "unite": "hl"
+        },
+        "volumeRevendique": {
+          "modele": "CotisationVariable",
+          "prix": 0.1,
+          "tva": 0.2,
+          "libelle": "Volume revendiqué",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        },
+        "communication": {
+          "modele": "CotisationVariable",
+          "prix": 0.1,
+          "tva": 0.2,
+          "libelle": "Communication",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        },
+        "controleexterne": {
+          "modele": "CotisationVariable",
+          "prix": 0.05,
+          "tva": 0.2,
+          "libelle": "Contrôle externe",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        },
+        "controleinterne": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "libelle": "Contrôle interne",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        },
+        "inao": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "libelle": "Cotisation reversée à l'INAO",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        }
+      }
+    },
+    "forfaitnegociantcave": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "",
+      "details": {
+        "forfaitnegociantcave": {
+          "modele": "CotisationFixe",
+          "prix": 110,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Forfait sur DRev",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+          ]
+        }
+      }
+    },
+    "forfait": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Forfait sur DRev",
+      "code_comptable": "706100",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 11,
+          "tva": 0.2,
+          "libelle": "Forfait sur DRev",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "isDeclarantFamille",
+          "unite": "hl",
+          "callback_parameters": [
+            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+          ]
+        }
+      }
+    },
+    "redevanceMed": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Redevance Méditerrannée",
+      "code_comptable": "706100",
+      "details": {
+
+      "redevanceMed": {
+        "modele": "CotisationVariable",
+        "prix": 0.15,
+        "tva": 0.2,
+        "libelle": "Redevance Méditerrannée",
+        "complement_libelle": "",
+        "docs": [
+          "DRev"
+        ],
+        "callback": "getVolumeLotsFacturables",
+        "callback_parameters": [
+          "/appellations/MED"
+        ]
+      }
+      }
+    }
+  }
+}

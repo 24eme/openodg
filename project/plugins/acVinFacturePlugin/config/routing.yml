@@ -22,6 +22,16 @@ facturation_pdf:
   requirements:
     sf_method: [get]
 
+facturation_pdf_auth:
+  url: /facturation/pdf/:id/:auth
+  param: { module: facturation, action: getFactureWithAuth }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get]
+
 facturation_edition:
   url: /facturation/edition/:id
   param: { module: facturation, action: edition }
@@ -85,6 +95,16 @@ facturation_regenerate:
 facturation_declarant:
   url: /facturation/declarant/:id
   param: { module: facturation, action: declarant }
+  class: FacturationDeclarantRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+facturation_declarant_view:
+  url: /facturation/declarant-view/:id
+  param: { module: facturation, action: declarantView }
   class: FacturationDeclarantRoute
   options:
     model:    Compte

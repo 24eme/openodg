@@ -155,4 +155,9 @@ class DRevConfiguration {
         return isset($this->configuration['logement_adresse']) && boolval($this->configuration['logement_adresse']);
     }
 
+    public function isRevendicationParLots() {
+
+        return ConfigurationClient::getCurrent()->declaration->isRevendicationParLots();
+    }
+
 }

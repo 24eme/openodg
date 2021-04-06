@@ -31,12 +31,12 @@
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('drev/recap', array('drev' => $drev, 'dr' => $dr)); ?>
-	<?php  if (!$drev->isPapier() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+    <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
+	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
-    <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
+    <?php if (DrevConfiguration::getInstance()->hasDegustation() && isset($form["date_degustation_voulue"])): ?>
         <h3>Dégustation</h3>
         <?php echo $form["date_degustation_voulue"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
@@ -60,13 +60,13 @@
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
                 </a>
                 <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;DRev
                 </a>
             </div>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-drev" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>
-<?php include_partial('drev/popupConfirmationValidation'); ?>
+<?php include_partial('drev/popupConfirmationValidation', array('approuver' => true)); ?>

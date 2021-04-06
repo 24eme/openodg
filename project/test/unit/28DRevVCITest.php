@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(15);
+$t = new lime_test(16);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -12,7 +12,8 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-$campagne = (date('Y')-2)."";
+$periode = (date('Y')-3)."";
+$campagne = $periode."-".($periode + 1);
 
 //Début des tests
 $t->comment("Création d'une DRev n-1");
@@ -22,6 +23,7 @@ $drev->save();
 
 $t->is($drev->identifiant, $viti->identifiant, "L'identifiant est celui du viti : ".$viti->identifiant);
 $t->is($drev->campagne, $campagne, "La campagne est ".$campagne);
+$t->is($drev->periode, $periode, "La periode est ".$periode);
 $drev->storeDeclarant();
 $drev->save();
 
@@ -66,8 +68,8 @@ $t->is(count($drev->declaration->getProduitsVci()), 1, "A donc un seul produit V
 $t->is($drev->get($produit_hash1)->vci->stock_final, 20, "stock final du produit VCI correct");
 $t->is($drev->get($produit_hash2)->vci->stock_final, 0, "stock final du produit sans VCI null");
 
-$campagne_n = (date('Y')-1)."";
-$drev_n = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne_n);
+$periode_n = $periode + 1;
+$drev_n = DRevClient::getInstance()->createDoc($viti->identifiant, $periode_n);
 $drev_n->save();
 $t->comment("Récupération du stock VCI en n : ".$drev_n->_id);
 $t->is(count($drev_n->getProduitsVci()), 1, "même nombre de produit VCI");

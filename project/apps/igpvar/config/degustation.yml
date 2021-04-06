@@ -1,0 +1,8 @@
+all:
+  configuration:
+    degustation:
+      specificite_lot_pdf: true
+      colleges:
+        degustateur_technicien: "Technicien"
+        degustateur_porteur_de_memoire: "Porteur de mémoire"
+        degustateur_usager_du_produit: "Usager du produit"

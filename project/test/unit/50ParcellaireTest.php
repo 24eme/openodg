@@ -2,10 +2,17 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(17);
-$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
-$date = (date('Y') - 1).date('-m-d');
+if (in_array($application, array('nantes', 'loire'))) {
+    $t = new lime_test(1);
+    $t->ok(true, "pas de parcellaire activé");
+    return;
+}
 
+$t = new lime_test(18);
+$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
+$year = date('Y') - 1;
+$date = $year.'-12-01';
+$campagne = $year.'-'.($year + 1);
 foreach(ParcellaireClient::getInstance()->getHistory($viti->identifiant, ParcellaireClient::TYPE_COUCHDB, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $parcellaire = ParcellaireClient::getInstance()->find($k);
     $parcellaire->delete(false);
@@ -15,6 +22,7 @@ $parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant
 $parcellaire->save();
 
 $t->is($parcellaire->_id, 'PARCELLAIRE-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id du doc est ".'PARCELLAIRE-'.$viti->identifiant.'-'.str_replace("-", "", $date));
+$t->is($parcellaire->campagne, $campagne, 'La campagne du parcellaire est bien indiquée');
 $t->is($parcellaire->source, "INAO", "La source des données est l'INAO");
 
 $configProduit = null;

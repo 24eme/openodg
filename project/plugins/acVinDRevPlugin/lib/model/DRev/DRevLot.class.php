@@ -94,32 +94,38 @@ class DRevLot extends BaseDRevLot
         $this->cepages->add($cepage, $repartition);
     }
 
-    public function getCepagesLibelle() {
-        $libelle = null;
-        foreach($this->cepages as $cepage => $repartition) {
-            if($libelle) {
-                $libelle .= ", ";
-            }
-            $libelle .= $cepage . " (".$repartition."%)";
+    public function getNumeroLogementOperateur() {
+        if(!$this->exist('numero_logement_operateur')) {
+            return null;
         }
-        return $libelle;
+        return $this->_get('numero_logement_operateur');
     }
 
-    public function getNumeroCuve() {
-        if($this->exist('numero_cuve') && $this->get('numero_cuve')) {
-            $this->numero = $this->get('numero_cuve');
+    public function setNumeroLogementOperateur($numero) {
+        if(!$this->exist('numero_logement_operateur')) {
+            $this->add('numero_logement_operateur');
         }
-        if($this->exist('numero_cuve')) {
-            $this->remove('numero_cuve');
-
-            return $this->getNumeroCuve();
-        }
-        return $this->numero;
+        return $this->_set('numero_logement_operateur', $numero);
     }
 
-    public function setNumeroCuve($numero) {
+    public function getDocumentType() {
 
-        return $this->setNumero($numero);
+        return DRevClient::TYPE_MODEL;
+    }
+
+    public function getDocumentOrdre() {
+        $this->_set('document_ordre', '01');
+        return "01";
+    }
+
+    public function getLibelle() {
+
+        return parent::getLibelle();
+    }
+
+    public function getMouvementFreeInstance() {
+
+        return DRevMouvementLots::freeInstance($this->getDocument());
     }
 
 }

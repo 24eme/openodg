@@ -1,0 +1,161 @@
+{
+    "_id": "TEMPLATE-FACTURE-2020",
+    "type": "TemplateFacture",
+    "campagne": 2020,
+    "template": "IGP",
+    "libelle": "2020 - IGPArdeche",
+    "docs": [
+        "DRev",
+        "DR",
+        "ChgtDenom",
+        "Degustation"
+    ],
+    "cotisations": {
+        "cotisationSyndicale": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Cotisation syndicale",
+            "code_comptable": "706100",
+            "details": {
+                "cotisationSyndicale": {
+                    "modele": "CotisationVariable",
+                    "prix": 0.02,
+                    "tva": 0.2,
+                    "unite": "hl",
+                    "libelle": "DR L15",
+                    "complement_libelle": "",
+                    "docs": [
+                        "DR"
+                    ],
+                    "callback": "calcul",
+                    "callback_parameters": [
+                        "L15"
+                    ]
+                }
+            }
+        },
+        "cotisationODG": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Cotisation ODG",
+            "code_comptable": "706100",
+            "details": {
+                "revendicationDRev": {
+                    "modele": "CotisationVariable",
+                    "prix": 0.21,
+                    "tva": 0.2,
+                    "unite": "hl",
+                    "libelle": "Volume lots DRev",
+                    "complement_libelle": "",
+                    "docs": [
+                        "DRev"
+                    ],
+                    "callback": "getVolumeLotsFacturables",
+                    "callback_parameters": [
+                    ]
+                },
+                "lots": {
+                    "modele": "CotisationVariable",
+                    "prix": 8,
+                    "tva": 0.2,
+                    "unite": "hl",
+                    "libelle": "Nombre lots DRev",
+                    "complement_libelle": "",
+                    "docs": [
+                        "DRev"
+                    ],
+                    "callback": "getNbLotsFacturables",
+                    "callback_parameters": [
+                    ]
+                },
+                "forfait": {
+                    "modele": "CotisationFixe",
+                    "callback": null,
+                    "prix": 75,
+                    "tva": 0.2,
+                    "unite": "",
+                    "libelle": "Forfait DRev",
+                    "complement_libelle": "",
+                    "docs": [
+                        "DRev"
+                    ]
+                },
+                "cotisation": {
+                    "modele": "CotisationVariable",
+                    "prix": 0.03,
+                    "tva": 0,
+                    "libelle": "Cotisation reversée à l'INAO",
+                    "complement_libelle": "",
+                    "docs": [
+                        "DRev"
+                    ],
+                    "callback": "getVolumeLotsFacturables"
+                }
+            }
+        },
+        "changementDenomination": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Changement de dénomination",
+            "code_comptable": "706102",
+            "details": {
+                "cotisation": {
+                    "modele": "CotisationFixe",
+                    "prix": 10,
+                    "tva": 0.2,
+                    "libelle": "vers Méditerrannée",
+                    "complement_libelle": "",
+                    "docs": [
+                        "ChgtDenom"
+                    ],
+                    "callback": "getFirstChgtDenomFacturable",
+                    "callback_parameters": [
+                    ]
+                }
+            }
+        },
+        "changementSecondeDenomination": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Changement de dénomination suivant",
+            "code_comptable": "706102",
+            "details": {
+                "cotisation": {
+                    "modele": "CotisationFixe",
+                    "prix": 15,
+                    "tva": 0.2,
+                    "libelle": "vers Méditerrannée",
+                    "complement_libelle": "",
+                    "docs": [
+                        "ChgtDenom"
+                    ],
+                    "callback": "getSecondChgtDenomFacturable",
+                    "callback_parameters": [
+                    ]
+                }
+            }
+        },
+        "lotsRedegustes": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Nombre de Lot",
+            "code_comptable": "706102",
+            "details": {
+                "forfait": {
+                    "modele": "Cotisation",
+                    "prix": 8,
+                    "tva": 0.2,
+                    "unite": "",
+                    "libelle": "",
+                    "complement_libelle": "",
+                    "docs": [
+                        "Degustation"
+                    ],
+                    "callback": "getFacturationLotRedeguste",
+                    "callback_parameters": [
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -293,7 +293,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
             $format_libelle = $this->getFormatLibelleCalcule();
             $formatResolu = str_replace("%format_libelle%", $format_libelle, $format);
             $libelle = $this->formatProduitLibelle($formatResolu);
-          //  var_dump($this->getDocument()->isEffervescentVindebaseActivate()); exit;
             if($this->getDocument()->isEffervescentVindebaseActivate() && $this->isEffervescentNode()){
                   $libelle= "Vin de base ".$libelle;
             }
@@ -743,11 +742,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getRendementDrL5() {
-        if($this->exist('attributs') && $this->attributs->exist('rendement_dr_l5')){
-          return $this->getRendementByKey('rendement_dr_l5');
-        }
 
-        return $this->getRendementByKey('rendement_dr');
+        return $this->getRendementByKey('rendement_dr_l5');
     }
 
     public function getRendementDR() {
@@ -1065,7 +1061,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function canHaveVci() {
 
-        return true;
+        return $this->hasRendementVci();
     }
 
     public function isEffervescentNode(){
@@ -1102,6 +1098,18 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         }
 
         return false;
+    }
+
+    public function getCepagesAutorises() {
+        if($this->hasCepagesAutorises()) {
+            return $this->_get('cepages_autorises');
+        }
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            $produits = array_merge($produits, $p->getCepage()->getCepagesAutorises()->toArray());
+        }
+        $produits = array_unique($produits);
+        return $produits;
     }
 
 }

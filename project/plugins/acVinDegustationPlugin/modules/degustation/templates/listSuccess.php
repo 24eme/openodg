@@ -1,79 +1,63 @@
+<?php use_helper('Date') ?>
+<?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
+
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href=""><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('degustation_etablissement_list',array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne)); ?>" ><?php echo $campagne ?></a>
 </ol>
-<?php use_helper('Float') ?>
 
 <div class="page-header no-border">
-  <h2>Les lots de <?php echo $etablissement->getNom(); ?></h2>
+  <div class="pull-right">
+      <?php if ($sf_user->hasDrevAdmin()): ?>
+      <form method="GET" class="form-inline" action="">
+          Campagne :
+          <select class="select2SubmitOnChange form-control" name="campagne">
+              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+                  <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i; ?>-<?php echo $i+1 ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+              <?php endfor; ?>
+          </select>
+          <button type="submit" class="btn btn-default">Changer</button>
+      </form>
+      <?php else: ?>
+          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne ?></span>
+      <?php endif; ?>
+  </div>
+  <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
-<?php if (count($lots)): ?>
-  <div class="row">
-    <table class="table table-condensed table-striped">
-      <thead>
-        <th class="col-sm-1">N° Lot</th>
-        <th class="col-sm-1">N° Dossier</th>
-        <th class="col-sm-1">Date</th>
-        <th class="col-sm-3">Appellation</th>
-        <th class="col-sm-1 text-center">Dossier</th>
-        <th class="col-sm-1 text-center">Degust.</th>
-        <th class="col-sm-1 text-center">Table</th>
-        <th class="col-sm-1 text-center">Dégusté</th>
-        <th class="col-sm-2 text-right"></th>
-      </thead>
-      <tbody>
-        <?php foreach($lots as $lotKey => $lotDocs): ?>
-          <?php foreach($lotDocs as $id_doc => $lot): ?>
-              <tr>
-                <td><?php echo $lot->numero_archive;  ?></td>
-                <td><?php echo $lot->numero_dossier;  ?></td>
-                <td ><strong><?php echo Date::francizeDate($lot->date); ?></strong></td>
-                <td><strong><?php echo $lot->produit_libelle; ?></strong>&nbsp;<small class="text-muted"><?php echo $lot->details; ?><strong class="pull-right">&nbsp;<?php echo echoFloat($lot->volume); ?>&nbsp;hl</strong></small></td>
-                <td class="text-center"><a class="btn btn-xs btn-success" href="<?php echo url_for($lot->dossier_type.'_visualisation',$lot->dossier_origine)?>"><?php echo $lot->dossier_libelle; ?></a></td>
-                <td class="text-center" >
-                  <?php if($lot->degustation): ?>
-                    <a class="btn btn-xs btn-<?php echo $lot->degustation_color?>" href="<?php echo url_for($lot->degustation_step_route,$lot->degustation)?>"><?php echo $lot->degustation_libelle; ?></a>
-
-                  <?php endif; ?>
-                </td>
-                <td class="text-center">
-                  <?php if(isset($lot->numero_table_step_route)): ?>
-                    <a class="btn btn-xs btn-<?php echo $lot->numero_table_color?>"
-                      href="<?php echo ($lot->numero_table)? url_for($lot->numero_table_step_route , array('id' => $lot->degustation->_id, 'numero_table' => $lot->numero_table))
-                      : url_for($lot->numero_table_step_route, array('id' => $lot->degustation->_id)); ?>">
-                      <?php echo ($lot->numero_table)? "Table ".$lot->numero_table : "Choisir"; ?>
-                    </a>
-                  <?php endif; ?>
-
-                </td>
-                <td class="text-center">
-                  <?php if(isset($lot->resultat_step_route)): ?>
-                    <a class="btn btn-xs btn-<?php echo $lot->resultat_color ?>"
-                      href="<?php echo url_for($lot->resultat_step_route , array('id' => $lot->degustation->_id, 'numero_table' => $lot->numero_table))."#".$lot->degustation_anchor; ?>">
-                      <?php if(is_null($lot->conformite)):
-                        echo "Resultat";
-                        elseif($r = Lot::$shortLibellesConformites[$lot->conformite]):
-                          echo $r;
-                          else :
-                            echo "Conforme";
-                          endif;
-                          ?>
-                        </a>
-                      <?php endif; ?>
-                    </td>
-                    <td class=" text-right">
-                      <?php if($lot->chgtdenom): ?>
-                      <a class="btn btn-xs btn-success"
-                      href="<?php echo  url_for('chgtdenom_visualisation' , array('id' => $lot->chgtdenom))  ?>">ChgDenom&nbsp;</a>
-                    <?php endif; ?>
-                      <a class="btn btn-xs btn-default"
-                      href="<?php echo  url_for('degustation_lot' , array('id' => preg_replace("/^([0-9]{5}).+/","$1",$lot->numero_archive), 'campagne' => $lot->campagne))  ?>">detail&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
-                    </a>
+<?php if (count($mouvements)): ?>
+      <table class="table table-condensed table-striped">
+        <thead>
+          <th class="col-sm-1">Date</th>
+          <th class="col-sm-1">Campagne</th>
+          <th class="col-sm-1">N° Dossier</th>
+          <th class="col-sm-1">N° Archive</th>
+          <th class="col-sm-4">Libellé</th>
+          <th class="col-sm-1">Volume</th>
+          <th class="col-sm-1">Document</th>
+          <th class="col-sm-2">Dernière étape</th>
+          <th class="col-sm-1 text-right">Detail</th>
+        </thead>
+        <tbody>
+          <?php foreach($mouvements as $lotKey => $mouvement): ?>
+                <tr>
+                  <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
+                  <td><?php echo $mouvement->value->campagne;  ?></td>
+                  <td><?php echo $mouvement->value->numero_dossier;  ?></td>
+                  <td><?php echo $mouvement->value->numero_archive;  ?></td>
+                  <td><?php  echo str_replace(array("(", ")"), array("<span class='text-muted'> - ", "</span>"), $mouvement->value->libelle);  ?></td>
+                  <td class="text-right"><?php echo echoFloat($mouvement->value->volume);  ?> <small class="text-muted"> hl</span></td>
+                  <td>
+                      <a href="<?php  echo url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id));  ?>">
+                          <?php echo $mouvement->value->document_type;  ?>
+                      </a>
                   </td>
-                  </tr>
-                <?php endforeach; ?>
-            <?php endforeach; ?>
-            <tbody>
-            </table>
-          <?php endif; ?>
-        </div>
+                  <td><?php  echo showLotStatusCartouche($mouvement->value->statut, null, preg_match("/ème dégustation/", $mouvement->value->libelle));  ?></td>
+                  <td class="text-right"><a class="btn btn-xs btn-default" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
+
+              </tr>
+                  <?php endforeach; ?>
+              <tbody>
+              </table>
+      <?php endif; ?>

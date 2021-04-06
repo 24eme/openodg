@@ -14,8 +14,12 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     public function create() {
+        if ($this->degustation->getLastNumeroTable() < 1) {
+            throw new sfException('Pas de lots attablés : '.$this->degustation->_id);
+        }
+
       for($nbtable=1 ;$nbtable <= $this->degustation->getLastNumeroTable(); $nbtable++){
-        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable))));
+        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('table' => $nbtable, 'degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable))));
       }
     }
 
@@ -38,22 +42,21 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s FICHE INDIVIDUELLE DE DEGUSTATION", $this->degustation->getOdg());
+        $titre = $this->degustation->getNomOrganisme();
 
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE INDIVIDUELLE DE DEGUSTATION";
 
         return $header_subtitle;
     }
 
 
     protected function getFooterText() {
-        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
+        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
         return $footer;
     }
 

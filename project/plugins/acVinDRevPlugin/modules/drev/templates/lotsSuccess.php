@@ -36,7 +36,7 @@
             </div>
             <div class="row">
               <div class="col-md-2"></div>
-              <div class="col-md-3">Numéro cuve : <?php echo $lot->numero_cuve; ?></div>
+              <div class="col-md-3">Numéro cuve : <?php echo $lot->numero_logement_operateur; ?></div>
               <div class="col-md-3"><strong>Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></strong></div>
               <div class="col-md-3"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
               <div class="col-md-1" >
@@ -72,32 +72,30 @@
                                 <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
                                        id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal"
                                        data-target="#<?php echo $lot->renderId() ?>_cepages" />
-                                <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Assemblages : " :  "Assemblage" ?></span></label>
+                                <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
                               </div>
-
-                            </div>
-                            <div class="col-sm-2">
-                                  <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getCampagne())); ?>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $lot['numero']->renderLabel("Numéro / Cuve(s)", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-6">
-                                  <?php echo $lot['numero']->render(); ?>
-                            </div>
+                      <div class="form-group">
+                        <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                        <div class="col-sm-3">
+                              <?php echo $lot['numero_logement_operateur']->render(); ?>
                         </div>
+                        <div class="col-sm-6 text-danger">
+                              <?php echo $lot['numero_logement_operateur']->renderError(); ?>
+                        </div>
+                      </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-5">
+                            <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-2">
                                 <div class="input-group">
-                                    <?php echo $lot['volume']->render(); ?>
-                                    <div class="input-group-addon">hl</div>
+                                    <?php echo $lot['millesime']->render(array('data-default-value' => $drev->getPeriode())); ?>
                                 </div>
                             </div>
                         </div>
@@ -114,11 +112,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
-                                <div class="input-group date-picker">
-                                    <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
-                                    <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
+                                <div class="input-group">
+                                    <?php echo $lot['volume']->render(); ?>
+                                    <div class="input-group-addon">hl</div>
                                 </div>
                             </div>
                         </div>
@@ -129,34 +127,47 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-9">
+                            <div class="col-sm-4">
                                   <?php echo $lot['specificite']->render(); ?>
                             </div>
+                            <div class="col-sm-5"></div>
                         </div>
                     </div>
                   <?php endif ?>
-                  <div class="col-md-6 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
-                    <label>
+                  <div class="col-md-6">
+                      <div class="form-group">
+                          <?php echo $lot['destination_date']->renderLabel("Date de transaction / conditionnement", array('class' => "col-sm-4 control-label")); ?>
+                          <div class="col-sm-5">
+                              <div class="input-group date-picker">
+                                  <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
+                                  <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-offset-8 col-md-3 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
                       <?php echo $lot['elevage']->render() ?>
                       <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
-                    </label>
                   </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade modal_lot_cepages" data-lot=<?php echo $key ?> id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Répartition des cépages" aria-hidden="true">
+        <div class="modal fade modal_lot_cepages" data-lot=<?php echo $key ?> id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Répartition des cépages</h4>
+                        <h4 class="modal-title" id="myModalLabel">Mention de cépages</h4>
+                        <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
                     </div>
                     <div class="modal-body">
                         <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-7">
-                                    <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                                    <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="input-group">
@@ -176,7 +187,7 @@
         </div>
     <?php endforeach; ?>
     <div class="text-right">
-        <button type="submit" name="submit" value="add" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
+        <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
     </div>
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-4">
@@ -190,7 +201,7 @@
             <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button id="lots_continue" type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>
     </div>
 </form>

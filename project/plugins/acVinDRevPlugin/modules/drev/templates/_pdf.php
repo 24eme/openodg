@@ -1,12 +1,14 @@
 <?php use_helper('TemplatingPDF');
  use_helper('Float');
  use_helper('Compte');
- use_helper("Date"); ?>
+ use_helper("Date");
+ use_helper('Lot'); ?>
+
 <style>
 <?php echo styleDRev(); ?>
 </style>
 
-<span class="h3Alt">&nbsp;Entreprise&nbsp;</span><br/>
+<span class="h3 font-size-16-pt">&nbsp;Entreprise&nbsp;</span><br/>
 <table class="tableAlt"><tr><td>
 <table border="0" >
   <tr>
@@ -27,7 +29,7 @@
 </table>
 </td></tr></table>
 <?php if(DRevConfiguration::getInstance()->hasLogementAdresse() && $drev->isAdresseLogementDifferente()): ?>
-    <span class="h3Alt">&nbsp;Logement du vin&nbsp;</span><br/>
+    <span class="h3Alt font-size-16-pt">&nbsp;Logement du vin&nbsp;</span><br/>
     <table class="tableAlt"><tr><td>
     <table border="0" >
       <tr>
@@ -39,13 +41,13 @@
 <?php endif; ?>
 <?php if(count($drev->declaration->getProduitsWithoutLots($region))): ?>
 <br />
-<div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
+<div><span class="h3 font-size-16-pt">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 400px;">Produit</th>
         <th class="th" style="text-align: center; width: 137px;">Superficie revendiquée</th>
-        <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI</th>
-        <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->campagne ?></th>
+        <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->periode-1 ?> issu du VCI</th>
+        <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->periode ?></th>
         <th class="th" style="text-align: center; width: 137px;">Volume revendiqué net total <?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small><?php endif; ?></th>
     </tr>
     <?php foreach($drev->declaration->getProduitsWithoutLots($region) as $produit): ?>
@@ -60,17 +62,17 @@
 </table>
 <br />
 <?php if(count($drev->declaration->getProduitsVci($region))): ?>
-<div><span class="h3">&nbsp;Gestion du VCI&nbsp;</span></div>
+<div><span class="h3 font-size-16-pt">&nbsp;Gestion du VCI&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 247px;">Produit</th>
-        <th class="th" style="text-align: center; width: 100px;">Stock <?php echo ($drev->campagne - 1) ?></th>
+        <th class="th" style="text-align: center; width: 100px;">Stock <?php echo ($drev->periode - 1) ?></th>
         <th class="th" style="text-align: center; width: 100px;">Rafraichi</th>
         <th class="th" style="text-align: center; width: 100px;">Complément</th>
         <th class="th" style="text-align: center; width: 100px;">A détruire</th>
         <th class="th" style="text-align: center; width: 100px;">Substitution</th>
-        <th class="th" style="text-align: center; width: 100px;">Constitué <?php echo $drev->campagne ?></th>
-        <th class="th" style="text-align: center; width: 100px;">Stock <?php echo $drev->campagne ?></th>
+        <th class="th" style="text-align: center; width: 100px;">Constitué <?php echo $drev->periode ?></th>
+        <th class="th" style="text-align: center; width: 100px;">Stock <?php echo $drev->periode ?></th>
     </tr>
     <?php foreach($drev->declaration->getProduitsVci($region) as $produit): ?>
         <tr>
@@ -93,25 +95,25 @@ Les produits déclarés sont du millésime du VCI
 <?php endif; ?>
 <?php endif; ?>
 
-<?php if(count($drev->declaration->getProduitsLots($region))): ?>
+<?php if(count($drev->getLotsRevendiques())): ?>
 <br />
-<div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
+<div><span class="h3 font-size-16-pt">&nbsp;Déclaration des lots&nbsp;</span></div>
 <?php if (count($drev->getLotsRevendiques())): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
-    <tr>
-        <th class="th" style="text-align: left; width: 80px">&nbsp;Date</th>
-        <th class="th" style="text-align: left; width: 50px">&nbsp;Lot</th>
-        <th class="th" style="text-align: left; width: 430px">&nbsp;Produit (millésime)</th>
-        <th class="th" style="text-align: center; width: 150px">Volume</th>
-        <th class="th" style="text-align: center; width: 230px">&nbsp;Destination (date)</th>
+    <tr style="line-height:20em;">
+        <th class="th" style="text-align: left; width: 9%">&nbsp;Date</th>
+        <th class="th" style="text-align: left; width: 13%">&nbsp;Lot</th>
+        <th class="th" style="text-align: left; width: 50%">&nbsp;Produit (millésime)</th>
+        <th class="th" style="text-align: center; width: 8%">Volume</th>
+        <th class="th" style="text-align: center; width: 20%">&nbsp;Destination (date)</th>
     </tr>
-<?php foreach($drev->getLotsRevendiques() as $lot): ?>
+<?php foreach($drev->getLotsByDate(true) as $lot): ?>
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_cuve ?></td>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)<?php if(count($lot->cepages)): echo "&nbsp;<small>".$lot->getCepagesToStr()."</small>"; endif; ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_logement_operateur ?></td>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo showProduitLot($lot) ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-        <td class="td" style="text-align: center;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
+        <td class="td" style="text-align: center; font-size: 8pt;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
     </tr>
 <?php endforeach; ?>
 </table>
@@ -123,7 +125,7 @@ Les produits déclarés sont du millésime du VCI
 
 <?php if($drev->hasProduitsReserveInterpro($region)): ?>
 <br />
-<div><span class="h3">&nbsp;Réserve interprofessionnelle&nbsp;</span></div>
+<div><span class="h3 font-size-16-pt">&nbsp;Réserve interprofessionnelle&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left;width: 400px;">&nbsp;Produit</th>
@@ -142,7 +144,7 @@ Les produits déclarés sont du millésime du VCI
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) && DRevConfiguration::getInstance()->hasEngagementsPdf()): ?>
     <br />
-    <div><span class="h3">&nbsp;Engagement(s)&nbsp;</span></div>
+    <div><span class="h3 font-size-16-pt">&nbsp;Engagement(s)&nbsp;</span></div>
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php foreach($drev->documents as $docKey => $doc): ?>
         <tr>

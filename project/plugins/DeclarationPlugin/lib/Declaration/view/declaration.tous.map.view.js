@@ -1,6 +1,6 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation" && doc.type != "Parcellaire") {
+    if(doc.type != "DRev" && doc.type != "ChgtDenom" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation" && doc.type != "Parcellaire" && doc.type != "Conditionnement" && doc.type != "Transaction") {
 
         return;
     }
@@ -103,6 +103,10 @@ function(doc) {
 	    }
     }
 
+     if (doc.statut_odg) {
+       statut = doc.statut_odg;
+     }
+
     var type = doc.type;
 
     var date = null;
@@ -127,6 +131,9 @@ function(doc) {
                 if(doc.declaration[key][detailKey].validation_odg){
                   statutProduit = "Approuvé";
                 }
+                if(doc.declaration[key][detailKey].statut_odg){
+                   statutProduit = doc.declaration[key][detailKey].statut_odg;
+                 }
     	          emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
                   nb_emits = nb_emits + 1;
               }

@@ -14,6 +14,13 @@ foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->id
     $fichier->delete();
 }
 
+foreach(DRevClient::getInstance()->getHistory($etablissement->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $drev = DRevClient::getInstance()->find($k);
+    $drev->validate();
+    $drev->validation_odg = date('c');
+    $drev->save();
+}
+
 $b = new sfTestFunctional(new Browser());
 $t = $b->test();
 

@@ -23,6 +23,11 @@ class DRevMarcClient extends acCouchdbClient implements FacturableClient {
 
     public function findFacturable($identifiant, $campagne) {
         $drev = $this->find('DREVMARC-'.str_replace("E", "", $identifiant).'-'.$campagne);
+        
+        if(!$drev) {
+            
+            return array();
+        }
 
         if(!$drev->validation_odg) {
 

@@ -46,6 +46,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected $csv_douanier = null;
     protected $document_douanier_type = null;
     protected $archivage_document = null;
+    protected $etablissement = null;
 
     public function __construct() {
         parent::__construct();
@@ -67,7 +68,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function constructId() {
-        $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
+        $id = 'DREV-' . $this->identifiant . '-' . $this->periode;
         if($this->version) {
             $id .= "-".$this->version;
         }
@@ -75,11 +76,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfiguration() {
-        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
+        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->getPeriode().'-10-01');
         if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
           $configuration->setEffervescentVindebaseActivate();
         }
         return $configuration;
+    }
+
+    public function getPeriode() {
+        return preg_replace('/-.*/', '', $this->campagne);
     }
 
     public function getProduits($region = null) {
@@ -214,6 +219,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lots;
     }
 
+    public function getLotsByDate($desc = false)
+    {
+        if (! $this->exist('lots')) {
+            return [];
+        }
+
+        $lots = $this->_get('lots')->toArray(1,1);
+        uasort($lots, "DRev::compareLots");
+
+        if ($desc) {
+            $lots = array_reverse($lots);
+        }
+
+        return $lots;
+    }
+
     public static function compareLots($lotA, $lotB){
         $dateA = $lotA->getDate();
         $dateB = $lotB->getDate();
@@ -307,7 +328,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach(array("DR", "SV12", "SV11") as $type) {
-            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $this->campagne);
+            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $this->periode);
             if (!$fichier) {
                 continue;
             }
@@ -381,10 +402,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getDocumentDouanierType();
     }
 
-    public function initDoc($identifiant, $campagne) {
+    public function initDoc($identifiant, $periode) {
         $this->identifiant = $identifiant;
-        $this->campagne = $campagne;
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
         $etablissement = $this->getEtablissementObject();
+        $this->constructId();
     }
 
     public function getCSV() {
@@ -427,7 +449,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		return null;
     	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
-    	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->campagne.'.csv';
+    	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
     		if (!mkdir($path)) {
     			throw new sfException('cannot create '.$path);
@@ -626,10 +648,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
-              if(!$this->hasAcheteurForProduit($csv,$k)){
                 $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
-              }
-
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
 
@@ -658,6 +677,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
+            if(!$p->recolte->volume_sur_place) {
+                $p->recolte->vci_constitue = null;
+                $p->vci->constitue = null;
+            }
             if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
     		   $todelete[$hash] = $hash;
                continue;
@@ -730,25 +753,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updateFromPrecedente();
     }
 
-    public function hasAcheteurForProduit($csv,$k){
-      $l = $csv[$k];
-      $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-      $codePrev = $code * 2;
-      while(($k > 0) && ($code < $codePrev)){
-         $codePrev = $code;
-         $k--;
-         $l = $csv[$k];
-         $code = $l[DRCsvFile::CSV_LIGNE_CODE];
-         if($code == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR){
-           return boolval($l [DRCsvFile::CSV_VALEUR]);
-         }
-       }
-      return false;
-    }
-
     public function updateFromPrecedente()
     {
-    	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne - 1))) {
+    	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->identifiant, $this->periode - 1)) {
         foreach($precedente->getProduitsVci() as $produit) {
           if ($produit->vci->stock_final) {
             $this->cloneProduit($produit);
@@ -764,32 +771,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         	}
           $p = $this->addProduit($produit->getProduitHash(), $produit->denomination_complementaire);
         }
-    }
-
-    public function addLotFromDegustation($lot) {
-        $lot_degustation = clone $lot;
-
-        $lot_degustation->remove('details');
-        $lot_degustation->remove('numero_table');
-        $lot_degustation->remove('leurre');
-        $lot_degustation->remove('conformite');
-        $lot_degustation->remove('motif');
-        $lot_degustation->remove('observation');
-        $lot_degustation->remove('declarant_nom');
-        $lot_degustation->remove('declarant_identifiant');
-        $lot_degustation->remove('origine_mouvement');
-        $lot_degustation->statut = Lot::STATUT_PRELEVABLE;
-
-        $lots = [];
-        foreach ($this->lots as $lot) {
-            $lots[] = $lot;
-        }
-        $lots[] = $lot_degustation;
-
-        $this->remove('lots');
-        $this->add('lots', $lots);
-
-        return $lot_degustation;
     }
 
     public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
@@ -852,11 +833,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function addLot() {
         $lot = $this->add('lots')->add();
-        $lot->millesime = $this->campagne;
-        $lot->statut = Lot::STATUT_PRELEVABLE;
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()) {
-          $lot->add('specificite','aucune');
-        }
+        $lot->id_document = $this->_id;
+        $lot->campagne = $this->getCampagne();
+        $lot->declarant_identifiant = $this->identifiant;
+        $lot->declarant_nom = $this->declarant->raison_sociale;
+        $lot->adresse_logement = $this->constructAdresseLogement();
+        $lot->affectable = true;
+        $lot->initDefault();
         return $lot;
     }
 
@@ -896,23 +879,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $etapeOriginal != $this->etape;
     }
 
-    public function storeLotsDateVersion($date) {
-        if($this->exist('lots')){
-          foreach($this->lots as $lot) {
-              if($lot->hasVolumeAndHashProduit() && (!$lot->exist('id_document') || !$lot->id_document)){
-                $lot->add('id_document',$this->_id);
-                $lot->add('date',$date);
-              }
-              foreach ($lot as $key => $field) {
-                if($lot->hasVolumeAndHashProduit() && $this->getDocument()->isModifiedMother($lot->getHash(), $key)){
-                  $lot->date = $date;
-                  $lot->id_document = $this->_id;
-                  break;
-                }
-              }
-          }
+    public function getDateValidationFormat($format = 'Y-m-d') {
+        if (!$this->validation) {
+            return "";
         }
-
+        return date ($format, strtotime($this->validation));
     }
 
     public function validate($date = null) {
@@ -920,29 +891,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $date = date('c');
         }
 
-        $this->storeLotsDateVersion($date);
         $this->cleanDoc();
         $this->validation = $date;
-        $this->archiver();
-        $this->generateMouvementsFactures();
-        $this->generateMouvementsLots();
-        $this->updateStatutsLotsSupprimes();
 
-        if(!count($this->getLotsRevendiques())) {
-            foreach($this->getProduitsLots() as $produit) {
-                $produit->validateOdg($date);
+        foreach($this->lots as $lot) {
+            if($lot->hasBeenEdited()) {
+                continue;
             }
+            $lot->date = $date;
         }
+
+        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
     }
-
-
 
     public function delete() {
-        $this->updateStatutsLotsSupprimes(false);
-        return parent::delete();
+        parent::delete();
+        $this->saveDocumentsDependants();
     }
 
-    public function devalidate($reinit_version_lot = true) {
+    public function devalidate() {
         $this->validation = null;
         $this->validation_odg = null;
         if($this->exist('etape')) {
@@ -951,37 +918,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
         }
-        if($reinit_version_lot && ConfigurationClient::getCurrent()->declaration->isRevendicationParLots() && $this->exist('lots')){
-          foreach($this->lots as $lot) {
-              if($lot->exist('date') && $lot->date && ($this->_id == $lot->id_document)){
-                $lot->date = null;
-                $lot->id_document = null;
-              }
-          }
-        }
-        $this->updateStatutsLotsSupprimes(false);
-    }
-
-    public function updateStatutsLotsSupprimes($validation = true) {
-      if (!$this->hasVersion()) {
-        return;
-      }
-      $mother = $this->getMother();
-      $updated = false;
-      foreach ($mother->getLots() as $lot) {
-        if ($validation && $lot->statut == Lot::STATUT_PRELEVABLE && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
-          $lot->statut = Lot::STATUT_NONPRELEVABLE;
-          $updated = true;
-        }
-        if (!$validation && $lot->statut == Lot::STATUT_NONPRELEVABLE && !$this->mouvements_lots->get($this->identifiant)->exist($lot->getUnicityKey())) {
-          $lot->statut = Lot::STATUT_PRELEVABLE;
-          $updated = true;
-        }
-      }
-      if ($updated) {
-        $mother->generateMouvementsLots();
-        $mother->save();
-      }
+        $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
     }
 
     public function validateOdg($date = null, $region = null) {
@@ -993,11 +930,60 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             throw new sfException("La validation nécessite une région");
         }
 
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
+
         if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
 
         $this->validation_odg = $date;
+
+        $this->remove('mouvements');
+        $this->generateMouvementsFactures();
+    }
+
+    public function setStatutOdgByRegion($statut, $region = null) {
+        if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+            if($region) {
+                foreach ($this->getProduits($region) as $hash => $produit) {
+                    $produit->setStatutOdg($statut);
+                }
+            } else {
+                foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                    $this->setStatutOdgByRegion($statut, $region);
+                }
+            }
+        }else{
+            foreach ($this->getProduits($region) as $hash => $produit) {
+                $produit->setStatutOdg($statut);
+            }
+        }
+        $allStatut = true;
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            if($produit->getStatutOdg() == $statut){
+               continue;
+            }
+            $allStatut = false;
+            break;
+        }
+        if(!$allStatut) {
+            return;
+        }
+        if (!$this->exist('statut_odg')) {
+            return $this->add('statut_odg', $statut);
+        }
+        return $this->_set('statut_odg', $statut);
+    }
+
+    public function isMiseEnAttenteOdg() {
+        return ($this->getStatutOdg() == DRevClient::STATUT_EN_ATTENTE);
+    }
+
+    public function getStatutOdg() {
+        if (!$this->exist('statut_odg')) {
+            return null;
+        }
+        return $this->_get('statut_odg');
     }
 
     protected function validateOdgByRegion($date = null, $region = null) {
@@ -1058,8 +1044,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getEtablissementObject() {
+        if($this->etablissement) {
 
-        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+            return $this->etablissement;
+        }
+
+        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+
+        return $this->etablissement;
     }
 
     public function initProduits() {
@@ -1202,39 +1194,69 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function canHaveSuperficieVinifiee()
     {
-    	$can = false;
     	foreach ($this->declaration->getProduits() as $produit) {
     		if ($produit->exist('superficie_vinifiee') || $produit->exist('superficie_vinifiee_vtsgn')) {
-    			$can = true;
-    			break;
+    			return true;
     		}
     	}
-    	return $can;
+    	return false;
     }
 
     public function isAdresseLogementDifferente() {
-        if(!$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
+        if(!$this->chais->nom && !$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
 
             return false;
         }
 
-        return ($this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
+        return ($this->chais->nom != $this->declarant->nom || $this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
     }
+
+    public function constructAdresseLogement(){
+        $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+
+        if($this->isAdresseLogementDifferente()){
+            $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+        }
+
+        return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
+     }
+
 
 	protected function doSave() {
         $this->piece_document->generatePieces();
-
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
 	}
 
-  public function archiver() {
-      $this->archivage_document->preSave();
-      if ($this->isArchivageCanBeSet()) {
-          $this->archiverLot($this->numero_archive);
-      }
-  }
+    public function saveDocumentsDependants() {
+        $mother = $this->getMother();
+
+        if(!$mother) {
+
+            return;
+        }
+
+        $mother->save();
+    }
+
+    public function save() {
+        $this->archiver();
+        $this->generateMouvementsLots();
+
+        parent::save();
+
+        $this->saveDocumentsDependants();
+    }
+
+    public function archiver() {
+        $this->add('type_archive', 'Revendication');
+        if (!$this->isArchivageCanBeSet()) {
+            return;
+        }
+        $this->archivage_document->preSave();
+        $this->archiverLot($this->numero_archive);
+    }
 
   /*** ARCHIVAGE ***/
 
@@ -1255,7 +1277,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $num = $m[1];
       }
       foreach($this->lots as $lot) {
-        if (empty($lot->numero_archive) && empty($lot->numero_dossier)) {
+        if (!$lot->numero_archive && !$lot->numero_dossier) {
           $num++;
           $lot->numero_archive = sprintf("%05d", $num);
           $lot->numero_dossier = $numeroDossier;
@@ -1310,13 +1332,42 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
+    public function getVolumeLotsFacturables($produitFilter = null){
+      $total = 0;
+      foreach($this->getLots() as $lot) {
+
+         $total += $lot->getVolumeFacturable($produitFilter);
+      }
+      return $total;
+    }
+
+    public function isVolumeLotsFacturablesInRange($min = null,$max = null){
+      $total = $this->getMaster()->getVolumeLotsFacturables();
+      if($total < 0){ return false; }
+      if(!$max && $total > $min){ return true; }
+      if($total > $min && $total <= $max){ return true; }
+      return false;
+    }
+
+    public function getNbLotsFacturables(){
+        return count($this->getLots());
+    }
+
+    public function getNbLotsPreleves(){
+        return count($this->getLots());
+    }
+
+    public function getNbLieuxPrelevements(){
+        return 1;
+    }
+
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getCampagne())){
+        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getPeriode())){
           return TemplateFactureClient::getInstance()->find($templateName);
         }
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getPeriode());
     }
 
     public function getMouvementsFactures() {
@@ -1325,6 +1376,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
+
       $templateFacture = $this->getTemplateFacture();
       if(!$templateFacture) {
           return array();
@@ -1344,12 +1396,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
       foreach($cotisations as $cotisation) {
           $mouvement = DRevMouvementFactures::freeInstance($this);
-          $mouvement->fillFromCotisation($cotisation);
-          $mouvement->facture = 0;
-          $mouvement->facturable = 1;
-          $mouvement->date = $this->getCampagne().'-12-10';
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
+          $mouvement->date = $this->getPeriode().'-12-10';
           $mouvement->date_version = $this->validation;
-          $mouvement->version = $this->version;
 
           if(isset($cotisationsPrec[$cotisation->getHash()])) {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
@@ -1367,7 +1416,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       if($rienAFacturer) {
-          return array($identifiantCompte => array());
+          return array();
 
       }
 
@@ -1382,93 +1431,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function generateMouvementsFactures() {
 
         return $this->mouvement_document->generateMouvementsFactures();
-    }
-    public function hasLotUnicityKey($key) {
-        foreach($this->lots as $k => $lot) {
-            if ($lot->getUnicityKey() == $key) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function getPourcentagesCepages($cepages) {
-      $total = 0;
-      $result = array();
-      foreach($cepages as $pc) {
-        $total += $pc;
-      }
-      foreach($cepages as $cep => $pc) {
-        if (!isset($result[$cep])) {
-          $result[$cep] = 0;
-        }
-        $result[$cep] += round(($pc/$total) * 100);
-      }
-      return $result;
-    }
-
-    private function generateMouvementLotsFromLot($lot, $key) {
-        $mvt = new stdClass();
-        $mvt->date = $lot->date;
-        $mvt->statut = $lot->statut;
-        $mvt->numero_dossier = $lot->numero_dossier;
-        $mvt->numero_archive = $lot->numero_archive;
-        $mvt->numero_cuve = $lot->numero_cuve;
-        $mvt->millesime = $lot->millesime;
-        $mvt->volume = $lot->volume;
-        $mvt->elevage = $lot->elevage;
-        $mvt->produit_hash = $lot->produit_hash;
-        $mvt->produit_libelle = $lot->produit_libelle;
-        $mvt->produit_couleur = $lot->getCouleurLibelle();
-        $mvt->region = '';
-        $mvt->version = $this->getVersion();
-        $mvt->origine_hash = $lot->getHash();
-        $mvt->origine_type = 'drev';
-        $mvt->origine_document_id = $this->_id;
-        $mvt->id_document = $this->_id;
-        $mvt->origine_mouvement = '/mouvements_lots/'.$this->identifiant.'/'.$key;
-        $mvt->declarant_identifiant = $this->identifiant;
-        $mvt->declarant_nom = $this->declarant->raison_sociale;
-        $mvt->destination_type = $lot->destination_type;
-        $mvt->destination_date = $lot->destination_date;
-        $mvt->details = '';
-
-        $tabCepages=[];
-
-        foreach($this->getPourcentagesCepages($lot->cepages) as $cep => $pc){
-          $tabCepages[$cep]=$pc;
-        }
-        arsort($tabCepages);
-
-        foreach($tabCepages as $cep => $pc) {
-          if (strlen($mvt->details)==0){
-            $mvt->details .=$cep.' ('.$pc.'%)';
-          }
-          else{
-            $mvt->details .= ' '.$cep.' ('.$pc.'%)';
-          }
-        }
-        $mvt->region = '';
-        $mvt->campagne = $this->campagne;
-        if($lot->exist('specificite')){
-          $mvt->specificite = $lot->specificite;
-        }
-        return $mvt;
-    }
-
-    public function generateAndAddMouvementLotsFromLot($lot, $key) {
-        $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-        return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
-    }
-
-    public function generateMouvementsLots() {
-        if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
-            $this->add('mouvements_lots')->add($this->identifiant);
-        }
-        foreach($this->lots as $k => $lot) {
-            $key = $lot->getUnicityKey();
-            $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
-        }
     }
 
     public function findMouvementFactures($cle, $id = null){
@@ -1495,12 +1457,113 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->add('mouvements');
     }
 
+    /**** FIN DES MOUVEMENTS ****/
+
+    /**** FCT de FACTURATION ****/
+
+    public function isDeclarantFamille($familleFilter = null){
+        if(!$familleFilter){
+
+            return false;
+        }
+        if(!$this->declarant->famille){
+
+            return false;
+        }
+        $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
+		$exclude = (bool) $exclude;
+        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+
+        if(!$exclude && preg_match($regexpFilter, $this->declarant->famille)) {
+
+			return true;
+		}
+
+        if($exclude && !preg_match($regexpFilter, $this->declarant->famille)) {
+
+			return true;
+		}
+
+        return false;
+    }
+
+    /**** MOUVEMENTS LOTS ****/
+
+    public function getLot($uniqueId) {
+
+        foreach($this->lots as $lot) {
+            if($lot->getUniqueId() != $uniqueId) {
+
+                continue;
+            }
+
+            return $lot;
+        }
+
+        return null;
+    }
+
     public function clearMouvementsLots(){
         $this->remove('mouvements_lots');
         $this->add('mouvements_lots');
     }
 
-    /**** FIN DES MOUVEMENTS ****/
+    public function addMouvementLot($mouvement) {
+
+        return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
+    }
+
+    public function generateMouvementsLots()
+    {
+        $this->clearMouvementsLots();
+
+        if (!$this->isValideeOdg()) {
+          return;
+        }
+
+        foreach ($this->lots as $lot) {
+            if($lot->hasBeenEdited()) {
+                continue;
+            }
+
+            if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && !$this->getMaster()->getLot($lot->unique_id)) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE));
+                continue;
+            }
+
+            $lot->updateDocumentDependances();
+
+            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+
+            if ($lot->elevage === true) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
+                continue;
+            }
+            if ($lot->eleve) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
+            }
+
+            if (!$lot->isChange()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+            }else{
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+            }
+
+            if($lot->isAffecte()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
+                continue;
+            }
+            if ($lot->isAffectable()) {
+                if (!$lot->isChange()) {
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+                }
+            }else{
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
+            }
+        }
+    }
+
+    /**** FIN DES MOUVEMENTS LOTS ****/
 
     /**** PIECES ****/
 
@@ -1515,7 +1578,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $date,
-    		'libelle' => 'Revendication des produits '.$this->campagne.' '.$complement,
+    		'libelle' => 'Revendication des produits '.$this->periode.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
@@ -1660,7 +1723,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function findDocumentByVersion($version) {
-        $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
+        $id = 'DREV-' . $this->identifiant . '-' . $this->periode;
         if($version) {
             $id .= "-".$version;
         }
@@ -1718,36 +1781,34 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateModificative() {
-        $doc = $this->version_document->generateModificative();
-        $doc->clearMouvementsLots();
-        $doc->clearMouvementsFactures();
-        return $doc;
-    }
 
-    public function generateNextVersion() {
-
-        throw new sfException("Not implemented");
+        return $this->version_document->generateModificative();
     }
 
     public function listenerGenerateVersion($document) {
-        $document->devalidate(false);
+        $document->constructId();
+        $document->clearMouvementsLots();
+        $document->clearMouvementsFactures();
+        $document->devalidate();
         foreach ($document->getProduitsLots() as $produit) {
           if($produit->exist("validation_odg") && $produit->validation_odg){
             $produit->validation_odg = null;
           }
         }
-        foreach ($document->lots as $lot) {
-          $lot->statut = Lot::STATUT_NONPRELEVABLE;
-        }
+    }
+
+    public function generateNextVersion() {
+
+        throw new sfException("Not use");
     }
 
     public function listenerGenerateNextVersion($document) {
-
+        throw new sfException("Not use");
     }
 
     public function getSuivante() {
 
-        throw new sfException("Not implemented");
+        throw new sfException("Not use");
     }
 
     public function isValidee() {
@@ -1760,10 +1821,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return boolval($this->getValidationOdg());
     }
 
+    public function isLotsEditable(){
+      return $this->isValideeOdg() && $this->isValidee();
+    }
+
     /**** FIN DE VERSION ****/
 
     public function getDate() {
-      return $this->campagne.'-12-10';
+      return $this->periode.'-12-10';
     }
 
     public function hasDenominationAuto($const) {
@@ -1820,4 +1885,5 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function hasProduitsReserveInterpro($region = null) {
         return (count($this->getProduitsWithReserveInterpro($region)));
     }
+
 }

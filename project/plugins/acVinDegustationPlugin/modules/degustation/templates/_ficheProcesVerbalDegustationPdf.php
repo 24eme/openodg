@@ -11,7 +11,7 @@ th {
     <tr>
       <td style="width:100%;">
         <p><small>
-          <span>&nbsp;&nbsp;Code Commission : _ _ _ _ _ _</span>
+          <span>Code Commission : <?= $degustation->_id ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;Campagne : <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;Millésime : <?php echo $degustation->campagne; ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></span>
@@ -24,7 +24,7 @@ th {
     </tr>
   </table>
 
-  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN IGP PRÉSENTÉS À LA COMMISION :</p>
+  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN IGP PRÉSENTÉS À LA COMMISSION :</p>
   <table>
     <tr>
       <td style="width:2%"></td>
@@ -155,7 +155,7 @@ th {
               <td><small><?php $etablissement = $etablissements[$lotDeguste->numero_dossier]; echo $etablissement->nom."<br/>".$etablissement->commune."<br/>".$etablissement->cvi ?></small></td>
               <td><small><?php echo "" ?></small></td>
               <td><small><?php echo "" ?></small></td>
-              <td><small><?php echo $lotDeguste->numero_cuve ?></small></td>
+              <td><small><?php echo $lotDeguste->numero_logement_operateur ?></small></td>
               <td style="float:right; text-align:right;"><small><?php echo number_format($lotDeguste->volume, 2) ?></small></td>
               <td><small><?php echo $lotDeguste->produit_libelle ?></small></td>
               <td><small><?php echo $lotDeguste->details ?></small></td>

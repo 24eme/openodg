@@ -444,10 +444,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function updateLdap($verbose = 0) {
         $ldap = new CompteLdap();
+        try {
         if ($this->isActif())
             $ldap->saveCompte($this, $verbose);
         else
-            $ldap->deleteCompte($this, $verbose);
+            @$ldap->deleteCompte($this, $verbose);
+        } catch(Exception $e) {
+            echo $this->_id." save ldap : ".$e->getMessage()."\n";
+        }
     }
 
     public function buildDroits($removeAll = false) {
@@ -774,4 +778,18 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return $this->getSociete()->getCodeComptable();
     }
 
+    public function getTagsDegustateur()
+    {
+        $tags = [];
+
+        if ($this->tags->exist('manuel')) {
+            foreach ($this->tags->manuel as $tag) {
+                if (strpos($tag, 'degustateur_') === 0) {
+                    $tags[] = ucfirst(str_replace('_', ' ', substr($tag, strlen('degustateur_'))));
+                }
+            }
+        }
+
+        return $tags;
+    }
 }

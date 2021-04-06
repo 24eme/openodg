@@ -1,0 +1,4 @@
+all:
+  configuration:
+    degustation:
+      anonymat4labo: true

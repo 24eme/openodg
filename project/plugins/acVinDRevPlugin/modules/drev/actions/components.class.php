@@ -10,9 +10,13 @@ class drevComponents extends sfComponents {
                 $this->drev_non_ouverte = true;
             }
         }
-        $this->drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
+        $this->drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->etablissement->identifiant, $this->periode);
 
         $this->drevsHistory = DRevClient::getInstance()->getHistory($this->etablissement->identifiant);
+    }
+
+    public function executeMonEspaceIGP(sfWebRequest $request) {
+        $this->drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->etablissement->identifiant, $this->periode);
     }
 
 }

@@ -2,13 +2,13 @@
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php if (isset($form)): ?>
-    <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
+    <form role="form" class="form-inline" action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
+    <h2>Déclaration de Revendication <?php echo $drev->periode ?>
     <?php if($drev->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
       <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
@@ -44,6 +44,12 @@
     </div>
 <?php endif; ?>
 
+<?php if ($sf_user->isAdmin() && $drev->isMiseEnAttenteOdg()): ?>
+    <div class="alert alert-info">
+        Cette déclaration a été <strong>mise en attente</strong> par l'ODG
+    </div>
+<?php endif; ?>
+
 <?php if(isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
@@ -52,7 +58,7 @@
 
 <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($drev->exist('date_degustation_voulue')) ? $drev->get('date_degustation_voulue') : null; ?></p>
+    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($drev->exist('date_degustation_voulue')) ? date_format(date_create($drev->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
 <?php endif ?>
 
 <div class="row row-margin row-button">
@@ -65,7 +71,7 @@
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
             </a>
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default">
-                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
+                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;DRev
             </a>
         </div>
     </div>
@@ -74,9 +80,9 @@
         <div class="btn-group">
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)):
                 if (!$drev->validation_odg): ?>
-                    <a class="btn btn-default" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+                    <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
             <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin()): ?>
-                    <a class="btn btn-warning" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+                    <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
             <?php elseif ($drev->isFactures()): ?>
                 <span class="text-muted">DRev facturée</span>
             <?php endif; ?>
@@ -87,11 +93,18 @@
                                                  ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))
                                                )): ?>
         <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
-                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+        <?php if (!$drev->isMiseEnAttenteOdg()): ?>
+                <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
+        <?php endif; ?>
+                <button type="button" name="validateOdg" id="btn-validation-document-drev" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         <?php endif; ?>
         </div>
     </div>
 </div>
 <?php if (isset($form)): ?>
 </form>
+<?php endif; ?>
+<?php include_partial('drev/popupConfirmationValidation', array('approuver' => false)); ?>
+<?php if (!$sf_user->isAdmin() && MandatSepaConfiguration::getInstance()->isActive() && !$drev->getEtablissementObject()->getSociete()->hasMandatSepa()): ?>
+<?php include_partial('mandatsepa/popupPropositionInscriptionPrelevement'); ?>
 <?php endif; ?>

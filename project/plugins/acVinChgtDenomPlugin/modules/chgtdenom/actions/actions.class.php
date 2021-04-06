@@ -1,29 +1,18 @@
 <?php
 
-class chgtdenomActions extends sfActions {
-
-
-    public function executeCreate(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-        $campagne = $request->getParameter('campagne');
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
-
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-        $chgtDenom->save();
-
-        return $this->redirect('chgtdenom_lots', $chgtDenom);
-    }
-
+class chgtdenomActions extends sfActions
+{
     public function executeCreateLot(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $lot = $request->getParameter('lot');
-        $campagne = $request->getParameter('campagne');
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
+        $chgtDenom->changement_origine_id_document = strtok($lot, ':');
+        $chgtDenom->changement_origine_lot_unique_id = strtok(':');
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id, 'key' => $lot));
+        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id));
     }
 
     public function executeCreatePapier(sfWebRequest $request) {
@@ -34,32 +23,24 @@ class chgtdenomActions extends sfActions {
         $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_lots', $chgtDenom);
+        return $this->redirect('chgtdenom_lots', array('sf_subject' => $etablissement, 'campagne' => $chgtDenom->campagne));
     }
 
     public function executeLots(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getChgtDenom();
-        $this->secureIsValide($this->chgtDenom);
-        $this->lots = $this->chgtDenom->getMvtLots();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->campagne = $request->getParameter('campagne');
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
     }
 
     public function executeEdition(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
-        $this->key = $request->getParameter("key", null);
-        $firstEdition = true;
 
-        if (!$this->key) {
-          $this->key = $this->chgtDenom->getLotKey();
-          $firstEdition = false;
+        if(!$this->chgtDenom->getLotOrigine()) {
+            return $this->redirect('chgtdenom_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
         }
 
-        if (!$this->key) {
-          return $this->redirect('chgtdenom_lots', $this->chgtDenom);
-        }
-        $this->chgtDenom->changement_origine_mvtkey = $this->key;
-
-        $this->form = new ChgtDenomForm($this->chgtDenom, $firstEdition);
+        $this->form = new ChgtDenomForm($this->chgtDenom);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -112,7 +93,11 @@ class chgtdenomActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
-        $this->form = new ChgtDenomValidationForm($this->chgtDenom);
+        $this->isAdmin = $this->getUser()->isAdmin();
+
+        $this->validation = new ChgtDenomValidation($this->chgtDenom);
+
+        $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -127,15 +112,25 @@ class chgtdenomActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin) {
+            $this->chgtDenom->validateOdg();
+            $this->chgtDenom->save();
+            $this->getUser()->setFlash("notice", "Le changement dénommination a été validé et approuvé");
+
+            return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+        }
 
         return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->isAdmin = $this->getUser()->isAdmin();
 
-        if ($this->getUser()->isAdmin() && !$this->chgtDenom->isApprouve()) {
-          $this->form = new ChgtDenomApprobationForm($this->chgtDenom);
+        $this->form = null;
+        if ($this->isAdmin && !$this->chgtDenom->isApprouve()) {
+          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin));
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -152,7 +147,27 @@ class chgtdenomActions extends sfActions {
 
         $this->form->save();
 
+        if($this->isAdmin) {
+            $this->chgtDenom->validateOdg();
+            $this->chgtDenom->save();
+            $this->getUser()->setFlash("notice", "Le changement dénommination a été approuvé");
+        }
+
         return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+    }
+
+    public function executeDevalidation(sfWebRequest $request) {
+        $chgtDenom = $this->getRoute()->getChgtDenom();
+        if (!$this->getUser()->isAdmin()) {
+          $this->secure(ChgtDenomSecurity::DEVALIDATION , $chgtDenom);
+        }
+
+        $chgtDenom->devalidate();
+        $chgtDenom->save();
+
+        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+
+        return $this->redirect($this->generateUrl('chgtdenom_edition', $chgtDenom));
     }
 
     public function executeSuppression(sfWebRequest $request) {
@@ -168,6 +183,21 @@ class chgtdenomActions extends sfActions {
 
             return $this->forwardSecure();
         }
+    }
+
+    public function executeChgtDenomPDF(sfWebRequest $request)
+    {
+        $chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $chgtDenom->getEtablissementObject());
+
+        $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+        $this->document->generate();
+        $this->document->addHeaders($this->getResponse());
+        return $this->renderText($this->document->output());
     }
 
     protected function secureIsValide($chgtDenom) {

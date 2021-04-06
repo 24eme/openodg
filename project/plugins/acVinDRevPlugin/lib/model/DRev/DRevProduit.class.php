@@ -156,7 +156,7 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
-		if($this->recolte->recolte_nette)
+		if($this->vci->rafraichi + $this->vci->substitution)
 			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
 		else
 			return $this->recolte->recolte_nette;
@@ -260,6 +260,21 @@ class DRevProduit extends BaseDRevProduit
 				$date = date('Y-m-d');
 		}
 		$this->add('validation_odg',$date);
+	}
+
+
+	public function setStatutOdg($statut) {
+		if (!$this->exist('statut_odg')) {
+			$this->add('statut_odg');
+		}
+		return $this->_set('statut_odg', $statut);
+	}
+
+	public function getStatutOdg() {
+		if (!$this->exist('statut_odg')) {
+			return null;
+		}
+		return $this->_get('statut_odg');
 	}
 
 	public function isValidateOdg(){

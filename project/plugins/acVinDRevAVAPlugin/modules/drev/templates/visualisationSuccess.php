@@ -15,7 +15,7 @@
         <span class="btn btn-default-step btn-xs">Facturé</span>
     <?php endif; ?></small></small>
     <?php elseif($drev->validation): ?>
-    <small class="pull-right">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?>
+    <small class="pull-right"><?php if ($drev->exist('automatique') && $drev->automatique): ?>Générée automatiquement<?php else: ?>Télédéclaration<?php endif; ?><?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?>
         <span class="btn btn-default-step btn-xs">Facturé</span>
     <?php endif; ?></small>
     <?php endif; ?>

@@ -51,8 +51,8 @@ class drevActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentYearPeriode());
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $periode);
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);
@@ -62,8 +62,8 @@ class drevActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentYearPeriode());
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $periode, true);
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);
@@ -140,7 +140,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         try {
-          	FichierClient::getInstance()->scrapeAndSaveFiles($this->drev->getEtablissementObject(), $this->drev->getDocumentDouanierType(), $this->drev->campagne);
+          	FichierClient::getInstance()->scrapeAndSaveFiles($this->drev->getEtablissementObject(), $this->drev->getDocumentDouanierType(), $this->drev->periode);
         } catch(Exception $e) {
         }
 
@@ -163,13 +163,13 @@ class drevActions extends sfActions {
         	throw new sfException('Client not found');
         }
 
-        $fichier = $client->findByArgs($this->drev->identifiant, $this->drev->campagne);
+        $fichier = $client->findByArgs($this->drev->identifiant, $this->drev->periode);
 
         if(!$fichier) {
-            $fichier = $client->createDoc($this->drev->identifiant, $this->drev->campagne);
+            $fichier = $client->createDoc($this->drev->identifiant, $this->drev->periode);
         }
-        $fichier->libelle = 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne;
-        $this->form = new DRevUploadDrForm($fichier, array('libelle' => 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne), array("papier" => $this->drev->isPapier()));
+        $fichier->libelle = 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->periode;
+        $this->form = new DRevUploadDrForm($fichier, array('libelle' => 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->periode), array("papier" => $this->drev->isPapier()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
@@ -216,7 +216,7 @@ class drevActions extends sfActions {
                         "?" .
                         http_build_query(array(
                             'url' => $this->generateUrl('drev_dr_import', $drev, true),
-                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne))));
+                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->periode))));
     }
 
     public function executeExploitation(sfWebRequest $request) {
@@ -315,7 +315,7 @@ class drevActions extends sfActions {
         }
 
         if (!count($this->drev->declaration)) {
-            $drev_previous = DRevClient::getInstance()->find(sprintf("DREV-%s-%s", $this->drev->identifiant, $this->drev->campagne - 1));
+            $drev_previous = DRevClient::getInstance()->find(sprintf("DREV-%s-%s", $this->drev->identifiant, $this->drev->periode - 1));
             if($drev_previous) {
                   $this->drev->updateFromDRev($drev_previous);
             }
@@ -440,11 +440,11 @@ class drevActions extends sfActions {
         }
 
         $lot = $this->drev->getLotByNumArchive($request->getParameter('numArchive'));
-        $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->drev->identifiant, $lot->numero_archive, $this->drev->campagne);
-        if($lotCheck){
-          throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
-          " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
-        }
+        // $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->drev->identifiant, $lot->numero_archive, $this->drev->periode);
+        // if($lotCheck){
+        //   throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
+        //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
+        // }
 
         if($lot){
             $this->drev->remove($lot->getHash());
@@ -618,6 +618,7 @@ class drevActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if ($this->needDrDouane()) {
 
@@ -632,8 +633,8 @@ class drevActions extends sfActions {
 
         $this->validation = new DRevValidation($this->drev);
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
+        $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -650,6 +651,7 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+        $this->form->save();
 
         $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
@@ -680,13 +682,14 @@ class drevActions extends sfActions {
         $this->drev->validate($dateValidation);
         $this->drev->cleanLots();
         $this->drev->save();
-
-        if($this->getUser()->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if(!$this->getUser()->hasDrevAdmin()){
+          {
             $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée, elle devra être approuvée par l'ensemble des ODG concernées");
 
             return $this->redirect('drev_visualisation', $this->drev);
+          }
         }
-
+        
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
             $this->drev->cleanLots();
@@ -696,12 +699,12 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
         }
 
-        if($this->getUser()->hasDrevAdmin()) {
-            $this->drev->validateOdg();
-            $this->drev->save();
-            $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
+        if($this->getUser()->hasDrevAdmin()){
+          $this->drev->validateOdg();
+          $this->drev->save();
+          $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
 
-            return $this->redirect('drev_visualisation', $this->drev);
+          return $this->redirect('drev_visualisation', $this->drev);
         }
 
         if(DrevConfiguration::getInstance()->hasValidationOdgAuto() && !$this->validation->hasPoints()) {
@@ -734,14 +737,38 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
         }
 
-        $service = $request->getParameter("service");
-        $params = array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null);
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
         if($this->regionParam){
           $params = array_merge($params,array('region' => $this->regionParam));
         }
         return $this->redirect('drev_visualisation', $params);
     }
 
+    public function executeEnattenteAdmin(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
+        $this->regionParam = $request->getParameter('region',null);
+
+        if (!$this->drev->isValidee()) {
+            throw sfException("Une DREV non validée ne peut être mise en attente");
+        }
+
+        if ($this->drev->isValideeOdg($this->regionParam)) {
+            throw sfException("Une DREV validée par une région ne peut être mise en attente par celle-ci");
+        }
+
+        $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        $this->drev->save();
+
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
+        if($this->regionParam){
+          $params = array_merge($params,array('region' => $this->regionParam));
+        }
+        return $this->redirect('drev_visualisation', $params);
+
+    }
 
 
     public function executeConfirmation(sfWebRequest $request) {
@@ -769,7 +796,7 @@ class drevActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
-
+        $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
 
         $documents = $this->drev->getOrAdd('documents');
@@ -777,13 +804,13 @@ class drevActions extends sfActions {
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
+            $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
-        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->campagne);
+        $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
         }
@@ -796,9 +823,29 @@ class drevActions extends sfActions {
 
         $this->form->save();
 
+        if($this->isAdmin && $this->drev->isValidee() && $this->drev->isValideeODG() === false){
+          return $this->redirect('drev_validation_admin', $this->drev);
+        }
+
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
+
+        public function executeEleve(sfWebRequest $request) {
+            $docid = $request->getParameter('id');
+            $doc = DRevClient::getInstance()->find($docid);
+            $this->forward404Unless($doc);
+            $lot_unique_id = $request->getParameter('unique_id');
+            $lot = $doc->getLot($lot_unique_id);
+            $this->forward404Unless($lot);
+
+            $lot->eleve();
+
+            $doc->generateMouvementsLots();
+            $doc->save();
+
+            return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
+        }
 
 
     public function executeModificative(sfWebRequest $request) {
@@ -889,7 +936,7 @@ class drevActions extends sfActions {
         }
 
         $this->getResponse()->setHttpHeader('Content-Type', 'application/'.$extension);
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.'.$extension.'"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="'.$drev->getDocumentDouanierType().'-%s-%s.'.$extension.'"', $drev->identifiant, $drev->periode));
         $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
         $this->getResponse()->setHttpHeader('Pragma', '');
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');

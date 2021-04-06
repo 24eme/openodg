@@ -26,8 +26,12 @@
                 <td><?php echo $lot->numero_archive;  ?></td>
                 <td><?php echo $lot->numero_dossier;  ?></td>
                 <td ><strong><?php echo Date::francizeDate($lot->date); ?></strong></td>
-                <td></td>
-                <td class="text-center"></td>
+                <td><?php echo "$lot->produit_libelle (<span class='text-muted')>$lot->millesime</span>)" ?></td>
+                <td class="text-center">
+                  <?php echo link_to(
+                      strstr(str_replace($lot->numero_archive, '', $lotKey), '-', 1),
+                      strtolower(strstr(str_replace($lot->numero_archive, '', $lotKey), '-', 1)).'/visualisation?id='.str_replace($lot->numero_archive, '', $lotKey)
+                  ) ?>
                 <td class="text-center" >
 
                 </td>

@@ -2,8 +2,8 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form method="post" action="<?php echo $url ?>" role="form" class="form-horizontal">
-                <?php echo $form->renderHiddenFields(); ?>
-            	<?php echo $form->renderGlobalErrors(); ?>
+				<?php echo $form->renderHiddenFields(); ?>
+				<?php echo $form->renderGlobalErrors(); ?>
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Ajouter un leurre à la table <?php echo DegustationClient::getNumeroTableStr($table) ?></h4>
@@ -12,14 +12,26 @@
 					<span class="error"><?php echo $form['hashref']->renderError() ?></span>
 					<div class="form-group row">
 						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['hashref']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+							<?php echo $form['hashref']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
-					<span class="error"><?php echo $form['numero_lot']->renderError() ?></span>
 					<div class="form-group row">
 						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['numero_lot']->render(array("placeholder" => "Numero lot", "class" => "form-control", "required" => false)) ?>
+							<div class="checkbox">
+								<input type="checkbox" value="0" id="vin_sans_cepage" checked="checked">
+								<label for="vin_sans_cepage">
+									vin sans cépage
+								</label>
+							</div>
 						</div>
+					</div>
+					<div style="display:none;" id="cepages_choice">
+					<span class="error"><?php echo $form['cepages']->renderError() ?></span>
+					<div class="form-group row">
+						<div class="col-xs-10 col-xs-offset-1">
+							<?php echo $form['cepages']->render(array("data-placeholder" => "Cépages", "class" => "form-control", "required" => false , "rows" => 1)) ?>
+						</div>
+					</div>
 					</div>
 				</div>
 				<div class="modal-footer">

@@ -199,10 +199,14 @@ class ConfigurationClient extends acCouchdbClient {
         return date('Ym', strtotime(ConfigurationClient::getInstance()->getDateFinCampagne($campagne)));
     }
 
-    public function buildCampagneByPeriode($periode) {
-
+    public function buildCampagneFromPeriode($periode) {
         return $this->buildCampagne($this->buildDate($periode));
     }
+
+	public function buildCampagneFromYearOrCampagne($year) {
+		$year = preg_replace('/-\d+/', '', $year);
+		return $this->buildCampagne($year."-10-01");
+	}
 
     public function getPeriodeSuivante($periode) {
         $nextMonth = $this->getMois($periode) + 1;

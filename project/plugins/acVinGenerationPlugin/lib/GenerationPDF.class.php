@@ -24,7 +24,12 @@ class GenerationPDF extends GenerationAbstract {
       return null;
     }
 
-    asort($pdffiles);
+    uasort($pdffiles, function($a, $b) {
+        $aCompare = preg_replace('/(facture|avoir)_[0-9]+_/', "", $a);
+        $bCompare = preg_replace('/(facture|avoir)_[0-9]+_/', "", $b);
+
+        return $aCompare > $bCompare;
+    });
 
     $fileres = rand().".pdf";
     $this->doesPDFsExist($pdffiles);

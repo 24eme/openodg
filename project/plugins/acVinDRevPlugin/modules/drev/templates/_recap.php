@@ -1,5 +1,6 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
+<?php use_helper('Lot') ?>
 
 <?php if ($drev->exist('achat_tolerance') && $drev->get('achat_tolerance')): ?>
   <div class="alert alert-info" role="alert">
@@ -16,13 +17,13 @@
         <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): ?>
           <th class="col-xs-4"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
             <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
-            <th class="col-xs-2 text-center">Volume millesime <?php echo $drev->campagne-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
-            <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Volume millesime <?php echo $drev->periode-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->periode ?>&nbsp;<small class="text-muted">(hl)</small></th>
             <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small>&nbsp;<?php endif; ?><small class="text-muted">(hl)</small></th>
           <?php else: ?>
             <th class="col-xs-6"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
               <th class="col-xs-2 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
-              <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
+              <th class="col-xs-2 text-center">Volume issu de la récolte <?php echo $drev->periode ?>&nbsp;<small class="text-muted">(hl)</small></th>
               <th class="col-xs-2 text-center">Volume revendiqué net total&nbsp;<?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small>&nbsp;<?php endif; ?><small class="text-muted">(hl)</small></th>
             <?php endif; ?>
           </tr>
@@ -53,81 +54,16 @@
               Ces volumes seront directement revendiqués par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
             </p>
           <?php endif; ?>
-
         <?php endif; ?>
         <?php if($drev->exist('lots')): ?>
-          <h3 id="table_igp_title">Déclaration des lots IGP</h3>
-          <?php
-          $lots = $drev->getLotsByCouleur();
-          $lotsHorsDR = $drev->getLotsHorsDR();
-          $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
-          ?>
-          <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle col-xs-12">
-          </div>
-          <br/>
-          <table class="table table-bordered table-striped table_igp">
-            <thead>
-              <tr>
-                <th class="col-xs-1">Date Rev.</th>
-                <th class="col-xs-1">Lot</th>
-                <th class="text-center col-xs-6">Produit (millesime)</th>
-                <th class="text-center col-xs-1">Volume</th>
-                <th class="text-center col-xs-3">Destination (date)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-              $firstRow = true;
-              $totalVolume = 0;
-              foreach ($lots as $couleur => $lotsByCouleur) :
-                $volume = 0;
-                if(count($lotsByCouleur)):
-                  foreach ($lotsByCouleur as $lot) :
-                    $totalVolume+=$lot->volume;
-                    ?>
-                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
-                      <td>
-                        <?php $drevDocOrigine = $lot->getDrevDocOrigine(); ?>
-                        <?php if($drevDocOrigine): ?><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $drevDocOrigine); ?>"><?php endif; ?>
-                          <?php echo $lot->getDateVersionfr(); ?>
-                          <?php if($drevDocOrigine): ?></a><?php endif; ?>
-                        </td>
-                        <td><?php echo $lot->numero_cuve; ?></td>
-                        <td>
-                          <?php echo $lot->produit_libelle; ?>
-                          <small >
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <?php echo ($lot->specificite && $lot->specificite != "aucune")? $lot->specificite : ""; ?>
-                          <?php endif ?>
-                          <?php echo ($lot->millesime)? " ".$lot->millesime."" : ""; ?></small>
-                          <?php if(count($lot->cepages)): ?>
-                            <br/>
-                            <small class="text-muted">
-                              <?php echo $lot->getCepagesToStr(); ?>
-                            </small>
-                          <?php endif; ?>
-                          <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
-                        </td>
-                        <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
-                      </tr>
-                      <?php
-                      $firstRow=false;
-                    endforeach;
-                  endif; ?>
-                <?php endforeach; ?>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td class="text-right">Total : </td>
-                  <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-            <br/>
-            <?php if($dr !== null): ?>
+
+
+            <?php
+                $lots = $drev->getLotsByCouleur();
+                $lotsHorsDR = $drev->getLotsHorsDR();
+                $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
+                ?>
+              <?php if($dr): ?>
               <h3>Synthèse IGP</h3>
               <table class="table table-bordered table-striped">
                 <thead>
@@ -179,14 +115,118 @@
                   <?php endforeach; ?>
                 </tbody>
               </table>
+            <?php endif; ?>
 
+          <h3 id="table_igp_title">Déclaration des lots IGP</h3>
+          <div class="row">
+              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle col-xs-12">
+          </div>
+          <br/>
+          <?php if(!$drev->validation_odg): ?>
+          <div class="row text-right">
+            <div class="col-xs-3 col-xs-offset-9">
+              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+            </span>
+
+            </div>
+          </div>
+          <br/>
+          <?php endif; ?>
+          <table class="table table-bordered table-striped table_igp">
+            <thead>
+              <tr>
+                <th class="col-xs-1">Date Rev.</th>
+                <?php if($drev->isValidee()): ?>
+                <th class="col-xs-1 text-center">Num. Dossier</th>
+                <th class="col-xs-1 text-center">Num. ODG</th>
+                <?php endif; ?>
+                <th class="col-xs-1 text-right">Lgmt</th>
+                <th class="text-center col-xs-5">Produit (millesime)</th>
+                <th class="text-center col-xs-1">Volume</th>
+                <th class="text-center col-xs-3">Destination (date)</th>
+                <?php if ($sf_user->isAdmin()): ?>
+                  <th class="text-center col-xs-1">Ctrole</th>
+                <?php endif;?>
+              </tr>
+            </thead>
+            <tbody>
               <?php
+              $firstRow = true;
+              $totalVolume = 0;
+                $volume = 0;
+                  foreach ($drev->getLotsByDate(true) as $lot) :
+                    $totalVolume+=$lot->volume;
+                    ?>
+                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
+                      <td>
+                        <?php $drevDocOrigine = $lot->getDrevDocOrigine(); ?>
+                        <?php if($drevDocOrigine): ?><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $drevDocOrigine); ?>"><?php endif; ?>
+                          <?php echo $lot->getDateVersionfr(); ?>
+                          <?php if($drevDocOrigine): ?></a><?php endif; ?>
+                        </td>
+                        <?php if($drev->isValidee()): ?>
+                        <td class="text-center"><?php echo $lot->numero_dossier; ?></td>
+                        <td class="text-center"><?php echo $lot->numero_archive; ?></td>
+                        <?php endif;?>
+                        <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>
+                        <td>
+                          <?php echo showProduitLot($lot) ?>
+                          <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
+                        </td>
+                        <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
+                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <?php if ($sf_user->isAdmin()): ?>
+                          <td class="text-center">
+                            <?php if(isset($form['lots'])): ?>
+                            <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
+                              <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
+                                <div class="col-xs-12">
+                                  <?php if ($sf_user->isAdmin() && !$drev->validation_odg): ?>
+                                  	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "drev bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_logement_operateur",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                  <?php else: ?>
+                                      <?php echo pictoDegustable($lot); ?>
+                                  <?php endif; ?>
+                                </div>
+                            </div>
+                          <?php else: ?>
+                            <div style="margin-bottom: 0;" class="">
+                              <div class="col-xs-12">
+                                  <?php echo pictoDegustable($lot); ?>
+                              </div>
+                            </div>
+                          <?php endif; ?>
+                        	</td>
+                        <?php endif; ?>
+
+                      </tr>
+                      <?php
+                      $firstRow=false;
+                    endforeach; ?>
+                <tr>
+                <?php
+                    $colspan = 2;
+                    if ($drev->isValidee()) {
+                        $colspan += 2;
+                    }
+                ?>
+                  <td colspan="<?php echo $colspan; ?>"></td>
+                  <td class="text-right">Total : </td>
+                  <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
+                  <td></td>
+                  <?php if ($sf_user->isAdmin()): ?>
+                    <td></td>
+                  <?php endif; ?>
+                </tr>
+              </tbody>
+            </table>
+            <br/>
+
+            <?php
                 if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
                 <div class="col-xs-12" style="margin-bottom: 20px;">
-                  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
+                  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
                 </div>
               <?php endif; ?>
-            <?php endif; ?>
 
           <?php endif; ?>
           <?php if(count($drev->declaration->getProduitsVci())): ?>
@@ -195,13 +235,13 @@
               <thead>
                 <tr>
                   <th class="col-xs-5"><?php if (count($drev->declaration->getProduitsVci()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
-                    <th class="text-center col-xs-1">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
+                    <th class="text-center col-xs-1">Stock <?php echo $drev->periode - 1 ?><br /><small class="text-muted">(hl)</small></th>
                     <th class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small></th>
                     <th class="text-center col-xs-1">Compl.<br /><small class="text-muted">(hl)</small></th>
                     <th class="text-center col-xs-1">A détruire<br /><small class="text-muted">(hl)</small></th>
                     <th class="text-center col-xs-1">Substitué<br /><small class="text-muted">(hl)</small></th>
-                    <th class="text-center col-xs-1">Constitué<br /><?php echo $drev->campagne ?>&nbsp;<small class="text-muted">(hl)</small></th>
-                    <th class="text-center col-xs-1">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
+                    <th class="text-center col-xs-1">Constitué<br /><?php echo $drev->periode ?>&nbsp;<small class="text-muted">(hl)</small></th>
+                    <th class="text-center col-xs-1">Stock <?php echo $drev->periode ?><br /><small class="text-muted">(hl)</small></th>
                   </tr>
                 </thead>
                 <tbody>

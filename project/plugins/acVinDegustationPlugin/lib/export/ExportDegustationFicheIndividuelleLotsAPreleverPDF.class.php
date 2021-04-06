@@ -14,21 +14,27 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     public function create() {
-      $etablissement = null;
 
-      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
+      $adresses = array();
+      foreach ($this->degustation->getLots() as $lot) {
+          $adresses[$lot->adresse_logement][$lot->getNumeroArchive()] = $lot;
+      }
+
+      foreach ($adresses as $adresseLogement => $lotsArchive) {
         $volumeLotTotal = 0;
-        foreach ($lotsEtablissement as $key => $lot) {
+        foreach ($lotsArchive as $archive => $lot) {
           $volumeLotTotal += $lot->volume;
         }
-        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
+
+        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsArchive[array_key_first($lotsArchive)]->declarant_identifiant);
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheIndividuelleLotsAPreleverPdf',
           array(
             'degustation' => $this->degustation,
             'etablissement' => $etablissement,
             'volumeLotTotal' => $volumeLotTotal,
-            'lots' => $lotsEtablissement
+            'lots' => $lotsArchive,
+            'adresseLogement' => $adresseLogement
           )
         ));
       }
@@ -53,22 +59,20 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
-
+        $titre = $this->degustation->getNomOrganisme();
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
-        );
-
+        $date = substr($this->degustation->date,0,10);
+        $date = $date[8].$date[9].'/'.$date[5].$date[6].'/'.$date[0].$date[1].$date[2].$date[3];
+        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu) . "Fiche de prélèvement (Liste des lots à prélever)  Date de commission prévu : ".$date;
         return $header_subtitle;
     }
 
 
     protected function getFooterText() {
-        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
+        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
         return $footer;
     }
 

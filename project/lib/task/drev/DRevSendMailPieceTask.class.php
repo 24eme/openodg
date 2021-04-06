@@ -43,7 +43,7 @@ EOF;
                 continue;
             }
 
-            if($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_EN_ATTENTE) {
+            if($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_A_APPROUVER) {
 
                 continue;
             }

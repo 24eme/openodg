@@ -38,7 +38,12 @@ $line = explode(";", $lines[0]);
 
 
 $t->is($line[SV12CsvFile::CSV_TYPE], "SV12", "Le type de la ligne est SV12");
-$t->is($line[SV12CsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
+$year = date('Y');
+if (date('m') < 8) {
+    $year = $year - 1;
+}
+$campagne = sprintf("%04d-%04d", $year , $year + 1 );
+$t->is($line[SV12CsvFile::CSV_CAMPAGNE], $campagne, "La campagne est $campagne");
 $t->is($line[SV12CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
 $t->is($line[SV12CsvFile::CSV_PRODUIT_CERTIFICATION], $produit->getCertification()->getKey(), "Certification OK");
 $t->is($line[SV12CsvFile::CSV_PRODUIT_GENRE], $produit->getGenre()->getKey(), "Genre OK");

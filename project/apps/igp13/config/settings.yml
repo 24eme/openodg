@@ -1,0 +1,49 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/04-Settings
+
+prod:
+  .settings:
+    no_script_name:         true
+    logging_enabled:        false
+
+dev:
+  .settings:
+    error_reporting:        <?php echo ((E_ALL) ^ E_DEPRECATED)."\n" ?>
+    web_debug:              true
+    cache:                  false
+    no_script_name:         false
+    etag:                   false
+
+test:
+  .settings:
+    error_reporting:        <?php echo ((E_ALL | E_STRICT) ^ E_NOTICE)."\n" ?>
+    cache:                  false
+    web_debug:              false
+    no_script_name:         false
+    etag:                   false
+    logging_enabled:        false
+
+all:
+  .settings:
+    enabled_modules:        [default, document, global, Email, piece, compte, compte_teledeclarant, etablissement, societe, etablissement_autocomplete, produit, drev, degustation, auth, common, declaration, fichier, habilitation, chgtdenom, facturation, generation, parcellaire, conditionnement, transaction, mandatsepa]
+    # Form security secret (CSRF protection)
+    csrf_secret:            false
+
+    # Output escaping settings
+    escaping_strategy:      true
+    escaping_method:        ESC_SPECIALCHARS
+
+    # Enable the database manager
+    use_database:           true
+
+    error_404_module:       global
+    error_404_action:       error404
+
+    login_module:           auth
+    login_action:           login
+
+    secure_module:          global
+    secure_action:          error403
+
+    i18n:                   true
+    default_culture:        fr

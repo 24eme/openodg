@@ -21,6 +21,17 @@ class Configuration extends BaseConfiguration {
         return $this->declaration->getProduits();
     }
 
+    public function getProduitsByCepage($cepage) {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if (in_array($cepage, $p->getCepagesAutorises()->toArray())) {
+                $produits[] = $p;
+                continue;
+            }
+        }
+        return $produits;
+    }
+
     public function getLieux(){
       $lieux = [];
       foreach ($this->getProduits() as $p) {
@@ -38,6 +49,7 @@ class Configuration extends BaseConfiguration {
 
     public function getCepagesAutorises($date = null, $attributes = array()) {
     	$cepages = array();
+
     	foreach($this->declaration->getProduits($date, "INTERPRO-declaration", null, $attributes) as $produit) {
     		$cepages_autorises = $produit->cepages_autorises->toArray();
     		foreach ($cepages_autorises as $ca) {

@@ -64,7 +64,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = $values[$indexCodeProduit];
 	        			$produit[] = $values[$indexCodeProduit + 1];
 	        			$produit[] = $values[$indexCodeProduit + 2];
-	        			$produit[] = sprintf('%02d', ($v+1));
+                        $produit[] = sprintf('%02d', ($v + 1 - $indexCodeProduit + 3));
 	        			$produit[] = preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
 	        			if ($v == $indexCodeProduit + 5) {
                             $produit[] = self::numerizeVal($values[$v], 4);

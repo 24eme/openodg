@@ -51,7 +51,7 @@
 
 <div class="row row-margin">
     <div class="col-xs-4 text-left">
-        <?php if($backUrl): ?>
+        <?php if(isset($backUrl) && $backUrl): ?>
         <a class="btn btn-default btn-default-step btn-lg btn-upper" href="<?php echo $backUrl ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
         <?php endif; ?>
     </div>

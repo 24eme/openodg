@@ -88,6 +88,18 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function getProduits($onlyActive = true) {
         return $this->declaration->getProduits($onlyActive);
     }
+
+    public function getProduitsByCepage($cepage) {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if (in_array($cepage, $p->getConfig()->getCepagesAutorises())) {
+                $produits[] = $p;
+                continue;
+            }
+        }
+        return $produits;
+    }
+
     public function isPapier() {
         return $this->exist('papier') && $this->get('papier');
     }

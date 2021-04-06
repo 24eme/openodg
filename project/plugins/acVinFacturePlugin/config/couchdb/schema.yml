@@ -40,7 +40,7 @@ Facture:
             ville: {}
             service_facturation: {}
             telephone: {}
-            email: {required: false}
+            email: { }
       declarant:
         type: collection
         definition:
@@ -187,6 +187,7 @@ TemplateFacture:
                   minimum_fallback: { required: false }
                   callback: { required: false }
                   required: { required: false }
+                  disabled: { required: false }
                   libelle: {  }
                   code_comptable: {  }
                   details:

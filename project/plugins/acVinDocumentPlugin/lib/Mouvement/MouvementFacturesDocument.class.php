@@ -36,14 +36,14 @@ class MouvementFacturesDocument
       }
 
       foreach($this->document->getMouvementsFactures() as $mouvements) {
-            foreach($mouvements as $mouvement) {
-                if(!$mouvement->isFacture()) {
-                    return false;
-                }
-            }
+          foreach($mouvements as $mouvement) {
+              if($mouvement->isFacture()) {
+                  return true;
+              }
+          }
         }
 
-        return true;
+        return false;
     }
 
     public function isNonFactures() {

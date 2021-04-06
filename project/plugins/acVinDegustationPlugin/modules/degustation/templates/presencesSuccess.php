@@ -2,6 +2,7 @@
 <?php use_helper('Float') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -42,17 +43,17 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numero_table) as $degustateur):
+                  <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numero_table) as $id_compte => $degustateur):
                     $name = $form->getWidgetNameFromDegustateur($degustateur);
                      ?>
                     <tr>
                       <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
-                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id_compte)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
                       <td class="text-center">
                         <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                           <?php echo $form[$name]->renderError() ?>
                           <div class="col-xs-12">
-                            <?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                            <?php echo $form[$name]->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                           </div>
                         </div>
                       </td>
@@ -61,7 +62,7 @@
                 </tbody>
               </table>
               <div class="row row-margin row-button">
-                <div class="col-xs-4"><a href="<?php echo url_for("degustation_visualisation", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+                <div class="col-xs-4"><a href="<?php echo url_for("degustation_resultats_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
                 <div class="col-xs-4 text-center">
                 </div>
                 <div class="col-xs-4 text-right">

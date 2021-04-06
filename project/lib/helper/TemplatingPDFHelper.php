@@ -11,7 +11,7 @@ function styleDRev() {
     }
 
     .th {
-        font-weight: normal; border: 1px solid #c75268; background-color: #f7dce5; color: #c75268;
+        font-weight: normal; border: 1px solid #c75268; background-color: #f7dce5; color: black;
     }
 
     .td {
@@ -40,6 +40,9 @@ function styleDRev() {
 
     .h3Alt {
         background-color: #f3c3d3; color: #c75268; font-weight: bold;
+    }
+    .font-size-16-pt{
+      font-size:16pt;
     }
 ";
 }
@@ -348,13 +351,12 @@ function styleTirage() {
 
 function echoCheck($text, $checked) {
     if ($checked) {
-        echo '<strong><span style="font-family: Dejavusans">☒&nbsp;';
+        echo '<strong><span style="font-family: Dejavusans">☒&nbsp;</span>';
     }else{
-        echo '<span style="font-family: Dejavusans">☐&nbsp;';
+        echo '<span style="font-family: Dejavusans">☐&nbsp;</span>';
 
     }
     echo $text;
-    echo '</span>';
     if ($checked) {
         echo '</strong>';
     }

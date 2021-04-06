@@ -2,7 +2,12 @@ all:
   routing_context_production_host: declaration.ava-aoc.fr
   auth:
     mode: NO_CAS #NO_CAS, CAS, NO_AUTH
-#    rights: [] 
+  debug:
+    authorized_ip:
+      - 127.0.0.1
+      - localhost
+      - ::1
+#    rights: []
   cas:
     domain: login.cas
     port: 443
@@ -55,7 +60,7 @@ all:
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"
-  facture:
+  courriers:
     emetteur:
       ALSACE:
         adresse: "12 avenue de la Foire aux Vins - B.P. 91225"
@@ -64,22 +69,13 @@ all:
         service_facturation: "Maison des Vins d'Alsace"
         telephone: "Téléphone 03 89 20 16 50 - Télécopie 03 89 20 16 60"
         email: "info@ava-aoc.fr"
+        responsable: "Responsable technique"
     coordonnees_bancaire:
       siret: "XXX XXX XXX XXXXX"
       banquenom: "Banque nom"
       banqueadresse: "Adresse de la banque"
       rib: "FRXX XXXX XXXX XXXX XXXX XXXX XXX"
       bic: "XXXXBIC"
-  degustation_courrier:
-    responsable: "Responsable technique"
-    visitetel: "00.00.00.00.00"
-    visiteorga: "Nom Prenom"
-    adresse:
-      raison_sociale: "Raison sociale"
-      adresse: "Adresse"
-      cp_ville: "CP Ville"
-      telephone: "Téléphone 00 00 00 00 00 - Fax 01 01 01 01 01"
-      email: "Email : mail@mailer.fr"
   contenances:
     bouteilles:
       "75 cl": 75
@@ -89,8 +85,9 @@ all:
       "150 cl": 150
       "300 cl": 300
   scrapy:
-    bin: "/.../.../prodouane_scrapy/bin/download_douane.sh"
-    documents: "/.../.../prodouane_scrapy/documents"
+    bin: "../../../prodouane_scrapy/bin/"
+    documents: "../../../prodouane_scrapy/documents/"
+    configfilename: "config.%app%.inc"
   oi:
     login: utilisateur
     mdp: motdepasse
@@ -134,3 +131,4 @@ all:
     regions:
       "": ""
   export_webpath: null
+  secret: mon_code_secret # 32 caracteres

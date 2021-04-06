@@ -1,0 +1,32 @@
+Identification de la déclaration;;;;;;;;;;;;
+DNR;%cvi%;ACTUALYS JEAN                (NEUILLY);;;;;;;;;;
+1;Code produit;;%code_inao_1%;;%code_inao_2%;;%code_inao_3%;;%code_inao_4%;;%code_inao_5%;
+;Libelle produit;;%libelle_produit_1%;;%libelle_produit_2%;;%libelle_produit_3%;;%libelle_produit_4%;;%libelle_produit_5%;
+2;Mention valorisante;;;;;;Melon;;;;;
+3;Zone viticole de récolte;;C1A;;C1A;;C1A;;C1A;;C1A;
+4;Superficie de récolte (Ha);;208;;0,8601;;0,8601;;0,1;;0,2;
+5;Récolte totale;;Exploitant (Hl);Bailleur (Hl);Exploitant (Hl);Bailleur (Hl);Exploitant (Hl);Bailleur (Hl);Exploitant (Hl);Bailleur (Hl);Exploitant (Hl);Bailleur (Hl)
+;;;6,66;0;60,31;0;60,31;0;2,23;0;6,21;0
+;Ventilation de la recolte (lies comprises);;;;;;;;;;;
+ 6-0;Recolte vendue sous forme de raisins. Volume de vins obtenu;;;;;;;;;;;
+ 7-0;Recolte vendue sous forme de mouts. Volume de mout obtenu;;;;;;;;;;;
+ 6-0;Récolte vendue sous forme de raisins. Volume de vins obtenu;;;;;;;;;;;
+ 7-0;Récolte vendue sous forme de moûts. Volume de moût obtenu;;;;;;;;;;;
+ 8-0;Récolte apportée en cave coopérative par l'adhérent.;;;;;;;;;;;
+9;Récolte en cave particulière. Volume obtenu;;6,66;0;60,31;0;60,31;0;2,23;0;6,21;0
+;Destination de la récolte non vendue;;;;;;;;;;;
+10;Volume en vinification;;6,66;0;64,07;0;64,07;0;2,23;0;6,21;0
+11;Volume en concentration;;0;0;0;0;0;0;0;0;0;0
+12;Volume autre destination;;0;0;0;0;0;0;0;0;0;0
+;Ventilation des produits obtenus;;;;;;;;;;;
+13;Volume de MC ou MCR obtenu non utilisé;;0;0;0;0;0;0;0;0;0;0
+14;Volume de vin sans AO/IGP avec ou sans cépage;;0;0;0;0;0;0;0;0;0;0
+15;Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé;;6,66;0;64,63;0;64,63;0;2,23;0;6,27;0
+16;Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels;;0,13;0;1,29;0;1,29;0;0,04;0;0,12;0
+17;Volume d'eau éliminé en cas d'enrichissement par concentration partielle;;0;0;0;0;0;0;0;0;0;0
+18;Volume substituable individuel (VSI);;0;0;0;0;0;0;0;0;0;0
+19;Volume complémentaire individuel (VCI);;0;0;0;0;0;0;0;0;0;0
+20;Nom du propriétaire bailleur à fruit;;;;;;;;;;;
+21;N°PPM du bailleur à fruit;;;;;;;;;;;
+22;Motif de non récolte;;;;;;;;;;;
+;;;;;;;;;;;;

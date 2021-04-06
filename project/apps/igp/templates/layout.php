@@ -22,8 +22,6 @@
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
 
-        <link rel="stylesheet" href="https://weareoutman.github.io/clockpicker/dist/jquery-clockpicker.min.css"></link>
-
         <!--[if lt IE 9]>
             <script type="text/javascript" src="/js/lib/respond.min.js"></script>
         <![endif]-->
@@ -52,11 +50,9 @@
                         <?php echo $sf_content ?>
                 </section>
 
-                <footer id="footer" class="container hidden-xs hidden-sm text-center" role="contentinfo">
+                <footer id="footer" class="container hidden-xs hidden-sm text-center mt-5 mb-5" role="contentinfo">
                     <nav role="navigation">
                         <ul class="list-inline" style="font-size: 13px;">
-                            <li><a href="<?php echo url_for('contact') ?>">Contact</a></li>
-                            <li><a href="<?php echo url_for('mentions_legales') ?>">Mentions légales</a></li>
                         </ul>
                     </nav>
                 </footer>

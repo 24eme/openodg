@@ -1,0 +1,154 @@
+#CONDITIONNEMENT
+Conditionnement:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      _attachments:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
+      type: { }
+      campagne: { }
+      date: { }
+      etape: { required: false }
+      achat_tolerance: { required: false }
+      identifiant: { }
+      validation: { }
+      validation_odg: { }
+      envoi_oi: { required: false}
+      non_recoltant: { required: false, type: integer }
+      non_conditionneur: { required: false, type: integer }
+      non_vinificateur: { required: false, type: integer }
+      papier: { required: false, type: integer }
+      automatique: { required: false, type: integer }
+      lecture_seule: { required: false }
+      denomination_auto: { required: false }
+      date_degustation_voulue: { required: false }
+      type_archive: { required: false }
+      version: { required: false }
+      numero_archive: {  }
+      declarant:
+        type: collection
+        class: ConditionnementDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+            famille: { }
+      lots:
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ConditionnementLot
+              inheritance: Lot
+              definition:
+                fields:
+                  date: { }
+                  id_document: { }
+                  unique_id: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
+                  campagne: {}
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  numero_logement_operateur: { }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
+                  millesime: { }
+                  volume: { type: float }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
+                  elevage: { }
+                  statut: {}
+                  adresse_logement: {}
+                  specificite: { }
+                  centilisation: { required: false }
+                  affectable: { }
+                  document_fils: { required: false }
+                  document_ordre: { }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
+      chais:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: ConditionnementMouvementLots
+                    inheritance: MouvementLots
+                    type: collection
+                    definition:
+                      fields:
+                        date: {  }
+                        campagne: {}
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        libelle: {}
+                        detail: {}
+                        volume: { type: float }
+                        version: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
+                        statut: {}
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ConditionnementPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

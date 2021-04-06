@@ -26,6 +26,9 @@
 	<td>
 		<?php include_partial('itemNoeud', array('produit' => $produit, 'noeud' => $produit->getCepage(), 'cvo' => $cvo)) ?>
 	</td>
+    <td class="text-center">
+        <a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getNoeudCepagesAutorises()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>"><?php echo count($produit->getCepagesAutorises()); ?></a>
+    </td>
 	<?php if(!isset($notDisplayDroit)): ?>
    	<td class="center">
      <?php if ($cvo) : ?>
@@ -67,6 +70,11 @@
 	<td class="text-right">
 		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
 			<?php echo sprintFloat($produit->getRendementDrL5()) ?>&nbsp;
+		</a>
+	</td>
+    <td class="text-right">
+		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
+			<?php echo sprintFloat($produit->getRendementDrL15()) ?>&nbsp;
 		</a>
 	</td>
 	<td class="text-right">

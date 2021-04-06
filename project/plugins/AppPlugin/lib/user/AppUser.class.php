@@ -9,6 +9,9 @@ class AppUser extends sfBasicSecurityUser {
     const NAMESPACE_COMPTE_ORIGIN = "COMPTE_ORIGIN";
     const CREDENTIAL_ADMIN = "ADMIN";
     const CREDENTIAL_DREV_ADMIN = 'teledeclaration_drev_admin';
+    const CREDENTIAL_CONDITIONNEMENT_ADMIN = 'teledeclaration_conditionnement_admin';
+    const CREDENTIAL_CHGTDENOM_ADMIN = 'teledeclaration_chgtDenom_admin';
+    const CREDENTIAL_TRANSACTION_ADMIN = 'teledeclaration_transaction_admin';
     const CREDENTIAL_STALKER = 'stalker';
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
@@ -47,12 +50,15 @@ class AppUser extends sfBasicSecurityUser {
         if(!$compte) {
           $societe = SocieteClient::getInstance()->findByIdentifiantSociete($login_or_compte);
           if(!$societe){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+              $this->signOut();
+              return false;
+              //throw new sfException("Le compte est nul : ".$login_or_compte);
           }
           $compte = $societe->getMasterCompte();
           $login = $compte->identifiant;
           if(!$compte){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+              $this->signOut();
+              return false;
           }
         }
 
@@ -154,6 +160,19 @@ class AppUser extends sfBasicSecurityUser {
         return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdmin();
     }
 
+    public function hasChgtDenomAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_CHGTDENOM_ADMIN) || $this->isAdmin();
+    }
+
+    public function hasConditionnementAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->isAdmin();
+    }
+
+
+    public function hasTransactionAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->isAdmin();
+    }
+
     public function isStalker() {
         return $this->hasCredential(self::CREDENTIAL_STALKER);
     }
@@ -162,6 +181,26 @@ class AppUser extends sfBasicSecurityUser {
       $drevConf = DrevConfiguration::getInstance();
       if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $drevConf->getOdgRegions()){
         if(in_array($region, $drevConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
+    }
+
+    public function getTeledeclarationConditionnementRegion() {
+      $condConf = ConditionnementConfiguration::getInstance();
+      if($this->hasConditionnementAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
+        if(in_array($region, $condConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
+    }
+
+    public function getTeledeclarationTransactionRegion() {
+      $transConf = TransactionConfiguration::getInstance();
+      if($this->hasTransactionAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
+        if(in_array($region, $transConf->getOdgRegions())){
                     return $region;
         }
       }

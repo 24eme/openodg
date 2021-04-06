@@ -24,6 +24,10 @@ class CampagneManager {
         return $this->getCampagneByDate(date('Y-m-d'));
     }
 
+    public function getCurrentYearPeriode() {
+        return preg_replace('/-.*/', '', $this->getCurrent());
+    }
+
     public function getCurrentPrevious() {
 
         return $this->getPrevious($this->getCurrent());
@@ -39,7 +43,7 @@ class CampagneManager {
 
         $annees = $this->getAnnees($campagne);
 
-        return $annees[1]."-".$this->mm_dd_debut; 
+        return $annees[1]."-".$this->mm_dd_debut;
     }
 
     public function getDateFinByCampagne($campagne) {
@@ -51,7 +55,13 @@ class CampagneManager {
     }
 
     public function getDateDebutByDate($date) {
+        if (!$date) {
+            throw new sfException("date needed");
+        }
         $annee = date('Y', strtotime($date));
+        if (!$annee) {
+            throw new sfException("wrong date format");
+        }
 
         while($date < $annee."-".$this->mm_dd_debut) {
         	$annee = $annee - 1;
@@ -71,7 +81,7 @@ class CampagneManager {
 
         $annees = $this->getAnnees($campagne);
 
-        return $this->formatCampagneOutput(sprintf('%s-%s', $annees[1]-1, $annees[2]-1)); 
+        return $this->formatCampagneOutput(sprintf('%s-%s', $annees[1]-1, $annees[2]-1));
 
     }
 
@@ -80,13 +90,12 @@ class CampagneManager {
 
         $annees = $this->getAnnees($campagne);
 
-        return $this->formatCampagneOutput(sprintf('%s-%s', $annees[1]+1, $annees[2]+1)); 
+        return $this->formatCampagneOutput(sprintf('%s-%s', $annees[1]+1, $annees[2]+1));
 
     }
 
     protected function getAnnees($campagne) {
     	if (!preg_match('/^([0-9]+)-([0-9]+)$/', $campagne, $annees)) {
-
             throw new sfException('campagne bad format');
         }
 
@@ -111,12 +120,12 @@ class CampagneManager {
 
     protected function formatCampagneInput($campagne_input) {
         if($this->format == self::FORMAT_PREMIERE_ANNEE) {
-            
+
             return sprintf("%s-%s", $campagne_input, $campagne_input + 1);
         }
 
         if($this->format == self::FORMAT_SECONDE_ANNEE) {
-            
+
             return sprintf("%s-%s", $campagne_input - 1, $campagne_input);
         }
 
@@ -125,9 +134,9 @@ class CampagneManager {
 
     public function consoliderCampagnesList($campagnes, $add_current = true, $add_one_more = true) {
         krsort($campagnes);
-        
+
         $campagnes_consolider = array();
-        
+
         if($add_current) {
             $campagnes_consolider[$this->getCurrent()] = $this->getCurrent();
         }

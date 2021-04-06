@@ -17,7 +17,7 @@
                   Nombre de lots ne faisant l'objet d'aucune dégustation :
               </div>
               <div class="col-sm-3 col-xs-3">
-                  <span class=""><strong><?php echo count($lotsPrelevables); ?></strong></span>
+              <strong><?php echo count($lotsPrelevables); ?></strong> <a href="<?= url_for('degustation_prelevables') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
               </div>
             </div>
             <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?> <?php if($form["time"]->getError()): ?>has-error<?php endif; ?>">
@@ -54,7 +54,7 @@
             </div>
             <div class="form-group text-right">
                 <div class="col-sm-4 col-sm-offset-8 col-xs-12">
-                    <button type="submit" class="btn btn-default btn-block btn-upper">Créer</button>
+                    <button type="submit" class="btn btn-primary">Créer une dégustation</button>
                 </div>
             </div>
         </div>
@@ -63,43 +63,19 @@
 <div class="page-header no-border">
     <h2>Les dernières dégustations</h2>
 </div>
-<?php if (count($degustations)): ?>
-<div class="row">
-<table class="table table-condensed table-striped">
-<thead>
-    <th class="col-sm-2 text-center">Date de dégustation</th>
-    <th class="col-sm-6">Lieu de la dégustation</th>
-    <th class="col-sm-2">Infos</th>
-    <th class="col-sm-2 text-center"></th>
-</thead>
-<tbody>
-<?php foreach($degustations as $d): ?>
-    <tr>
-        <td class="col-sm-2 text-center"><?php echo $d->date; ?></td>
-        <td class="col-sm-6"><?php echo $d->lieu; ?></td>
-        <td class="col-sm-2">
-            <?php echo ($d->lots) ? count($d->lots) : '0'; ?> <span class="text-muted">lots</span> -
-            <?php echo ($d->degustateurs) ? count($d->degustateurs) : '0'; ?> <span class="text-muted">degust.</span>
-        </td>
-        <td class="col-sm-2 text-right">
-            <?php if ($d->isValidee()): ?>
-              <a href="<?php echo url_for('degustation_visualisation', $d)?>"class="btn btn-success" >Visualisation</a>
-          <?php else: ?>
-            <a href="<?php echo url_for('degustation_redirect', $d)?>" class="btn btn-success">Reprendre la saisie</a>
-          <?php endif; ?>
-        </td>
-    </tr>
-<?php endforeach; ?>
-<tbody>
-</table>
-<?php endif; ?>
+
+<?php include_partial('degustation/liste', ['degustations' => $degustations]) ?>
+
+<div>
+    <a href="<?= url_for('degustation_liste', ['campagne' => $campagne]) ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les dégustations</a>
+</div>
+
 <div class="page-header no-border">
     <h2>Elevages</h2>
 </div>
-<p><strong><?php echo count($lotsElevages); ?><?php if(count($lotsElevages)>1):?> lots<?php else: ?> lot<?php endif; ?></strong> sont actuellement en élevages : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
+<p><strong><?php echo count($lotsElevages); ?><?php if(count($lotsElevages)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement en élevage<?php if(count($lotsElevages)>1):?>s<?php endif; ?> : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
 
 <div class="page-header no-border">
     <h2>Manquements</h2>
 </div>
-<p>Manquements en cours : <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>
-</div>
+<p><strong><?php echo count($lotsManquements); ?><?php if(count($lotsManquements)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement non conforme<?php if(count($lotsManquements)>1):?>s<?php endif; ?> <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>

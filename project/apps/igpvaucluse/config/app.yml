@@ -1,0 +1,15 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+all:
+  organisme:
+    nom: "Syndicat des vins IGP du Vaucluse"
+  float:
+    default_decimal_format: 2
+    max_decimal_authorized: 4
+  societe:
+    format_identifiant: "VCL%06d"
+  donnees_viticoles:
+    regions:
+      IGPVAUCLUSE: "IGPVAUCLUSE"

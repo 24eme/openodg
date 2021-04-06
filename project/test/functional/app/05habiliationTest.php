@@ -19,6 +19,12 @@ foreach(HabilitationClient::getInstance()->getProduitsConfig($config) as $p) {
 }
 
 $b = new sfTestFunctional(new Browser());
+if (!$produit1)  {
+    $t = $b->test();
+    $t->ok(true, "test disabled");
+    return;
+}
+
 $t = $b->test();
 
 $t->comment('En mode admin');

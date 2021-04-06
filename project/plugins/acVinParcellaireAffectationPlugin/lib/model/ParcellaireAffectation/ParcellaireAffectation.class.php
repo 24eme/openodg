@@ -47,18 +47,22 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function constructId() {
-      $this->set('_id', ParcellaireAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne);
+      $this->set('_id', ParcellaireAffectationClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->periode);
   }
 
-  public function initDoc($identifiant, $campagne, $date) {
+  public function initDoc($identifiant, $periode, $date) {
       $this->identifiant = $identifiant;
-      $this->campagne = $campagne;
       if ($this->exist('date')) {
         $this->date = $date;
       }
+      $this->campagne = $periode.'-'.($periode + 1);
       $this->constructId();
       $this->storeDeclarant();
       $this->storeParcellesAffectation();
+  }
+
+  public function getPeriode() {
+      return preg_replace('/-.*/', '', $this->campagne);
   }
 
   public function updateParcellesAffectation() {
@@ -98,7 +102,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
   public function getConfiguration() {
 
-      return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-03-01');
+      return ConfigurationClient::getInstance()->getConfiguration($this->periode.'-03-01');
   }
 
     public function getParcelles($onlyAffectes = false) {
@@ -225,7 +229,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles affectées '.$this->campagne.' '.$complement,
+            'libelle' => 'Identification des parcelles affectées '.$this->periode.' '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null

@@ -2,11 +2,9 @@
 
 class ChgtDenomForm extends acCouchdbObjectForm
 {
-    public static $types = array("CHGT" => "Changement de dénomination", "DCLST" => "Déclassement");
-    public $firstEdition;
+    public static $types = array(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT => "Changement de dénomination", ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT  => "Déclassement");
 
-    public function __construct(acCouchdbJson $object, $firstEdition, $options = array(), $CSRFSecret = null) {
-        $this->firstEdition = $firstEdition;
+    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -20,14 +18,20 @@ class ChgtDenomForm extends acCouchdbObjectForm
         $this->setWidget('changement_volume', new bsWidgetFormInputFloat());
         $this->setValidator('changement_volume', new sfValidatorNumber(array('required' => false)));
 
-        $this->setWidget('changement_produit', new bsWidgetFormChoice(array('choices' => $produits)));
-        $this->setValidator('changement_produit', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
-
+        $this->setWidget('changement_produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
+        $this->setValidator('changement_produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
+        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
         for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
             $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
             $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
+        }
+
+        if(ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()){
+          $this->setWidget('changement_specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
+          $this->setValidator('changement_specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
 
         $this->validatorSchema->setPostValidator(new ChgtDenomValidator($this->getObject()));
@@ -36,12 +40,10 @@ class ChgtDenomForm extends acCouchdbObjectForm
 
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
-        if ($values['changement_type'] == 'DCLST') {
-          	$this->getObject()->changement_produit = null;
-        }
-        if ($values['changement_produit']) {
-            $produits = $this->getProduits();
-          	$this->getObject()->changement_produit_libelle = (isset($produits[$values['changement_produit']]))? $produits[$values['changement_produit']] : null;
+        $this->getObject()->changement_type = $values['changement_type'];
+        $this->getObject()->changement_produit_hash = null;
+        if ($values['changement_produit_hash'] && !$this->getObject()->isDeclassement()) {
+            $this->getObject()->changement_produit_hash = $values['changement_produit_hash'];
         }
         $this->getObject()->remove('changement_cepages');
         $this->getObject()->add('changement_cepages');
@@ -51,14 +53,18 @@ class ChgtDenomForm extends acCouchdbObjectForm
             }
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
+
         $this->getObject()->generateLots();
     }
 
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
-      $defaults['changement_type'] = (!$this->firstEdition && !$this->getObject()->changement_produit)? 'DCLST' : 'CHGT';
-      $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getMvtLot()->volume;
+      $defaults['changement_type'] = $this->getObject()->changement_type;
+      $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
+      if (ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()) {
+        $defaults['changement_specificite'] = $this->getObject()->changement_specificite;
+      }
       $i=0;
       foreach($this->getObject()->changement_cepages as $cepage => $repartition) {
           $defaults['cepage_'.$i] = $cepage;
@@ -83,5 +89,10 @@ class ChgtDenomForm extends acCouchdbObjectForm
     public function getCepages()
     {
         return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
+    }
+
+    public function getSpecificites()
+    {
+        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  ChgtDenomConfiguration::getInstance()->getSpecificites());
     }
 }

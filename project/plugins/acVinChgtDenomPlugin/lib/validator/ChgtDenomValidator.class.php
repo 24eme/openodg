@@ -12,7 +12,7 @@ class ChgtDenomValidator extends sfValidatorSchema
 
 		public function configure($options = array(), $messages = array()) {
 				parent::configure($options, $messages);
-        $this->addMessage('impossible_volume', "Le volume ne peut excéder ".$this->obj->getMvtLot()->volume." hl");
+        $this->addMessage('impossible_volume', "Le volume ne peut excéder ".$this->obj->getLotOrigine()->volume." hl");
 				$this->addMessage('impossible_numero', "Le numéro du logement ne peut pas être identique à l'original");
     }
 
@@ -20,28 +20,8 @@ class ChgtDenomValidator extends sfValidatorSchema
 			$errorSchema = new sfValidatorErrorSchema($this);
     	$hasError = false;
 
-    	if ($values['changement_type'] == 'CHGT' && !$values['changement_produit']) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_produit');
-    	    $hasError = true;
-    	}
-
-    	if ($values['changement_quantite'] == 'PART' && !$values['changement_volume']) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_volume');
-    	    $hasError = true;
-    	}
-
-    	if ($values['changement_quantite'] == 'PART' && !$values['changement_numero']) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_numero');
-    	    $hasError = true;
-    	}
-
-    	if ($values['changement_quantite'] == 'PART' && $values['changement_numero'] == $this->obj->getMvtLot()->numero) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'impossible_numero'), 'changement_numero');
-    	    $hasError = true;
-    	}
-
-    	if ($values['changement_quantite'] == 'PART' && $values['changement_volume'] > $this->obj->getMvtLot()->volume) {
-    	    $errorSchema->addError(new sfValidatorError($this, 'impossible_volume'), 'changement_volume');
+    	if ($values['changement_type'] == 'CHGT' && !$values['changement_produit_hash']) {
+    	    $errorSchema->addError(new sfValidatorError($this, 'required'), 'changement_produit_hash');
     	    $hasError = true;
     	}
 

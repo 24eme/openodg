@@ -11,4 +11,10 @@ class DegustationLotForm extends acCouchdbObjectForm
 
         $this->widgetSchema->setNameFormat('lot_form[%s]');
     }
+
+    public function doUpdateObject($values)
+    {
+        return $this->getObject()->getDocument()->modifyVolumeLot($this->getObject()->getHash(), $values['volume']);
+
+    }
 }

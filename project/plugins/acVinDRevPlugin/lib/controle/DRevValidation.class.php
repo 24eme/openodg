@@ -67,7 +67,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
 
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
-        $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->campagne-1));
+        $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->periode-1));
 
         /*
          * Engagement
@@ -193,7 +193,7 @@ class DRevValidation extends DocumentValidation
     protected function controleRecoltes()
     {
         foreach($this->document->getProduits() as $produit) {
-            if($produit->getConfig()->getRendementDR() && ($produit->getRendementDR() > $produit->getConfig()->getRendementDR()) ) {
+            if($produit->getConfig()->getRendementDrL15() && ($produit->getRendementDrL15() > $produit->getConfig()->getRendementDrL15()) ) {
                 if(!array_key_exists($produit->gethash(),$this->produit_revendication_rendement)){
                   $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
                   $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
@@ -335,7 +335,7 @@ class DRevValidation extends DocumentValidation
           $volume = sprintf("%01.02f",$lot->getVolume());
           if(!$lot->exist('millesime') || !$lot->millesime){
               $this->addPoint(self::TYPE_ERROR, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-          }elseif($lot->millesime < ($this->document->campagne - 1)){
+          }elseif($lot->millesime < ($this->document->periode - 1)){
             $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
           }
           if(!$lot->exist('destination_type') || !$lot->destination_type){
