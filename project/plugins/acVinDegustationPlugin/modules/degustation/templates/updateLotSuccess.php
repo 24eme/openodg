@@ -6,8 +6,10 @@
     <div class="page-header"><h2>Modification du Lot IGP</h2></div>
 
     <div class="alert alert-warning" role="alert">
-      <strong>Attention !</strong> Cela créera une modificatrice à la DRev <?php echo $lot->id_document ?>
+    <strong>Attention !</strong> Cela créera une modificatrice à la déclaration <a href='<?php echo url_for('declaration_doc', ['id' => $lot->id_document_provenance]) ?>'><?php echo $lot->id_document_provenance ?>
     </div>
+
+    <?php include_partial('chgtdenom/infoLotOrigine', array('lot' => $lot, 'opacity' => false)); ?>
 
     <form role="form" action="<?php echo url_for("degustation_update_lot", ['id' => $degustation->_id, 'lot' => $lotkey]) ?>" method="post" id="form_degustation_update_lot" class="form-horizontal">
 

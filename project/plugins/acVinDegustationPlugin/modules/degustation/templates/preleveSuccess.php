@@ -65,7 +65,7 @@
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
               &nbsp;
               <?php if($lot->isOrigineEditable()): ?>
-              <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>">
+              <a title="Modifier le lot dans la déclaration originale" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>">
                 <i class="glyphicon glyphicon-pencil"></i>
               </a>
               <?php else: ?>
