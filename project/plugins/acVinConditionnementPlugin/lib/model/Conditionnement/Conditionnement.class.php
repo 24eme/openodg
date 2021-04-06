@@ -43,4 +43,13 @@ class Conditionnement extends BaseConditionnement
         return Lot::STATUT_CONDITIONNE;
     }
 
+    public function getMaster()
+    {
+        return $this;
+    }
+
+    public function generateModificative()
+    {
+        return $this->version_document->generateModificative();
+    }
 }

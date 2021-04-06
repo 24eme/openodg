@@ -1395,7 +1395,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$lot = $this->get($hash_lot);
 
 			// Drev => modificatrice + changement dans Drev
-			$lotDrevOriginal = $lot->getLotPere();
+			$lotDrevOriginal = $lot->getLotProvenance();
             $lotDrevOriginalToSave = clone $lotDrevOriginal;
 
 			// $modificatrice
