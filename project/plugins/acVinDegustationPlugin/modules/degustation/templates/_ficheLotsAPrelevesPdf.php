@@ -97,7 +97,7 @@ th {
             }?>
           </small>
           </td>
-          <td></td>
+          <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
           <td></td>
          </tr>
          <?php $ligne++; ?>

@@ -281,7 +281,7 @@ abstract class Lot extends acCouchdbDocumentTree
       if(!$this->exist('id_document_provenance') || !$this->id_document_provenance){
         return null;
       }
-      return acCouchdbManager::getClient()->find($this->id_document_provenance);
+      return DeclarationClient::getInstance()->findCache($this->id_document);
     }
 
     public function hasBeenEdited(){
@@ -780,7 +780,7 @@ abstract class Lot extends acCouchdbDocumentTree
             return null;
         }
 
-        $doc = DeclarationClient::getInstance()->find($docId);
+        $doc = DeclarationClient::getInstance()->findCache($docId);
 
         return $doc->get($mouvement->value->lot_hash);
     }
@@ -805,21 +805,9 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getLotDocumentOrdre(intval($this->document_ordre) + 1);
     }
 
-    public function getLotFils()
-    {
-
-        return $this->getLotAffectation();
-    }
-
     public function getLotProvenance()
     {
         return $this->getLotDocumentOrdre(intval($this->document_ordre) - 1);
-    }
-
-    public function getLotPere()
-    {
-
-        return $this->getLotProvenance();
     }
 
     abstract public function getDocumentOrdre();
