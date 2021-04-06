@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-xs-12 text">
               <p class="alert alert-warning">
-                  <span class="glyphicon glyphicon-warning-sign"> Vous avez <strong><?php echo count($degustation->getLotsNonAttables()); ?> lot(s)</strong> qui ne sont pas attablé(s).</span>
+                  <span class="glyphicon glyphicon-warning-sign"> Vous avez <strong><?php $nb = count($degustation->getLotsNonAttables()); echo $nb==1 ? "$nb lot qui n'est pas attablé." : "$nb lots qui ne sont pas attablés."; ?> </strong></span>
               </p>
             </div>
         </div>
