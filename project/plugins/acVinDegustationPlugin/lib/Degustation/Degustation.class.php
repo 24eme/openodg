@@ -359,7 +359,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             throw new sfException("Pour ajouter un lot, il faut avoir un id à notre degustation");
         }
         $lotOrig = DegustationClient::getInstance()->cleanLotForDegustation($lotOrig);
-        $this->docToSave[$lotOrig->id_document] = $lotOrig->id_document;
+
+        if (property_exists($lotOrig, 'leurre') && ! $lotOrig->leurre) {
+            $this->docToSave[$lotOrig->id_document] = $lotOrig->id_document;
+        }
+
         $lot = $this->lots->add(null, $lotOrig);
         $lot->date = $this->date;
         $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
@@ -656,6 +660,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getLotsFromProvenance() {
             $lots = array();
             foreach($this->getLots() as $lot) {
+                if ($lot->isLeurre()) {
+                    continue;
+                }
                 $lots[$lot->unique_id] = DegustationClient::getInstance()->cleanLotForDegustation($lot->getLotProvenance()->getData());
 				$lots[$lot->unique_id]->specificite = $lot->specificite;
 				$lots[$lot->unique_id]->statut = $lot->statut;
@@ -1382,7 +1389,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$lot = $this->get($hash_lot);
 
 			// Drev => modificatrice + changement dans Drev
-			$lotDrevOriginal = $lot->getLotPere();
+			$lotDrevOriginal = $lot->getLotProvenance();
             $lotDrevOriginalToSave = clone $lotDrevOriginal;
 
 			// $modificatrice

@@ -32,6 +32,8 @@ class conditionnementActions extends sfActions {
 
         $this->secure(ConditionnementSecurity::EDITION, $conditionnement);
 
+        $this->redirectIfAffecte($conditionnement);
+
         if ($conditionnement->exist('etape') && $conditionnement->etape) {
             return $this->redirect('conditionnement_' . $conditionnement->etape, $conditionnement);
         }
@@ -44,6 +46,8 @@ class conditionnementActions extends sfActions {
         $etablissement = $conditionnement->getEtablissementObject();
         $this->secure(ConditionnementSecurity::EDITION, $conditionnement);
 
+        $this->redirectIfAffecte($conditionnement);
+
         $conditionnement->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
@@ -55,6 +59,8 @@ class conditionnementActions extends sfActions {
         if (!$this->getUser()->isAdmin()) {
           $this->secure(ConditionnementSecurity::DEVALIDATION , $conditionnement);
         }
+
+        $this->redirectIfAffecte($conditionnement);
 
         $conditionnement->validation = null;
         $conditionnement->validation_odg = null;
@@ -75,6 +81,8 @@ class conditionnementActions extends sfActions {
     public function executeExploitation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
+
+        $this->redirectIfAffecte($this->conditionnement);
 
         if($this->conditionnement->storeEtape($this->getEtape($this->conditionnement, ConditionnementEtapes::ETAPE_EXPLOITATION))) {
             $this->conditionnement->save();
@@ -124,6 +132,8 @@ class conditionnementActions extends sfActions {
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        $this->redirectIfAffecte($this->conditionnement);
+
         $has = false;
         if(count($this->conditionnement->getLots())){
             $has = true;
@@ -163,6 +173,8 @@ class conditionnementActions extends sfActions {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
 
+        $this->redirectIfAffecte($this->conditionnement);
+
         if($this->conditionnement->getLotByNumArchive($request->getParameter('numArchive')) === null){
           throw new sfException("le lot d'index ".$request->getParameter('numArchive')." n'existe pas ");
         }
@@ -187,6 +199,8 @@ class conditionnementActions extends sfActions {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
         $this->isAdmin = $this->getUser()->isAdmin();
+
+        $this->redirectIfAffecte($this->conditionnement);
 
         if($this->conditionnement->storeEtape($this->getEtape($this->conditionnement, ConditionnementEtapes::ETAPE_VALIDATION))) {
             $this->conditionnement->save();
@@ -264,6 +278,8 @@ class conditionnementActions extends sfActions {
         $this->secure(array(ConditionnementSecurity::VALIDATION_ADMIN), $this->conditionnement);
         $this->regionParam = $request->getParameter('region',null);
 
+        $this->redirectIfAffecte($this->conditionnement);
+
         $this->conditionnement->validateOdg(null,$this->regionParam);
         $this->conditionnement->save();
 
@@ -292,6 +308,7 @@ class conditionnementActions extends sfActions {
     public function executeConfirmation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::VISUALISATION, $this->conditionnement);
+        $this->redirectIfAffecte($this->conditionnement);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -403,4 +420,19 @@ class conditionnementActions extends sfActions {
         throw new sfStopException();
     }
 
+    protected function redirectIfAffecte($conditionnement)
+    {
+        $affecte = false;
+
+        foreach ($conditionnement->getLots() as $lot) {
+            if ($lot->isAffecte() || $lot->isChange()) {
+                $affecte = true;
+            }
+        }
+
+        if ($affecte) {
+            $this->getUser()->setFlash('warning', "Vous ne pouvez pas modifier une déclaration si l'un des lots a été affecté");
+            return $this->redirect('conditionnement_visualisation', $conditionnement);
+        }
+    }
 }

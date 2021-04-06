@@ -378,6 +378,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        $this->redirectIfAffecte($this->drev);
+
         if ($this->needDrDouane()) {
 
             return $this->redirect('drev_dr_upload', $this->drev);
@@ -689,7 +691,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_visualisation', $this->drev);
           }
         }
-        
+
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
             $this->drev->validateOdg();
             $this->drev->cleanLots();
@@ -987,6 +989,22 @@ class drevActions extends sfActions {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
 
         throw new sfStopException();
+    }
+
+    protected function redirectIfAffecte($drev)
+    {
+        $affecte = false;
+
+        foreach ($drev->getLots() as $lot) {
+            if ($lot->isAffecte() || $lot->isChange()) {
+                $affecte = true;
+            }
+        }
+
+        if ($affecte) {
+            $this->getUser()->setFlash('warning', "Vous ne pouvez pas modifier une déclaration si l'un des lots a été affecté");
+            return $this->redirect('drev_visualisation', $drev);
+        }
     }
 
 }
