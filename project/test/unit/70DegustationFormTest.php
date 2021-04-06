@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(111);
+$t = new lime_test(113);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -225,6 +225,13 @@ $t->ok(!$degustation->lots[2]->getMouvement(Lot::STATUT_AFFECTABLE), "Il a un mo
 
 $t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 0, "Il n'y a plus de mouvement prélevable");
 
+$t->comment('on ajoute un leurre, on revient pour décocher un lot, le leurre ne doit pas avoir disparu');
+$degustation->addLeurre($degustation->lots[0]->produit_hash, null, 1);
+$degustation->save();
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$t->is(count($degustation->lots), 4, "3 lots + 1 leurre");
+
 $t->comment('On décoche les lots et on en sélectionne qu\'un');
 $form = new DegustationPrelevementLotsForm($degustation);
 
@@ -242,12 +249,13 @@ $form->bind($valuesRev);
 $form->save();
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
-$t->is(count($degustation->lots), 1, 'Il y a un lot dans la dégustation');
+$t->is(count($degustation->lots), 2, 'Il y a un lot et un leurre dans la dégustation');
 $t->is($degustation->lots[0]->getNombrePassage(), 1, "Le numero de passage du lot restant est bien toujours 1");
 $t->is($degustation->lots[0]->id_document, $degustation->_id, "Le doc id du seul lot restant est bien ".$degustation->_id);
 $t->is($degustation->lots[0]->id_document_provenance, $drev->_id, "La provenance du seul lot restant est bien toujours ".$drev->_id);
 $t->is($degustation->lots[0]->document_ordre, '02', "Le document ordre du seul lot restant est bien toujours 02");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Le lot qui reste dans la dégut a bien une affectation source");
+$t->is($degustation->lots[1]->isLeurre(), true, "Le lot 2 est un leurre");
 
 $t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 2, "Il y a 2 mouvements prélevables (1 de la transaction, l'autre de la drev)");
 

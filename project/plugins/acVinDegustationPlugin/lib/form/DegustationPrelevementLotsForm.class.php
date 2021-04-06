@@ -3,6 +3,7 @@
 class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
     private $lots = [];
+    private $leurres = [];
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
     protected $object = null;
@@ -18,6 +19,12 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     public function configure() {
         $this->lots = $this->object->getLotsFromProvenance();
         uasort($this->lots, array("DegustationClient", "sortLotByDate"));
+
+        foreach ($this->object->getLots() as $lot) {
+            if ($lot->isLeurre()) {
+                $this->leurres[] = $lot;
+            }
+        }
 
         foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {
             if (array_key_exists($key, $this->lots)) {
@@ -57,6 +64,8 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
             }
         }
 
+        $lots = array_merge($lots, $this->leurres);
+
         $this->getObject()->setLots($lots);
         if (!$this->getObject()->max_lots < count($lots)) {
             $this->getObject()->max_lots = count($lots);
@@ -69,6 +78,9 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         $nbLots = 0;
         $lots_preleves = [];
         foreach ($this->getObject()->lots as $lot) {
+          if ($lot->isLeurre()) {
+              continue;
+          }
           $defaults['lots'][$lot->getUniqueId()] = array('preleve' => 1);
           $lots_preleves[] = $lot->getUniqueId();
           $nbLots++;
