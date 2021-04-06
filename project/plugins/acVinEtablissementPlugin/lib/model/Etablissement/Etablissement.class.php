@@ -519,7 +519,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function getMeAndLiaisonOfType($type) {
-        return array_merge(arrat($this), $this->getLiaisonObjectOfType($type));
+        return array_merge(array($this), $this->getLiaisonObjectOfType($type));
     }
 
     public function  getLiaisonObjectOfType($type) {
