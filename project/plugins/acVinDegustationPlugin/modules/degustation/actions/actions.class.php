@@ -204,10 +204,18 @@ class degustationActions extends sfActions {
         }
 
         if(!$next_college){
-          return $this->redirect('degustation_prelevements_etape', $this->degustation);
+          return $this->redirect('degustation_convocations', $this->degustation);
         }
 
         return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id ,'college' => $next_college));
+    }
+
+
+    public function executeConvocations(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_CONVOCATIONS))) {
+            $this->degustation->save(false);
+          }
     }
 
 
