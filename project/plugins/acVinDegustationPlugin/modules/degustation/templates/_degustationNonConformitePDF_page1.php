@@ -49,7 +49,7 @@
 </table><br/><br/>
 
 <table>
-  <tr><td>Dans tous les cas, il vous appartient de nous retourner, par fax ou par courrier, daté et signé chacun des documents joints avec la mention de votre décision :&nbsp;<strong>Demande de déclassement ou nouvelle présentation</strong>.<br/><br/>Dans cette dernière hypothèse, vous voudrez bien nous retourner la fiche de non-conformité accompagnée d’un nouveau bulletin d’analyse</td></tr><br/>
+  <tr><td>Dans tous les cas, il vous appartient de nous retourner, par fax ou par courrier, daté et signé chacun des documents joints avec la mention de votre décision :&nbsp;<strong>Demande de déclassement ou nouvelle présentation</strong>.<br/><br/></td></tr><br/>
   <tr><td>Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.</td></tr><br/>
   <tr><td>Pour toutes informations, merci de nous contacter.</td></tr><br/>
 </table>
