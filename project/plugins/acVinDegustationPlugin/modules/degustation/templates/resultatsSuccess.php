@@ -14,7 +14,7 @@
   <h2>Saisie des résultats de conformité</h2>
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
-
+<p>Nombre total d'échantillons : <?php echo count($degustation->getLotsWithoutLeurre()); ?></p>
 <p>Cocher les échantillons conformes à chaque tables</p>
 
 <ul class="nav nav-pills">

@@ -184,17 +184,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function saveDocumentsDependants() {
         foreach($this->docToSave as $docId) {
-            (acCouchdbManager::getClient()->find($docId))->save();
+            DeclarationClient::getInstance()->findCache($docId)->save(false);
         }
 
         $this->docToSave = array();
+        DeclarationClient::getInstance()->clearCache();
+
     }
 
-    public function save() {
+    public function save($saveDependants = true) {
         $this->generateMouvementsLots();
 
         parent::save();
-        if (count($this->lots)) {
+
+        if (count($this->lots) && $saveDependants) {
             $this->fillDocToSaveFromLots();
             $this->saveDocumentsDependants();
         }

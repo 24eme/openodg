@@ -1238,15 +1238,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $mother->save();
+        DeclarationClient::getInstance()->clearCache();
     }
 
-    public function save() {
+    public function save($saveDependants = true) {
         $this->archiver();
         $this->generateMouvementsLots();
 
         parent::save();
 
-        $this->saveDocumentsDependants();
+        if($saveDependants) {
+            $this->saveDocumentsDependants();
+        }
     }
 
     public function archiver() {
@@ -1271,18 +1274,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
   }
 
   public function archiverLot($numeroDossier) {
+      $lots = array();
+      foreach($this->lots as $lot) {
+        if ($lot->numero_archive) {
+            continue;
+        }
+        $lots[] = $lot;
+      }
+      if(!count($lots)) {
+          return;
+      }
       $lastNum = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne(Lot::TYPE_ARCHIVE, $this->archivage_document->getCampagne());
       $num = 0;
       if (preg_match("/^([0-9]+).*/", $lastNum, $m)) {
         $num = $m[1];
       }
-      foreach($this->lots as $lot) {
-        if (!$lot->numero_archive && !$lot->numero_dossier) {
+      foreach($lots as $lot) {
           $num++;
           $lot->numero_archive = sprintf("%05d", $num);
           $lot->numero_dossier = $numeroDossier;
-        }
       }
+      DeclarationClient::getInstance()->clearCache();
   }
 
   /*** FIN ARCHIVAGE ***/

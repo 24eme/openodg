@@ -75,26 +75,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return preg_replace("/.+—[ ]*/", "", $this->lieu);
     }
 
-    public function getEtablissementObject() {
-
-        return EtablissementClient::getInstance()->find("ETABLISSEMENT-".$this->identifiant);
-    }
-
 	protected function doSave() {
 		$this->piece_document->generatePieces();
 	}
 
-    public function save($generateMouvements = true) {
-		if(!$generateMouvements) {
+    public function save($saveDependants = true) {
+        echo "PUT asking save degustation ".$this->_id."\n";
 
-			return parent::save();
-		}
 
         $this->generateMouvementsLots();
 
         parent::save();
 
-        $this->saveDocumentsDependants();
+        if($saveDependants) {
+            $this->saveDocumentsDependants();
+		}
     }
 
 	public function storeEtape($etape) {
@@ -193,10 +188,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function saveDocumentsDependants() {
         $this->fillDocToSaveFromLots();
         foreach($this->docToSave as $docId) {
-            (acCouchdbManager::getClient()->find($docId))->save();
+            DeclarationClient::getInstance()->findCache($docId)->save(false);
         }
 
         $this->docToSave = array();
+        DeclarationClient::getInstance()->clearCache();
     }
 
 	public function getLot($uniqueId) {
@@ -1221,14 +1217,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function getNbLotByTypeForNumDossier($numDossier, $adresse){
-			$lots = array();
-			foreach ($this->getLotsByNumDossierNumArchive()[$numDossier] as $numCuve => $lot) {
-                if($lot->adresse_logement == $adresse){
-                    $lots[$lot->getTypeProvenance()] +=1;
+		public function getNbLotByAdresseLogt($declarant_identifiant, $adresse){
+			$lotsByType = array();
+			foreach ($this->getLotsByOperateurs($declarant_identifiant) as $lots) {
+                foreach ($lots as $lot) {
+                    if($lot->adresse_logement == $adresse){
+                        $lotsByType[$lot->getTypeProvenance()] +=1;
+                    }
                 }
 			}
-			return $lots;
+			return $lotsByType;
 		}
 
 
