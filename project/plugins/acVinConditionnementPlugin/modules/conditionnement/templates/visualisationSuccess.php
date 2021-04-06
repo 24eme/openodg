@@ -24,6 +24,11 @@
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
+<?php if ($sf_user->hasFlash('warning')): ?>
+    <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
+<?php endif; ?>
+
+
 <?php if(!$conditionnement->validation): ?>
 <div class="alert alert-warning">
     La saisie de cette déclaration n'est pas terminée elle est en cours d'édition
