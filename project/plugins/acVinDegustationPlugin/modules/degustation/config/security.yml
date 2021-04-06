@@ -4,3 +4,7 @@ all:
 getCourrierWithAuth:
   is_secure: false
   credentials: []
+
+convocationWithAuth:
+  is_secure: false
+  credentials: []
