@@ -38,9 +38,9 @@
                           <table class="table table-bordered table-condensed table-striped">
                           	<thead>
                               	<tr>
-                              		<th class="col-xs-4">Collège</th>
-                          			<th class="col-xs-8">Membre</th>
-
+                                    <th class="col-xs-2">Collège</th>
+                                    <th class="col-xs-7">Membre</th>
+                                    <th class="col-xs-3">Email</th>
                                   </tr>
                           	</thead>
                           	<tbody>
@@ -49,6 +49,7 @@
                                 <tr>
                                 <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
                                 <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $identifiant)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                                <td><?php echo (CompteClient::getInstance()->find($identifiant)->email); ?></td>
                                 </tr>
                                 <?php endforeach;?>
                             <?php endforeach; ?>
