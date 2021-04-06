@@ -126,6 +126,26 @@ degustation_selection_degustateurs:
   requirements:
     sf_method: [get, post]
 
+degustation_convocations:
+  url: /degustation/:id/convocations
+  param: { module: degustation, action: convocations }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_convocations_mails:
+  url: /degustation/:id/convocations/mails
+  param: { module: degustation, action: convocationsMails }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_preleve:
   url: /degustation/:id/preleve
   param: { module: degustation, action: preleve }
@@ -516,3 +536,13 @@ degustation_get_courrier_auth:
     type: object
   requirements:
     sf_method: [get]
+
+degustation_convocation_auth:
+  url: /degustation/convocation/:id/:college/:identifiant/:auth/confirmation/:presence
+  param: {module: degustation, action: convocationWithAuth, presence: 1}
+  class: DegustationRoute
+  options:
+    model: Degustation
+    type: object
+  requirements:
+    sf_method: [get, post]

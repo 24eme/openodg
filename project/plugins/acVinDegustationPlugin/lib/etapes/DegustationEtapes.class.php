@@ -4,6 +4,7 @@ class DegustationEtapes extends Etapes {
 
     const ETAPE_LOTS = 'LOTS';
     const ETAPE_DEGUSTATEURS = 'DEGUSTATEURS';
+    const ETAPE_CONVOCATIONS = 'CONVOCATIONS';
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
@@ -16,17 +17,19 @@ class DegustationEtapes extends Etapes {
     public static $etapes = array(
         self::ETAPE_LOTS => 1,
         self::ETAPE_DEGUSTATEURS => 2,
-        self::ETAPE_PRELEVEMENTS => 3,
-        self::ETAPE_TABLES => 4,
-        self::ETAPE_ANONYMATS => 5,
-        self::ETAPE_COMMISSION => 6,
-        self::ETAPE_RESULTATS => 7,
-        self::ETAPE_NOTIFICATIONS => 8,
+        self::ETAPE_CONVOCATIONS => 3,
+        self::ETAPE_PRELEVEMENTS => 4,
+        self::ETAPE_TABLES => 5,
+        self::ETAPE_ANONYMATS => 6,
+        self::ETAPE_COMMISSION => 7,
+        self::ETAPE_RESULTATS => 8,
+        self::ETAPE_NOTIFICATIONS => 9,
     );
 
     public static $libelles = array(
         self::ETAPE_LOTS => 'Lots',
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
+        self::ETAPE_CONVOCATIONS => 'Convocations',
         self::ETAPE_PRELEVEMENTS => 'Prélévements / Confirmation',
         self::ETAPE_TABLES => 'Tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
@@ -38,6 +41,7 @@ class DegustationEtapes extends Etapes {
     public static $libelles_short = array(
         self::ETAPE_LOTS => 'Lots',
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
+        self::ETAPE_CONVOCATIONS => 'Convocations',
         self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_TABLES => 'Tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
@@ -49,6 +53,7 @@ class DegustationEtapes extends Etapes {
     public static $links = array(
         self::ETAPE_LOTS => 'degustation_prelevement_lots',
         self::ETAPE_DEGUSTATEURS => 'degustation_selection_degustateurs',
+        self::ETAPE_CONVOCATIONS => 'degustation_convocations',
         self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',

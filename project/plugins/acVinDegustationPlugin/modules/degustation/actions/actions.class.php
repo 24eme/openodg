@@ -204,10 +204,26 @@ class degustationActions extends sfActions {
         }
 
         if(!$next_college){
-          return $this->redirect('degustation_prelevements_etape', $this->degustation);
+          return $this->redirect('degustation_convocations', $this->degustation);
         }
 
         return $this->redirect('degustation_selection_degustateurs', array('id' => $this->degustation->_id ,'college' => $next_college));
+    }
+
+
+    public function executeConvocations(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_CONVOCATIONS))) {
+            $this->degustation->save(false);
+          }
+    }
+
+    public function executeConvocationsMails(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        Email::getInstance()->sendConfirmationDegustateursMails($this->degustation);
+        $this->getUser()->setFlash("notice", "Les mails de convocations ont été envoyés aux dégustateurs.");
+        $this->degustation->save(false);
+        return $this->redirect('degustation_convocations', $this->degustation);
     }
 
 
@@ -848,5 +864,43 @@ class degustationActions extends sfActions {
         }
 
         $this->forward('degustation', 'degustation'.$type.'PDF');
+    }
+
+    public function executeConvocationWithAuth(sfWebRequest $request) {
+        $auth = $request->getParameter('auth');
+        $this->id = $request->getParameter('id');
+        $this->identifiant = $request->getParameter('identifiant', null);
+        $this->college = $request->getParameter('college', null);
+        $this->presence = $request->getParameter('presence', null);
+
+        if (! $this->identifiant) {
+            throw new sfException('Parametre identifiant n\'est pas défini');
+        }
+
+        if (! $this->college) {
+            throw new sfException('Parametre college n\'est pas défini');
+        }
+
+        if (is_null($this->presence)) {
+            throw new sfException('Parametre présence n\'est pas défini');
+        }
+
+        $key = DegustationClient::generateAuthKey($this->id, $this->identifiant);
+        $auth = substr($auth, 0, strlen($key));
+
+        if ($auth !== $key) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+        $this->setLayout(false);
+        $this->degustation = DegustationClient::getInstance()->find($this->id);
+        $degustateurs = $this->degustation->get("degustateurs");
+        if (! $degustateurs->exist($this->college) || !$degustateurs->get($this->college)->exist($this->identifiant)) {
+            throw new sfException("Le dégustateur $this->college n\'est pas dans la dégustation ");
+        }
+        $degustateur = $degustateurs->get($this->college)->get($this->identifiant);
+
+        $degustateurs->get($this->college)->get($this->identifiant)->add('confirmation', boolval($this->presence));
+        $this->degustation->save(false);
+
     }
 }
