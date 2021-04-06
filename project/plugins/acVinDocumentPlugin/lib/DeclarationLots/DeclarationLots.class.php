@@ -345,18 +345,27 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       }
 
       public function archiverLot($numeroDossier) {
+          $lots = array();
+          foreach($this->lots as $lot) {
+            if ($lot->numero_archive) {
+                continue;
+            }
+            $lots[] = $lot;
+          }
+          if(!count($lots)) {
+              return;
+          }
           $lastNum = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne(Lot::TYPE_ARCHIVE, $this->archivage_document->getCampagne());
           $num = 0;
           if (preg_match("/^([0-9]+).*/", $lastNum, $m)) {
             $num = $m[1];
           }
-          foreach($this->lots as $lot) {
-            if (!$lot->numero_archive && !$lot->numero_dossier) {
+          foreach($lots as $lot) {
               $num++;
               $lot->numero_archive = sprintf("%05d", $num);
               $lot->numero_dossier = $numeroDossier;
-            }
           }
+          DeclarationClient::getInstance()->clearCache();
       }
 
       public function getPourcentagesCepages($cepages) {
