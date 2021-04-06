@@ -784,8 +784,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         if ($this->tags->exist('manuel')) {
             foreach ($this->tags->manuel as $tag) {
-                if (strpos($tag, 'degustateur:') === 0) {
-                    $tags[] = substr($tag, strlen('degustateur:'));
+                if (strpos($tag, 'degustateur_') === 0) {
+                    $tags[] = ucfirst(str_replace('_', ' ', substr($tag, strlen('degustateur_'))));
                 }
             }
         }

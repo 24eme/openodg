@@ -111,4 +111,3 @@
 
           <?php endif; ?>
 <?php use_javascript('hamza_style.js'); ?>
-<?php use_javascript('conditionnement.js'); ?>
