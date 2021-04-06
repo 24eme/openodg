@@ -73,7 +73,7 @@ p, div {
       <span>&nbsp;&nbsp;Heure : _ _ _ _</span>
     </td>
     <td style="width:50%; text-align: center;">
-      <span>&nbsp;&nbsp;&nbsp;&nbsp;Lieu : <?php echo $degustation->getLieuNom(); ?> </span>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;Labo : <?php echo $etablissement->getLaboLibelle(); ?> </span>
     </td>
   </tr>
   <tr>
