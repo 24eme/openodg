@@ -517,18 +517,38 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function getMeAndLiaisonOfType($type) {
-        $etablissements = array($this);
-        if ($this->exist('liaisons_operateurs')) {
-            foreach ($this->liaisons_operateurs as $k => $o) {
-                if ($o->type_liaison == $type) {
-                    $e = EtablissementClient::getInstance()->find($o->id_etablissement);
-                    if ($e && ($e->cvi || $e->ppm)) {
-                        $etablissements[] = $e;
-                    }
-                }
+        return array_merge(arrat($this), $this->getLiaisonObjectOfType($type));
+    }
+
+    public function  getLiaisonObjectOfType($type) {
+        $etablissements = array();
+        foreach ($this->getLiaisonOfType($type) as $o) {
+            $e = EtablissementClient::getInstance()->find($o->id_etablissement);
+            if ($e && ($e->cvi || $e->ppm)) {
+                $etablissements[] = $e;
             }
         }
         return $etablissements;
+    }
+
+    public function  getLiaisonOfType($type) {
+        $liaisons = array();
+        if ($this->exist('liaisons_operateurs')) {
+            foreach ($this->liaisons_operateurs as $k => $o) {
+                if ($o->type_liaison == $type) {
+                    $liaisons[] = $o;
+                }
+            }
+        }
+        return $liaisons;
+    }
+
+    public function getLaboLibelle() {
+        $labos = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_LABO);
+        if (!count($labos)) {
+            return null;
+        }
+        return $labos[0]->libelle_etablissement;
     }
 
 }
