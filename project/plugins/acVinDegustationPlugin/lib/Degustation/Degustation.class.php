@@ -79,18 +79,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$this->piece_document->generatePieces();
 	}
 
-    public function save($generateMouvements = true) {
-		if(!$generateMouvements) {
+    public function save($saveDependants = true) {
+        echo "PUT asking save degustation ".$this->_id."\n";
 
-			return parent::save();
-		}
 
         $this->generateMouvementsLots();
 
         parent::save();
 
-        $this->saveDocumentsDependants();
-        DeclarationClient::getInstance()->clearCache();
+        if($saveDependants) {
+            $this->saveDocumentsDependants();
+		}
     }
 
 	public function storeEtape($etape) {
@@ -189,10 +188,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function saveDocumentsDependants() {
         $this->fillDocToSaveFromLots();
         foreach($this->docToSave as $docId) {
-            DeclarationClient::getInstance()->findCache($docId)->save();
+            DeclarationClient::getInstance()->findCache($docId)->save(false);
         }
 
         $this->docToSave = array();
+        DeclarationClient::getInstance()->clearCache();
     }
 
 	public function getLot($uniqueId) {
