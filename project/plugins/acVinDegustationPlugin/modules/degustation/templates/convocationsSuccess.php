@@ -2,7 +2,7 @@
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_CONVOCATIONS)); ?>
-
+<?php $degustateur = null; $college = null; ?>
 
 <div class="page-header no-border">
   <h2>Convocations des dégustateurs</h2>
@@ -44,20 +44,24 @@
                                   </tr>
                           	</thead>
                           	<tbody>
-                          		<?php foreach ($degustation->degustateurs as $college => $degustateurs): ?>
-                  	        		<?php foreach ($degustateurs as $id => $degustateur): ?>
-                  	        		<tr>
-                  								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
-                  	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
-
-                  							</tr>
-                          		<?php endforeach;?>
-                          		<?php endforeach; ?>
+                            <?php foreach ($degustation->degustateurs as $college => $degustateurs): ?>
+                                <?php foreach ($degustateurs as $identifiant => $degustateur): ?>
+                                <tr>
+                                <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
+                                <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $identifiant)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                                </tr>
+                                <?php endforeach;?>
+                            <?php endforeach; ?>
                           	</tbody>
                           </table>
                   	</div>
                   </div>
 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-4 text-center">
+                <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#popupMailDegustateurs" type="button">&nbsp;Prévisualiser le mail&nbsp;</button>
             </div>
         </div>
       </div>
@@ -75,3 +79,6 @@
     <a class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_prelevements_etape', $degustation) ?>" >&nbsp;Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
   </div>
 </div>
+<?php if($college && $degustateur): ?>
+    <?php include_partial('degustation/popupMailDegustateurs',array('degustation' => $degustation, 'identifiant' => $identifiant, 'college' => $college)); ?>
+<?php endif; ?>

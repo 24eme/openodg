@@ -526,3 +526,13 @@ degustation_get_courrier_auth:
     type: object
   requirements:
     sf_method: [get]
+
+degustation_convocation_auth:
+  url: /degustation/convocation/:id/:college/:identifiant/:auth/confirmation/:presence
+  param: {module: degustation, action: convocationWithAuth, presence: 1}
+  class: DegustationRoute
+  options:
+    model: Degustation
+    type: object
+  requirements:
+    sf_method: [get, post]
