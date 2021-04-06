@@ -80,8 +80,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
     public function save($saveDependants = true) {
-        echo "PUT asking save degustation ".$this->_id."\n";
-
 
         $this->generateMouvementsLots();
 
