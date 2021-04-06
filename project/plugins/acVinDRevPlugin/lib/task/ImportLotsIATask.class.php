@@ -114,7 +114,7 @@ EOF;
             $produit_alias = $this->alias($data[self::CSV_APPELLATION], $data[self::CSV_COULEUR]);
             $produitKey = $this->clearProduitKey(KeyInflector::slugify($produit_alias));
             if (!isset($this->produits[$produitKey])) {
-              echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR].";pas d'import;$line\n";
+              echo "WARNING;produit non trouvé ".$data[self::CSV_APPELLATION].' '.$data[self::CSV_COULEUR]." ($produitKey);pas d'import;$line\n";
               continue;
             }
             $produit = $this->produits[$produitKey];

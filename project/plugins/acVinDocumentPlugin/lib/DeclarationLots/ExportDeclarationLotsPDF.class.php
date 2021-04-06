@@ -48,7 +48,7 @@ class ExportDeclarationLotsPDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        return sprintf("\n%s     %s - %s - %s   %s    %s\n", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
+        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
     }
 
     protected function getHeaderSubtitle() {
