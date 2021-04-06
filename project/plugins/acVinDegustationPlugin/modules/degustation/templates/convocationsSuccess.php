@@ -27,7 +27,7 @@
           <div class="col-xs-12 text-right">
             <br/>
               <br/>
-              <a class="btn btn-default btn-sm" style="" href="<?php echo "#"; ?>" onclick="confirm('Voulez-vous envoyer le mail aux dégustateurs?')" >&nbsp;Convoquer les dégustateurs&nbsp;<span class="glyphicon glyphicon-send"></span></a>
+              <a class="btn btn-default btn-sm" style="" href="<?php echo url_for('degustation_convocations_mails', $degustation); ?>" onclick="confirm('Voulez-vous envoyer les emails aux dégustateurs?')" >&nbsp;Convoquer les dégustateurs&nbsp;<span class="glyphicon glyphicon-send"></span></a>
           </div>
         </div>
         <br/>

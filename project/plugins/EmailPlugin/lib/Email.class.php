@@ -48,7 +48,7 @@ class Email {
 
             return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
         }
-        
+
         return Email::getInstance()->getMessageDrevConfirmee($drev);
     }
 
@@ -557,6 +557,43 @@ class Email {
                 ->setContentType('text/plain');
 
         return $this->getMailer()->send($message);
+    }
+
+
+    public function sendConfirmationDegustateursMails($degustation) {
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $infos = sfConfig::get('app_facture_emetteur');
+        $courrier_infos = $infos[$app];
+
+        $from = $courrier_infos['email'];
+        $reply_to = $courrier_infos['email'];
+
+        foreach ($degustation->degustateurs as $college_key => $collegeComptes) {
+            foreach ($collegeComptes as $id_compte => $degustateur) {
+                $compte = CompteClient::getInstance()->find($id_compte);
+                $to = $compte->email;
+                $subject = $courrier_infos['service_facturation']." - Convocation pour une dégustation le " . ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm");
+
+                $body = $this->getBodyFromPartial('send_convocation_degustateur', array('degustation' => $degustation, 'identifiant' => $id_compte, 'college' => $college_key));
+
+                if (!$compte->email) {
+                    $to = $reply_to;
+                    $subject = "[$compte->nom : EMAIL NON ENVOYE] " . $subject;
+                    $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $degustateur->get('libelle',''), $this->getAction()->generateUrl('compte_visualisation', array('identifiant' => $identifiant), true), $body);
+                }
+
+                $message = Swift_Message::newInstance()
+                        ->setFrom($from)
+                        ->setReplyTo($reply_to)
+                        ->setTo($to)
+                        ->setSubject($subject)
+                        ->setBody($body)
+                        ->setContentType('text/plain');
+                $this->getMailer()->send($message);
+            }
+        }
+
+        return true;
     }
 
     protected function getMailer() {

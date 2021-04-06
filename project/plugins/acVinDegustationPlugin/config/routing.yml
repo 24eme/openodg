@@ -136,6 +136,16 @@ degustation_convocations:
   requirements:
     sf_method: [get]
 
+degustation_convocations_mails:
+  url: /degustation/:id/convocations/mails
+  param: { module: degustation, action: convocationsMails }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_preleve:
   url: /degustation/:id/preleve
   param: { module: degustation, action: preleve }
