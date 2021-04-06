@@ -3,6 +3,7 @@
 class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
     protected $degustation = null;
+    protected $courrierInfos = null;
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
@@ -10,6 +11,11 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
+
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $courrierInfos = sfConfig::get('app_facture_emetteur');
+        $this->courrierInfos = $courrierInfos[$app];
+
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
@@ -59,7 +65,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = $this->degustation->getNomOrganisme();
+        $titre = $this->courrierInfos["service_facturation"];
         return $titre;
     }
 
@@ -72,7 +78,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
 
     protected function getFooterText() {
-        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
+        return sprintf("\n%s     %s - %s - %s   %s    %s\n", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
         return $footer;
     }
 
