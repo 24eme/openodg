@@ -305,13 +305,15 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             $this->piece_document->generatePieces();
     	}
 
-        public function save() {
+        public function save($saveDependants = true) {
             $this->archiver();
             $this->generateMouvementsLots();
 
             parent::save();
 
-            $this->saveDocumentsDependants();
+            if($saveDependants) {
+                $this->saveDocumentsDependants();
+            }
         }
 
         public function saveDocumentsDependants() {
@@ -323,6 +325,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             }
 
             $mother->save();
+            DeclarationClient::getInstance()->clearCache();
         }
 
         public function archiver() {
