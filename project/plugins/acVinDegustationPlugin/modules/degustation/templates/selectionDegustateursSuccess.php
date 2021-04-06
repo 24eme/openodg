@@ -20,6 +20,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
 
+          <form action="<?php echo url_for("degustation_selection_degustateurs", array('id' => $degustation->_id, 'college' => $college)) ?>" method="post" class="form-horizontal degustation degustateurs">
           <div class="row row-margin row-button">
             <div class="col-xs-offset-4 col-xs-4 text-center">
             </div>
@@ -29,11 +30,12 @@
 
         <p>Sélectionnez l'ensemble des <?php echo strtolower($college_libelle).'s'; ?> en vue de leurs participations à la dégustation</p>
 
-        <div class="form-group">
+        <div class="row">
+        <div class="col-xs-12">
           <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
         </div>
-
-        <form action="<?php echo url_for("degustation_selection_degustateurs", array('id' => $degustation->_id, 'college' => $college)) ?>" method="post" class="form-horizontal degustation degustateurs">
+        </div>
+        <br/>
 
 
           <?php echo $form->renderHiddenFields(); ?>
