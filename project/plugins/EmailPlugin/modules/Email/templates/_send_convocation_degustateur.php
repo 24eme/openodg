@@ -1,11 +1,10 @@
 <?php use_helper('Date'); ?>Bonjour,
 
-Vous êtes convié en tant que degustateur en qualité de <?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?> à la dégustation du <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm"); ?>.
+Une dégustation aura lieu le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "HH").'h'.format_date($degustation->date, "mm"); ?> (<?php echo $degustation->getLieuNom()." - ".preg_replace("/.+—[ ]*/", "", $degustation->lieu); ?>).
 
-Celle ci se tiendra <?php echo $degustation->getLieuNom(); ?>
+Êtes vous disponible pour y participer en tant que <?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?>?
 
-
-Vous trouverez ci-dessous le lien pour confirmer votre présence à cette dégustation :
+Pour confirmer votre présence, cliquez sur le lien suivant :
 
 <?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
     'id' => $degustation->_id,
@@ -15,7 +14,7 @@ Vous trouverez ci-dessous le lien pour confirmer votre présence à cette dégus
 ], true); ?>
 
 
-Si toutefois vous ne pouvez pas venir à cette  dégustation, vous pouvez indiquer votre absence ci dessous :
+Si vous ne pouvez pas venir à cette dégustation, merci de nous indiquer votre absence en cliquant sur le lien ci dessous :
 
 <?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
     'id' => $degustation->_id,
