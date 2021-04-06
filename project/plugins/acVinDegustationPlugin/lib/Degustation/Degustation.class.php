@@ -75,11 +75,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return preg_replace("/.+—[ ]*/", "", $this->lieu);
     }
 
-    public function getEtablissementObject() {
-
-        return EtablissementClient::getInstance()->find("ETABLISSEMENT-".$this->identifiant);
-    }
-
 	protected function doSave() {
 		$this->piece_document->generatePieces();
 	}
@@ -95,6 +90,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         parent::save();
 
         $this->saveDocumentsDependants();
+        DeclarationClient::getInstance()->clearCache();
     }
 
 	public function storeEtape($etape) {
@@ -193,7 +189,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function saveDocumentsDependants() {
         $this->fillDocToSaveFromLots();
         foreach($this->docToSave as $docId) {
-            (acCouchdbManager::getClient()->find($docId))->save();
+            DeclarationClient::getInstance()->findCache($docId)->save();
         }
 
         $this->docToSave = array();

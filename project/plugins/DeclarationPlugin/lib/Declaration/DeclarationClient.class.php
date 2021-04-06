@@ -5,6 +5,8 @@ class DeclarationClient
     protected static $self = null;
     const REGION_LOT = 'IGP_VALDELOIRE';
 
+    public $findCache = array();
+
     public static function getInstance() {
         if(is_null(self::$self)) {
 
@@ -17,6 +19,18 @@ class DeclarationClient
     public function find($id, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $force_return_ls = false) {
 
         return acCouchdbManager::getClient()->find($id, $hydrate, $force_return_ls);
+    }
+
+    public function clearCache() {
+        $this->findCache = array();
+    }
+
+    public function findCache($id) {
+        if(!array_key_exists($id, $this->findCache)) {
+            $this->findCache[$id] = $this->find($id);
+        }
+
+        return $this->findCache[$id];
     }
 
     public function getExportCsvClassName($type) {
