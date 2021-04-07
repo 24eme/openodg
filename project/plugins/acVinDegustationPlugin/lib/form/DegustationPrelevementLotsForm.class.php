@@ -27,14 +27,16 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
         }
 
         foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {
-            if (array_key_exists($key, $this->lots)) {
+            if (array_key_exists($item->unique_id, $this->lots)) {
                 continue;
             }
 
-            $this->lots[$key] = $item;
+            $this->lots[$item->unique_id] = $item;
         }
 
         $formLots = new BaseForm();
+
+        ksort($this->lots);
 
         foreach ($this->lots as $key => $lot) {
             $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
