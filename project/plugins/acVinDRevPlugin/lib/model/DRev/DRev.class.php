@@ -219,14 +219,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lots;
     }
 
-    public function getLotsByDate($desc = false)
+    public function getLotsByNumeroDossierAndDate($chrono = true)
     {
         if (! $this->exist('lots')) {
             return [];
         }
 
-        $lots = $this->_get('lots')->toArray(1,1);
-        uasort($lots, "DRev::compareLots");
+        $lots = array();
+        foreach($this->_get('lots')->toArray(1,1) as $lot) {
+            $lots[$lot->unique_id.$lot->date] = $lot;
+        }
+        ksort($lots);
+        $lots = array_values($lots);
 
         if ($desc) {
             $lots = array_reverse($lots);

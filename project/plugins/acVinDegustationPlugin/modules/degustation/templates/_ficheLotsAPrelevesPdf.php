@@ -33,15 +33,16 @@ th {
         </tr>
       </table>
     <?php $ligne = 1; $table_header = true;
-    foreach($lots as $adresse => $lotsArchive):
-        $etablissement = $etablissements[$adresse];
-        $adresseLogement = splitLogementAdresse($adresse);
+    foreach($lots as $key_lots => $lotsArchive):
+        $etablissement = $etablissements[$key_lots];
 
         $numDossier = null;
         foreach ($lotsArchive as $lot) {
-          $numDossier = $lot->numero_archive;
+          $numDossier = $lot->numero_dossier;
           break;
         }
+        $adresse = $lot->getRawValue()->adresse_logement;
+        $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
     <?php if ($ligne % 12 == 0 ) : $table_header = true; ?>
       </table>
@@ -78,7 +79,7 @@ th {
           <td><?php echo tdStart() ?>
             N° dossier : <?php echo $numDossier; ?><br/>
             <small>
-            <?php $lotTypesNb = $degustation->getNbLotByAdresseLogt($etablissement->identifiant, $adresse); ?>
+            <?php $lotTypesNb = $degustation->getNbLotByTypeFilteredByAdresseLogt($etablissement->identifiant, $adresse); ?>
             <?php foreach ($lotTypesNb as $provenance => $nb) {
                 echo $nb." lot";
                 echo ($nb>1)?'s':'';

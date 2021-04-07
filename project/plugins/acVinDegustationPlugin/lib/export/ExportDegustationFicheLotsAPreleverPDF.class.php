@@ -17,8 +17,8 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
           if ($lot->isLeurre()) {
               continue;
           }
-          $adresses[$lot->adresse_logement][$lot->getNumeroArchive()] = $lot;
-          $etablissements[$lot->adresse_logement] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+          $adresses[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant][$lot->getNumeroArchive()] = $lot;
+          $etablissements[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
 
       }
 

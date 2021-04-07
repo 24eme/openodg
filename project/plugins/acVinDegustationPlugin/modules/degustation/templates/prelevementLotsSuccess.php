@@ -53,8 +53,8 @@
             <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
             <td><?php echo $lot->declarant_nom; ?></td>
             <td>
-              <a href="<?php echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>">
-                <?php echo ucfirst(strtolower($lot->type_document)); ?>
+              <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
+                <?php echo ucfirst(strtolower($lot->type_document)).' n°&nbsp;'.$lot->numero_dossier; ?>
               </a>
             </td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
@@ -69,7 +69,7 @@
               <div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form['lots'][$key]['preleve']->renderError() ?>
                   <div class="col-xs-12">
-                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => $lot->numero_dossier, "data-preleve-lot" => $lot->numero_logement_operateur, 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => $lot->declarant_identifiant, "data-preleve-lot" => $lot->unique_id, 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                   </div>
               </div>
             </td>
