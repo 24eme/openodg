@@ -383,8 +383,6 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
 
-        $this->checkIfAffecte($this->drev);
-
         if ($this->needDrDouane()) {
 
             return $this->redirect('drev_dr_upload', $this->drev);
