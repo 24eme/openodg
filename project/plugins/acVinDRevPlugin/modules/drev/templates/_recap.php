@@ -154,7 +154,7 @@
               $firstRow = true;
               $totalVolume = 0;
                 $volume = 0;
-                  foreach ($drev->getLotsByDate(true) as $lot) :
+                  foreach ($drev->getLotsByNumeroDossierAndDate() as $lot) :
                     $totalVolume+=$lot->volume;
                     ?>
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
