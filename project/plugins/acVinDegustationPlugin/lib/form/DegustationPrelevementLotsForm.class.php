@@ -86,18 +86,21 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
           $nbLots++;
         }
 
-        foreach ($this->lots as $key => $lot) {
-            if (in_array($lot->unique_id, $lots_preleves)) {
-                continue;
-            }
+        if (!count($lots_preleves)){
 
-            $preleve = ($this->dates_degust_drevs[$lot->id_document] > $this->getDateDegustation()) ? 0 : 1;
+            foreach ($this->lots as $key => $lot) {
+                if (in_array($lot->unique_id, $lots_preleves)) {
+                    continue;
+                }
 
-            if(!is_null($this->getObject()->max_lots) && ($this->getObject()->max_lots <= $nbLots)){
-                $preleve = 0;
+                $preleve = ($this->dates_degust_drevs[$lot->id_document] > $this->getDateDegustation()) ? 0 : 1;
+
+                if(!is_null($this->getObject()->max_lots) && ($this->getObject()->max_lots <= $nbLots)){
+                    $preleve = 0;
+                }
+                $nbLots+=$preleve;
+                $defaults['lots'][$key] = array('preleve' => $preleve);
             }
-            $nbLots+=$preleve;
-            $defaults['lots'][$key] = array('preleve' => $preleve);
         }
 
         $this->setDefaults($defaults);
