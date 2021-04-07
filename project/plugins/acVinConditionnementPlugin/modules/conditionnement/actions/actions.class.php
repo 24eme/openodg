@@ -17,7 +17,7 @@ class conditionnementActions extends sfActions {
 
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_CONDITIONNEMENT, $etablissement);
 
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, null, true);
