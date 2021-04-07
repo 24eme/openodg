@@ -11,7 +11,6 @@
     <h2>Déclaration de Conditionnement du <?php echo format_date( $conditionnement->date); ?>
     <?php if($conditionnement->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> reçue le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
-      <?php if($conditionnement->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
     <?php elseif($conditionnement->validation): ?>
     <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> signée le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($conditionnement->validation_odg): ?> et approuvée le <?php echo format_date($conditionnement->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
