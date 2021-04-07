@@ -47,7 +47,7 @@
               <br/>
             </div>
           </div>
-          	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri)) ?>" method="post" class="form-horizontal degustation table">
+          	<form action="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri)) ?>" method="post" class="form-horizontal degustation table" id="#form-organisation-table">
           		<?php echo $form->renderHiddenFields(); ?>
           		<div class="bg-danger">
           			<?php echo $form->renderGlobalErrors(); ?>
@@ -74,6 +74,8 @@
                           <a href="<?php echo url_for('degustation_position_lot_up', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-up"></span></a>
                           <a href="<?php echo url_for('degustation_position_lot_down', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-down"></span></a>
                           <?php endif; ?>
+                            <br/>
+                            <small class="text-muted"><?php echo $lot->position ?></small>
                         </td>
           							<td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
           								<div class="row">
