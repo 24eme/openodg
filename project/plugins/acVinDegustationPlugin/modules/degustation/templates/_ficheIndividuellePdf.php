@@ -44,17 +44,13 @@
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-          <th class="topempty bg-white" style="width:10%; "><?php echo tdStart() ?><strong>Couleur</strong></th>
-          <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>IGP/ Millesime</strong></th>
-          <th class="topempty bg-white"style="width:14%;"><?php echo tdStart() ?><strong>Cépage</strong></th>
+          <th class="topempty bg-white" style="width:30%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
          <th colspan="4"style="width:20%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
           <th class="bg-white" colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Avis</strong></th>
           <th class="bg-white"  colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-          <th class="topempty bg-white" style="width:22%;"><strong>Motifs (si non conforme)</strong></th>
+          <th class="topempty bg-white" style="width:30%;"><strong>Motifs (si non conforme)</strong></th>
        </tr>
        <tr style="line-height:13px;">
-         <th class="empty bg-white"></th>
-         <th class="empty bg-white"></th>
          <th class="empty bg-white"></th>
          <th class="empty bg-white"></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>Visuel<br>/12</small></strong></th>
@@ -71,15 +67,7 @@
 
     <tr style="line-height:13px;">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
-      <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getConfig()->getCouleur()->getLibelle();  ?></strong></td>
-      <td><?php echo tdStart() ?>
-        &nbsp;<?php echo $lotInfo->getConfig()->getAppellation()->getLibelle(); ?>
-        <?php if(DegustationConfiguration::getInstance()->hasSpecificiteLotPdf() && DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-        <br/><small style="color: #777777;font-size :14px"><?php echo " ($lotInfo->specificite)";?></small>
-      <?php endif ?>
-      &nbsp;<?php echo $lotInfo->getMillesime(); ?>
-      </td>
-      <td><?php echo tdStart() ?><?php echo showOnlyCepages($lotInfo) ?></td>
+      <td><?php echo tdStart() ?><?php echo showProduitLot($lotInfo) ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
