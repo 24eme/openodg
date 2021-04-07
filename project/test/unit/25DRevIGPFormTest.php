@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(117);
+$t = new lime_test(118);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -160,7 +160,6 @@ $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_F
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$periode;
 if($drevConfig->hasSpecificiteLot()){
   $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
-  $valuesRev['lots']['0']['specificite'] = $drevConfig->getSpecificites()['bio'];
 }
 
 $form->bind($valuesRev);
@@ -211,6 +210,7 @@ $drev->validate();
 $drev->save();
 
 $t->is(count($drev->lots), 1, "La DRev validée contient uniquement le lot saisi");
+$t->is($drev->lots[0]->specificite, null, "La spécificité du lot est nulle");
 $t->ok(!$drev->mouvements_lots->exist($drev->identifiant), "La DRev non validée ODG ne contient pas de mouvement de lots");
 
 $t->comment("DRev Validée ODG");

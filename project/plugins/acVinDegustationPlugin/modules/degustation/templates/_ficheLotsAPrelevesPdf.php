@@ -32,7 +32,7 @@ th {
           <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
         </tr>
       </table>
-    <?php $ligne = 3; $table_header = true;
+    <?php $ligne = 1; $table_header = true;
     foreach($lots as $adresse => $lotsArchive):
         $etablissement = $etablissements[$adresse];
         $adresseLogement = splitLogementAdresse($adresse);
@@ -61,15 +61,20 @@ th {
          <tr style="line-height:17px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale; ?></small></strong></td>
            <td>
-             <small><?php echo $adresseLogement['nom'].' '.$adresseLogement['adresse']; ?></small><br/>
-             <small><?php echo $adresseLogement['code_postal']; ?> <?php echo $adresseLogement['commune']; ?></small><br/>
-             <small>
+             <small><?php
+                if ($adresseLogement['nom'] != $etablissement->raison_sociale) {
+                    echo substr($adresseLogement['nom'], 0, 32).'<br/>';
+                }
+                echo substr($adresseLogement['adresse'], 0, 32); ?><br/>
+                <?php echo substr($adresseLogement['code_postal'].' '.$adresseLogement['commune'], 0, 32); ?><br/>
+                <?php if ($adresseLogement['nom'] == $etablissement->raison_sociale): ?>
+                    <br/>
+                <?php endif; ?>
              <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?>
              <?php echo ($etablissement->telephone_bureau && $etablissement->telephone_mobile) ? ' / ' : ''; ?>
              <?php echo ($etablissement->telephone_mobile) ? $etablissement->telephone_mobile : '' ?>
             </small>
-
-           </td>
+          </td>
           <td><?php echo tdStart() ?>
             N° dossier : <?php echo $numDossier; ?><br/>
             <small>
