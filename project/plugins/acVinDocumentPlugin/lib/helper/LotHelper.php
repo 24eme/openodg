@@ -24,7 +24,7 @@ function showOnlyCepages($lot){
     $total = $lot->volume;
     $text .= " <small class='text-muted'>";
     foreach ($lot->cepages as $cepage => $hl) {
-        $text .= $cepage . ' (' . round(($hl*100)/$total, 2) . "%)";
+        $text .= $cepage . ' (' . round(($hl*100)/$total, 2) . "%) ";
     }
     $text .= "</small>";
   } else {
