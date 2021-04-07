@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(13);
+$t = new lime_test(16);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -17,6 +17,18 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $transaction = TransactionClient::getInstance()->find($k);
     $transaction->delete(false);
+}
+foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = ConditionnementClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $cd = ChgtDenomClient::getInstance()->find($k);
+    $cd->delete(false);
+}
+foreach(DrevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $drev = DrevClient::getInstance()->find($k);
+    $drev->delete(false);
 }
 
 $year = date('Y');
@@ -26,6 +38,19 @@ if (date('m') < 8) {
 $campagne = sprintf("%04d-%04d", $year , $year + 1 );
 $date = $year.'10-28';
 //Début des tests
+
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev->validate();
+$drev->validateOdg();
+$drev->save();
+$t->is($drev->numero_archive, '00002', "La DRev créée pour tester la mise en commun des numéros d'archive avec la Transaction");
+$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
+$conditionnement->validate();
+$conditionnement->validateOdg();
+$conditionnement->save();
+$t->is($conditionnement->numero_archive, '00003', "Le conditionnement créé pour tester la mise en commun des numéros d'archive avec la Transaction");
+
+
 $t->comment("Création d'une Transaction");
 
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
@@ -73,9 +98,10 @@ $transaction->save();
 $t->comment("Historique de mouvements");
 $lot = $transaction->lots[0];
 
-$t->is(count($transaction->lots->toArray(true, false)), 1, "Un lot");
-$t->ok($lot->numero_dossier, "Numéro de dossier");
-$t->ok($lot->numero_archive, "Numéro d'archive");
+$t->is(count($transaction->lots->toArray(true, false)), 1, "La transaction possède bien un lot");
+$t->is($transaction->numero_archive, '00004', "Le numéro de dossier sur la transaction prend en compte la DREV et le conditionnement créé au début");
+$t->is($lot->numero_dossier, '00004', "Le numeor de dossier du lot reprend bien le numero d'archive de la transaction");
+$t->is($lot->numero_archive, '00001', "Le numéro d'archive est bien le premier");
 $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_ENLEVE), 'Le lot est enlevé');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');

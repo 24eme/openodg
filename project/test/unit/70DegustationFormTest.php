@@ -50,6 +50,10 @@ foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouch
     $transaction = TransactionClient::getInstance()->find($k);
     $transaction->delete(false);
 }
+foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $cd = ChgtDenomClient::getInstance()->find($k);
+    $cd->delete(false);
+}
 foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
@@ -180,9 +184,9 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 3, 'Il y a 3 lots dans la dégustation');
 
-$t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00003", "Le lot 1 de la dégustation a bien la clé unique");
-$t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00001-00001", "Le lot 2 de la dégustation a bien la clé unique");
-$t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00001-00002", "Le lot 3 de la dégustation a bien la clé unique");
+$t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00003-00003", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00003-00003");
+$t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00002-00001", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00002-00001");
+$t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00002-00002", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00002");
 
 $t->is($degustation->lots[1]->adresse_logement,$addrCompleteLgtDrev, "Dans la dégustation on a l'addresse de logement depuis la DRev");
 
