@@ -79,7 +79,7 @@ th {
           <td><?php echo tdStart() ?>
             N° dossier : <?php echo $numDossier; ?><br/>
             <small>
-            <?php $lotTypesNb = $degustation->getNbLotByAdresseLogt($etablissement->identifiant, $adresse); ?>
+            <?php $lotTypesNb = $degustation->getNbLotByTypeFilteredByAdresseLogt($etablissement->identifiant, $adresse); ?>
             <?php foreach ($lotTypesNb as $provenance => $nb) {
                 echo $nb." lot";
                 echo ($nb>1)?'s':'';

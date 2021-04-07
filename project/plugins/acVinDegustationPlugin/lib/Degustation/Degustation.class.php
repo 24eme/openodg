@@ -1215,7 +1215,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function getNbLotByAdresseLogt($declarant_identifiant, $adresse){
+		public function getNbLotByTypeFilteredByAdresseLogt($declarant_identifiant, $adresse){
 			$lotsByType = array();
 			foreach ($this->getLotsByOperateurs($declarant_identifiant) as $lots) {
                 foreach ($lots as $lot) {
