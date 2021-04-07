@@ -86,6 +86,8 @@ class drevActions extends sfActions {
         $etablissement = $drev->getEtablissementObject();
         $this->secure(DRevSecurity::EDITION, $drev);
 
+        $this->checkIfAffecte($drev);
+
         $drev->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
@@ -93,10 +95,13 @@ class drevActions extends sfActions {
     }
 
     public function executeDevalidation(sfWebRequest $request) {
+
         $drev = $this->getRoute()->getDRev();
         if (!$this->getUser()->isAdmin()) {
           $this->secure(DRevSecurity::DEVALIDATION , $drev);
         }
+
+        $this->checkIfAffecte($drev);
 
         $drev->validation = null;
         $drev->validation_odg = null;
@@ -377,8 +382,6 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
-
-        $this->redirectIfAffecte($this->drev);
 
         if ($this->needDrDouane()) {
 
@@ -991,19 +994,16 @@ class drevActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function redirectIfAffecte($drev)
+    protected function checkIfAffecte($drev)
     {
-        $affecte = false;
-
+        $lotsAffectes = [];
         foreach ($drev->getLots() as $lot) {
             if ($lot->isAffecte() || $lot->isChange()) {
-                $affecte = true;
+                $lotsAffectes[] = $lot->getHash();
             }
         }
-
-        if ($affecte) {
-            $this->getUser()->setFlash('warning', "Vous ne pouvez pas modifier une déclaration si l'un des lots a été affecté");
-            return $this->redirect('drev_visualisation', $drev);
+        if (count($lotsAffectes) > 0) {
+            throw new Exception('Les lots suivants de la DREV '.$drev->_id.' sont affectés : '.implode(', ', $lotsAffectes));
         }
     }
 
