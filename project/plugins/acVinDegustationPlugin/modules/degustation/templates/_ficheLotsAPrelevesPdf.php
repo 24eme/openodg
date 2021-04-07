@@ -12,7 +12,6 @@ th {
 </style>
     <div>
       <table>
-        <?php echo tdStart() ?>
         <tr>
           <td style="width:20%;">
           </td>
@@ -33,16 +32,7 @@ th {
           <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
         </tr>
       </table>
-      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
-        <tr style="line-height:20px;">
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:35%;"><?php echo tdStart() ?><strong>Coordonnées</strong></th>
-          <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
-          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
-        </tr>
-        <?php $ligne = 0; $page = 1;
-
+    <?php $ligne = 1; $table_header = true;
     foreach($lots as $adresse => $lotsArchive):
         $etablissement = $etablissements[$adresse];
         $adresseLogement = splitLogementAdresse($adresse);
@@ -53,12 +43,12 @@ th {
           break;
         }
     ?>
-    <?php if(($ligne == 11 && $page == 1) || ($ligne == 12 && $page > 1)): //display 14 Lots on the first page and below 17 Lots all others pages?>
+    <?php if ($ligne % 12 == 0 ) : $table_header = true; ?>
       </table>
       <br pagebreak="true" />
       <p>Suite des lots<p/>
-      <?php $ligne = 0; $page++ ?>
-
+    <?php endif;?>
+    <?php if ($table_header): $table_header = false; ?>
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
