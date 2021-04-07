@@ -152,7 +152,7 @@ $t->is(count($lotsEnManquement), 0, "Il y a 0 mouvement en manquement");
 
 $lotPrelevable = current($lotsPrelevables);
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotPrelevable), 1, "Le lot prélevable sait qu'il a une dégust précédente");
-$t->is($lotPrelevable->specificite, Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation", "La spécificité du lot prélevable est : ".Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation");
+$t->is($lotPrelevable->specificite, "2ème dégustation", "La spécificité du lot prélevable est : 2ème dégustation");
 $t->is($lotPrelevable->id_document, $degustation1->_id, "Le lot prélevable de la degust 1 a été généré par ".$degustation1->_id);
 $t->is($lotPrelevable->id_document_provenance, $drev->_id, "Le lot prélevable de la degust 1 a pour origine ".$drev->_id);
 $t->is($lotPrelevable->id_document_affectation, null, "Le lot prélevable de la degust 1 n'est pas encore affecté");
@@ -196,7 +196,7 @@ $t->is($lot_degust2->getNombrePassage(), 2, "Le lot de la deuxième degust a com
 $t->ok($lot_degust2->isSecondPassage(), "Le lot de la deuxième degust est bien en isSecondPassage()");
 $t->is($lot_degust2->affectable, false, "Le lot de la 2d dégustation n'est plus affectable");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot_degust2), 2, "Il y a deux affecte source avant le lot de la 2de dégustation");
-$t->is($lot_degust2->specificite, Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation", "La spécificité du lot attribué à la 2de dégustation est : ".Lot::SPECIFICITE_UNDEFINED.", 2ème dégustation");
+$t->is($lot_degust2->specificite, "2ème dégustation", "La spécificité du lot attribué à la 2de dégustation est : 2ème dégustation");
 
 $t->is($lot_degust1->document_ordre, '02', "Le numéro d'ordre du lot de la degustation 1 est bien 02");
 $t->is($lot_degust1->id_document_affectation, $degustation2->_id, "Le lot de la degust 1 est bien affecté à la degustation 2 ".$degustation2->_id);
