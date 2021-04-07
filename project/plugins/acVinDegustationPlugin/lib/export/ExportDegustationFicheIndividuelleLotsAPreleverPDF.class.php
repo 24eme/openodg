@@ -23,6 +23,9 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
       $adresses = array();
       foreach ($this->degustation->getLots() as $lot) {
+          if ($lot->isLeurre()){
+              continue;
+          }
           $adresses[$lot->adresse_logement][$lot->getNumeroArchive()] = $lot;
       }
 

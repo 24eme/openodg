@@ -14,6 +14,9 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
       $etablissements = array();
       $adresses = array();
       foreach ($this->degustation->getLots() as $lot) {
+          if ($lot->isLeurre()) {
+              continue;
+          }
           $adresses[$lot->adresse_logement][$lot->getNumeroArchive()] = $lot;
           $etablissements[$lot->adresse_logement] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
 
