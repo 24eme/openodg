@@ -54,7 +54,7 @@
             <td><?php echo $lot->declarant_nom; ?></td>
             <td>
               <a href="<?php echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>">
-                <?php echo ucfirst(strtolower($lot->type_document)); ?>
+                <?php echo ucfirst(strtolower($lot->type_document)).' n°&nbsp;'.$lot->numero_dossier; ?>
               </a>
             </td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
