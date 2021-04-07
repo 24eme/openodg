@@ -26,9 +26,9 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
           if ($lot->isLeurre()){
               continue;
           }
-          $adresses[$lot->adresse_logement][$lot->getNumeroArchive()] = $lot;
+          $adresses[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant][$lot->unique_id] = $lot;
       }
-
+      ksort($adresses);
       foreach ($adresses as $adresseLogement => $lotsArchive) {
         $volumeLotTotal = 0;
         foreach ($lotsArchive as $archive => $lot) {
@@ -43,7 +43,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
             'etablissement' => $etablissement,
             'volumeLotTotal' => $volumeLotTotal,
             'lots' => $lotsArchive,
-            'adresseLogement' => $adresseLogement
+            'adresseLogement' => $lot->adresse_logement
           )
         ));
       }

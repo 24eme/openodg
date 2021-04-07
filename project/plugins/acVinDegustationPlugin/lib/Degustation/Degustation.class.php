@@ -1000,17 +1000,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			foreach ($this->getLots() as $key => $lot) {
 				if($lot->leurre)
 					continue;
-				$lots[] = $lot;
+				$lots[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant.$lot->unique_id] = $lot;
 			}
 			$lotsSorted = $lots;
-
-			usort($lotsSorted, function ($lot1, $lot2) {
-					if (strcmp($lot1->declarant_nom, $lot2->declarant_nom) === 0) {
-							return 0;
-					}
-					return strcmp($lot1->declarant_nom, $lot2->declarant_nom) < 0  ? -1 : 1;
-			});
-
+            ksort($lotsSorted);
 			foreach ($lotsSorted as $lot) {
 				if($nbLots > $maxLotsParPlanche){
 					$planche++;
