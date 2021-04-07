@@ -278,6 +278,7 @@
                   if (! isNaN(parseFloat(input.value))) {
                       total += parseFloat(input.value)
                       nbRempli++;
+                  }
               })
 
               var vol_total = document.getElementById(type+'_lots_lots_'+lot+'_volume')
@@ -286,7 +287,6 @@
                 return;
               }
 
-              console.log(nbRempli);
               vol_total.value = parseFloat(total)
 
               $('#'+type+'_lots_lots_'+lot+'_volume').blur()
