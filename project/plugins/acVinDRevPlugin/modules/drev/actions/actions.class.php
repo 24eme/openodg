@@ -378,7 +378,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
 
-        $this->redirectIfAffecte($this->drev);
+        $this->checkIfAffecte($this->drev);
 
         if ($this->needDrDouane()) {
 
@@ -991,19 +991,16 @@ class drevActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function redirectIfAffecte($drev)
+    protected function checkIfAffecte($drev)
     {
-        $affecte = false;
-
+        $lotsAffectes = [];
         foreach ($drev->getLots() as $lot) {
             if ($lot->isAffecte() || $lot->isChange()) {
-                $affecte = true;
+                $lotsAffectes[] = $lot->getHash();
             }
         }
-
-        if ($affecte) {
-            $this->getUser()->setFlash('warning', "Vous ne pouvez pas modifier une déclaration si l'un des lots a été affecté");
-            return $this->redirect('drev_visualisation', $drev);
+        if (count($lotsAffectes) > 0) {
+            throw new Exception('Les lots suivants de la DREV '.$drev->_id.' sont affectés : '.implode(', ', $lotsAffectes));
         }
     }
 
