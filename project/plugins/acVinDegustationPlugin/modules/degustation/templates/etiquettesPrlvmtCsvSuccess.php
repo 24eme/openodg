@@ -17,7 +17,7 @@ foreach ($degustation->getEtiquettesFromLots(7) as $plancheLots) {
         echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->details)).";";
         echo str_replace(';', ' ', $lotInfo->lot->centilisation).";";
         echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->numero_logement_operateur)).";";
-        echo str_replace(';', ' ', $lotInfo->lot->volume)."\n";
+        echo str_replace(';', ' ', $lotInfo->lot->volume).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->getLaboLibelle())."\n";
     }
 }
