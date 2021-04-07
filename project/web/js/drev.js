@@ -203,22 +203,6 @@
           e.preventDefault();
         });
 
-        var checkBlocsLot = function() {
-            $('#form_'+type+'_lots .bloc-lot').each(function() {
-                var saisi = false;
-                $(this).find('input, select').each(function() {
-                    if(($(this).val() && $(this).attr('data-default-value') != $(this).val()) || $(this).is(":focus")) {
-                        saisi = true;
-                    }
-                });
-                if(!saisi) {
-                    $(this).addClass('transparence-sm');
-                } else {
-                    $(this).removeClass('transparence-sm');
-                }
-            });
-        }
-
         var checkBlocsLotCepages = function() {
             $('#form_'+type+'_lots .ligne_lot_cepage').each(function() {
                 var saisi = true;
@@ -278,38 +262,38 @@
                 }
                 $('span.checkboxtext_'+$(this).attr('id')).html(libelle + " <a>(Changer)</a>");
             });
-        }
 
-        var inputs_hl = document.querySelectorAll('.modal input.input-hl')
+            document.querySelectorAll('#form_'+type+'_lots .modal_lot_cepages').forEach(function(modal) {
+              var total = 0.00
 
-        inputs_hl.forEach(function (input, index) {
-            input.addEventListener('change', function (event) {
-                var total = 0.00
+              while (! modal.classList.contains('modal')) {
+                  modal = modal.parentElement
+              }
 
-                var modal = event.target.parentElement
-                while (! modal.classList.contains('modal')) {
-                    modal = modal.parentElement
-                }
+              var lot = modal.dataset.lot
 
-                var lot = modal.dataset.lot
+              inputs = modal.querySelectorAll('input.input-hl')
+              var nbRempli = 0;
+              inputs.forEach(function (input) {
+                  if (! isNaN(parseFloat(input.value))) {
+                      total += parseFloat(input.value)
+                      nbRempli++;
+              })
 
-                inputs = modal.querySelectorAll('input.input-hl')
-                inputs.forEach(function (input) {
-                    if (! isNaN(parseFloat(input.value))) {
-                        total += parseFloat(input.value)
-                    }
-                })
+              var vol_total = document.getElementById(type+'_lots_lots_'+lot+'_volume')
+              if(!nbRempli) {
+                vol_total.readOnly = false;
+                return;
+              }
 
-                var vol_total = document.getElementById(type+'_lots_lots_'+lot+'_volume')
-                vol_total.value = parseFloat(total)
+              console.log(nbRempli);
+              vol_total.value = parseFloat(total)
 
-                $('#'+type+'_lots_lots_'+lot+'_volume').blur()
+              $('#'+type+'_lots_lots_'+lot+'_volume').blur()
 
-                vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+              vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
             })
-
-            input.dispatchEvent(new Event('change'));
-        })
+        }
 
         function precision(f) {
             if (!isFinite(f)) { return 2 }
@@ -319,14 +303,13 @@
             return p
         }
 
-        checkBlocsLot();
         checkBlocsLotCepages();
-        $('#form_'+type+'_lots input').on('keyup', function() { checkBlocsLot; checkBlocsLotCepages; });
-        $('#form_'+type+'_lots select').on('change', function() { checkBlocsLot; checkBlocsLotCepages; });
-        $('#form_'+type+'_lots input').on('focus', function() { checkBlocsLot; checkBlocsLotCepages; });
-        $('#form_'+type+'_lots select').on('focus', function() { checkBlocsLot; checkBlocsLotCepages; });
-        $('#form_'+type+'_lots input').on('blur', function() { checkBlocsLot; checkBlocsLotCepages; });
-        $('#form_'+type+'_lots select').on('blur', function() { checkBlocsLot; checkBlocsLotCepages; });
+        $('#form_'+type+'_lots .ligne_lot_cepage input').on('change', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage select').on('change', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage input').on('focus', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage select').on('focus', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage input').on('blur', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage select').on('blur', function() { checkBlocsLotCepages(); });
 
         $('#form_'+type+'_lots input.input-float').on('click', function(e) {
             if (! e.target.readOnly) {
