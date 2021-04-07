@@ -380,8 +380,13 @@ class degustationActions extends sfActions {
         $this->forward404Unless($degustation->lots->exist($index));
         $lot = $degustation->lots->get($index);
         $lot->upPosition();
+
+        $tri = array_merge(['Manuel'], explode('|', $tri));
+        $tri = array_unique($tri);
+        $tri = implode('|', $tri);
+
         $degustation->save(false);
-        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
+        return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
     }
 
     public function executeDownPositionLot(sfWebRequest $request) {
@@ -393,8 +398,13 @@ class degustationActions extends sfActions {
         $this->forward404Unless($degustation->lots->exist($index));
         $lot = $degustation->lots->get($index);
         $lot->downPosition();
+
+        $tri = array_merge(['Manuel'], explode('|', $tri));
+        $tri = array_unique($tri);
+        $tri = implode('|', $tri);
+
         $degustation->save(false);
-        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $tri));
+        return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
     }
 
     public function executeOrganisationTableRecap(sfWebRequest $request) {

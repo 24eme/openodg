@@ -3,7 +3,7 @@
 class ExportDegustationEtiquettesAnonymesPDF extends ExportPDF {
 
     protected $degustation = null;
-    const MAX_PLANCHE = 23;
+    const MAX_PLANCHE = 24;
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
@@ -19,9 +19,25 @@ class ExportDegustationEtiquettesAnonymesPDF extends ExportPDF {
     }
 
     public function create() {
-      foreach ($this->degustation->getLotTableBySlice($this::MAX_PLANCHE) as $plancheLots) {
-        @$this->printable_document->addPage($this->getPartial('degustation/etiquettesAnonymesPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
-      }
+        $i = 0;
+        $plancheLots = [];
+        $lots = $this->degustation->getLots()->toArray();
+
+        usort($lots, function ($a, $b) {
+            return strcmp($a->numero_anonymat, $b->numero_anonymat);
+        });
+
+        foreach ($lots as $lot) {
+            $plancheLots[] = $lot;
+            $i++;
+
+            if ($i == self::MAX_PLANCHE) {
+                $this->printable_document->addPage($this->getPartial('degustation/etiquettesAnonymesPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
+                $i = 0;
+                $plancheLots = [];
+            }
+        }
+        $this->printable_document->addPage($this->getPartial('degustation/etiquettesAnonymesPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
   }
 
 

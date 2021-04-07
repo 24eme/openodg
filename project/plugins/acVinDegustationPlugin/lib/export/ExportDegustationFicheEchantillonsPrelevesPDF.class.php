@@ -10,11 +10,20 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
     }
 
     public function create() {
+        $lots = $this->degustation->getLotsByOperateurs();
+        ksort($lots);
+
+        foreach ($lots as $operateur => &$lots_operateur) {
+            usort($lots_operateur, function($a, $b) {return strcmp($a->numero_anonymat, $b->numero_anonymat);});
+        }
+
+        $lots = array_merge($lots, ['leurres' => $this->degustation->getLeurres()]);
+
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheEchantillonsPrelevesPdf',
           array(
             'degustation' => $this->degustation,
-            'lots' => $this->degustation->getLotsByNumDossier()
+            'lots' => $lots
           )
         ));
     }
@@ -22,13 +31,12 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
 
 
     protected function getHeaderTitle() {
-       return "Fiche des lots ventilés anonymisés";
+       return $this->degustation->getNomOrganisme();
     }
 
-    protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
-        $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
+    protected function getHeaderSubtitle()
+    {
+        $header_subtitle = sprintf("%s\n\n%s", $this->degustation->lieu, "Fiche des lots ventilés anonymisés");
 
         return $header_subtitle;
     }

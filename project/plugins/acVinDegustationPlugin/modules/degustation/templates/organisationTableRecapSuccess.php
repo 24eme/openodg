@@ -79,6 +79,9 @@
                                 <div class="col-xs-6">
                                     <?php echo showProduitLot($lot) ?>
                                 </div>
+                                <div class="col-xs-2 text-right">
+                                    <small class="text-muted"><?php echo $lot->position ?></small>
+                                </div>
                             </div>
                         </td>
                         <td class="text-center">
