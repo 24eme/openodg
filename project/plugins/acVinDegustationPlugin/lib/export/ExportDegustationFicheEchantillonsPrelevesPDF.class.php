@@ -31,13 +31,12 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
 
 
     protected function getHeaderTitle() {
-       return "Fiche des lots ventilés anonymisés";
+       return $this->degustation->getNomOrganisme();
     }
 
-    protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
-        $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
+    protected function getHeaderSubtitle()
+    {
+        $header_subtitle = sprintf("%s\n\n%s", $this->degustation->lieu, "Fiche des lots ventilés anonymisés");
 
         return $header_subtitle;
     }
