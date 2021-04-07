@@ -898,6 +898,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->hasBeenEdited()) {
                 continue;
             }
+            if($lot->specificite == Lot::SPECIFICITE_UNDEFINED) {
+                $lot->specificite = null;
+            }
             $lot->date = $date;
         }
 
