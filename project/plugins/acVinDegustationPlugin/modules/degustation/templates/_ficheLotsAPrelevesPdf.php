@@ -38,7 +38,7 @@ th {
 
         $numDossier = null;
         foreach ($lotsArchive as $lot) {
-          $numDossier = $lot->numero_archive;
+          $numDossier = $lot->numero_dossier;
           break;
         }
         $adresse = $lot->getRawValue()->adresse_logement;
