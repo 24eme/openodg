@@ -32,7 +32,7 @@
       </p>
     </table>
 
-<?php $i = 9; $table_header = true;
+<?php $i = 18; $table_header = true;
  foreach($lots as $lotInfo): ?>
    <?php if ($i % 30 == 0 ) : $table_header = true; ?>
 </table>
@@ -65,7 +65,7 @@
        </tr>
    <?php endif;?>
 
-    <tr style="line-height:13px;">
+    <tr style="line-height:25px;">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
       <td><?php echo tdStart() ?><?php echo showProduitLot($lotInfo) ?></td>
       <td><?php echo tdStart() ?></td>
