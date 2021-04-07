@@ -40,8 +40,8 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("(Liste des lots à prélever)\n\nLieu de dégustation : %s\nDate de commission : %s", $this->degustation->lieu,$this->degustation->getDateFormat('d/m/Y'));
-
+        $header_subtitle = sprintf("(Liste des lots à prélever)\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+        $header_subtitle .= sprintf("\nLieu de dégustation: %s", $this->degustation->lieu);
         return $header_subtitle;
     }
 

@@ -9,16 +9,31 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(25);
+$t = new lime_test(31);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
 $centilisations_bib_key = key($centilisations["bib"]);
 
-//Suppression des Conditioinnement précédents
+//Suppression des Conditioinnement (et drev et transaction) précédents
+foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $transaction = TransactionClient::getInstance()->find($k);
+    $transaction->delete(false);
+}
 foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $conditionnement = ConditionnementClient::getInstance()->find($k);
     $conditionnement->delete(false);
+}
+foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $cd = ChgtDenomClient::getInstance()->find($k);
+    $cd->delete(false);
+}
+foreach(DrevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $drev = DrevClient::getInstance()->find($k);
+    $drev->delete(false);
+}
+foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
 $year = date('Y');
@@ -99,9 +114,36 @@ $conditionnement->save();
 $t->comment("Historique de mouvements");
 $lot = $conditionnement->lots[0];
 
-$t->ok($lot->numero_dossier, "Numéro de dossier");
-$t->ok($lot->numero_archive, "Numéro d'archive");
+$t->is($conditionnement->numero_archive, '00002', "Le numéro de dossier du conditionnement a bien le numéro attendu");
+
+$t->is($lot->numero_dossier, '00002', "Le numéro de dossier du lot est bien le numéro d'archive du conditionnement");
+$t->is($lot->numero_archive, '00001', "Le numéro d'archive du lot est bien celui attendu");
 $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_CONDITIONNE), 'Le lot est conditionné');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
+
+$transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
+$lottransaction = $transaction->addLot();
+$lottransaction->volume = 12;
+$lottransaction->produit_hash = $produit->getHash();
+$lottransaction->numero_logement_operateur = "A";
+$transaction->validate();
+$transaction->save();
+$transaction = TransactionClient::getInstance()->find($transaction->_id);
+$lottransaction = $transaction->lots[0];
+$t->is($transaction->numero_archive, '00003', "Le numéro d'archive d'une transaction est bien partagé avec celui du conditionnement");
+$t->is($lottransaction->numero_dossier, '00003', "Le numéro de dosssier du lot de la transaction est bien le numéro d'archive de la transaction");
+$t->is($lottransaction->numero_archive, '00004', "Le numéro d'archive du lot de transaction est bien partagé avec celui du conditionnement");
+
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$lotdrev = $drev->addLot();
+$lotdrev->produit_hash = $produit->getHash();
+$lotdrev->volume = 15;
+$lotdrev->numero_logement_operateur = "B";
+$drev->validate();
+$drev->validateOdg();
+$drev->save();
+$t->is($drev->numero_archive, '00004', "La DRev créée a bien un numéro d'archive commun avec la Transaction");
+$t->is($drev->lots[0]->numero_archive, '00005', "Le lot de la DRev a bien un numéro d'archive commun avec la Transaction");
+
