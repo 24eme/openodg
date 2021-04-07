@@ -53,7 +53,7 @@
             <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
             <td><?php echo $lot->declarant_nom; ?></td>
             <td>
-              <a href="<?php echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>">
+              <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
                 <?php echo ucfirst(strtolower($lot->type_document)).' n°&nbsp;'.$lot->numero_dossier; ?>
               </a>
             </td>
