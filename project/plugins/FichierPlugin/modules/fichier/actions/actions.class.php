@@ -32,7 +32,7 @@ class fichierActions extends sfActions
 
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
-    	$fileParam = $request->getParameter('file', null);
+    	$fileParam = $request->getParameter('file', 'pdf');
 		$this->secureEtablissement($fichier->getEtablissementObject());
 		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 
@@ -49,7 +49,7 @@ class fichierActions extends sfActions
     	}
     	$filename = null;
     	foreach ($fichier->_attachments as $key => $attachment) {
-    		if (!$fileParam || $fileParam == $key) {
+            if (!$fileParam || strpos($key, $fileParam) !== false ) {
     			$filename = $key;
     		}
     	}
