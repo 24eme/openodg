@@ -86,6 +86,8 @@ class drevActions extends sfActions {
         $etablissement = $drev->getEtablissementObject();
         $this->secure(DRevSecurity::EDITION, $drev);
 
+        $this->checkIfAffecte($drev);
+
         $drev->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
@@ -93,10 +95,13 @@ class drevActions extends sfActions {
     }
 
     public function executeDevalidation(sfWebRequest $request) {
+
         $drev = $this->getRoute()->getDRev();
         if (!$this->getUser()->isAdmin()) {
           $this->secure(DRevSecurity::DEVALIDATION , $drev);
         }
+
+        $this->checkIfAffecte($drev);
 
         $drev->validation = null;
         $drev->validation_odg = null;
