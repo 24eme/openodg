@@ -10,10 +10,10 @@
     <div>
       <table>
           <tr>
-            <td style="width:33%;">
+            <td style="width:60%;">
               <p>Code Commission: <?= $degustation->_id ?></p>
             </td>
-            <td style="width:60%;">
+            <td style="width:30%;">
               <p>Responsable : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
             </td>
             <td style="width:2%">
@@ -44,6 +44,7 @@
 
     <p style="margin-left:0;">Nombre total de lots : <?php echo count($lots);?></p>
 
+    <?php $first = true; $i = 0; ?>
     <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
       <tr style="line-height:20px;">
          <th rowspan="2" class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>N° Dossier</strong></th>
@@ -58,25 +59,21 @@
         <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>IGP/Couleur/Millésime</small></strong></th>
         <th class="bg-white" style="width:20%;"><?php echo tdStart() ?><strong><small>Cepage</small></strong></th>
       </tr>
-    <?php $i=1;?>
-     <?php  foreach($lots as $numero_dossier => $lotInfo):  ?>
-       <?php $firstDisplay = true; ?>
-
-        <?php foreach ($lotInfo as $uniqueId => $lot): ?>
-          <tr>
-            <?php if($firstDisplay == true): ?>
-              <td rowspan="<?php echo count($lotInfo); ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
-              <td rowspan="<?php echo count($lotInfo); ?>" style="vertical-align: middle;"><small><?php echo $lot->declarant_nom."<br>".$lot->declarant_identifiant;?></small></td>
-            <?php $firstDisplay= false; endif; ?>
-            <td><small><?php echo $lot->numero_archive ?></small></td>
-            <td><small><?php echo $lot->numero_anonymat ?></small></td>
-            <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
-            <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
-            <td><small><?php echo $lot->produit_libelle." ".$lot->getMillesime(); ?></small></td>
-            <td><small><?php echo showOnlyCepages($lot) ?></small></td>
-          </tr>
-      <?php endforeach; ?>
-
-      <?php $i=$i+1 ?>
+        <?php foreach($lots as $numero_anonymat => $lot): ?>
+      <tr>
+        <td style="margin-top: 10em; vertical-align: middle;"><small><?php echo $lot->numero_dossier ?></small></td>
+        <td style="vertical-align: middle;"><small><?php echo $lot->declarant_nom."<br>".$lot->declarant_identifiant;?></small></td>
+        <td><small><?php echo $lot->numero_archive ?></small></td>
+        <td><small><?php echo $lot->numero_anonymat ?></small></td>
+        <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
+        <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
+        <td><small><?php echo $lot->produit_libelle." ".$lot->getMillesime(); ?></small></td>
+        <td><small><?php echo showOnlyCepages($lot) ?></small></td>
+      </tr>
+      <?php $i++ ?>
+      <?php if ($first && $i == 13 || $i == 22) : ?>
+        <?php $i = 0; $first = false; ?>
+        <hr pagebreak="true"/>
+      <?php endif ?>
     <?php endforeach; ?>
   </table>
