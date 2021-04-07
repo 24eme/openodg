@@ -278,7 +278,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDocOrigine(){
-      if(!$this->exist('id_document') || !$this->id_document){
+      if(!$this->exist('id_document_provenance') || !$this->id_document_provenance){
         return null;
       }
       return DeclarationClient::getInstance()->findCache($this->id_document);

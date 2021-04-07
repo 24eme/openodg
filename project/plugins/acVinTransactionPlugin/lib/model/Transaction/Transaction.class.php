@@ -51,4 +51,9 @@ class Transaction extends BaseTransaction
     public function getMillesime(){
       return explode('-', $this->getCampagne())[0];
     }
+
+    public function getMaster()
+    {
+        return $this;
+    }
 }
