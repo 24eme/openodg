@@ -92,6 +92,7 @@ abstract class Lot extends acCouchdbDocumentTree
             Lot::STATUT_DECLASSE => "danger",
             Lot::STATUT_ELEVAGE_EN_ATTENTE => "warning",
             Lot::STATUT_ELEVE => "warning",
+            STATUT_NONAFFECTABLE => "success"
         );
 
     public static $libellesConformites = array(
