@@ -13,23 +13,28 @@ class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
-    public function create() {
-      $lots = [];
-      $nbLots = 0;
-      foreach ($this->degustation->getLotsByNumDossier() as $numero_dossier => $lotInfo) {
-        foreach ($lotInfo as $uniqueId => $lot) {
-          $lots[$lot->numero_table][$numero_dossier][$uniqueId] = $lot;
-          $nbLots++;
+    public function create()
+    {
+        $lotsTries = [];
+        $lots = $this->degustation->getLots();
 
+        foreach ($lots as $lot) {
+            $lotsTries[$lot->numero_table][] = $lot;
         }
-      }
-      ksort($lots);
+
+        foreach ($lotsTries as $table => &$lots_table) {
+            usort($lots_table, function ($a, $b) {
+                return strcmp($a->numero_anonymat, $b->numero_anonymat);
+            });
+        }
+
+        ksort($lotsTries);
+
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheEchantillonsPrelevesTablePdf',
           array(
             'degustation' => $this->degustation,
-            'nbLots' => $nbLots,
-            'lots' => $lots
+            'lots' => $lotsTries
           )
         ));
     }
@@ -59,10 +64,7 @@ class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
     }
 
     protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."LISTE DES LOTS VENTILES";
-
-        return $header_subtitle;
+        return sprintf("%s\n\n", $this->degustation->lieu)." Liste des lots ventilés anonymisés par table";
     }
 
 
