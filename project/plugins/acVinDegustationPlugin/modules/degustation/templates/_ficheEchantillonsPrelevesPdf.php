@@ -42,7 +42,7 @@
       </table>
     </div>
 
-    <p style="margin-left:0;">Nombre total de lots : <?php echo count($degustation->getLotsAnonymized());?></p>
+    <p style="margin-left:0;">Nombre total de lots : <?php echo count($degustation->getLots());?></p>
 
      <?php $affiche = 0; $reste = 0; $i = 10; $table_header = true;  foreach($lots as $operateur => $lots_operateur):  ?>
        <?php $firstDisplay = true; $reste = 0?>

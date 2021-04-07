@@ -885,6 +885,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $leurre;
         }
 
+    public function getLeurres()
+    {
+        $leurres = [];
+        foreach ($this->getLots() as $lot) {
+            if ($lot->isLeurre()) {
+                $leurres[] = $lot;
+            }
+        }
+
+        return $leurres;
+    }
+
 		/**** Fin Gestion des tables de la degustation ****/
 
 

@@ -17,6 +17,8 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
             usort($lots_operateur, function($a, $b) {return strcmp($a->numero_anonymat, $b->numero_anonymat);});
         }
 
+        $lots = array_merge($lots, ['leurres' => $this->degustation->getLeurres()]);
+
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheEchantillonsPrelevesPdf',
           array(
