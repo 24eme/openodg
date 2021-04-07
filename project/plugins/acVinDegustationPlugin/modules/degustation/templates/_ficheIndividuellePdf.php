@@ -27,14 +27,14 @@
         &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
           <strong>Signature : &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
           <strong>Table : &nbsp;<?php echo $lots[0]->getNumeroTableStr(); ?></strong>
       </p>
     </table>
 
-<?php $i = 9; $table_header = true;
+<?php $i = 2; $table_header = true;
  foreach($lots as $lotInfo): ?>
-   <?php if ($i % 30 == 0 ) : $table_header = true; ?>
+   <?php if ($i % 12 == 0 ) : $table_header = true; ?>
 </table>
      <br pagebreak="true" />
      <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?><p/>
@@ -44,7 +44,7 @@
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-          <th class="topempty bg-white" style="width:30%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
+          <th class="topempty bg-white" style="width:25%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
          <th colspan="4"style="width:20%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
           <th class="bg-white" colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Avis</strong></th>
           <th class="bg-white"  colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
@@ -65,7 +65,7 @@
        </tr>
    <?php endif;?>
 
-    <tr style="line-height:13px;">
+    <tr style="line-height:25px;">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
       <td><?php echo tdStart() ?><?php echo showProduitLot($lotInfo) ?></td>
       <td><?php echo tdStart() ?></td>

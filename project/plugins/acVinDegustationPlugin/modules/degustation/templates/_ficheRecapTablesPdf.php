@@ -63,7 +63,7 @@ th {
     </div>
 
     <div>
-      <?php  $ligne=7; $table_header = true;
+      <?php  $ligne=12; $table_header = true;
       foreach($lots as $numAnonyme => $lotInfo): ?>
       <?php if($ligne % 20 == 0): $table_header = true; ?>
         </table>
@@ -76,7 +76,7 @@ th {
             <tr style="line-height:20px;">
                <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
                <th class="topempty bg-white" style="width:10%;"><?php echo tdStart() ?><strong>Lgmt</small></th>
-               <th class="topempty bg-white" style="width:30%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
+               <th class="topempty bg-white" style="width:25%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
                <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
                <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
                <th class="topempty bg-white" style="width:8%;"><?php echo tdStart() ?><strong>Note</strong></th>
@@ -94,7 +94,7 @@ th {
               <th class="empty bg-white"></th>
             </tr>
       <?php endif; ?>
-         <tr style="line-height:17px;">
+         <tr style="line-height:25px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->numero_logement_operateur ?></small></strong></td>
            <td><?php echo tdStart() ?><small><?php echo showProduitLot($lotInfo);?></small></td>
