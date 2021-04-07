@@ -73,9 +73,10 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getHeaderSubtitle() {
-        $date = substr($this->degustation->date,0,10);
-        $date = $date[8].$date[9].'/'.$date[5].$date[6].'/'.$date[0].$date[1].$date[2].$date[3];
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu) . "Fiche de prélèvement (Liste des lots à prélever)  Date de commission prévu : ".$date;
+        $header_subtitle = sprintf("Fiche de prélevement\n\nDate de commission : %s\nLieu de dégustation : %s\n",
+                                    $this->degustation->getDateFormat('d/m/Y'),
+                                    $this->degustation->lieu
+                                  );
         return $header_subtitle;
     }
 
