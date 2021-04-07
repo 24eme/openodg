@@ -53,6 +53,9 @@ class fichierActions extends sfActions
     			$filename = $key;
     		}
     	}
+		if (!$filename) {
+			$filename = $key;
+		}
     	$file = file_get_contents($fichier->getAttachmentUri($filename));
         if(!$file) {
             return $this->forward404($filename." n'existe pas pour ".$fichier->_id);
