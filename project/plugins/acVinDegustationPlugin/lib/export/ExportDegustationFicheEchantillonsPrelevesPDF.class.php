@@ -10,8 +10,12 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
     }
 
     public function create() {
-        $lots = $this->degustation->getLotsAnonymized();
+        $lots = $this->degustation->getLotsByOperateurs();
         ksort($lots);
+
+        foreach ($lots as $operateur => &$lots_operateur) {
+            usort($lots_operateur, function($a, $b) {return strcmp($a->numero_anonymat, $b->numero_anonymat);});
+        }
 
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheEchantillonsPrelevesPdf',

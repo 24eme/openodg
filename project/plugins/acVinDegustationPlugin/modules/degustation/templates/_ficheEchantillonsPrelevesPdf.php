@@ -44,14 +44,13 @@
 
     <p style="margin-left:0;">Nombre total de lots : <?php echo count($degustation->getLotsAnonymized());?></p>
 
-     <?php $affiche = 0; $reste = 0; $i = 10; $table_header = true;  foreach($lots as $numero_dossier => $lotInfo):  ?>
+     <?php $affiche = 0; $reste = 0; $i = 10; $table_header = true;  foreach($lots as $operateur => $lots_operateur):  ?>
        <?php $firstDisplay = true; $reste = 0?>
 
-        <?php foreach ($lotInfo as $uniqueId => $lot): ?>
+        <?php foreach ($lots_operateur as $lot): ?>
           <?php if ($i % 30 == 0 ) : $table_header = true; $firstDisplay = true;?>
        </table>
             <br pagebreak="true" />
-            <p>Suite des lots table <?php echo $lot->getNumeroTableStr(); ?><p/>
             <br/>
           <?php $i = 0; endif; ?>
           <?php if ($table_header): $table_header = false; ?>
@@ -71,8 +70,8 @@
           <?php endif; ?>
           <tr>
             <?php if($firstDisplay == true):
-              $affiche = count($lotInfo) - $reste;
-              if((30 - $i) > 0 && (30 - $i) < count($lotInfo)){
+              $affiche = count($lots_operateur) - $reste;
+              if((30 - $i) > 0 && (30 - $i) < count($lots_operateur)){
                 $reste = (30 - $i);
                 $affiche = (30 - $i);
               }
@@ -84,7 +83,7 @@
             <td><small><?php echo $lot->numero_anonymat?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
-            <td><small><?php echo showProduitLot($lot); ?></small></td>
+            <td><small><?php echo ($lot->numero_dossier) ? showProduitLot($lot) : '' ; ?></small></td>
           </tr>
           <?php $i++; ?>
       <?php endforeach; ?>
