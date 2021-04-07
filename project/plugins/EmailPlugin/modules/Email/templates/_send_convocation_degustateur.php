@@ -4,7 +4,7 @@ $infos = sfConfig::get('app_facture_emetteur');
 $signature = $infos[$app]['service_facturation'];
 ?>Madame, Monsieur,
 
-Nous vous invitions à participer à la prochaine commission de dégustation des vins IGP qui aura lieu le le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "HH").'h'.format_date($degustation->date, "mm"); ?> <?php echo $degustation->getLieuNom()." - ".preg_replace("/.+—[ ]*/", "", $degustation->lieu); ?>
+Nous vous invitions à participer à la prochaine commission de dégustation des vins IGP qui aura lieu le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "HH").'h'.format_date($degustation->date, "mm"); ?> <?php echo $degustation->getLieuNom()." - ".preg_replace("/.+—[ ]*/", "", $degustation->lieu); ?>
 
 
 Pour le bon déroulé de cette dégustation nous vous remercions de bien vouloir nous confirmer votre présence en cliquant sur le lien :
