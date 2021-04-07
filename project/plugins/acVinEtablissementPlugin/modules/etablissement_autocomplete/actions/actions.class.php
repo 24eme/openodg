@@ -6,7 +6,7 @@ class etablissement_autocompleteActions extends sfActions
   	public function executeAll(sfWebRequest $request) {
 	    $interpro = $request->getParameter('interpro_id');
 	    $q = $request->getParameter('q');
-	    $limit = $request->getParameter('limit', 100);
+	    $limit = $request->getParameter('limit', 500);
 	    $e = EtablissementAllView::getInstance()->findByInterproAndStatut($interpro, EtablissementClient::STATUT_ACTIF, $q, $limit);
 	    $json = $this->matchEtablissements($e, $q, $limit);
         $this->getResponse()->setContentType('text/json');
