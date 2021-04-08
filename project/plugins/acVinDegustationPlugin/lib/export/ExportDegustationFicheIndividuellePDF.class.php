@@ -14,12 +14,14 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     public function create() {
+        $notation = DegustationConfiguration::getInstance()->hasNotation();
+
         if ($this->degustation->getLastNumeroTable() < 1) {
             throw new sfException('Pas de lots attablés : '.$this->degustation->_id);
         }
 
       for($nbtable=1 ;$nbtable <= $this->degustation->getLastNumeroTable(); $nbtable++){
-        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('table' => $nbtable, 'degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable))));
+        @$this->printable_document->addPage($this->getPartial('degustation/ficheIndividuellePdf', array('table' => $nbtable, 'degustation' => $this->degustation, 'lots' => $this->degustation->getLotsByTable($nbtable), 'notation' => $notation)));
       }
     }
 

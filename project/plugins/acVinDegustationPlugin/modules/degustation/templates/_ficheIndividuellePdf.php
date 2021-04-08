@@ -53,11 +53,11 @@
        <tr style="line-height:13px;">
          <th class="empty bg-white"></th>
          <th class="empty bg-white"></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Visuel<br>/12</small></strong></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Olfactif<br>/12</small></strong></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Gustatif <br> /24</small></strong></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>TOTAL<br/>/48</small></strong></th>
-         <th class="bg-white" style="width:4%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Visuel<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Olfactif<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Gustatif<br><?php if($notation): ?>/24<?php endif ?></small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>TOTAL<br><?php if($notation): ?>/48<?php endif ?></small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
          <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
          <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
          <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>

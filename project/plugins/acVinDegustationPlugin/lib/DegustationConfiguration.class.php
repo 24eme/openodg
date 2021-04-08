@@ -38,4 +38,9 @@ class DegustationConfiguration {
     {
         return isset($this->configuration['anonymat4labo']) && boolval($this->configuration['anonymat4labo']);
     }
+
+    public function hasNotation()
+    {
+        return isset($this->configuration['notation']) && boolval($this->configuration['notation']);
+    }
 }
