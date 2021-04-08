@@ -220,35 +220,31 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getValueForTri($type) {
         $type = strtolower($type);
         $type = str_replace('é', 'e', $type);
-        switch ($type) {
-            case 'millesime':
-                return ($this->millesime) ? $this->millesime : 'XXXX';
-                break;
-            case 'appellation':
-                return $this->getConfig()->getAppellation()->getKey();
-                break;
-            case 'couleur':
-                return $this->getConfig()->getCouleur()->getKey();
-                break;
-            case 'genre':
-                return $this->getConfig()->getGenre()->getKey();
-                break;
-            case 'cepage':
-                return $this->details;
-                break;
-            case 'produit':
-                return $this->_get('produit_hash').$this->_get('details');
-                break;
-            case 'manuel':
-                return $this->position;
-                break;
+        if ($type == 'millesime') {
+            return ($this->millesime) ? $this->millesime : 'XXXX';
+         }
+         if (!$this->getConfig()||$type == 'numero_anonymat') {
+           $numero= intval(substr($this->numero_anonymat, 1));
+           return $numero;
+         }
+        if ($type == 'appellation') {
+            return $this->getConfig()->getAppellation()->getKey();
         }
-
-        if (!$this->getConfig()||$type == 'numero_anonymat') {
-          $numero= intval(substr($this->numero_anonymat, 1));
-          return $numero;
+        if ($type == 'couleur') {
+            return $this->getConfig()->getCouleur()->getKey();
         }
-
+        if ($type == 'genre') {
+            return $this->getConfig()->getGenre()->getKey();
+        }
+        if ($type == 'cepage') {
+            return $this->details;
+        }
+        if ($type == 'produit') {
+            return $this->_get('produit_hash').$this->_get('details');
+        }
+        if ($type == 'position') {
+            return $this->position;
+        }
         throw new sfException('unknown type of value : '.$type);
     }
 
