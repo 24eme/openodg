@@ -6,6 +6,14 @@
 
 class DRevLot extends BaseDRevLot
 {
+    public function getFieldsToFill() {
+        $fields = parent::getFieldsToFill();
+        //Le produit ne fait pas partie des champs à vérifié car il peut être prérempli par la DR
+        unset($fields[array_search("produit_hash", $fields)]);
+        $fields[] = 'destination_type';
+        return $fields;
+    }
+
     public function getProduitRevendiqueLibelleComplet() {
         $p = $this->getProduitRevendique();
         if ($p) {

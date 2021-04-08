@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(118);
+$t = new lime_test(121);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -134,7 +134,6 @@ $t->is($produit1->recolte->superficie_total, $valuesRev['produits'][$produit_has
 $t->is($produit1->superficie_revendique, $valuesRev['produits'][$produit_hash1]['superficie_revendique'], "La superficie revendique est enregistré");
 
 $t->comment("Étape lots");
-$t->comment("Vérifier la spécificité");
 $drevConfig = DRevConfiguration::getInstance();
 $t->is($drevConfig->hasSpecificiteLot(), true, "La configuration a des spécificités de Lots");
 $t->ok(count($drevConfig->getSpecificites()), "La configuration retourne bien des spécificités");
@@ -161,6 +160,7 @@ $valuesRev['lots']['0']['destination_date'] = '30/11/'.$periode;
 if($drevConfig->hasSpecificiteLot()){
   $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
 }
+$valuesRev['lots']['0']['specificite'] = "";
 
 $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
@@ -174,6 +174,7 @@ $t->is($drev->lots[0]->destination_date, join('-', array_reverse(explode('/', $v
 $t->is($drev->lots[0]->produit_hash, $valuesRev['lots']['0']['produit_hash'], "La hash du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->produit_libelle, $produit1->getLibelle(), "Le libellé du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->millesime, $valuesRev['lots']['0']['millesime'], "Le millesime du lot 1 est bien enregistré");
+$t->is($drev->lots[0]->specificite, "", "La spécificité Aucune est enregistrée");
 $t->is($drev->lots[0]->id_document_provenance, null, "Le lot n'a pas de provenance");
 $t->is($drev->lots[0]->id_document_affectation, null, "Le lot n'a pas de fils");
 $t->ok($drev->lots[0]->isAffectable(), "Le lot est affectable");
@@ -186,11 +187,19 @@ if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
 
 $t->comment("Étape validation");
 
+$drev->lots[0]->specificite = Lot::SPECIFICITE_UNDEFINED;
+$validation = new DRevValidation($drev);
+$erreurs = $validation->getPointsByCodes('erreur');
+$t->ok(array_key_exists('lot_incomplet', $erreurs), "Point bloquant sur la spécificité");
+
+$drev->lots[0]->specificite = "";
+
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->is(array_key_first($erreurs), 'lot_volume_total_depasse', "Le volume total du lot est dépassé");
+$t->ok(!array_key_exists('lot_incomplet', $erreurs), "Pas de point bloquant sur la spécificité");
+$t->ok(array_key_exists('lot_volume_total_depasse', $erreurs), "Le volume total du lot est dépassé");
 $t->is(count($erreurs), 1, 'Il y a un point bloquant');
 $t->is($vigilances, null, "un point de vigilance à la validation");
 
@@ -210,7 +219,7 @@ $drev->validate();
 $drev->save();
 
 $t->is(count($drev->lots), 1, "La DRev validée contient uniquement le lot saisi");
-$t->is($drev->lots[0]->specificite, null, "La spécificité du lot est nulle");
+$t->is($drev->lots[0]->specificite, "", "La spécificité du lot est vide");
 $t->ok(!$drev->mouvements_lots->exist($drev->identifiant), "La DRev non validée ODG ne contient pas de mouvement de lots");
 
 $t->comment("DRev Validée ODG");
@@ -331,10 +340,12 @@ $valuesRev['lots']['1']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_F
 $valuesRev['lots']['1']['destination_date'] = '30/11/'.$periode;
 $valuesRev['lots']['1']['produit_hash'] = $produitconfig2->getHash();
 $valuesRev['lots']['1']['millesime'] = date('Y') - 1;
+$valuesRev['lots']['1']['specificite'] = '';
 
 $valuesRev['lots']['2'] = $valuesRev['lots']['1'];
 $valuesRev['lots']['2']['numero_logement_operateur'] = "Cuve C";
 $valuesRev['lots']['2']['produit_hash'] = $produitconfig_horsDR->getHash();
+$valuesRev['lots']['1']['specificite'] = '';
 
 $form->bind($valuesRev);
 

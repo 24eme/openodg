@@ -171,8 +171,8 @@ abstract class Lot extends acCouchdbDocumentTree
         }
     }
 
-    protected function getFieldsToFill() {
-        return  array('numero', 'millesime', 'volume', 'destination_type', 'destination_date', 'elevage', 'specificite', 'centilisation');
+    public function getFieldsToFill() {
+        return  array('numero_logement_operateur', 'millesime', 'volume', 'destination_date', 'elevage', 'specificite', 'produit_hash');
     }
 
     public function isEmpty() {

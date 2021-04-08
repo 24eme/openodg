@@ -4,7 +4,9 @@
 class ConditionnementLot extends BaseConditionnementLot
 {
     public function getFieldsToFill() {
-        return array('numero_logement_operateur', 'millesime', 'volume', 'produit_hash', 'destination_date', 'elevage', 'specificite', 'centilisation');
+        $fields = parent::getFieldsToFill();
+        $fields[] = 'centilisation';
+        return $fields;
     }
 
     public function setCentilisation($centilisation) {

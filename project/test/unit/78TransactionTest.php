@@ -74,14 +74,14 @@ foreach ($produits as $key => $produit) {
 }
 $lot = $transaction->addLot();
 $lot->volume = 12;
+$lot->specificite = null;
 $lot = $transaction->addLot();
 $lot->produit_hash = $produit->getHash();
 $transaction->save();
 
 $validation = new TransactionValidation($transaction);
 
-$t->is(count($validation->getPointsByCode(TransactionValidation::TYPE_ERROR, "lot_produit_non_saisi")), 1, "Point bloquant:Aucun produit saisi lors de l'etape Lot");
-$t->is(count($validation->getPointsByCode(TransactionValidation::TYPE_ERROR, "lot_volume_non_saisi")), 1, "Point bloquant:Aucun volume saisi lors de l'etape Lot");
+$t->is(count($validation->getPointsByCode(TransactionValidation::TYPE_ERROR, "lot_incomplet")), 2, "Points bloquants sur chacun des lots");
 
 $transaction->remove('lots');
 
@@ -104,6 +104,7 @@ $lot = $transaction->lots[0];
 
 $t->is(count($transaction->lots->toArray(true, false)), 1, "La transaction possède bien un lot");
 $t->is($transaction->numero_archive, '00003', "Le numéro de dossier sur la transaction prend en compte la DREV et le conditionnement créé au début");
+$t->is($lot->specificite, "", "La spécificité est vide");
 $t->is($lot->numero_dossier, '00003', "Le numeor de dossier du lot reprend bien le numero d'archive de la transaction");
 $t->is($lot->numero_archive, '00001', "Le numéro d'archive est bien le premier");
 $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
