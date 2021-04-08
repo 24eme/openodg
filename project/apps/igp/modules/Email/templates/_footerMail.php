@@ -8,4 +8,4 @@ $email = $infos[$app]['email'];
 <?php echo $signature; ?>
 --
 mailto:<?php echo $email ;?>
-<?echo $telephone; ?>
+<?php echo $telephone; ?>
