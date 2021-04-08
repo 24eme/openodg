@@ -35,6 +35,10 @@ foreach(DrevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
+foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {
+    $doc = acCouchdbManager::getClient()->find($r->id);
+    $doc->delete();
+}
 
 $year = date('Y');
 if (date('m') < 8) {
@@ -116,9 +120,9 @@ $t->ok(!$conditionnement->lots[0]->specificite, "La spécifité UNDEFINDED est v
 $t->comment("Historique de mouvements");
 $lot = $conditionnement->lots[0];
 
-$t->is($conditionnement->numero_archive, '00002', "Le numéro de dossier du conditionnement a bien le numéro attendu");
+$t->is($conditionnement->numero_archive, '00001', "Le numéro de dossier du conditionnement a bien le numéro attendu");
 
-$t->is($lot->numero_dossier, '00002', "Le numéro de dossier du lot est bien le numéro d'archive du conditionnement");
+$t->is($lot->numero_dossier, '00001', "Le numéro de dossier du lot est bien le numéro d'archive du conditionnement");
 $t->is($lot->numero_archive, '00001', "Le numéro d'archive du lot est bien celui attendu");
 $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_CONDITIONNE), 'Le lot est conditionné');
@@ -134,8 +138,8 @@ $transaction->validate();
 $transaction->save();
 $transaction = TransactionClient::getInstance()->find($transaction->_id);
 $lottransaction = $transaction->lots[0];
-$t->is($transaction->numero_archive, '00003', "Le numéro d'archive d'une transaction est bien partagé avec celui du conditionnement");
-$t->is($lottransaction->numero_dossier, '00003', "Le numéro de dosssier du lot de la transaction est bien le numéro d'archive de la transaction");
+$t->is($transaction->numero_archive, '00002', "Le numéro d'archive d'une transaction est bien partagé avec celui du conditionnement");
+$t->is($lottransaction->numero_dossier, '00002', "Le numéro de dosssier du lot de la transaction est bien le numéro d'archive de la transaction");
 $t->is($lottransaction->numero_archive, '00004', "Le numéro d'archive du lot de transaction est bien partagé avec celui du conditionnement");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -146,6 +150,6 @@ $lotdrev->numero_logement_operateur = "B";
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
-$t->is($drev->numero_archive, '00004', "La DRev créée a bien un numéro d'archive commun avec la Transaction");
+$t->is($drev->numero_archive, '00003', "La DRev créée a bien un numéro d'archive commun avec la Transaction");
 $t->is($drev->lots[0]->numero_archive, '00005', "Le lot de la DRev a bien un numéro d'archive commun avec la Transaction");
 
