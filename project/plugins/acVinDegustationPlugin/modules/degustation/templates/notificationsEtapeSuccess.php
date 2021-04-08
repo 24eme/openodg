@@ -20,7 +20,10 @@
       <div class="panel-body">
 
         <div class="row row-condensed">
-          <div class="col-xs-4 col-xs-offset-8">
+          <div class="col-xs-4">
+              <a class="btn btn-default" href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a>
+          </div>
+          <div class="col-xs-4 col-xs-offset-4">
               <a class="pull-right btn btn-success" href="<?= url_for('degustation_all_notification_pdf', ['id' => $degustation->_id]) ?>"><i class="glyphicon glyphicon-file"></i> Télécharger toutes les notifications</a>
           </div>
           <div class="col-xs-12">
