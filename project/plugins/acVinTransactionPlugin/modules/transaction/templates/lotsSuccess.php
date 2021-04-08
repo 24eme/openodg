@@ -96,7 +96,7 @@
                           <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
                           <div class="col-sm-2">
                               <div class="input-group">
-                                  <?php echo $lot['millesime']->render(array('data-default-value' => $transaction->getMillesime())); ?>
+                                  <?php echo $lot['millesime']->render(); ?>
                               </div>
                           </div>
                       </div>

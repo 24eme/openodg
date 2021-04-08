@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(31);
+$t = new lime_test(32);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -110,6 +110,8 @@ $t->ok($conditionnement->numero_archive, "Numéro d'archive défini");
 
 $conditionnement->validateOdg();
 $conditionnement->save();
+
+$t->ok(!$conditionnement->lots[0]->specificite, "La spécifité UNDEFINDED est vide");
 
 $t->comment("Historique de mouvements");
 $lot = $conditionnement->lots[0];

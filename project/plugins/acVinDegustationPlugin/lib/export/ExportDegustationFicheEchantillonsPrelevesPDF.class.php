@@ -11,7 +11,9 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
 
     public function create() {
         $lots = $this->degustation->getLotsByOperateurs();
-        ksort($lots);
+        usort($lots, function ($a, $b) {
+            return strcmp($a[0]->declarant_nom, $b[0]->declarant_nom);
+        });
 
         foreach ($lots as $operateur => &$lots_operateur) {
             usort($lots_operateur, function($a, $b) {return strcmp($a->numero_anonymat, $b->numero_anonymat);});

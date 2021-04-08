@@ -196,6 +196,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               continue;
           }
           $lot->date = $date;
+          if($lot->specificite == Lot::SPECIFICITE_UNDEFINED) {
+              $lot->specificite = null;
+          }
         }
 
         $this->cleanDoc();

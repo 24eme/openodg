@@ -74,16 +74,14 @@ th {
       <?php if ($table_header): $table_header = false; ?>
           <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
             <tr style="line-height:20px;">
-               <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-               <th class="topempty bg-white" style="width:10%;"><?php echo tdStart() ?><strong>Lgmt</small></th>
-               <th class="topempty bg-white" style="width:25%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
+               <th class="topempty bg-white"style="width:10%; "><?php echo tdStart() ?><strong>Anon</strong></th>
+               <th class="topempty bg-white" style="width:30%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
                <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
                <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-               <th class="topempty bg-white" style="width:8%;"><?php echo tdStart() ?><strong>Note</strong></th>
+               <th class="topempty bg-white" style="width:10%;"><?php echo tdStart() ?><strong>Note</strong></th>
                <th class="topempty bg-white" style="width:30%;"><strong>Motifs (si non conforme)</strong></th>
             </tr>
             <tr style="line-height:13px;">
-              <th class="empty bg-white"></th>
               <th class="empty bg-white"></th>
               <th class="empty bg-white"></th>
               <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
@@ -96,7 +94,6 @@ th {
       <?php endif; ?>
          <tr style="line-height:25px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
-           <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->numero_logement_operateur ?></small></strong></td>
            <td><?php echo tdStart() ?><small><?php echo showProduitLot($lotInfo);?></small></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
