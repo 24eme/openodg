@@ -123,7 +123,7 @@ $t->is(array_keys($degust->getLotsNonAnonymisable()), array('/lots/1'), "Seul le
 $isAnonymized = $degust->isAnonymized();
 $t->ok(!$isAnonymized, 'La dégustation n\'est pas "anonymisée"');
 
-$t->is(count($degust->lots), 4,'La dégustation a bien 4 lots (3 drev et un leure)');
+$t->is(count($degust->lots), 4,'La dégustation a bien 4 lots (3 drev et un leurre)');
 $t->comment('Apposement de l\'anonymat');
 $degust->anonymize();
 $degust->save();
