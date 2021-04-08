@@ -1,1 +1,4 @@
-Le Syndicat des vins IGP13
+<?php
+$signature = $infos[$app]['service_facturation'];
+?>
+<?php echo $signature; ?>
