@@ -48,7 +48,7 @@
 		<tbody>
 		<?php foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
-      <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->numero_dossier; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
+      <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->declarant_identifiant; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
         <td><?php echo $lot->declarant_nom; ?></td>
         <td><?php echo $lot->getTypeProvenance(); ?> <span class="text-muted">n°<?php echo $lot->numero_dossier; ?></span></td>
         <td class="edit"><?= $lot->numero_logement_operateur ?>
