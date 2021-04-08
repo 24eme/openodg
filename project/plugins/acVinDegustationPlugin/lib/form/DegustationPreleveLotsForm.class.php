@@ -4,15 +4,21 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
 
     public function configure() {
         $formLots = new BaseForm();
-        $lots = ($this->getDocument()->lots)->toArray();
+        $lots = array();
+        foreach( ($this->getDocument()->lots)->toArray() as $k => $l ) {
+            $lots[$l->campagne.$l->numero_dossier.$l->adresse_logement.$l->unique_id] = array('lot' => $l, 'key' => $k);
+        }
+        ksort($lots);
 
-        uasort($lots, array($this, 'cmp'));
-    		foreach ($lots as $key => $lot) {
-    			if ($lot->isLeurre()) {
-    				continue;
-    			}
-    			$formLots->embedForm($key, new DegustationPreleveLotForm($lot));
-    		}
+        foreach (array_values($lots) as $v) {
+            $lot = $v['lot'];
+            $key = $v['key'];
+            if ($lot->isLeurre()) {
+                continue;
+            }
+            $formLots->embedForm($key, new DegustationPreleveLotForm($lot));
+        }
+
         $this->embedForm('lots', $formLots);
         $this->widgetSchema->setNameFormat('preleve[%s]');
 
