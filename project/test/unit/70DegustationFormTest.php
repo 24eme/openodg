@@ -184,10 +184,9 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 3, 'Il y a 3 lots dans la dégustation');
 
-$t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00003-00003", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00003-00003");
-$t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00002-00001", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00002-00001");
-$t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00002-00002", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00002");
-
+$t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");
+$t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00001-00002", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00001-00002");
+$t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00002-00003", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00003");
 $t->is($degustation->lots[1]->adresse_logement,$addrCompleteLgtDrev, "Dans la dégustation on a l'addresse de logement depuis la DRev");
 
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Il y a une affectation source avant celle-ci pour le lot 1 (de transaction) de la dégustation");
@@ -199,9 +198,9 @@ $t->is($degustation->lots[2]->getNombrePassage(), 1, "Le lot 3 de la dégustatio
 $t->is($degustation->lots[0]->document_ordre, '02', "Le lot 1 de la dégustation a bien 02 comme document d'ordre");
 $t->is($degustation->lots[1]->document_ordre, '02', "Le lot 2 de la dégustation a bien 02 comme document d'ordre");
 $t->is($degustation->lots[2]->document_ordre, '02', "Le lot 3 de la dégustation a bien 02 comme document d'ordre");
-$t->is($degustation->lots[0]->id_document_provenance, $transaction->_id, "La provenance du lot 1 de la dégustation est bien la transaction ".$transaction->_id);
+$t->is($degustation->lots[0]->id_document_provenance, $drev->_id, "La provenance du lot 1 de la dégustation est bien la DREV ".$drev->_id);
 $t->is($degustation->lots[1]->id_document_provenance, $drev->_id, "La provenance du lot 2 de la dégustation est bien la DREV ".$drev->_id);
-$t->is($degustation->lots[2]->id_document_provenance, $drev->_id, "La provenance du lot 3 de la dégustation est bien la DREV ".$drev->_id);
+$t->is($degustation->lots[2]->id_document_provenance, $transaction->_id, "La provenance du lot 3 de la dégustation est bien la transaction ".$transaction->_id);
 
 $drev = DRevClient::getInstance()->find($iddrev);
 $t->is($drev->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la DREV est bien ".$degustation->_id);
