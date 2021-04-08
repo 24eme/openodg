@@ -148,8 +148,13 @@ th {
               <th style="width: 5%"><?php echo tdStart() ?><small>C/NC</small></th>
               <th style="width: 20%"><?php echo tdStart() ?><small>Motif NC <br/>Observation de Conformité</small></th>
             </tr>
-          <?php foreach ($lotsDegustes as $key => $lotDeguste): ?>
+          <?php $page1 = 0; $pages = 0; foreach ($lotsDegustes as $key => $lotDeguste): ?>
+          <?php if ($page1 == 3 || $pages == 15): ?>
+            <tr pagebreak="true">
+          <?php $pages = 0; ?>
+          <?php else: ?>
             <tr>
+          <?php endif ?>
               <td><small><?php echo $lotDeguste->numero_dossier ?></small></td>
               <td><small><?php echo $lotDeguste->numero_archive ?></small></td>
               <td><small><?php $etablissement = $etablissements[$lotDeguste->numero_dossier]; echo $etablissement->nom."<br/>".$etablissement->commune."<br/>".$etablissement->cvi ?></small></td>
@@ -161,8 +166,16 @@ th {
               <td><small><?php echo $lotDeguste->details ?></small></td>
               <td><small><?php echo "" ?></small></td>
               <td><small><?php echo $lotDeguste->statut == Lot::STATUT_CONFORME ? "C" : "NC" ?></small></td>
-              <td><small><?php echo $lotDeguste->observation ?></small></td>
+              <td><small>
+                <?php if ($lotDeguste->getMouvement(Lot::STATUT_CONFORME)): ?>
+                    <?php echo $lotDeguste->observation ?>
+                <?php else: ?>
+                    <?php echo Lot::getLibelleConformite($lotDeguste->conformite) ?> :
+                    <?php echo $lotDeguste->motif ?>
+                <?php endif ?>
+              </small></td>
             </tr>
+          <?php $page1++; $pages++; ?>
           <?php endforeach; ?>
           </table>
         </div>
