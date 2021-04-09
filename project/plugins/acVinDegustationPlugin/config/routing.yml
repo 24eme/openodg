@@ -527,9 +527,20 @@ degustation_desanonymize:
     requirements:
     sf_method: [get]
 
-degustation_get_courrier_auth:
-  url: /degustation/get/:id/:auth/:type
-  param: {module: degustation, action: getCourrierWithAuth}
+degustation_get_courrier_auth_conforme:
+  url: /degustation/get/:id/:auth/conforme/:identifiant
+  param: {module: degustation, action: getCourrierWithAuth, type: Conformite}
+  class: DegustationRoute
+  options:
+    model: Degustation
+    type: object
+  requirements:
+    sf_method: [get]
+
+
+degustation_get_courrier_auth_nonconforme:
+  url: /degustation/get/:id/:auth/nonconforme/:lot_dossier/:lot_archive
+  param: {module: degustation, action: getCourrierWithAuth, type: NonConformite}
   class: DegustationRoute
   options:
     model: Degustation

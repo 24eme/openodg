@@ -16,15 +16,13 @@ L'ensemble de vos lots sont :
 
 <?php if(count($lotsConformes)): ?>
 Conforme(s) et apte(s) à la commercialisation. Vous trouverez ci-dessous le lien vers le courrier confirmant la conformité du(des) lot(s) présenté(s) (<?= count($lotsConformes) ?>) :
-<a href="<?php echo url_for('degustation_get_courrier_auth', [
+<a href="<?php echo url_for('degustation_get_courrier_auth_conforme', [
     'id' => $degustation->_id,
     'auth' => DegustationClient::generateAuthKey($degustation->_id, $identifiant),
-    'type' => 'Conformite',
     'identifiant' => $identifiant
-], true) ?>"><?php echo url_for('degustation_get_courrier_auth', [
+], true) ?>"><?php echo url_for('degustation_get_courrier_auth_conforme', [
     'id' => $degustation->_id,
     'auth' => DegustationClient::generateAuthKey($degustation->_id, $identifiant),
-    'type' => 'Conformite',
     'identifiant' => $identifiant
 ], true) ?>
 </a>
@@ -34,17 +32,15 @@ Conforme(s) et apte(s) à la commercialisation. Vous trouverez ci-dessous le lie
 Non conforme(s) et bloqué(s) à la commercialisation. Vous trouverez en cliquant sur le(s) lien(s) ci-dessous le courrier concernant chacun des lots présentant une non conformité :
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
 * <?= showProduitLot($lotNonConforme) . ", NON CONFORMITÉ de type : " . $lotNonConforme->getShortLibelleConformite() ?>
-<a href="<?php echo url_for('degustation_get_courrier_auth', array(
+<a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
     'auth' => DegustationClient::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
-    'type' => 'NonConformite',
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
 ), true); ?>">
-<?php echo url_for('degustation_get_courrier_auth', array(
+<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
     'auth' => DegustationClient::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
-    'type' => 'NonConformite',
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
 ), true); ?>
