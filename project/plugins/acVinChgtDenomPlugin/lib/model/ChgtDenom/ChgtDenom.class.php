@@ -178,6 +178,24 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $this->changement_origine_id_document.":".$this->changement_origine_lot_unique_id;
     }
 
+    public function hasLotsUtilises() {
+        foreach($this->lots as $lot) {
+            if($lot->hasBeenEdited()) {
+                continue;
+            }
+
+            if($lot->isAffecte()) {
+                return true;
+            }
+
+            if($lot->isChange()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 	protected function doSave() {
           $this->piece_document->generatePieces();
     	}

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(32);
+$t = new lime_test(33);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -116,6 +116,7 @@ $conditionnement->validateOdg();
 $conditionnement->save();
 
 $t->ok(!$conditionnement->lots[0]->specificite, "La spécifité UNDEFINDED est vide");
+$t->ok(!$conditionnement->hasLotsUtilises(), "La déclaration n'a pas de lots utilisés");
 
 $t->comment("Historique de mouvements");
 $lot = $conditionnement->lots[0];

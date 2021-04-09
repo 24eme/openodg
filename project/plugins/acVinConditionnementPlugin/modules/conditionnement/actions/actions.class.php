@@ -32,8 +32,6 @@ class conditionnementActions extends sfActions {
 
         $this->secure(ConditionnementSecurity::EDITION, $conditionnement);
 
-        $this->checkIfAffecte($conditionnement);
-
         if ($conditionnement->exist('etape') && $conditionnement->etape) {
             return $this->redirect('conditionnement_' . $conditionnement->etape, $conditionnement);
         }
@@ -45,8 +43,6 @@ class conditionnementActions extends sfActions {
         $conditionnement = $this->getRoute()->getConditionnement();
         $etablissement = $conditionnement->getEtablissementObject();
         $this->secure(ConditionnementSecurity::EDITION, $conditionnement);
-
-        $this->checkIfAffecte($conditionnement);
 
         $conditionnement->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
@@ -60,7 +56,9 @@ class conditionnementActions extends sfActions {
           $this->secure(ConditionnementSecurity::DEVALIDATION , $conditionnement);
         }
 
-        $this->checkIfAffecte($conditionnement);
+        if($conditionnement->hasLotsUtilises()) {
+            throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
+        }
 
         $conditionnement->validation = null;
         $conditionnement->validation_odg = null;
@@ -81,8 +79,6 @@ class conditionnementActions extends sfActions {
     public function executeExploitation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
-
-        $this->checkIfAffecte($this->conditionnement);
 
         if($this->conditionnement->storeEtape($this->getEtape($this->conditionnement, ConditionnementEtapes::ETAPE_EXPLOITATION))) {
             $this->conditionnement->save();
@@ -132,8 +128,6 @@ class conditionnementActions extends sfActions {
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
         $this->isAdmin = $this->getUser()->isAdmin();
 
-        $this->checkIfAffecte($this->conditionnement);
-
         $has = false;
         if(count($this->conditionnement->getLots())){
             $has = true;
@@ -173,8 +167,6 @@ class conditionnementActions extends sfActions {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
 
-        $this->checkIfAffecte($this->conditionnement);
-
         if($this->conditionnement->getLotByNumArchive($request->getParameter('numArchive')) === null){
           throw new sfException("le lot d'index ".$request->getParameter('numArchive')." n'existe pas ");
         }
@@ -199,8 +191,6 @@ class conditionnementActions extends sfActions {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
         $this->isAdmin = $this->getUser()->isAdmin();
-
-        $this->checkIfAffecte($this->conditionnement);
 
         if($this->conditionnement->storeEtape($this->getEtape($this->conditionnement, ConditionnementEtapes::ETAPE_VALIDATION))) {
             $this->conditionnement->save();
@@ -278,8 +268,6 @@ class conditionnementActions extends sfActions {
         $this->secure(array(ConditionnementSecurity::VALIDATION_ADMIN), $this->conditionnement);
         $this->regionParam = $request->getParameter('region',null);
 
-        $this->checkIfAffecte($this->conditionnement);
-
         $this->conditionnement->validateOdg(null,$this->regionParam);
         $this->conditionnement->save();
 
@@ -308,7 +296,6 @@ class conditionnementActions extends sfActions {
     public function executeConfirmation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::VISUALISATION, $this->conditionnement);
-        $this->checkIfAffecte($this->conditionnement);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -420,16 +407,4 @@ class conditionnementActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function checkIfAffecte($conditionnement)
-    {
-        $lotsAffectes = [];
-        foreach ($conditionnement->getLots() as $lot) {
-            if ($lot->isAffecte() || $lot->isChange()) {
-                $lotsAffectes[] = $lot->getHash();
-            }
-        }
-        if (count($lotsAffectes) > 0) {
-            throw new Exception('Les lots suivants du conditionnement '.$conditionnement->_id.' sont affectés : '.implode(', ', $lotsAffectes));
-        }
-    }
 }

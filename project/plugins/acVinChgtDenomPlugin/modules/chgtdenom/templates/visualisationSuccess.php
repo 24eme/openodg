@@ -54,7 +54,7 @@
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('chgtdenom_pdf', ['id' => $chgtDenom->_id]) ?>" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Voir le PDF</a>
         <div class="col-xs-4 text-right">
-          <?php if ($chgtDenom->validation_odg && ChgtDenomSecurity::getInstance($sf_user, $chgtDenom->getRawValue())->isAuthorized(ChgtDenomSecurity::DEVALIDATION)):?>
+          <?php if ($chgtDenom->validation_odg && ChgtDenomSecurity::getInstance($sf_user, $chgtDenom->getRawValue())->isAuthorized(ChgtDenomSecurity::DEVALIDATION) && !$chgtDenom->hasLotsUtilises()):?>
               <a class="btn btn-default" href="<?php echo url_for('chgtdenom_devalidation', $chgtDenom) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider ce Changement de dénomination ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
           <?php endif; ?>
         </div>

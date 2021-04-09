@@ -55,6 +55,10 @@ class transactionActions extends sfActions {
           $this->secure(TransactionSecurity::DEVALIDATION , $transaction);
         }
 
+        if($transaction->hasLotsUtilises()) {
+            throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
+        }
+
         $transaction->validation = null;
         $transaction->validation_odg = null;
         foreach ($transaction->getProduits() as $produit) {

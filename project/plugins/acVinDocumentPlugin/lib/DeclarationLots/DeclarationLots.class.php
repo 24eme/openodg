@@ -140,6 +140,24 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $lot;
       }
 
+      public function hasLotsUtilises() {
+          foreach($this->lots as $lot) {
+              if($lot->hasBeenEdited()) {
+                  continue;
+              }
+
+              if($lot->isAffecte()) {
+                  return true;
+              }
+
+              if($lot->isChange()) {
+                  return true;
+              }
+          }
+
+          return false;
+      }
+
       public function storeDeclarant() {
           $this->declarant_document->storeDeclarant();
           if($this->getEtablissementObject()->famille) {

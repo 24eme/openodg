@@ -8,8 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-
-$t = new lime_test(120);
+$t = new lime_test(123);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -90,6 +89,7 @@ $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 3 étant no
 $t->ok(!$drev->lots[0]->isChange(), "Le lot changeable dans la DREV n'est pas isChange()");
 $t->ok(!$drev->lots[1]->isChange(), "un lot non changeable dans la DREV n'est pas isChange()");
 $t->ok(!$drev->lots[2]->isChange(), "Le lot changeable dans la DREV n'est pas isChange()");
+$t->ok(!$drev->hasLotsUtilises(), "La drev n'a pas de lots utilisés");
 
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
@@ -143,8 +143,10 @@ $t->is($chgtDenomFromDrev->lots[0]->affectable, $lotFromDrev->affectable, "Le lo
 
 $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_NONAFFECTABLE), "Le changement a bien un mouvement non affectable");
 $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le changement a bien un mouvement changé dest");
+$t->ok(!$chgtDenomFromDrev->hasLotsUtilises(), "La déclaration n'a pas de lots utilisés");
 
 $drev = DrevClient::getInstance()->find($drev->_id);
+$t->ok($drev->hasLotsUtilises(), "La drev a des lots utilisés");
 $t->is($drev->lots[2]->id_document_affectation, $idChgtDenomFromDrev, "La DREV bien le changement enregistré comme affectation ".$idChgtDenomFromDrev);
 $t->ok($drev->lots[2]->isChange(), "Le lot changé dans la DREV est bien isChange()");
 $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le changement a bien généré dans la Drev un mouvement changé src");

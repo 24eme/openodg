@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(16);
+$t = new lime_test(17);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -98,13 +98,14 @@ $t->ok($transaction->numero_archive, "Numéro d'archive défini");
 $transaction->validateOdg();
 $transaction->save();
 
+$t->is($transaction->lots[0]->specificite, "", "La spécificité est vide");
+$t->ok(!$transaction->hasLotsUtilises(), "La déclaration n'a pas de lots utilisés");
 
 $t->comment("Historique de mouvements");
 $lot = $transaction->lots[0];
 
 $t->is(count($transaction->lots->toArray(true, false)), 1, "La transaction possède bien un lot");
 $t->is($transaction->numero_archive, '00003', "Le numéro de dossier sur la transaction prend en compte la DREV et le conditionnement créé au début");
-$t->is($lot->specificite, "", "La spécificité est vide");
 $t->is($lot->numero_dossier, '00003', "Le numeor de dossier du lot reprend bien le numero d'archive de la transaction");
 $t->is($lot->numero_archive, '00001', "Le numéro d'archive est bien le premier");
 $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");

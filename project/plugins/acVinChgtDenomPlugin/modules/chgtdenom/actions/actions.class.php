@@ -162,6 +162,10 @@ class chgtdenomActions extends sfActions
           $this->secure(ChgtDenomSecurity::DEVALIDATION , $chgtDenom);
         }
 
+        if($chgtDenom->hasLotsUtilises()) {
+            throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
+        }
+
         $chgtDenom->devalidate();
         $chgtDenom->save();
 

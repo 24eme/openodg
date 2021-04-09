@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(113);
+$t = new lime_test(115);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -110,8 +110,8 @@ $t->ok($drev->lots[1]->numero_archive, "Numéro d'archive du lot 2");
 $t->ok($drev->lots[1]->numero_dossier, "Numéro de dossier du lot 2");
 $t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 1 est bien 01");
 $t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 2 est bien 01");
-
 $t->is($drev->lots[1]->adresse_logement, $addrCompleteLgtDrev, "Lot drev a l'adresse de chai");
+$t->ok(!$drev->hasLotsUtilises(), "La drev n'a pas de lot utilisée");
 
 $t->comment($drev->_id);
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
@@ -206,6 +206,7 @@ $t->is($degustation->lots[1]->id_document_provenance, $drev->_id, "La provenance
 $t->is($degustation->lots[2]->id_document_provenance, $transaction->_id, "La provenance du lot 3 de la dégustation est bien la transaction ".$transaction->_id);
 
 $drev = DRevClient::getInstance()->find($iddrev);
+$t->ok($drev->hasLotsUtilises(), "La drev a des lots utilisée");
 $t->is($drev->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la DREV est bien ".$degustation->_id);
 $t->is($drev->lots[1]->id_document_affectation, $degustation->_id, "L'affectation du lot 2 dans la DREV est bien ".$degustation->_id);
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[0]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 1 dans la DREV");

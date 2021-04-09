@@ -86,8 +86,6 @@ class drevActions extends sfActions {
         $etablissement = $drev->getEtablissementObject();
         $this->secure(DRevSecurity::EDITION, $drev);
 
-        $this->checkIfAffecte($drev);
-
         $drev->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
@@ -101,7 +99,9 @@ class drevActions extends sfActions {
           $this->secure(DRevSecurity::DEVALIDATION , $drev);
         }
 
-        $this->checkIfAffecte($drev);
+        if($drev->hasLotsUtilises()) {
+            throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
+        }
 
         $drev->validation = null;
         $drev->validation_odg = null;
