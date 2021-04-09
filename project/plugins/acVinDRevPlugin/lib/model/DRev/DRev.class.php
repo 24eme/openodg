@@ -232,7 +232,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         ksort($lots);
         $lots = array_values($lots);
 
-        if ($desc) {
+        if ($chrono) {
             $lots = array_reverse($lots);
         }
 
