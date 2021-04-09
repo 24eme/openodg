@@ -16,7 +16,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
-				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
+				$this->cm = new CampagneManager('08-01');
     }
 
     public function getDateFormat($format = 'Y-m-d') {
@@ -47,6 +47,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $this->piece_document = new PieceDocument($this);
         $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->archivage_document = new ArchivageDocument($this);
+    }
+
+    public function initDoc()
+    {
+        $this->campagne = $this->getCampagneByDate();
     }
 
     public function getConfiguration() {

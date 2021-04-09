@@ -16,7 +16,7 @@ if ($annee < 8){
 }
 $campagne = $annee.'-'.($annee + 1);
 $date = $annee.'-09-01';
-$degust_date = $date.' 12:45';
+$degust_date = $date.' 12:45:00';
 $degust_date_fr = '01/09/'.$annee;
 $degust_time_fr = '12:45';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -61,7 +61,8 @@ foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRA
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
-$docid = "DEGUSTATION-".preg_replace("/[:\ -]+/", "", $degust_date);
+$iddate = DateTime::createFromFormat('Y-m-d H:i:s', $degust_date)->format('YmdHi');
+$docid = "DEGUSTATION-".preg_replace("/[:\ -]+/", "", $iddate);
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
@@ -160,7 +161,7 @@ $t->ok($degustation->_id, "la création donne un id à la degustation");
 $t->is($degustation->_id, $docid, "doc id");
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
-$t->is($degustation->date, $degust_date.":00", "La date de la degustation est la bonne");
+$t->is($degustation->date, $degust_date, "La date de la degustation est la bonne");
 $t->is($degustation->lieu, $lieu, "Lieu de la dégustation");
 $t->is($degustation->getLieuNom(), "Lieu test", "Nom du lieu de la dégustation");
 
