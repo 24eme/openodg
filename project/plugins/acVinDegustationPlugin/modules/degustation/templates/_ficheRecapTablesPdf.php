@@ -52,10 +52,9 @@ th {
         <tbody>
           <?php for( $i = 0; $i<5; $i++): ?>
               <tr>
-                <td style="width:35%; text-align:left; margin-left: 1em;"></td>
-                <td style="width:35%; text-align:left; margin-left: 1em;"></td>
-                <td style="width:30%">
-                </td>
+                <td style="width:35%; text-align:left; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
+                <td style="width:35%; text-align:left; margin-left: 1em;"><br/></td>
+                <td style="width:30%"><br/></td>
               </tr>
           <?php endfor; ?>
         </tbody>
@@ -63,7 +62,7 @@ th {
     </div>
 
     <div>
-      <?php  $ligne=12; $table_header = true;
+      <?php  $ligne=13; $table_header = true;
       foreach($lots as $numAnonyme => $lotInfo): ?>
       <?php if($ligne % 20 == 0): $table_header = true; ?>
         </table>
