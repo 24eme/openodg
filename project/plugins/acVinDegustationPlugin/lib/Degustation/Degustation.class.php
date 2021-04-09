@@ -436,7 +436,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!$including_leurre && $lot->isLeurre()){
 					continue;
 				}
-				if($lot->statut == $statut){
+				if($lot->getMouvement($statut)){
 					$lots[] = $lot;
 				}
 			}
