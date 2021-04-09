@@ -65,7 +65,11 @@
     <td>
       <strong>Action corrective proposée</strong>
       <ul>
+        <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
+        <li>Recours OC/OI</li>
+        <?php else: ?>
         <li>Mise en place d'une pratique oenologique permettant la disparition du défaut constaté</li>
+        <?php endif ?>
         <li>Déclassement du lot concerné en vin sans indication géographique (Vin de France)</li>
       </ul>
     </td>
@@ -75,7 +79,7 @@
 <table border="1">
 <tr>
   <td style="font-weight:bold;">Date d'envoi fiche<br/></td>
-  <td style="font-weight:bold;">Date de Notification :<br/></td>
+  <td style="font-weight:bold;">Date de Notification :<br/><?php echo date('d/m/Y') ?></td>
   <td style="font-weight:bold;">Signature du responsable de l'ODG :<br/></td>
 </tr>
 </table>
@@ -87,7 +91,11 @@
       <br/><?php echo tdStart() ?> <?php echo echoCheck('Déclassement', false) ?><br/>
     </td>
     <td>
-      <br/><?php echo tdStart() ?> <?php echo echoCheck('Nouvelle dégustation', false) ?><br/>
+      <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
+        <br/><?php echo tdStart() ?> <?php echo echoCheck('Recours OC/OI (Frais à ma charge)', false) ?><br/>
+      <?php else: ?>
+        <br/><?php echo tdStart() ?> <?php echo echoCheck('Nouvelle dégustation', false) ?><br/>
+      <?php endif ?>
     </td>
   </tr>
   <tr style="height: 250px">
