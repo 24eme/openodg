@@ -226,8 +226,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $lots = array();
+        $i=0;
         foreach($this->_get('lots')->toArray(1,1) as $lot) {
-            $lots[$lot->unique_id.$lot->date] = $lot;
+            $index = ($lot->campagne&&$lot->numero_dossier&&$lot->numero_archive)? $lot->unique_id.$lot->date : $i++;
+            $lots[$index] = $lot;
+            $i++;
         }
         ksort($lots);
         $lots = array_values($lots);
