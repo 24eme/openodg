@@ -83,7 +83,12 @@
   <td style="font-weight:bold;">Signature du responsable de l'ODG :<br/></td>
 </tr>
 </table>
+<?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
+<p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner OBLIGATOIREMENT à l'ODG et à l'OI.</strong></p>
+<?php else: ?>
 <p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner à l'ODG.</strong></p>
+<?php endif ?>
+
 
 <table border="1">
   <tr style="text-align: center;">
