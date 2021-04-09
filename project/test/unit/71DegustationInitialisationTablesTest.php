@@ -12,7 +12,7 @@ $t = new lime_test();
 
 $annee = (date('Y')-1)."";
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
-$degust_date = $annee.'-09-01 12:45';
+$degust_date = $annee.'-09-01 13:45:00';
 $degustid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
 $degust = DegustationClient::getInstance()->find($degustid);
 if ($degust) {
