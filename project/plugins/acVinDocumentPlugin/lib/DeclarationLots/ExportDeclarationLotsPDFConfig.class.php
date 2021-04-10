@@ -23,8 +23,8 @@ class ExportDeclarationLotsPDFConfig extends acTCPDFConfig
         $this->font_size = 12;
         $this->font_size_main = 12;
 
-        $this->path_images = sfConfig::get('sf_web_dir').'/images/';
-        $this->header_logo = 'pdf/logo_'.strtolower(sfConfig::get('sf_app')).'.jpg';
+        $this->path_images = sfConfig::get('sf_web_dir').'/images/pdf/';
+        $this->header_logo = 'logo_'.strtolower(sfConfig::get('sf_app')).'.jpg';
         $this->header_logo_width = 70;
 
     }
