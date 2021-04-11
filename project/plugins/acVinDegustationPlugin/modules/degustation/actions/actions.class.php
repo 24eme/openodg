@@ -873,7 +873,17 @@ class degustationActions extends sfActions {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
-        $this->forward('degustation', 'degustation'.$type.'PDF');
+        if($type == "Conformite") {
+
+            return $this->executeDegustationConformitePDF($request);
+        }
+
+        if($type == "NonConformite") {
+
+            return $this->executeDegustationNonConformitePDF($request);
+        }
+
+        throw new sfError404Exception();
     }
 
     public function executeConvocationWithAuth(sfWebRequest $request) {

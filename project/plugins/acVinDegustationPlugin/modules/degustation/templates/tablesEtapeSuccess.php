@@ -50,7 +50,7 @@
           <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Aucun' ?></strong> <strong>Échantillon<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
         </div>
         <div class="col-xs-12 text-right">
-            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Échantillons par table&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
+            <a id="btn_organisation_table" class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Échantillons par table&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
         </div>
       </div>
     </div>
@@ -62,7 +62,7 @@
   <div class="col-xs-4 text-center">
   </div>
   <div class="col-xs-4 text-right">
-    <a class="btn btn-primary btn-upper" <?php echo (!intval($infosDegustation["nbTables"]))? 'disabled="disabled"' : ''; ?>
+    <a id="btn_suivant" class="btn btn-primary btn-upper" <?php echo (!intval($infosDegustation["nbTables"]))? 'disabled="disabled"' : ''; ?>
          href="<?php echo (intval($infosDegustation["nbTables"]))? url_for('degustation_anonymats_etape', $degustation) : "#"; ?>">Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
 
   </div>

@@ -68,7 +68,7 @@ $b->click('button[type="submit"]', array('import_dr_prodouane' => false))->follo
 $b->isForwardedTo('drev', 'lots');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
 
-$b->click('button[id="lots_continue"]')->followRedirect()->followRedirect();
+$b->click('button[id="lots_continue"]', array("drev_lots" => array("lots" => array(array("produit_hash" => $produit->getHash(), "volume" => 100)))))->followRedirect()->followRedirect();
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 
@@ -137,4 +137,148 @@ $b->isForwardedTo('degustation', 'etiquettesPrlvmtCsv');
 $t->is($b->getResponse()->getContentType(), 'text/csv; charset=ISO-8859-1', "Content type en csv");
 $t->is($b->getResponse()->getStatuscode(), 200, "CSV Étiquettes de prélevement");
 
+$b->back();
+$b->click('#btn_suivant');
+$b->isForwardedTo('degustation', 'tablesEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape d'organisation des tables");
 
+$b->click('#btn_organisation_table')->followRedirect();
+$b->isForwardedTo('degustation', 'organisationTable');
+$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'organisation des tables");
+
+$b->click('button[type="submit"]', array('tables' => array('numero_lot_0' => '1')))->followRedirect();
+$b->isForwardedTo('degustation', 'organisationTableRecap');
+$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire récapitulatif d'organisation des tables");
+
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'tablesEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'organisation des tables");
+
+$b->click('#btn_suivant');
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape d'anonymat");
+
+$b->click('#btn_suivant')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape commission");
+
+$b->click('#btn_pdf_fiche_echantillons_preleves');
+$b->isForwardedTo('degustation', 'ficheEchantillonsPrelevesPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche lots ventilés (Anonymisés)");
+
+$b->back();
+$b->click('#btn_pdf_fiche_echantillons_preleves_table');
+$b->isForwardedTo('degustation', 'ficheEchantillonsPrelevesTablePDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche lots ventilés (Anonymisés par table)");
+
+$b->back();
+$b->click('#btn_pdf_etiquette_anonymes_table');
+$b->isForwardedTo('degustation', 'etiquettesAnonymesPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes (Anonymisés)");
+
+$b->back();
+$b->click('#btn_pdf_presence_degustateurs');
+$b->isForwardedTo('degustation', 'fichePresenceDegustateursPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "Feuille de présence des dégustateurs");
+
+$b->back();
+$b->click('#btn_pdf_fiche_individuelle_degustateurs');
+$b->isForwardedTo('degustation', 'ficheIndividuellePDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "Fiche individuelle des dégustateurs");
+
+$b->back();
+$b->click('#btn_pdf_fiche_resultats_table');
+$b->isForwardedTo('degustation', 'ficheRecapTablesPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "Fiche individuelle des dégustateurs");
+
+$b->back();
+$b->click('#btn_suivant');
+$b->isForwardedTo('degustation', 'resultatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape résultats");
+
+$b->click('#btn_resultats')->followRedirect();
+$b->isForwardedTo('degustation', 'resultats');
+$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire des résultats");
+
+$b->click('#popupResultat_0 button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'resultats');
+$t->is($b->getResponse()->getStatuscode(), 200, "Validation du formulaire de résultat d'un échantillon");
+
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'resultatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape de résultats");
+
+$b->click('#btn_suivant');
+$b->isForwardedTo('degustation', 'notificationsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape notifications");
+
+$b->click('#btn_pdf_fiches_proces_verbal');
+$b->isForwardedTo('degustation', 'procesVerbalDegustationPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche de procès verbal");
+
+$b->back();
+$b->click('#btn_pdf_notifications');
+$b->isForwardedTo('degustation', 'degustationAllNotificationsPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF de toutes les notifications");
+
+$b->back();
+$b->isForwardedTo('degustation', 'notificationsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape de notifications");
+
+$b->click(".btn-mail-previsualisation");
+$b->isForwardedTo('degustation', 'mailPrevisualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Popup de prévisualisation");
+
+$b->click("#pdf_lots_conforme");
+$b->isForwardedTo('degustation', 'degustationConformitePDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF de conformités");
+
+$uriConformiteProtege = $b->getRequest()->getUri();
+
+$b->back();
+$b->click("pre a");
+$b->isForwardedTo('degustation', 'getCourrierWithAuth');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF de conformités (par url authentifiante)");
+
+$uriConformiteAuthentifiante = $b->getRequest()->getUri();
+
+$t->comment('En mode télédéclarant');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
+$b->restart();
+
+$b->post('/login_no_cas', array('admin' => array('login' => $societe->getIdentifiant())));
+$t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
+
+$b->get('/degustation');
+$t->is($b->getResponse()->getStatuscode(), 403, "Accueil des dégustations interdite");
+
+$t->comment('En mode non connecté');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
+$b->restart();
+
+$b->get('/degustation');
+$b->isForwardedTo('auth', 'login');
+$t->is($b->getResponse()->getStatuscode(), 200, "Redirection sur la page de login");
+
+$b->get($uriConformiteProtege);
+$b->isForwardedTo('auth', 'login');
+$t->is($b->getResponse()->getStatuscode(), 200, "Le PDF de conformités par url classique est protégé");
+
+$b->get($uriConformiteAuthentifiante);
+$b->isForwardedTo('degustation', 'getCourrierWithAuth');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "Le PDF de conformités par url authentifiant est accessible");

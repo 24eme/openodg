@@ -24,14 +24,14 @@
             </li>
             <?php if (count($lotsConformes)): ?>
             <li>
-                <a href="<?php echo url_for('degustation_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $identifiant), true); ?>">
+                <a id="pdf_lots_conforme" href="<?php echo url_for('degustation_conformite_pdf', array('id' => $degustation->_id, 'identifiant' => $identifiant), true); ?>">
                     PDF des lots conformes
                 </a>
             </li>
             <?php endif ?>
             <?php foreach ($lotsNonConformes as $lotNonConforme): ?>
             <li>
-                <a href="<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier, 'lot_archive' => $lotNonConforme->numero_archive), true); ?>">
+                <a id="pdf_lots_non_conforme" href="<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier, 'lot_archive' => $lotNonConforme->numero_archive), true); ?>">
                     PDF des lots non conformes
                 </a>
             </li>

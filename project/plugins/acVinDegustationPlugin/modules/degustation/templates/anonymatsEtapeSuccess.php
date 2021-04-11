@@ -70,9 +70,9 @@
   </div>
   <div class="col-xs-4 text-right">
       <?php if(!$degustation->isAnonymized()): ?>
-       <a class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_anonymize', $degustation) ?>" onclick="confirm('Voulez-vous confirmer l\'anonymat?')" >&nbsp;Anonymiser&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+       <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_anonymize', $degustation) ?>" onclick="confirm('Voulez-vous confirmer l\'anonymat?')" >&nbsp;Anonymiser&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
    <?php else : ?>
-      <a class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_commission_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+      <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_commission_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
   <?php endif; ?>
   </div>
 </div>
