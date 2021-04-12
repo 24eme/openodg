@@ -3,11 +3,11 @@
 class chgtdenomActions extends sfActions
 {
     public function executeCreateLot(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
+        $chgtDenom = $this->getRoute()->getChgtDenom();
         $lot = $request->getParameter('lot');
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
+        $this->secureEtablissement(null, $chgtDenom->getEtablissementObject());
 
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
+        // Format de $lot : DEGUSTATION-20210101:2020-2021-00001-00001 | document_id:unique_id
         $chgtDenom->changement_origine_id_document = strtok($lot, ':');
         $chgtDenom->changement_origine_lot_unique_id = strtok(':');
         $chgtDenom->save();
@@ -15,21 +15,32 @@ class chgtdenomActions extends sfActions
         return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id));
     }
 
+    public function executeCreate(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        $campagne = $request->getParameter('campagne');
+        $this->secureEtablissement(null, $etablissement);
+
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant);
+        $chgtDenom->save();
+
+        return $this->redirect('chgtdenom_lots', ['id' => $chgtDenom->_id, 'campagne' => $campagne]);
+    }
+
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $campagne = $request->getParameter('campagne');
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
+        $this->secureEtablissement(null, $etablissement);
 
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, null, 1);
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_lots', array('sf_subject' => $etablissement, 'campagne' => $chgtDenom->campagne));
+        return $this->redirect('chgtdenom_lots', array('id' => $chgtDenom->_id, 'campagne' => $campagne));
     }
 
     public function executeLots(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->campagne = $request->getParameter('campagne');
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->chgtDenom->identifiant);
     }
 
     public function executeEdition(sfWebRequest $request) {
