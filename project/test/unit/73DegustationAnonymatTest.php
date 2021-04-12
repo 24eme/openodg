@@ -104,9 +104,11 @@ $t->is($degust->lots[0]->statut, Lot::STATUT_ATTABLE, "Le 1er lot est attablé")
 $t->is($degust->lots[1]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le 2ème lot est toujours en attente de prelevement");
 $t->is($degust->lots[2]->statut, Lot::STATUT_ATTABLE, "Le 3ème lot est attablé");
 
-$t->comment('On ajoute un leurre en 4ème lot');
+$t->comment('On ajoute deux leurres en 4ème et 5ème lot');
 $lot4 = $degust->addLeurre($lot1->produit_hash, null, 1);
 $t->is($lot4->numero_archive, null, "le lot leurre n'a pas de numero d'archive");
+$lot5 = $degust->addLeurre($lot1->produit_hash, null, 1);
+$t->is($lot5->numero_archive, null, "le lot leurre n'a pas de numero d'archive");
 $degust->save();
 $degust = DegustationClient::getInstance()->find($degustid);
 
@@ -118,7 +120,7 @@ $t->is($idDocumentProvenance, $drev->_id, "La provenance du lot est bien ". $dre
 
 $t->ok($lotProvenance->isAffecte(),'Le lot 3 est affecté dans la DREV');
 
-$t->comment('On a 2 lots normaux / 1 Leurre sur la table A, 1 lot normal qui n\'a pas de table');
+$t->comment('On a 2 lots normaux / 2 Leurre sur la table A, 1 lot normal qui n\'a pas de table');
 
 $t->comment('On test l\'anonymat');
 $t->is(array_keys($degust->getLotsNonAnonymisable()), array('/lots/1'), "Seul le /lots/1 n'est pas anonymisable");
@@ -126,9 +128,20 @@ $t->is(array_keys($degust->getLotsNonAnonymisable()), array('/lots/1'), "Seul le
 $isAnonymized = $degust->isAnonymized();
 $t->ok(!$isAnonymized, 'La dégustation n\'est pas "anonymisée"');
 
-$t->is(count($degust->lots), 4,'La dégustation a bien 4 lots (3 drev et un leurre)');
+$t->is(count($degust->lots), 5,'La dégustation a bien 4 lots (3 drev et 2 leurre)');
+
+$t->comment("On ignore le lot leurre 4 de la table A");
+$t->is(count($degust->getLotsNonAttables()), 0, "Tous les lots sont attablés");
+$lotLeurre = $degust->lots[3];
+$degust->lots[3] = $degust->ignorerLot($lotLeurre);
+$t->is(count($degust->getLotsNonAttables()), 1, "Un lot non attablé");
+$t->ok($lotLeurre->isIgnored(), "Le leurre n'est plus dans une table et est ignoré");
+$degust->save();
+
 $t->comment('Apposement de l\'anonymat');
+$t->is(count($degust->getLots()), 5, "Avant l'apposement il ya 5 lots");
 $degust->anonymize();
+$t->is(count($degust->getLots()), 3, "Après l'apposement il ya 3 lots dont 2 lots Drev et 1 Leurre car 1 leurre est ignoré (supprimé) et 1 lot non-attablé");
 $degust->save();
 
 $degust = DegustationClient::getInstance()->find($degustid);

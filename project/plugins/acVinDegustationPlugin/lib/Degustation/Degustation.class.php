@@ -8,7 +8,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	protected $piece_document = null;
 	protected $array_tri = null;
-	protected $cm = null;
     protected $docToSave = array();
     protected $archivage_document = null;
     protected $mouvement_document = null;
@@ -16,7 +15,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
-				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
 
     public function getDateFormat($format = 'Y-m-d') {
@@ -33,10 +31,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function isLotsEditable(){
       return false;
     }
-
-		public function getCampagneByDate() {
-			return $this->cm->getCampagneByDate($this->getDateFormat());
-		}
 
     public function __clone() {
         parent::__clone();
@@ -57,8 +51,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$date = new DateTime($this->date);
 
         $this->set('_id', DegustationClient::TYPE_COUCHDB."-".$date->format('YmdHi'));
-    }
 
+        $this->campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($date->format('Y-m-d'));
+    }
 
 		public function getConfigProduits() {
 
@@ -611,7 +606,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getFreeLots(){
 			$freeLots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if(! $lot->exist('numero_table') || !$lot->numero_table){
+				if(! $lot->exist('numero_table') || (!$lot->numero_table && $lot->isIgnored())){
 					$freeLots[] = $lot;
 				}
 			}
@@ -622,7 +617,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$tables = array();
 			$freeLots = $this->getFreeLots();
 			foreach ($this->lots as $lot) {
-				if($lot->exist('numero_table') && $lot->numero_table){
+				if($lot->exist('numero_table') && $lot->numero_table && !$lot->isIgnored()){
 					if(!isset($tables[$lot->numero_table])){
 						$tables[$lot->numero_table] = new stdClass();
 						$tables[$lot->numero_table]->lots = array();
@@ -900,6 +895,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $leurres;
     }
 
+		public function ignorerLot($lot){
+			$lot->numero_table = Lot::TABLE_IGNORE;
+			return $lot;
+		}
+
 		/**** Fin Gestion des tables de la degustation ****/
 
 
@@ -976,9 +976,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsNonAttables(){
 			$non_attables = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table)
+				if($lot->numero_table || $lot->leurre)
 					continue;
-				$non_attables[$lot->unique_id] = $lot;
+				$non_attables[] = $lot;
 			}
 			return $non_attables;
 		}
@@ -1243,7 +1243,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getTemplateFacture() {
 
-            return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
+            return TemplateFactureClient::getInstance()->findByCampagne($this->campagne);
         }
 
         public function getMouvementsFactures() {

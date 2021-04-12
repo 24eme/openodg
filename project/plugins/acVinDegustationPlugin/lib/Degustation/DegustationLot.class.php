@@ -56,7 +56,7 @@ class DegustationLot extends BaseDegustationLot {
   }
 
     public function isAnonymisable(){
-        return !is_null($this->numero_table);
+        return !is_null($this->numero_table) && !$this->isIgnored();
     }
 
     public function anonymize($index)
@@ -168,6 +168,10 @@ class DegustationLot extends BaseDegustationLot {
             $this->statut = Lot::STATUT_ATTABLE;
         }
         return parent::setNumeroTable($n);
+    }
+
+    public function isIgnored(){
+      return $this->numero_table === Lot::TABLE_IGNORE;
     }
 
 }

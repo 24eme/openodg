@@ -18,11 +18,11 @@ L'ensemble de vos lots sont :
 Conforme(s) et apte(s) à la commercialisation. Vous trouverez ci-dessous le lien vers le courrier confirmant la conformité du(des) lot(s) présenté(s) (<?= count($lotsConformes) ?>) :
 <a href="<?php echo url_for('degustation_get_courrier_auth_conforme', [
     'id' => $degustation->_id,
-    'auth' => DegustationClient::generateAuthKey($degustation->_id, $identifiant),
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'identifiant' => $identifiant
 ], true) ?>"><?php echo url_for('degustation_get_courrier_auth_conforme', [
     'id' => $degustation->_id,
-    'auth' => DegustationClient::generateAuthKey($degustation->_id, $identifiant),
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'identifiant' => $identifiant
 ], true) ?>
 </a>
@@ -34,13 +34,13 @@ Non conforme(s) et bloqué(s) à la commercialisation. Vous trouverez en cliquan
 * <?= showProduitLot($lotNonConforme) . ", NON CONFORMITÉ de type : " . $lotNonConforme->getShortLibelleConformite() ?>
 <a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
-    'auth' => DegustationClient::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
 ), true); ?>">
 <?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
-    'auth' => DegustationClient::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
 ), true); ?>
