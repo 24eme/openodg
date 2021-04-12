@@ -63,7 +63,7 @@
               </div>
 
               <div style="border: none;" class="m-3">
-                Produit : <strong><?php echo showProduitLot($lot) ?></strong>
+                Produit : <strong><?php echo showProduitCepagesLot($lot) ?></strong>
               </div>
 
               <div style="border: none;" class="m-3">Volume : <strong><?php echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></div>

@@ -58,7 +58,7 @@
                         <td><?php echo $lot->numero_logement_operateur; ?></td>
                       <?php endif; ?>
                         <td>
-                        <?php echo showProduitLot($lot) ?>
+                        <?php echo showProduitCepagesLot($lot) ?>
                         </td>
                         <td class="text-right"><?php echo $lot->pays; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>

@@ -50,7 +50,7 @@
     <tr>
       <td><?php echo $lotOrigine->numero_dossier ?> / <?php echo $lotOrigine->numero_archive ?></td>
       <td><?php echo $lotOrigine->numero_logement_operateur?></td>
-      <td><?php echo showProduitLot($lotOrigine) ?></td>
+      <td><?php echo showProduitCepagesLot($lotOrigine) ?></td>
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lotOrigine->volume); ?></td>
       <td><?php echo ($lotOrigine->observation) ?? '' ?></td>
     </tr>
@@ -73,13 +73,13 @@
     <tr>
         <td>
 N° Lot OP : <?php echo $lot->numero_logement_operateur; ?><br/>
-            Produit : <?php echo showProduitLot($chgtdenom->lots[0]); ?><br/>
+            Produit : <?php echo showProduitCepagesLot($chgtdenom->lots[0]); ?><br/>
             Volume : <?php echo sprintf("%.2f", $lot->volume) ?> hl
         </td>
         <?php if ($total == false): ?>
             <td>
 N° Lot OP : <?php echo $lot2->numero_logement_operateur; ?><br/>
-            Produit : <?php echo showProduitLot($lot2); ?><br/>
+            Produit : <?php echo showProduitCepagesLot($lot2); ?><br/>
             Volume : <?php echo sprintf("%.2f", $lot2->volume) ?> hl
             </td>
         <?php endif; ?>

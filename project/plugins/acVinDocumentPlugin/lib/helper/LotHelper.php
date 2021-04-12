@@ -1,6 +1,6 @@
 <?php
 
-function showProduitLot($lot, $specificite_protection = true)
+function showOnlyProduit($lot, $specificite_protection = true)
 {
 
   $text = $lot->produit_libelle." <small>";
@@ -12,10 +12,14 @@ function showProduitLot($lot, $specificite_protection = true)
   }
 
   $text .= "</small>";
-  $text .= showOnlyCepages($lot);
-
   return $text;
+}
 
+function showProduitCepagesLot($lot, $specificite_protection = true)
+{
+    $text .= showOnlyProduit($lot);
+    $text .= showOnlyCepages($lot);
+    return $text;
 }
 
 function showOnlyCepages($lot, $maxcars = null) {
