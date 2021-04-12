@@ -170,7 +170,7 @@
                         <?php endif;?>
                         <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>
                         <td>
-                          <?php echo showProduitLot($lot) ?>
+                          <?php echo showProduitCepagesLot($lot) ?>
                           <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>

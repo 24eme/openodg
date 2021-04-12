@@ -1,6 +1,6 @@
 <?php
 
-function showProduitLot($lot, $specificite_protection = true)
+function showProduitCepagesLot($lot, $specificite_protection = true)
 {
 
   $text = $lot->produit_libelle." <small>";

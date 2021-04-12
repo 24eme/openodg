@@ -77,7 +77,7 @@
                                       <?php echo $lot->declarant_nom; echo (!$lot->leurre)? ' ('.$lot->numero_logement_operateur.')' : ''; ?>
                                   </div>
                                 <div class="col-xs-6">
-                                    <?php echo showProduitLot($lot) ?>
+                                    <?php echo showProduitCepagesLot($lot) ?>
                                 </div>
                                 <div class="col-xs-2 text-right">
                                     <small class="text-muted"><?php echo $lot->position ?></small>

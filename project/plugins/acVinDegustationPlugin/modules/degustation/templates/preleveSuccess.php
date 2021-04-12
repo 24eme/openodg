@@ -59,7 +59,7 @@
           <?php endif; ?>
         </td>
         <td>
-            <?= showProduitLot($lot) ?>
+            <?= showProduitCepagesLot($lot) ?>
         </td>
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>

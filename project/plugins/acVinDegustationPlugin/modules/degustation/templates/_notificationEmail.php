@@ -31,7 +31,7 @@ Conforme(s) et apte(s) à la commercialisation. Vous trouverez ci-dessous le lie
 <?php if(count($lotsNonConformes)): ?>
 Non conforme(s) et bloqué(s) à la commercialisation. Vous trouverez en cliquant sur le(s) lien(s) ci-dessous le courrier concernant chacun des lots présentant une non conformité :
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
-* <?= showProduitLot($lotNonConforme) . ", NON CONFORMITÉ de type : " . $lotNonConforme->getShortLibelleConformite() ?>
+* <?= showProduitCepagesLot($lotNonConforme) . ", NON CONFORMITÉ de type : " . $lotNonConforme->getShortLibelleConformite() ?>
 <a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
