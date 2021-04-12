@@ -389,24 +389,6 @@ class degustationActions extends sfActions {
         return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
     }
 
-    public function executeDownPositionLot(sfWebRequest $request) {
-        $degustation = $this->getRoute()->getDegustation();
-        $index = $request->getParameter('index');
-        $tri = $request->getParameter('tri');
-        $numero_table = $request->getParameter('numero_table');
-
-        $this->forward404Unless($degustation->lots->exist($index));
-        $lot = $degustation->lots->get($index);
-        $lot->downPosition();
-
-        $tri = array_merge(['Manuel'], explode('|', $tri));
-        $tri = array_unique($tri);
-        $tri = implode('|', $tri);
-
-        $degustation->save(false);
-        return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
-    }
-
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->tri = $request->getParameter('tri');
@@ -709,10 +691,13 @@ class degustationActions extends sfActions {
         $values = $this->triTableForm->getValues();
         unset($values['recap']);
 
+        $degustation->tri = join('|', array_filter(array_unique(array_values($values))));
+        $degustation->save();
+
         if($recap) {
-            return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id, 'tri' => join('|', array_filter(array_values($values)))));
+            return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
         }
-        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
     }
 
     public function executeEtiquettesPrlvmtCsv(sfWebRequest $request) {

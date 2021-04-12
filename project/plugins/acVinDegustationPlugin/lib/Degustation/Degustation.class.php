@@ -690,6 +690,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$this->generateMouvementsLots();
         }
 
+		public function getTri() {
+			$tri = $this->_get('tri');
+			if (!$tri) {
+				$tri = 'Couleur|Appellation|Cépage';
+			}
+			return $tri;
+		}
+
 		public function anonymize(){
             $this->cleanLotsNonAnonymisable();
 
@@ -698,10 +706,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if (!count($lots)) {
 					break;
 				}
-				if (!$this->tri) {
-					$this->tri = 'Couleur|Appellation|Cépage';
-				}
-
                 $this->array_tri = explode('|', $this->tri);
 				usort($lots, array($this, 'sortLotsByThisTri'));
 				foreach ($lots as $k => $lot){

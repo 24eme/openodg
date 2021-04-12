@@ -217,8 +217,8 @@ degustation_organisation_table:
     sf_method: [get, post]
 
 degustation_position_lot_up:
-  url: /degustation/:id/position-lot/:index/up/:numero_table/:tri
-  param: { module: degustation, action: upPositionLot, numero_table: 0, tri: 0}
+  url: /degustation/:id/position-lot/:index/up/:numero_table
+  param: { module: degustation, action: changePositionLot, sens: 1}
   class: DegustationRoute
   options:
     model:    Degustation
@@ -227,8 +227,8 @@ degustation_position_lot_up:
     sf_method: [get]
 
 degustation_position_lot_down:
-  url: /degustation/:id/position-lot/:index/down/:numero_table/:tri
-  param: { module: degustation, action: downPositionLot, numero_table: 0, tri: 0}
+  url: /degustation/:id/position-lot/:index/down/:numero_table
+  param: { module: degustation, action: changePositionLot, sens: -1}
   class: DegustationRoute
   options:
     model:    Degustation

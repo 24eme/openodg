@@ -238,12 +238,12 @@ abstract class Lot extends acCouchdbDocumentTree
             return $this->getConfig()->getGenre()->getKey();
         }
         if ($type == 'cepage') {
-            return $this->details;
+            return $this->getCepagesToStr();
         }
         if ($type == 'produit') {
             return $this->_get('produit_hash').$this->_get('details');
         }
-        if ($type == 'position') {
+        if ($type == 'manuel') {
             return $this->position;
         }
         throw new sfException('unknown type of value : '.$type);
@@ -499,20 +499,17 @@ abstract class Lot extends acCouchdbDocumentTree
         return true;
     }
 
-    public function upPosition()
+    public function changePosition($sens)
     {
       if (!$this->numero_table) {
         return;
       }
-      return $this->switchPosition($this, $this->getLotInPrevPosition());
-    }
-
-    public function downPosition()
-    {
-      if (!$this->numero_table) {
-        return;
+      $this->getDocument()->tri = "Manuel";
+      if ($sens > 0) {
+          return $this->switchPosition($this, $this->getLotInPrevPosition());
+      }else {
+          return $this->switchPosition($this->getLotInNextPosition(), $this);
       }
-      return $this->switchPosition($this->getLotInNextPosition(), $this);
     }
 
     public function getLotInLastPosition($numeroTable) {
