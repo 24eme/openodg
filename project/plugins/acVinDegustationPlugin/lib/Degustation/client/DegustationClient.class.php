@@ -80,7 +80,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 
     public static function getNumeroTableStr($numero_table){
       $alphas = range('A', 'Z');
-      return $alphas[$numero_table-1];
+      return intval($numero_table) ? $alphas[$numero_table-1] : false;
     }
 
     public function getElevages($campagne = null) {
@@ -129,8 +129,4 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $facturables;
     }
 
-    public static function generateAuthKey($degustation, $discriminant)
-    {
-        return hash_hmac('sha512', $degustation.$discriminant, sfConfig::get('app_secret'));
-    }
 }
