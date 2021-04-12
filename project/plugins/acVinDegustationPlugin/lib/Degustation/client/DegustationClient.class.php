@@ -23,9 +23,6 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         $degustation = new Degustation();
         $degustation->date = $date;
         $degustation->constructId();
-        //On vire les heures, minutes, secondes si elles sont présentes:
-        $date = preg_replace('/ .*/', '', $date);
-        $degustation->initDoc($date);
 
         return $degustation;
     }
@@ -83,7 +80,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 
     public static function getNumeroTableStr($numero_table){
       $alphas = range('A', 'Z');
-      return $alphas[$numero_table-1];
+      return intval($numero_table) ? $alphas[$numero_table-1] : false;
     }
 
     public function getElevages($campagne = null) {
@@ -120,20 +117,16 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 
     public function findFacturable($identifiant, $campagne) {
         // TODO : A optimiser : aujourd'hui on doit récuperer toutes les Degustations du declarant
-        return array();
+
         $lotsView = MouvementLotView::getInstance()->getByIdentifiant($identifiant)->rows;
 
         $facturables = array();
         foreach ($lotsView as $lotView) {
             if(preg_match("/^".self::TYPE_COUCHDB."-".($campagne+1)."/", $lotView->id) && !array_key_exists($lotView->id,$facturables)){
-                $facturables[$lotView->id] = $this->cleanLotForDegustation($this->find($lotView->id));
+                $facturables[$lotView->id] = $this->find($lotView->id);
             }
         }
         return $facturables;
     }
 
-    public static function generateAuthKey($degustation, $discriminant)
-    {
-        return hash_hmac('sha512', $degustation.$discriminant, sfConfig::get('app_secret'));
-    }
 }

@@ -145,7 +145,7 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getRedegustationForfait",
+          "callback": "getFacturationLotRedeguste",
           "callback_parameters": [
             "NOT /appellations/APL,/appellations/MED"
           ]

@@ -176,7 +176,7 @@ class fichierActions extends sfActions
 		$this->categories = array();
 		$this->decreases = 0;
 		foreach ($allHistory as $doc) {
-            $date = DateTime::createFromFormat('Y-m-d', $doc->key[PieceAllView::KEYS_DATE_DEPOT]);
+            $date = DateTime::createFromFormat('Y-m-d', preg_replace('/ .*/', '', $doc->key[PieceAllView::KEYS_DATE_DEPOT]));
 
             if ($date < DateTime::createFromFormat('Y-m-d', $date->format('Y').'-08-01')) {
                 $end_campagne = $date->format('Y');

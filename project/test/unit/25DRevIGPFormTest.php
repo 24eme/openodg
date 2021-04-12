@@ -12,6 +12,9 @@ $t = new lime_test(124);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
+$periode = (date('Y')-1)."";
+$campagne = $periode."-".($periode + 1);
+
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
@@ -77,8 +80,6 @@ file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%lib
 $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produitconfig1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produitconfig2->getLibelleComplet());
-
-$periode = (date('Y')-1)."";
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
