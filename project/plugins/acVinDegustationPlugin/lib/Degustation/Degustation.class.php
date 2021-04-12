@@ -976,7 +976,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsNonAttables(){
 			$non_attables = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table || $lot->leurre)
+				if($lot->numero_table && !$lot->isIgnored())
 					continue;
 				$non_attables[] = $lot;
 			}
