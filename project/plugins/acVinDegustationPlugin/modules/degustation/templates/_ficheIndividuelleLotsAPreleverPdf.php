@@ -64,7 +64,7 @@ p, div {
     </td>
   </tr>
   <tr>
-    <br/><br/>
+    <br/>
     <td style="width:30%;">
       <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prélèvement&nbsp;date : _ _ _ _ </span>
       <br/>
@@ -104,10 +104,9 @@ p, div {
          <th style="width: 30%"><?php echo tdStart() ?><small>Produit/Cépage/Millésime</small></th>
          <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
          <th style="width:8%"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
-         <th style="width:8%"><?php echo tdStart() ?><small>Chgt Lot Op</small></th>
          <th style="width: 10%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Dest.</small></th>
-         <th style="width: 20%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
+         <th style="width: 15%"><?php echo tdStart() ?><small>Destination</small></th>
+         <th style="width: 22%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
        </tr>
    <?php endif;?>
    <tr style="line-height:17px;">
@@ -122,12 +121,12 @@ p, div {
       <small><?php echo $lot->numero_logement_operateur ?></small>
     </td>
     <td><?php echo tdStart() ?>
-    </td>
-    <td><?php echo tdStart() ?>
       <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false) : $lot->getTextPassage(false)." $lot->specificite"; ?></small>
     </td>
     <td><?php echo tdStart() ?>
-      <small><?php echo substr($lot->getLotDocumentOrdre(1)->id_document,0,4); ?><?php echo tdStart() ?></small>
+      <small>
+        <?php echo $lot->getDestinationShort() ?>
+      </small>
     </td>
     <td><?php echo tdStart() ?>
     </td>
