@@ -23,9 +23,9 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         $degustation = new Degustation();
         $degustation->date = $date;
         $degustation->constructId();
-        $degustation->initDoc(
-            DateTime::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d')
-        );
+        //On vire les heures, minutes, secondes si elles sont présentes:
+        $date = preg_replace('/ .*/', '', $date);
+        $degustation->initDoc($date);
 
         return $degustation;
     }
