@@ -1363,6 +1363,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
+                if(!$lot->isSecondPassage()){
+                    continue;
+                }
                 if(isset($mouvements[$lot->declarant_identifiant]) && isset($mouvements[$lot->declarant_identifiant][$keyCumul])){
                     $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
                     continue;

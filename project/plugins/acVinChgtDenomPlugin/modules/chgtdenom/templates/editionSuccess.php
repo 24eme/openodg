@@ -3,7 +3,6 @@
 
 <?php use_javascript("chgtDenom.js", "last") ?>
 <?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $chgtDenom )); ?>
-<?php include_partial('chgtdenom/step', array('step' => 'edition', 'chgtDenom' => $chgtDenom)) ?>
 
 
     <div class="page-header no-border">
@@ -87,7 +86,7 @@
 
         <div style="margin-top: 20px;" class="row row-margin row-button">
             <div class="col-xs-4">
-                <a tabindex="-1" href="<?php echo url_for('chgtdenom_lots', ['identifiant' => $chgtDenom->identifiant, 'campagne' => $chgtDenom->campagne]) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+                <a tabindex="-1" href="<?php echo url_for('chgtdenom_lots', ['id' => $chgtDenom->_id, 'campagne' => $chgtDenom->campagne]) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
             </div>
             <div class="col-xs-4 text-center">
                 <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Supprimer la déclaration</a>
