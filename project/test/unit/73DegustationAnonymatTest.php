@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
-$degust_date = $annee.'-09-01 12:45';
+$degust_date = $annee.'-09-01 14:45:00';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {

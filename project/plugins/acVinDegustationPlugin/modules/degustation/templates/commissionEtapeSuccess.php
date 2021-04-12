@@ -30,9 +30,9 @@
               <div class="col-xs-12">
                 <br/>
                 <ul class="list-group">
-                  <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>" ><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés)</a></li>
-                  <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés par table)</a></li>
-                  <li class="list-group-item"><a href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Tableau des étiquettes (Anonymisés)</a></li>
+                  <li class="list-group-item"><a id="btn_pdf_fiche_echantillons_preleves" href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>" ><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés)</a></li>
+                  <li class="list-group-item"><a id="btn_pdf_fiche_echantillons_preleves_table" href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés par table)</a></li>
+                  <li class="list-group-item"><a id="btn_pdf_etiquette_anonymes_table" href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Tableau des étiquettes (Anonymisés)</a></li>
                 </ul>
                 <br/>
             </div>
@@ -53,9 +53,9 @@
           <div class="col-xs-12">
             <br/>
             <ul class="list-group">
-              <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Feuille de présence des dégustateurs</a></li>
-              <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des degustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a></li>
-              <li class="list-group-item"><a href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a></li>
+              <li class="list-group-item"><a id="btn_pdf_presence_degustateurs" href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Feuille de présence des dégustateurs</a></li>
+              <li class="list-group-item"><a id="btn_pdf_fiche_individuelle_degustateurs" href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des dégustateurs (<?php echo $infosDegustation["nbDegustateursConfirmes"] ?>)</a></li>
+              <li class="list-group-item"><a id="btn_pdf_fiche_resultats_table" href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche résultats par table (<?php echo $infosDegustation["nbTables"] ?>)</a></li>
             </ul>
             <br/>
           </div>
@@ -69,5 +69,5 @@
   <div class="col-xs-4"><a href="<?php echo url_for('degustation_tables_etape', $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
   <div class="col-xs-4 text-center">
   </div>
-  <div class="col-xs-4 text-right"><a class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_resultats_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
+  <div class="col-xs-4 text-right"><a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_resultats_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
 </div>
