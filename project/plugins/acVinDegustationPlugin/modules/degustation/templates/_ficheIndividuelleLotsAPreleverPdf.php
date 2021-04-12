@@ -112,7 +112,7 @@ p, div {
    <tr style="line-height:17px;">
      <td><?php echo tdStart() ?><small><?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></small></td>
      <td><?php echo tdStart() ?>
-       <?php echo showProduitLot($lot); ?>
+       <?php echo showProduitCepagesLot($lot); ?>
      </td>
     <td><?php echo tdStart() ?>
       <small><?php echoFloat($lot->volume); ?></small>

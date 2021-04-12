@@ -20,7 +20,7 @@
       <td><?php echo $lot->declarant_nom; ?></td>
       <td class="text-right"><?php echo $lot->volume; ?>&nbsp;hl</td>
       <td>
-          <?php echo showProduitLot($lot->getRawValue(), false) ?><br/>
+          <?php echo showProduitCepagesLot($lot->getRawValue(), false) ?><br/>
           <span class="text-muted">Lot opérateur n°&nbsp;<?php echo $lot->numero_logement_operateur; ?></span>
       </td>
       <td>

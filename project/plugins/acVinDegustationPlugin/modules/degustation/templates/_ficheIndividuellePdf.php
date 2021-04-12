@@ -67,7 +67,7 @@
 
     <tr style="line-height:25px;">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
-      <td><?php echo tdStart() ?><?php echo showProduitLot($lotInfo) ?></td>
+      <td><?php echo tdStart() ?><?php echo showProduitCepagesLot($lotInfo) ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>

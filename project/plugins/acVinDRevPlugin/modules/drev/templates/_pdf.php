@@ -111,7 +111,7 @@ Les produits déclarés sont du millésime du VCI
     <tr>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_logement_operateur ?></td>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo showProduitLot($lot) ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
+        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo showProduitCepagesLot($lot) ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
         <td class="td" style="text-align: center; font-size: 8pt;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
     </tr>

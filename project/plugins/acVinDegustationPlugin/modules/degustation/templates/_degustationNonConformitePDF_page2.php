@@ -31,7 +31,7 @@
   <tr><td>Commission de Dégustation réunie le : <?php echo format_date($degustation->date, "P", "fr_FR"); ?></td></tr>
 </table>
 
-<p style="text-align: center"><strong>Lot concerné par la non-conformité : <?php echo showProduitLot($lot) ?></strong></p>
+<p style="text-align: center"><strong>Lot concerné par la non-conformité : <?php echo showProduitCepagesLot($lot) ?></strong></p>
 
 <table border="1" cellpadding=0 cellspacing=0 style="text-align: center;">
   <tr>
@@ -43,7 +43,7 @@
   <tr>
     <td><?php echo $lot->numero_dossier ?> / <?php echo $lot->numero_archive ?></td>
     <td><?php echo $lot->numero_logement_operateur ?></td>
-    <td><?php echo showProduitLot($lot) ?></td>
+    <td><?php echo showProduitCepagesLot($lot) ?></td>
     <td><?php echo sprintf("%.2f", $lot->volume) ?></td>
   </tr>
 </table>

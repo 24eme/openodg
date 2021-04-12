@@ -93,7 +93,7 @@ th {
       <?php endif; ?>
          <tr style="line-height:25px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
-           <td><?php echo tdStart() ?><small><?php echo showProduitLot($lotInfo);?></small></td>
+           <td><?php echo tdStart() ?><small><?php echo showProduitCepagesLot($lotInfo);?></small></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>

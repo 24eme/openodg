@@ -89,7 +89,7 @@
             <td><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="text-align: right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
-            <td><small><?php echo showProduitLot($lot) ?></small></td>
+            <td><small><?php echo showOnlyProduit($lot) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>
           </tr>
           <?php $i++; endforeach; ?>
         <?php endforeach; ?>

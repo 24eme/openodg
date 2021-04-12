@@ -48,16 +48,16 @@
        <?php $firstDisplay = true; $reste = 0?>
 
         <?php foreach ($lots_operateur as $lot): ?>
-          <?php if ($i % 30 == 0 ) : $table_header = true; $firstDisplay = true;?>
+          <?php if ($i % 27 == 0 ) : $table_header = true; $firstDisplay = true;?>
        </table>
             <br pagebreak="true" />
             <br/>
           <?php $i = 0; endif; ?>
           <?php if ($table_header): $table_header = false; ?>
-            <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
+            <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
               <tr style="line-height:20px;">
-                 <th rowspan="2" class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>N° Dossier</strong></th>
-                 <th rowspan="2" class="topempty bg-white" style="width:22%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
+                 <th rowspan="2" class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong>N° Dossier</strong></th>
+                 <th rowspan="2" class="bg-white" style="width:22%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
                  <th class="bg-white" colspan="6"style="width:67%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(trié par n° déclarant et n° anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
@@ -83,7 +83,7 @@
             <td><small><?php echo $lot->numero_anonymat?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
-            <td><small><?php echo showProduitLot($lot); ?></small></td>
+            <td style="height:25px;"><small><?php echo showProduitCepagesLot($lot); ?></small></td>
           </tr>
           <?php $i++; ?>
       <?php endforeach; ?>

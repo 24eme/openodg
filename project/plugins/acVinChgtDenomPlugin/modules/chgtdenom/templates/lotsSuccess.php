@@ -30,7 +30,7 @@
             <td><?php echo $lot->numero_archive; ?></td>
             <td><a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>"><?php echo $lot->type_document; ?></a></td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
-            <td><?php echo showProduitLot($lot->getRawValue()) ?></td>
+            <td><?php echo showProduitCepagesLot($lot->getRawValue()) ?></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
             <td><a href="<?php echo url_for("chgtdenom_create_lot", array("id" => $chgtDenom->_id, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
