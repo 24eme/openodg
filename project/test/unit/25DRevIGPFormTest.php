@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(121);
+$t = new lime_test(124);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -27,8 +27,25 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
     HabilitationClient::getInstance()->deleteDoc(HabilitationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
+foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $transaction = TransactionClient::getInstance()->find($k);
+    $transaction->delete(false);
+}
+foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = ConditionnementClient::getInstance()->find($k);
+    $conditionnement->delete(false);
+}
+foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $cd = ChgtDenomClient::getInstance()->find($k);
+    $cd->delete(false);
+}
 foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
+}
+
+foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {
+    $doc = acCouchdbManager::getClient()->find($r->id);
+    $doc->delete();
 }
 
 $config = ConfigurationClient::getCurrent();
@@ -228,6 +245,7 @@ $drev->validateOdg();
 $drev->save();
 
 $t->is(count($drev->mouvements_lots->get($drev->identifiant)->toArray(true, false)), 3, "La DRev validée contient le mouvement correspondant au lot saisi");
+$t->is($drev->numero_archive, "00001", "Numéro d'archive de la DRev à 00001");
 
 $t->comment("Génération d'un mouvement à partir d'un lot");
 
@@ -270,6 +288,16 @@ $t->is(count($lot->getMouvements()), 3, "3 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), 'Le lot est revendiqué');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 
+
+$t->comment("Génération d'un document intermédiaire pour tester les numéros d'archive");
+$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $drev->getCampagne(), $drev->getDate());
+$conditionnement->save();
+$conditionnement->validate();
+$conditionnement->validateOdg();
+$conditionnement->save();
+
+$t->is($conditionnement->numero_archive, "00002", "Numéro d'archive du conditionnement à 00002");
+
 $t->comment("Modificatrice ".$drev->_id."-M01");
 $drev_modif = $drev->generateModificative();
 $drev_modif->validate();
@@ -278,6 +306,7 @@ $drev_modif->save();
 $drev_modif = $drev->findMaster();
 $t->is($drev_modif->_id, $drev->_id.'-M01', "La modification a l'identifiant attendu");
 $t->is(count($drev_modif->lots[0]->getMouvements()), 0, "La modificatrice n'a pas de mouvements pour ce lot");
+$t->is($drev_modif->numero_archive, "00003", "Numéro d'archive de la DRev à 00003");
 
 $t->comment("Suppression de lots");
 $drev_modif->remove('lots');
