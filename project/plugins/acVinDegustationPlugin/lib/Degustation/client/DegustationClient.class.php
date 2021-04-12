@@ -129,8 +129,4 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $facturables;
     }
 
-    public static function generateAuthKey($degustation, $discriminant)
-    {
-        return hash_hmac('sha512', $degustation.$discriminant, sfConfig::get('app_secret'));
-    }
 }

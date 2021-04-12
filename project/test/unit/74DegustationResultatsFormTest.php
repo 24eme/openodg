@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(19);
+$t = new lime_test(22);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -203,4 +203,9 @@ $t->comment('Notifications');
 $doc->setMailEnvoyeEtablissement($etbIdentifiant, 0);
 $t->is($doc->isMailEnvoyeEtablissement($etbIdentifiant), false, 'On remet les mails à non envoyé');
 
-$t->isnt(DegustationClient::generateAuthKey($doc->_id, $etbIdentifiant), DegustationClient::generateAuthKey($doc->_id, "COMPTE-00000"), "La génération de clé diffère pour un compte différent");
+$authKey = UrlSecurity::generateAuthKey($doc->_id, $etbIdentifiant);
+
+$t->is(strlen($authKey), 10, "Génération de la clé de chiffrement");
+$t->ok(UrlSecurity::verifyAuthKey($doc->_id, $etbIdentifiant, $authKey), "La clé de chiffrement est vérifié");
+$t->ok(UrlSecurity::verifyAuthKey($doc->_id, $etbIdentifiant, $authKey."a"), "La clé de chiffrement est vérifié que sur les 10 premiers caractères");
+$t->ok(!UrlSecurity::verifyAuthKey($doc->_id, $etbIdentifiant, "a".$authKey), "La clé n'est pas valide");

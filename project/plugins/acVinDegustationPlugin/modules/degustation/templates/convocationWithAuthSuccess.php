@@ -68,7 +68,7 @@
                             <?php endif; ?>
                                     <a href="<?php echo url_for('degustation_convocation_auth', [
                                         'id' => $degustation->_id,
-                                        'auth' => DegustationClient::generateAuthKey($degustation->_id, $identifiant),
+                                        'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
                                         'college' => $college,
                                         'identifiant' => $identifiant,
                                         'presence' => intval(!$presence)
