@@ -64,7 +64,7 @@ th {
     <div>
       <?php  $ligne=13; $table_header = true;
       foreach($lots as $numAnonyme => $lotInfo): ?>
-      <?php if($ligne % 20 == 0): $table_header = true; ?>
+      <?php if($ligne % 19 == 0): $table_header = true; ?>
         </table>
           <br pagebreak="true" />
           <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?><p/>
