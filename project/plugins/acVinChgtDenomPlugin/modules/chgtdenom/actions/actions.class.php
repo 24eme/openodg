@@ -48,7 +48,7 @@ class chgtdenomActions extends sfActions
         $this->secureIsValide($this->chgtDenom);
 
         if(!$this->chgtDenom->getLotOrigine()) {
-            return $this->redirect('chgtdenom_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
+            return $this->redirect('chgtdenom_lots', array('id' => $this->chgtDenom->_id, 'campagne' => $this->chgtDenom->campagne));
         }
 
         $this->form = new ChgtDenomForm($this->chgtDenom);
