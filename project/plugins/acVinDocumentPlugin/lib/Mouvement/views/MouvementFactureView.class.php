@@ -10,7 +10,7 @@ class MouvementFactureView extends acCouchdbView
     const KEY_TYPE = 4;
     const KEY_DATE = 5;
     const KEY_DOC_ORIGIN = 6;
-    const KEY_KEY_ORIGIN = 7;
+    const KEY_ORIGIN = 7;
 
     public static function getInstance() {
 

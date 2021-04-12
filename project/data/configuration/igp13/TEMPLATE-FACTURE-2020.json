@@ -88,6 +88,28 @@
         }
       }
     },
+    "changement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "IGP13",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "libelle": "Changement de dénomination vers Méditerrannée",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "getVolumeDestFacturable",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        }
+      }
+    },
     "alpilles": {
       "modele": "CotisationsCollection",
       "callback": "",
@@ -126,28 +148,6 @@
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables"
-        }
-      }
-    },
-    "changement": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Changement de dénomination",
-      "code_comptable": "706102",
-      "details": {
-        "cotisation": {
-          "modele": "CotisationVariable",
-          "prix": 0.15,
-          "tva": 0.2,
-          "libelle": "vers Méditerrannée",
-          "complement_libelle": "",
-          "docs": [
-            "ChgtDenom"
-          ],
-          "callback": "getVolumeDestFacturable",
-          "callback_parameters": [
-            "/appellations/MED"
-          ]
         }
       }
     }
