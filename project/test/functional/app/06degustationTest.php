@@ -162,20 +162,20 @@ $b->click('#btn_suivant')->followRedirect();
 $b->isForwardedTo('degustation', 'commissionEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape commission");
 
-$b->click('#btn_pdf_fiche_echantillons_preleves');
-$b->isForwardedTo('degustation', 'ficheEchantillonsPrelevesPDF');
+$b->click('#btn_degustation_fiche_tables_echantillons_par_dossier_pdf');
+$b->isForwardedTo('degustation', 'ficheTablesEchantillonsParDossierPDF');
 $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
 $t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche lots ventilés (Anonymisés)");
 
 $b->back();
-$b->click('#btn_pdf_fiche_echantillons_preleves_table');
-$b->isForwardedTo('degustation', 'ficheEchantillonsPrelevesTablePDF');
+$b->click('#btn_pdf_degustation_fiche_tables_echantillons_par_anonymat_pdf');
+$b->isForwardedTo('degustation', 'ficheTablesEchantillonsParAnonymatPDF');
 $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
 $t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche lots ventilés (Anonymisés par table)");
 
 $b->back();
-$b->click('#btn_pdf_etiquette_anonymes_table');
-$b->isForwardedTo('degustation', 'etiquettesAnonymesPDF');
+$b->click('#btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf');
+$b->isForwardedTo('degustation', 'etiquettesTablesEchantillonsParAnonymatPDF');
 $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
 $t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes (Anonymisés)");
 

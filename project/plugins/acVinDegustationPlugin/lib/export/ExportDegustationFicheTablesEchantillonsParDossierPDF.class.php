@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLotsPDF {
+class ExportDegustationFicheTablesEchantillonsParDossierPDF extends ExportDeclarationLotsPDF {
 
     protected $degustation = null;
 
@@ -22,7 +22,7 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
         $lots = array_merge($lots, ['leurres' => $this->degustation->getLeurres()]);
 
         @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheEchantillonsPrelevesPdf',
+          $this->getPartial('degustation/ficheTablesEchantillonsParDossierPdf',
           array(
             'degustation' => $this->degustation,
             'lots' => $lots
@@ -45,7 +45,7 @@ class ExportDegustationFicheEchantillonsPrelevesPDF extends ExportDeclarationLot
 
 
     public function getFileName($with_rev = false) {
-        $filename = sprintf("fiche_echantillons_preleves_%s", $this->degustation->_id);
+        $filename = sprintf("fiche_echantillons_table_par_dossier_%s", $this->degustation->_id);
         if ($with_rev) {
             $filename .= '_' . $this->degustation->_rev;
         }

@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
+class ExportDegustationFicheTablesEchantillonsParAnonymatPDF extends ExportPDF {
 
     protected $degustation = null;
 
@@ -31,7 +31,7 @@ class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
         ksort($lotsTries);
 
         @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheEchantillonsPrelevesTablePdf',
+          $this->getPartial('degustation/ficheTablesEchantillonsParAnonymatPdf',
           array(
             'degustation' => $this->degustation,
             'lots' => $lotsTries
@@ -75,7 +75,7 @@ class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDegustationFicheEchantillonsPrelevesTablePDFConf();
+        return new ExportDegustationFicheTablesEchantillonsParAnonymatPDFConf();
     }
 
     public function getFileName($with_rev = false) {
@@ -84,7 +84,7 @@ class ExportDegustationFicheEchantillonsPrelevesTablePDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_echantillons_preleves_table_%s", $degustation->_id);
+        $filename = sprintf("fiche_echantillons_table_par_anonymat_%s", $degustation->_id);
 
 
         if ($with_rev) {
