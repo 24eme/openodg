@@ -83,7 +83,7 @@
           <tr class="<?php echo $class; ?>" >
             <td><small><?php echo $lot->numero_anonymat ?></small></td>
             <td><small><?php echo DegustationClient::getNumeroTableStr($table) ?></small></td>
-            <td><small><?php echo substr($lot->declarant_nom, 0, 35)."<br>".$lot->declarant_identifiant;?></small></td>
+            <td><small><?php echo substr($lot->declarant_nom, 0, 33)."<br>".$lot->declarant_identifiant;?></small></td>
 
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>

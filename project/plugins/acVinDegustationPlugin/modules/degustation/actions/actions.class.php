@@ -316,30 +316,19 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->tri = $request->getParameter('tri');
-        if(!$this->tri){
-            $this->tri = $this->degustation->tri;
-        }
-        if(!$this->tri){
-            $this->tri = 'Couleur|Genre|Appellation';
-        }
         if(!$request->getParameter('numero_table')) {
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1, 'tri' => $this->tri));
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
 
         $this->numero_table = $request->getParameter('numero_table');
 
-        if(!$this->tri){
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $this->tri));
-        }
+        $this->tri = $this->degustation->tri;
         $this->tri_array = explode('|', strtolower($this->tri));
 
-        $this->degustation->tri = $this->tri;
-
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
-        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table);
+        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
-        $this->triTableForm = new DegustationTriTableForm($this->tri_array, false);
+        $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), false);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -389,32 +378,11 @@ class degustationActions extends sfActions {
         return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
     }
 
-    public function executeDownPositionLot(sfWebRequest $request) {
-        $degustation = $this->getRoute()->getDegustation();
-        $index = $request->getParameter('index');
-        $tri = $request->getParameter('tri');
-        $numero_table = $request->getParameter('numero_table');
-
-        $this->forward404Unless($degustation->lots->exist($index));
-        $lot = $degustation->lots->get($index);
-        $lot->downPosition();
-
-        $tri = array_merge(['Manuel'], explode('|', $tri));
-        $tri = array_unique($tri);
-        $tri = implode('|', $tri);
-
-        $degustation->save(false);
-        return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
-    }
-
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->tri = $request->getParameter('tri');
-        $this->degustation->tri = $this->tri;
-        $this->tri_array = explode('|', strtolower($this->tri));
-
+        $this->tri = $this->degustation->tri;
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
-        $this->triTableForm = new DegustationTriTableForm($this->tri_array, true);
+        $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), true);
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
@@ -709,10 +677,13 @@ class degustationActions extends sfActions {
         $values = $this->triTableForm->getValues();
         unset($values['recap']);
 
+        $degustation->tri = join('|', array_filter(array_unique(array_values($values))));
+        $degustation->save();
+
         if($recap) {
-            return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id, 'tri' => join('|', array_filter(array_values($values)))));
+            return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
         }
-        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => join('|', array_filter(array_values($values)))));
+        return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
     }
 
     public function executeEtiquettesPrlvmtCsv(sfWebRequest $request) {

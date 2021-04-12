@@ -24,6 +24,8 @@ $l9_t2 = $degustation->addLeurre(null, 'Leurre 9 table 2', 2);
 $l10_t2 = $degustation->addLeurre(null, 'Leurre 10 table 2', 2);
 $l11_t2 = $degustation->addLeurre(null, 'Leurre 11 table 2', 2);
 
+$t->is($degustation->tri, "Couleur|Appellation|Cépage", "La dégustation a un tri par defaut Couleur|Appellation|Cépage");
+
 $t->is(count($degustation->lots), 11, '11 lots dans la degustation');
 $t->is($l1_t1->getPosition(), '01000', 'l1_t1 position 01000');
 $t->is($l2_t1->getPosition(), '01001', 'l2_t1 position 01001');
@@ -38,19 +40,21 @@ $t->is($l10_t2->getPosition(), '02009', 'l3_t1 position 02009');
 $t->is($l11_t2->getPosition(), '02010', 'l4_t1 position 02010');
 
 $t->comment('Test du up');
-$l4_t1->upPosition();
+$l4_t1->changePosition(1);
 $t->is($l3_t1->getPosition(), '01003', 'l3_t1 nouvelle position 01003');
 $t->is($l4_t1->getPosition(), '01002', 'l4_t1 nouvelle position 01002');
+$t->is($degustation->tri, "Manuel", "Après un changement de position, le tri de la dégustation est Manuel");
+
 
 $t->comment('Test du down');
-$l4_t1->downPosition();
+$l4_t1->changePosition(-1);
 $t->is($l3_t1->getPosition(), '01002', 'l3_t1 nouvelle position 01002');
 $t->is($l4_t1->getPosition(), '01003', 'l4_t1 nouvelle position 01003');
 
 $t->comment('Test des bornes');
-$l1_t1->upPosition();
+$l1_t1->changePosition(1);
 $t->is($l1_t1->getPosition(), '01000', 'l1_t1 non bougé');
-$l7_t1->downPosition();
+$l7_t1->changePosition(-1);
 $t->is($l7_t1->getPosition(), '01006', 'l7_t1 non bougé');
 
 $t->comment('Test deplacement table');

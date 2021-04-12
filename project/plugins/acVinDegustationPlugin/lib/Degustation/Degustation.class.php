@@ -613,7 +613,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $freeLots;
 		}
 
-		public function getTablesWithFreeLots($add_default_table = false){
+		public function getTablesWithFreeLots(){
 			$tables = array();
 			$freeLots = $this->getFreeLots();
 			foreach ($this->lots as $lot) {
@@ -625,13 +625,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					}
 					$tables[$lot->numero_table]->lots[] = $lot;
 				}
-			}
-
-			if($add_default_table && !count($tables)){
-				$table = new stdClass();
-				$table->lots = array();
-				$table->freeLots = $freeLots;
-				$tables[] = $table;
 			}
 			return $tables;
 		}
@@ -690,6 +683,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$this->generateMouvementsLots();
         }
 
+		public function getTri() {
+			$tri = $this->_get('tri');
+			if (!$tri) {
+				$tri = 'Couleur|Appellation|Cépage';
+			}
+			return $tri;
+		}
+
 		public function anonymize(){
             $this->cleanLotsNonAnonymisable();
 
@@ -698,10 +699,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if (!count($lots)) {
 					break;
 				}
-				if (!$this->tri) {
-					$this->tri = 'Couleur|Appellation|Cépage';
-				}
-
                 $this->array_tri = explode('|', $this->tri);
 				usort($lots, array($this, 'sortLotsByThisTri'));
 				foreach ($lots as $k => $lot){
@@ -776,9 +773,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-		public function getLotsTableOrFreeLotsCustomSort($numero_table, array $tri,  $free = true){
+		public function getLotsTableOrFreeLotsCustomSort($numero_table, $free = true){
 			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
-			$this->array_tri = $tri;
+			$this->array_tri = $this->getTriArray();
 			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
 		}
@@ -799,13 +796,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $syntheseLots;
 		}
 
-		public function getSyntheseLotsTableCustomTri($numero_table = null, array $tri){
-            if (($key = array_search('manuel', $tri)) !== false) {
-                unset($tri[$key]);
+        public function getTriArray() {
+            return explode('|', strtolower($this->tri));
+
+        }
+
+        public function getSyntheseLotsTableCustomTri($numero_table = null){
+            $tri_array = $this->getTriArray();
+            if (($key = array_search('manuel', $tri_array)) !== false) {
+                unset($tri_array[$key]);
             }
-			$lots = $this->getLotsPrelevesCustomSort($tri);
-			return $this->createSynthesFromLots($lots, $numero_table, $tri);
-		}
+            $lots = $this->getLotsPrelevesCustomSort($tri_array);
+            return $this->createSynthesFromLots($lots, $numero_table, $tri_array);
+        }
 
 		private function createSynthesFromLots($lots, $numero_table, array $tri = null) {
 			$syntheseLots = array();
@@ -1152,7 +1155,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-
+            $this->array_tri = $this->getTriArray();
+            usort($lots, array($this, "sortLotsByThisTri"));
 			return $lots;
 		}
 
@@ -1359,6 +1363,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
+                if(!$lot->isSecondPassage()){
+                    continue;
+                }
                 if(isset($mouvements[$lot->declarant_identifiant]) && isset($mouvements[$lot->declarant_identifiant][$keyCumul])){
                     $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
                     continue;

@@ -1,5 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
-
+<?php use_helper('Lot') ?>
 <?php $i=0; ?>
 <table border="0" class="" cellspacing=0 cellpadding=0 style="text-align: right;">
 <?php foreach($plancheLots as $key => $lotInfo): ?>

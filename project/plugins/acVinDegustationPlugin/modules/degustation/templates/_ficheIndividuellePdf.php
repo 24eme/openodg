@@ -34,7 +34,7 @@
 
 <?php $i = 2; $table_header = true;
  foreach($lots as $lotInfo): ?>
-   <?php if ($i % 12 == 0 ) : $table_header = true; ?>
+   <?php if ($i % 10 == 0 ) : $table_header = true; ?>
 </table>
      <br pagebreak="true" />
      <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?><p/>
