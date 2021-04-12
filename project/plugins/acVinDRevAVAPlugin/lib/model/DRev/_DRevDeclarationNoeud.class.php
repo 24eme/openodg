@@ -165,6 +165,19 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $total;
     }
 
+    public function getSuperficieRevendique()
+    {
+        if($this->exist('superficie_revendique')) {
+            
+            return $this->_get('superficie_revendique');
+        }
+    	$total = 0;
+        foreach($this->getChildrenNode() as $key => $item) {
+            $total += $item->getSuperficieRevendique();
+        }
+        return $total;
+    }
+
 	public function getTotalVolumeRevendique()
     {
     	$total = 0;
