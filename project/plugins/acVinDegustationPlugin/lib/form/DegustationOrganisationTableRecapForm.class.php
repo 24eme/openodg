@@ -24,6 +24,8 @@ class DegustationOrganisationTableRecapForm extends acCouchdbObjectForm {
             $name = $this->getWidgetNameFromLot($lot);
             if(intval($values[$name])){
                 $lot->numero_table = intval($values[$name]);
+            }else if($values[$name] === Lot::TABLE_IGNORE){
+                $lot = $this->getObject()->ignorerLot($lot);
             }else{
                 $lot->numero_table = null;
             }
@@ -48,6 +50,7 @@ class DegustationOrganisationTableRecapForm extends acCouchdbObjectForm {
         for ($i=1; $i <= $max_liste; $i++) {
             $liste_tables_choices["".$i] = "Table ".DegustationClient::getNumeroTableStr($i);
         }
+        $liste_tables_choices[Lot::TABLE_IGNORE] = "Ignoré";
         return $liste_tables_choices;
     }
 

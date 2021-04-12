@@ -608,7 +608,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getFreeLots(){
 			$freeLots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if(! $lot->exist('numero_table') || !$lot->numero_table){
+				if(! $lot->exist('numero_table') || (!$lot->numero_table && $lot->isIgnored())){
 					$freeLots[] = $lot;
 				}
 			}
@@ -619,7 +619,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$tables = array();
 			$freeLots = $this->getFreeLots();
 			foreach ($this->lots as $lot) {
-				if($lot->exist('numero_table') && $lot->numero_table){
+				if($lot->exist('numero_table') && $lot->numero_table && !$lot->isIgnored()){
 					if(!isset($tables[$lot->numero_table])){
 						$tables[$lot->numero_table] = new stdClass();
 						$tables[$lot->numero_table]->lots = array();
@@ -978,9 +978,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsNonAttables(){
 			$non_attables = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table && !$lot->isIgnored())
+				if($lot->numero_table || $lot->leurre)
 					continue;
-				$non_attables[$lot->unique_id] = $lot;
+				$non_attables[] = $lot;
 			}
 			return $non_attables;
 		}
