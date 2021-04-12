@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(115);
+$t = new lime_test(116);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -149,6 +149,7 @@ $t->comment("Création de la dégustation");
 
 $degustation = DegustationClient::getInstance()->createDoc($degust_date);
 $t->is($degustation->_id, $docid, "doc id");
+$t->is($degustation->campagne, $campagne, "campagne à partir de la date");
 
 $form = new DegustationCreationForm();
 $values = array('date' => $degust_date_fr, 'time' => $degust_time_fr, 'lieu' => "Lieu test — adresse lieu test");
