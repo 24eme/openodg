@@ -41,7 +41,11 @@
             <strong class="lead"><?php echo $infosDegustation["nbTables"]; ?></strong> Tables prévues :</br>
             <?php if($infosDegustation["nbTables"]): ?>
               <?php foreach ($degustation->getTablesWithFreeLots() as $numTable => $table): ?>
-                <strong class="lead"><?php echo DegustationClient::getNumeroTableStr($numTable); ?></strong> <strong><?php echo count($table->lots); ?> lots</strong><?php if($numTable < count($degustation->getTablesWithFreeLots())):?>, <?php endif;?>
+                <?php if(DegustationClient::getNumeroTableStr($numTable) !== false): ?>
+                  <?php if($numTable !== 1):?>, <?php endif;?>
+                  <strong class="lead"><?php echo DegustationClient::getNumeroTableStr($numTable); ?></strong>
+                  <strong><?php echo count($table->lots); ?> lots</strong>
+                <?php endif; ?>
               <?php endforeach; ?>
             </br>
           <?php else: ?>
