@@ -31,7 +31,7 @@
                     <td class='text-right'><strong><?php echo count($table->lots); $total += count($table->lots); ?></strong></td>
                     <td></td>
                 </tr>
-                    <?php foreach ($degustation->getSyntheseLotsTableCustomTri($numero_table, $tri_array->getRawValue()) as $hash => $lotsProduit): ?>
+                    <?php foreach ($degustation->getSyntheseLotsTableCustomTri($numero_table) as $hash => $lotsProduit): ?>
                       <tr class="vertical-center collapse accordion_<?php echo $numero_table ?>" data-hash="<?php echo $hash; ?>" >
                         <td></td>
                         <td><?php echo preg_replace('/ -(.*)/', '<span class="text-muted">\1</span>', $lotsProduit->libelle) ?></td>

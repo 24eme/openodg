@@ -773,9 +773,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-		public function getLotsTableOrFreeLotsCustomSort($numero_table, array $tri,  $free = true){
+		public function getLotsTableOrFreeLotsCustomSort($numero_table, $free = true){
 			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
-			$this->array_tri = $tri;
+			$this->array_tri = $this->getTriArray();
 			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
 		}
@@ -796,13 +796,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $syntheseLots;
 		}
 
-		public function getSyntheseLotsTableCustomTri($numero_table = null, array $tri){
-            if (($key = array_search('manuel', $tri)) !== false) {
-                unset($tri[$key]);
+        public function getTriArray() {
+            return explode('|', strtolower($this->tri));
+
+        }
+
+        public function getSyntheseLotsTableCustomTri($numero_table = null){
+            $tri_array = $this->getTriArray();
+            if (($key = array_search('manuel', $tri_array)) !== false) {
+                unset($tri_array[$key]);
             }
-			$lots = $this->getLotsPrelevesCustomSort($tri);
-			return $this->createSynthesFromLots($lots, $numero_table, $tri);
-		}
+            $lots = $this->getLotsPrelevesCustomSort($tri_array);
+            return $this->createSynthesFromLots($lots, $numero_table, $tri_array);
+        }
 
 		private function createSynthesFromLots($lots, $numero_table, array $tri = null) {
 			$syntheseLots = array();
@@ -1149,7 +1155,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-
+            $this->array_tri = $this->getTriArray();
+            usort($lots, array($this, "sortLotsByThisTri"));
 			return $lots;
 		}
 

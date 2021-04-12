@@ -325,10 +325,10 @@ class degustationActions extends sfActions {
         $this->tri = $this->degustation->tri;
         $this->tri_array = explode('|', strtolower($this->tri));
 
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
-        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table);
+        $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
-        $this->triTableForm = new DegustationTriTableForm($this->tri_array, false);
+        $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), false);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -380,12 +380,9 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->tri = $request->getParameter('tri');
-        $this->degustation->tri = $this->tri;
-        $this->tri_array = explode('|', strtolower($this->tri));
-
+        $this->tri = $this->degustation->tri;
         $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
-        $this->triTableForm = new DegustationTriTableForm($this->tri_array, true);
+        $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), true);
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
 
