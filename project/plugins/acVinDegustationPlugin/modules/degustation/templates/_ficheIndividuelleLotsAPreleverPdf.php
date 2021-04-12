@@ -100,13 +100,14 @@ p, div {
     <?php if ($table_header): $table_header = false; ?>
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
-         <th style="width: 9%"><?php echo tdStart() ?><small>N° Dossier/Lot</small></th>
-         <th style="width: 29%"><?php echo tdStart() ?><small>Produit/Cépage/Millésime</small></th>
+         <th style="width: 10%"><?php echo tdStart() ?><small>N° Dossier/Lot</small></th>
+         <th style="width: 30%"><?php echo tdStart() ?><small>Produit/Cépage/Millésime</small></th>
          <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
-         <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
-         <th style="width: 7%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
-         <th style="width: 6%"><?php echo tdStart() ?><small>Type de lot</small></th>
-         <th style="width: 35%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
+         <th style="width:8%"><?php echo tdStart() ?><small>N°Lot<br/>Opérateur</small></th>
+         <th style="width:8%"><?php echo tdStart() ?><small>Chgt Lot Op</small></th>
+         <th style="width: 10%"><?php echo tdStart() ?><small>Passage (spécificité)</small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>Dest.</small></th>
+         <th style="width: 20%"><?php echo tdStart() ?><small>Obs préleveur <br/>Obs opérateurs</small></th>
        </tr>
    <?php endif;?>
    <tr style="line-height:17px;">
@@ -121,12 +122,14 @@ p, div {
       <small><?php echo $lot->numero_logement_operateur ?></small>
     </td>
     <td><?php echo tdStart() ?>
+    </td>
+    <td><?php echo tdStart() ?>
       <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false) : $lot->getTextPassage(false)." $lot->specificite"; ?></small>
     </td>
     <td><?php echo tdStart() ?>
       <small><?php echo substr($lot->getLotDocumentOrdre(1)->id_document,0,4); ?><?php echo tdStart() ?></small>
     </td>
-    <td><?php echo tdStart() ?><br/><br/>
+    <td><?php echo tdStart() ?>
     </td>
    </tr>
    <?php $i++; ?>
