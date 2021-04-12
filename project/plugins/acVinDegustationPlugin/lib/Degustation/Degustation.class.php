@@ -1339,6 +1339,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvement->date = $this->getDateFormat();
             $mouvement->date_version = $this->getDateFormat();
             $mouvement->detail_identifiant = $lot->unique_id;
+            $mouvement->facture = intval($mouvement->date_version < "2021-04-01");
+
             return $mouvement;
         }
 
