@@ -316,25 +316,14 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->tri = $request->getParameter('tri');
-        if(!$this->tri){
-            $this->tri = $this->degustation->tri;
-        }
-        if(!$this->tri){
-            $this->tri = 'Couleur|Genre|Appellation';
-        }
         if(!$request->getParameter('numero_table')) {
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1, 'tri' => $this->tri));
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
 
         $this->numero_table = $request->getParameter('numero_table');
 
-        if(!$this->tri){
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table, 'tri' => $this->tri));
-        }
+        $this->tri = $this->degustation->tri;
         $this->tri_array = explode('|', strtolower($this->tri));
-
-        $this->degustation->tri = $this->tri;
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTableCustomTri($this->numero_table, $this->tri_array);
         $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table, $this->tri_array);

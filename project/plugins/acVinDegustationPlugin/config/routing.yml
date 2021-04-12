@@ -207,7 +207,7 @@ degustation_degustateur_absence:
     sf_method: [get, post]
 
 degustation_organisation_table:
-  url: /degustation/:id/organisation-table/:numero_table/:tri
+  url: /degustation/:id/organisation-table/:numero_table
   param: { module: degustation, action: organisationTable, numero_table: 0, tri: 0}
   class: DegustationRoute
   options:
