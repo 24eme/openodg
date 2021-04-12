@@ -10,7 +10,7 @@ Pour le bon déroulé de cette dégustation nous vous remercions de bien vouloir
 
 <?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
     'id' => $degustation->_id,
-    'auth' => DegustationClient::generateAuthKey($degustation->_id, $identifiant),
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'college' => $college,
     'identifiant' => $identifiant
 ], true); ?>
@@ -18,7 +18,7 @@ Pour le bon déroulé de cette dégustation nous vous remercions de bien vouloir
 
 Si vous ne pouvez pas venir : <?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
     'id' => $degustation->_id,
-    'auth' => DegustationClient::generateAuthKey($degustation->_id, $identifiant),
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'college' => $college,
     'identifiant' => $identifiant,
     'presence' => '0'

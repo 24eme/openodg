@@ -835,7 +835,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
-        $auth = $request->getParameter('auth');
+        $authKey = $request->getParameter('auth');
         $degustation_id = $request->getParameter('id');
         $identifiant = $request->getParameter('identifiant', null);
         $lot_dossier = $request->getParameter('lot_dossier', null);
@@ -866,10 +866,7 @@ class degustationActions extends sfActions {
             throw new sfException('Discriminant vide');
         }
 
-        $key = DegustationClient::generateAuthKey($degustation_id, $discriminant);
-        $auth = substr($auth, 0, strlen($key));
-
-        if ($auth !== $key) {
+        if (!UrlSecurity::verifyAuthKey($degustation_id, $discriminant, $authKey)) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
@@ -887,7 +884,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeConvocationWithAuth(sfWebRequest $request) {
-        $auth = $request->getParameter('auth');
+        $authKey = $request->getParameter('auth');
         $this->id = $request->getParameter('id');
         $this->identifiant = $request->getParameter('identifiant', null);
         $this->college = $request->getParameter('college', null);
@@ -905,12 +902,10 @@ class degustationActions extends sfActions {
             throw new sfException('Parametre présence n\'est pas défini');
         }
 
-        $key = DegustationClient::generateAuthKey($this->id, $this->identifiant);
-        $auth = substr($auth, 0, strlen($key));
-
-        if ($auth !== $key) {
+        if (!UrlSecurity::verifyAuthKey($this->id, $this->identifiant, $authKey)) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
+
         $this->setLayout(false);
         $this->degustation = DegustationClient::getInstance()->find($this->id);
         $degustateurs = $this->degustation->get("degustateurs");
