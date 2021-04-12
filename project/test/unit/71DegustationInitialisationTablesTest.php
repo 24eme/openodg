@@ -70,7 +70,13 @@ $t->is($leurreTable2->leurre, true, 'C\'est un leurre');
 $t->is($leurreTable2->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
 $t->is($leurreTable2->numero_table, 2, 'Le numéro de table est le 2');
 $t->is($leurreTable2->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
-$degust->lots->remove(3);
+
+$t->comment("On ignore le leurre de la table 2");
+$t->is(count($degust->getLotsNonAttables()), 0, "Tous les lots sont attablés");
+$lotLeurre = $degust->lots[3];
+$degust->lots[3] = $degust->ignorerLot($lotLeurre);
+$t->is(count($degust->getLotsNonAttables()), 1, "Un lot non attablé");
+$t->ok($lotLeurre->isIgnored(), "Le leurre n'est plus dans une table et est ignoré");
 $degust->save();
 
 $t->comment('puis on la retire');

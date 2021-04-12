@@ -897,6 +897,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $leurres;
     }
 
+		public function ignorerLot($lot){
+			$lot->numero_table = Lot::TABLE_IGNORE;
+			return $lot;
+		}
+
 		/**** Fin Gestion des tables de la degustation ****/
 
 
@@ -973,7 +978,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsNonAttables(){
 			$non_attables = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table)
+				if($lot->numero_table && !$lot->isIgnored())
 					continue;
 				$non_attables[$lot->unique_id] = $lot;
 			}
