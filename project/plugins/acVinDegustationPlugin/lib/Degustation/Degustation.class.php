@@ -613,7 +613,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $freeLots;
 		}
 
-		public function getTablesWithFreeLots($add_default_table = false){
+		public function getTablesWithFreeLots(){
 			$tables = array();
 			$freeLots = $this->getFreeLots();
 			foreach ($this->lots as $lot) {
@@ -625,13 +625,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					}
 					$tables[$lot->numero_table]->lots[] = $lot;
 				}
-			}
-
-			if($add_default_table && !count($tables)){
-				$table = new stdClass();
-				$table->lots = array();
-				$table->freeLots = $freeLots;
-				$tables[] = $table;
 			}
 			return $tables;
 		}
