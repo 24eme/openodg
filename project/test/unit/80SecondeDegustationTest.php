@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(45);
+$t = new lime_test(47);
 
 $campagne = (date('Y')-1)."";
 $degust1_date_fr = '09/09/'.$campagne;
@@ -121,12 +121,16 @@ $form->save();
 
 $t->comment("Conformité des lots");
 $degustation1->lots[0]->statut = Lot::STATUT_CONFORME;
+$degustation1->lots[0]->email_envoye = date('Y-m-d');
 $degustation1->lots[1]->statut = Lot::STATUT_NONCONFORME;
+$degustation1->lots[1]->email_envoye = date('Y-m-d');
 $degustation1->save();
 
 $degustation1 = DegustationClient::getInstance()->find($iddegust1);
 $t->is($degustation1->lots[0]->getNombrePassage(), 1, 'Le numero de passage du lot 1 de la degustation 1 est bien 1');
 $t->is($degustation1->lots[1]->getNombrePassage(), 1, 'Le numero de passage du lot 2 de la degustation 1 est bien 1');
+$t->is($degustation1->lots[0]->email_envoye, date('Y-m-d'), 'La notification du lot 1 est à la date du jour');
+$t->is($degustation1->lots[1]->email_envoye, date('Y-m-d'), 'La notification du lot 2 est à la date du jour');
 
 $lot_degust1 = $degustation1->lots[1];
 $t->ok($lot_degust1->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est non conforme");

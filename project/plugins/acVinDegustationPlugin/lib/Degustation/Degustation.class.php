@@ -297,6 +297,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $declarants = [];
 
         foreach ($this->lots as $lot) {
+			if (!$lot->email_envoye) {
+				continue;
+			}
             if (! $lot->isNonConforme()) {
                 if (in_array($lot->declarant_identifiant, $declarants) === true) {
                     continue;
@@ -310,7 +313,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $pieces[] = [
                 'identifiant' => $lot->declarant_identifiant,
-                'date_depot' => $this->validation,
+                'date_depot' => $lot->email_envoye,
                 'libelle' => $libelle,
                 'mime' => Piece::MIME_PDF,
                 'visibilite' => 1,
