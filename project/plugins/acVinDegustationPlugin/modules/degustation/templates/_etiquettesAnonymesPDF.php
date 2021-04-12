@@ -13,7 +13,7 @@
                   <?php echo tdStart() ?>&nbsp;<h1><strong><?php echo $lotInfo->getNumeroAnonymat(); ?></strong></h1>
                 </td>
               </tr>
-              <tr style="line-height:17px;">
+              <tr>
                 <td colspan="2">
                 </td>
               </tr>
@@ -22,8 +22,10 @@
                   <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo $lotInfo->produit_libelle .' '.  $lotInfo->millesime;  ?></strong>
                 </td>
               </tr>
-              <tr>
-                <td colspan="2" style="overflow-wrap:break-word;">
+              <tr style="line-height:12px;">
+                <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:7px;">
+                  <?php echo tdStart() ?>
+                  <?php echo showOnlyCepages($lotInfo, 75); ?>
                 </td>
               </tr>
               <tr style="line-height:17px;">

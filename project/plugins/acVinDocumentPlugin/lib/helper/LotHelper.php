@@ -18,24 +18,31 @@ function showProduitLot($lot, $specificite_protection = true)
 
 }
 
-function showOnlyCepages($lot){
-  $text = null;
+function showOnlyCepages($lot, $maxcars = null) {
+  $text = '';
+  $html = " <small class='text-muted'>";
   if ($lot instanceof stdClass) {
     $total = $lot->volume;
-    $text .= " <small class='text-muted'>";
     foreach ($lot->cepages as $cepage => $hl) {
         $text .= $cepage . ' (' . round(($hl*100)/$total, 2) . "%) ";
     }
-    $text .= "</small>";
   } else {
     if ($lot->cepages) {
-      $text .= " <small class='text-muted'>".$lot->getCepagesLibelle()."</small>";
+      $text .= $lot->getCepagesLibelle();
     }
     if($lot->exist("details")) {
-        $text .= " <small class='text-muted'>".$lot->details."</small>";
+        $text .= $lot->details;
     }
   }
-    return $text;
+  if (!$text) {
+    return null;
+  }
+  if ($maxcars) {
+      $text = substr($text, 0, $maxcars);
+  }
+  $html .= $text;
+  $html .= "</small>";
+  return $html;
 }
 
 function getUrlEtapeFromMvtLot($mvtLot)
