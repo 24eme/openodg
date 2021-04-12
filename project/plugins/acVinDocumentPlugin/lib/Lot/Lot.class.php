@@ -868,4 +868,26 @@ abstract class Lot extends acCouchdbDocumentTree
         return 0.0;
     }
 
+    public function getDestinationShort()
+    {
+        $dest = [];
+
+        if (strpos($this->id_document_provenance, 'TRANSACTION') !== false) {
+            $dest[] = 'VRAC';
+        }
+
+        if (strpos($this->id_document_provenance, 'CONDITIONNEMENT') !== false) {
+            $dest[] = 'CONDITIONNEMENT';
+        }
+
+        if (strpos($this->destination_type, 'VRAC') !== false) {
+            $dest[] = 'VRAC';
+        }
+
+        if (strpos($this->destination_type, 'CONDITIONNEMENT') !== false) {
+            $dest[] = 'CONDITIONNEMENT';
+        }
+
+        return implode(' / ', array_unique($dest));
+    }
 }
