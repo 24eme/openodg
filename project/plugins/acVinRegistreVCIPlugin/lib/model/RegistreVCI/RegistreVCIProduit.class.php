@@ -133,7 +133,8 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
     if (!$drev) {
       return 'XXX';
     }
-    return $drev->get($this->pseudo_produit->getHash())->getTotalTotalSuperficie();
+
+    return $drev->get($this->pseudo_produit->getHash())->superficie_revendique;
   }
 
   public function isProduitCepage() {

@@ -8,7 +8,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 	protected $piece_document = null;
 	protected $array_tri = null;
-	protected $cm = null;
     protected $docToSave = array();
     protected $archivage_document = null;
     protected $mouvement_document = null;
@@ -16,7 +15,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
-				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
 
     public function getDateFormat($format = 'Y-m-d') {
@@ -33,10 +31,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function isLotsEditable(){
       return false;
     }
-
-		public function getCampagneByDate() {
-			return $this->cm->getCampagneByDate($this->getDateFormat());
-		}
 
     public function __clone() {
         parent::__clone();
@@ -57,8 +51,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$date = new DateTime($this->date);
 
         $this->set('_id', DegustationClient::TYPE_COUCHDB."-".$date->format('YmdHi'));
-    }
 
+        $this->campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($date->format('Y-m-d'));
+    }
 
 		public function getConfigProduits() {
 
@@ -297,6 +292,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $declarants = [];
 
         foreach ($this->lots as $lot) {
+			if (!$lot->email_envoye) {
+				continue;
+			}
             if (! $lot->isNonConforme()) {
                 if (in_array($lot->declarant_identifiant, $declarants) === true) {
                     continue;
@@ -310,7 +308,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $pieces[] = [
                 'identifiant' => $lot->declarant_identifiant,
-                'date_depot' => $this->validation,
+                'date_depot' => $lot->email_envoye,
                 'libelle' => $libelle,
                 'mime' => Piece::MIME_PDF,
                 'visibilite' => 1,
@@ -1245,7 +1243,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getTemplateFacture() {
 
-            return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
+            return TemplateFactureClient::getInstance()->findByCampagne($this->campagne);
         }
 
         public function getMouvementsFactures() {
