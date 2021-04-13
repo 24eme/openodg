@@ -189,7 +189,7 @@ class FactureClient extends acCouchdbClient {
     }
 
     /** facturation par mvts **/
-    public function createDocFromView($mouvements, $societe, $date_facturation = null, $message_communication = null, $region = null) {
+    public function createDocFromView($mouvements, $societe, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
         if(!$region){
             return null;
         }
@@ -201,6 +201,7 @@ class FactureClient extends acCouchdbClient {
         $facture->constructIds($compte);
         $facture->storeEmetteur($region);
         $facture->storeDeclarant($compte);
+        $facture->storeTemplates($template);
 
         foreach ($mouvements as $identifiant => $mvt) {
             $facture->storeLignesByMouvementsView($mvt);
@@ -339,12 +340,22 @@ class FactureClient extends acCouchdbClient {
       $generation->documents = array();
       $generation->somme = 0;
       $region = ($generation->arguments->exist('region'))? $generation->arguments->region : null;
+      $modele = ($generation->arguments->exist('modele'))? $generation->arguments->modele : null;
+      if(!$modele){
+          throw new sfException("La génération ne possède pas de modèle de facture");
+      }
+
+      $template = TemplateFactureClient::getInstance()->find($modele);
+      if(!$template){
+          throw new sfException(sprintf("Le template %s n'existe pas dans la base ", $modele));
+      }
+
       $cpt = 0;
 
       foreach ($generationFactures as $societeID => $mouvementsSoc) {
           $societe = SocieteClient::getInstance()->find($societeID);
 
-          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation,$message_communication,$region);
+          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template);
           $f->save();
           $generation->somme += $f->total_ttc;
           $generation->add('documents')->add($cpt, $f->_id);
