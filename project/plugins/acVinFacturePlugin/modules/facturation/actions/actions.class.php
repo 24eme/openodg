@@ -15,25 +15,35 @@ class facturationActions extends sfActions
             $this->generation = new Generation();
             $this->generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
             $this->generation->somme = 0;
-            $this->formFacturationMassive = new FactureGenerationForm();
         }
+        $this->formFacturationMassive = new FactureGenerationForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
-        if(class_exists("EtablissementChoiceForm")) {
-          $this->formEtablissement->bind($request->getParameter($this->formEtablissement->getName()));
-          $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
-          if($this->formEtablissement->isValid()) {
+         $this->formEtablissement->bind($request->getParameter($this->formEtablissement->getName()));
+         $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
+         $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
+         if($this->formEtablissement->isValid()) {
               $etb = EtablissementClient::getInstance()->find($this->formEtablissement->getValue('identifiant'));
               return $this->redirect('facturation_declarant', array('id' => $etb->getMasterCompte()->_id));
           }
           if($this->formFacturationMassive->isValid()) {
-              $etb = EtablissementClient::getInstance()->find($this->formEtablissement->getValue('identifiant'));
-              return $this->redirect('facturation_declarant', array('id' => $etb->getMasterCompte()->_id));
+
+              $values = $this->formFacturationMassive->getValues();
+              $generation = new Generation();
+
+              $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+              $generation->arguments->add('date_facturation', $values['date_facturation']);
+              $generation->arguments->add('date_mouvement', $values['date_mouvement']);
+              $generation->arguments->add('type_document', $values['type_document']);
+              $generation->arguments->add('message_communication', $values['message_communication']);
+              $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
+              $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+              $generation->save();
+              return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
           }
-        }
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -133,7 +143,7 @@ class facturationActions extends sfActions
             $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
             $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
             $generation->save();
-            //$urlRetour = $request->getParameter('retour', false);
+
             $urlRetour = $this->generateUrl('facturation_declarant', array('id' => $this->compte->_id));
             return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission, 'retour' => $urlRetour));
 
