@@ -10,7 +10,7 @@ transaction_create:
 
 transaction_create_papier:
   url: /transaction/creation-papier/:identifiant
-  param: { module: transaction, action: createPapier }
+  param: { module: transaction, action: create }
   class: EtablissementRoute
   options:
     model:    Etablissement

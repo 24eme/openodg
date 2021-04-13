@@ -5,22 +5,14 @@ class transactionActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
+        $isAdmin = $this->getUser()->isAdmin();
+        if (!$isAdmin) {
+            $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
+        }
 
         $date = $request->getParameter("date", date('Y-m-d'));
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date);
-        $transaction->save();
-
-        return $this->redirect('transaction_edit', $transaction);
-    }
-
-    public function executeCreatePapier(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
-
-        $date = $request->getParameter("date", date('Y-m-d'));
-        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $date, true);
+        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
         $transaction->save();
 
         return $this->redirect('transaction_edit', $transaction);
