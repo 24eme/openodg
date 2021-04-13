@@ -1,9 +1,9 @@
 chgtdenom_create_lot:
-  url: /changement-denomination/:id/creation-lot/:lot
+  url: /changement-denomination/:identifiant/creation-lot/:lot
   param: { module: chgtdenom, action: createLot }
-  class: ChgtDenomRoute
+  class: EtablissementRoute
   options:
-    model:    ChgtDenom
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get]
@@ -29,11 +29,11 @@ chgtdenom_create_papier:
     sf_method: [get]
 
 chgtdenom_lots:
-  url: /changement-denomination/lots/:id/:campagne
+  url: /changement-denomination/lots/:identifiant/:campagne
   param: { module: chgtdenom, action: lots }
-  class: ChgtDenomRoute
+  class: EtablissementRoute
   options:
-    model:    ChgtDenom
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get, post]

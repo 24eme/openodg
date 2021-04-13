@@ -47,11 +47,13 @@ Non conforme(s) et bloqué(s) à la commercialisation. Vous trouverez en cliquan
 </a>
 <?php endforeach; ?>
 
-Si vous décidez de déclasser, vous pouvez télécharger la déclaration de changement de dénomination (DICD) à partir de votre espace :
-<a href="<?php echo url_for('declaration_etablissement', [
-    'identifiant' => $identifiant
-], true) ?>"><?php echo url_for('declaration_etablissement', [
-    'identifiant' => $identifiant
+Si vous décidez de déclasser, vous pouvez télécharger la déclaration de changement de dénomination (DICD) :
+<a href="<?php echo url_for('chgtdenom_lots', [
+    'identifiant' => $identifiant,
+    'campagne' => $degustation->campagne
+], true) ?>"><?php echo url_for('chgtdenom_lots', [
+    'identifiant' => $identifiant,
+    'campagne' => $degustation->campagne
 ], true) ?>
 </a>
 
