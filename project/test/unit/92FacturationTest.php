@@ -127,14 +127,13 @@ $defaults = $form->getDefaults();
 
 $valuesRev['date_facturation'] = "01/01/".($drev->getCampagne()+1);
 $valuesRev['date_mouvement'] = "01/01/".($drev->getCampagne()+1);
-$valuesRev['type_document'] = FactureClient::TYPE_DOCUMENT_TOUS;
+$valuesRev['type_document'] = DRevClient::TYPE_MODEL;
 $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
 
 $gForm = $form->save();
 $gForm->arguments->add('modele', $templateFacture->_id);
 $gForm->arguments->add('region', strtoupper($application));
-
 $gForm->save();
 
 $socCompte = $viti->getMasterCompte();
@@ -161,7 +160,7 @@ foreach ($facturesSoc as $f) {
 
 $t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
 
-$t->is($facture->numero_facture,"20_DREV_00001", "Le numero de campagne attendu est bien $facture->numero_facture ");
+$t->is($facture->numero_facture,"20_DRev_00001", "Le numero de campagne attendu est bien $facture->numero_facture ");
 
 
 // Affichage Cotisations
