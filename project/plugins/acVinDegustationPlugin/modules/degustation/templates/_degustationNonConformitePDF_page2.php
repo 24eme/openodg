@@ -15,7 +15,7 @@
 <br/>
 <br/>
 <table border="1" style="text-align:center;padding:10px;">
-  <tr><td>FICHE DE NON CONFORMITÉ<br/>Lot : <?php echo $lot->unique_id ?></td></tr>
+  <tr><td>FICHE DE NON CONFORMITÉ<br/>NC<?php echo $lot->unique_id ?></td></tr>
   <tr>
     <td style="width: 50%">
       <strong>Opérateur :</strong> <?php echo $etablissement->raison_sociale ?><br>
