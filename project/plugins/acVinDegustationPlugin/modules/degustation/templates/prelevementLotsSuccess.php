@@ -12,11 +12,11 @@
   <table class="table table-condensed">
     <tbody>
       <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total de <strong>lots prévus&nbsp;:</strong></td>
+        <td class="col-xs-3" >Nombre total de <strong>lots à prélever&nbsp;:</strong></td>
         <td class="col-xs-9"><strong id="nbLotsSelectionnes"><?php echo $infosDegustation["nbLots"]; ?></strong></td>
       </tr>
       <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total <strong>d'adhérents prélevés&nbsp;:</strong></td>
+        <td class="col-xs-3" >Nombre total <strong>d'adhérents à prélever&nbsp;:</strong></td>
         <td class="col-xs-9"><strong id="nbAdherentsAPrelever"><?php echo $infosDegustation["nbAdherents"]; ?></strong></td>
       </tr>
     </tbody>
@@ -49,7 +49,7 @@
                 $lot = $form->getLot($key);
                 $lot->type_document = substr($lot->id_document, 0, 4);
             ?>
-          <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier ?>">
+          <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->declarant_identifiant ?>">
             <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
             <td><?php echo $lot->declarant_nom; ?></td>
             <td>
