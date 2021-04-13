@@ -10,7 +10,7 @@ conditionnement_create:
 
 conditionnement_create_papier:
   url: /conditionnement/creation-papier/:identifiant
-  param: { module: conditionnement, action: createPapier }
+  param: { module: conditionnement, action: create }
   class: EtablissementRoute
   options:
     model:    Etablissement

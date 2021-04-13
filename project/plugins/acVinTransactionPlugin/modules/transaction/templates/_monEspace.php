@@ -15,26 +15,27 @@
         </div>
         <?php if ($transaction && $transaction->validation): ?>
             <div class="panel-body">
-                <p>Votre déclaration de vrac export a été validée aujourd'hui.</p>
-                <div style="margin-top: 76px;">
+                <p class="explications">Votre déclaration de vrac export a été validée aujourd'hui.</p>
+                <div class="actions">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_visualisation', $transaction) ?>">Visualiser la déclaration</a>
                 </div>
             </div>
         <?php elseif ($transaction): ?>
             <div class="panel-body">
-                <p>Reprendre la déclaration de vrac export du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?>.</p>
-                <div style="margin-top: 50px;">
+                <p class="explications">Reprendre la déclaration de vrac export du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?>.</p>
+                <div class="actions">
                     <a class="btn btn-block btn-primary" href="<?php echo url_for('transaction_edit', $transaction) ?>"><span class="glyphicon glyphicon-pencil"></span> Reprendre la saisie</a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('transaction_delete', $transaction) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </div>
             </div>
         <?php else: ?>
             <div class="panel-body">
-                <p>Espace permettant la déclaration de vos vrac exports.</p>
-                <div style="margin-top: 50px;">
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
+                <p class="explications">Espace permettant la déclaration de vos vrac exports.</p>
+                <div class=actions>
                     <?php if ($sf_user->isAdmin() || $sf_user->hasTransactionAdmin()): ?>
-                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('transaction_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
+                        <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
+                    <?php else: ?>
+                        <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
                     <?php endif; ?>
                 </div>
             </div>

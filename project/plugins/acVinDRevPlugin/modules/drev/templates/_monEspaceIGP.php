@@ -7,8 +7,8 @@
             <h3 class="panel-title">Revendication <?php echo $periode; ?></h3>
         </div>
         <div class="panel-body">
-            <p>Espace permettant de revendiquer vos lots en IGP et consulter ceux que vous avez déjà revendiqué</p>
-            <div style="margin-top: 76px;">
+            <p class="explications">Espace permettant de revendiquer vos lots en IGP et consulter ceux que vous avez déjà revendiqué</p>
+            <div class="actions">
                 <?php if($drev && $drev->validation): ?>
                 <a class="btn btn-block btn-primary" href="<?php echo           url_for('drev_visualisation', $drev) ?>">Consulter et Revendiquer</a>
                 <?php elseif($drev && !$drev->validation): ?>

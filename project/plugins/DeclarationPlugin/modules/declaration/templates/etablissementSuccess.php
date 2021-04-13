@@ -113,8 +113,8 @@
                 <h3 class="panel-title">Vos factures</h3>
             </div>
             <div class="panel-body">
-                <p>Accéder à l'espace de mise à disposition de vos factures en téléchargement</p>
-                <div style="margin-top: 50px;">
+                <p class="explications">Accéder à l'espace de mise à disposition de vos factures en téléchargement</p>
+                <div class="actions">
                     <a class="btn btn-block btn-info" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
                 </div>
             </div>

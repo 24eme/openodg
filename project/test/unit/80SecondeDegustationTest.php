@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(47);
+$t = new lime_test(48);
 
 $campagne = (date('Y')-1)."";
 $degust1_date_fr = '09/09/'.$campagne;
@@ -189,6 +189,7 @@ $drev = DRevClient::getInstance()->find($drev->_id);
 $t->is(count($lot_degust2->getMouvements()), 2, "Le lot a deux mouvements");
 $t->is($lot_degust2->numero_archive, $lot_degust1->numero_archive, "Le numero archive de la dégustation 2 n'a pas changé par rapport à la dégustation 1");
 $t->is($lot_degust2->numero_dossier, $lot_degust1->numero_dossier, "Le numero dossier de la dégustation 2 n'a pas changé à la dégustation 1");
+$t->is($lot_degust2->email_envoye, null, "La date d'envoi de mail a été réinitialisée");
 
 $t->is($lot_degust2->id_document, $degustation2->_id, "L'id du doc du mouvement est la même degustation");
 $t->ok($lot_degust2->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Le lot a le mouvement ".Lot::STATUT_ATTENTE_PRELEVEMENT);

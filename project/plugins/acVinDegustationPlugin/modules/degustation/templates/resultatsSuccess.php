@@ -57,8 +57,9 @@
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td><?= $lot->getTypeProvenance() ?></td>
                         <td class="text-left">
-                            <?php echo showProduitCepagesLot($lot) ?>
-                            <span class="pull-right text-muted" ><small><?php echo $lot->numero_logement_operateur.' '.$lot->volume.'hl'; ?></small></span>
+                            <?php echo showOnlyProduit($lot) ?> - <small>n°&nbsp;<?php echo $lot->numero_logement_operateur; ?></small>
+                            <br/><?php echo showOnlyCepages($lot) ?>
+                            <span class="pull-right text-muted" ><small><?php echo $lot->volume.'&nbsp;hl'; ?></small></span>
                         </td>
                         <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <div style="margin-bottom: 0;">

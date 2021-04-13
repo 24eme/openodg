@@ -124,3 +124,7 @@
 .pl-5 { padding-left:3rem!important; }
 
 .checkboxlots input:not(:checked) { display: none; }
+
+.block_declaration .panel-body{ height: 175px; max-height: 175px }
+.block_declaration .explications{ height: 80px; max-height: 80px }
+.block_declaration .actions{ height: 75px; max-height: 75px }

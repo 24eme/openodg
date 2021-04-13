@@ -48,7 +48,9 @@
                         <a href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id));  ?>" data-toggle="tooltip"
                               data-html="true"
                               title="<?= $lot->getLibelle() . ' - ' . $lot->volume . "hl<br>" . $lot->getShortLibelleConformite() ?>"
-                              class="label label-<?= ($lot->isManquement()) ? 'danger' : 'success'?>"
+                              class="label label-<?php if($lot->isManquement())  { echo 'danger'; }
+                                                    elseif ($lot->isConformeObs()) { echo 'warning'; }
+                                                    else { echo 'success'; } ?>"
                               style="<?php if($lot->hasSpecificitePassage()): ?>border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;<?php endif; ?>"
                         ><span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>
