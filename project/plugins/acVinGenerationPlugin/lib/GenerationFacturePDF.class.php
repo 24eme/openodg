@@ -19,12 +19,7 @@ class GenerationFacturePDF extends GenerationPDF {
 
     public function preGeneratePDF() {
         parent::preGeneratePDF();
-
-        if($this->generation->arguments->exist("modele") && $this->generation->arguments->modele){
-            $this->preGenerateByTemplate();
-        }else{
-            $this->preGenerateByView();
-        }
+        $this->preGenerateByView();
     }
 
 

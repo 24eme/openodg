@@ -1,6 +1,6 @@
 <?php
 class generationActions extends sfActions {
-    
+
   private function getGenerationFromRequest(sfWebRequest $request) {
       $this->type = $request['type_document'];
       $this->identifiant = isset($request['identifiant'])? $request['identifiant'] : null;
@@ -11,12 +11,13 @@ class generationActions extends sfActions {
 
       return $this->generation;
   }
-  
+
   public function executeView(sfWebRequest $request) {
       $this->generation = $this->getGenerationFromRequest($request);
+      $this->retour = $request->getParameter('retour',false);
       if($this->generation->type_document == GenerationClient::TYPE_DOCUMENT_FACTURES) {
           $this->menuActive = 'facturation';
-          $this->backUrl = $this->generateUrl('facturation');
+          $this->backUrl = ($this->retour)? $this->retour : $this->generateUrl('facturation');
       }
 
       if($this->generation->type_document == GenerationClient::TYPE_DOCUMENT_EXPORT_CSV) {
@@ -34,7 +35,7 @@ class generationActions extends sfActions {
           $this->backUrl = $this->generateUrl('export');
       }
   }
-  
+
   public function executeList(sfWebRequest $request) {
       $this->type = $request['type_document'];
       $this->historyGeneration = GenerationClient::getInstance()->findHistoryWithType($this->type);
@@ -61,5 +62,5 @@ class generationActions extends sfActions {
           return $this->redirect('generation_list', array('type_document' => $this->type));
       }
   }
-    
+
 }
