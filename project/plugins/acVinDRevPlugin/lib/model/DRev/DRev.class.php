@@ -929,6 +929,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
+        $lots_in_degustation = $this->haveLotsInDegustation();
+        if(count($lots_in_degustation)){
+          $text = "";
+          foreach ($lots_in_degustation as $key => $id_degust) {
+            $text .= "$id_degust ";
+          }
+          throw new sfException("La dévalidation n'est pas possible. Vous avez un ou plusieurs lots dans : $text");
+        }
+
         $this->validation = null;
         $this->validation_odg = null;
         if($this->exist('etape')) {
@@ -1278,6 +1287,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         $this->archivage_document->preSave();
         $this->archiverLot($this->numero_archive);
+    }
+
+    public function haveLotsInDegustation(){
+      $degustationList = array();
+      foreach ($this->getLots() as $key => $lot) {
+        if(!$lot->isAffecte())
+          continue;
+        $degustationList[] = $lot->id_document_affectation;
+
+      }
+      return $degustationList;
     }
 
   /*** ARCHIVAGE ***/
