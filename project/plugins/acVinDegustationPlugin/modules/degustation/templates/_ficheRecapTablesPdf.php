@@ -14,18 +14,19 @@ th {
       <table>
         <tr>
           <td style="width:33%;">
-            <p>Date : <?php $date = explode("-", substr($degustation->date, 0, 10));echo "$date[2]/$date[1]/$date[0]"; ?></p>
-            <p>Heure : <?php echo substr($degustation->date, -5); ?></p>
-            <p>Code Commission: <?php echo $degustation->_id; ?></p>
+            <p>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></p>
+            <p>Heure : <?php echo $date->format("H:i"); ?></p>
           </td>
           <td style="width:33%;">
-            <p>Campagne: <?php echo $degustation->campagne .'/'.($degustation->campagne+1); ?></p>
-            <p>Millésime: <?php echo $degustation->campagne; ?></p>
-
+            <p>Campagne: <?php echo $degustation->campagne;?></p>
           </td>
           <td style="width:33%">
             <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
           </td>
+        </tr>
+        <br/>
+        <tr>
+          <td colspan="3">&nbsp;&nbsp;Code Commission: <?php echo $degustation->_id; ?></td>
         </tr>
       </table>
     </div>
