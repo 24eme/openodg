@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(122);
+$t = new lime_test(116);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -103,19 +103,6 @@ $drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
-
-$t->ok(boolval($drev->validation_odg) === true, "La DRev est validée odg.");
-$haveLotsInDegustation = $drev->haveLotsInDegustation();
-$t->ok(boolval(count($haveLotsInDegustation)) === false, "La Drev n'a aucun lot dans une dégustation.");
-
-$drev->devalidate();
-$drev->save();
-$t->ok(boolval($drev->validation_odg) === false, "La DRev est dévalidée.");
-
-$drev->validate();
-$drev->validateOdg();
-$drev->save();
-$t->ok(boolval($drev->validation_odg) === true, "La DRev est revalidée odg.");
 
 $t->ok($drev->lots[0]->numero_archive, "Numéro d'archive du lot 1");
 $t->ok($drev->lots[0]->numero_dossier, "Numéro de dossier du lot 1");
@@ -413,13 +400,3 @@ $t->comment('On confirme le dernier degustateur');
 $degustation->degustateurs->degustateur_porteur_de_memoire->get($degustPorteurMemoire->_id)->add('confirmation', 1);
 
 $t->is($degustation->hasAllDegustateursConfirmation(), true, "Les dégustateurs ont tous signalé leurs présence");
-
-$t->comment("Dévalidation d'une Drev dont les lots sont dans une Degust");
-$haveLotsInDegustation = $drev->haveLotsInDegustation();
-$t->ok(count($haveLotsInDegustation), "Au moins un lot de la Drev est dans une Degust");
-try{
-    $drev->devalidate();
-}catch(\Exception $e){
-  $msg = $e->getMessage();
-}
-$t->ok(strpos($msg, "La dévalidation n'est pas possible.") !== false, "Impossible de dévalider la DRev car lot dans une Degustation");
