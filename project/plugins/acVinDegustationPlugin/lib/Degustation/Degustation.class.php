@@ -627,6 +627,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$tables[$lot->numero_table]->lots[] = $lot;
 				}
 			}
+            ksort($tables);
 			return $tables;
 		}
 
