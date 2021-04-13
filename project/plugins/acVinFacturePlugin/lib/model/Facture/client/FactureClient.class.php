@@ -397,36 +397,6 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
-    public function createFactureByTemplateWithGeneration($template, $compte_or_id, $date_facturation = null) {
-
-        $generation = new Generation();
-        $generation->date_emission = date('Y-m-d-H:i');
-        $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
-        $generation->documents = array();
-        $generation->somme = 0;
-        $cpt = 0;
-
-        $compte = $compte_or_id;
-
-        if(is_string($compte)) {
-            $compte = CompteClient::getInstance()->find($compte_or_id);
-        }
-        $f = $this->createFactureByTemplate($template, $compte, $date_facturation);
-
-        if(!$f) {
-
-            return false;
-        }
-
-        $f->save();
-
-        $generation->somme += $f->total_ttc;
-        $generation->add('documents')->add($cpt, $f->_id);
-        $generation->libelle = $compte->nom_a_afficher;
-        $cpt++;
-
-        return $generation;
-    }
 
     public function getProduitsFromTypeLignes($lignes) {
         $produits = array();
