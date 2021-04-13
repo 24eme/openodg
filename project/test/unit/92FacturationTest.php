@@ -161,6 +161,8 @@ foreach ($facturesSoc as $f) {
 
 $t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
 
+$t->is($facture->numero_facture,"20_DREV_00001", "Le numero de campagne attendu est bien $facture->numero_facture ");
+
 
 // Affichage Cotisations
 $cptCotisTotal = 0;

@@ -31,7 +31,7 @@ class facturationActions extends sfActions
           }
           if($this->formFacturationMassive->isValid()) {
 
-              $generation = $this->form->save();
+              $generation = $this->formFacturationMassive->save();
               $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
               $generation->save();
 
@@ -102,7 +102,7 @@ class facturationActions extends sfActions
             $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
             $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
 
-            if(!count($this->mouvements) || $this->force){
+            if($this->force){
                 try {
                   foreach ($this->templatesFactures as $key => $templateFacture) {
                     $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant, $this->force),$this->mouvements);
