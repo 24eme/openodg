@@ -57,19 +57,6 @@ class FactureClient extends acCouchdbClient {
         return $this->startkey('FACTURE-'.$idClient.'-'.$date.'00')->endkey('FACTURE-'.$idClient.'-'.$date.'99')->execute($hydrate);
     }
 
-    public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null, $region = null) {
-        $mouvements = $template->getMouvementsFactures($compte->identifiant);
-
-        $mouvements = $this->aggregateMouvementsFactures($mouvements);
-
-        if(!count($mouvements)) {
-
-            return false;
-        }
-
-        return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template, $region);
-    }
-
     public function getMouvementsFacturesByDocs($compteIdentifiant, $docs, $regenerate = false) {
         if (!$docs) {
 
