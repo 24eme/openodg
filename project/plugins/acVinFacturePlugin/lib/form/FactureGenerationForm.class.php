@@ -35,7 +35,7 @@ class FactureGenerationForm extends BaseForm {
         return array_merge(array(FactureClient::TYPE_DOCUMENT_TOUS => 'Tous'), FactureClient::$origines);
     }
     public function save() {
-        $value = $this->getValue('file');
+        $values = $this->getValues();
         $generation = new Generation();
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
         $generation->arguments->add('date_facturation', $values['date_facturation']);
