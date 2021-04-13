@@ -302,9 +302,10 @@ class facturationActions extends sfActions
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->compte->getSociete());
 
+        $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
+        $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
+
         if(!count($this->mouvements) || $this->force){
-            $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
-            $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
             try {
               foreach ($this->templatesFactures as $key => $templateFacture) {
                 $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant, $this->force),$this->mouvements);
@@ -336,9 +337,10 @@ class facturationActions extends sfActions
         $generation->arguments->add('compte', $this->compte->_id);
         $generation->arguments->add('message_communication', $values['message_communication']);
         $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
+        $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
         $generation->save();
         //$urlRetour = $request->getParameter('retour', false);
-        $urlRetour = $this->generateUrl('facturation_declarant', array('id' => $identifiant));
+        $urlRetour = $this->generateUrl('facturation_declarant', array('id' => $this->compte->_id));
         return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission, 'retour' => $urlRetour));
 
     }

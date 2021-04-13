@@ -28,6 +28,16 @@ class GenerationFacturePDF extends GenerationPDF {
         $message_communication = $this->generation->arguments->exist('message_communication') ? $this->generation->arguments->get('message_communication') : null;
         $date_facturation = $this->generation->arguments->exist('date_facturation') ? Date::getIsoDateFromFrenchDate($this->generation->arguments->get('date_facturation')) : null;
 
+        $modele = ($this->generation->arguments->exist('modele'))? $this->generation->arguments->modele : null;
+        if(!$modele){
+            throw new sfException("Il est obligatoire d'avoir un template de facturation");
+        }
+
+        $template = TemplateFactureClient::getInstance()->find($modele);
+        if(!$template) {
+            throw new sfException(sprintf("Le template de facture %s n'existe pas", $modele));
+        }
+
         if(!$this->generation->exist('somme')) {
           $this->generation->somme = 0;
         }
