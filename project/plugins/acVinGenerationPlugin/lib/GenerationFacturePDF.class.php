@@ -19,11 +19,6 @@ class GenerationFacturePDF extends GenerationPDF {
 
     public function preGeneratePDF() {
         parent::preGeneratePDF();
-
-        // if(!$this->generation->arguments->exist('compte') || !$this->generation->arguments->compte){
-        //     //$this->generateAllMouvements();
-        // }
-
         $this->preGenerate();
     }
 
