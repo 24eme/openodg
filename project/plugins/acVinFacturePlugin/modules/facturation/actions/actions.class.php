@@ -31,17 +31,10 @@ class facturationActions extends sfActions
           }
           if($this->formFacturationMassive->isValid()) {
 
-              $values = $this->formFacturationMassive->getValues();
-              $generation = new Generation();
-
-              $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
-              $generation->arguments->add('date_facturation', $values['date_facturation']);
-              $generation->arguments->add('date_mouvement', $values['date_mouvement']);
-              $generation->arguments->add('type_document', $values['type_document']);
-              $generation->arguments->add('message_communication', $values['message_communication']);
-              $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
+              $generation = $this->form->save();
               $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
               $generation->save();
+
               return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
           }
 
@@ -131,17 +124,9 @@ class facturationActions extends sfActions
                 return sfView::SUCCESS;
             }
 
-            $values = $this->form->getValues();
-            $generation = new Generation();
-
-            $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
-            $generation->arguments->add('date_facturation', $values['date_facturation']);
-            $generation->arguments->add('date_mouvement', $values['date_mouvement']);
-            $generation->arguments->add('type_document', $values['type_document']);
-            $generation->arguments->add('compte', $this->compte->_id);
-            $generation->arguments->add('message_communication', $values['message_communication']);
-            $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
+            $generation = $this->form->save();
             $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+            $generation->arguments->add('compte', $this->compte->_id);
             $generation->save();
 
             $urlRetour = $this->generateUrl('facturation_declarant', array('id' => $this->compte->_id));

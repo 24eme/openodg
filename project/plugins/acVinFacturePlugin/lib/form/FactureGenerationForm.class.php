@@ -2,8 +2,6 @@
 
 class FactureGenerationForm extends BaseForm {
 
-
-
     public function __construct($defaults = array(), $options = array(), $CSRFSecret = null) {
         $defaults['date_facturation'] = date('d/m/Y');
         $defaults['type_document'] = FactureClient::TYPE_DOCUMENT_TOUS;
@@ -35,5 +33,16 @@ class FactureGenerationForm extends BaseForm {
     public function getTypesDocument() {
 
         return array_merge(array(FactureClient::TYPE_DOCUMENT_TOUS => 'Tous'), FactureClient::$origines);
+    }
+    public function save() {
+        $value = $this->getValue('file');
+        $generation = new Generation();
+        $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+        $generation->arguments->add('date_facturation', $values['date_facturation']);
+        $generation->arguments->add('date_mouvement', $values['date_mouvement']);
+        $generation->arguments->add('type_document', $values['type_document']);
+        $generation->arguments->add('message_communication', $values['message_communication']);
+        $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
+        return $generation;
     }
 }
