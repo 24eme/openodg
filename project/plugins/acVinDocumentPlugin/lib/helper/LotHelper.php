@@ -16,7 +16,7 @@ function showOnlyProduit($lot, $specificite_protection = true)
 }
 
 function showProduitCepagesLot($lot, $specificite_protection = true)
-{
+{   $text = "";
     $text .= showOnlyProduit($lot);
     $text .= showOnlyCepages($lot);
     return $text;

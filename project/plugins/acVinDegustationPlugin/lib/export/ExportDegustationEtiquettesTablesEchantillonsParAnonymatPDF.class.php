@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationEtiquettesAnonymesPDF extends ExportPDF {
+class ExportDegustationEtiquettesTablesEchantillonsParAnonymatPDF extends ExportPDF {
 
     protected $degustation = null;
     const MAX_PLANCHE = 24;
@@ -32,12 +32,12 @@ class ExportDegustationEtiquettesAnonymesPDF extends ExportPDF {
             $i++;
 
             if ($i == self::MAX_PLANCHE) {
-                $this->printable_document->addPage($this->getPartial('degustation/etiquettesAnonymesPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
+                $this->printable_document->addPage($this->getPartial('degustation/etiquettesTablesEchantillonsParAnonymatPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
                 $i = 0;
                 $plancheLots = [];
             }
         }
-        $this->printable_document->addPage($this->getPartial('degustation/etiquettesAnonymesPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
+        $this->printable_document->addPage($this->getPartial('degustation/etiquettesTablesEchantillonsParAnonymatPDF', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots)));
   }
 
 
@@ -83,7 +83,7 @@ class ExportDegustationEtiquettesAnonymesPDF extends ExportPDF {
     }
 
     public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("table_des_etiquettes__des_lots_anonymises_%s", $degustation->_id);
+        $filename = sprintf("etiquettes_des_lots_par_anonymat_%s", $degustation->_id);
 
 
         if ($with_rev) {

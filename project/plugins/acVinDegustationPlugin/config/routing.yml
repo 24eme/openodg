@@ -356,9 +356,9 @@ degustation_etiquette_csv:
   requirements:
     sf_method: [get]
 
-degustation_etiquette_anonymes_pdf:
+degustation_etiquettes_tables_echantillons_par_anonymat_pdf:
   url: /degustation/:id/etiquettesAnonymes/pdf
-  param: { module: degustation, action: etiquettesAnonymesPDF }
+  param: { module: degustation, action: etiquettesTablesEchantillonsParAnonymatPDF }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -377,9 +377,9 @@ degustation_fiche_individuelle_pdf:
       sf_method: [get]
 
 
-degustation_fiche_echantillons_preleves_pdf:
-    url: /degustation/:id/ficheEchantillonsPreleves/pdf
-    param: { module: degustation, action: ficheEchantillonsPrelevesPDF }
+degustation_fiche_tables_echantillons_par_dossier_pdf:
+    url: /degustation/:id/ficheTablesEchantillonsParDossier/pdf
+    param: { module: degustation, action: ficheTablesEchantillonsParDossierPDF }
     class: DegustationRoute
     options:
       model:    Degustation
@@ -387,9 +387,9 @@ degustation_fiche_echantillons_preleves_pdf:
     requirements:
       sf_method: [get]
 
-degustation_fiche_echantillons_preleves_table_pdf:
-    url: /degustation/:id/ficheEchantillonsPrelevesTable/pdf
-    param: { module: degustation, action: ficheEchantillonsPrelevesTablePDF }
+degustation_fiche_tables_echantillons_par_anonymat_pdf:
+    url: /degustation/:id/ficheTablesEchantillonsParAnonymat/pdf
+    param: { module: degustation, action: ficheTablesEchantillonsParAnonymatPDF }
     class: DegustationRoute
     options:
       model:    Degustation

@@ -30,9 +30,9 @@
               <div class="col-xs-12">
                 <br/>
                 <ul class="list-group">
-                  <li class="list-group-item"><a id="btn_pdf_fiche_echantillons_preleves" href="<?php echo url_for('degustation_fiche_echantillons_preleves_pdf', $degustation) ?>" ><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés)</a></li>
-                  <li class="list-group-item"><a id="btn_pdf_fiche_echantillons_preleves_table" href="<?php echo url_for('degustation_fiche_echantillons_preleves_table_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche lots ventilés (Anonymisés par table)</a></li>
-                  <li class="list-group-item"><a id="btn_pdf_etiquette_anonymes_table" href="<?php echo url_for('degustation_etiquette_anonymes_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Tableau des étiquettes (Anonymisés)</a></li>
+                  <li class="list-group-item"><a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>" ><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (triés par Numéro de dossier)</a></li>
+                  <li class="list-group-item"><a id="btn_pdf_degustation_fiche_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_anonymat_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (triés par Numéro d'anonymat)</a></li>
+                  <li class="list-group-item"><a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_anonymat_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes pour tables (triées par Numéro d'Anonymat)</a></li>
                 </ul>
                 <br/>
             </div>

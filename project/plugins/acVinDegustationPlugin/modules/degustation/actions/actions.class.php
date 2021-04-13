@@ -698,9 +698,9 @@ class degustationActions extends sfActions {
       return $this->mutualExcecutePDF($request);
     }
 
-    public function executeEtiquettesAnonymesPDF(sfWebRequest $request) {
+    public function executeEtiquettesTablesEchantillonsParAnonymatPDF(sfWebRequest $request) {
       $degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationEtiquettesAnonymesPDF($degustation, $request->getParameter('output', 'pdf'), false);
+      $this->document = new ExportDegustationEtiquettesTablesEchantillonsParAnonymatPDF($degustation, $request->getParameter('output', 'pdf'), false);
       return $this->mutualExcecutePDF($request);
     }
 
@@ -710,15 +710,15 @@ class degustationActions extends sfActions {
       return $this->mutualExcecutePDF($request);
     }
 
-    public function executeFicheEchantillonsPrelevesPDF(sfWebRequest $request){
+    public function executeFicheTablesEchantillonsParDossierPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationFicheEchantillonsPrelevesPDF($degustation,$request->getParameter('output','pdf'),false);
+      $this->document = new ExportDegustationFicheTablesEchantillonsParDossierPDF($degustation,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
 
-    public function executeFicheEchantillonsPrelevesTablePDF(sfWebRequest $request){
+    public function executeFicheTablesEchantillonsParAnonymatPDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationFicheEchantillonsPrelevesTablePDF($degustation,$request->getParameter('output','pdf'),false);
+      $this->document = new ExportDegustationFicheTablesEchantillonsParAnonymatPDF($degustation,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
 

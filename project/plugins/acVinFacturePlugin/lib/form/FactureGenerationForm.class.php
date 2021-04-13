@@ -3,11 +3,10 @@
 class FactureGenerationForm extends BaseForm {
 
 
-    const TYPE_DOCUMENT_TOUS = "TOUS";
 
     public function __construct($defaults = array(), $options = array(), $CSRFSecret = null) {
         $defaults['date_facturation'] = date('d/m/Y');
-        $defaults['type_document'] = FactureGenerationMasseForm::TYPE_DOCUMENT_TOUS;
+        $defaults['type_document'] = FactureClient::TYPE_DOCUMENT_TOUS;
         parent::__construct($defaults, $options, $CSRFSecret);
     }
 
@@ -35,6 +34,6 @@ class FactureGenerationForm extends BaseForm {
 
     public function getTypesDocument() {
 
-        return array_merge(array(self::TYPE_DOCUMENT_TOUS => 'Tous'), FactureClient::$origines);
+        return array_merge(array(FactureClient::TYPE_DOCUMENT_TOUS => 'Tous'), FactureClient::$origines);
     }
 }

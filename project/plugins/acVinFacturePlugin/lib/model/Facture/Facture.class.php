@@ -12,7 +12,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     protected $piece_document = null;
     protected $forceFactureMouvements = false;
 
-    const MESSAGE_DEFAULT = "ICI le message par défaut : Vous pouvez retrouver nos infos jours après jours sur http://www.vinsvaldeloire.fr";
 
     public function __construct() {
         parent::__construct();
@@ -35,11 +34,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->_get('campagne');
     }
 
-    public function storeEmetteur() {
+    public function storeEmetteur($region = null) {
         $configs = sfConfig::get('app_facture_emetteur');
         $emetteur = new stdClass();
 
-        $this->region = strtoupper(sfConfig::get('sf_app'));
+        $this->region = ($region)? $region : strtoupper(sfConfig::get('sf_app'));
 
         if (!array_key_exists($this->region, $configs))
             throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
@@ -234,9 +233,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public function storeLignesByMouvementsView($mouvement) {
             $ligne = $this->lignes->add($mouvement->value->categorie);
             $ligne->libelle = $mouvement->value->type_libelle;
-            $ligne->produit_identifiant_analytique = $configCollection->code_comptable;
             $document_origine = $mouvement->id;
-            $key_origine = $mouvement->key[MouvementFactureView::KEY_KEY_ORIGIN];
+            $key_origine = $mouvement->key[MouvementFactureView::KEY_ORIGIN];
             $ligne->origine_mouvements->add($document_origine)->add(null, $key_origine);
 
             $d = $ligne->details->add();
@@ -551,7 +549,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         if($this->exist('message_communication')){
             return $this->_get('message_communication');
         }
-        return self::MESSAGE_DEFAULT;
+        return "";
     }
 
     protected function doSave() {

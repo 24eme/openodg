@@ -320,9 +320,10 @@ class facturationActions extends sfActions
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
         $generation->arguments->add('date_facturation', $values['date_facturation']);
         $generation->arguments->add('date_mouvement', $values['date_mouvement']);
+        $generation->arguments->add('type_document', $values['type_document']);
         $generation->arguments->add('compte', $this->compte->_id);
         $generation->arguments->add('message_communication', $values['message_communication']);
-
+        $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
         $generation->save();
 
         return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));

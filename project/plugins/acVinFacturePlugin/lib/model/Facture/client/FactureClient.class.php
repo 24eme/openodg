@@ -13,7 +13,11 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
 
 
-    public static $origines = array(DRevClient::TYPE_MODEL => DRevClient::TYPE_MODEL,
+    const TYPE_DOCUMENT_TOUS = "TOUS";
+
+
+    public static $origines = array( self::TYPE_DOCUMENT_TOUS => self::TYPE_DOCUMENT_TOUS,
+                                     DRevClient::TYPE_MODEL => DRevClient::TYPE_MODEL,
                                     'DR' => 'DR',
                                     'Degustation' => 'Degustation',
                                     'ChgtDenom' => 'ChgtDenom'
@@ -53,7 +57,7 @@ class FactureClient extends acCouchdbClient {
         return $this->startkey('FACTURE-'.$idClient.'-'.$date.'00')->endkey('FACTURE-'.$idClient.'-'.$date.'99')->execute($hydrate);
     }
 
-    public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null) {
+    public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null, $region = null) {
         $mouvements = $template->getMouvementsFactures($compte->identifiant);
 
         $mouvements = $this->aggregateMouvementsFactures($mouvements);
@@ -63,7 +67,7 @@ class FactureClient extends acCouchdbClient {
             return false;
         }
 
-        return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
+        return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template, $region);
     }
 
     public function getMouvementsFacturesByDocs($compteIdentifiant, $docs, $regenerate = false) {
@@ -152,7 +156,7 @@ class FactureClient extends acCouchdbClient {
         return array_values($mouvementsAggreges);
     }
 
-    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
+    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null, $region = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
         // Attention le compte utilisé pour OpenOdg est celui de la société
@@ -160,7 +164,7 @@ class FactureClient extends acCouchdbClient {
           $compte = $compte->getSociete()->getMasterCompte();
         }
         $facture->constructIds($compte);
-        $facture->storeEmetteur();
+        $facture->storeEmetteur($region);
         $facture->storeDeclarant($compte);
         $facture->storeLignesByMouvements($mouvements, $template);
         $facture->updateTotaux();
@@ -185,14 +189,17 @@ class FactureClient extends acCouchdbClient {
     }
 
     /** facturation par mvts **/
-    public function createDocFromView($mouvements, $societe, $date_facturation = null, $message_communication = null) {
+    public function createDocFromView($mouvements, $societe, $date_facturation = null, $message_communication = null, $region = null) {
+        if(!$region){
+            return null;
+        }
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
 
         $compte = $societe->getMasterCompte();
 
         $facture->constructIds($compte);
-        $facture->storeEmetteur();
+        $facture->storeEmetteur($region);
         $facture->storeDeclarant($compte);
 
         foreach ($mouvements as $identifiant => $mvt) {
@@ -297,7 +304,7 @@ class FactureClient extends acCouchdbClient {
           $date_mouvement = Date::getIsoDateFromFrenchDate($parameters['date_mouvement']);
           foreach ($mouvementsBySoc as $identifiant => $mouvements) {
               foreach ($mouvements as $key => $mouvement) {
-                      $farDateMvt = $this->getGreatestDate($mouvement->key[MouvementFactureView::KEY_DATE]);
+                      $farDateMvt = $this->getGreatestDate(preg_replace("/([0-9]{4}-[0-9]{2}-[0-9]{2})(.+)/","$1",$mouvement->key[MouvementFactureView::KEY_DATE]));
                       if(Date::sup($farDateMvt,$date_mouvement)) {
   		                    unset($mouvements[$key]);
                           $mouvementsBySoc[$identifiant] = $mouvements;
@@ -309,8 +316,8 @@ class FactureClient extends acCouchdbClient {
                           $mouvementsBySoc[$identifiant] = $mouvements;
                           continue;
                       }
-//TODO : ajouter l'origine mvt dans vue
-                      if(isset($parameters['type_document']) && $parameters['type_document'] != $mouvement->key[MouvementFactureView::KEYS_ORIGIN]) {
+
+                      if(isset($parameters['type_document']) && $parameters['type_document'] != "TOUS" && $parameters['type_document'] != $mouvement->key[MouvementFactureView::KEY_TYPE]) {
                         unset($mouvements[$key]);
                         $mouvementsBySoc[$identifiant] = $mouvements;
                         continue;
@@ -329,15 +336,15 @@ class FactureClient extends acCouchdbClient {
           $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
       }
 
-      //$generation->date_emission = date('Y-m-d-H:i');
       $generation->documents = array();
       $generation->somme = 0;
+      $region = ($generation->arguments->exist('region'))? $generation->arguments->region : null;
       $cpt = 0;
 
       foreach ($generationFactures as $societeID => $mouvementsSoc) {
           $societe = SocieteClient::getInstance()->find($societeID);
 
-          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation,$message_communication);
+          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation,$message_communication,$region);
           $f->save();
           $generation->somme += $f->total_ttc;
           $generation->add('documents')->add($cpt, $f->_id);

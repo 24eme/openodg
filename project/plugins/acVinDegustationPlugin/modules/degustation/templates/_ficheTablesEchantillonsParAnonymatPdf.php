@@ -16,67 +16,70 @@
 
 
 </style>
-    <div>
+
       <table style="line-height:15px;">
           <tr>
             <td style="width:33%;">
-              <p>Code Commission: <?= $degustation->_id ?></p>
+              Code Commission: <?= $degustation->_id ?><br/>
             </td>
             <td style="width:60%;">
-              <p>Responsable : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
+              Responsable : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<br/>
             </td>
-            <td style="width:2%">
-            </td>
-          </tr>
-
-          <tr>
-            <td style="width:33%;">
-              <p>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></p>
-            </td>
-            <td style="width:33%;">
-              <p>Heure : <?php echo $date->format("H:i"); ?></p>
-            </td>
-            <td style="width:33%">
-              <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
+            <td style="width:2%"><br/>
             </td>
           </tr>
 
           <tr>
             <td style="width:33%;">
-              <p>Campagne: <?php echo $degustation->campagne; ?></p>
+              Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?><br/>
+            </td>
+            <td style="width:33%;">
+              Heure : <?php echo $date->format("H:i"); ?><br/>
             </td>
             <td style="width:33%">
+              Lieu : <?php echo $degustation->getLieuNom(); ?><br/>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="width:33%;">
+              Campagne: <?php echo $degustation->campagne; ?><br/>
+            </td>
+            <td style="width:33%"><br/>
+            </td>
+          </tr>
+          <tr>
+            <td style="width:33%;">
+               Nombre total de lots : <?php echo count($degustation->getLots()) ;?><br/>
+            </td>
+            <td style="width:33%"><br/>
             </td>
           </tr>
       </table>
-    </div>
 
-    <p>Nombre total de lots : <?php echo (string)(count($lots, COUNT_RECURSIVE) - count($lots)) ;?></p>
-
-    <?php $class = 'odd'; $i = 1; $first = true; $table_header = true; foreach ($lots as $table => $lots_table): ?>
+    <?php $class = 'odd'; $i = 3; $first = true; $table_header = true; foreach ($lots as $table => $lots_table): ?>
         <?php $class = ($class === "even") ? 'odd' : 'even'; ?>
         <?php foreach ($lots_table as $lot): ?>
-          <?php if (($first === true && $i % 12 === 0) || $i % 16 === 0): ?>
+          <?php if ($i % 16 === 0): ?>
             <?php $table_header = true; $first = false; $i = 0; ?>
              </table>
               <br pagebreak="true" />
-              <p>Suite des lots<p/>
-              <br/>
+              Suite des lots<br/><br/>
           <?php endif; ?>
 
           <?php if ($table_header): $table_header = false; ?>
-            <table border="0.5px" class="table"style="text-align: center;">
+            <table border="1" cellspacing="0" class="table"style="text-align: center;">
               <tr style="line-height:20px;">
-                <th rowspan="2" class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>N° Anonymat</strong></th>
-                 <th rowspan="2" class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Table</strong></th>
-                 <th rowspan="2" class="topempty bg-white" style="width:20%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
-                 <th class="bg-white" colspan="6"style="width:60%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(Trié par table et n° anonymat)</small></th>
+                 <th rowspan="2" class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong>N° Anonymat</strong></th>
+                 <th rowspan="2" class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong>Table</strong></th>
+                 <th rowspan="2" class="bg-white" style="width:24%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
+                 <th colspan="6" class="bg-white" style="width:56%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(Trié par table et n° anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Lot ODG</small></strong></th>
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Dos</small></strong></th>
-                <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
-                <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>Vol (hl)</small></strong></th>
+                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
+                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>
                 <th class="bg-white" style="width:30%;"><?php echo tdStart() ?><strong><small>Produit millesime cépage</small></strong></th>
               </tr>
           <?php endif; ?>
@@ -88,7 +91,7 @@
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
-            <td style="text-align: right;"><small><?php echo number_format($lot->volume, 2) ?></small></td>
+            <td style="text-align: right;"><small><?php echo number_format($lot->volume, 2) ?>&nbsp;hl &nbsp;</small></td>
             <td><small><?php echo showOnlyProduit($lot) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>
           </tr>
           <?php $i++; endforeach; ?>
