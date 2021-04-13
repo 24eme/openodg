@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 27;
+$nb_test = 29;
 $has_lot = false;
 if ($application == 'loire' || $application == 'igp13') {
     $has_lot = true;
@@ -72,8 +72,9 @@ $produit2->superficie_revendique = 150;
 
 if ($has_lot) {
     $lot = $drev->addLot();
-    $lot->millesime = $campagne;
+    $lot->millesime = null;
     $lot->numero_logement_operateur = "1";
+    $lot->specificite = Lot::SPECIFICITE_PRIMEUR;
     $lot->volume = 30.4;
     $lot->destination_type = null;
     $lot->destination_date = $campagne.'-11-15';
@@ -87,6 +88,11 @@ $drev->save();
 $t->comment("Validation des Drev");
 $date_validation_1 = $campagne."-10-30";
 $date_validation_odg_1 = $campagne."-11-05";
+
+$t->comment("Point de vigilance DRev");
+$validation = new DRevValidation($drev);
+$vigilance = $validation->getVigilances();
+$t->is(count($vigilance), 2, "Il ya deux points de vigilance dont un dû au millésime absent.");
 
 $drev->validate($date_validation_1);
 $drev->save();
@@ -133,9 +139,10 @@ $lot = null;
 if ($has_lot) {
     $lot = $drev_modificative->addLot();
 
-    $lot->millesime = $campagne;
+    $lot->millesime = null;
     $lot->numero_logement_operateur = "14";
     $lot->volume = 3.5;
+    $lot->specificite = Lot::SPECIFICITE_PRIMEUR;
     $lot->destination_type = null;
     $lot->destination_date = ($campagne+1).'-06-15';
     $lot->produit_hash = $produit1->getConfig()->getHash();
@@ -143,6 +150,12 @@ if ($has_lot) {
     $lot->addCepage("Chenin", 30);
     $lot->addCepage("Sauvignon", 70);
 }
+
+$t->comment("Point de vigilance DRev modificatrice");
+$validation = new DRevValidation($drev_modificative);
+$vigilance = $validation->getVigilances();
+$t->is(count($vigilance), 3, "Il ya trois points de vigilance, un repris de la DRev et un autre dans la DRev modificatrice");
+
 $drev_modificative->validate($date_validation_2);
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {

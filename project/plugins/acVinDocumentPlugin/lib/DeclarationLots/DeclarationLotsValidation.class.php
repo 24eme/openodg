@@ -19,9 +19,6 @@ abstract class DeclarationLotsValidation extends DocumentValidation
         }
 
         foreach ($this->document->lots as $key => $lot) {
-            if($lot->hasBeenEdited()){
-              continue;
-            }
 
             if($lot->isEmpty()){
               continue;
