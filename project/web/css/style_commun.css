@@ -128,3 +128,16 @@
 .block_declaration .panel-body{ height: 175px; max-height: 175px }
 .block_declaration .explications{ height: 80px; max-height: 80px }
 .block_declaration .actions{ height: 75px; max-height: 75px }
+
+.lots-by-table {
+    padding-left: 0;
+}
+
+.lots-by-table li {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.lots-by-table li:not(:last-child)::after {
+    content: ", ";
+}
