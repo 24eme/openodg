@@ -21,6 +21,12 @@
     </h2>
 </div>
 
+<?php if ($drev->isValidee()): ?>
+<div class="well mb-5">
+    <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $drev->getEtablissementObject())); ?>
+</div>
+<?php endif ?>
+
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>

@@ -40,17 +40,20 @@
           <div class="col-xs-8">
             <strong class="lead"><?php echo $infosDegustation["nbTables"]; ?></strong> Tables prévues :</br>
             <?php if($infosDegustation["nbTables"]): ?>
+              <ul class="lots-by-table">
               <?php foreach ($degustation->getTablesWithFreeLots() as $numTable => $table): ?>
                 <?php if(DegustationClient::getNumeroTableStr($numTable) !== false): ?>
-                  <?php if($numTable !== 1):?>, <?php endif;?>
-                  <strong class="lead"><?php echo DegustationClient::getNumeroTableStr($numTable); ?></strong>
-                  <strong><?php echo count($table->lots); ?> lots</strong>
+                  <li>
+                    <strong class="lead"><?php echo DegustationClient::getNumeroTableStr($numTable); ?></strong>
+                    <strong><?php echo count($table->lots); ?> lots</strong>
+                  </li>
                 <?php endif; ?>
               <?php endforeach; ?>
-            </br>
+              </ul>
           <?php else: ?>
-            <strong>Aucune tables</strong></br>
+            <strong>Aucune tables</strong>
           <?php endif; ?>
+          </br>
           <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Aucun' ?></strong> <strong>Échantillon<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
         </div>
         <div class="col-xs-12 text-right">

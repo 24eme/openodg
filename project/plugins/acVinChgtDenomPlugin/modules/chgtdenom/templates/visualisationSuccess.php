@@ -16,6 +16,12 @@
         <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
 
+    <?php if ($chgtDenom->isValide()): ?>
+    <div class="well mb-5">
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $chgtDenom->getEtablissementObject())); ?>
+    </div>
+    <?php endif ?>
+
     <?php if($sf_user->isAdmin()): ?>
       <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom, 'form' => $form)); ?>
     <?php else:?>
