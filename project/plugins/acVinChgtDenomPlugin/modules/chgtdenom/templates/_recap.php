@@ -15,7 +15,7 @@
 </style>
 <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => true)); ?>
 
-<div class="col-sm-12 mb-5">
+<div class="col-sm-12 mb-4">
   <div class="text-center">
     <strong>Devient</strong><br />
     <span class="glyphicon glyphicon-chevron-down"></span>
