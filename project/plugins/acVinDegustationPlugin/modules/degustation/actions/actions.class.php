@@ -837,7 +837,7 @@ class degustationActions extends sfActions {
             throw new sfException('Discriminant vide');
         }
 
-        if (!UrlSecurity::verifyAuthKey($degustation_id, $discriminant, $authKey)) {
+        if (!UrlSecurity::verifyAuthKey($authKey, $degustation_id, $discriminant)) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
@@ -873,7 +873,7 @@ class degustationActions extends sfActions {
             throw new sfException('Parametre présence n\'est pas défini');
         }
 
-        if (!UrlSecurity::verifyAuthKey($this->id, $this->identifiant, $authKey)) {
+        if (!UrlSecurity::verifyAuthKey($authKey, $this->id, $this->identifiant)) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
