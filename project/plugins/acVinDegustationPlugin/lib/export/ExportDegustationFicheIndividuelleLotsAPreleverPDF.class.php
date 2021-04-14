@@ -26,7 +26,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
           if ($lot->isLeurre()){
               continue;
           }
-          $adresses[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant][$lot->unique_id] = $lot;
+          $adresses[$lot->declarant_identifiant][$lot->unique_id] = $lot;
       }
       ksort($adresses);
       foreach ($adresses as $adresseLogement => $lotsArchive) {
