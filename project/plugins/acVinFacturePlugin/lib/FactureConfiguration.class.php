@@ -83,6 +83,13 @@ class FactureConfiguration {
       return $this->configuration['numero_format'];
     }
 
+    public function getNumeroFormatDocuments(){
+      if(!isset($this->configuration['numero_format_documents']) || !$this->configuration['numero_format_documents']){
+        return "";
+      }
+      return $this->configuration['numero_format_documents'];
+    }
+
     public function getModaliteDePaiement()
     {
         return ($this->configuration['modalite_paiement']) ?: '';

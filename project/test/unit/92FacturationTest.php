@@ -34,6 +34,13 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
 foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
     FactureClient::getInstance()->delete($f);
 }
+
+//Suppression des generation précédentes
+foreach(GenerationClient::getInstance()->findHistory() as $k => $g) {
+    $generation = GenerationClient::getInstance()->find($g->id);
+    $generation->delete(false);
+}
+
 //Suppression des dégustation précédentes
 foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
@@ -72,29 +79,9 @@ for ($i=0; $i < 5 ; $i++) {
     }
 }
 
-/*
-$csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane_facturation.csv');
-
-$csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
-file_put_contents($csvTmpFile, str_replace(
-                               array("%cvi%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%","%code_inao_3%", "%libelle_produit_3%","%code_inao_4%", "%libelle_produit_4%","%code_inao_5%", "%libelle_produit_5%"),
-                               array($viti->cvi, $produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet(),$produit3->getCodeDouane(), $produit3->getLibelleComplet(),$produit4->getCodeDouane(), $produit4->getLibelleComplet(),$produit5->getCodeDouane(), $produit5->getLibelleComplet()), $csvContentTemplate));
-$t->comment("utilise le fichier test/data/dr_douane_facturation.csv");
-*/
 $campagne = (date('Y')-1)."";
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
-/*
-$t->comment("Récupération des données à partir de la DR");
-
-$dr = DRClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
-$dr->setDateDepot("$campagne-12-15");
-$dr->save();
-$dr->storeFichier($csvTmpFile);
-
-$dr->save();
-*/
 
 $t->ok(!count($drev->mouvements),"La Drev n'a pas encore de mouvements facturables");
 
@@ -135,19 +122,34 @@ $templateFacture = TemplateFactureClient::getInstance()->findByCampagne($drev->c
 $t->ok($templateFacture->_id,"Le template de facture est : $templateFacture->_id");
 
 
-$form = new FacturationDeclarantForm(array(), array('modeles' => $templatesFactures,'uniqueTemplateFactureName' => $templateFacture));
+$form = new FactureGenerationForm();
 $defaults = $form->getDefaults();
 
 $valuesRev['date_facturation'] = "01/01/".($drev->getCampagne()+1);
+$valuesRev['date_mouvement'] = "01/01/".($drev->getCampagne()+1);
+$valuesRev['type_document'] = DRevClient::TYPE_MODEL;
 $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
 
+$gForm = $form->save();
+$gForm->arguments->add('modele', $templateFacture->_id);
+$gForm->arguments->add('region', strtoupper($application));
+$gForm->save();
+
 $socCompte = $viti->getMasterCompte();
 
-$generation = FactureClient::getInstance()->createFactureByTemplateWithGeneration($templateFacture, $socCompte->_id, $valuesRev['date_facturation'], null, $templateFacture->arguments->toArray(true, false));
-$g = $generation->save();
+$t->ok($gForm, "Une génération de facture a bien été créée");
 
-$t->ok($g, "Une génération de facture a bien été créée");
+$generationsids = GenerationClient::getInstance()->getGenerationIdEnAttente();
+
+$t->is(count($generationsids),1, "Il y a une génération de facture en attente");
+
+foreach ($generationsids as $gid) {
+    $generation = GenerationClient::getInstance()->find($gid);
+    $g = GenerationClient::getInstance()->getGenerator($generation,null,null);
+    $g->generate();
+}
+
 
 $facturesSoc = FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant);
 $t->is(count($facturesSoc), 1, "Une facture a été générée");
@@ -157,6 +159,8 @@ foreach ($facturesSoc as $f) {
 }
 
 $t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
+
+$t->is($facture->numero_facture,"20_DRev_00001", "Le numero de campagne attendu est bien $facture->numero_facture ");
 
 
 // Affichage Cotisations

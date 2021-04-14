@@ -47,27 +47,17 @@ class FactureClient extends acCouchdbClient {
       return $id;
     }
 
-    public function getNextNoFactureCampagneFormatted($idClient, $campagne, $format){
+    public function getNextNoFactureCampagneFormatted($idClient, $campagne, $format, $document_origine = null){
         $annee = DateTime::createFromFormat("Y",$campagne)->format("y");
         $archiveNumero = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne("Facture", $campagne);
+        if($document_origine){
+            return sprintf($format, $annee, $document_origine, intval($archiveNumero) + 1);
+        }
         return sprintf($format, $annee, intval($archiveNumero) + 1);
     }
 
     public function getAtDate($idClient,$date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         return $this->startkey('FACTURE-'.$idClient.'-'.$date.'00')->endkey('FACTURE-'.$idClient.'-'.$date.'99')->execute($hydrate);
-    }
-
-    public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null, $region = null) {
-        $mouvements = $template->getMouvementsFactures($compte->identifiant);
-
-        $mouvements = $this->aggregateMouvementsFactures($mouvements);
-
-        if(!count($mouvements)) {
-
-            return false;
-        }
-
-        return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template, $region);
     }
 
     public function getMouvementsFacturesByDocs($compteIdentifiant, $docs, $regenerate = false) {
@@ -189,7 +179,7 @@ class FactureClient extends acCouchdbClient {
     }
 
     /** facturation par mvts **/
-    public function createDocFromView($mouvements, $societe, $date_facturation = null, $message_communication = null, $region = null) {
+    public function createDocFromView($mouvements, $societe, $date_facturation = null, $message_communication = null, $region = null, $template = null, $type_document = null) {
         if(!$region){
             return null;
         }
@@ -198,9 +188,10 @@ class FactureClient extends acCouchdbClient {
 
         $compte = $societe->getMasterCompte();
 
-        $facture->constructIds($compte);
+        $facture->constructIds($compte, $type_document);
         $facture->storeEmetteur($region);
         $facture->storeDeclarant($compte);
+        $facture->storeTemplates($template);
 
         foreach ($mouvements as $identifiant => $mvt) {
             $facture->storeLignesByMouvementsView($mvt);
@@ -339,12 +330,24 @@ class FactureClient extends acCouchdbClient {
       $generation->documents = array();
       $generation->somme = 0;
       $region = ($generation->arguments->exist('region'))? $generation->arguments->region : null;
+      $modele = ($generation->arguments->exist('modele'))? $generation->arguments->modele : null;
+      $type_document = ($generation->arguments->exist('type_document'))? $generation->arguments->type_document : null;
+
+      if(!$modele){
+          throw new sfException("La génération ne possède pas de modèle de facture");
+      }
+
+      $template = TemplateFactureClient::getInstance()->find($modele);
+      if(!$template){
+          throw new sfException(sprintf("Le template %s n'existe pas dans la base ", $modele));
+      }
+
       $cpt = 0;
 
       foreach ($generationFactures as $societeID => $mouvementsSoc) {
           $societe = SocieteClient::getInstance()->find($societeID);
 
-          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation,$message_communication,$region);
+          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template, $type_document);
           $f->save();
           $generation->somme += $f->total_ttc;
           $generation->add('documents')->add($cpt, $f->_id);
@@ -399,36 +402,6 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
-    public function createFactureByTemplateWithGeneration($template, $compte_or_id, $date_facturation = null) {
-
-        $generation = new Generation();
-        $generation->date_emission = date('Y-m-d-H:i');
-        $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
-        $generation->documents = array();
-        $generation->somme = 0;
-        $cpt = 0;
-
-        $compte = $compte_or_id;
-
-        if(is_string($compte)) {
-            $compte = CompteClient::getInstance()->find($compte_or_id);
-        }
-        $f = $this->createFactureByTemplate($template, $compte, $date_facturation);
-
-        if(!$f) {
-
-            return false;
-        }
-
-        $f->save();
-
-        $generation->somme += $f->total_ttc;
-        $generation->add('documents')->add($cpt, $f->_id);
-        $generation->libelle = $compte->nom_a_afficher;
-        $cpt++;
-
-        return $generation;
-    }
 
     public function getProduitsFromTypeLignes($lignes) {
         $produits = array();

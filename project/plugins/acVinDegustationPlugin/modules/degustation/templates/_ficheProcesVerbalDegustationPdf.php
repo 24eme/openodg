@@ -58,11 +58,7 @@ th {
             <td ><small><?php echo $nbTables; ?></small></td>
           </tr>
           <tr style="width:12%">
-            <th><small>Nombre de Jurés</small></th>
-            <td style=""><small><?php echo $nbDegustateurs; ?></small></td>
-          </tr>
-          <tr style="width:12%">
-            <th><small>Nombre de jurés présents</small></th>
+            <th><small>Nombre de jurés</small></th>
             <td style=""><small><?php echo $nbDegustateursPresents; ?></small></td>
           </tr>
         </table>

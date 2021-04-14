@@ -102,15 +102,6 @@ facturation_declarant:
   requirements:
     sf_method: [get, post]
 
-facturation_declarant_view:
-  url: /facturation/declarant-view/:id
-  param: { module: facturation, action: declarantView }
-  class: FacturationDeclarantRoute
-  options:
-    model:    Compte
-    type:     object
-  requirements:
-    sf_method: [get, post]
 
 facturation_tempalte:
   url: /facturation/template/:id

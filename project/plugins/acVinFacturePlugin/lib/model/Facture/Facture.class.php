@@ -66,12 +66,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-    public function constructIds($doc) {
+    public function constructIds($doc, $type_document = null) {
         if (!$doc)
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
         $this->identifiant = $doc->identifiant;
-        if($format = FactureConfiguration::getInstance()->getNumeroFormat()){
+        if($format = FactureConfiguration::getInstance()->getNumeroFormatDocuments()){
+          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format, $type_document);
+
+        }elseif($format = FactureConfiguration::getInstance()->getNumeroFormat()){
+
           $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
         }else{
           $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, date('Ymd'));
