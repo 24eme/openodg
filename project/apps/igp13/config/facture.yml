@@ -7,7 +7,6 @@ all:
       all_etablissements: false
       export_sage_width_txt: true
       all_etablissements: true
-      numero_campagne: true
       modalite_paiement: "Modalités de paiements : \\ par chèque ou virement à réception de facture"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true

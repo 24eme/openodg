@@ -6,6 +6,8 @@ $telephone = $infos[$app]['telephone'];
 $email = $infos[$app]['email'];
 ?>
 <?php echo $signature; ?>
+
 --
 mailto:<?php echo $email ;?>
+
 <?php echo $telephone; ?>
