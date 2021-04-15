@@ -32,7 +32,7 @@ class GenerationFactureMail extends GenerationAbstract {
         $app = strtoupper(sfConfig::get('sf_app'));
         $signature = $infos[$app]['service_facturation'];
 
-        return "Facture n° $numero - ".$signature;
+        return "Facture n°$numero - ".$signature;
     }
 
     public static function getActionLibelle() {
@@ -41,8 +41,6 @@ class GenerationFactureMail extends GenerationAbstract {
     }
 
     public static function getActionDescription() {
-
-
 
         return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".self::getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
     }

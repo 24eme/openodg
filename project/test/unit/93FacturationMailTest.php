@@ -101,6 +101,8 @@ $mail = $mailGenerator->generateMailForADocumentId($facture->_id);
 $t->ok(get_class($mail), "Génération du mail d'une facture");
 $t->ok(strpos($mail, "https"), "Le mail contient une url");
 $t->ok(!strpos($mail, "symfony"), "L'url n'a pas symfony");
+$t->like($mail->getSubject(), "/^Facture n°".$facture->getNumeroOdg()." - /", "Sujet du mail");
+
 $mailGenerator->generate();
 
 $t->is($generationMail->statut, GenerationClient::GENERATION_STATUT_GENERE, "Statut généré");
