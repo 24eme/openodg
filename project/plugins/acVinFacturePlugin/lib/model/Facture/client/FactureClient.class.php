@@ -47,6 +47,7 @@ class FactureClient extends acCouchdbClient {
       return $id;
     }
 
+    // Fonction obsolète mais encore utilisée pour Nantes
     public function getNextNoFactureCampagneFormatted($idClient, $campagne, $format, $document_origine = null){
         $annee = DateTime::createFromFormat("Y",$campagne)->format("y");
         $archiveNumero = ArchivageAllView::getInstance()->getLastNumeroArchiveByTypeAndCampagne("Facture", $campagne);
