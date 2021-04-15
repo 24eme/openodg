@@ -13,21 +13,38 @@ class GenerationFactureMail extends GenerationAbstract {
         $message = Swift_Message::newInstance()
          ->setFrom(sfConfig::get('app_mail_from_email'))
          ->setTo($facture->getSociete()->getEmailCompta())
-         ->setSubject("Facture n°".$facture->getNumeroOdg()." - BIVC")
-         ->setBody("Bonjour,
-
-Une nouvelle facture du BIVC est disponible, vous pouvez la télécharger directement en cliquant sur le lien : <".ProjectConfiguration::getAppRouting()->generate('facturation_pdf_auth', array('id' => $facture->_id, 'auth' => FactureClient::generateAuthKey($id)), true).">
-
-Bien cordialement,
-
-Le BIVC");
+         ->setSubject(self::getSujet($facture->getNumeroOdg()))
+         ->setBody($this->getPartial("facturation/email", array('facture' => $facture)));
 
         return $message;
+    }
+
+    public static function getPartial($templateName, $vars = null) {
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+
+        $vars = null !== $vars ? $vars : array();
+
+        return get_partial($templateName, $vars);
+    }
+
+    public static function getSujet($numero) {
+        $infos = sfConfig::get('app_facture_emetteur');
+        $app = strtoupper(sfConfig::get('sf_app'));
+        $signature = $infos[$app]['service_facturation'];
+
+        return "Facture n° $numero - ".$signature;
     }
 
     public static function getActionLibelle() {
 
         return "Envoyer les factures par mail";
+    }
+
+    public static function getActionDescription() {
+
+
+
+        return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".self::getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
     }
 
     public function getMailer() {
