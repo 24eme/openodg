@@ -160,7 +160,10 @@ foreach ($facturesSoc as $f) {
 
 $t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
 
-$t->is($facture->numero_facture,"20_DRev_00001", "Le numero de campagne attendu est bien $facture->numero_facture ");
+$t->is($facture->_id, "FACTURE-".$socVitiCompte->identifiant."-".date("Ymd")."01", "ID de la facture");
+$t->is($facture->numero_facture,date("Ymd")."01", "Numero de la facture");
+$t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
+$t->is($facture->getNumeroOdg(),substr($facture->campagne, 2, 2)."00001", "Numéro odg de la facture");
 
 
 // Affichage Cotisations

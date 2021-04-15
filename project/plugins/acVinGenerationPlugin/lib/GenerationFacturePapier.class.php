@@ -26,6 +26,11 @@ class GenerationFacturePapier extends GenerationPDF
         return "Générer le PDF des factures non téléchargées";
     }
 
+    public static function getActionDescription() {
+
+        return null;
+    }
+
     public function generatePDFForADocumentID($docid)
     {
         $facture = FactureClient::getInstance()->find($docid);

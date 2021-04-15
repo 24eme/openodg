@@ -361,6 +361,28 @@ class facturationActions extends sfActions
         $this->redirect('facture_societe', $this->societe);
     }
 
+    public function executeSousGenerationFacture(sfWebRequest $request)
+    {
+        $generationMaitre = $request->getParameter('generation');
+        $type = $request->getParameter('type');
+
+        $generationMaitre = GenerationClient::getInstance()->find($generationMaitre);
+
+        if (! $generationMaitre) {
+            $this->redirect404();
+        }
+
+        $generation = $generationMaitre->getOrCreateSubGeneration($type);
+
+        $generationMaitre->save();
+        $generation->save();
+
+        return $this->redirect('generation_view', [
+          'type_document' => $generationMaitre->type_document,
+          'date_emission' => $generationMaitre->date_emission.'-'.$generation->type_document
+        ]);
+    }
+
     public function executeTemplate(sfWebRequest $request) {
         $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
     }
