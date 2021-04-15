@@ -14,7 +14,13 @@ class ExportDeclarationLotsPDF extends ExportPDF {
         $app = strtoupper(sfConfig::get('sf_app'));
         $courrierInfos = sfConfig::get('app_facture_emetteur');
         $this->courrierInfos = $courrierInfos[$app];
-        $this->courrierInfos['signature'] = sfConfig::get('sf_web_dir').'/images/signatures/signature_'.$app.'.jpg';
+
+        if (file_exists(sfConfig::get('sf_web_dir').'/images/signatures/signature_'.$app.'.jpg')) {
+            $this->courrierInfos['signature'] = sfConfig::get('sf_web_dir').'/images/signatures/signature_'.$app.'.jpg';
+        } else {
+            $this->courrierInfos['signature'] = sfConfig::get('sf_web_dir').'/images/px.gif';
+        }
+
         parent::__construct($type, $use_cache, $file_dir, $filename);
         if($this->printable_document->getPdf()){
           $this->printable_document->getPdf()->setPrintHeader(true);
