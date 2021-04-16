@@ -288,6 +288,16 @@ $degustation2->save();
 
 $t->is(count($degustation2->getMouvementsFactures()), 1, "Degustation 2 : on a bien le mouvement de facture de la redegustation");
 
+$mouvement = null;
+foreach ($degustation2->getMouvementsFactures() as $mvtsOp) {
+    foreach ($mvtsOp as $uniqkey => $mvt) {
+        $mouvement = $mvt;
+        break;
+    }
+    break;
+}
+
+$t->is($mvt->detail_identifiant,$lot2->numero_dossier, "Degustation 2 : Le mouvements de facture a bien le numéro de dossier du lot redégusté");
 
 
 $t->comment("Conformité du lot de la degustation 2 ");
