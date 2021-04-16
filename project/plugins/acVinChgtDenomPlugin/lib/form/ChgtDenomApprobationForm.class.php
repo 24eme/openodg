@@ -27,7 +27,5 @@ class ChgtDenomApprobationForm extends acCouchdbObjectForm
         $this->getObject()->validation_odg = null;
         $this->getObject()->generateMouvementsLots($prelevable);
         $this->getObject()->validation_odg = $validationOdg;
-        //TODO: réactiver generateMouvementsFactures
-        //$this->getObject()->generateMouvementsFactures();
     }
 }

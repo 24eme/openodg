@@ -119,7 +119,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('c');
         }
         $this->validation_odg = $date;
-        $this->generateMouvementsFactures();
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
     }
 
     public function getEtablissementObject() {

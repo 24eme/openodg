@@ -43,7 +43,8 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
     	           $this->generateDonnees();
     	    }
 
-            if(!count($this->mouvements)){
+            if(!$this->isFactures()){
+                $this->clearMouvementsFactures();
                 $this->generateMouvementsFactures();
             }
         }
