@@ -18,7 +18,7 @@
     <?php include_partial('infoLotOrigine', array('lot' => $lotOrigine, 'opacity' => true)); ?>
 <?php else : ?>
     <div class="well">
-        <i class="glyphicon glyphicon-warning-sign"></i> <strong>Lot d'origine non trouvé.</strong> Peut-être s'agit-il d'un négociant.
+        Déclare posséder un lot de <strong><?php echo $chgtDenom->getOrigineProduitLibelle() ?></strong> de <strong><?php echoFloat($chgtDenom->getOrigineVolume()) ?></strong> <span class="text-muted">hl</span>
     </div>
 <?php endif ?>
 

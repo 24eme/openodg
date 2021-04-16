@@ -56,7 +56,15 @@
     </tr>
     <?php else: ?>
         <tr>
-            <td colspan="5" style="text-align:center">Pas de lot d'origine</td>
+          <td></td>
+          <td></td>
+          <td>
+            <?php echo $chgtdenom->getOrigineProduitLibelle() ?>
+            <small><?php echo $chgtdenom->getOrigineMillesime() ?></small>
+            <small><?php echo $chgtdenom->getOrigineSpecificite() ?></small>
+          </td>
+          <td style="text-align:right;"><?php echo sprintf("%.2f", $chgtdenom->getOrigineVolume()); ?></td>
+          <td></td>
         </tr>
     <?php endif ?>
 </table>
