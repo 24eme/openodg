@@ -239,6 +239,36 @@ foreach ($generationsids as $gid) {
 $facturesSoc = FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant);
 $t->is(count($facturesSoc), 2, "La facture pour la modificatrice a bien été générée");
 
+$t->comment("Test d'avoir");
+$avoir = null;
+foreach ($facturesSoc as $f) {
+    $avoir = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($f);
+    break;
+}
+
+$t->ok($avoir, "Il y a maintenant 1 avoir");
+
+$t->comment("On annule la validation ODG de la Drev");
+
+$drev = DRevClient::getInstance()->find($drev->_id);
+$drev->validation_odg = null;
+$drev->save();
+
+$mouvementsFactures = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte->getSociete());
+foreach ($mouvementsFactures as $mvtFact) {
+    $t->isnt($mvtFact->id, $drev->_id, "Les mouvements facturables ne sont pas ceux de la DRev");
+}
+
+$t->comment("On revalide ODG la DRev");
+$drev = DRevClient::getInstance()->find($drev->_id);
+$drev->validateOdg();
+$drev->save();
+
+$mouvementsFactures = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte->getSociete());
+foreach ($mouvementsFactures as $mvtFact) {
+    $t->isnt($mvtFact->id, $drev->_id, "Les mouvements facturables ne sont toujours pas ceux de la DRev");
+}
+
 $t->comment("Ajout de paiements");
 $t->is(count($facture->paiements),0,"Le nombre de paiements de la facture est 0 ");
 $paiementForm = new FacturePaiementsMultipleForm($facture);

@@ -953,8 +953,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->validation_odg = $date;
 
-        $this->remove('mouvements');
-        $this->generateMouvementsFactures();
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
     }
 
     public function setStatutOdgByRegion($statut, $region = null) {
