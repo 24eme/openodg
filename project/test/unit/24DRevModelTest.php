@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(55);
+$t = new lime_test(56);
 
 $igp13 = ($application == 'igp13');
 
@@ -165,6 +165,12 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume 
 $t->ok($drev->numero_archive, "Le numéro d'archive a été défini");
 $t->is($drev->validation, $date , "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
+
+if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
+    $t->is($drev->addLot(), null, "L'ajout de lot ne fonctionne pas une fois la drev validée");
+} else {
+    $t->pass();
+}
 
 if(FactureConfiguration::getInstance()->isActive()) {
     $t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");

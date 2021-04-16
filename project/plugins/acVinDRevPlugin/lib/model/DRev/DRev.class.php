@@ -802,7 +802,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         if(!$exist && $produit->getConfig()->isRevendicationParLots()) {
             $lot = $this->addLot();
-            $lot->setProduitHash($produit->getConfig()->getHash());
+            if($lot) {
+                $lot->setProduitHash($produit->getConfig()->getHash());
+            }
         }
 
         return $this->get($produit->getHash());
@@ -839,6 +841,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function addLot() {
+        if($this->isValidee()) {
+            return null;
+        }
         $lot = $this->add('lots')->add();
         $lot->id_document = $this->_id;
         $lot->campagne = $this->getCampagne();
