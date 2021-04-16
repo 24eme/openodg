@@ -103,34 +103,43 @@ for ($i=0; $i < 5 ; $i++) {
 }
 
 $drev->save();
-
 $t->ok(!count($drev->mouvements),"La Drev n'a toujours pas de mouvements facturables, elle n'est pas validée ODG");
 
 $drev->validate();
+$drev->save();
 $drev->validateOdg();
 $drev->save();
 
 $t->ok(count($drev->mouvements),"La Drev a des mouvements facturables, elle est validée ODG");
 
+$mvtDrev = null;
+foreach ($drev->getMouvementsFactures() as $mvtsOp) {
+    foreach ($mvtsOp as $uniqkey => $mvt) {
+        $mvtDrev = $mvt;
+        break;
+    }
+    break;
+}
+
+$t->is($mvtDrev->detail_identifiant,$drev->lots[0]->numero_dossier, "Le mouvements de facture a bien le numéro de dossier du lot de DREV");
+
+$t->comment("Vérification du template de facturation");
 
 $templatesFactures = TemplateFactureClient::getInstance()->findAll();
 $t->ok(count($templatesFactures),"Il existe au moins un template de facture");
-
 $templateFacture = TemplateFactureClient::getInstance()->findByCampagne($drev->campagne);
-
-
 $t->ok($templateFacture->_id,"Le template de facture est : $templateFacture->_id");
+$t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
 
+$t->comment("Création de la facture par formulaire de génération");
 
 $form = new FactureGenerationForm();
 $defaults = $form->getDefaults();
-
 $valuesRev['date_facturation'] = "01/01/".($drev->getCampagne()+1);
 $valuesRev['date_mouvement'] = "01/01/".($drev->getCampagne()+1);
 $valuesRev['type_document'] = DRevClient::TYPE_MODEL;
 $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
-
 $gForm = $form->save();
 $gForm->arguments->add('modele', $templateFacture->_id);
 $gForm->arguments->add('region', strtoupper($application));
@@ -158,15 +167,19 @@ foreach ($facturesSoc as $f) {
   $facture = $f;
 }
 
-$t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
-
 $t->is($facture->_id, "FACTURE-".$socVitiCompte->identifiant."-".date("Ymd")."01", "ID de la facture");
 $t->is($facture->numero_facture,date("Ymd")."01", "Numero de la facture");
 $t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
 $t->is($facture->getNumeroOdg(),substr($facture->campagne, 2, 2)."00001", "Numéro odg de la facture");
 
-$t->is(count($facture->paiements),0,"Le nombre de paiements de la facture est 0 ");
+foreach ($facture->getLignes() as $key => $lignes) {
+    $t->is($lignes->numero_dossier, $drev->numero_archive, "La ligne de facture ".$key." a le bon numéro de dossier");
+}
 
+
+
+$t->comment("Ajout de paiements");
+$t->is(count($facture->paiements),0,"Le nombre de paiements de la facture est 0 ");
 $paiementForm = new FacturePaiementsMultipleForm($facture);
 $valuesPaiement = array('_revision' => $facture->_rev);
 $valuesPaiement['paiements'][0]['montant'] = 1;
@@ -288,16 +301,16 @@ $degustation2->save();
 
 $t->is(count($degustation2->getMouvementsFactures()), 1, "Degustation 2 : on a bien le mouvement de facture de la redegustation");
 
-$mouvement = null;
+$mvtRedegust = null;
 foreach ($degustation2->getMouvementsFactures() as $mvtsOp) {
     foreach ($mvtsOp as $uniqkey => $mvt) {
-        $mouvement = $mvt;
+        $mvtRedegust = $mvt;
         break;
     }
     break;
 }
 
-$t->is($mvt->detail_identifiant,$lot2->numero_dossier, "Degustation 2 : Le mouvements de facture a bien le numéro de dossier du lot redégusté");
+$t->is($mvtRedegust->detail_identifiant,$lot2->numero_dossier, "Degustation 2 : Le mouvements de facture a bien le numéro de dossier du lot redégusté");
 
 
 $t->comment("Conformité du lot de la degustation 2 ");
