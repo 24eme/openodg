@@ -239,8 +239,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return !$this->isDeclassement();
     }
 
-    public function isTotal() {
-      return ($this->changement_volume == $this->getLotOrigine()->volume);
+    public function isTotal()
+    {
+        if ($this->getLotOrigine() == null) {
+            return $this->changement_volume == $this->origine_volume;
+        }
+
+        return ($this->changement_volume == $this->getLotOrigine()->volume);
     }
 
     public function getPourcentagesCepages() {
