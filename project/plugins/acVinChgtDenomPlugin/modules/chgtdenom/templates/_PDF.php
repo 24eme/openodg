@@ -46,7 +46,7 @@
     <th style="width: 10%">Volume<br/>(hl)</th>
     <th style="width: 20%">Observation</th>
   </tr>
-    <?php $lotOrigine = $chgtdenom->getLotOrigine(); ?>
+    <?php if($lotOrigine = $chgtdenom->getLotOrigine()): ?>
     <tr>
       <td><?php echo $lotOrigine->numero_dossier ?> / <?php echo $lotOrigine->numero_archive ?></td>
       <td><?php echo $lotOrigine->numero_logement_operateur?></td>
@@ -54,6 +54,11 @@
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lotOrigine->volume); ?></td>
       <td><?php echo ($lotOrigine->observation) ?? '' ?></td>
     </tr>
+    <?php else: ?>
+        <tr>
+            <td colspan="5" style="text-align:center">Pas de lot d'origine</td>
+        </tr>
+    <?php endif ?>
 </table>
 
 <br/>
