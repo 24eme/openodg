@@ -801,17 +801,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         if(!$exist && $produit->getConfig()->isRevendicationParLots()) {
-            $oneLotExist = false;
-            foreach ($this->getLots() as $lot) {
-                if($lot->produit_hash && $hash == $lot->produit_hash){
-                    $oneLotExist = true;
-                    break;
-                }
-            }
-            if(!$oneLotExist){
-                $lot = $this->addLot();
-                $lot->setProduitHash($produit->getConfig()->getHash());
-            }
+            $lot = $this->addLot();
+            $lot->setProduitHash($produit->getConfig()->getHash());
         }
 
         return $this->get($produit->getHash());
