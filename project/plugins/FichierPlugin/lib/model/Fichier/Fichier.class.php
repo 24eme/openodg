@@ -70,7 +70,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     		$fileinfos = $this->_attachments->get($file)->toArray();
     		return $fileinfos['content_type'];
     	}
-    	return null;
+        throw new sfException('Pas de mime trouvé pour le fichier '.$file);
     }
 
     public function getFichiers()
