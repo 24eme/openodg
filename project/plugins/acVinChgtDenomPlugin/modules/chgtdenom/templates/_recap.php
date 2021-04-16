@@ -13,7 +13,14 @@
     border: 1px solid #e7e7e7;
   }
 </style>
-<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => true)); ?>
+
+<?php if ($lotOrigine = $chgtDenom->getLotOrigine()) : ?>
+    <?php include_partial('infoLotOrigine', array('lot' => $lotOrigine, 'opacity' => true)); ?>
+<?php else : ?>
+    <div class="well">
+        <i class="glyphicon glyphicon-warning-sign"></i> <strong>Lot d'origine non trouvé.</strong> Peut-être s'agit-il d'un négociant.
+    </div>
+<?php endif ?>
 
 <div class="col-sm-12 mb-4">
   <div class="text-center">
