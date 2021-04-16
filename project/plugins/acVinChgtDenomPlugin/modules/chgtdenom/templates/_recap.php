@@ -13,7 +13,14 @@
     border: 1px solid #e7e7e7;
   }
 </style>
-<?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => true)); ?>
+
+<?php if ($lotOrigine = $chgtDenom->getLotOrigine()) : ?>
+    <?php include_partial('infoLotOrigine', array('lot' => $lotOrigine, 'opacity' => true)); ?>
+<?php else : ?>
+    <div class="well">
+        Déclare posséder un lot de <strong><?php echo $chgtDenom->getOrigineProduitLibelle() ?></strong> de <strong><?php echoFloat($chgtDenom->getOrigineVolume()) ?></strong> <span class="text-muted">hl</span>
+    </div>
+<?php endif ?>
 
 <div class="col-sm-12 mb-4">
   <div class="text-center">
