@@ -17,7 +17,7 @@ class Cotisation
 		return $this->config;
 	}
 
-	protected function getConfigCollection() {
+	public function getConfigCollection() {
 
 		return $this->getConfig()->getParent()->getParent();
 	}
@@ -37,7 +37,7 @@ class Cotisation
 		return $this->getConfig()->tva;
 	}
 
-	protected function getConfigLibelle() {
+	public function getConfigLibelle() {
 
 		return $this->getConfig()->libelle;
 	}
