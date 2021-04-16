@@ -20,7 +20,7 @@
           "CEPAGE",
           "CHARDONNAY B",
           "CHASSELAS B",
-          "CHASSELAS RS",
+          "CHASSE3B583LAS RS",
           "CHENIN B",
           "COT N",
           "EGIODOLA N",
@@ -6732,7 +6732,7 @@
                                 "code": null,
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
-                                "code_douane": "3B009",
+                                "code_douane": "3B141",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6783,7 +6783,7 @@
                                 "code": null,
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
-                                "code_douane": "3S009",
+                                "code_douane": "3S141",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6834,7 +6834,7 @@
                                 "code": null,
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
-                                "code_douane": "3R009",
+                                "code_douane": "3R141",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6975,7 +6975,7 @@
                                 "code": null,
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
-                                "code_douane": "3B009",
+                                "code_douane": "3B182",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7026,7 +7026,7 @@
                                 "code": null,
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
-                                "code_douane": "3S009",
+                                "code_douane": "3S182",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7077,7 +7077,7 @@
                                 "code": null,
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
-                                "code_douane": "3R009",
+                                "code_douane": "3R182",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7218,7 +7218,7 @@
                                 "code": null,
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
-                                "code_douane": "3B009",
+                                "code_douane": "3B582",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7269,7 +7269,7 @@
                                 "code": null,
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
-                                "code_douane": "3S009",
+                                "code_douane": "3S582",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7328,7 +7328,7 @@
                                 "code": null,
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
-                                "code_douane": "3R009",
+                                "code_douane": "3R582",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7469,7 +7469,7 @@
                                 "code": null,
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
-                                "code_douane": "3B009",
+                                "code_douane": "3B583",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7520,7 +7520,7 @@
                                 "code": null,
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
-                                "code_douane": "3S009",
+                                "code_douane": "3S583",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7571,7 +7571,7 @@
                                 "code": null,
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
-                                "code_douane": "3R009",
+                                "code_douane": "3R583",
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
