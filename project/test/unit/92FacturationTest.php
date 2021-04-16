@@ -176,7 +176,68 @@ foreach ($facture->getLignes() as $key => $lignes) {
     $t->is($lignes->numero_dossier, $drev->numero_archive, "La ligne de facture ".$key." a le bon numéro de dossier");
 }
 
+$t->comment("Modificatrice DREV, on ajoute un lot volume 100 et on supprime le dernier lot");
 
+$drevM01 = $drev->generateModificative();
+$drevM01->save();
+$lotToRemove = null;
+$volumeFacturable = 0;
+foreach ($drevM01->lots as $num => $lot) {
+    $lotToRemove = $num;
+    $volumeFacturable = $lot->volume * -1;
+}
+$volumeFacturable += 100;
+
+$drevM01->lots->remove($num);
+$drevM01Lot = $drevM01->addLot();
+$drevM01Lot->numero_logement_operateur = 'CUVE M01';
+$drevM01Lot->produit_hash = $produit_hash_d13;
+$drevM01Lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
+$drevM01Lot->volume = 100;
+
+$drevM01->validate();
+$drevM01->save();
+
+$drevM01->validateOdg();
+$drevM01->save();
+
+$t->ok(count($drevM01->mouvements),"La Drev Modificatrice a des mouvements facturables");
+
+$mvtDrevM01 = null;
+foreach ($drevM01->getMouvementsFactures() as $mvtsOp) {
+    foreach ($mvtsOp as $uniqkey => $mvt) {
+        $mvtDrevM01 = $mvt;
+        break;
+    }
+    break;
+}
+
+$t->is($volumeFacturable, $mvtDrevM01->quantite, "Le volume facturable M01 est bien le simple ajout de lot +100 et le retrait du lot de -5 = +95");
+$t->is($mvtDrevM01->detail_identifiant, $drevM01->numero_archive, "Le numéro de dossier du mouvement est celui de la Modificatrice");
+$t->isnt($mvtDrevM01->detail_identifiant, $drev->numero_archive, "Le numéro de dossier du mouvement n'est pas le même que celui de la DRev de base");
+
+$form = new FactureGenerationForm();
+$defaults = $form->getDefaults();
+$valuesRev['date_facturation'] = "01/01/".($drev->getCampagne()+1);
+$valuesRev['date_mouvement'] = "01/01/".($drev->getCampagne()+1);
+$valuesRev['type_document'] = DRevClient::TYPE_MODEL;
+$form->bind($valuesRev);
+$gForm = $form->save();
+$gForm->arguments->add('modele', $templateFacture->_id);
+$gForm->arguments->add('region', strtoupper($application));
+$gForm->save();
+
+$generationsids = GenerationClient::getInstance()->getGenerationIdEnAttente();
+
+foreach ($generationsids as $gid) {
+    $generation = GenerationClient::getInstance()->find($gid);
+    $g = GenerationClient::getInstance()->getGenerator($generation,null,null);
+    $g->generate();
+}
+
+
+$facturesSoc = FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant);
+$t->is(count($facturesSoc), 2, "La facture pour la modificatrice a bien été générée");
 
 $t->comment("Ajout de paiements");
 $t->is(count($facture->paiements),0,"Le nombre de paiements de la facture est 0 ");
