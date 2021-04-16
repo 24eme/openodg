@@ -430,3 +430,14 @@ $chgtDenom->validateOdg();
 $chgtDenom->save();
 
 $t->ok(count($chgtDenom->getMouvementsFactures())," Changement Deno : on a un mouvement de facture car on est valideOdg et MED");
+
+$mvtChgtDenom = null;
+foreach ($chgtDenom->getMouvementsFactures() as $mvtsOp) {
+    foreach ($mvtsOp as $uniqkey => $mvt) {
+        $mvtChgtDenom = $mvt;
+        break;
+    }
+    break;
+}
+
+$t->is($mvtChgtDenom->detail_identifiant, $lot->numero_dossier."b" ,"Changement Deno :le mouvement de facture du changement a le numéro de dossier correspondant à celui du chgtDenom");
