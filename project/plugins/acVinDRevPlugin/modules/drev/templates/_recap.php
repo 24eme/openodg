@@ -101,7 +101,7 @@
 
                           <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
                         <?php elseif (isset($lotsHorsDR[$couleur])): ?>
-                          <?php echoFloat($lotsHorsDR[$couleur]->volume); ?><small class="text-muted">&nbsp;hl</small>
+                            <?php echoFloat($lotsHorsDR[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
                         <?php endif; ?>
 
 
