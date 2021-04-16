@@ -1344,7 +1344,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvement->createFromCotisationAndDoc($cotisation, $this);
             $mouvement->date = $this->getDateFormat();
             $mouvement->date_version = $this->getDateFormat();
-            $mouvement->detail_identifiant = $lot->unique_id;
+            $mouvement->detail_identifiant = $lot->numero_dossier;
             $mouvement->facture = intval($mouvement->date_version < "2021-04-01");
 
             return $mouvement;
@@ -1368,11 +1368,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-                if(isset($mouvements[$lot->declarant_identifiant]) && isset($mouvements[$lot->declarant_identifiant][$keyCumul])){
-                    $mouvements[$lot->declarant_identifiant][$keyCumul]->quantite++;
-                    continue;
-                }
-                $mouvements[$lot->declarant_identifiant][$keyCumul] = $this->creationMouvementFactureFromLot($cotisation,$lot);
+                $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
+                $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
             }
 
             return $mouvements;

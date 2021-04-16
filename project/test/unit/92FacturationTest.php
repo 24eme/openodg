@@ -160,8 +160,23 @@ foreach ($facturesSoc as $f) {
 
 $t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
 
-$t->is($facture->numero_facture,"20_DRev_00001", "Le numero de campagne attendu est bien $facture->numero_facture ");
+$t->is($facture->_id, "FACTURE-".$socVitiCompte->identifiant."-".date("Ymd")."01", "ID de la facture");
+$t->is($facture->numero_facture,date("Ymd")."01", "Numero de la facture");
+$t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
+$t->is($facture->getNumeroOdg(),substr($facture->campagne, 2, 2)."00001", "Numéro odg de la facture");
 
+$t->is(count($facture->paiements),0,"Le nombre de paiements de la facture est 0 ");
+
+$paiementForm = new FacturePaiementsMultipleForm($facture);
+$valuesPaiement = array('_revision' => $facture->_rev);
+$valuesPaiement['paiements'][0]['montant'] = 1;
+$valuesPaiement['paiements'][0]['date'] = "01/01/".($drev->getCampagne()+1);
+$valuesPaiement['paiements'][0]['type_reglement'] = FactureClient::FACTURE_PAIEMENT_CHEQUE;
+$paiementForm->bind($valuesPaiement);
+$t->ok($paiementForm->isValid(), "Le formulaire est valide");
+
+$facture = $paiementForm->save();
+$t->is(count($facture->paiements),1,"Le nombre de paiements de la facture est 1 ");
 
 // Affichage Cotisations
 $cptCotisTotal = 0;
