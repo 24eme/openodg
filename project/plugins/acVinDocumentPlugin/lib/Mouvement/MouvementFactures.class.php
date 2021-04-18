@@ -27,7 +27,8 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
     public function fillFromCotisation($cotisation) {
         $this->categorie = $cotisation->getCollectionKey();
         $this->type_hash = $cotisation->getDetailKey();
-        $this->type_libelle = $cotisation->getLibelle();
+        $this->type_libelle = $cotisation->getConfigCollection()->libelle;
+        $this->detail_libelle = $cotisation->getConfigLibelle();
         $this->quantite = $cotisation->getQuantite();
         $this->taux = $cotisation->getPrix();
         $this->tva = $cotisation->getTva();

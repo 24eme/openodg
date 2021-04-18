@@ -327,13 +327,14 @@ class DRevValidation extends DeclarationLotsValidation
             if($lot->isEmpty()){
               continue;
             }
+
             //si lots IGP n'existent pas dans la DR
             if(!$lot->lotPossible() && $this->document->hasDocumentDouanier()){
                 $volume = sprintf("%01.02f",$lot->getVolume());
                 if (preg_match('/(DEFAUT|MULTI)$/', $lot->produit_hash)) {
-                    $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+                    $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$lot->volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
                 }else{
-                    $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+                    $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$lot->volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
                 }
             }
         }
