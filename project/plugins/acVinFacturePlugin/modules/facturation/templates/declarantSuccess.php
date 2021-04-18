@@ -117,7 +117,7 @@
         <td><?php echo ucfirst($valueMvt->categorie); ?> <?php echo $valueMvt->type_libelle; ?></td>
         <td class="text-right"><?php echo echoFloat($valueMvt->quantite); ?></td>
         <td class="text-right"><?php echo echoFloat($valueMvt->taux); ?></td>
-        <td class="text-right"><?php echo echoFloat($valueMvt->tva); ?>&nbsp;%</td>
+        <td class="text-right"><?php echo echoFloat($valueMvt->tva * 100, 0, 0); ?>&nbsp;%</td>
         <td class="text-right"><?php echo echoFloat($valueMvt->taux * $valueMvt->quantite); ?>&nbsp;€</td>
     </tr>
   <?php endforeach; ?>
