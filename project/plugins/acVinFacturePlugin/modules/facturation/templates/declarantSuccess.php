@@ -112,7 +112,7 @@
       $valueMvt = (isset($mvt->value))? $mvt->value : $mvt;
        ?>
     <tr>
-        <td><a href="<?php echo url_for("declaration_doc", array("id" => $mvt->id))?>" ><?php echo $valueMvt->type;?><?php echo "&nbsp;".$valueMvt->version;?> <?php echo "&nbsp;".$valueMvt->campagne;?></a></td>
+        <td><a href="<?php echo url_for("declaration_doc", array("id" => $mvt->id))?>" ><?php echo $valueMvt->type;?><?php if($valueMvt->version): ?>&nbsp;<?php echo $valueMvt->version;?><?php endif; ?>&nbsp;<?php echo $valueMvt->campagne;?></a></td>
         <td><?php echo format_date($valueMvt->date, "dd/MM/yyyy", "fr_FR"); ?></td>
         <td><?php echo ucfirst($valueMvt->type_libelle); ?> <?php echo $valueMvt->detail_libelle; ?><?php if($valueMvt->detail_identifiant): ?> - <?php echo $valueMvt->detail_identifiant; ?><?php endif; ?></td>
         <td class="text-right"><?php echo echoFloat($valueMvt->quantite); ?></td>
