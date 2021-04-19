@@ -1369,13 +1369,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
-    public function getVolumeLotsFacturables($produitFilter = null){
-      $total = 0;
-      foreach($this->getLots() as $lot) {
+    public function getVolumeRevendiqueLots($produitFilter = null){
+        $total = 0;
+        foreach($this->getLots() as $lot) {
+            $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+  		    $isExcludeMode = (bool) $produitExclude;
+            $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
 
-         $total += $lot->getVolumeFacturable($produitFilter);
-      }
-      return $total;
+            if($produitFilter && !$isExcludeMode && !preg_match($regexpFilter, $lot->getProduitHash())) {
+
+      			continue;
+      		}
+
+            if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
+      			continue;
+  		    }
+
+            $total += $lot->volume;
+        }
+        return $total;
+    }
+
+    /**
+    * @deprecated use getVolumeRevendiqueLots instead
+    */
+    public function getVolumeLotsFacturables($produitFilter = null){
+
+        return $this->getVolumeRevendiqueLots($produitFilter);
     }
 
     public function isVolumeLotsFacturablesInRange($min = null,$max = null){
