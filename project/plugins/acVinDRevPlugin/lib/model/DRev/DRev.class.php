@@ -127,7 +127,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         // Parcours dans les lots
         foreach($this->lots as $lot) {
-
+            if($lot->millesime != $this->getPeriode()) {
+              continue;
+            }
           $couleur = $lot->getProduitRevendiqueLibelleComplet();
           if($lot->getProduitRevendique()){
             $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleComplet();
@@ -136,7 +138,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           if (!isset($couleurs[$couleur]['volume_lots'])) {
               $couleurs[$couleur]['volume_lots'] = 0;
           }
+          if (!isset($couleurs[$couleur]['nb_lots'])) {
+              $couleurs[$couleur]['nb_lots'] = 0;
+          }
             $couleurs[$couleur]['volume_lots'] += $lot->volume;
+            $couleurs[$couleur]['nb_lots']++;
         }
         foreach($couleurs as $k => $couleur) {
             if (!isset($couleur['volume_lots'])) {
@@ -198,7 +204,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $lotsDR = $this->summerizeProduitsLotsByCouleur();
       $lotsHorsDR = array();
       foreach ($this->getLots() as $key => $lot) {
-
+          if($lot->millesime != $this->getPeriode()) {
+            continue;
+          }
         if(!isset($lotsDR[$lot->produit_libelle])){
             @$lotsHorsDR[$lot->produit_libelle]['volume_lots'] += $lot->volume;
         }
