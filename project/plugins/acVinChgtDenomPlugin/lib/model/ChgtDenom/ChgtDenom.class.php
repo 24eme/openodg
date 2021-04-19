@@ -315,7 +315,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->produit_hash = $this->origine_produit_hash;
           $lot->produit_libelle = $this->origine_produit_libelle;
           $lot->cepages = $this->origine_cepages;
-          $lot->specificite .= " DECLASSÉ";
+          $lot->specificite .= " DECLASSÉ en VSIG";
       }
       $lots[] = $lot;
 
