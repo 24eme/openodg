@@ -219,7 +219,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lots;
     }
 
-    public function getLotsByNumeroDossierAndDate($chrono = true)
+    public function getLotsByNumeroDossier(){
+      $lots = array();
+      $i=0;
+      foreach($this->_get('lots')->toArray(1,1) as $lot) {
+          $index = ($lot->campagne&&$lot->numero_dossier&&$lot->numero_archive)? $lot->numero_dossier.$lot->date : $i++;
+          $lots[$index] = $lot;
+          $i++;
+      }
+      ksort($lots);
+      $lots = array_values($lots);
+
+      return $lots;
+    }
+
+    public function getLotsByUniqueAndDate($chrono = true)
     {
         if (! $this->exist('lots')) {
             return [];
@@ -1232,11 +1246,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
         if($this->isAdresseLogementDifferente()){
-            $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+            $completeAdresse = sprintf("%s — %s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune,$this->chais->telephone);
         }
 
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
      }
+
+  public function getAdresseLogement($lot){
+     $drev = DRevClient::getInstance()->find($lot->id_document);
+     return $drev->constructAdresseLogement();
+  }
 
 
 	protected function doSave() {

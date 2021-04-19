@@ -26,7 +26,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
           if ($lot->isLeurre()){
               continue;
           }
-          $adresses[$lot->declarant_identifiant][$lot->unique_id] = $lot;
+          $adresses[$lot->adresse_logement][$lot->unique_id] = $lot;
       }
       ksort($adresses);
       foreach ($adresses as $adresseLogement => $lotsArchive) {
@@ -36,6 +36,10 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
         }
 
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsArchive[array_key_first($lotsArchive)]->declarant_identifiant);
+        $adresseLogement = $lot->adresse_logement;
+        if(boolval($adresseLogement) === false){
+            $adresseLogement = sprintf("%s — %s — %s — %s",$etablissement->nom, $etablissement->getAdresse(), $etablissement->code_postal, $etablissement->commune);
+        }
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheIndividuelleLotsAPreleverPdf',
           array(
@@ -43,7 +47,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
             'etablissement' => $etablissement,
             'volumeLotTotal' => $volumeLotTotal,
             'lots' => $lotsArchive,
-            'adresseLogement' => $lot->adresse_logement
+            'adresseLogement' => $adresseLogement
           )
         ));
       }
