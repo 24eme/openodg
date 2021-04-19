@@ -114,7 +114,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
-                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, 'volume_lots' => 0, 'volume_restant' => 0);
+                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, 'volume_lots' => 0, 'volume_restant' => 0, 'nb_lots' => 0);
             }
             if(isset($couleurs[$couleur]['volume_total']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
                 $couleurs[$couleur]['volume_total'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
@@ -209,6 +209,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           }
         if(!isset($lotsDR[$lot->produit_libelle])){
             @$lotsHorsDR[$lot->produit_libelle]['volume_lots'] += $lot->volume;
+            @$lotsHorsDR[$lot->produit_libelle]['nb_lots']++;
         }
       }
       return $lotsHorsDR;
@@ -227,7 +228,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lots;
     }
 
-    public function getLotsByNumeroDossierAndDate($chrono = true)
+    public function getLotsByNumeroDossier(){
+      $lots = array();
+      $i=0;
+      foreach($this->_get('lots')->toArray(1,1) as $lot) {
+          $index = ($lot->campagne&&$lot->numero_dossier&&$lot->numero_archive)? $lot->numero_dossier.$lot->date : $i++;
+          $lots[$index] = $lot;
+          $i++;
+      }
+      ksort($lots);
+      $lots = array_values($lots);
+
+      return $lots;
+    }
+
+    public function getLotsByUniqueAndDate($chrono = true)
     {
         if (! $this->exist('lots')) {
             return [];
@@ -1240,11 +1255,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
         if($this->isAdresseLogementDifferente()){
-            $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+            $completeAdresse = sprintf("%s — %s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune,$this->chais->telephone);
         }
 
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
      }
+
+  public function getAdresseLogement($lot){
+     $drev = DRevClient::getInstance()->find($lot->id_document);
+     return $drev->constructAdresseLogement();
+  }
 
 
 	protected function doSave() {
@@ -1369,13 +1389,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
-    public function getVolumeLotsFacturables($produitFilter = null){
-      $total = 0;
-      foreach($this->getLots() as $lot) {
+    public function getVolumeRevendiqueLots($produitFilter = null){
+        $total = 0;
+        foreach($this->getLots() as $lot) {
+            $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+  		    $isExcludeMode = (bool) $produitExclude;
+            $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
 
-         $total += $lot->getVolumeFacturable($produitFilter);
-      }
-      return $total;
+            if($produitFilter && !$isExcludeMode && !preg_match($regexpFilter, $lot->getProduitHash())) {
+
+      			continue;
+      		}
+
+            if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
+      			continue;
+  		    }
+
+            $total += $lot->volume;
+        }
+        return $total;
+    }
+
+    /**
+    * @deprecated use getVolumeRevendiqueLots instead
+    */
+    public function getVolumeLotsFacturables($produitFilter = null){
+
+        return $this->getVolumeRevendiqueLots($produitFilter);
     }
 
     public function isVolumeLotsFacturablesInRange($min = null,$max = null){
@@ -1386,12 +1426,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return false;
     }
 
-    public function getNbLotsFacturables(){
-        return count($this->getLots());
-    }
-
     public function getNbLotsPreleves(){
-        return count($this->getLots());
+        $nbLots = 0;
+
+        foreach($this->getLots() as $lot) {
+            if(!$lot->isAffecte()) {
+                continue;
+            }
+            $nbLots++;
+        }
+        return $nbLots;
     }
 
     public function getNbLieuxPrelevements(){

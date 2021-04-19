@@ -26,7 +26,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         },
         "cotisation": {
           "modele": "CotisationVariable",
@@ -38,7 +38,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         },
         "controleexterne": {
           "modele": "CotisationVariable",
@@ -50,7 +50,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         },
         "controleinterne": {
           "modele": "CotisationVariable",
@@ -62,7 +62,26 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
+        }
+      }
+    },
+    "conditionnement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "IGP13",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "Cotisation",
+          "prix": 60,
+          "tva": 0.2,
+          "libelle": "Conditionnement",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getForfaitConditionnement"
         }
       }
     },
@@ -119,15 +138,37 @@
         "cotisation": {
           "modele": "CotisationVariable",
           "prix": 0.05,
-          "tva": 0,
+          "tva": 0.2,
           "libelle": "Revendication",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": [
             "/appellations/APL"
+          ]
+        }
+      }
+    },
+    "mediterrannee": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation Méditerrannée",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "libelle": "Revendication",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": [
+            "/appellations/MED"
           ]
         }
       }
@@ -147,7 +188,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         }
       }
     }

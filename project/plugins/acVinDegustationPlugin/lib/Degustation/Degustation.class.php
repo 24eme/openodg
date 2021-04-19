@@ -852,26 +852,23 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
     public function sortLotsByThisTri($a, $b){
-			$a_data = '';
-			$b_data = '';
-			foreach($this->array_tri as $t) {
-				$a_data .= $a->getValueForTri($t);
-				$b_data .= $b->getValueForTri($t);
-				if ( $this->array_tri == ['numero_anonymat']){
-					$cmp = $a_data-$b_data;
-					if ($cmp !=0) {
-						return $cmp;
-					}
-				}
-				else{
-					$cmp = strcmp($a_data, $b_data);
-					if ($cmp) {
-					return $cmp;
-					}
-				}
-			}
-      return 0;
-      }
+        $a_data = '';
+        $b_data = '';
+        foreach($this->array_tri as $t) {
+            $a_data .= $a->getValueForTri($t);
+            $b_data .= $b->getValueForTri($t);
+
+            $cmp = strcmp($a_data, $b_data);
+
+            if ($cmp == 0) {
+                continue;
+            }
+
+            return $cmp;
+        }
+        return 0;
+    }
+
     public function addLeurre($hash, $cepages, $numero_table)
         {
             if (! $this->exist('lots')) {
@@ -1366,6 +1363,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
                 if(!$lot->isSecondPassage()){
+                    continue;
+                }
+                $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
+                $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+            }
+
+            return $mouvements;
+        }
+
+		public function getForfaitConditionnement($cotisation){
+            $mouvements = array();
+            $keyCumul = $cotisation->getDetailKey();
+            foreach ($this->getLotsPreleves() as $lot) {
+                if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);

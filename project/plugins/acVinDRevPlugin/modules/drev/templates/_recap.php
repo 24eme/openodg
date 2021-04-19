@@ -95,7 +95,13 @@
 
                         <?php endif; ?>
                       </td>
-                      <td class="text-right"><?php  echo($synthese_revendication[$couleur]['nb_lots'] > 0)? $synthese_revendication[$couleur]['nb_lots'] : 'aucun lots'; ?></td>
+                      <td class="text-right">
+                              <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['nb_lots']): ?>
+                          <?php  echo($synthese_revendication[$couleur]['nb_lots'] > 0)? $synthese_revendication[$couleur]['nb_lots'] : 'aucun lots'; ?>
+                      <?php elseif(isset($lotsHorsDR[$couleur])): ?>
+                          <?php echo $lotsHorsDR[$couleur]['nb_lots']; ?>
+                      <?php endif; ?>
+                      </td>
                       <td class="text-right">
                         <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
 
@@ -154,7 +160,7 @@
               $firstRow = true;
               $totalVolume = 0;
                 $volume = 0;
-                  foreach ($drev->getLotsByNumeroDossierAndDate() as $lot) :
+                  foreach ($drev->getLotsByUniqueAndDate() as $lot) :
                     $totalVolume+=$lot->volume;
                     ?>
                     <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
@@ -229,6 +235,29 @@
               <?php endif; ?>
 
           <?php endif; ?>
+
+          <?php if($drev->isValidee()): ?>
+          <h3 id="table_igp_title">Chais</h3>
+          <table class="table table-bordered table-striped table_igp">
+            <thead>
+              <tr>
+                <th class="col-xs-2 text-center">Num. Dossier</th>
+                <th class="col-xs-8 text-center">Détails du chais</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($drev->getLotsByNumeroDossier() as $lot) : ?>
+                <tr>
+                  <td class="text-center"><?php echo $lot->numero_dossier; ?></td>
+                  <td class="text-left">
+                    <?php echo $drev->getAdresseLogement($lot);
+                    ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        <?php endif; ?>
           <?php if(count($drev->declaration->getProduitsVci())): ?>
             <h3>Gestion du VCI</h3>
             <table class="table table-bordered table-striped">

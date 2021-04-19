@@ -180,6 +180,7 @@ DRev:
             adresse: { }
             commune: { }
             code_postal: { }
+            telephone: { }
       mouvements:
         type: collection
         definition:
