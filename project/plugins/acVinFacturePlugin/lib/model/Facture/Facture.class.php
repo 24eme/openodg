@@ -233,11 +233,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement) {
             $ligne = $this->lignes->add($mouvement->value->categorie);
-            $ligne->numero_dossier = $mouvement->value->detail_identifiant;
+            $ligne->reference = $mouvement->value->detail_identifiant;
             $ligne->libelle = $mouvement->value->type_libelle;
             $ligne->origine_mouvements->add($mouvement->id)->add(null, $mouvement->key[MouvementFactureView::KEY_ORIGIN]);
 
-            $libelle = $mouvement->value->detail_libelle. ' - N° '.$mouvement->value->detail_identifiant;
+            $libelle = $this->createLigneLibelle($ligne->libelle,$mouvement->value->detail_libelle,$ligne->reference);
+
             $detail = null;
             $quantite = 0;
             foreach ($ligne->details as $d) {
@@ -258,6 +259,14 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $detail->quantite += $mouvement->value->quantite;
             $ligne->updateTotaux();
 
+    }
+
+    protected function createLigneLibelle($cotisLibelle, $detailLibelle, $reference){
+        $l = $cotisLibelle." ".$detailLibelle;
+        if($reference){
+            $l.= " - ".$reference;
+        }
+        return $l;
     }
 
 

@@ -68,7 +68,7 @@ Facture:
                   produit_identifiant_analytique: {  }
                   montant_tva: {type: float}
                   montant_ht: {type: float}
-                  numero_dossier: { }
+                  reference: { }
                   origine_mouvements:
                     type: collection
                     definition:
