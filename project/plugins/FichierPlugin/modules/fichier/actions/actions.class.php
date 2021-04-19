@@ -55,6 +55,9 @@ class fichierActions extends sfActions
     	}
 		if (!$filename) {
 			$filename = $key;
+			if ($fileParam == 'pdf') {
+				$fileParam = $filename;
+			}
 		}
     	$file = file_get_contents($fichier->getAttachmentUri($filename));
         if(!$file) {
