@@ -26,7 +26,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         },
         "cotisation": {
           "modele": "CotisationVariable",
@@ -38,7 +38,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         },
         "controleexterne": {
           "modele": "CotisationVariable",
@@ -50,7 +50,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         },
         "controleinterne": {
           "modele": "CotisationVariable",
@@ -62,7 +62,26 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
+        }
+      }
+    },
+    "conditionnement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "IGP13",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "Cotisation",
+          "prix": 60,
+          "tva": 0.2,
+          "libelle": "Conditionnement",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getForfaitConditionnement"
         }
       }
     },
@@ -125,7 +144,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": [
             "/appellations/APL"
           ]
@@ -147,7 +166,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": [
             "/appellations/MED"
           ]
@@ -169,7 +188,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         }
       }
     }
