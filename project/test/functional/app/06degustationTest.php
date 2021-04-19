@@ -13,6 +13,8 @@ $has_vci = true;
 $has_aoc = true;
 
 if ($application != 'igp13') {
+    $b = new sfTestFunctional(new Browser());
+    $t = $b->test();
     return;
 }
 
