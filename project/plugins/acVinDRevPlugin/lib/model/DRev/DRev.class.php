@@ -1406,12 +1406,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return false;
     }
 
-    public function getNbLotsFacturables(){
-        return count($this->getLots());
-    }
-
     public function getNbLotsPreleves(){
-        return count($this->getLots());
+        $nbLots = 0;
+
+        foreach($this->getLots() as $lot) {
+            if(!$lot->isAffecte()) {
+                continue;
+            }
+            $nbLots++;
+        }
+        return $nbLots;
     }
 
     public function getNbLieuxPrelevements(){
