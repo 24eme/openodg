@@ -261,7 +261,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     }
 
-    protected function createLigneLibelle($cotisLibelle, $detailLibelle, $reference){
+    public static function createLigneLibelle($cotisLibelle, $detailLibelle, $reference){
         $l = $cotisLibelle." ".$detailLibelle;
         if($reference){
             $l.= " - ".$reference;

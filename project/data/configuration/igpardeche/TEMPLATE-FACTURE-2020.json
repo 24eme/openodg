@@ -14,7 +14,7 @@
         "cotisationSyndicale": {
             "modele": "CotisationsCollection",
             "callback": "",
-            "libelle": "Cotisation syndicale",
+            "libelle": "Cotisation Syndicale",
             "code_comptable": "706100",
             "details": {
                 "cotisationSyndicale": {
@@ -22,7 +22,7 @@
                     "prix": 0.02,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "Volume de la déclaration de récolte (L15)",
+                    "libelle": "Déclaration de récolte (L15)",
                     "complement_libelle": "",
                     "docs": [
                         "DR"
@@ -40,7 +40,7 @@
             "libelle": "Cotisation ODG",
             "code_comptable": "706100",
             "details": {
-                "revendicationDRev": {
+                "revendication": {
                     "modele": "CotisationVariable",
                     "prix": 0.22,
                     "tva": 0.2,
@@ -58,7 +58,6 @@
                     "modele": "CotisationVariable",
                     "prix": 8,
                     "tva": 0.2,
-                    "unite": "hl",
                     "libelle": "Nombre de lots presentés",
                     "complement_libelle": "",
                     "docs": [
@@ -72,7 +71,6 @@
                     "modele": "CotisationFixe",
                     "prix": 75,
                     "tva": 0.2,
-                    "unite": "",
                     "libelle": "Frais de dossier",
                     "complement_libelle": "",
                     "docs": [
@@ -82,12 +80,21 @@
                     "callback_parameters": [
                         "NOT /CDR/"
                     ]
-                },
-                "cotisation": {
+                }
+            }
+        },
+        "inao": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Droits INAO",
+            "code_comptable": "706100",
+            "details": {
+                "revendication": {
                     "modele": "CotisationVariable",
                     "prix": 0.03,
                     "tva": 0,
-                    "libelle": "Droits INAO",
+                    "unite": "hl",
+                    "libelle": "",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
