@@ -12,7 +12,6 @@
     <h2>Déclaration de Vrac export <small>du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?></small>
     <?php if($transaction->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($transaction->validation && $transaction->validation !== true): ?> reçue le <?php echo format_date($transaction->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
-      <?php if($transaction->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
     <?php elseif($transaction->validation): ?>
     <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($transaction->validation && $transaction->validation !== true): ?> signée le <?php echo format_date($transaction->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($transaction->validation_odg): ?> et approuvée le <?php echo format_date($transaction->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
