@@ -209,6 +209,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           }
         if(!isset($lotsDR[$lot->produit_libelle])){
             @$lotsHorsDR[$lot->produit_libelle]['volume_lots'] += $lot->volume;
+            @$lotsHorsDR[$lot->produit_libelle]['nb_lots']++;
         }
       }
       return $lotsHorsDR;
