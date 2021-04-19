@@ -135,8 +135,8 @@ $t->comment("Création de la facture par formulaire de génération");
 
 $form = new FactureGenerationForm();
 $defaults = $form->getDefaults();
-$valuesRev['date_facturation'] = "01/01/".($drev->getCampagne()+1);
-$valuesRev['date_mouvement'] = "01/01/".($drev->getCampagne()+1);
+$valuesRev['date_facturation'] = date('d/m/Y');
+$valuesRev['date_mouvement'] = date('d/m/Y');
 $valuesRev['type_document'] = DRevClient::TYPE_MODEL;
 $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
@@ -150,7 +150,6 @@ $socCompte = $viti->getMasterCompte();
 $t->ok($gForm, "Une génération de facture a bien été créée");
 
 $generationsids = GenerationClient::getInstance()->getGenerationIdEnAttente();
-
 $t->is(count($generationsids),1, "Il y a une génération de facture en attente");
 
 foreach ($generationsids as $gid) {
@@ -158,7 +157,6 @@ foreach ($generationsids as $gid) {
     $g = GenerationClient::getInstance()->getGenerator($generation,null,null);
     $g->generate();
 }
-
 
 $facturesSoc = FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant);
 $t->is(count($facturesSoc), 1, "Une facture a été générée");
@@ -173,7 +171,7 @@ $t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
 $t->is($facture->getNumeroOdg(),substr($facture->campagne, 2, 2)."00001", "Numéro odg de la facture");
 
 foreach ($facture->getLignes() as $key => $lignes) {
-    $t->is($lignes->numero_dossier, $drev->numero_archive, "La ligne de facture ".$key." a le bon numéro de dossier");
+    $t->is($lignes->reference, $drev->numero_archive, "La ligne de facture ".$key." a le bon numéro de dossier");
 }
 
 $t->comment("Modificatrice DREV, on ajoute un lot volume 100 et on supprime le dernier lot");
@@ -218,8 +216,8 @@ $t->isnt($mvtDrevM01->detail_identifiant, $drev->numero_archive, "Le numéro de 
 
 $form = new FactureGenerationForm();
 $defaults = $form->getDefaults();
-$valuesRev['date_facturation'] = "01/01/".($drev->getCampagne()+1);
-$valuesRev['date_mouvement'] = "01/01/".($drev->getCampagne()+1);
+$valuesRev['date_facturation'] = date('d/m/Y');
+$valuesRev['date_mouvement'] = date('d/m/Y');
 $valuesRev['type_document'] = DRevClient::TYPE_MODEL;
 $form->bind($valuesRev);
 $gForm = $form->save();

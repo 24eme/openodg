@@ -95,7 +95,7 @@
 
                         <?php endif; ?>
                       </td>
-                      <td class="text-right"><?php  echo (count($lotsByCouleur))? count($lotsByCouleur) : 'aucun lots'; ?></td>
+                      <td class="text-right"><?php  echo($synthese_revendication[$couleur]['nb_lots'] > 0)? $synthese_revendication[$couleur]['nb_lots'] : 'aucun lots'; ?></td>
                       <td class="text-right">
                         <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
 

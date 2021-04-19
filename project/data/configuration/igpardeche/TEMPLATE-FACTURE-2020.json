@@ -42,7 +42,7 @@
             "details": {
                 "revendicationDRev": {
                     "modele": "CotisationVariable",
-                    "prix": 0.21,
+                    "prix": 0.22,
                     "tva": 0.2,
                     "unite": "hl",
                     "libelle": "Volume lots DRev",
