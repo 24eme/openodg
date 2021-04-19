@@ -1,6 +1,6 @@
 <?php
 
-class DRevRegenerateMouvementsTask extends sfBaseTask
+class DeclarationRegenerateMouvementsTask extends sfBaseTask
 {
 
     protected function configure()
@@ -15,9 +15,9 @@ class DRevRegenerateMouvementsTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace = 'drev';
+        $this->namespace = 'declaration';
         $this->name = 'regenerate-mouvements';
-        $this->briefDescription = "Regénère les mouvements de la DRev";
+        $this->briefDescription = "Regénère les mouvements de facturation d'un document";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -29,10 +29,11 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
 
-        $drev = DRevClient::getInstance()->find($arguments['doc_id']);
-        $drev->mouvements = null;
+        $drev = DeclarationClient::getInstance()->find($arguments['doc_id']);
+        $drev->remove('mouvements');
+        $drev->add('mouvements');
         $drev->generateMouvementsFactures();
         $drev->save();
-        echo sprintf("SUCCESS;La DRev a bien des nouveaux mouvements ;%s\n", $drev->_id);
+        echo sprintf("SUCCESS;Les mouvements ont été regénérés;%s\n", $drev->_id);
     }
 }
