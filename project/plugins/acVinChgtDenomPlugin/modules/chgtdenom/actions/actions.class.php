@@ -12,8 +12,13 @@ class chgtdenomActions extends sfActions
         $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, null, $papier);
 
         // Format de $lot : DEGUSTATION-20210101:2020-2021-00001-00001 | document_id:unique_id
-        $chgtDenom->changement_origine_id_document = strtok($lot, ':');
-        $chgtDenom->changement_origine_lot_unique_id = strtok(':');
+        $docid = strtok($lot, ':');
+        $unique_id = strtok(':');
+        $doc = acCouchdbManager::getClient()->find($docid);
+        $this->forward404Unless($doc);
+        $lot = $doc->getLot($unique_id);
+        $this->forward404Unless($lot);
+        $chgtDenom->setLotOrigine($lot);
         $chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id));

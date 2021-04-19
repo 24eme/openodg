@@ -154,7 +154,7 @@ if ($has_lot) {
 $t->comment("Point de vigilance DRev modificatrice");
 $validation = new DRevValidation($drev_modificative);
 $vigilance = $validation->getVigilances();
-$t->is(count($vigilance), 3, "Il ya trois points de vigilance, un repris de la DRev et un autre dans la DRev modificatrice");
+$t->is(count($vigilance), 3, "Il ya trois points de vigilance, deux repris de la DRev et un autre dans la DRev modificatrice");
 
 $drev_modificative->validate($date_validation_2);
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {

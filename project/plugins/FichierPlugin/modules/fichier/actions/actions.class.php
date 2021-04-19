@@ -32,7 +32,7 @@ class fichierActions extends sfActions
 
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
-    	$fileParam = $request->getParameter('file', 'pdf');
+    	$fileParam = $request->getParameter('file');
 		$this->secureEtablissement($fichier->getEtablissementObject());
 		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 
@@ -56,6 +56,9 @@ class fichierActions extends sfActions
 		if (!$filename) {
 			$filename = $key;
 		}
+        if (!$fileParam) {
+            $fileParam = $filename;
+        }
     	$file = file_get_contents($fichier->getAttachmentUri($filename));
         if(!$file) {
             return $this->forward404($filename." n'existe pas pour ".$fichier->_id);

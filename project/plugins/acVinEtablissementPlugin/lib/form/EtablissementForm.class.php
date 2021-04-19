@@ -24,6 +24,7 @@ class EtablissementForm extends acCouchdbObjectForm
 			"chais_adresse" =>  new sfWidgetFormInput(array("label" => "Adresse")),
 			"chais_commune" =>  new sfWidgetFormInput(array("label" => "Commune")),
 			"chais_code_postal" =>  new sfWidgetFormInput(array("label" => "Code postal")),
+			"chais_telephone" => new sfWidgetFormInput(array("label" => "Tél.")),
         ));
 	$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
         $this->setValidators(array(
@@ -46,6 +47,7 @@ class EtablissementForm extends acCouchdbObjectForm
 			'chais_adresse' => new sfValidatorString(array("required" => false)),
 			'chais_commune' => new sfValidatorString(array("required" => false)),
 			'chais_code_postal' => new sfValidatorString(array("required" => false)),
+			"chais_telephone" => new sfValidatorString(array("required" => false)),
         ));
 
 		if(!DRevConfiguration::getInstance()->hasLogementAdresse()) {
@@ -57,6 +59,8 @@ class EtablissementForm extends acCouchdbObjectForm
 			unset($this->validatorSchema['chais_commune']);
 			unset($this->widgetSchema['chais_code_postal']);
 			unset($this->validatorSchema['chais_code_postal']);
+			unset($this->widgetSchema['chais_telephone']);
+			unset($this->validatorSchema['chais_telephone']);
 		}
 
         if(!$this->getOption("use_email")) {
@@ -86,6 +90,7 @@ class EtablissementForm extends acCouchdbObjectForm
 			$this->setDefault('chais_adresse', $this->getObject()->getDocument()->chais->adresse);
 			$this->setDefault('chais_commune', $this->getObject()->getDocument()->chais->commune);
 			$this->setDefault('chais_code_postal', $this->getObject()->getDocument()->chais->code_postal);
+			$this->setDefault('chais_telephone', $this->getObject()->getDocument()->chais->telephone);
 		}
     }
 
@@ -108,6 +113,7 @@ class EtablissementForm extends acCouchdbObjectForm
 			$this->getObject()->getDocument()->chais->adresse = $values['chais_adresse'];
 			$this->getObject()->getDocument()->chais->commune = $values['chais_commune'];
 			$this->getObject()->getDocument()->chais->code_postal = $values['chais_code_postal'];
+			$this->getObject()->getDocument()->chais->telephone = $values['chais_telephone'];
 
 			if(!$this->getObject()->getDocument()->isAdresseLogementDifferente()) {
 			    $this->getObject()->getDocument()->remove('chais');

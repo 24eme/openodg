@@ -1373,6 +1373,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
+		public function getForfaitConditionnement($cotisation){
+            $mouvements = array();
+            $keyCumul = $cotisation->getDetailKey();
+            foreach ($this->getLotsPreleves() as $lot) {
+                if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
+                    continue;
+                }
+                $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
+                $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+            }
+
+            return $mouvements;
+        }
+
 
         public function getFacturationNonConforme($cotisation,$filters = null)
         {

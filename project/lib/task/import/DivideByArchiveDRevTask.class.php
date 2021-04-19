@@ -82,6 +82,9 @@ EOF;
         $docs = array();
         $drevs = array();
         foreach($affectations as $k => $a) {
+            if (!$a['id_document_affectation']) {
+                continue;
+            }
             if (!isset($docs[$a['id_document_affectation']])) {
                 $docs[$a['id_document_affectation']] = acCouchdbManager::getClient()->find($a['id_document_affectation']);
             }
