@@ -631,6 +631,20 @@ class degustationActions extends sfActions {
         return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
+    public function executeLotAffectable(sfWebRequest $request) {
+        $docid = $request->getParameter('id');
+        $unique_id = $request->getParameter('unique_id');
+        $doc = acCouchdbManager::getClient()->find($docid);
+        $lot = $doc->getLot($unique_id);
+        if (!$lot->getMouvement(Lot::STATUT_NONAFFECTABLE)) {
+            throw sfException("Action impossible");
+        }
+        $lot->affectable = true;
+        $doc->save();
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
+    }
+
+
     public function executeAnonymize(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
       $degustation->anonymize();

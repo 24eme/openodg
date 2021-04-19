@@ -336,6 +336,12 @@ degustation_lot_reputeconforme:
   requirements:
     sf_method: [get]
 
+degustation_lot_affectable:
+  url: /degustation/lots/:id/:unique_id/affectable
+  param: { module: degustation, action: lotAffectable }
+  requirements:
+    sf_method: [get]
+
 degustation_lot_conforme_appel:
   url: /degustation/lots/:id/:lot/conforme-appel
   param: { module: degustation, action: lotConformeAppel }

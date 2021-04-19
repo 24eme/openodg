@@ -92,6 +92,16 @@ endforeach;
                            <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_reputeconforme', array('id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Changer en réputé conforme</a></li>
                        </ul>
                      </div>
+                 <?php elseif ($mouvement->value->statut == Lot::STATUT_NONAFFECTABLE): ?>
+                     <div class="dropdown" style="display: inline-block">
+                       <button class="btn btn-primary dropdown-toggle btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                         Modifier
+                         <span class="caret"></span>
+                       </button>
+                       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                           <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_affectable', array('id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Changer en réputé conforme</a></li>
+                       </ul>
+                     </div>
                   <?php endif; ?>
               </td>
           </tr>
