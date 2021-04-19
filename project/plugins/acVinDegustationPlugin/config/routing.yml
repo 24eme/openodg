@@ -43,6 +43,10 @@ degustation_etablissement_list:
 degustation_lot_historique:
   url: /historique/:identifiant/:unique_id
   param: { module: degustation, action: lotHistorique }
+  class: DegustationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
   requirements:
     sf_method: [get]
 
