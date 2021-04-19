@@ -22,7 +22,7 @@
                     "prix": 0.02,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "DR L15",
+                    "libelle": "Volume de la déclaration de récolte (L15)",
                     "complement_libelle": "",
                     "docs": [
                         "DR"
@@ -42,15 +42,15 @@
             "details": {
                 "revendicationDRev": {
                     "modele": "CotisationVariable",
-                    "prix": 0.21,
+                    "prix": 0.22,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "Volume lots DRev",
+                    "libelle": "Volume revendiqué",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getVolumeLotsFacturables",
+                    "callback": "getVolumeRevendiqueLots",
                     "callback_parameters": [
                     ]
                 },
@@ -59,37 +59,40 @@
                     "prix": 8,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "Nombre lots DRev",
+                    "libelle": "Nombre de lots presentés",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getNbLotsFacturables",
+                    "callback": "getNbLotsPreleves",
                     "callback_parameters": [
                     ]
                 },
                 "forfait": {
                     "modele": "CotisationFixe",
-                    "callback": null,
                     "prix": 75,
                     "tva": 0.2,
                     "unite": "",
-                    "libelle": "Forfait DRev",
+                    "libelle": "Frais de dossier",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
+                    ],
+                    "callback": "getVolumeRevendiqueLots",
+                    "callback_parameters": [
+                        "NOT /CDR/"
                     ]
                 },
                 "cotisation": {
                     "modele": "CotisationVariable",
                     "prix": 0.03,
                     "tva": 0,
-                    "libelle": "Cotisation reversée à l'INAO",
+                    "libelle": "Droits INAO",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
                     ],
-                    "callback": "getVolumeLotsFacturables"
+                    "callback": "getVolumeRevendiqueLots"
                 }
             }
         },

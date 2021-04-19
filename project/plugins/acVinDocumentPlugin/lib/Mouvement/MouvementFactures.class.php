@@ -14,13 +14,6 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
         $this->version = $doc->version;
         $this->type = $doc->type;
         $this->campagne = ($doc->exist('campagne'))? $doc->campagne : null;
-        /*
-        produit_hash: {  }
-        produit_libelle: {  }
-        type_hash: {  }
-        type_libelle: {  }
-        detail_identifiant: {  }
-        detail_libelle: {  } */
 
     }
 

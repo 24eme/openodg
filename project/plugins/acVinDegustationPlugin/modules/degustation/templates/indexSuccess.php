@@ -46,7 +46,7 @@
                 <?php echo $form["max_lots"]->renderError(); ?>
                 <?php echo $form["lieu"]->renderLabel("Lieu de dégustation", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-sm-5 col-xs-5">
-                  	<?php echo $form["lieu"]->render(array("class" => "form-control")); ?>
+                    <?php echo $form["lieu"]->render(array("class" => "form-control", 'required' => true)); ?>
                 </div>
                 <div class="col-sm-3 col-xs-3">
                   	<?php echo $form["max_lots"]->render(array("class" => "form-control", "placeholder" => 'Nombre max de lots')); ?>
