@@ -1426,7 +1426,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       foreach($cotisations as $cotisation) {
           $mouvement = DRevMouvementFactures::freeInstance($this);
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
-          $mouvement->date = $this->getPeriode().'-12-10';
+          $mouvement->date = $this->validation;
           $mouvement->date_version = $this->validation;
           $mouvement->detail_identifiant = $this->numero_archive;
 
