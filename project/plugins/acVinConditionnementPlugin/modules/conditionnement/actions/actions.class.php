@@ -231,7 +231,7 @@ class conditionnementActions extends sfActions {
             $this->conditionnement->validateOdg();
             $this->conditionnement->cleanLots();
             $this->conditionnement->save();
-            $this->getUser()->setFlash("notice", "La déclaration de conditionnement papier a été validée et approuvée, un email a été envoyé au déclarant");
+            $this->getUser()->setFlash("notice", "La déclaration de conditionnement papier a été validée et approuvée");
 
             return $this->redirect('conditionnement_visualisation', $this->conditionnement);
         }

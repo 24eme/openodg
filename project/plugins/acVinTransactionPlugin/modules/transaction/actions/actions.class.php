@@ -229,7 +229,7 @@ class transactionActions extends sfActions {
             $this->transaction->validateOdg();
             $this->transaction->cleanLots();
             $this->transaction->save();
-            $this->getUser()->setFlash("notice", "La déclaration de transaction papier a été validée et approuvée, un email a été envoyé au déclarant");
+            $this->getUser()->setFlash("notice", "La déclaration de transaction papier a été validée et approuvée");
 
             return $this->redirect('transaction_visualisation', $this->transaction);
         }

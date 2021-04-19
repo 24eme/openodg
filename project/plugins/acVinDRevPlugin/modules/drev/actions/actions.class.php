@@ -699,7 +699,7 @@ class drevActions extends sfActions {
             $this->drev->validateOdg();
             $this->drev->cleanLots();
             $this->drev->save();
-            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
+            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée");
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
