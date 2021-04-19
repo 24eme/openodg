@@ -32,7 +32,7 @@
                 <ul class="list-group">
                   <li class="list-group-item"><a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>" ><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (triés par Numéro de dossier)</a></li>
                   <li class="list-group-item"><a id="btn_pdf_degustation_fiche_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_anonymat_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (triés par Numéro d'anonymat)</a></li>
-                  <li class="list-group-item"><a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_anonymat_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes pour tables (triées par Numéro d'Anonymat)</a></li>
+                  <li class="list-group-item"><a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_anonymat_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes pour tables (triées par Numéro d'anonymat)</a></li>
                 </ul>
                 <br/>
             </div>
