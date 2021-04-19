@@ -119,7 +119,7 @@
         "cotisation": {
           "modele": "CotisationVariable",
           "prix": 0.05,
-          "tva": 0,
+          "tva": 0.2,
           "libelle": "Revendication",
           "complement_libelle": "",
           "docs": [
@@ -128,6 +128,28 @@
           "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/APL"
+          ]
+        }
+      }
+    },
+    "mediterrannee": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation Méditerrannée",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "libelle": "Revendication",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "/appellations/MED"
           ]
         }
       }
