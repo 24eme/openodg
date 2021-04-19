@@ -330,6 +330,12 @@ degustation_recours_oc:
   requirements:
     sf_method: [get]
 
+degustation_lot_reputeconforme:
+  url: /degustation/lots/:id/:unique_id/reputeconforme
+  param: { module: degustation, action: lotReputeConforme }
+  requirements:
+    sf_method: [get]
+
 degustation_lot_conforme_appel:
   url: /degustation/lots/:id/:lot/conforme-appel
   param: { module: degustation, action: lotConformeAppel }
