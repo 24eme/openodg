@@ -20,6 +20,10 @@ class ExportDegustationFicheRecapTablesPDF extends ExportDeclarationLotsPDF {
             throw new sfException('Pas de lots attablés : '.$this->degustation->_id);
         }
 
+        foreach ($lotsByTable as &$table) {
+            ksort($table);
+        }
+
       foreach($lotsByTable as $numeroTable => $lots) {
           @$this->printable_document->addPage(
             $this->getPartial('degustation/ficheRecapTablesPdf',
