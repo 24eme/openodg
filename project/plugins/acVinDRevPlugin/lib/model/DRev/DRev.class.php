@@ -200,7 +200,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       foreach ($this->getLots() as $key => $lot) {
 
         if(!isset($lotsDR[$lot->produit_libelle])){
-            $lotsHorsDR[$lot->produit_libelle] = $lot;
+            @$lotsHorsDR[$lot->produit_libelle]['volume_lots'] += $lot->volume;
         }
       }
       return $lotsHorsDR;
@@ -801,15 +801,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         if(!$exist && $produit->getConfig()->isRevendicationParLots()) {
-            $oneLotExist = false;
-            foreach ($this->getLots() as $lot) {
-                if($lot->produit_hash && $hash == $lot->produit_hash){
-                    $oneLotExist = true;
-                    break;
-                }
-            }
-            if(!$oneLotExist){
-                $lot = $this->addLot();
+            $lot = $this->addLot();
+            if($lot) {
                 $lot->setProduitHash($produit->getConfig()->getHash());
             }
         }
@@ -848,6 +841,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function addLot() {
+        if($this->isValidee()) {
+            return null;
+        }
         $lot = $this->add('lots')->add();
         $lot->id_document = $this->_id;
         $lot->campagne = $this->getCampagne();
@@ -957,8 +953,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->validation_odg = $date;
 
-        $this->remove('mouvements');
-        $this->generateMouvementsFactures();
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
     }
 
     public function setStatutOdgByRegion($statut, $region = null) {
@@ -1430,6 +1428,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
           $mouvement->date = $this->getPeriode().'-12-10';
           $mouvement->date_version = $this->validation;
+          $mouvement->detail_identifiant = $this->numero_archive;
 
           if(isset($cotisationsPrec[$cotisation->getHash()])) {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();

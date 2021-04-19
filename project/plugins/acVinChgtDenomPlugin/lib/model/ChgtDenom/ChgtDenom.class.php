@@ -119,7 +119,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('c');
         }
         $this->validation_odg = $date;
-        $this->generateMouvementsFactures();
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
     }
 
     public function getEtablissementObject() {
@@ -239,8 +242,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return !$this->isDeclassement();
     }
 
-    public function isTotal() {
-      return ($this->changement_volume == $this->getLotOrigine()->volume);
+    public function isTotal()
+    {
+        if ($this->getLotOrigine() == null) {
+            return $this->changement_volume == $this->origine_volume;
+        }
+
+        return ($this->changement_volume == $this->getLotOrigine()->volume);
     }
 
     public function getPourcentagesCepages() {
@@ -505,6 +513,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       foreach($cotisations as $cotisation) {
           $mouvement = ChgtDenomMouvementFactures::freeInstance($this);
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
+
+          // On insère le detail_identifiant du lots Destinataire pour la facture
+          foreach ($this->lots as $lot) {
+              if($this->changement_produit_hash == $lot->produit_hash){
+                  $mouvement->detail_identifiant = $lot->numero_archive;
+              }
+          }
 
           if(!$mouvement->quantite) {
               continue;

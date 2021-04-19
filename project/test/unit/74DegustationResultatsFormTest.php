@@ -206,6 +206,6 @@ $t->is($doc->isMailEnvoyeEtablissement($etbIdentifiant), false, 'On remet les ma
 $authKey = UrlSecurity::generateAuthKey($doc->_id, $etbIdentifiant);
 
 $t->is(strlen($authKey), 10, "Génération de la clé de chiffrement");
-$t->ok(UrlSecurity::verifyAuthKey($doc->_id, $etbIdentifiant, $authKey), "La clé de chiffrement est vérifié");
-$t->ok(UrlSecurity::verifyAuthKey($doc->_id, $etbIdentifiant, $authKey."a"), "La clé de chiffrement est vérifié que sur les 10 premiers caractères");
-$t->ok(!UrlSecurity::verifyAuthKey($doc->_id, $etbIdentifiant, "a".$authKey), "La clé n'est pas valide");
+$t->ok(UrlSecurity::verifyAuthKey($authKey, $doc->_id, $etbIdentifiant), "La clé de chiffrement est vérifié");
+$t->ok(UrlSecurity::verifyAuthKey($authKey."a", $doc->_id, $etbIdentifiant), "La clé de chiffrement est vérifié que sur les 10 premiers caractères");
+$t->ok(!UrlSecurity::verifyAuthKey("a".$authKey, $doc->_id, $etbIdentifiant), "La clé n'est pas valide");

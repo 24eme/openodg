@@ -14,7 +14,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "IGP13",
-      "code_comptable": "706100",
+      "code_comptable": "",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
@@ -70,7 +70,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "IGP13",
-      "code_comptable": "706102",
+      "code_comptable": "",
       "details": {
         "forfait": {
           "modele": "Cotisation",
@@ -92,7 +92,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "IGP13",
-      "code_comptable": "706102",
+      "code_comptable": "",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
@@ -114,7 +114,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation Alpilles",
-      "code_comptable": "706102",
+      "code_comptable": "",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
@@ -136,7 +136,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "INAO",
-      "code_comptable": "706102",
+      "code_comptable": "",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",

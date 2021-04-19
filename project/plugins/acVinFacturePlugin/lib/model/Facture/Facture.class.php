@@ -71,11 +71,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
         $this->identifiant = $doc->identifiant;
-        if($format = FactureConfiguration::getInstance()->getNumeroFormatDocuments()){
-          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format, $type_document);
-
-        }elseif($format = FactureConfiguration::getInstance()->getNumeroFormat()){
-
+        if($format = FactureConfiguration::getInstance()->getNumeroFormat()){ // Pour nantes obsolète
           $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
         }else{
           $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, date('Ymd'));
@@ -193,7 +189,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         return $ligne;
     }
-
+/*
     public function storeLignesByMouvements($mouvements, $template) {
         foreach($template->cotisations as $configCollection) {
             $ligne = $this->addLigne($configCollection);
@@ -232,23 +228,34 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->lignes->remove($ligne_key);
       }
     }
+    */
 
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement) {
             $ligne = $this->lignes->add($mouvement->value->categorie);
+            $ligne->numero_dossier = $mouvement->value->detail_identifiant;
             $ligne->libelle = $mouvement->value->type_libelle;
-            $document_origine = $mouvement->id;
-            $key_origine = $mouvement->key[MouvementFactureView::KEY_ORIGIN];
-            $ligne->origine_mouvements->add($document_origine)->add(null, $key_origine);
+            $ligne->origine_mouvements->add($mouvement->id)->add(null, $mouvement->key[MouvementFactureView::KEY_ORIGIN]);
 
-            $d = $ligne->details->add();
-            $d->libelle = $mouvement->value->type_libelle;
-            $d->quantite = $mouvement->value->quantite;
-            $d->prix_unitaire = $mouvement->value->taux;
-            $d->taux_tva = $mouvement->value->tva;
-            if($mouvement->value->unite) {
-                $d->add('unite', $mouvement->value->unite);
+            $libelle = $mouvement->value->detail_libelle. ' - N° '.$mouvement->value->detail_identifiant;
+            $detail = null;
+            $quantite = 0;
+            foreach ($ligne->details as $d) {
+                if($d->libelle == $libelle){
+                    $detail = $d;
+                }
             }
+            if(!$detail){
+                $detail = $ligne->details->add();
+                $detail->prix_unitaire = $mouvement->value->taux;
+                $detail->taux_tva = $mouvement->value->tva;
+                $detail->libelle = $libelle;
+                if($mouvement->value->unite) {
+                    $detail->add('unite', $mouvement->value->unite);
+                }
+            }
+
+            $detail->quantite += $mouvement->value->quantite;
             $ligne->updateTotaux();
 
     }

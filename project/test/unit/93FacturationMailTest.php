@@ -11,6 +11,7 @@ if ($application != 'igp13') {
 $t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
+$societeViti = $viti->getSociete();
 $socVitiCompte = $viti->getSociete()->getMasterCompte();
 
 //Suppression des DRev précédentes
@@ -81,6 +82,12 @@ $t->is(count($generation->sous_generation_types->toArray(true, false)), 2, "Les 
 $genarator = GenerationClient::getInstance()->getGenerator($generation, $configuration, array());
 $genarator->generate();
 
+$facture = null;
+foreach($generation->documents as $id_facture) {
+    $facture = FactureClient::getInstance()->find($id_facture);
+    break;
+}
+
 $t->comment("Envoi des factures par mail avec une génération");
 
 $generationMail = $generation->getOrCreateSubGeneration(GenerationClient::TYPE_DOCUMENT_FACTURES_MAILS);
@@ -94,6 +101,8 @@ $mail = $mailGenerator->generateMailForADocumentId($facture->_id);
 $t->ok(get_class($mail), "Génération du mail d'une facture");
 $t->ok(strpos($mail, "https"), "Le mail contient une url");
 $t->ok(!strpos($mail, "symfony"), "L'url n'a pas symfony");
+$t->like($mail->getSubject(), "/^Facture n°".$facture->getNumeroOdg()." - /", "Sujet du mail");
+
 $mailGenerator->generate();
 
 $t->is($generationMail->statut, GenerationClient::GENERATION_STATUT_GENERE, "Statut généré");
@@ -101,7 +110,7 @@ $t->is($mailGenerator->getLogFilname(), $generationMail->date_emission."-facture
 $t->is($mailGenerator->getLogPath(), sfConfig::get('sf_web_dir')."/generation/".$mailGenerator->getLogFilname(), "Chemin complet vers le fichier de log");
 $t->is($mailGenerator->getPublishFile(), "%2Fgeneration%2F".$mailGenerator->getLogFilname(), "Chemin complet relatif encodé");
 $logdate = date("Y-m-d H:i:s");
-$t->is($mailGenerator->getLog($facture->_id, "ENVOYÉ", $logdate), array($logdate, $facture->getNumeroPieceComptable(), $facture->identifiant, $facture->declarant->raison_sociale, $societeViti->getEmail(), "ENVOYÉ", $facture->_id), "La ligne de log contient les informations");
+$t->is($mailGenerator->getLog($facture->_id, "ENVOYÉ", $logdate), array($logdate, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $societeViti->getEmail(), "ENVOYÉ", $facture->_id), "La ligne de log contient les informations");
 $t->ok(file_exists($mailGenerator->getLogPath()), "Le fichier de log existe");
 $t->is(count(file($mailGenerator->getLogPath())), 2, "Le fichier de log contient 2 lignes");
 $mailGenerator->addLog($facture->_id, "ERROR", $logdate);

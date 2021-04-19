@@ -58,16 +58,19 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 
     public function getMime($file = null)
     {
-    	if (!$file) {
+    	if (!$file || !$this->_attachments->exist($file)) {
     		foreach ($this->_attachments as $filename => $fileinfos) {
-    			$file = $filename;
+                if (strpos($filename, $file) !== false) {
+		             $file = $filename;
+                     break;
+                 }
     		}
     	}
     	if ($file && $this->_attachments->exist($file)) {
     		$fileinfos = $this->_attachments->get($file)->toArray();
     		return $fileinfos['content_type'];
     	}
-    	return null;
+        throw new sfException('Pas de mime trouvé pour le fichier '.$file);
     }
 
     public function getFichiers()

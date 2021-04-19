@@ -143,7 +143,7 @@ class chgtdenomActions extends sfActions
         if($this->isAdmin) {
             $this->chgtDenom->validateOdg();
             $this->chgtDenom->save();
-            $this->getUser()->setFlash("notice", "Le changement dénommination a été approuvé");
+            $this->getUser()->setFlash("notice", "Le changement dénomination a été approuvé");
         }
 
         return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
@@ -185,7 +185,7 @@ class chgtdenomActions extends sfActions
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
         $chgtDenom = $this->getRoute()->getChgtDenom();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $chgtDenom->getEtablissementObject());
+        $this->secureEtablissement(null, $chgtDenom->getEtablissementObject());
 
         $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

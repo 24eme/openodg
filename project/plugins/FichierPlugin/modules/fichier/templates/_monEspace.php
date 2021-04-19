@@ -36,7 +36,7 @@
                 <p class="explications">Espace de récupération de la Déclaration de production pour le déclarant.</p>
                 <div class="actions">
                   <?php if($sv): ?>
-                    <a class="btn btn-block btn-success" href="<?php echo url_for('csvgenerate_fichier', $sv); ?>">Télécharger les données liées à la déclaration</a>
+                    <a class="btn btn-success btn-block" href="<?php echo url_for('get_fichier', array('id' => $sv->_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Télécharger la déclaration douanière</a>
                     <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('upload_fichier', array('sf_subject' => $etablissement));  ?>?fichier_id=<?php echo $sv->_id; ?>"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Détails du fichier</a>
                 	<?php else: ?>
                 	<a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => ($etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) ? 'SV11' : 'SV12')) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>

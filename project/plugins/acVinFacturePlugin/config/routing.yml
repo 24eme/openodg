@@ -12,6 +12,13 @@ facturation_massive:
     sf_method: [get, post]
   class: FacturationRoute
 
+facturation_sous_generation:
+  url: /facture/generation/:generation/:type
+  param: { module: facturation, action: sousGenerationFacture }
+  requirements:
+    sf_method: [get, post]
+  class: FacturationRoute
+
 facturation_pdf:
   url: /facturation/pdf/:id
   param: { module: facturation, action: latex }

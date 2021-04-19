@@ -472,6 +472,10 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         return explode(';',$this->email);
     }
 
+    public function getEmailCompta() {
+        return $this->getEmail();
+    }
+
     public function getEmailTeledeclaration() {
         if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
             return Anonymization::hideIfNeeded($this->teledeclaration_email);
