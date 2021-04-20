@@ -3,13 +3,12 @@
                 $lotsHorsDR = $drev->getLotsHorsDR();
                 $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
                 ?>
-              <?php if($dr): ?>
               <h3>Synthèse IGP</h3>
               <table class="table table-bordered table-striped">
                 <thead>
                   <tr>
                     <th class="text-center col-xs-5" style="border-top: hidden; border-left: hidden;"></th>
-                    <th class="text-center col-xs-2" colspan="2">DR</th>
+                    <th class="text-center col-xs-2" colspan="2"><?php echo $drev->getDocumentDouanierType(); ?></th>
                     <th class="text-center col-xs-5" colspan="3">DRev</th>
                   </tr>
                 </thead>
@@ -61,7 +60,6 @@
                   <?php endforeach; ?>
                 </tbody>
               </table>
-            <?php endif; ?>
 
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
