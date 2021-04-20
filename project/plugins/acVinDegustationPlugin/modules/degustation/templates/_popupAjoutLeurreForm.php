@@ -36,7 +36,7 @@
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
-					<button type="submit" class="btn btn-success btn pull-right">Ajouter le produit</button>
+					<button type="submit" class="btn btn-success btn pull-right" id="leurre_ajout">Ajouter le produit</button>
 				</div>
 			</form>
 		</div>
