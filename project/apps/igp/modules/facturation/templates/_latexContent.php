@@ -143,11 +143,11 @@
         <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
         <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
-        {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?><?php if($ligne->exist('unite')): ?> \texttt{<?php echo $detail->unite ?>} <?php endif; ?> &
+        {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php if($detail->exist('unite')): ?><?php echo ($detail->unite); ?><?php else: ?>~~~<?php endif; ?>} &
         <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
-    <?php endforeach; ?>
 		\hline
+    <?php endforeach; ?>
   <?php endforeach; ?>
   \end{tabular}
 
