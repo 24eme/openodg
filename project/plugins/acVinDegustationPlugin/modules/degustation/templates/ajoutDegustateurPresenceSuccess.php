@@ -56,7 +56,7 @@
             </div>
   				</div>
   				<div class="modal-footer">
-  					<a href="<?php echo url_for("degustation_resultats_etape", $degustation) ?>" class="pull-left btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+  					<a href="<?php echo url_for('degustation_presences', array('id' => $degustation->_id, 'numero_table' => 1)) ?>" class="pull-left btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
   					<button type="submit" class="btn btn-success btn pull-right">Valider</button>
   				</div>
   			</form>
