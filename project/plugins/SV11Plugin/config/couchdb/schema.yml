@@ -21,3 +21,37 @@ SV11:
                   valeur: { }
                   tiers: { }
                   bailleur: { }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: SV11MouvementFactures
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        detail_identifiant: {  }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        unite: { required: false }
+                        taux: { }
+                        tva: { }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
+                        categorie: {  }
+                        type: {  }
+                        campagne: {  }
