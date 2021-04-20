@@ -512,14 +512,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       foreach($cotisations as $cotisation) {
           $mouvement = ChgtDenomMouvementFactures::freeInstance($this);
-          $mouvement->createFromCotisationAndDoc($cotisation, $this);
-
-          // On insère le detail_identifiant du lots Destinataire pour la facture
           foreach ($this->lots as $lot) {
               if($this->changement_produit_hash == $lot->produit_hash){
                   $mouvement->detail_identifiant = $lot->numero_archive;
               }
           }
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
           if(!$mouvement->quantite) {
               continue;

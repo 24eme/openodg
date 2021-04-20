@@ -68,7 +68,7 @@ Facture:
                   produit_identifiant_analytique: {  }
                   montant_tva: {type: float}
                   montant_ht: {type: float}
-                  reference: { }
+                  reference: { required: false } # À supprimer
                   origine_mouvements:
                     type: collection
                     definition:
@@ -84,6 +84,7 @@ Facture:
                       fields:
                         '*':
                           type: collection
+                          class: FactureLigneDetail
                           definition:
                             fields:
                               libelle: {}

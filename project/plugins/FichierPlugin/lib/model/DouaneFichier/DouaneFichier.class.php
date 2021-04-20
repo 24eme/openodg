@@ -1,6 +1,12 @@
 <?php
 
 class DouaneFichier extends Fichier {
+
+    public function getPeriode() {
+
+        $this->campagne;
+    }
+
     public function generateDonnees() {
         $classExport = DeclarationClient::getInstance()->getExportCsvClassName($this->type);
         $export = new $classExport($this, false);
