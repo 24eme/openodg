@@ -109,6 +109,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function summerizeProduitsLotsByCouleur() {
         $couleurs = array();
+        if (!count($this->declaration)  && $this->hasDocumentDouanier()) {
+            $this->importFromDocumentDouanier();
+        }
 
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
@@ -538,6 +541,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function importFromDocumentDouanier($force = false) {
+      $this->declarant->famille = $this->getEtablissementObject()->famille;
       if (!$force && count($this->declaration) && $this->declaration->getTotalTotalSuperficie()) {
         return false;
       }
