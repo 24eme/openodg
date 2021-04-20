@@ -45,7 +45,7 @@
                     "prix": 0.22,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "Volume revendiqué",
+                    "libelle": "Volume revendiqué - N° %detail_identifiant%",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
@@ -58,7 +58,7 @@
                     "modele": "CotisationVariable",
                     "prix": 8,
                     "tva": 0.2,
-                    "libelle": "Nombre de lots presentés",
+                    "libelle": "Nombre de lots presentés - N° %detail_identifiant%",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
@@ -94,7 +94,7 @@
                     "prix": 0.03,
                     "tva": 0,
                     "unite": "hl",
-                    "libelle": "",
+                    "libelle": "- N° %detail_identifiant%",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
@@ -113,7 +113,7 @@
                     "modele": "CotisationFixe",
                     "prix": 10,
                     "tva": 0.2,
-                    "libelle": "vers Méditerrannée",
+                    "libelle": "vers Méditerrannée - N° %detail_identifiant%",
                     "complement_libelle": "",
                     "docs": [
                         "ChgtDenom"
