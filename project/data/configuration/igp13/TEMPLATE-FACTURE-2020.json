@@ -77,6 +77,7 @@
           "prix": 60,
           "tva": 0.2,
           "libelle": "Conditionnement - N° %detail_identifiant%",
+          "unite": "",
           "complement_libelle": "",
           "docs": [
             "Degustation"
@@ -118,6 +119,7 @@
           "prix": 0.15,
           "tva": 0.2,
           "libelle": "Changement de dénomination vers Méditerrannée - N° %detail_identifiant%",
+          "unite": "hl",
           "complement_libelle": "",
           "docs": [
             "ChgtDenom"
@@ -140,6 +142,7 @@
           "prix": 0.05,
           "tva": 0.2,
           "libelle": "Revendication - N° %detail_identifiant%",
+          "unite": "hl",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -162,6 +165,7 @@
           "prix": 0.15,
           "tva": 0.2,
           "libelle": "Revendication - N° %detail_identifiant%",
+          "unite": "hl",
           "complement_libelle": "",
           "docs": [
             "DRev"
