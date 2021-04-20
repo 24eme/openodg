@@ -985,6 +985,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $non_attables;
 		}
 
+		public function addDegustateur($compteId, $college, $numTab){
+			$this->getOrAdd('degustateurs');
+			$compte = CompteClient::getInstance()->find($compteId);
+			$degustateur = $this->degustateurs->getOrAdd($college)->getOrAdd($compteId);
+			$degustateur->getOrAdd('libelle');
+			$degustateur->libelle = $compte->getLibelleWithAdresse();
+			$degustateur->getOrAdd('confirmation');
+			$degustateur->getOrAdd('numero_table');
+
+			$degustateur->numero_table = $numTab;
+			$degustateur->confirmation = true;
+		}
+
 		public function hasAllDegustateursConfirmation(){
 			$confirmation = true;
 			foreach ($this->getDegustateurs() as $collegeKey => $degustateursCollege) {
