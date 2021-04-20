@@ -173,7 +173,7 @@
               <?php endif; ?>
 
 
-          <?php if($drev->isValidee() && $drev->isAllDossiersHaveSameAddress()): ?>
+          <?php if($drev->isValidee() && !$drev->isAllDossiersHaveSameAddress()): ?>
           <h3 id="table_igp_title">Chais</h3>
           <table class="table table-bordered table-striped table_igp">
             <thead>
