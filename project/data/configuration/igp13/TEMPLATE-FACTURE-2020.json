@@ -76,6 +76,7 @@
           "modele": "Cotisation",
           "prix": 60,
           "tva": 0.2,
+          "unite": "",
           "libelle": "Conditionnement",
           "complement_libelle": "",
           "docs": [
@@ -117,6 +118,7 @@
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0.2,
+          "unite": "hl",
           "libelle": "Changement de dénomination vers Méditerrannée",
           "complement_libelle": "",
           "docs": [
@@ -139,6 +141,7 @@
           "modele": "CotisationVariable",
           "prix": 0.05,
           "tva": 0.2,
+          "unite": "hl",
           "libelle": "Revendication",
           "complement_libelle": "",
           "docs": [
@@ -161,6 +164,7 @@
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0.2,
+          "unite": "hl",
           "libelle": "Revendication",
           "complement_libelle": "",
           "docs": [
@@ -183,6 +187,7 @@
           "modele": "CotisationVariable",
           "prix": 0.03,
           "tva": 0,
+          "unite": "hl",
           "libelle": "Cotisation reversée à l'INAO",
           "complement_libelle": "",
           "docs": [
