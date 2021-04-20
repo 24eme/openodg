@@ -9,19 +9,24 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
         $this->fillFromCotisation($cotisation);
         $this->facture = 0;
         $this->facturable = 1;
-        $this->date = ($doc->exist('validation_odg'))? $doc->validation_odg : null;
-        $this->date_version = ($doc->exist('validation'))? $doc->validation : null;
-        $this->version = $doc->version;
+        if($doc->exist('version')) {
+            $this->version = $doc->version;
+        }
+        if($doc->exist('validation')) {
+            $this->date = $doc->validation;
+            $this->date_version = $doc->validation;
+        }
         $this->type = $doc->type;
-        $this->campagne = ($doc->exist('campagne'))? $doc->campagne : null;
-
+        if($doc->exist('campagne')) {
+            $this->campagne = $doc->campagne;
+        }
     }
 
     public function fillFromCotisation($cotisation) {
         $this->categorie = $cotisation->getCollectionKey();
         $this->type_hash = $cotisation->getDetailKey();
-        $this->type_libelle = $cotisation->getConfigCollection()->libelle;
-        $this->detail_libelle = $cotisation->getConfigLibelle();
+        $this->type_libelle = str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigCollection()->libelle);
+        $this->detail_libelle = str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigLibelle());
         $this->quantite = $cotisation->getQuantite();
         $this->taux = $cotisation->getPrix();
         $this->tva = $cotisation->getTva();

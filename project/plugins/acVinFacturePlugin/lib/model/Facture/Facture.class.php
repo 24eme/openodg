@@ -233,16 +233,13 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement) {
             $ligne = $this->lignes->add($mouvement->value->categorie);
-            $ligne->reference = $mouvement->value->detail_identifiant;
             $ligne->libelle = $mouvement->value->type_libelle;
             $ligne->origine_mouvements->add($mouvement->id)->add(null, $mouvement->key[MouvementFactureView::KEY_ORIGIN]);
-
-            $libelle = $this->createLigneLibelle($ligne->libelle,$mouvement->value->detail_libelle,$ligne->reference);
 
             $detail = null;
             $quantite = 0;
             foreach ($ligne->details as $d) {
-                if($d->libelle == $libelle){
+                if($d->libelle == $mouvement->value->detail_libelle){
                     $detail = $d;
                 }
             }
@@ -250,7 +247,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
                 $detail = $ligne->details->add();
                 $detail->prix_unitaire = $mouvement->value->taux;
                 $detail->taux_tva = $mouvement->value->tva;
-                $detail->libelle = $libelle;
+                $detail->libelle = $mouvement->value->detail_libelle;
                 if($mouvement->value->unite) {
                     $detail->add('unite', $mouvement->value->unite);
                 }
@@ -407,7 +404,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function getCampageTemplate() {
 
-        return preg_replace('/^[A-Z]+-[A-Z]+-[A-Z]+-/', '', $this->getTemplateId());
+        return preg_replace('/^[A-Z]+-[A-Z]+-([A-Z]+-)?/', '', $this->getTemplateId());
     }
 
     public function getTemplateId() {

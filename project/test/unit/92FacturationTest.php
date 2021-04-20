@@ -170,9 +170,11 @@ $t->is($facture->numero_facture,date("Ymd")."01", "Numero de la facture");
 $t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
 $t->is($facture->getNumeroOdg(),substr($facture->campagne, 2, 2)."00001", "Numéro odg de la facture");
 
-foreach ($facture->getLignes() as $key => $lignes) {
-    $t->is($lignes->reference, $drev->numero_archive, "La ligne de facture ".$key." a le bon numéro de dossier");
-}
+$t->is($facture->lignes->igp13->libelle, "IGP13", "Libellé de la ligne");
+$t->ok($facture->lignes->igp13->details[0]->unite, "hl", "Unité du détail");
+$t->ok($facture->lignes->igp13->details[0]->libelle, "Libellé du détail de la ligne");
+$t->like($facture->lignes->igp13->details[0]->libelle, "/N° ".$drev->numero_archive."/", "Libellé du détail de la ligne avec le numéro d'archive");
+$t->is($facture->lignes->igp13->details[0]->getLibelleComplet(), $facture->lignes->igp13->libelle." ".$facture->lignes->igp13->details[0]->libelle, "Libellé complet de la ligne");
 
 $t->comment("Modificatrice DREV, on ajoute un lot volume 100 et on supprime le dernier lot");
 

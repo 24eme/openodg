@@ -1351,10 +1351,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function creationMouvementFactureFromLot($cotisation, $lot){
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
-            $mouvement->createFromCotisationAndDoc($cotisation, $this);
-            $mouvement->date = $this->getDateFormat();
+			$mouvement->detail_identifiant = $lot->numero_dossier;
             $mouvement->date_version = $this->getDateFormat();
-            $mouvement->detail_identifiant = $lot->numero_dossier;
+            $mouvement->date = $this->getDateFormat();
+            $mouvement->createFromCotisationAndDoc($cotisation, $this);
             $mouvement->facture = intval($mouvement->date_version < "2021-04-01");
 
             return $mouvement;

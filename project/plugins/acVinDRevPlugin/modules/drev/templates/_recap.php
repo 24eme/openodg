@@ -9,10 +9,10 @@
 <?php endif; ?>
 
 <?php if(count($drev->getProduitsWithoutLots())): ?>
-<?php    include_partial('drev/recap_aop', array('drev'=>$drev)); ?>
+<?php    include_partial('drev/recap_aop', array('drev'=>$drev, 'form' =>$form)); ?>
 <?php endif; ?>
 <?php if($drev->exist('lots')): ?>
-<?php    include_partial('drev/recap_igp', array('drev'=>$drev)); ?>
+<?php    include_partial('drev/recap_igp', array('drev'=>$drev, 'form' =>$form)); ?>
 <?php endif; ?>
           <?php if(count($drev->declaration->getProduitsVci())): ?>
             <h3>Gestion du VCI</h3>
