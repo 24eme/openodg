@@ -1251,11 +1251,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ($this->chais->nom != $this->declarant->nom || $this->chais->adresse != $this->declarant->adresse || $this->chais->commune != $this->declarant->commune || $this->chais->code_postal != $this->declarant->code_postal);
     }
 
+    public function isAllDossiersHaveSameAddress(){
+      $adresse = $this->constructAdresseLogement();
+      foreach ($this->getLotsByNumeroDossier() as $lot){
+        if($lot->adresse_logement !== $adresse)
+          return false;
+      }
+      return true;
+    }
+
     public function constructAdresseLogement(){
         $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
         if($this->isAdresseLogementDifferente()){
-            $completeAdresse = sprintf("%s — %s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune,$this->chais->telephone);
+            $completeAdresse = $this->chais->nom ? $this->chais->nom." — " : "";
+            $completeAdresse .= $this->chais->adresse ? $this->chais->adresse." — " :"";
+            $completeAdresse .= $this->chais->code_postal ? $this->chais->code_postal." — " :  "";
+            $completeAdresse .= $this->chais->commune ? $this->chais->commune : "";
+            $completeAdresse .= $this->chais->telephone ? " — ".$this->chais->telephone : "";
         }
 
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
