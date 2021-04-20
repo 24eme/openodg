@@ -56,11 +56,13 @@
         </div>
         <div class="col-xs-4 text-center">
             <div class="btn-group">
+                <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
                 <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
                 </a>
+                <?php endif; ?>
                 <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;DRev
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;PDF de la DRev
                 </a>
             </div>
         </div>

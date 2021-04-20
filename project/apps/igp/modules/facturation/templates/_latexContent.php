@@ -1,5 +1,7 @@
 <?php use_helper('TemplatingFacture'); ?>
-<?php use_helper('Display'); ?>
+<?php use_helper('Display');
+var_dump( sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban']); exit;
+ ?>
 \documentclass[a4paper, 10pt]{letter}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -29,7 +31,6 @@
 \definecolor{vertclair}{rgb}{0.70,0.70,0.70}
 \definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
-
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_<?php echo strtolower($facture->region); ?>.png}
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Relevé de Cotisations<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
@@ -41,7 +42,7 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\EMETTEURIBAN{<?php echo (sfConfig::get('app_facture_coordonnees_bancaire'))['rib'] ?>}
+\def\EMETTEURIBAN{<?php echo (isset(sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban']))? sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban'] : "" ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
@@ -143,11 +144,11 @@
         <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
         <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
-        {<?php echo ($detail->libelle == 'Superficie') ? formatFloat($detail->quantite, ',', 4) : formatFloat($detail->quantite, ','); ?><?php if($ligne->exist('unite')): ?> \texttt{<?php echo $detail->unite ?>} <?php endif; ?> &
+        {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php if($detail->exist('unite')): ?><?php echo ($detail->unite); ?><?php else: ?>~~~<?php endif; ?>} &
         <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
-    <?php endforeach; ?>
 		\hline
+    <?php endforeach; ?>
   <?php endforeach; ?>
   \end{tabular}
 

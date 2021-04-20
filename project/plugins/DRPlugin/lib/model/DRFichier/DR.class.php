@@ -95,8 +95,8 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
       foreach($cotisations as $cotisation) {
           $mouvement = DRMouvementFactures::freeInstance($this);
           $mouvement->createFromCotisationAndDoc($cotisation,$this);
-          $mouvement->date = $this->getCampagne().'-12-10';
-          $mouvement->date_version = $this->getCampagne().'-12-10';
+          $mouvement->date = $this->getPeriode().'-12-10';
+          $mouvement->date_version = $this->getPeriode().'-12-10';
 
           if(isset($cotisationsPrec[$cotisation->getHash()])) {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();

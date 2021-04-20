@@ -21,31 +21,7 @@
           "prix": 0.17,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Revendication",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeRevendiqueLots"
-        },
-        "cotisation": {
-          "modele": "CotisationVariable",
-          "prix": 0.245,
-          "tva": 0,
-          "unite": "hl",
-          "libelle": "Cotisation syndicale",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeRevendiqueLots"
-        },
-        "controleexterne": {
-          "modele": "CotisationVariable",
-          "prix": 0.1,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Contrôle externe",
+          "libelle": "Cotisation ODG - N° %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -57,7 +33,39 @@
           "prix": 0.2,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Contrôle interne",
+          "libelle": "Contrôle interne - N° %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        },
+        "controleexterne": {
+          "modele": "CotisationVariable",
+          "prix": 0.1,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle externe - N° %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        }
+      }
+    },
+    "cotisationSyndicale": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.245,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation syndicale - N° %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -76,7 +84,8 @@
           "modele": "Cotisation",
           "prix": 60,
           "tva": 0.2,
-          "libelle": "Conditionnement",
+          "libelle": "Contrôle conditionné - N° %detail_identifiant%",
+          "unite": "",
           "complement_libelle": "",
           "docs": [
             "Degustation"
@@ -96,36 +105,13 @@
           "prix": 70,
           "tva": 0.2,
           "unite": "",
-          "libelle": "Forfait sur nouveau passage en dégustation",
+          "libelle": "Nouveau passage en dégustation - N° %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "Degustation"
           ],
           "callback": "getFacturationLotRedeguste",
-          "callback_parameters": [
-          ]
-        }
-      }
-    },
-    "changement": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "IGP13",
-      "code_comptable": "",
-      "details": {
-        "cotisation": {
-          "modele": "CotisationVariable",
-          "prix": 0.15,
-          "tva": 0.2,
-          "libelle": "Changement de dénomination vers Méditerrannée",
-          "complement_libelle": "",
-          "docs": [
-            "ChgtDenom"
-          ],
-          "callback": "getVolumeDestFacturable",
-          "callback_parameters": [
-            "/appellations/MED"
-          ]
+          "callback_parameters": []
         }
       }
     },
@@ -139,7 +125,8 @@
           "modele": "CotisationVariable",
           "prix": 0.05,
           "tva": 0.2,
-          "libelle": "Revendication",
+          "libelle": "Revendication - N° %detail_identifiant%",
+          "unite": "hl",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -157,16 +144,32 @@
       "libelle": "Cotisation Méditerrannée",
       "code_comptable": "",
       "details": {
-        "cotisation": {
+        "revendication": {
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0.2,
-          "libelle": "Revendication",
+          "libelle": "revendication - N° %detail_identifiant%",
+          "unite": "hl",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
           "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        },
+        "changement": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "changement de dénomination - N° %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "getVolumeDestFacturable",
           "callback_parameters": [
             "/appellations/MED"
           ]
@@ -176,14 +179,15 @@
     "inao": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "INAO",
+      "libelle": "Droits INAO",
       "code_comptable": "",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
           "prix": 0.03,
           "tva": 0,
-          "libelle": "Cotisation reversée à l'INAO",
+          "unite": "hl",
+          "libelle": "(N° %detail_identifiant%)",
           "complement_libelle": "",
           "docs": [
             "DRev"

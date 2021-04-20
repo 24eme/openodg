@@ -988,6 +988,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $non_attables;
 		}
 
+		public function addDegustateur($compteId, $college, $numTab){
+			$this->getOrAdd('degustateurs');
+			$compte = CompteClient::getInstance()->find($compteId);
+			$degustateur = $this->degustateurs->getOrAdd($college)->getOrAdd($compteId);
+			$degustateur->getOrAdd('libelle');
+			$degustateur->libelle = $compte->getLibelleWithAdresse();
+			$degustateur->getOrAdd('confirmation');
+			$degustateur->getOrAdd('numero_table');
+
+			$degustateur->numero_table = $numTab;
+			$degustateur->confirmation = true;
+		}
+
 		public function hasAllDegustateursConfirmation(){
 			$confirmation = true;
 			foreach ($this->getDegustateurs() as $collegeKey => $degustateursCollege) {
@@ -1341,10 +1354,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function creationMouvementFactureFromLot($cotisation, $lot){
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
-            $mouvement->createFromCotisationAndDoc($cotisation, $this);
-            $mouvement->date = $this->getDateFormat();
+			$mouvement->detail_identifiant = $lot->numero_dossier;
             $mouvement->date_version = $this->getDateFormat();
-            $mouvement->detail_identifiant = $lot->numero_dossier;
+            $mouvement->date = $this->getDateFormat();
+            $mouvement->createFromCotisationAndDoc($cotisation, $this);
             $mouvement->facture = intval($mouvement->date_version < "2021-04-01");
 
             return $mouvement;
