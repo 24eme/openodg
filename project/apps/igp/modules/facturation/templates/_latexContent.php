@@ -1,7 +1,5 @@
 <?php use_helper('TemplatingFacture'); ?>
-<?php use_helper('Display');
-var_dump( sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban']); exit;
- ?>
+<?php use_helper('Display'); ?>
 \documentclass[a4paper, 10pt]{letter}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
