@@ -30,8 +30,7 @@
             <th class="col-xs-1">Date</th>
             <th class="col-xs-1">Numéro</th>
             <th class="col-xs-2">Type</th>
-            <th class="col-xs-4">Libellé</th>
-            <th class="col-xs-2 text-right">Montant TTC Facture</th>
+            <th class="col-xs-4 text-right">Montant TTC Facture</th>
             <th class="col-xs-2 text-right">Montant payé</th>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <th style="witdth: 0;"></th>
@@ -45,7 +44,6 @@
             <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
             <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
-            <td><?php if(!$facture->isAvoir()): ?><?php echo ($facture->getTemplate())? $facture->getTemplate()->libelle : $facture->getPieces()[0]->libelle ?><?php endif; ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
             <td class="text-right"><?php echo echoFloat($facture->getMontantPaiement()); ?>&nbsp;€</td>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
