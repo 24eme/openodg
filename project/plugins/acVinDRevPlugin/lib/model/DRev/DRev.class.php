@@ -117,8 +117,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
-                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0, 'volume_max' => 0, 'volume_lots' => 0, 'volume_restant' => 0, 'nb_lots' => 0);
+                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0,
+                                            'volume_max' => 0, 'volume_lots' => 0,
+                                            'volume_restant' => 0, 'nb_lots' => 0,
+                                            'nb_lots_degustables' => 0
+                                           );
             }
+            $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' Total';
             if(isset($couleurs[$couleur]['volume_total']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
                 $couleurs[$couleur]['volume_total'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
             } else {
@@ -126,40 +131,55 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
-            $couleurs[$couleur]['nb_lots'] = 0;
-            $couleurs[$couleur]['nb_lots_degustables'] = 0;
         }
 
         // Parcours dans les lots
         foreach($this->lots as $lot) {
-            if (!isset($couleurs[$couleur]['nb_lots'])) {
-                $couleurs[$couleur]['nb_lots'] = 0;
-                $couleurs[$couleur]['nb_lots_degustables'] = 0;
-            }
-            if (!isset($couleurs[$couleur]['volume_lots'])) {
-                $couleurs[$couleur]['volume_lots'] = 0;
-            }
             if($lot->millesime != $this->getPeriode()) {
-              continue;
+                continue;
             }
-          $couleur = $lot->getProduitRevendiqueLibelleComplet();
-          if($lot->getProduitRevendique()){
-            $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleComplet();
-          }
+            $couleur = $lot->getConfig()->getCouleur()->getLibelleComplet();
+            if (!isset($couleurs[$couleur])) {
+                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0,
+                                            'volume_max' => 0, 'volume_lots' => 0,
+                                            'volume_restant' => 0, 'nb_lots' => 0,
+                                            'nb_lots_degustables' => 0
+                                           );
+            }
+            $couleurs[$couleur]['appellation'] = $lot->getConfig()->getAppellation()->getLibelleComplet().' Total';
+            if($lot->getProduitRevendique()){
+                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleComplet();
+            }
             $couleurs[$couleur]['volume_lots'] += $lot->volume;
             $couleurs[$couleur]['nb_lots']++;
             if ($lot->affectable) {
                 $couleurs[$couleur]['nb_lots_degustables']++;
             }
         }
+        $total_appellations = array();
         foreach($couleurs as $k => $couleur) {
-            if (!isset($couleur['volume_lots'])) {
-                $couleur['volume_lots'] = 0;
+            if (isset($couleur['volume_total']) || isset($couleur['volume_lots'])) {
+                $couleur['volume_restant'] = $couleur['volume_total'] - $couleur['volume_lots'];
+                $couleurs[$k]['volume_restant'] = $couleur['volume_restant'];
             }
-            if (isset($couleur['volume_total'])) {
-                $couleurs[$k]['volume_restant'] = $couleur['volume_total'] - $couleur['volume_lots'];
+            if (!isset($total_appellations[$couleur['appellation']])) {
+                    $total_appellations[$couleur['appellation']] = array(
+                                                'volume_total' => 0, 'superficie_totale' => 0,
+                                                'volume_max' => 0, 'volume_lots' => 0,
+                                                'volume_restant' => 0, 'nb_lots' => 0,
+                                                'nb_lots_degustables' => 0
+                                               );
             }
+            $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
+            $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
+            $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
+            $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
+            $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
+            $total_appellations[$couleur['appellation']]['nb_lots'] += $couleur['nb_lots'];
+            $total_appellations[$couleur['appellation']]['nb_lots_degustables'] += $couleur['nb_lots_degustables'];
         }
+        $couleurs = array_merge($couleurs, $total_appellations);
+        ksort($couleurs);
         return $couleurs;
     }
 

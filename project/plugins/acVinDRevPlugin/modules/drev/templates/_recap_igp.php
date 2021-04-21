@@ -1,8 +1,3 @@
-            <?php
-                $lots = $drev->getLotsByCouleur();
-                $lotsHorsDR = $drev->getLotsHorsDR();
-                $synthese_revendication = $drev->summerizeProduitsLotsByCouleur();
-                ?>
               <h3>Synthèse IGP</h3>
               <table class="table table-bordered table-striped">
                 <thead>
@@ -23,44 +18,43 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($lots as $couleur => $lotsByCouleur) : ?>
-                    <tr>
-                      <td><strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a><small class="pull-right">&nbsp;<?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat(round($synthese_revendication[$couleur]['volume_total'] / $synthese_revendication[$couleur]['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?></td>
-                      <td class="text-right"><?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['superficie_totale']): ?><?php echoFloat($synthese_revendication[$couleur]['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?></td>
+                  <?php foreach ($drev->summerizeProduitsLotsByCouleur() as $couleur => $synthese) :
+                      $isTotal = strpos($couleur, 'Total') !== false;
+                    ?>
+                    <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
+                      <td>
+                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a>
+                          <?php if (!$isTotal) : ?>
+                              <small class="pull-right">&nbsp;<?php if(isset($synthese) && $synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?>
+                          <?php endif; ?>
+                      </td>
                       <td class="text-right">
-                        <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_total']): ?>
-
-                          <?php echoFloat($synthese_revendication[$couleur]['volume_total']); ?><small class="text-muted">&nbsp;hl</small>
+                          <?php if($synthese['superficie_totale']): ?><?php printf("%.04f", $synthese['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?>
+                      </td>
+                      <td class="text-right">
+                        <?php if(isset($synthese) && $synthese['volume_total']): ?>
+                          <?php echoFloat($synthese['volume_total']); ?><small class="text-muted">&nbsp;hl</small>
 
                         <?php endif; ?>
                       </td>
                       <td class="text-right">
-                          <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['nb_lots']): ?>
-                              <?php  if ($synthese_revendication[$couleur]['nb_lots'] > 0): ?>
-                                  <?php printf("%0.2d", $synthese_revendication[$couleur]['nb_lots_degustables'] / $synthese_revendication[$couleur]['nb_lots'] * 100); ?>%</span> &nbsp;&nbsp; <?php echo $synthese_revendication[$couleur]['nb_lots']; ?>
+                              <?php  if ($synthese['nb_lots'] > 0): ?>
+                                  <?php if ($isTotal): ?>
+                                  <span class="text-muted"><?php printf("%0.2d", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100); ?>%</span> &nbsp;&nbsp;
+                                  <?php endif;?>
+                                  <?php echo $synthese['nb_lots']; ?>
                               <?php else: ?>
                                    aucun lots
                                <?php endif; ?>
-                      <?php elseif(isset($lotsHorsDR[$couleur]) && isset($synthese_revendication[$couleur]['nb_lots'])): ?>
-                          <div class="col-xs-6 text-muted text-left"><?php printf("%0.2d", $synthese_revendication[$couleur]['nb_lots_degustables'] / $synthese_revendication[$couleur]['nb_lots'] * 100); ?>%</div> <div class="col-xs-6"><?php echo $synthese_revendication[$couleur]['nb_lots']; ?></div>
-                      <?php endif; ?>
                       </td>
                       <td class="text-right">
-                        <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['volume_lots']): ?>
-
-                          <?php echoFloat($synthese_revendication[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
-                        <?php elseif (isset($lotsHorsDR[$couleur])): ?>
-                            <?php echoFloat($lotsHorsDR[$couleur]['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
-                        <?php endif; ?>
-
-
+                          <?php echoFloat($synthese['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
                       </td>
                       <td class="text-right">
-                        <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) >= 0): ?><?php echoFloat($synthese_revendication[$couleur]['volume_restant']); ?><small>&nbsp;hl</small><?php endif; ?>
-                        <?php if(isset($synthese_revendication[$couleur]) && round($synthese_revendication[$couleur]['volume_restant'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese_revendication[$couleur]['volume_restant']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                        <?php if(isset($synthese) && round($synthese['volume_restant'],2) >= 0): ?><?php echoFloat($synthese['volume_restant']); ?><small>&nbsp;hl</small><?php endif; ?>
+                        <?php if(isset($synthese) && round($synthese['volume_restant'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
                       </td>
-                    </tr>
-
+                      </tr>
                   <?php endforeach; ?>
                 </tbody>
               </table>
