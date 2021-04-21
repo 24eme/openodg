@@ -129,15 +129,6 @@
   \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-    <?php if (count($ligne->details) === 1 && !$ligne->details->getFirst()->libelle): ?>
-        \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
-        <?php echo formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
-        <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo ($ligne->details[0]->exist('unite') && $ligne->details[0]->unite)? $ligne->details[0]->unite : "~~" ?>} &
-        \textbf{<?php echo ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',')." €"; ?>} &
-        \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
-        \hline
-        <?php continue ?>
-    <?php endif; ?>
     <?php foreach ($ligne->details as $detail): ?>
         <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
         <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
