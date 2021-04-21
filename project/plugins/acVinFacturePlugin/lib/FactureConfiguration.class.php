@@ -107,4 +107,24 @@ class FactureConfiguration {
 
         return $this->configuration['delais_paiement'];
     }
+
+    public function getInfos($region = null) {
+        $infos = sfConfig::get('app_facture_emetteur');
+        if(!$region) {
+            $region = strtoupper(sfConfig::get('sf_app'));
+        }
+
+        return $infos[$region];
+    }
+
+    public function getInfo($key, $region = null) {
+        $infos = $this->getInfos($region);
+
+        if(!isset($infos[$key])) {
+
+            return null;
+        }
+
+        return $infos[$key];
+    }
 }
