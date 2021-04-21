@@ -21,12 +21,17 @@ class FacturePaiementEmbedForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        if($this->getObject()->date) {
+        if(!$this->getObject()->date) {
             $date = new DateTime($this->getObject()->date);
             $this->setDefault('date', $date->format('d/m/Y'));
+        }else{
+            $this->setDefault('date', date('d/m/Y'));
         }
-
+        if(!$this->getObject()->montant) {
+            $this->setDefault('montant', $this->getObject()->getDocument()->total_ttc - $this->getObject()->getDocument()->getMontantPaiement());
+        }
     }
+
 
     protected function getTypesPaiements(){
       return array_merge(array("" => ""),FactureClient::$types_paiements);

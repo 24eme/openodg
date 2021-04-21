@@ -1,13 +1,6 @@
-<?php
-$infos = sfConfig::get('app_facture_emetteur');
-$app = strtoupper(sfConfig::get('sf_app'));
-$signature = $infos[$app]['service_facturation'];
-$telephone = $infos[$app]['telephone'];
-$email = $infos[$app]['email'];
-?>
-<?php echo $signature; ?>
+<?php echo FactureConfiguration::getInstance()->getInfo('service_facturation'); ?>
 
 --
-mailto:<?php echo $email ;?>
+mailto:<?php echo FactureConfiguration::getInstance()->getInfo('email'); ?>
 
-<?php echo $telephone; ?>
+<?php echo FactureConfiguration::getInstance()->getInfo('telephone'); ?>

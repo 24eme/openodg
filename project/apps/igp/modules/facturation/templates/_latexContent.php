@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[top=1cm, bottom=3cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
+\usepackage[top=1cm, bottom=1.5cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
@@ -31,7 +31,7 @@
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_<?php echo strtolower($facture->region); ?>.png}
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Facture<?php endif; ?>}
-\def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
+\def\NUMFACTURE{<?php echo $facture->numero_odg; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
@@ -40,10 +40,13 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\EMETTEURIBAN{<?php echo (isset(sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban']))? sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban'] : "" ?>}
+\def\EMETTEURIBAN{<?php echo FactureConfiguration::getInstance()->getInfo('iban', $facture->region) ?>}
+\def\EMETTEURTVAINTRACOM{<?php echo FactureConfiguration::getInstance()->getInfo('tva_intracom', $facture->region) ?>}
+\def\EMETTEURSIRET{<?php echo FactureConfiguration::getInstance()->getInfo('siret', $facture->region) ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
+\def\FACTUREDECLARANTIDENTIFIANT{<?php echo $facture->identifiant; ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
@@ -61,20 +64,22 @@
 
 }
 \cfoot{\small{
-	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
-	N°TVA : FR96803741834 \\
-	IBAN : \EMETTEURIBAN \\
+    \EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL \\
 }}
 
 \begin{document}
 
 \begin{minipage}{0.5\textwidth}
-	\begin{center}
-	\hspace{-1.2cm}
-	\includegraphics[width=4cm]{\LOGO}
-	\end{center}
+	\vspace{-0.8cm}
+	\includegraphics[width=4cm]{\LOGO} \\
+	\textbf{\EMETTEURLIBELLE} \\ \\
+	\EMETTEURADRESSE \\
+	\EMETTEURCP~\EMETTEURVILLE \\ \\
+    \small{
+	N°~TVA~:~\EMETTEURTVAINTRACOM \\
+    SIRET~:~\EMETTEURSIRET \\
+    IBAN~:~\EMETTEURIBAN
+    }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
@@ -92,7 +97,7 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
 \hhline{|-|-|-|-|}
- \cellcolor{verttresclair} \textbf{N° :} & <?php echo $facture->numero_facture; ?> & \cellcolor{verttresclair} \textbf{Date :} & <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>  \tabularnewline
+ \cellcolor{verttresclair} \textbf{N° :} & \NUMFACTURE & \cellcolor{verttresclair} \textbf{Date :} & <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>  \tabularnewline
  \hhline{|-|-|-|-|}
 \end{tabular}
 
@@ -100,10 +105,17 @@
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
+<?php if($facture->getCvi()): ?>
+\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
+\hhline{|-|-|-|-|}
+\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT & \cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
+\hhline{|-|-|-|-|}
+<?php else: ?>
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
 \hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
+\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT \tabularnewline
 \hhline{|-|-|}
+<?php endif; ?>
 \end{tabular}
 
 \\\vspace{2mm}
@@ -119,7 +131,7 @@
 \end{tabular}
 \end{minipage}
 
-\\\vspace{4mm}
+\\\vspace{8mm}
 
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
@@ -141,14 +153,12 @@
   <?php endforeach; ?>
   \end{tabular}
 
-\\\vspace{6mm}
+\\\vspace{10mm}
 
 \end{center}
 
 \begin{minipage}{0.5\textwidth}
-<?= escape_string_for_latex(
-    ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
-) ?>
+~
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \renewcommand{\arraystretch}{1.5}
@@ -159,35 +169,17 @@
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
   \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{NET À PAYER}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
+  & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
 \end{tabular}
 \end{minipage}
 
-<?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
-\begin{center}
-\\\vspace{2cm}
-\flushleft \textbf{\large{Encours de règlement}}}
-\\\vspace{0.5cm}
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|m{5cm}|>{\raggedleft}m{8cm}|>{\raggedleft}m{5cm}|}
-  \hline
-  \rowcolor{verttresclair} \textbf{Date de règlement} & \multicolumn{1}{c|}{\textbf{Type de règlement}} & \multicolumn{1}{c|}{\textbf{Montant}}  \tabularnewline
-  \hline
-  <?php foreach ($facture->paiements as $paiement): ?>
-				<?php echo DateTime::createFromformat("Y-m-d",$paiement->date)->format('d/m/Y'); ?>&
-				<?php echo ($paiement->type_reglement)? FactureClient::$types_paiements[$paiement->type_reglement] : ""; ?>&
-				<?php echo formatFloat($paiement->montant,',').' €'; ?>
-				\tabularnewline
-        \hline
-		<?php endforeach; ?>
-    \multicolumn{2}{|c}{~} & \textbf{Déjà réglé: <?php echo formatFloat($facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
-		\hline
-		\multicolumn{2}{|c}{~} & \textbf{NET A PAYER : <?php echo formatFloat($facture->total_ttc - $facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
-    \hline
-  \end{tabular}
-	\begin{minipage}{0.5\textwidth}
-\end{minipage}
-<?php endif; ?>
+\\\vspace{6mm}
+
+\textbf{Modalités de paiements} \\ \\
+<?= escape_string_for_latex(
+    ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
+) ?>
+
 \end{center}
 \end{document}

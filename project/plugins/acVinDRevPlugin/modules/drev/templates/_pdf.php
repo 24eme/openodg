@@ -28,16 +28,29 @@
   </tr>
 </table>
 </td></tr></table>
-<?php if(DRevConfiguration::getInstance()->hasLogementAdresse() && $drev->isAdresseLogementDifferente()): ?>
-    <span class="h3Alt font-size-16-pt">&nbsp;Logement du vin&nbsp;</span><br/>
-    <table class="tableAlt"><tr><td>
-    <table border="0" >
-      <tr>
-          <td style="width: 360px;">&nbsp;Adresse : <i><?php echo $drev->chais->adresse ?></i></td>
-          <td>&nbsp;Commune : <i><?php echo $drev->chais->code_postal; ?> <?php echo $drev->chais->commune; ?></i></td>
-      </tr>
+
+<?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
+    <br/><br/>
+    <span class="h3 font-size-16-pt">&nbsp;Logement du vin&nbsp;</span><br/>
+    <table class="tableAlt" border="0" cellspacing=0 cellpadding=0 style="text-align: right;" >
+      <thead>
+        <tr style="line-height:20em;">
+          <th class="th" style="text-align: center; width: 20%">Num. Dossier</th>
+          <th class="th" style="text-align: center; width: 80%">Détails du chais</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($drev->getLotsByNumeroDossier() as $lot) : ?>
+        <tr>
+          <td class="td" style="text-align: center; width: 20%"><?php echo $lot->numero_dossier; ?></td>
+          <td class="td" style="text-align: left; width: 80%">
+            <?php echo $drev->getAdresseLogement($lot);
+            ?>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
     </table>
-    </td></tr></table>
 <?php endif; ?>
 <?php if(count($drev->declaration->getProduitsWithoutLots($region))): ?>
 <br />

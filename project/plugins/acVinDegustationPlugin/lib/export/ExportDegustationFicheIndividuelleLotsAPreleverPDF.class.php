@@ -12,9 +12,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
             $filename = $this->getFileName(true);
         }
 
-        $app = strtoupper(sfConfig::get('sf_app'));
-        $courrierInfos = sfConfig::get('app_facture_emetteur');
-        $this->courrierInfos = $courrierInfos[$app];
+        $this->courrierInfos = FactureConfiguration::getInstance()->getInfos();
 
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }

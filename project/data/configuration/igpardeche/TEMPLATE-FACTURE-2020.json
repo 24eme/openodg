@@ -17,7 +17,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Cotisation Syndicale",
-            "code_comptable": "706100",
+            "code_comptable": "SYNDICALE",
             "details": {
                 "cotisationSyndicaleDR": {
                     "modele": "CotisationVariable",
@@ -70,7 +70,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Cotisation ODG",
-            "code_comptable": "706100",
+            "code_comptable": "ODG",
             "details": {
                 "revendication": {
                     "modele": "CotisationVariable",
@@ -118,15 +118,15 @@
         "inao": {
             "modele": "CotisationsCollection",
             "callback": "",
-            "libelle": "Droits INAO",
-            "code_comptable": "706100",
+            "libelle": "Droits INAO - N° %detail_identifiant%",
+            "code_comptable": "INAO",
             "details": {
                 "revendication": {
                     "modele": "CotisationVariable",
                     "prix": 0.03,
                     "tva": 0,
                     "unite": "hl",
-                    "libelle": "- N° %detail_identifiant%",
+                    "libelle": "",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"

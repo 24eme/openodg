@@ -7,6 +7,6 @@ all:
       all_etablissements: false
       export_sage_width_txt: true
       all_etablissements: true
-      modalite_paiement: "Modalités de paiements : \\ - comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars 2020 à novembre 2020 \\ - prélèvement automatique en 9 fois de mars 2020 à novembre 2020 \\"
+      modalite_paiement: "Payable par virement : IBAN %iban%\\En votre aimable règlement à réception."
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true

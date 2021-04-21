@@ -131,8 +131,8 @@ degustation_selection_degustateurs:
     sf_method: [get, post]
 
 degustation_ajout_degustateurPresence:
-  url: /degustation/:id/ajout-degustateur-presence
-  param: { module: degustation, action: ajoutDegustateurPresence}
+  url: /degustation/:id/ajout-degustateur-presence/:table
+  param: { module: degustation, action: ajoutDegustateurPresence, table: 1}
   class: DegustationRoute
   options:
     model:    Degustation

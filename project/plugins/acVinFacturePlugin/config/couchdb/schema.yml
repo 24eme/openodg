@@ -8,7 +8,8 @@ Facture:
       identifiant: {}
       code_comptable_client: {}
       numero_facture: {}
-      numero_ava: {}
+      numero_odg: {}
+      numero_ava: { required: false }
       numero_adherent: {}
       date_emission: {}
       date_facturation: {}
@@ -117,7 +118,7 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
-      modalite_paiement: { required: false}
+      modalite_paiement: { }
       paiements:
         class: FacturePaiements
         required: false

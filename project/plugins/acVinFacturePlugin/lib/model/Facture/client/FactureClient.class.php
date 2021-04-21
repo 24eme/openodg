@@ -162,7 +162,7 @@ class FactureClient extends acCouchdbClient {
         $facture->storeOrigines();
         $facture->storeTemplates($template);
         if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
-            $facture->add('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
+            $facture->set('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
         }
         $facture->arguments = $arguments;
         if(trim($message_communication)) {
@@ -201,7 +201,7 @@ class FactureClient extends acCouchdbClient {
         $facture->updateTotaux();
 
         if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
-            $facture->add('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
+            $facture->set('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
         }
         //$facture->arguments = $arguments;
         if(trim($message_communication)) {
@@ -249,7 +249,7 @@ class FactureClient extends acCouchdbClient {
         $f->_id = $facture->_id;
         $f->_rev = $facture->_rev;
         $f->numero_facture = $facture->numero_facture;
-        $f->numero_ava = $facture->numero_ava;
+        $f->numero_odg = $facture->numero_odg;
         $f->numero_archive = $facture->numero_archive;
 
         $f->forceFactureMouvements();
@@ -458,7 +458,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->add('templates');
 
       $avoir->numero_archive = null;
-      $avoir->numero_ava = null;
+      $avoir->numero_odg = null;
       $avoir->versement_comptable = 0;
       $avoir->versement_comptable_paiement = 1;
       $avoir->storeDatesCampagne(date('Y-m-d'));

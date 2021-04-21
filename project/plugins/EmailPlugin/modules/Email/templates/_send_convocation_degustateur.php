@@ -1,6 +1,5 @@
 <?php use_helper('Date');
-$app = strtoupper(sfConfig::get('sf_app'));
-$infos = sfConfig::get('app_facture_emetteur');
+$infos = FactureConfiguration::getInstance()->getInfos();
 ?>Madame, Monsieur,
 
 Nous vous invitions à participer à la prochaine commission de dégustation des vins IGP qui aura lieu le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "HH").'h'.format_date($degustation->date, "mm"); ?> <?php echo $degustation->getLieuNom()." - ".preg_replace("/.+—[ ]*/", "", $degustation->lieu); ?>

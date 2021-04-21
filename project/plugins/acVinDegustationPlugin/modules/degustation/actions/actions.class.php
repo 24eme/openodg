@@ -165,9 +165,9 @@ class degustationActions extends sfActions {
 
     public function executeAjoutDegustateurPresence(sfWebRequest $request){
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->table = null;
+        $this->table = $request->getParameter('table');
 
-        $this->form = new DegustationAjoutDegustateurForm($this->degustation);
+        $this->form = new DegustationAjoutDegustateurForm($this->degustation, array(), array('table' => $this->table));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
