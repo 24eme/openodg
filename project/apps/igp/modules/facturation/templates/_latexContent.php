@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[top=1cm, bottom=3cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
+\usepackage[top=1cm, bottom=1.5cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
@@ -164,8 +164,9 @@
 \end{tabular}
 \end{minipage}
 
-\\\vspace{5mm}
+\\\vspace{6mm}
 
+\textbf{Modalités de paiements} \\ \\
 <?= escape_string_for_latex(
     ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
 ) ?>
