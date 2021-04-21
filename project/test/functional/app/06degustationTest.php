@@ -216,16 +216,16 @@ $t->is($b->getResponse()->getContentType(), 'text/html; charset=utf-8', "Content
 $t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche individuelle dégustateur html");
 
 $b->with('response')->begin()->
-    checkElement('table.table tr:nth-child(3) td:nth-child(1) strong', "A01")->
-    checkElement('table.table tr:nth-child(4) td:nth-child(1) strong', "A02")->
-    checkElement('table.table tr:nth-child(5) td:nth-child(1) strong', "A03")->
-    checkElement('table.table tr:nth-child(6) td:nth-child(1) strong', "A04")->
-    checkElement('table.table tr:nth-child(7) td:nth-child(1) strong', "A05")->
-    checkElement('table.table tr:nth-child(8) td:nth-child(1) strong', "A06")->
-    checkElement('table.table tr:nth-child(9) td:nth-child(1) strong', "A07")->
-    checkElement('table.table tr:nth-child(10) td:nth-child(1) strong', "A08")->
-    checkElement('table.table:nth-child(2n) tr:nth-child(3) td:nth-child(1) strong', "A09")->
-    checkElement('table.table:nth-child(2n) tr:nth-child(4) td:nth-child(1) strong', "A10")
+    checkElement('table#table_fiche_1 tr:nth-child(3) td:nth-child(1) strong', "A01")->
+    checkElement('table#table_fiche_1 tr:nth-child(4) td:nth-child(1) strong', "A02")->
+    checkElement('table#table_fiche_1 tr:nth-child(5) td:nth-child(1) strong', "A03")->
+    checkElement('table#table_fiche_1 tr:nth-child(6) td:nth-child(1) strong', "A04")->
+    checkElement('table#table_fiche_1 tr:nth-child(7) td:nth-child(1) strong', "A05")->
+    checkElement('table#table_fiche_1 tr:nth-child(8) td:nth-child(1) strong', "A06")->
+    checkElement('table#table_fiche_1 tr:nth-child(9) td:nth-child(1) strong', "A07")->
+    checkElement('table#table_fiche_1 tr:nth-child(10) td:nth-child(1) strong', "A08")->
+    checkElement('table#table_fiche_2 tr:nth-child(3) td:nth-child(1) strong', "A09")->
+    checkElement('table#table_fiche_2 tr:nth-child(4) td:nth-child(1) strong', "A10")
 ->end();
 
 $b->back();

@@ -31,16 +31,16 @@
           <strong>Table : &nbsp;<?php echo $lots[0]->getNumeroTableStr(); ?></strong>
       </p>
 
-<?php $i = 2; $table_header = true;
+<?php $i = 2; $table_header = true; $table_num = 1;
  foreach($lots as $lotInfo): ?>
-   <?php if ($i % 10 == 0 ) : $table_header = true; ?>
+   <?php if ($i % 10 == 0 ) : $table_header = true; $table_num++; ?>
 </table>
      <br pagebreak="true" />
      <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?></p>
      <br/>
    <?php endif; ?>
    <?php if ($table_header): $table_header = false; ?>
-     <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
+     <table border="1px" class="table" id="table_fiche_<?php echo $table_num ?>" $cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:7%; "><?php echo tdStart() ?><strong>Anon</strong></th>
           <th class="topempty bg-white" style="width:25%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
