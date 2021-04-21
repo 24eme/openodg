@@ -41,11 +41,11 @@
         <h4>Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong></h4>
       </div>
       <div class="col-xs-3 text-right">
-      <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->validation_odg && isset($form['lots']) && $sf_user->isAdmin()): ?>
-        <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
-          <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
+      <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->validation_odg && $sf_user->isAdmin() && $lot->isLogementEditable()): ?>
+        <div style="margin-bottom: 0;" class="<?php if($form->hasErrors()): ?>has-error<?php endif; ?>">
+          <?php echo $form['affectable']->renderError() ?>
           <div class="col-xs-12">
-              <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+              <?php echo $form['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
           </div>
         </div>
       <?php else: ?>
