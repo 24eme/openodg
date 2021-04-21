@@ -37,11 +37,11 @@
                       <td class="text-right">
                           <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['nb_lots']): ?>
                               <?php  if ($synthese_revendication[$couleur]['nb_lots'] > 0): ?>
-                                  <div class="col-xs-6 text-muted text-left"><?php printf("%0.2d", $synthese_revendication[$couleur]['nb_lots_degustables'] / $synthese_revendication[$couleur]['nb_lots'] * 100); ?>%</div> <div class="col-xs-6"><?php echo $synthese_revendication[$couleur]['nb_lots']; ?></div>
+                                  <?php printf("%0.2d", $synthese_revendication[$couleur]['nb_lots_degustables'] / $synthese_revendication[$couleur]['nb_lots'] * 100); ?>%</span> &nbps;&spb,<?php echo $synthese_revendication[$couleur]['nb_lots']; ?>
                               <?php else: ?>
                                    aucun lots
                                <?php endif; ?>
-                      <?php elseif(isset($lotsHorsDR[$couleur])): ?>
+                      <?php elseif(isset($lotsHorsDR[$couleur]) && isset($synthese_revendication[$couleur]['nb_lots'])): ?>
                           <div class="col-xs-6 text-muted text-left"><?php printf("%0.2d", $synthese_revendication[$couleur]['nb_lots_degustables'] / $synthese_revendication[$couleur]['nb_lots'] * 100); ?>%</div> <div class="col-xs-6"><?php echo $synthese_revendication[$couleur]['nb_lots']; ?></div>
                       <?php endif; ?>
                       </td>

@@ -187,7 +187,7 @@
         </div>
     <?php endforeach; ?>
     <div class="text-right">
-        <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
+        <button type="submit" name="submit" value="add" id="lots_ajout" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
     </div>
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-4">

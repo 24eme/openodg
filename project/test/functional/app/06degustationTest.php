@@ -70,13 +70,20 @@ $b->click('button[type="submit"]', array('import_dr_prodouane' => false))->follo
 $b->isForwardedTo('drev', 'lots');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
 
-$b->click('button[id="lots_continue"]', array("drev_lots" => array("lots" => array(array("produit_hash" => $produit->getHash(), "volume" => 100)))))->followRedirect()->followRedirect();
+$b->click('button[id="lots_ajout"]')->followRedirect();
+$b->click('button[id="lots_ajout"]')->followRedirect();
+$b->with('response')->begin()->checkElement('.bloc-lot', 2)->end();
+$b->click('button[id="lots_continue"]', array("drev_lots" => array("lots" => array(
+    array("produit_hash" => $produit->getHash(), "volume" => 100),
+    array("produit_hash" => $produit->getHash(), "volume" => 200),
+))))->followRedirect()->followRedirect();
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 
 $b->click('button[id="btn-validation-document-drev"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
+$b->with('response')->begin()->checkElement('tr.hamzastyle-item', 2)->end();
 
 $t->comment("Organisation d'une dégustation");
 
@@ -84,7 +91,7 @@ $b->get('/degustation');
 $b->isForwardedTo('degustation', 'index');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil des dégustations");
 
-$b->click('button[type="submit"]', array('degustation_creation' => array('date' => date('d/m/Y'), 'time' => '11:00', 'max_lots' => '1')))->followRedirect();
+$b->click('button[type="submit"]', array('degustation_creation' => array('date' => date('d/m/Y'), 'time' => '11:00', 'max_lots' => '2')))->followRedirect();
 $b->isForwardedTo('degustation', 'prelevementLots');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape de séléction des lots");
 
@@ -112,7 +119,10 @@ $b->click('#btn_suivi_prelevement');
 $b->isForwardedTo('degustation', 'preleve');
 $t->is($b->getResponse()->getStatuscode(), 200, "Saisie des prélévements");
 
-$b->click('button[type="submit"]', array('preleve' => array('lots' => array(array("preleve" => "1")))))->followRedirect();
+$b->click('button[type="submit"]', array('preleve' => array('lots' => array(
+    array("preleve" => "1"),
+    array("preleve" => "1")
+))))->followRedirect();
 $b->isForwardedTo('degustation', 'prelevementsEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape de prélevements");
 
@@ -148,7 +158,13 @@ $b->click('#btn_organisation_table')->followRedirect();
 $b->isForwardedTo('degustation', 'organisationTable');
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'organisation des tables");
 
-$b->click('button[type="submit"]', array('tables' => array('numero_lot_0' => '1')))->followRedirect();
+$table1 = ['numero_lot_0' => 1, 'numero_lot_1' => 1];
+for($i = 2; $i < 10; $i++) {
+    $table1['numero_lot_'.$i] = 1;
+    $b->click('#leurre_ajout', ['degustation_ajout_leurre' => ['table' => '1', 'hashref' => '/declaration/certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT']])->followRedirect();
+}
+
+$b->click('button[type="submit"]', array('tables' => $table1))->followRedirect();
 $b->isForwardedTo('degustation', 'organisationTableRecap');
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire récapitulatif d'organisation des tables");
 
@@ -192,6 +208,25 @@ $b->click('#btn_pdf_fiche_individuelle_degustateurs');
 $b->isForwardedTo('degustation', 'ficheIndividuellePDF');
 $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
 $t->is($b->getResponse()->getStatuscode(), 200, "Fiche individuelle des dégustateurs");
+
+$b->back();
+$b->click('#btn_pdf_fiche_individuelle_degustateurs', ['output' => 'html']);
+$b->isForwardedTo('degustation', 'ficheIndividuellePDF');
+$t->is($b->getResponse()->getContentType(), 'text/html; charset=utf-8', "Content type en html");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche individuelle dégustateur html");
+
+$b->with('response')->begin()->
+    checkElement('table.table tr:nth-child(3) td:nth-child(1) strong', "A01")->
+    checkElement('table.table tr:nth-child(4) td:nth-child(1) strong', "A02")->
+    checkElement('table.table tr:nth-child(5) td:nth-child(1) strong', "A03")->
+    checkElement('table.table tr:nth-child(6) td:nth-child(1) strong', "A04")->
+    checkElement('table.table tr:nth-child(7) td:nth-child(1) strong', "A05")->
+    checkElement('table.table tr:nth-child(8) td:nth-child(1) strong', "A06")->
+    checkElement('table.table tr:nth-child(9) td:nth-child(1) strong', "A07")->
+    checkElement('table.table tr:nth-child(10) td:nth-child(1) strong', "A08")->
+    checkElement('table.table:nth-child(2n) tr:nth-child(3) td:nth-child(1) strong', "A09")->
+    checkElement('table.table:nth-child(2n) tr:nth-child(4) td:nth-child(1) strong', "A10")
+->end();
 
 $b->back();
 $b->click('#btn_pdf_fiche_resultats_table');

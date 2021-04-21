@@ -258,15 +258,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     }
 
-    public static function createLigneLibelle($cotisLibelle, $detailLibelle, $reference){
-        $l = $cotisLibelle." ".$detailLibelle;
-        if($reference){
-            $l.= " - ".$reference;
-        }
-        return $l;
-    }
-
-
     public function storePapillons() {
       $papillons = FactureConfiguration::getInstance()->getEcheancesArray();
       $nbPapillons = count($papillons);

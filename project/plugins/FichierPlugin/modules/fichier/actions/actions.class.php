@@ -51,6 +51,7 @@ class fichierActions extends sfActions
     	foreach ($fichier->_attachments as $key => $attachment) {
             if (!$fileParam || strpos($key, $fileParam) !== false ) {
     			$filename = $key;
+				break;
     		}
     	}
 		if (!$filename) {
