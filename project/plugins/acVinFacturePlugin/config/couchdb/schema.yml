@@ -9,6 +9,7 @@ Facture:
       code_comptable_client: {}
       numero_facture: {}
       numero_odg: {}
+      numero_ava: { required: false }
       numero_adherent: {}
       date_emission: {}
       date_facturation: {}
