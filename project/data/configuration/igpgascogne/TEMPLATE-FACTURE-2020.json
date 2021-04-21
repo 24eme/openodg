@@ -9,7 +9,7 @@
         "Degustation"
     ],
     "cotisations": {
-        "forfaitSyndical": {
+        "cotisationSyndicale": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "IGP Gascogne",
@@ -20,7 +20,7 @@
                     "prix": 5,
                     "tva": 0,
                     "unite": "hl",
-                    "libelle": "Cotisation syndicale",
+                    "libelle": "Forfait syndical - N° %detail_identifiant%",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
@@ -41,7 +41,7 @@
                     "prix": 10,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "Forfait sur DRev",
+                    "libelle": "Forfait ODG - N° %detail_identifiant%",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
@@ -61,7 +61,7 @@
                     "prix": 0.46,
                     "tva": 0.2,
                     "unite": "hl",
-                    "libelle": "Revendication",
+                    "libelle": "Revendication - N° %detail_identifiant%",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
@@ -73,14 +73,14 @@
         "inao": {
           "modele": "CotisationsCollection",
           "callback": "",
-          "libelle": "INAO",
+          "libelle": "Droits INAO",
           "code_comptable": "706102",
           "details": {
             "cotisation": {
               "modele": "CotisationVariable",
               "prix": 0.03,
               "tva": 0,
-              "libelle": "Cotisation reversée à l'INAO",
+              "libelle": "- N° %detail_identifiant%",
               "complement_libelle": "",
               "docs": [
                 "DRev"
@@ -92,7 +92,7 @@
         "nonConformite": {
             "modele": "CotisationsCollection",
             "callback": "",
-            "libelle": "Forfait sur lot non conforme",
+            "libelle": "Forfait nouvelle dégustation - N° %detail_identifiant%",
             "code_comptable": "706102",
             "details": {
                 "forfait": {
