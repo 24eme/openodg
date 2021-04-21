@@ -115,15 +115,18 @@ class facturationActions extends sfActions
                 return sfView::SUCCESS;
             }
 
+            $generation = $this->form->save();
+            $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+            $generation->arguments->add('compte', $this->compte->_id);
+            $generation->statut = GENERATIONCLIENT::GENERATION_STATUT_GENERE;
+            $generation->save();
+
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
-            $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$parameters);
+            $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
             if($mouvementsBySoc)
             {
-                $generation = $this->form->save();
-                $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
-                $generation->arguments->add('compte', $this->compte->_id);
-                $generation->statut = GENERATIONCLIENT::GENERATION_STATUT_GENERE;
-                $generation->save();
+                $date_facturation = Date::getIsoDateFromFrenchDate($generation->arguments->get('date_facturation'));
+                $message_communication = $generation->arguments->get('message_communication');
                 $facture = FactureClient::getInstance()->createFacturesBySoc($mouvementsBySoc,$date_facturation, $message_communication,$generation);
                 $facture->save();
             }
