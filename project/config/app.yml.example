@@ -70,6 +70,9 @@ all:
         telephone: "Téléphone 03 89 20 16 50 - Télécopie 03 89 20 16 60"
         email: "info@ava-aoc.fr"
         responsable: "Responsable technique"
+        iban: "FRXX XXXX XXXX XXXX XXXX XXXX XXX"
+        tva_intracom: "FRXXX XXX XXX XXXXX"
+        siret: "XXX XXX XXX XXXXX"
     coordonnees_bancaire:
       siret: "XXX XXX XXX XXXXX"
       banquenom: "Banque nom"

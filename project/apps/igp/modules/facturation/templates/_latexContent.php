@@ -41,6 +41,8 @@
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
 \def\EMETTEURIBAN{<?php echo FactureConfiguration::getInstance()->getInfo('iban', $facture->region) ?>}
+\def\EMETTEURTVAINTRACOM{<?php echo FactureConfiguration::getInstance()->getInfo('tva_intracom', $facture->region) ?>}
+\def\EMETTEURSIRET{<?php echo FactureConfiguration::getInstance()->getInfo('siret', $facture->region) ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
@@ -61,19 +63,20 @@
 
 }
 \cfoot{\small{
-	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
-	N°TVA : FR96803741834 \\
-	IBAN : \EMETTEURIBAN \\
+    \EMETTEURCONTACT Email~:~\EMETTEUREMAIL \\
 }}
 
 \begin{document}
 
 \begin{minipage}{0.5\textwidth}
-    \vspace{-4cm}
-    \hspace{-0.5cm}
-	\includegraphics[width=4cm]{\LOGO}
+	\vspace{-0.8cm}
+	\includegraphics[width=4cm]{\LOGO} \\
+	\textbf{\EMETTEURLIBELLE} \\ \\
+	\EMETTEURADRESSE \\
+	\EMETTEURCP~\EMETTEURVILLE \\ \\
+	N°~TVA~:~\EMETTEURTVAINTRACOM \\
+	IBAN~:~\EMETTEURIBAN \\
+    SIRET~:~\EMETTEURSIRET
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
@@ -156,7 +159,7 @@
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
   \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{NET À PAYER}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
+  & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
 \end{tabular}
 \end{minipage}
