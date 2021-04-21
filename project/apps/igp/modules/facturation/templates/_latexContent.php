@@ -31,7 +31,7 @@
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_<?php echo strtolower($facture->region); ?>.png}
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Facture<?php endif; ?>}
-\def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
+\def\NUMFACTURE{<?php echo $facture->numero_odg; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
@@ -71,10 +71,9 @@
 \begin{document}
 
 \begin{minipage}{0.5\textwidth}
-	\begin{center}
-	\hspace{-1.2cm}
+    \vspace{-4cm}
+    \hspace{-0.5cm}
 	\includegraphics[width=4cm]{\LOGO}
-	\end{center}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
@@ -92,7 +91,7 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
 \hhline{|-|-|-|-|}
- \cellcolor{verttresclair} \textbf{N° :} & <?php echo $facture->numero_facture; ?> & \cellcolor{verttresclair} \textbf{Date :} & <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>  \tabularnewline
+ \cellcolor{verttresclair} \textbf{N° :} & \NUMFACTURE & \cellcolor{verttresclair} \textbf{Date :} & <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>  \tabularnewline
  \hhline{|-|-|-|-|}
 \end{tabular}
 
