@@ -40,9 +40,9 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\EMETTEURIBAN{<?php echo (isset(sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban']))? sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban'] : "" ?>}
-\def\EMETTEURTVAINTRACOM{<?php echo (isset(sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['tva_intracom']))? sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['tva_intracom'] : "" ?>}
-\def\EMETTEURSIRET{<?php echo (isset(sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['siret']))? sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['siret'] : "" ?>}
+\def\EMETTEURIBAN{<?php echo FactureConfiguration::getInstance()->getInfo('iban', $facture->region) ?>}
+\def\EMETTEURTVAINTRACOM{<?php echo FactureConfiguration::getInstance()->getInfo('tva_intracom', $facture->region) ?>}
+\def\EMETTEURSIRET{<?php echo FactureConfiguration::getInstance()->getInfo('siret', $facture->region) ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}

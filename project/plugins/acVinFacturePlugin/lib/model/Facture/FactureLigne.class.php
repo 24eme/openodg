@@ -74,7 +74,7 @@ class FactureLigne extends BaseFactureLigne {
 
     public function getOrigineIdentifiant() {
         foreach($this->origine_mouvements as $docId => $origines) {
-              
+
               return $docId;
         }
 

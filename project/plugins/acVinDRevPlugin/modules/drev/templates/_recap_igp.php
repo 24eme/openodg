@@ -188,13 +188,15 @@
             </thead>
             <tbody>
               <?php foreach ($drev->getLotsByNumeroDossier() as $lot) : ?>
+                <?php if($lot->adresse_logement === $drev->constructAdresseLogement()): ?>
                 <tr>
                   <td class="text-center"><?php echo $lot->numero_dossier; ?></td>
                   <td class="text-left">
-                    <?php echo $drev->getAdresseLogement($lot);
+                    <?php echo $lot->adresse_logement;
                     ?>
                   </td>
                 </tr>
+              <?php endif; ?>
               <?php endforeach; ?>
             </tbody>
           </table>

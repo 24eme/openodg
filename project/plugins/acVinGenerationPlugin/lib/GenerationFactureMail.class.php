@@ -28,11 +28,8 @@ class GenerationFactureMail extends GenerationAbstract {
     }
 
     public static function getSujet($numero) {
-        $infos = sfConfig::get('app_facture_emetteur');
-        $app = strtoupper(sfConfig::get('sf_app'));
-        $signature = $infos[$app]['service_facturation'];
 
-        return "Facture n°$numero - ".$signature;
+        return "Facture n°$numero - ".FactureConfiguration::getInstance()->getInfo('service_facturation');
     }
 
     public static function getActionLibelle() {

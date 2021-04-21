@@ -114,6 +114,10 @@ class FactureConfiguration {
             $region = strtoupper(sfConfig::get('sf_app'));
         }
 
+        if (!array_key_exists($region, $infos)) {
+            throw new sfException(sprintf('Config %s not found in app.yml', $region));
+        }
+
         return $infos[$region];
     }
 

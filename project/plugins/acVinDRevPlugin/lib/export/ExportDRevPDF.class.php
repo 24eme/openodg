@@ -98,8 +98,7 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getFooterText() {
         if(!$this->getRegion()) {
-            $app = strtoupper(sfConfig::get('sf_app'));
-            $courrierInfos = sfConfig::get('app_facture_emetteur');
+            $courrierInfos = FactureConfiguration::getInstance()->getInfos();
             if($courrierInfos && isset($courrierInfos[$app])){
                 $courrierInfos = $courrierInfos[$app];
                 return sprintf("<span style='color:#ff0000;'>%s     %s - %s - %s - %s - %s</span>", $courrierInfos['service_facturation'], $courrierInfos['adresse'], $courrierInfos['code_postal'], $courrierInfos['ville'], $courrierInfos['telephone'], $courrierInfos['email']);
