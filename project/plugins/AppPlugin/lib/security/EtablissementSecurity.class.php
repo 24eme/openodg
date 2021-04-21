@@ -31,7 +31,7 @@ class EtablissementSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DECLARANT_DREV, $droits) && ! in_array($this->etablissement->famille, [EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR])) {
+        if(in_array(self::DECLARANT_DREV, $droits) && ! in_array($this->etablissement->famille, [EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR,EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR])) {
 
             return false;
         }
