@@ -26,6 +26,7 @@ ChgtDenom:
           fields:
             '*': { type: float }
       changement_volume: { type: float }
+      changement_affectable: {}
       origine_produit_hash: {}
       origine_produit_libelle: { }
       origine_millesime: { }
@@ -37,6 +38,7 @@ ChgtDenom:
           fields:
             '*': { type: float }
       origine_volume: { type: float }
+      origine_affectable: {}
       declarant:
         type: collection
         class: ChgtDenomDeclarant

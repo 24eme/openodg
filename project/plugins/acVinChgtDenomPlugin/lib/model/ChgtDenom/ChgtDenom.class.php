@@ -153,6 +153,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->changement_volume = $lot->volume;
         $this->changement_specificite = $lot->specificite;
         $this->changement_numero_logement_operateur = $lot->numero_logement_operateur;
+        $this->changement_affectable = $lot->affectable;
         $this->origine_millesime = $lot->millesime;
         $this->origine_volume = $lot->volume;
         $this->origine_specificite = $lot->specificite;
@@ -160,6 +161,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->origine_cepages = $lot->cepages;
         $this->origine_produit_libelle = $lot->produit_libelle;
         $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
+        $this->origine_affectable = $lot->affectable;
     }
 
     public function getOrigineNumeroLogementOperateur()
@@ -341,7 +343,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                   $lot->details .= $cep.' ('.$pc.'%) ';
               }
           }
-      }else{
+
+          if ($this->exist('changement_affectable')) {
+              $lot->affectable = $this->changement_affectable;
+          }
+      } else {
           $lot->produit_hash = $this->origine_produit_hash;
           $lot->produit_libelle = $this->origine_produit_libelle;
           $lot->cepages = $this->origine_cepages;
