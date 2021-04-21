@@ -25,6 +25,8 @@ class ChgtDenomValidationForm extends acCouchdbForm
       if($this->isAdmin) {
           if (isset($values['affectable']) && $values['affectable']) {
               $this->getDocument()->set('changement_affectable', true);
+          } else {
+              $this->getDocument()->set('changement_affectable', false);
           }
        }
 
