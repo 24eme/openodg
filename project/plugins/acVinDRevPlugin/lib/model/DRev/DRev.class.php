@@ -1290,7 +1290,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function constructAdresseLogement(){
-        $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+        $completeAdresse = sprintf("%s — %s  %s  %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+        $completeAdresse .= $this->declarant->telephone_mobile ? " — ".$this->declarant->telephone_mobile : "";
+        $completeAdresse .= $this->declarant->telephone_bureau ? " — ".$this->declarant->telephone_bureau : "";
 
         if($this->isAdresseLogementDifferente()){
             $completeAdresse = $this->chais->nom ? $this->chais->nom." — " : "";
@@ -1303,7 +1305,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
      }
 
-  public function getAdresseLogement($lot){
+     public function getAdresseLogement($lot){
      $drev = DRevClient::getInstance()->find($lot->id_document);
      return $drev->constructAdresseLogement();
   }

@@ -4,8 +4,10 @@ class DegustationAjoutDegustateurForm extends acCouchdbForm {
 
     protected $degustateurs;
     protected $colleges;
+    protected $table;
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+        $this->table = $options['table'];
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
@@ -19,6 +21,8 @@ class DegustationAjoutDegustateurForm extends acCouchdbForm {
     $this->setValidator('college', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->colleges))));
 
     $this->setWidget('table', new bsWidgetFormChoice(array('choices' => $this->getTables())));
+    $this->widgetSchema['table']->setDefault($this->table);
+
     $this->setValidator('table', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getTables()))));
 
     $this->widgetSchema->setNameFormat('lot_form[%s]');

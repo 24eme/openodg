@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[top=1cm, bottom=3cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
+\usepackage[top=1cm, bottom=1.5cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
@@ -40,10 +40,13 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\EMETTEURIBAN{<?php echo (isset(sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban']))? sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban'] : "" ?>}
+\def\EMETTEURIBAN{<?php echo FactureConfiguration::getInstance()->getInfo('iban', $facture->region) ?>}
+\def\EMETTEURTVAINTRACOM{<?php echo FactureConfiguration::getInstance()->getInfo('tva_intracom', $facture->region) ?>}
+\def\EMETTEURSIRET{<?php echo FactureConfiguration::getInstance()->getInfo('siret', $facture->region) ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
+\def\FACTUREDECLARANTIDENTIFIANT{<?php echo $facture->identifiant; ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
@@ -61,19 +64,22 @@
 
 }
 \cfoot{\small{
-	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
-	N°TVA : FR96803741834 \\
-	IBAN : \EMETTEURIBAN \\
+    \EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL \\
 }}
 
 \begin{document}
 
 \begin{minipage}{0.5\textwidth}
-    \vspace{-4cm}
-    \hspace{-0.5cm}
-	\includegraphics[width=4cm]{\LOGO}
+	\vspace{-0.8cm}
+	\includegraphics[width=4cm]{\LOGO} \\
+	\textbf{\EMETTEURLIBELLE} \\ \\
+	\EMETTEURADRESSE \\
+	\EMETTEURCP~\EMETTEURVILLE \\ \\
+    \small{
+	N°~TVA~:~\EMETTEURTVAINTRACOM \\
+    SIRET~:~\EMETTEURSIRET \\
+    IBAN~:~\EMETTEURIBAN
+    }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
@@ -99,10 +105,17 @@
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
+<?php if($facture->getCvi()): ?>
+\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
+\hhline{|-|-|-|-|}
+\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT & \cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
+\hhline{|-|-|-|-|}
+<?php else: ?>
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
 \hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
+\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT \tabularnewline
 \hhline{|-|-|}
+<?php endif; ?>
 \end{tabular}
 
 \\\vspace{2mm}
@@ -156,13 +169,14 @@
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
   \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{NET À PAYER}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
+  & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
 \end{tabular}
 \end{minipage}
 
-\\\vspace{5mm}
+\\\vspace{6mm}
 
+\textbf{Modalités de paiements} \\ \\
 <?= escape_string_for_latex(
     ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
 ) ?>

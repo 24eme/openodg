@@ -162,7 +162,7 @@ class FactureClient extends acCouchdbClient {
         $facture->storeOrigines();
         $facture->storeTemplates($template);
         if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
-            $facture->add('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
+            $facture->set('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
         }
         $facture->arguments = $arguments;
         if(trim($message_communication)) {
@@ -201,7 +201,7 @@ class FactureClient extends acCouchdbClient {
         $facture->updateTotaux();
 
         if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
-            $facture->add('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
+            $facture->set('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
         }
         //$facture->arguments = $arguments;
         if(trim($message_communication)) {

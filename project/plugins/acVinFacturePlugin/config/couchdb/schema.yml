@@ -118,7 +118,7 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
-      modalite_paiement: { required: false}
+      modalite_paiement: { }
       paiements:
         class: FacturePaiements
         required: false

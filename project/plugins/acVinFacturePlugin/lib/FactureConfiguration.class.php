@@ -107,4 +107,28 @@ class FactureConfiguration {
 
         return $this->configuration['delais_paiement'];
     }
+
+    public function getInfos($region = null) {
+        $infos = sfConfig::get('app_facture_emetteur');
+        if(!$region) {
+            $region = strtoupper(sfConfig::get('sf_app'));
+        }
+
+        if (!array_key_exists($region, $infos)) {
+            throw new sfException(sprintf('Config %s not found in app.yml', $region));
+        }
+
+        return $infos[$region];
+    }
+
+    public function getInfo($key, $region = null) {
+        $infos = $this->getInfos($region);
+
+        if(!isset($infos[$key])) {
+
+            return null;
+        }
+
+        return $infos[$key];
+    }
 }

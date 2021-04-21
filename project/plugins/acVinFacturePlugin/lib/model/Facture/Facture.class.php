@@ -35,19 +35,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function storeEmetteur($region = null) {
-        $configs = sfConfig::get('app_facture_emetteur');
-        $emetteur = new stdClass();
-
-        $this->region = ($region)? $region : strtoupper(sfConfig::get('sf_app'));
-
-        if (!array_key_exists($this->region, $configs))
-            throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
-        foreach ($configs[$this->region] as $param => $value) {
+        foreach (FactureConfiguration::getInstance()->getInfos($region) as $param => $value) {
             if($this->emetteur->exist($param)){
                 $this->emetteur->$param = $value;
             }
         }
-
     }
 
     public function storeDatesCampagne($date_facturation = null) {
@@ -67,6 +59,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
           $c = explode('-', ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date_facturation));
           $this->campagne = $c[0];
         }
+    }
+
+    public function setModalitePaiement($modalitePaiement) {
+        $modalitePaiement = str_replace("%iban%", FactureConfiguration::getInstance()->getInfo('iban'), $modalitePaiement);
+
+        return $this->_set('modalite_paiement', $modalitePaiement);
     }
 
     public function constructIds($doc, $type_document = null) {

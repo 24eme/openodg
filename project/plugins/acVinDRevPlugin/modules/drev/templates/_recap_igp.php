@@ -161,18 +161,9 @@
                 </tr>
               </tbody>
             </table>
-            <br/>
 
-            <?php
-                if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
-                <div class="col-xs-12" style="margin-bottom: 20px;">
-                  <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
-                </div>
-              <?php endif; ?>
-
-
-          <?php if($drev->isValidee() && !$drev->isAllDossiersHaveSameAddress()): ?>
-          <h3 id="table_igp_title">Chais</h3>
+          <?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
+          <h3 id="table_igp_title">Logement du vin</h3>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
@@ -192,4 +183,13 @@
               <?php endforeach; ?>
             </tbody>
           </table>
+        <?php endif; ?>
+
+        <br/>
+
+        <?php
+            if(($sf_user->hasDrevAdmin() || $drev->validation) && (count($drev->getProduitsLots()) || count($drev->getLots())) && $drev->isValidee() && $drev->isModifiable()): ?>
+            <div class="col-xs-12" style="margin-bottom: 20px;">
+              <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer des nouveaux lots IGP</a>
+            </div>
         <?php endif; ?>
