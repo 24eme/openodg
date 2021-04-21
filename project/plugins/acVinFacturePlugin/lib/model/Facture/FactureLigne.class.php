@@ -60,7 +60,7 @@ class FactureLigne extends BaseFactureLigne {
         $this->montant_ht = round($this->montant_ht, 2);
         $this->montant_tva = round($this->montant_tva, 2);
     }
-    
+
 
     /*public function getProduitIdentifiantAnalytique() {
       $id = $this->_get('produit_identifiant_analytique');

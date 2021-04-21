@@ -61,7 +61,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-    public function setModaliteDePaiement($modalitePaiement) {
+    public function setModalitePaiement($modalitePaiement) {
         $modalitePaiement = str_replace("%iban%", FactureConfiguration::getInstance()->getInfo('iban'), $modalitePaiement);
 
         return $this->_set('modalite_paiement', $modalitePaiement);

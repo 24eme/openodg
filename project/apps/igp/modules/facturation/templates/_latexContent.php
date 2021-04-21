@@ -164,8 +164,9 @@
 \end{tabular}
 \end{minipage}
 
-\\\vspace{5mm}
+\\\vspace{6mm}
 
+\textbf{Modalités de paiements} \\ \\
 <?= escape_string_for_latex(
     ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
 ) ?>
