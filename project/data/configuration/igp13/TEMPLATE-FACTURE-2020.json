@@ -141,14 +141,14 @@
     "mediterrannee": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisation Méditerrannée",
+      "libelle": "Cotisation Méditerrannée - N° %detail_identifiant%",
       "code_comptable": "",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0.2,
-          "libelle": "revendication - N° %detail_identifiant%",
+          "libelle": "",
           "unite": "hl",
           "complement_libelle": "",
           "docs": [
