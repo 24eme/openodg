@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(123);
+$t = new lime_test(134);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -122,6 +122,7 @@ $t->is($chgtDenomFromDrev->periode, $year, "le chgt de denom a la bonne periode 
 
 $lotFromDrev = array_shift($lots);
 $chgtDenomFromDrev->setLotOrigine($lotFromDrev);
+$t->is($chgtDenom->changement_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur par defaut est le numero logement du lot origine');
 $chgtDenomFromDrev->changement_produit_hash = $drev->lots[1]->produit_hash;
 $chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenomFromDrev->validate();
@@ -216,9 +217,11 @@ $t->is($chgtDenom->periode, $year, "le chgt de denom a la bonne periode à $year
 $t->comment("Création d'un Changement de Denom Total");
 
 $chgtDenom->setLotOrigine($lotFromDegust);
+$t->is($chgtDenom->changement_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur par defaut est le numero logement du lot origine');
 $chgtDenom->changement_cepages = array('CABERNET' => $volume);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
+$chgtDenom->changement_numero_logement_operateur = "2(ex1)";
 $chgtDenom->validate();
 $chgtDenom->save();
 
@@ -226,6 +229,7 @@ $t->is(count($chgtDenom->lots), 1, "1 seul lot généré");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 $t->is($chgtDenom->changement_volume, $volume, "Le changement est bien sur $volume hl");
 $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit est bien ".$autreLot->produit_libelle);
+$t->is($chgtDenom->origine_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, "Le logement origine est celui du lot origine");
 $t->ok($chgtDenom->isTotal(), "Le changement est bien indiqué comme total");
 
 $lotFromChgmt = $chgtDenom->lots->get(0);
@@ -238,6 +242,7 @@ $t->is($lotFromChgmt->volume, $volume, "Le volume de $volume hl est bien appliqu
 $t->is($lotFromChgmt->cepages->toArray(), array('CABERNET' => $volume), "Le 100% cepage est bien appliqué dans dans le lot");
 $t->is($lotFromChgmt->document_ordre, '03', "Le numéro d'ordre est bien 03");
 $t->is($lotFromChgmt->id_document_provenance, $degustation->_id, "Le lot généré provient bien de la dégustation ".$degustation->_id);
+$t->is($lotFromChgmt->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur, "Le lot changé a changé de logement");
 
 $t->ok($lotFromChgmt->getMouvement(Lot::STATUT_CHANGE_DEST), "statut du lot change dest");
 $t->ok($lotFromChgmt->getMouvement(Lot::STATUT_NONAFFECTABLE), "statut du lot affectable (provenant d'une non conformité)");
@@ -255,6 +260,7 @@ $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenom->changement_volume = round($volume / 2, 2);
+$chgtDenom->changement_numero_logement_operateur = "2(ex1)";
 $chgtDenom->validate();
 $chgtDenom->save();
 
@@ -269,6 +275,8 @@ $t->is($chgtDenom->lots[0]->document_ordre, '03', "Le lot 1 a bien 03 comme num�
 $t->is($chgtDenom->lots[1]->document_ordre, '03', "Le lot 1 a bien 03 comme numéro d'ordre");
 $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "Le lot 1 généré provient bien de la dégustation ".$degustation->_id);
 $t->is($chgtDenom->lots[1]->id_document_provenance, $degustation->_id, "Le lot 2 généré provient bien de la dégustation ".$degustation->_id);
+$t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement opérateur n'a pas changé pour le lot origine");
+$t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur, "Le logement lot 2 a changé");
 
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_NONCONFORME, "statut du lot orginel est bien non conforme");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable");
@@ -342,3 +350,24 @@ $t->ok($chgtDenom->isApprouve(), "Le changement est bien validé et approuvé : 
 $chgtDenom->devalidate();
 $chgtDenom->save();
 $t->ok(!$chgtDenom->isValidee(), "Le changement est maintenant dévalidé.");
+
+$t->comment('Edition d\'un logement');
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom n'a pas de logement editable");
+$t->is($chgtDenom->lots->get(1)->isLogementEditable(), true, "Le lot changé d'un chgt denom a un logement editable");
+$chgtDenom->validate();
+$t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un chgt denom n'a plus de logement editable après la validation");
+
+$chgtDenom->clearMouvementsLots();
+$chgtDenom->clearLots();
+$chgtDenom->devalidate();
+
+$chgtDenom->setLotOrigine($lotFromDegust);
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
+$chgtDenom->changement_volume = $lotFromDegust->volume;
+$chgtDenom->changement_specificite = "HVE";
+$chgtDenom->generateLots();
+
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un chgt denom total a un logement editable");
+$chgtDenom->validate();
+$chgtDenom->save();
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");

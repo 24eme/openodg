@@ -59,8 +59,8 @@ chgtdenom_validation:
     sf_method: [get, post]
 
 chgtdenom_logement:
-  url: /changement-denomination/logement/:id/:key
-  param: { module: chgtdenom, action: logement, key: null }
+  url: /changement-denomination/logement/:id
+  param: { module: chgtdenom, action: logement }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom

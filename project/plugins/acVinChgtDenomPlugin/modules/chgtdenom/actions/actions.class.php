@@ -60,21 +60,8 @@ class chgtdenomActions extends sfActions
     public function executeLogement(sfWebRequest $request) {
         $chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($chgtDenom);
-        $key = $request->getParameter("key", null);
 
-        if (!$key) {
-          $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
-          return $this->redirect('chgtdenom_validation', $chgtDenom);
-        }
-
-        $key = str_replace('ind', '', $key);
-
-        if (!$chgtDenom->lots->exist($key)) {
-          $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
-          return $this->redirect('chgtdenom_validation', $chgtDenom);
-        }
-
-        $form = new ChgtDenomLogementForm($chgtDenom->lots->get($key));
+        $form = new ChgtDenomLogementForm($chgtDenom);
 
         $form->bind($request->getParameter($form->getName()));
 
@@ -92,6 +79,10 @@ class chgtdenomActions extends sfActions
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
         $this->isAdmin = $this->getUser()->isAdmin();
+
+        if (! $this->chgtDenom->isValide()) {
+            $this->formLogement = new ChgtDenomLogementForm($this->chgtDenom);
+        }
 
         $this->validation = new ChgtDenomValidation($this->chgtDenom);
 

@@ -152,13 +152,40 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->changement_millesime = $lot->millesime;
         $this->changement_volume = $lot->volume;
         $this->changement_specificite = $lot->specificite;
+        $this->changement_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->origine_millesime = $lot->millesime;
         $this->origine_volume = $lot->volume;
         $this->origine_specificite = $lot->specificite;
         $this->origine_produit_hash = $lot->produit_hash;
         $this->origine_cepages = $lot->cepages;
         $this->origine_produit_libelle = $lot->produit_libelle;
+        $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
+    }
 
+    public function getOrigineNumeroLogementOperateur()
+    {
+        $l = $this->_get('origine_numero_logement_operateur');
+
+        if ($l) {
+            return $l;
+        }
+
+        $l = $this->getLotOrigine()->numero_logement_operateur;
+        $this->setOrigineNumeroLogementOperateur($l);
+        return $l;
+    }
+
+    public function getChangementNumeroLogementOperateur()
+    {
+        $l = $this->_get('changement_numero_logement_operateur');
+
+        if ($l) {
+            return $l;
+        }
+
+        $l = $this->getOrigineNumeroLogementOperateur();
+        $this->setOrigineNumeroLogementOperateur($l);
+        return $l;
     }
 
     public function getLotOrigine() {
@@ -287,6 +314,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
       $lot->document_ordre = $ordre;
       $lot->id_document_provenance = $this->changement_origine_id_document;
+
       if (!$this->isTotal()) {
         $lotOrig = clone $lot;
         $lotOrig->volume -= $this->changement_volume;
@@ -299,8 +327,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->numero_archive .= 'a';
           $lot->unique_id .= 'a';
       }
+
       $lot->volume = $this->changement_volume;
       $lot->specificite = $this->changement_specificite;
+
       if ($this->isChgtDenomination()) {
           $lot->produit_hash = $this->changement_produit_hash;
           $lot->produit_libelle = $this->changement_produit_libelle;
@@ -317,12 +347,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->cepages = $this->origine_cepages;
           $lot->specificite .= " DECLASSÉ en VSIG";
       }
+
       $lots[] = $lot;
 
       foreach($lots as $l) {
         $lot = $this->lots->add(null, $l);
         $lot->id_document = $this->_id;
         $lot->updateDocumentDependances();
+      }
+
+      if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
+          $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
       }
     }
 

@@ -20,8 +20,7 @@ class ChgtDenomForm extends acCouchdbObjectForm
 
         $this->setWidget('changement_produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('changement_produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
-        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
-        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
+
         for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
             $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));

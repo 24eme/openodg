@@ -19,6 +19,7 @@ ChgtDenom:
       changement_produit_libelle: { }
       changement_millesime: { }
       changement_specificite: { }
+      changement_numero_logement_operateur: {}
       changement_cepages:
         type: collection
         definition:
@@ -29,6 +30,7 @@ ChgtDenom:
       origine_produit_libelle: { }
       origine_millesime: { }
       origine_specificite: { }
+      origine_numero_logement_operateur: {}
       origine_cepages:
         type: collection
         definition:
