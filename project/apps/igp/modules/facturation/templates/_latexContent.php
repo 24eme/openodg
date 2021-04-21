@@ -63,6 +63,7 @@
 
 }
 \cfoot{\small{
+    \EMETTEURCONTACT Email~:~\EMETTEUREMAIL \\
 }}
 
 \begin{document}
@@ -72,8 +73,7 @@
 	\includegraphics[width=4cm]{\LOGO} \\
 	\textbf{\EMETTEURLIBELLE} \\ \\
 	\EMETTEURADRESSE \\
-	\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL \\ \\
+	\EMETTEURCP~\EMETTEURVILLE \\ \\
 	N°~TVA~:~\EMETTEURTVAINTRACOM \\
 	IBAN~:~\EMETTEURIBAN \\
     SIRET~:~\EMETTEURSIRET
