@@ -163,6 +163,30 @@ class degustationActions extends sfActions {
         }
     }
 
+    public function executeAjoutDegustateurPresence(sfWebRequest $request){
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->table = null;
+
+        $this->form = new DegustationAjoutDegustateurForm($this->degustation);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        $this->table = $this->form->getValues()['table'];
+
+        return $this->redirect('degustation_presences', array('id' =>$this->degustation->_id, 'numero_table' => $this->table));
+    }
+
     public function executeSelectionDegustateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
