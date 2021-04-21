@@ -852,23 +852,26 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
     public function sortLotsByThisTri($a, $b){
-        $a_data = '';
-        $b_data = '';
-        foreach($this->array_tri as $t) {
-            $a_data .= $a->getValueForTri($t);
-            $b_data .= $b->getValueForTri($t);
-
-            $cmp = strcmp($a_data, $b_data);
-
-            if ($cmp == 0) {
-                continue;
-            }
-
-            return $cmp;
-        }
-        return 0;
-    }
-
+			$a_data = '';
+			$b_data = '';
+			foreach($this->array_tri as $t) {
+				$a_data .= $a->getValueForTri($t);
+				$b_data .= $b->getValueForTri($t);
+				if ( $this->array_tri == ['numero_anonymat']){
+					$cmp = $a_data-$b_data;
+					if ($cmp !=0) {
+						return $cmp;
+					}
+				}
+				else{
+					$cmp = strcmp($a_data, $b_data);
+					if ($cmp) {
+					return $cmp;
+					}
+				}
+			}
+      return 0;
+      }
     public function addLeurre($hash, $cepages, $numero_table)
         {
             if (! $this->exist('lots')) {
@@ -983,6 +986,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$non_attables[] = $lot;
 			}
 			return $non_attables;
+		}
+
+		public function addDegustateur($compteId, $college, $numTab){
+			$this->getOrAdd('degustateurs');
+			$compte = CompteClient::getInstance()->find($compteId);
+			$degustateur = $this->degustateurs->getOrAdd($college)->getOrAdd($compteId);
+			$degustateur->getOrAdd('libelle');
+			$degustateur->libelle = $compte->getLibelleWithAdresse();
+			$degustateur->getOrAdd('confirmation');
+			$degustateur->getOrAdd('numero_table');
+
+			$degustateur->numero_table = $numTab;
+			$degustateur->confirmation = true;
 		}
 
 		public function hasAllDegustateursConfirmation(){

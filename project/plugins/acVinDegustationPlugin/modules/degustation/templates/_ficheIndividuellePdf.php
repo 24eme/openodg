@@ -30,14 +30,13 @@
         &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
           <strong>Table : &nbsp;<?php echo $lots[0]->getNumeroTableStr(); ?></strong>
       </p>
-    </table>
 
 <?php $i = 2; $table_header = true;
  foreach($lots as $lotInfo): ?>
    <?php if ($i % 10 == 0 ) : $table_header = true; ?>
 </table>
      <br pagebreak="true" />
-     <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?><p/>
+     <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?></p>
      <br/>
    <?php endif; ?>
    <?php if ($table_header): $table_header = false; ?>

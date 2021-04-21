@@ -130,6 +130,16 @@ degustation_selection_degustateurs:
   requirements:
     sf_method: [get, post]
 
+degustation_ajout_degustateurPresence:
+  url: /degustation/:id/ajout-degustateur-presence
+  param: { module: degustation, action: ajoutDegustateurPresence}
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_convocations:
   url: /degustation/:id/convocations
   param: { module: degustation, action: convocations }

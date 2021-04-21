@@ -126,10 +126,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
+            $couleurs[$couleur]['nb_lots'] = 0;
+            $couleurs[$couleur]['nb_lots_degustables'] = 0;
         }
 
         // Parcours dans les lots
         foreach($this->lots as $lot) {
+            if (!isset($couleurs[$couleur]['nb_lots'])) {
+                $couleurs[$couleur]['nb_lots'] = 0;
+                $couleurs[$couleur]['nb_lots_degustables'] = 0;
+            }
+            if (!isset($couleurs[$couleur]['volume_lots'])) {
+                $couleurs[$couleur]['volume_lots'] = 0;
+            }
             if($lot->millesime != $this->getPeriode()) {
               continue;
             }
@@ -137,15 +146,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           if($lot->getProduitRevendique()){
             $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleComplet();
           }
-
-          if (!isset($couleurs[$couleur]['volume_lots'])) {
-              $couleurs[$couleur]['volume_lots'] = 0;
-          }
-          if (!isset($couleurs[$couleur]['nb_lots'])) {
-              $couleurs[$couleur]['nb_lots'] = 0;
-          }
             $couleurs[$couleur]['volume_lots'] += $lot->volume;
             $couleurs[$couleur]['nb_lots']++;
+            if ($lot->affectable) {
+                $couleurs[$couleur]['nb_lots_degustables']++;
+            }
         }
         foreach($couleurs as $k => $couleur) {
             if (!isset($couleur['volume_lots'])) {
