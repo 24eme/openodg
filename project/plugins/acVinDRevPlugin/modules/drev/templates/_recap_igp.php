@@ -37,7 +37,7 @@
                       <td class="text-right">
                           <?php if(isset($synthese_revendication[$couleur]) && $synthese_revendication[$couleur]['nb_lots']): ?>
                               <?php  if ($synthese_revendication[$couleur]['nb_lots'] > 0): ?>
-                                  <?php printf("%0.2d", $synthese_revendication[$couleur]['nb_lots_degustables'] / $synthese_revendication[$couleur]['nb_lots'] * 100); ?>%</span> &nbps;&spb,<?php echo $synthese_revendication[$couleur]['nb_lots']; ?>
+                                  <?php printf("%0.2d", $synthese_revendication[$couleur]['nb_lots_degustables'] / $synthese_revendication[$couleur]['nb_lots'] * 100); ?>%</span> &nbsp;&nbsp; <?php echo $synthese_revendication[$couleur]['nb_lots']; ?>
                               <?php else: ?>
                                    aucun lots
                                <?php endif; ?>
