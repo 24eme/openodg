@@ -24,8 +24,7 @@ class degustationComponents extends sfComponents {
 
         $email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
 
-        $app = strtoupper(sfConfig::get('sf_app'));
-        $courrierInfos = sfConfig::get('app_facture_emetteur')[$app];
+        $courrierInfos = FactureConfiguration::getInstance()->getInfos();
 
         $cc = $courrierInfos['email'];
         $subject = sprintf("%s - Résultat de dégustation du %s", $courrierInfos['service_facturation'], ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
@@ -54,8 +53,7 @@ class degustationComponents extends sfComponents {
                     break;
             }
         }
-        $app = strtoupper(sfConfig::get('sf_app'));
-        $courrierInfos = sfConfig::get('app_facture_emetteur')[$app];
+        $courrierInfos = FactureConfiguration::getInstance()->getInfos();
 
         $this->subject = sprintf("%s - Résultat de dégustation du %s",$courrierInfos['service_facturation'], ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
         $this->email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();

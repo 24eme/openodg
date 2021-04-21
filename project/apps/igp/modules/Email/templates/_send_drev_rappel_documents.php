@@ -1,12 +1,11 @@
 <?php
-$app = strtoupper(sfConfig::get('sf_app'));
-$infos = sfConfig::get('app_facture_emetteur');
+$infos = FactureConfiguration::getInstance()->getInfos();
 
-$service = $infos[$app]['service_facturation'];
-$email = $infos[$app]['email'];
-$adresse = $infos[$app['adresse'];
-$code_postal = $infos[$app['code_postal'];
-$ville = $infos[$app['ville'];
+$service = $infos['service_facturation'];
+$email = $infos['email'];
+$adresse = $infos['adresse'];
+$code_postal = $infos['code_postal'];
+$ville = $infos['ville'];
 ?>
 Bonjour,
 

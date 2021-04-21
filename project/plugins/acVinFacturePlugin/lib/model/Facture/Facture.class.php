@@ -35,19 +35,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function storeEmetteur($region = null) {
-        $configs = sfConfig::get('app_facture_emetteur');
-        $emetteur = new stdClass();
-
-        $this->region = ($region)? $region : strtoupper(sfConfig::get('sf_app'));
-
-        if (!array_key_exists($this->region, $configs))
-            throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
-        foreach ($configs[$this->region] as $param => $value) {
+        foreach (FactureConfiguration::getInstance()->getInfos($region) as $param => $value) {
             if($this->emetteur->exist($param)){
                 $this->emetteur->$param = $value;
             }
         }
-
     }
 
     public function storeDatesCampagne($date_facturation = null) {

@@ -1152,16 +1152,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function getCoordonnees() {
-        $configs = sfConfig::get('app_facture_emetteur');
-        $emetteur = new stdClass();
 
-        $region = strtoupper($this->getOdg());
-
-        if (!array_key_exists($region, $configs))
-            throw new sfException(sprintf('Config %s not found in app.yml', $region));
-        $emetteur = $configs[$region];
-				return $emetteur;
-    }
+            return FactureConfiguration::getInstance()->getInfs();
+        }
 
 		public function getLotsSortByTables(){
 			$lots = array();
