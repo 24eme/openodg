@@ -8,6 +8,18 @@ if ($application != 'igp13') {
     return;
 }
 
+$emetteurs["IGP13"] = array(
+    "adresse" => "rue",
+    "code_postal" => "cp",
+    "ville" => "ville cedex 1",
+    "service_facturation" => "Syndicat des vins",
+    "telephone" => "00 00 00 00 00 - 00 00 00 00 00",
+    "email" => "bonjour@email.fr",
+    "responsable" => "responsable",
+    "iban" => "iban"
+);
+sfConfig::set('app_facture_emetteur' , $emetteurs);
+
 $t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();

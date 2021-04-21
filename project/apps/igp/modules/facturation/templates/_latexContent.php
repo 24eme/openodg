@@ -1,7 +1,5 @@
 <?php use_helper('TemplatingFacture'); ?>
-<?php use_helper('Display');
-var_dump( sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['iban']); exit;
- ?>
+<?php use_helper('Display'); ?>
 \documentclass[a4paper, 10pt]{letter}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -32,7 +30,7 @@ var_dump( sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['i
 \definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_<?php echo strtolower($facture->region); ?>.png}
-\def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Relevé de Cotisations<?php endif; ?>}
+\def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Facture<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
@@ -126,20 +124,11 @@ var_dump( sfConfig::get('app_facture_emetteur')[strtoupper($facture->region)]['i
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|m{9.7cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
+\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
   \hline
-  \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Qté}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
+  \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-    <?php if (count($ligne->details) === 1 && !$ligne->details->getFirst()->libelle): ?>
-        \textbf{<?php echo str_replace(array("(", ")"), array('\footnotesize{(', ")}"), $ligne->libelle); ?>} \textbf{Total} &
-        <?php echo formatFloat($ligne->details[0]->prix_unitaire, ',') ?> € &
-        <?php echo formatFloat($ligne->details[0]->quantite, ',') ?> \texttt{<?php echo ($ligne->details[0]->exist('unite') && $ligne->details[0]->unite)? $ligne->details[0]->unite : "~~" ?>} &
-        \textbf{<?php echo ($ligne->montant_tva === 0) ? null : formatFloat($ligne->montant_tva, ',')." €"; ?>} &
-        \textbf{<?php echo formatFloat($ligne->montant_ht, ','); ?> €}  \tabularnewline
-        \hline
-        <?php continue ?>
-    <?php endif; ?>
     <?php foreach ($ligne->details as $detail): ?>
         <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
         <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &

@@ -84,31 +84,22 @@ class facturationActions extends sfActions
 
     public function executeDeclarant(sfWebRequest $request){
             $this->compte = $this->getRoute()->getCompte();
-            $this->force = boolval($request->getParameter('force',false));
 
             $this->forwardCompteSecure();
             $identifiant = $this->compte->identifiant;
             if($this->compte->exist('id_societe')){
               $identifiant = $this->compte->getSociete()->identifiant;
             }
-
+            $this->societe = $this->compte->getSociete();
             $this->form = new FactureGenerationForm();
 
             $this->identifiant = $request->getParameter('identifiant');
 
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
-            $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->compte->getSociete());
+            $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
 
             $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
             $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
-
-            if($this->force){
-                try {
-                  foreach ($this->templatesFactures as $key => $templateFacture) {
-                    $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant, $this->force),$this->mouvements);
-                  }
-                } catch (FacturationPassException $e) { }
-            }
 
             $this->setTemplate('declarant');
 
@@ -124,13 +115,20 @@ class facturationActions extends sfActions
                 return sfView::SUCCESS;
             }
 
-            $generation = $this->form->save();
-            $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
-            $generation->arguments->add('compte', $this->compte->_id);
-            $generation->save();
+            $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
+            $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$parameters);
+            if($mouvementsBySoc)
+            {
+                $generation = $this->form->save();
+                $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+                $generation->arguments->add('compte', $this->compte->_id);
+                $generation->statut = GENERATIONCLIENT::GENERATION_STATUT_GENERE;
+                $generation->save();
+                $facture = FactureClient::getInstance()->createFacturesBySoc($mouvementsBySoc,$date_facturation, $message_communication,$generation);
+                $facture->save();
+            }
 
-            $urlRetour = $this->generateUrl('facturation_declarant', array('id' => $this->compte->_id));
-            return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission, 'retour' => $urlRetour));
+            return $this->redirect('facturation_declarant', array('id' => $this->compte->_id));
 
         }
 
