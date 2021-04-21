@@ -76,8 +76,8 @@
 	\EMETTEURCP~\EMETTEURVILLE \\ \\
     \small{
 	N°~TVA~:~\EMETTEURTVAINTRACOM \\
-	IBAN~:~\EMETTEURIBAN \\
     SIRET~:~\EMETTEURSIRET
+    IBAN~:~\EMETTEURIBAN \\
     }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
