@@ -12,7 +12,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
             $filename = $this->getFileName(true);
         }
 
-        $this->courrierInfos = FactureConfiguration:getInstance()->getInfos();
+        $this->courrierInfos = FactureConfiguration::getInstance()->getInfos();
 
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
