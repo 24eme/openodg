@@ -79,10 +79,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->_id = FactureClient::getInstance()->getId($this->identifiant, $this->numero_facture);
     }
 
-    public function getNumeroOdg() {
-        if($this->_get('numero_ava')) {
 
-            return $this->_get('numero_ava');
+    public function getNumeroAva(){
+        if($this->_get('numero_odg')) {
+            return $this->_get('numero_odg');
         }
         if(FactureConfiguration::getInstance()->getNumeroCampagne()){
           return $this->numero_facture;
@@ -379,7 +379,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         foreach ($this->origines as $docid) {
             $doc = FactureClient::getInstance()->getDocumentOrigine($docid);
 	    if ($doc) {
-	      $doc->save();
+	      $doc->save(false);
 	    }
         }
     }
@@ -427,7 +427,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
 
         $this->archivage_document->preSave();
-        $this->numero_ava = $this->getNumeroOdg();
+        $this->numero_odg = $this->getNumeroAva();
     }
 
     public function storeDeclarant($doc) {
@@ -572,7 +572,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     	return (!$this->getDateFacturation())? array() : array(array(
     		'identifiant' => str_replace('E', '', $this->getIdentifiant()),
     		'date_depot' => $this->getDateFacturation(),
-    		'libelle' => $type.' n° '.$this->numero_ava.' du '.$date->format('d/m/Y').' - '.number_format($this->total_ht, 2, '.', ' ').' € HT',
+    		'libelle' => $type.' n° '.$this->numero_odg.' du '.$date->format('d/m/Y').' - '.number_format($this->total_ht, 2, '.', ' ').' € HT',
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
