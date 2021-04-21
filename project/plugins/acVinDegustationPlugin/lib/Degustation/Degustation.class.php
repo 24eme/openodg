@@ -994,11 +994,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$degustateur = $this->degustateurs->getOrAdd($college)->getOrAdd($compteId);
 			$degustateur->getOrAdd('libelle');
 			$degustateur->libelle = $compte->getLibelleWithAdresse();
-			$degustateur->getOrAdd('confirmation');
-			$degustateur->getOrAdd('numero_table');
 
-			$degustateur->numero_table = $numTab;
-			$degustateur->confirmation = true;
+			if($numTab !== false){
+				$degustateur->getOrAdd('numero_table');
+				$degustateur->numero_table = $numTab;
+				$degustateur->getOrAdd('confirmation');
+				$degustateur->confirmation = true;
+			}
+
 		}
 
 		public function hasAllDegustateursConfirmation(){
