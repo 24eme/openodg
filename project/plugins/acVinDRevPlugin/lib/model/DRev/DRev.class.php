@@ -1274,8 +1274,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         if($this->isAdresseLogementDifferente()){
             $completeAdresse = $this->chais->nom ? $this->chais->nom." — " : "";
-            $completeAdresse .= $this->chais->adresse ? $this->chais->adresse." — " :"";
-            $completeAdresse .= $this->chais->code_postal ? $this->chais->code_postal." — " :  "";
+            $completeAdresse .= $this->chais->adresse ? $this->chais->adresse."  " :"";
+            $completeAdresse .= $this->chais->code_postal ? $this->chais->code_postal."  " :  "";
             $completeAdresse .= $this->chais->commune ? $this->chais->commune : "";
             $completeAdresse .= $this->chais->telephone ? " — ".$this->chais->telephone : "";
         }
