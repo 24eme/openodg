@@ -64,7 +64,7 @@
 
 }
 \cfoot{\small{
-    \EMETTEURCONTACT Email~:~\EMETTEUREMAIL \\
+    \EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL \\
 }}
 
 \begin{document}
@@ -75,9 +75,11 @@
 	\textbf{\EMETTEURLIBELLE} \\ \\
 	\EMETTEURADRESSE \\
 	\EMETTEURCP~\EMETTEURVILLE \\ \\
+    \small{
 	N°~TVA~:~\EMETTEURTVAINTRACOM \\
-	IBAN~:~\EMETTEURIBAN \\
-    SIRET~:~\EMETTEURSIRET
+    SIRET~:~\EMETTEURSIRET \\
+    IBAN~:~\EMETTEURIBAN
+    }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
