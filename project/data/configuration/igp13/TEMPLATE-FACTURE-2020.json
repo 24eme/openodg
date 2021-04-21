@@ -179,7 +179,7 @@
     "inao": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Droits INAO",
+      "libelle": "Droits INAO - N° %detail_identifiant%",
       "code_comptable": "",
       "details": {
         "cotisation": {
@@ -187,7 +187,7 @@
           "prix": 0.03,
           "tva": 0,
           "unite": "hl",
-          "libelle": "(N° %detail_identifiant%)",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "DRev"
