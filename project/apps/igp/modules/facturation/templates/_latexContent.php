@@ -46,6 +46,7 @@
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
+\def\FACTUREDECLARANTIDENTIFIANT{<?php echo $facture->identifiant; ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
@@ -63,7 +64,7 @@
 
 }
 \cfoot{\small{
-    \EMETTEURCONTACT Email~:~\EMETTEUREMAIL \\
+    \EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL \\
 }}
 
 \begin{document}
@@ -74,9 +75,11 @@
 	\textbf{\EMETTEURLIBELLE} \\ \\
 	\EMETTEURADRESSE \\
 	\EMETTEURCP~\EMETTEURVILLE \\ \\
+    \small{
 	N°~TVA~:~\EMETTEURTVAINTRACOM \\
-	IBAN~:~\EMETTEURIBAN \\
-    SIRET~:~\EMETTEURSIRET
+    SIRET~:~\EMETTEURSIRET \\
+    IBAN~:~\EMETTEURIBAN
+    }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
@@ -102,10 +105,17 @@
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
+<?php if($facture->getCvi()): ?>
+\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
+\hhline{|-|-|-|-|}
+\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT & \cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
+\hhline{|-|-|-|-|}
+<?php else: ?>
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
 \hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
+\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT \tabularnewline
 \hhline{|-|-|}
+<?php endif; ?>
 \end{tabular}
 
 \\\vspace{2mm}
