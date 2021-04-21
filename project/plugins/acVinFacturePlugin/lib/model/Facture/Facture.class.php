@@ -50,14 +50,17 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     }
 
-
     public function storeDatesCampagne($date_facturation = null) {
         $this->date_emission = date('Y-m-d');
         $this->date_facturation = $date_facturation;
-        $date_facturation_object = new DateTime($this->date_facturation);
-        $this->date_echeance = $date_facturation_object->modify('+30 days')->format('Y-m-d');
-        if (!$this->date_facturation)
-            $this->date_facturation = date('Y-m-d');
+        if(!$this->date_facturation) {
+            $this->date_facturation = $this->date_emission;
+        }
+        $this->date_echeance = $date_facturation;
+        if(FactureConfiguration::getInstance()->getDelaisPaiement()) {
+            $date_facturation_object = new DateTime($this->date_facturation);
+            $this->date_echeance = $date_facturation_object->modify(FactureConfiguration::getInstance()->getDelaisPaiement())->format('Y-m-d');
+        }
         $dateFacturation = explode('-', $this->date_facturation);
         $this->campagne = $dateFacturation[0];
         if(FactureConfiguration::getInstance()->getNumeroCampagne()){
