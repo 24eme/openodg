@@ -6,7 +6,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
 
     public function getPeriode() {
 
-        $this->campagne;
+        return $this->campagne;
     }
 
     public function __clone() {
@@ -73,8 +73,10 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
 
       $rienAFacturer = true;
 
+      $classMouvement = get_class($this)."MouvementFactures";
+
       foreach($cotisations as $cotisation) {
-          $mouvement = DRMouvementFactures::freeInstance($this);
+          $mouvement = $classMouvement::freeInstance($this);
           $mouvement->createFromCotisationAndDoc($cotisation,$this);
           $mouvement->date = $this->getPeriode().'-12-10';
           $mouvement->date_version = $this->getPeriode().'-12-10';

@@ -1,5 +1,5 @@
 <?php
 
-class SV11MouvementFactures extends BaseDRMouvementFactures {
+class SV11MouvementFactures extends BaseSV11MouvementFactures {
 
 }

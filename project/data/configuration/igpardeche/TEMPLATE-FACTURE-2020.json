@@ -7,6 +7,8 @@
     "docs": [
         "DRev",
         "DR",
+        "SV11",
+        "SV12",
         "ChgtDenom",
         "Degustation"
     ],
@@ -17,7 +19,7 @@
             "libelle": "Cotisation Syndicale",
             "code_comptable": "706100",
             "details": {
-                "cotisationSyndicale": {
+                "cotisationSyndicaleDR": {
                     "modele": "CotisationVariable",
                     "prix": 0.02,
                     "tva": 0.2,
@@ -30,6 +32,36 @@
                     "callback": "calcul",
                     "callback_parameters": [
                         "L15"
+                    ]
+                },
+                "cotisationSyndicaleSV11": {
+                    "modele": "CotisationVariable",
+                    "prix": 0.02,
+                    "tva": 0.2,
+                    "unite": "hl",
+                    "libelle": "Déclaration de production (SV11)",
+                    "complement_libelle": "",
+                    "docs": [
+                        "SV11"
+                    ],
+                    "callback": "calcul",
+                    "callback_parameters": [
+                        "L10"
+                    ]
+                },
+                "cotisationSyndicaleSV12": {
+                    "modele": "CotisationVariable",
+                    "prix": 0.02,
+                    "tva": 0.2,
+                    "unite": "hl",
+                    "libelle": "Déclaration de production (SV12)",
+                    "complement_libelle": "",
+                    "docs": [
+                        "SV12"
+                    ],
+                    "callback": "calcul",
+                    "callback_parameters": [
+                        "L10"
                     ]
                 }
             }

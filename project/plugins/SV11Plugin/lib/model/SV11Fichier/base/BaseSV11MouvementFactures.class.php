@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseSV12MouvementFactures
+ * BaseSV11MouvementFactures
  *
- * Base model for SV12MouvementFactures
+ * Base model for SV11MouvementFactures
 
  * @property integer $facture
  * @property integer $facturable
@@ -14,7 +14,7 @@
 
  */
 
-abstract class BaseSV11ouvementFactures extends MouvementFactures {
+abstract class BaseSV11MouvementFactures extends MouvementFactures {
 
     public function configureTree() {
        $this->_root_class_name = 'SV11';
