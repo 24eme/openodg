@@ -98,4 +98,13 @@ class FactureConfiguration {
     public function hasPaiements(){
       return isset($this->configuration['paiements']) && $this->configuration['paiements'];
     }
+
+    public function getDelaisPaiement() {
+        if(!isset($this->configuration['delais_paiement'])) {
+
+            return null;
+        }
+
+        return $this->configuration['delais_paiement'];
+    }
 }
