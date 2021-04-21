@@ -7,3 +7,4 @@ all:
       all_etablissements: false
       uniq_template_prefix: false
       export_sage_width_txt: true
+      delais_paiement: "+30 days"

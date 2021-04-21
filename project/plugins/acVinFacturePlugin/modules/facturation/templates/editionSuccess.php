@@ -5,10 +5,10 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
   <li><a href="<?php echo url_for('facturation_declarant', $facture->getCompte()); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
-  <li class="active"><a href=""><?php if($facture->numero_ava): ?>Modification la facture n°<?php echo $facture->numero_ava ?><?php else: ?>Création d'un avoir<?php endif; ?></a></li>
+  <li class="active"><a href=""><?php if($facture->numero_odg): ?>Modification la facture n°<?php echo $facture->numero_odg ?><?php else: ?>Création d'un avoir<?php endif; ?></a></li>
 </ol>
 
-<h2><?php if($facture->numero_ava): ?>Édition de <?php if($facture->isAvoir()): ?>l'<?php else: ?>la <?php endif; ?><?php else: ?>Création <?php if($facture->isAvoir()): ?>d'un<?php else: ?>d'une<?php endif; ?> <?php endif; ?><?php if($facture->isAvoir()): ?>Avoir <?php else: ?>Facture<?php endif; ?> <?php if($facture->numero_ava): ?>n°<?php echo $facture->numero_ava; ?><?php endif; ?> <small>(Daté du <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>)</small>
+<h2><?php if($facture->numero_odg): ?>Édition de <?php if($facture->isAvoir()): ?>l'<?php else: ?>la <?php endif; ?><?php else: ?>Création <?php if($facture->isAvoir()): ?>d'un<?php else: ?>d'une<?php endif; ?> <?php endif; ?><?php if($facture->isAvoir()): ?>Avoir <?php else: ?>Facture<?php endif; ?> <?php if($facture->numero_ava): ?>n°<?php echo $facture->numero_ava; ?><?php endif; ?> <small>(Daté du <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>)</small>
 <br />
     <small><?php echo $facture->declarant->raison_sociale ?>
     (<?php echo $facture->declarant->adresse ?> <?php echo $facture->declarant->code_postal ?> <?php echo $facture->declarant->commune ?>)</small>
