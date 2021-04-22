@@ -9,3 +9,4 @@ all:
       export_sage_width_txt: false
       paiements: false
       delais_paiement: null
+      exercice: "civil"
