@@ -16,6 +16,12 @@ unset($societeConfig['disable_save']);
 sfConfig::set('societe_configuration_societe', $societeConfig);
 sfConfig::set('app_facture_emetteur', [
     'IGP13' => [
-        'email' => 'email@domain.com'
+        'adresse' => '1 rue du chemin',
+        'code_postal' => '12345',
+        'ville' => 'Ville',
+        'service_facturation' => 'Syndicat',
+        'telephone' => 'Tel. 01 02 03 04 05',
+        'email' => 'email@domain.com',
+        'responsable' => 'Re Sponsable'
     ]
 ]);
