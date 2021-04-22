@@ -95,6 +95,11 @@ class FactureConfiguration {
         return ($this->configuration['modalite_paiement']) ?: '';
     }
 
+    public function getExercice() {
+
+        return ($this->configuration['exercice']) ?: '';
+    }
+
     public function hasPaiements(){
       return isset($this->configuration['paiements']) && $this->configuration['paiements'];
     }

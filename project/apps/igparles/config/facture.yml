@@ -7,6 +7,7 @@ all:
       all_etablissements: false
       export_sage_width_txt: true
       all_etablissements: true
-      modalite_paiement: "Par chèque ou virement à réception de facture."
+      modalite_paiement: "Par chèque à l'ordre de "ODG 13" et à adresser au Syndicat des vignerons d'Arles"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      exercice: "viticole"

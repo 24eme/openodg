@@ -8,6 +8,20 @@ if ($application != 'igp13') {
     return;
 }
 
+$emetteurs["IGP13"] = array(
+    "adresse" => "rue",
+    "code_postal" => "cp",
+    "ville" => "ville cedex 1",
+    "service_facturation" => "Syndicat des vins",
+    "telephone" => "00 00 00 00 00 - 00 00 00 00 00",
+    "email" => "bonjour@email.fr",
+    "responsable" => "responsable",
+    "iban" => "iban",
+    "tva_intracom" => "tva_intracom",
+    "siret" => "siret"
+);
+sfConfig::set('app_facture_emetteur' , $emetteurs);
+
 $t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -129,5 +143,3 @@ $t->is(get_class($papierGenerator), 'GenerationFacturePapier', "Classe d'exécut
 $facturePapier = $papierGenerator->generatePDFForADocumentId($facture->_id);
 $t->ok(get_class($facturePapier), "FactureLatex", "Génération d'un PDF d'une facture");
 $papierGenerator->generate();
-
-
