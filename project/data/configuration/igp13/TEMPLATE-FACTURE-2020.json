@@ -118,14 +118,14 @@
     "alpilles": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisation Alpilles",
+      "libelle": "Cotisation Alpilles - N° %detail_identifiant%",
       "code_comptable": "",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
           "prix": 0.05,
           "tva": 0.2,
-          "libelle": "Revendication - N° %detail_identifiant%",
+          "libelle": "",
           "unite": "hl",
           "complement_libelle": "",
           "docs": [
@@ -134,6 +134,29 @@
           "callback": "getVolumeRevendiqueLots",
           "callback_parameters": [
             "/appellations/APL"
+          ]
+        }
+      }
+    },
+    "terreDeCamargue": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation Terre de Camargue - N° %detail_identifiant%",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.05,
+          "tva": 0.2,
+          "libelle": "",
+          "unite": "hl",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": [
+            "/appellations/D13/mentions/DEFAUT/lieux/TDC"
           ]
         }
       }
@@ -164,7 +187,7 @@
           "prix": 0.15,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "changement de dénomination - N° %detail_identifiant%",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "ChgtDenom"
