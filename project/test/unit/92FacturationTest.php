@@ -16,7 +16,9 @@ $emetteurs["IGP13"] = array(
     "telephone" => "00 00 00 00 00 - 00 00 00 00 00",
     "email" => "bonjour@email.fr",
     "responsable" => "responsable",
-    "iban" => "iban"
+    "iban" => "iban",
+    "tva_intracom" => "tva_intracom",
+    "siret" => "siret"
 );
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
