@@ -76,9 +76,13 @@
 	\EMETTEURADRESSE \\
 	\EMETTEURCP~\EMETTEURVILLE \\ \\
     \small{
+    <?php if(FactureConfiguration::getInstance()->getInfo('tva_intracom', $facture->region)): ?>
 	N°~TVA~:~\EMETTEURTVAINTRACOM \\
+    <?php endif; ?>
     SIRET~:~\EMETTEURSIRET \\
+    <?php if(FactureConfiguration::getInstance()->getInfo('iban', $facture->region)): ?>
     IBAN~:~\EMETTEURIBAN
+    <?php endif; ?>
     }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
