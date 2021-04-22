@@ -59,8 +59,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         if (FactureConfiguration::getInstance()->getExercice() == 'viticole') {
             $date_campagne = new DateTime($this->date_facturation);
-            $date_campagne = $date_campagne->modify('+5 months');
-            $this->campagne = "".($date_campagne->format('Y') - 1);
+            $date_campagne = $date_campagne->modify('-7 months');
+            $this->campagne = $date_campagne->format('Y');
         }
     }
 
@@ -96,7 +96,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             return $this->_get('numero_odg');
         }
 
-        return preg_replace('/^\d{4}(\d{2}).*/', '$1', $this->campagne) . $this->numero_archive;
+        return $this->campagne . $this->numero_archive;
     }
 
     public function getNumeroReference() {
