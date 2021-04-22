@@ -10,3 +10,4 @@ all:
       modalite_paiement: "- comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars 2020 à novembre 2020 \\ - prélèvement automatique en 9 fois de mars 2020 à novembre 2020 \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      exercice: "viticole"

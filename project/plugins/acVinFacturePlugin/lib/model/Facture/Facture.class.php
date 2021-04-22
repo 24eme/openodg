@@ -53,11 +53,14 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $date_facturation_object = new DateTime($this->date_facturation);
             $this->date_echeance = $date_facturation_object->modify(FactureConfiguration::getInstance()->getDelaisPaiement())->format('Y-m-d');
         }
+
         $dateFacturation = explode('-', $this->date_facturation);
         $this->campagne = $dateFacturation[0];
-        if(FactureConfiguration::getInstance()->getNumeroCampagne()){
-          $c = explode('-', ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date_facturation));
-          $this->campagne = $c[0];
+
+        if (FactureConfiguration::getInstance()->getExercice() == 'viticole') {
+            $date_campagne = new DateTime($this->date_facturation);
+            $date_campagne = $date_campagne->modify('+5 months');
+            $this->campagne = "".($date_campagne->format('Y') - 1);
         }
     }
 
@@ -82,14 +85,18 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
 
     public function getNumeroAva(){
+        if($this->exist('numero_ava') && $this->_get('numero_ava')) {
+            return $this->_get('numero_ava');
+        }
+        return $this->_get('numero_odg');
+    }
+
+    public function getNumeroOdg(){
         if($this->_get('numero_odg')) {
             return $this->_get('numero_odg');
         }
-        if(FactureConfiguration::getInstance()->getNumeroCampagne()){
-          return $this->numero_facture;
-        }
 
-        return preg_replace('/^\d{2}(\d{2}).*/', '$1', $this->date_facturation) . $this->numero_archive;
+        return preg_replace('/^\d{4}(\d{2}).*/', '$1', $this->campagne) . $this->numero_archive;
     }
 
     public function getNumeroReference() {
@@ -249,7 +256,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
                 $detail->prix_unitaire = $mouvement->value->taux;
                 $detail->taux_tva = $mouvement->value->tva;
                 $detail->libelle = $mouvement->value->detail_libelle;
-                if($mouvement->value->unite) {
+                if(isset($mouvement->value->unite) && $mouvement->value->unite) {
                     $detail->add('unite', $mouvement->value->unite);
                 }
             }
@@ -428,7 +435,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
 
         $this->archivage_document->preSave();
-        $this->numero_odg = $this->getNumeroAva();
+        $this->numero_odg = $this->getNumeroOdg();
     }
 
     public function storeDeclarant($doc) {

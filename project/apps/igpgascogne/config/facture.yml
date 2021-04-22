@@ -10,3 +10,4 @@ all:
       modalite_paiement: "- comptant par virement ou chèque \\ - prélèvement sous 15 jours \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      exercice: "viticole"

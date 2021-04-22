@@ -10,3 +10,4 @@ all:
       modalite_paiement: "Payable par virement : IBAN %iban%\\En votre aimable règlement à réception."
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      exercice: "viticole"
