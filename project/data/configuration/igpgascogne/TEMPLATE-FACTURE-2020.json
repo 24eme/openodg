@@ -115,7 +115,7 @@
         }
       }
     },
-    "nonConformiteCDG": {
+    "redegustationCDG": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Forfait nouvelle dégustation",
@@ -131,14 +131,14 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationNonConforme",
+          "callback": "getFacturationLotRedeguste",
           "callback_parameters": [
             "/appellations/CDG"
           ]
         }
       }
-  },
-    "nonConformiteCOT": {
+    },
+    "redegustationCOT": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Forfait nouvelle dégustation",
@@ -154,13 +154,12 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationNonConforme",
+          "callback": "getFacturationLotRedeguste",
           "callback_parameters": [
             "/appellations/COT"
           ]
         }
       }
     }
-
   }
 }
