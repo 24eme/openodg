@@ -180,7 +180,7 @@ foreach ($facturesSoc as $f) {
 $t->is($facture->_id, "FACTURE-".$socVitiCompte->identifiant."-".date("Ymd")."01", "ID de la facture");
 $t->is($facture->numero_facture,date("Ymd")."01", "Numero de la facture");
 $t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
-$t->is($facture->getNumeroOdg(),substr($facture->campagne, 2, 2)."00001", "Numéro odg de la facture");
+$t->is($facture->getNumeroOdg(),$facture->campagne."00001", "Numéro odg de la facture");
 $t->is($facture->date_echeance , $facture->date_facturation, "Date d'échéance à récéption");
 
 $t->is($facture->lignes->igp13->libelle, "IGP13", "Libellé de la ligne");
