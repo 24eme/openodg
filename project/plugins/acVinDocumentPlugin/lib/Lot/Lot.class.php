@@ -323,7 +323,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isPreleve(){
-      return in_array($this->statut, self::$statuts_preleves);
+        return $this->preleve !== null;
     }
 
     public function isLeurre()

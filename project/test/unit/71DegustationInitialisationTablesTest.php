@@ -13,7 +13,7 @@ $t = new lime_test();
 $annee = (date('Y')-1)."";
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust_date = $annee.'-09-01 13:45:00';
-$degustid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
+$degustid = "DEGUSTATION-".str_replace(['-', ' ', ':00', ':'], "", $degust_date);
 $degust = DegustationClient::getInstance()->find($degustid);
 if ($degust) {
     $degust->delete();
@@ -28,11 +28,11 @@ $lot1 = $degust->addLot(
         "produit_hash":"\/declaration\/certifications\/IGP\/genres\/TRANQ\/appellations\/APL\/mentions\/DEFAUT\/lieux\/DEFAUT\/couleurs\/rouge\/cepages\/DEFAUT",
         "produit_libelle":"Alpilles Rouge","statut":"03_PRELEVE"}' )
 );
-$lot1->statut = Lot::STATUT_PRELEVE;
+$lot1->preleve = date('Y-m-d');
 $degust->generateMouvementsLots();
 $degust->save();
-$t->is($lot1->statut, Lot::STATUT_PRELEVE, 'Le lot 1 est bien prelevé');
-$t->is($degust->getLots()[0]->statut, Lot::STATUT_PRELEVE, 'Le lot 1 est bien prelevé');
+$t->ok($lot1->getMouvement(Lot::STATUT_PRELEVE), 'Le lot 1 est bien prelevé');
+$t->ok($degust->lots->get(0)->getMouvement(Lot::STATUT_PRELEVE), 'Le lot 1 est bien prelevé');
 
 $t->comment($degust->_id);
 $t->is($degust->hasFreeLots(), true, 'Il y a des lots non assignés');
