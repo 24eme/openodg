@@ -140,6 +140,10 @@ $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
 preg_match("|/drev/visualisation/([^/]+)|", $b->getRequest()->getUri(), $matches);
 $drevId = $matches[1];
 
+$b->click('a#lien-telechargement-pdf-drev');
+$b->isForwardedTo('drev', 'PDF');
+$t->is($b->getResponse()->getStatuscode(), 200, "Pdf de la drev");
+
 $t->comment('En mode habilitation');
 
 $b->get('/logout');
