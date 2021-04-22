@@ -14,3 +14,8 @@ if(getenv("COUCHURL")) {
 $societeConfig = sfConfig::get('societe_configuration_societe');
 unset($societeConfig['disable_save']);
 sfConfig::set('societe_configuration_societe', $societeConfig);
+sfConfig::set('app_facture_emetteur', [
+    'IGP13' => [
+        'email' => 'email@domain.com'
+    ]
+]);
