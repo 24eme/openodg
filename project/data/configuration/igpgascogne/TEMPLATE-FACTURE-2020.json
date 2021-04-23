@@ -25,7 +25,10 @@
           "docs": [
             "DRev"
           ],
-          "callback": ""
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+          ]
         }
       }
     },
@@ -45,7 +48,10 @@
           "docs": [
             "DRev"
           ],
-          "callback": ""
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+          ]
         }
       }
     },
@@ -60,7 +66,7 @@
           "prix": 0.46,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "IGP Gascogne - N° %detail_identifiant%",
+          "libelle": "Gascogne (%detail_identifiant%)",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -68,6 +74,29 @@
           "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/CDG"
+          ]
+        }
+      }
+    },
+    "revendicationLotGER": {
+      "modele": "CotisationsCollection",
+      "callback": "70600000",
+      "libelle": "Volumes",
+      "code_comptable": "",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.46,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Gers (%detail_identifiant%)",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "/appellations/GER"
           ]
         }
       }
@@ -83,7 +112,7 @@
           "prix": 0.46,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "IGP  Comté Tolosan - N° %detail_identifiant%",
+          "libelle": "Comté Tolosan (%detail_identifiant%)",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -99,14 +128,14 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",
-      "code_comptable": "70620000",
+      "code_comptable": "70630000",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
           "prix": 0.03,
           "tva": 0,
           "unite": "hl",
-          "libelle": "- N° %detail_identifiant%",
+          "libelle": "(%detail_identifiant%)",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -118,7 +147,7 @@
     "redegustationCDG": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Forfait nouvelle dégustation",
+      "libelle": "Nouvelle dégustation",
       "code_comptable": "70600200",
       "details": {
         "forfait": {
@@ -127,13 +156,36 @@
           "tva": 0.2,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- N° %detail_identifiant%",
+          "complement_libelle": "(%detail_identifiant%)",
           "docs": [
             "Degustation"
           ],
           "callback": "getFacturationLotRedeguste",
           "callback_parameters": [
             "/appellations/CDG"
+          ]
+        }
+      }
+    },
+    "redegustationGER": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nouvelle dégustation",
+      "code_comptable": "70600200",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0.2,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "(%detail_identifiant%)",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationLotRedeguste",
+          "callback_parameters": [
+            "/appellations/GER"
           ]
         }
       }
@@ -150,7 +202,7 @@
           "tva": 0.2,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- N° %detail_identifiant%",
+          "complement_libelle": "(%detail_identifiant%)",
           "docs": [
             "Degustation"
           ],

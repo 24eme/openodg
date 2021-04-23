@@ -51,7 +51,7 @@
             <br/>
             <?php if($degustation->isAnonymized()): ?>
               <br/>
-              <a class="btn btn-default btn-sm" style="opacity:0.5" href="<?php echo url_for('degustation_desanonymize', $degustation) ?>" onclick="confirm('Voulez-vous retirer l\'anonymat?')" >&nbsp;Retirer l'anonymat&nbsp;<span class="glyphicon glyphicon-eye-open"></span></a>
+              <a class="btn btn-default btn-sm" style="opacity:0.5" href="<?php echo url_for('degustation_desanonymize', $degustation) ?>" onclick="return confirm('Voulez-vous retirer l\'anonymat?');" >&nbsp;Retirer l'anonymat&nbsp;<span class="glyphicon glyphicon-eye-open"></span></a>
             <?php endif; ?>
           </div>
         </div>
@@ -70,7 +70,7 @@
   </div>
   <div class="col-xs-4 text-right">
       <?php if(!$degustation->isAnonymized()): ?>
-       <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_anonymize', $degustation) ?>" onclick="confirm('Voulez-vous confirmer l\'anonymat?')" >&nbsp;Anonymiser&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+       <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_anonymize', $degustation) ?>" onclick="return confirm('Voulez-vous confirmer l\'anonymat?');" >&nbsp;Anonymiser&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
    <?php else : ?>
       <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_commission_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
   <?php endif; ?>

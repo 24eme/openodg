@@ -857,4 +857,8 @@ abstract class Lot extends acCouchdbDocumentTree
 
         return implode(' / ', array_unique($dest));
     }
+    public function isInElevage()
+    {
+      return ($this->elevage); 
+    }
 }

@@ -145,6 +145,13 @@ $templateFacture = TemplateFactureClient::getInstance()->findByCampagne($drev->c
 $t->ok($templateFacture->_id,"Le template de facture est : $templateFacture->_id");
 $t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
 
+$codes_comptables = array();
+foreach ($templateFacture->getCotisations() as $cotisName => $cotis) {
+    $cotis->code_comptable = 'CODE_COMPTABLE_'.$cotisName;
+    $codes_comptables[$cotisName] = $cotis->code_comptable;
+}
+$templateFacture->save();
+
 $t->comment("Création de la facture par formulaire de génération");
 
 $form = new FactureGenerationForm();
@@ -190,6 +197,8 @@ $t->ok($facture->lignes->igp13->details[0]->unite, "hl", "Unité du détail");
 $t->ok($facture->lignes->igp13->details[0]->libelle, "Libellé du détail de la ligne");
 $t->like($facture->lignes->igp13->details[0]->libelle, "/N° ".$drev->numero_archive."/", "Libellé du détail de la ligne avec le numéro d'archive");
 $t->is($facture->lignes->igp13->details[0]->getLibelleComplet(), $facture->lignes->igp13->libelle." ".$facture->lignes->igp13->details[0]->libelle, "Libellé complet de la ligne");
+
+$t->is($facture->lignes->igp13->produit_identifiant_analytique, $templateFacture->cotisations->igp13->code_comptable, "Le code comptable est bien renseigné");
 
 $t->comment("Modificatrice DREV, on ajoute un lot volume 100 et on supprime le dernier lot");
 
@@ -385,15 +394,10 @@ $values = array('date' => date("d/m/Y"), 'time' => "18:00", 'lieu' => "Test — 
 $form->bind($values);
 $degustation2 = $form->save();
 
-$t->comment("Sélection des lots");
-$form = new DegustationPrelevementLotsForm($degustation2);
-$valuesRev = array(
-    'lots' => $form['lots']->getValue(),
-    '_revision' => $degustation2->_rev,
-);
-$valuesRev['lots'][$drev->lots[1]->getUnicityKey()]['preleve'] = 1;
-$form->bind($valuesRev);
-$form->save();
+$t->comment("Sélection du lot");
+$l = $degustation2->addLot($lot);
+$l->preleve = true;
+$degustation2->save();
 
 $lot2 = $degustation2->lots[0];
 
@@ -405,7 +409,7 @@ $t->ok(!count($degustation2->getMouvementsFactures()), "Degustation 2 : on a tou
 $degustation2->anonymize();
 $degustation2->save();
 
-$t->is(count($degustation2->getMouvementsFactures()), 1, "Degustation 2 : on a bien le mouvement de facture de la redegustation");
+$t->is(count($degustation2->getMouvementsFactures()), 1, "Degustation 2 : on a bien le mouvement de facture de la redegustation $degustation2->_id");
 
 $mvtRedegust = null;
 foreach ($degustation2->getMouvementsFactures() as $mvtsOp) {
