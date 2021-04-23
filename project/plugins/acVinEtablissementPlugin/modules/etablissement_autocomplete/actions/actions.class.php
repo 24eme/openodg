@@ -33,10 +33,12 @@ class etablissement_autocompleteActions extends sfActions
 
 	  	foreach($etablissements as $key => $etablissement) {
 	      $text = EtablissementAllView::getInstance()->makeLibelle($etablissement);
-
 	      if (Search::matchTerm($term, $text)) {
             $compte = CompteClient::getInstance()->find(str_replace("ETABLISSEMENT-", "COMPTE-", $etablissement->id));
             if($compte && $compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1))){
+                $text.=' ⛔';
+            }
+            if($compte->exist('en_alerte') && $compte->en_alerte){
                 $text.=' ⛔';
             }
 	        $json[EtablissementClient::getInstance()->getId($etablissement->id)] = $text;
