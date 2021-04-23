@@ -25,7 +25,10 @@
           "docs": [
             "DRev"
           ],
-          "callback": ""
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+          ]
         }
       }
     },
@@ -45,7 +48,10 @@
           "docs": [
             "DRev"
           ],
-          "callback": ""
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+          ]
         }
       }
     },
