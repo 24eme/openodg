@@ -78,6 +78,29 @@
         }
       }
     },
+    "revendicationLotGER": {
+      "modele": "CotisationsCollection",
+      "callback": "70600000",
+      "libelle": "Volumes",
+      "code_comptable": "",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.46,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Gers (%detail_identifiant%)",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "/appellations/GER"
+          ]
+        }
+      }
+    },
     "revendicationLotCOT": {
       "modele": "CotisationsCollection",
       "callback": "70610000",
@@ -140,6 +163,29 @@
           "callback": "getFacturationLotRedeguste",
           "callback_parameters": [
             "/appellations/CDG"
+          ]
+        }
+      }
+    },
+    "redegustationGER": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nouvelle dégustation",
+      "code_comptable": "70600200",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0.2,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "(%detail_identifiant%)",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationLotRedeguste",
+          "callback_parameters": [
+            "/appellations/GER"
           ]
         }
       }
