@@ -66,7 +66,7 @@
           "prix": 0.46,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "IGP Gascogne - N° %detail_identifiant%",
+          "libelle": "Gascogne (%detail_identifiant%)",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -89,7 +89,7 @@
           "prix": 0.46,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "IGP  Comté Tolosan - N° %detail_identifiant%",
+          "libelle": "Comté Tolosan (%detail_identifiant%)",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -112,7 +112,7 @@
           "prix": 0.03,
           "tva": 0,
           "unite": "hl",
-          "libelle": "- N° %detail_identifiant%",
+          "libelle": "(%detail_identifiant%)",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -124,7 +124,7 @@
     "redegustationCDG": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Forfait nouvelle dégustation",
+      "libelle": "Nouvelle dégustation",
       "code_comptable": "70600200",
       "details": {
         "forfait": {
@@ -133,7 +133,7 @@
           "tva": 0.2,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- N° %detail_identifiant%",
+          "complement_libelle": "(%detail_identifiant%)",
           "docs": [
             "Degustation"
           ],
@@ -156,7 +156,7 @@
           "tva": 0.2,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- N° %detail_identifiant%",
+          "complement_libelle": "(%detail_identifiant%)",
           "docs": [
             "Degustation"
           ],
