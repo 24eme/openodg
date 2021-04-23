@@ -247,7 +247,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $detail = null;
             $quantite = 0;
             foreach ($ligne->details as $d) {
-                if($d->libelle == $mouvement->value->detail_libelle){
+                if($d->libelle == $mouvement->value->detail_libelle && $detail->prix_unitaire == $mouvement->value->taux && $detail->taux_tva == $mouvement->value->tva && $mouvement->value->unite){
                     $detail = $d;
                 }
             }
