@@ -179,11 +179,18 @@
 \end{minipage}
 
 \\\vspace{6mm}
-
+<?php if (count($facture->paiements)): ?>
+\textbf{Paiement(s) :} \\
+\begin{itemize}
+<?php foreach($facture->paiements as $paiement): ?>
+\item <?= FactureClient::$types_paiements[$paiement->type_reglement]; ?> de <?= formatFloat($paiement->montant, ','); ?>~€, le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?> \\
+<?php endforeach; ?>
+\end{itemize}
+<?php else: ?>
 \textbf{Modalités de paiements} \\ \\
 <?= escape_string_for_latex(
     ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
 ) ?>
-
+<?php endif; ?>
 \end{center}
 \end{document}

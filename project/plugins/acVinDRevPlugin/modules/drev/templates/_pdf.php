@@ -8,7 +8,7 @@
 <?php echo styleDRev(); ?>
 </style>
 
-<span class="h3 font-size-16-pt">&nbsp;Entreprise&nbsp;</span><br/>
+<span class="h3Alt">&nbsp;Entreprise&nbsp;</span><br/>
 <table class="tableAlt"><tr><td>
 <table border="0" >
   <tr>
@@ -31,7 +31,7 @@
 
 <?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
     <br/><br/>
-    <span class="h3 font-size-16-pt">&nbsp;Logement du vin&nbsp;</span><br/>
+    <span class="h3">&nbsp;Logement du vin&nbsp;</span><br/>
     <table class="tableAlt" border="0" cellspacing=0 cellpadding=0 style="text-align: right;" >
       <thead>
         <tr style="line-height:20em;">
@@ -54,7 +54,7 @@
 <?php endif; ?>
 <?php if(count($drev->declaration->getProduitsWithoutLots($region))): ?>
 <br />
-<div><span class="h3 font-size-16-pt">&nbsp;Revendication&nbsp;</span></div>
+<div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 400px;">Produit</th>
@@ -110,7 +110,7 @@ Les produits déclarés sont du millésime du VCI
 
 <?php if(count($drev->getLotsRevendiques())): ?>
 <br />
-<div><span class="h3 font-size-16-pt">&nbsp;Déclaration des lots&nbsp;</span></div>
+<div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
 <?php if (count($drev->getLotsRevendiques())): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr style="line-height:20em;">
@@ -138,7 +138,7 @@ Les produits déclarés sont du millésime du VCI
 
 <?php if($drev->hasProduitsReserveInterpro($region)): ?>
 <br />
-<div><span class="h3 font-size-16-pt">&nbsp;Réserve interprofessionnelle&nbsp;</span></div>
+<div><span class="h3">&nbsp;Réserve interprofessionnelle&nbsp;</span></div>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left;width: 400px;">&nbsp;Produit</th>
@@ -157,7 +157,7 @@ Les produits déclarés sont du millésime du VCI
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) && DRevConfiguration::getInstance()->hasEngagementsPdf()): ?>
     <br />
-    <div><span class="h3 font-size-16-pt">&nbsp;Engagement(s)&nbsp;</span></div>
+    <div><span class="h3">&nbsp;Engagement(s)&nbsp;</span></div>
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php foreach($drev->documents as $docKey => $doc): ?>
         <tr>
