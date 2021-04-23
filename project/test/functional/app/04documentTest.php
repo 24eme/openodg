@@ -24,7 +24,7 @@ foreach(DRevClient::getInstance()->getHistory($etablissement->identifiant, acCou
 $b = new sfTestFunctional(new Browser());
 $t = $b->test();
 
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null, 'app_facture_emetteur' => $facture_emetteur_test));
 
 $b->get('/documents/'.$etablissement->identifiant);
 $b->isForwardedTo('fichier', 'piecesHistorique');
@@ -84,7 +84,7 @@ $t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
 $t->comment('En mode habilitation');
 
 $b->get('/logout');
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('habilitation')));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array('habilitation'), 'app_facture_emetteur' => $facture_emetteur_test));
 $b->restart();
 
 $b->get('/documents/'.$etablissement->identifiant);
@@ -139,7 +139,7 @@ $t->is($b->getResponse()->getStatusCode(), 403, "Page de modification de ce fich
 $t->comment('En mode télédéclarant');
 
 $b->get('/logout');
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array(), 'app_facture_emetteur' => $facture_emetteur_test));
 $b->restart();
 
 $b->post('/login_no_cas', array('admin' => array('login' => $societe->getIdentifiant())));

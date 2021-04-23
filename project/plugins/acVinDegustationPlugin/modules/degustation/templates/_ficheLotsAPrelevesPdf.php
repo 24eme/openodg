@@ -33,16 +33,12 @@ th {
         </tr>
       </table>
     <?php $ligne = 1; $table_header = true;
-    foreach($lots as $key_lots => $lotsArchive):
+    foreach($lots as $key_lots => $lotsDossier):
         $etablissement = $etablissements[$key_lots];
+            foreach ($lotsDossier as $numDossier => $lot) :
 
-        $numDossier = null;
-        foreach ($lotsArchive as $lot) {
-          $numDossier = $lot->numero_dossier;
-          break;
-        }
-        $adresse = $lot->getRawValue()->adresse_logement;
-        $adresseLogement = splitLogementAdresse($lot->adresse_logement);
+            $adresse = $lot->getRawValue()->adresse_logement;
+            $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
     <?php if ($ligne % 12 == 0 ) : $table_header = true; ?>
       </table>
@@ -77,9 +73,9 @@ th {
             </small>
           </td>
           <td><?php echo tdStart() ?>
-            N° dossier : <?php echo $numDossier; ?><br/>
+            <?php echo $numDossier; ?><br/>
             <small>
-            <?php $lotTypesNb = $degustation->getNbLotByTypeFilteredByAdresseLogt($etablissement->identifiant, $adresse); ?>
+            <?php $lotTypesNb = $degustation->getNbLotByTypeFilteredByNumDossier($etablissement->identifiant, $numDossier); ?>
             <?php foreach ($lotTypesNb as $provenance => $nb) {
                 echo $nb." lot";
                 echo ($nb>1)?'s':'';
@@ -98,5 +94,6 @@ th {
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>
+   <?php endforeach; ?>
       </table>
     </div>

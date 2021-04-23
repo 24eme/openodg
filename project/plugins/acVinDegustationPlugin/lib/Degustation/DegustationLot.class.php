@@ -141,7 +141,7 @@ class DegustationLot extends BaseDegustationLot {
     }
 
     public function isPreleve() {
-        return ($this->preleve);
+        return $this->preleve !== null;
     }
 
     public function getDocumentType() {

@@ -322,7 +322,7 @@ class FactureClient extends acCouchdbClient {
     }
 
 
-    public function createFacturesBySoc($generationFactures, $date_facturation, $message_communication = null, $generation = null) {
+    public function createFacturesBySoc($mouvements, $date_facturation, $message_communication = null, $generation = null) {
       if(!$generation){
           $generation = new Generation();
           $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
@@ -345,7 +345,7 @@ class FactureClient extends acCouchdbClient {
 
       $cpt = 0;
 
-      foreach ($generationFactures as $societeID => $mouvementsSoc) {
+      foreach ($mouvements as $societeID => $mouvementsSoc) {
           $societe = SocieteClient::getInstance()->find($societeID);
 
           $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template, $type_document);

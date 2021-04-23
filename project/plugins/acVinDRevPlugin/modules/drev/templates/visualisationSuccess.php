@@ -78,7 +78,7 @@
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
             </a>
         <?php endif; ?>
-            <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default">
+            <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default" id="lien-telechargement-pdf-drev">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;PDF de la DRev
             </a>
         </div>

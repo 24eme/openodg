@@ -78,6 +78,7 @@ $degust = DegustationClient::getInstance()->createDoc($degust_date);
 $t->comment("Les deux premiers lots sont prélevés");
 $lot1 = $degust->addLot($drev->lots[0]);
 $lot1->statut = Lot::STATUT_PRELEVE;
+$lot1->preleve = date('Y-m-d');
 $t->is($lot1->numero_archive, '00001', "le numéro d'archive du lot 1 est bien 00001");
 $t->is($lot1->unique_id, $campagne.'-00001-00001', "le numéro d'archive du lot 1 est bien $campagne-00001-00001");
 $lot2 = $degust->addLot($drev->lots[1]);
@@ -87,10 +88,15 @@ $t->is($lot2->unique_id, $campagne.'-00001-00002', "le numéro d'archive du lot 
 $t->comment("Le 3ème n'est pas prélevés");
 $lot3 = $degust->addLot($drev->lots[2]);
 $lot3->statut = Lot::STATUT_PRELEVE;
+$lot3->preleve = date('Y-m-d');
 $t->is($lot3->numero_archive, '00003', "le numéro d'archive du lot 3 est bien 00003");
 $t->is($lot3->unique_id, $campagne.'-00001-00003', "le numéro d'archive du lot 3 est bien $campagne-00001-00003");
 $degust->generateMouvementsLots();
 $degust->save();
+
+$t->ok($lot1->getMouvement(Lot::STATUT_PRELEVE), "Le lot 1 est prélevé");
+$t->ok($lot3->getMouvement(Lot::STATUT_PRELEVE), "Le lot 3 est prélevé");
+
 $degustid = $degust->_id;
 $t->comment($degustid);
 

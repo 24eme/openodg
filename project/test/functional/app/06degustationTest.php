@@ -54,7 +54,7 @@ foreach($config->getProduits() as $p) {
 $b = new sfTestFunctional(new Browser());
 $t = $b->test();
 
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null, 'app_facture_emetteur' => $facture_emetteur_test));
 
 $t->comment("Saisie d'une DRev");
 
@@ -292,7 +292,7 @@ $uriConformiteAuthentifiante = $b->getRequest()->getUri();
 $t->comment('En mode télédéclarant');
 
 $b->get('/logout');
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array(), 'app_facture_emetteur' => $facture_emetteur_test));
 $b->restart();
 
 $b->post('/login_no_cas', array('admin' => array('login' => $societe->getIdentifiant())));
@@ -304,7 +304,7 @@ $t->is($b->getResponse()->getStatuscode(), 403, "Accueil des dégustations inter
 $t->comment('En mode non connecté');
 
 $b->get('/logout');
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array(), 'app_facture_emetteur' => $facture_emetteur_test));
 $b->restart();
 
 $b->get('/degustation');
