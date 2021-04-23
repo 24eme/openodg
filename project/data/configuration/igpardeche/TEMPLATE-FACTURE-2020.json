@@ -99,11 +99,33 @@
                     "callback_parameters": [
                     ]
                 },
+                "redegustation": {
+                    "modele": "Cotisation",
+                    "prix": 8,
+                    "tva": 0.2,
+                    "unite": "",
+                    "libelle": "Second passage non conformité - N° %detail_identifiant%",
+                    "complement_libelle": "",
+                    "docs": [
+                        "Degustation"
+                    ],
+                    "callback": "getFacturationLotRedeguste",
+                    "callback_parameters": [
+                    ]
+                }
+            }
+        },
+        "fraisDossier": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Frais de dossier",
+            "code_comptable": "706100",
+            "details": {
                 "forfait": {
                     "modele": "CotisationFixe",
                     "prix": 75,
                     "tva": 0.2,
-                    "libelle": "Frais de dossier",
+                    "libelle": "",
                     "complement_libelle": "",
                     "docs": [
                         "DRev"
@@ -119,7 +141,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Droits INAO - N° %detail_identifiant%",
-            "code_comptable": "INAO",
+            "code_comptable": "706400",
             "details": {
                 "revendication": {
                     "modele": "CotisationVariable",
@@ -138,14 +160,14 @@
         "changementDenomination": {
             "modele": "CotisationsCollection",
             "callback": "",
-            "libelle": "Changement de dénomination",
-            "code_comptable": "706102",
+            "libelle": "Changement de dénomination - N° %detail_identifiant%",
+            "code_comptable": "706300",
             "details": {
-                "cotisation": {
+                "premier": {
                     "modele": "CotisationFixe",
                     "prix": 10,
                     "tva": 0.2,
-                    "libelle": "vers Méditerrannée - N° %detail_identifiant%",
+                    "libelle": "",
                     "complement_libelle": "",
                     "docs": [
                         "ChgtDenom"
@@ -153,47 +175,17 @@
                     "callback": "getFirstChgtDenomFacturable",
                     "callback_parameters": [
                     ]
-                }
-            }
-        },
-        "changementSecondeDenomination": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "Changement de dénomination suivant",
-            "code_comptable": "706102",
-            "details": {
-                "cotisation": {
+                },
+                "suivant": {
                     "modele": "CotisationFixe",
                     "prix": 15,
                     "tva": 0.2,
-                    "libelle": "vers Méditerrannée",
+                    "libelle": "",
                     "complement_libelle": "",
                     "docs": [
                         "ChgtDenom"
                     ],
                     "callback": "getSecondChgtDenomFacturable",
-                    "callback_parameters": [
-                    ]
-                }
-            }
-        },
-        "lotsRedegustes": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "Nombre de Lot",
-            "code_comptable": "706102",
-            "details": {
-                "forfait": {
-                    "modele": "Cotisation",
-                    "prix": 8,
-                    "tva": 0.2,
-                    "unite": "",
-                    "libelle": "",
-                    "complement_libelle": "",
-                    "docs": [
-                        "Degustation"
-                    ],
-                    "callback": "getFacturationLotRedeguste",
                     "callback_parameters": [
                     ]
                 }
