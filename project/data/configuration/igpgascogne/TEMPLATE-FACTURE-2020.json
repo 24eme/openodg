@@ -105,7 +105,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",
-      "code_comptable": "70620000",
+      "code_comptable": "70630000",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
