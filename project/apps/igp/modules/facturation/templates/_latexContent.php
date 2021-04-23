@@ -112,12 +112,12 @@
 <?php if($facture->getCvi()): ?>
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
 \hhline{|-|-|-|-|}
-\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT & \cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
+\cellcolor{verttresclair} \textbf{ID :} & \FACTUREDECLARANTIDENTIFIANT & \cellcolor{verttresclair} \textbf{CVI :} & \FACTUREDECLARANTCVI \tabularnewline
 \hhline{|-|-|-|-|}
 <?php else: ?>
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
 \hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{ID :} & \hspace{0.3cm} \FACTUREDECLARANTIDENTIFIANT \tabularnewline
+\cellcolor{verttresclair} \textbf{ID :} & \FACTUREDECLARANTIDENTIFIANT \tabularnewline
 \hhline{|-|-|}
 <?php endif; ?>
 \end{tabular}
