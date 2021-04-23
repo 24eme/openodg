@@ -35,10 +35,9 @@ class etablissement_autocompleteActions extends sfActions
 	      $text = EtablissementAllView::getInstance()->makeLibelle($etablissement);
 	      if (Search::matchTerm($term, $text)) {
             $compte = CompteClient::getInstance()->find(str_replace("ETABLISSEMENT-", "COMPTE-", $etablissement->id));
-            if($compte && $compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1))){
-                $text.=' ⛔';
-            }
-            if($compte->exist('en_alerte') && $compte->en_alerte){
+            $verif_exploite_plus = $compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1));
+            $verif_en_alert = $compte->exist('en_alerte') && $compte->en_alerte;
+            if($compte && ($verif_exploite_plus || $verif_en_alert)){
                 $text.=' ⛔';
             }
 	        $json[EtablissementClient::getInstance()->getId($etablissement->id)] = $text;
