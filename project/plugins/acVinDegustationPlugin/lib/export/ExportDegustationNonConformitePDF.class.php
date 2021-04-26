@@ -17,6 +17,8 @@ class ExportDegustationNonConformitePDF extends ExportDeclarationLotsPDF {
     public function create() {
         if ($this->lot->conformite === Lot::CONFORMITE_NONTYPICITE_CEPAGE) {
             $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_typiciteCepage', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lot' => $this->lot, 'courrierInfos' => $this->courrierInfos)));
+        } elseif ($this->lot->conformite === Lot::CONFORMITE_NONCONFORME_ANALYTIQUE) {
+            $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_analytique', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lot' => $this->lot, 'courrierInfos' => $this->courrierInfos)));
         } else {
             $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot, 'courrierInfos' => $this->courrierInfos)));
             $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page2', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot )));
