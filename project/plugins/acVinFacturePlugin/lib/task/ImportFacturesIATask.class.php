@@ -37,6 +37,7 @@ EOF;
     }
 
     protected function execute($arguments = array(), $options = array()) {
+        sfContext::createInstance($this->configuration);
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
@@ -44,7 +45,7 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line, ';');
-            if (!$data) {
+            if (!$data || $data[self::CSV_FACTURE_RAISON_SOCIALE] == "Raison Sociale") {
               continue;
             }
             $etablissement = $this->identifyEtablissement($data[self::CSV_FACTURE_RAISON_SOCIALE], null, $data[self::CSV_FACTURE_CODE_POSTAL]);
@@ -52,6 +53,11 @@ EOF;
                echo "WARNING;établissement non trouvé ".$data[self::CSV_FACTURE_RAISON_SOCIALE].";pas d'import;$line\n";
                continue;
             }
+            $date = strtok($data[self::CSV_FACTURE_DATE_FACTURE], '/');
+            $date = strtok('/').'-'.$date;
+            $date = strtok('/').'-'.$date;
+            $mouvements = array();
+            $facture = FactureClient::getInstance()->createEmptyDoc($etablissement, $date, "facture importée", strtoupper($options['application']));
         }
     }
 
