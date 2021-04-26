@@ -57,7 +57,37 @@ EOF;
             $date = strtok('/').'-'.$date;
             $date = strtok('/').'-'.$date;
             $mouvements = array();
-            $facture = FactureClient::getInstance()->createEmptyDoc($etablissement, $date, "facture importée", strtoupper($options['application']));
+            $facture = FactureClient::getInstance()->createEmptyDoc($etablissement, $date, "Facture importée", strtoupper($options['application']));
+            echo $facture->_id."\n";
+            $f = FactureClient::getInstance()->find($facture->_id);
+            if ($f) {
+                $facture = $f;
+            }
+            $line = $facture->add('lignes')->add('ligne_import_'.count($facture->lignes));
+            $line->libelle = 'Import dossier '.$data[self::CSV_FACTURE_NUM_DOSSIER];
+            $detail = $line->add('details')->add();
+            $detail->quantite = $data[self::CSV_FACTURE_VOLUME] * 1;
+            $detail->montant_ht = $data[self::CSV_FACTURE_MONTANT_FACTURE] / 1.2;
+            $detail->taux_tva = 0.2;
+            $detail->montant_tva = ($data[self::CSV_FACTURE_MONTANT_FACTURE] * 1) - $detail->montant_ht;
+            $detail->prix_unitaire = $detail->montant_ht / $detail->quantite;
+            $detail->libelle = $data[self::CSV_FACTURE_IGP];
+            $facture->updateTotaux();
+            $facture->montant_paiement += 0;
+            $facture->versement_comptable_paiement = 0;
+            if ($data[self::CSV_FACTURE_TOTAL_REGLE]) {
+                $paiement  = $facture->add("paiements")->add();
+                $paiement->montant = $data[self::CSV_FACTURE_TOTAL_REGLE] * 1;
+                $paiement->commentaire = "Paiement importé";
+                $facture->versement_comptable_paiement = 1;
+                $facture->montant_paiement += $data[self::CSV_FACTURE_TOTAL_REGLE] * 1;
+            }
+            $facture->versement_comptable = 1;
+            $facture->campagne = $data[self::CSV_FACTURE_CAMPAGNE];
+            $facture->numero_archive = $data[self::CSV_FACTURE_NUM_FACTURE];
+            $facture->numero_odg = str_replace('_', '', $data[self::CSV_FACTURE_NUM_FACTURE]);
+            $facture->date_emission = $date;
+            $facture->save();
         }
     }
 
