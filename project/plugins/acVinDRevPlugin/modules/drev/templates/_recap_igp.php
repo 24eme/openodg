@@ -115,7 +115,8 @@
                           <?php echo showProduitCepagesLot($lot) ?>
                           <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                           <?php if($lot->isInElevage()):?>
-                            <p><small class="text-muted"> en élevage </small></p>
+                            <br>
+                            <small class="text-muted"> en élevage </small>
                           <?php endif; ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>

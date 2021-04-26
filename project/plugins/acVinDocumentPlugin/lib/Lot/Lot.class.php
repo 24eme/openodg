@@ -769,21 +769,8 @@ abstract class Lot extends acCouchdbDocumentTree
         }else{
             $numero_archive = $this->numero_archive;
         }
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $numero_archive, sprintf("%02d", $documentOrdre));
-        $docId = null;
-        foreach($mouvements->rows as $mouvement) {
-            $docId = $mouvement->id;
-            break;
-        }
 
-        if(!$docId) {
-
-            return null;
-        }
-
-        $doc = DeclarationClient::getInstance()->findCache($docId);
-
-        return $doc->get($mouvement->value->lot_hash);
+        return LotsClient::getInstance()->find($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $numero_archive, sprintf("%02d", $documentOrdre));
     }
 
     public function updateDocumentDependances() {
@@ -859,6 +846,6 @@ abstract class Lot extends acCouchdbDocumentTree
     }
     public function isInElevage()
     {
-      return ($this->elevage); 
+      return ($this->elevage);
     }
 }

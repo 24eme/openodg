@@ -17,7 +17,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Cotisation Syndicale",
-            "code_comptable": "SYNDICALE",
+            "code_comptable": "706200",
             "details": {
                 "cotisationSyndicaleDR": {
                     "modele": "CotisationVariable",
@@ -70,7 +70,7 @@
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Cotisation ODG",
-            "code_comptable": "ODG",
+            "code_comptable": "706000",
             "details": {
                 "revendication": {
                     "modele": "CotisationVariable",
