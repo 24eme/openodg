@@ -147,7 +147,7 @@ class FactureClient extends acCouchdbClient {
         return array_values($mouvementsAggreges);
     }
 
-    public function createEmptyDoc($compte, $date_facturation = null, $message_communication = null, $region = null, $template = null, $type_document = null ) {
+    public function createEmptyDoc($compte, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
         if(get_class($compte) == "stdClass") {
@@ -165,7 +165,7 @@ class FactureClient extends acCouchdbClient {
         if (!$region) {
             $region = $compte->region;
         }
-        $facture->constructIds($compte, $type_document);
+        $facture->constructIds($compte);
         $facture->storeEmetteur($region);
         $facture->storeDeclarant($compte);
         $facture->storeTemplates($template);
@@ -200,11 +200,11 @@ class FactureClient extends acCouchdbClient {
     }
 
     /** facturation par mvts **/
-    public function createDocFromView($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null, $type_document = null) {
+    public function createDocFromView($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
         if(!$region){
             return null;
         }
-        $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template, $type_document);
+        $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
 
         foreach ($mouvements as $identifiant => $mvt) {
             $facture->storeLignesByMouvementsView($mvt);
@@ -340,7 +340,6 @@ class FactureClient extends acCouchdbClient {
       $generation->somme = 0;
       $region = ($generation->arguments->exist('region'))? $generation->arguments->region : null;
       $modele = ($generation->arguments->exist('modele'))? $generation->arguments->modele : null;
-      $type_document = ($generation->arguments->exist('type_document'))? $generation->arguments->type_document : null;
 
       if(!$modele){
           throw new sfException("La génération ne possède pas de modèle de facture");
@@ -356,7 +355,7 @@ class FactureClient extends acCouchdbClient {
       foreach ($mouvements as $societeID => $mouvementsSoc) {
           $societe = SocieteClient::getInstance()->find($societeID);
 
-          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template, $type_document);
+          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template);
           $f->save();
           $generation->somme += $f->total_ttc;
           $generation->add('documents')->add($cpt, $f->_id);

@@ -70,7 +70,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->_set('modalite_paiement', $modalitePaiement);
     }
 
-    public function constructIds($doc, $type_document = null) {
+    public function constructIds($doc) {
         if (!$doc)
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
