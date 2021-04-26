@@ -247,9 +247,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $detail = null;
             $quantite = 0;
             $template = $this->getTemplate();
-            foreach ($template->getCotisations() as $cotisName => $cotis) {
-                if($cotis->code_comptable && $mouvement->value->categorie == $cotisName){
-                    $ligne->produit_identifiant_analytique = $cotis->code_comptable;
+            if ($template) {
+                foreach ($template->getCotisations() as $cotisName => $cotis) {
+                    if($cotis->code_comptable && $mouvement->value->categorie == $cotisName){
+                        $ligne->produit_identifiant_analytique = $cotis->code_comptable;
+                        break;
+                    }
                 }
             }
 
