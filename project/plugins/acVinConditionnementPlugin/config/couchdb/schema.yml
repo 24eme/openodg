@@ -101,6 +101,7 @@ Conditionnement:
             adresse: { }
             commune: { }
             code_postal: { }
+            telephone: { }
       mouvements_lots:
         type: collection
         definition:
