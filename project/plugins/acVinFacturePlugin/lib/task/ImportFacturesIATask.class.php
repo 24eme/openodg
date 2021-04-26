@@ -44,6 +44,8 @@ EOF;
 
         foreach(file($arguments['csv']) as $line) {
             $line = str_replace("\n", "", $line);
+            $line = str_replace('SCEA DES FUMEES BLANCHES Prod', 'SAS DES FUMEES BLANCHES Prod', $line);
+            $line = str_replace('SCEA DOMAINE DES FUMEES BLANCHES NV', 'SAS DOMAINE DES FUMEES BLANCHES NV', $line);
             $data = str_getcsv($line, ';');
             if (!$data || $data[self::CSV_FACTURE_RAISON_SOCIALE] == "Raison Sociale") {
               continue;
