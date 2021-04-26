@@ -147,9 +147,9 @@ class FactureClient extends acCouchdbClient {
         return array_values($mouvementsAggreges);
     }
 
-    public function createEmptyDoc($compte, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
+    public function createEmptyDoc($compte, $date_facturation = null, $message_communication = null, $region = null, $template = null, $date_emission = null) {
         $facture = new Facture();
-        $facture->storeDatesCampagne($date_facturation);
+        $facture->storeDatesCampagne($date_facturation, $date_emission);
         if(get_class($compte) == "stdClass") {
             if(isset($compte->compte)) {
                 $id = $compte->compte;

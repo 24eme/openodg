@@ -42,8 +42,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-    public function storeDatesCampagne($date_facturation = null) {
-        $this->date_emission = date('Y-m-d');
+    public function storeDatesCampagne($date_facturation = null, $date_emission = null) {
+        if ($date_emission) {
+            $this->date_emission = $date_emission;
+        }else{
+            $this->date_emission = date('Y-m-d');
+        }
         $this->date_facturation = $date_facturation;
         if(!$this->date_facturation) {
             $this->date_facturation = $this->date_emission;
@@ -78,7 +82,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         if($format = FactureConfiguration::getInstance()->getNumeroFormat()){ // Pour nantes obsolète
           $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
         }else{
-          $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, date('Ymd'));
+          $date_emission_object = new DateTime($this->date_emission);
+          $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, $date_emission_object->format('Ymd'));
         }
         $this->_id = FactureClient::getInstance()->getId($this->identifiant, $this->numero_facture);
     }

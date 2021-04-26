@@ -57,7 +57,7 @@ EOF;
             $date = strtok('/').'-'.$date;
             $date = strtok('/').'-'.$date;
             $mouvements = array();
-            $facture = FactureClient::getInstance()->createEmptyDoc($etablissement, $date, "Facture importée", strtoupper($options['application']));
+            $facture = FactureClient::getInstance()->createEmptyDoc($etablissement, $date, "Facture importée", strtoupper($options['application']), null, $date);
             echo $facture->_id."\n";
             $f = FactureClient::getInstance()->find($facture->_id);
             if ($f) {
