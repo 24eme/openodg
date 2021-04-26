@@ -65,6 +65,9 @@ EOF;
             if ($f) {
                 $facture = $f;
             }
+            $data[self::CSV_FACTURE_MONTANT_FACTURE] = str_replace(',', '.', $data[self::CSV_FACTURE_MONTANT_FACTURE]);
+            $data[self::CSV_FACTURE_VOLUME] = str_replace(',', '.', $data[self::CSV_FACTURE_VOLUME]);
+            $data[self::CSV_FACTURE_TOTAL_REGLE] = str_replace(',', '.', $data[self::CSV_FACTURE_TOTAL_REGLE]);
             $line = $facture->add('lignes')->add('ligne_import_'.count($facture->lignes));
             $line->libelle = 'Import dossier '.$data[self::CSV_FACTURE_NUM_DOSSIER];
             $detail = $line->add('details')->add();
