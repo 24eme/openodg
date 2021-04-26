@@ -159,16 +159,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if ($with_total) {
             $total_appellations = array();
             foreach($couleurs as $k => $couleur) {
-                if (isset($couleur['volume_total']) || isset($couleur['volume_lots'])) {
+                if (!isset($couleur['volume_total'])) {
+                    $couleur['volume_total'] = 0;
+                }
+                if (isset($couleur['volume_lots'])) {
                     $couleur['volume_restant'] = $couleur['volume_total'] - $couleur['volume_lots'];
+                    $couleur['volume_restant_max'] = $couleur['volume_max'] - $couleur['volume_lots'];
                     $couleurs[$k]['volume_restant'] = $couleur['volume_restant'];
+                    $couleurs[$k]['volume_restant_max'] = $couleur['volume_restant_max'];
                 }
                 if (!isset($total_appellations[$couleur['appellation']])) {
                     $total_appellations[$couleur['appellation']] = array(
                         'volume_total' => 0, 'superficie_totale' => 0,
                         'volume_max' => 0, 'volume_lots' => 0,
-                        'volume_restant' => 0, 'nb_lots' => 0,
-                        'nb_lots_degustables' => 0
+                        'volume_restant' => 0, 'volume_restant_max' => 0,
+                        'nb_lots' => 0, 'nb_lots_degustables' => 0
                     );
                 }
                 $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
@@ -176,6 +181,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
                 $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
                 $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
+                $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
                 $total_appellations[$couleur['appellation']]['nb_lots'] += $couleur['nb_lots'];
                 $total_appellations[$couleur['appellation']]['nb_lots_degustables'] += $couleur['nb_lots_degustables'];
             }
