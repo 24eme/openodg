@@ -87,7 +87,7 @@ p, div {
   </tr>
 </table>
 <br />
-<p><strong><?php echo count($lots) ?> lots à prélever</strong> <small>(pour un volume total de <?php echo $volumeLotTotal ?> hl)</small> :</p>
+<p><strong><?php echo count($lots) ?> lot(s) à prélever</strong> <small>(pour un volume total de <?php echo $volumeLotTotal ?> hl)</small> :</p>
   <?php $i = 10; $table_header = true; foreach($lots as $key => $lot): ?>
    <?php if($i % 20 == 0 ): $table_header = true; ?>
     </table>
