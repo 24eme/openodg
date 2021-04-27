@@ -309,7 +309,7 @@ class degustationActions extends sfActions {
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsNotAnonymized();
+
       $this->form = new DegustationDegustateursConfirmationForm($this->degustation);
 
       if (!$request->isMethod(sfWebRequest::POST)) {
