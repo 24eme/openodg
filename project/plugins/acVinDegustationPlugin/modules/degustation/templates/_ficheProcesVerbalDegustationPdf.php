@@ -70,9 +70,51 @@ th {
 <hr>
 
 <div>
-  <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
+  <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse; margin-top: 1px" scope="colgroup" >
     <tr>
       <td><div><p>Tableau des échantillons de vin IGP <?php echo $appellation ?> présentés à la commission</p></div></td>
+      <td>
+        <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
+          <thead>
+            <tr>
+              <th rowspan="2" style="width:35%"></th>
+              <th rowspan="2" style="width:15%"><small>Synthèse</small></th>
+              <th colspan="2" style="width:20%"><small>Résultat</small></th>
+            </tr>
+            <tr>
+              <th><small>C</small></th>
+              <th><small>NC</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php $c = []; $nc = []; $vc = 0; $vnc = 0; foreach ($lotsDegustes as $l) {
+                if ($l->conformite == Lot::CONFORMITE_CONFORME) :
+                    $c[$l->declarant_identifiant]++; $vc += $l->volume;
+                else:
+                    $nc[$l->declarant_identifiant]++; $vnc += $l->volume;
+                endif;
+            } ?>
+            <tr>
+              <th><small>Nombre de lots</small></th>
+              <td><small><?php echo count($lotsDegustes) ?></small></td>
+              <td><small><?php echo array_sum($c) ?></small></td>
+              <td><small><?php echo array_sum($nc) ?></small></td>
+            </tr>
+            <tr>
+              <th><small>Volumes total (hl)</small></th>
+              <td style="text-align: right"><small><?php echo $vc + vnc ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echo $vc ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echo $vnc ?> hl</small>&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+              <th><small>Nombre d'opérateurs</small></th>
+              <td><small><?php echo count($c) + count($nc) ?></small></td>
+              <td><small><?php echo count($c) ?></small></td>
+              <td><small><?php echo count($nc) ?></small></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
     </tr>
     <tr>
       <td style="width: 100%">
