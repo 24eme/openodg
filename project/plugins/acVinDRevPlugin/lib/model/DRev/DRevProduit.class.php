@@ -152,6 +152,16 @@ class DRevProduit extends BaseDRevProduit
 			return true;
 		}
 
+        if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_sur_place)) {
+
+			return true;
+		}
+
+        if ($this->recolte->volume_sur_place_revendique == $this->recolte->volume_sur_place_revendique) {
+
+            return true;
+        }
+
 		return false;
 	}
 

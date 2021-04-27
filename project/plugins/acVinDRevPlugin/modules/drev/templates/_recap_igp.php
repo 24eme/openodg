@@ -9,7 +9,7 @@
                 </thead>
                 <thead>
                   <tr>
-                    <th class="text-center col-xs-5">Produit (millesime)</th>
+                    <th class="text-center col-xs-5">Produit (millesime) <small class="pull-right text-muted">Rdmt L5</small></th>
                     <th class="text-center col-xs-1">Superficie</th>
                     <th class="text-center col-xs-1">Volume</th>
                     <th class="text-center col-xs-1">Nb lots</th>
@@ -19,21 +19,21 @@
                 </thead>
                 <tbody>
                   <?php foreach ($drev->summerizeProduitsLotsByCouleur() as $couleur => $synthese) :
-                      $isTotal = strpos($couleur, 'Total') !== false;
+                      $isTotal = (strpos($couleur, 'Total') !== false);
                     ?>
                     <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
                       <td>
                           <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a>
                           <?php if (!$isTotal) : ?>
-                              <small class="pull-right">&nbsp;<?php if(isset($synthese) && $synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?>
+                              <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?>
                           <?php endif; ?>
                       </td>
                       <td class="text-right">
                           <?php if($synthese['superficie_totale']): ?><?php printf("%.04f", $synthese['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?>
                       </td>
-                        <?php if(isset($synthese['volume_total']) && $synthese['volume_total']): ?>
+                        <?php if(isset($synthese['volume_sur_place']) && $synthese['volume_sur_place']): ?>
                           <td class="text-right">
-                          <?php echoFloat($synthese['volume_total']); ?><small class="text-muted">&nbsp;hl</small>
+                          <?php echoFloat($synthese['volume_sur_place']); ?><small class="text-muted">&nbsp;hl</small>
                           </td>
                          <?php elseif(isset($synthese['volume_max']) && $synthese['volume_max']): ?>
                           <td class="text-right alert-danger">
@@ -113,7 +113,7 @@
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
                         <?php if($drev->isValidee()): ?>
-                        <td class="text-center"><a title="Historique du lot" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>"><?php echo $lot->numero_dossier; ?></a></td>
+                        <td class="text-center"><?php echo $lot->numero_dossier; ?></td>
                         <td class="text-center"><a title="Historique du lot" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>"><?php echo $lot->numero_archive; ?></a></td>
                         <?php endif;?>
                         <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>

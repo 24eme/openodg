@@ -997,12 +997,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$degustateur->libelle = $compte->getLibelleWithAdresse();
 
 			if($numTab !== false){
-				$degustateur->getOrAdd('numero_table');
-				$degustateur->numero_table = $numTab;
+				if($numTab !== null){
+					$degustateur->getOrAdd('numero_table');
+					$degustateur->numero_table = $numTab;
+				}
 				$degustateur->getOrAdd('confirmation');
 				$degustateur->confirmation = true;
 			}
 
+		}
+
+		public function setDateEmailConvocationDegustateur($date, $compteId, $college) {
+			$this->getOrAdd('degustateurs');
+			$degustateur = $this->degustateurs->getOrAdd($college)->getOrAdd($compteId);
+			$degustateur->getOrAdd('email_convocation');
+			$degustateur->email_convocation = $date;
 		}
 
 		public function hasAllDegustateursConfirmation(){
