@@ -16,7 +16,7 @@ $stepNum = $etapes->getEtapeNum($etapeMax);
     }else{
        echo url_for($etapes->getRouteLink($k), $object);
     }
-    ?>" class="<?php if(isset($ajax) && $ajax): ?>ajax<?php endif; ?>"><?php echo str_replace('%campagne%', intval($object->campagne) - 1, $etapes->getLibelle($k, $object, ESC_RAW));?></a>
+    ?>" class="<?php echo strtolower($k); ?> <?php if(isset($ajax) && $ajax): ?>ajax<?php endif; ?>"><?php echo str_replace('%campagne%', intval($object->campagne) - 1, $etapes->getLibelle($k, $object, ESC_RAW));?></a>
         </li>
     <?php endforeach; ?>
     </ul>
