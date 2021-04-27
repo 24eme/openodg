@@ -197,7 +197,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         return $ligne;
     }
-/*
+
     public function storeLignesByMouvements($mouvements, $template) {
         foreach($template->cotisations as $configCollection) {
             $ligne = $this->addLigne($configCollection);
@@ -236,7 +236,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->lignes->remove($ligne_key);
       }
     }
-    */
+
 
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement) {
