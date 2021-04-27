@@ -32,6 +32,15 @@
         <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
+    <?php if ($sf_user->hasFlash('notice')): ?>
+    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('error')): ?>
+    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('warning')): ?>
+    <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
+    <?php endif; ?>
     <?php  if(!$sf_user->isAdmin() && ($etablissement->getSociete() && count($etablissement->getSociete()->getEtablissementsObj(false)) > 1)): ?>
       <section id="principal">
           <form id="choix_etablissement" method="post" action="<?php echo url_for('drev_societe_choix_etablissement', array('identifiant' => $etablissement->identifiant)) ?>">

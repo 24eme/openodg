@@ -12,8 +12,12 @@ class conditionnementActions extends sfActions {
         $date = $request->getParameter("date", date('Y-m-d'));
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
-
-        $conditionnement->save();
+        try {
+            $conditionnement->save();
+        }catch(couchException $e) {
+            $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de conditionnement aujourd'hui");
+            return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
+        }
 
         return $this->redirect('conditionnement_edit', $conditionnement);
     }

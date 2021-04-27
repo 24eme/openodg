@@ -179,18 +179,25 @@
 \end{minipage}
 
 \\\vspace{6mm}
-<?php if (count($facture->paiements)): ?>
+<?php if ($facture->exist('message_communication') && $facture->message_communication): ?>
+\textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\
+<?php endif; ?>
+\\\vspace{6mm}
+<?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
 \textbf{Paiement(s) :} \\
 \begin{itemize}
 <?php foreach($facture->paiements as $paiement): ?>
-\item <?= FactureClient::$types_paiements[$paiement->type_reglement]; ?> de <?= formatFloat($paiement->montant, ','); ?>~€, le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?> \\
+\item <?= (isset(FactureClient::$types_paiements[$paiement->type_reglement])) ? FactureClient::$types_paiements[$paiement->type_reglement]. " de ": ""; ?> <?= formatFloat($paiement->montant, ','); ?>~€,
+<?php if ($paiement->date): ?>
+le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
+<?php endif; ?>
+\textit{<?= ($paiement->commentaire) ? "(".escape_string_for_latex($paiement->commentaire).")" : ''; ?>}
+ \\
 <?php endforeach; ?>
 \end{itemize}
-<?php else: ?>
+<?php elseif ($facture->exist('modalite_paiement') && $facture->modalite_paiement): ?>
 \textbf{Modalités de paiements} \\ \\
-<?= escape_string_for_latex(
-    ($facture->exist('modalite_paiement')) ? $facture->modalite_paiement : ''
-) ?>
+<?= escape_string_for_latex($facture->modalite_paiement) ?>
 <?php endif; ?>
 \end{center}
 \end{document}

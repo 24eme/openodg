@@ -31,10 +31,16 @@
                       <td class="text-right">
                           <?php if($synthese['superficie_totale']): ?><?php printf("%.04f", $synthese['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?>
                       </td>
-                      <td class="text-right">
-                        <?php if(isset($synthese) && $synthese['volume_total']): ?>
+                        <?php if(isset($synthese['volume_total']) && $synthese['volume_total']): ?>
+                          <td class="text-right">
                           <?php echoFloat($synthese['volume_total']); ?><small class="text-muted">&nbsp;hl</small>
-
+                          </td>
+                         <?php elseif(isset($synthese['volume_max']) && $synthese['volume_max']): ?>
+                          <td class="text-right alert-danger">
+                              <abbr title="Volume max : les lies n'ont pas été retirées car il y a des livraisons à des tiers sans détails">⚠</abbr> <?php echoFloat($synthese['volume_max']); ?><small class="text-muted">&nbsp;hl</small></span>
+                          </td>
+                         <?php else: ?>
+                          <td></td>
                         <?php endif; ?>
                       </td>
                       <td class="text-right">
@@ -51,8 +57,8 @@
                           <?php echoFloat($synthese['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
                       </td>
                       <td class="text-right">
-                        <?php if(isset($synthese) && round($synthese['volume_restant'],2) >= 0): ?><?php echoFloat($synthese['volume_restant']); ?><small>&nbsp;hl</small><?php endif; ?>
-                        <?php if(isset($synthese) && round($synthese['volume_restant'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                        <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) >= 0): ?><?php echoFloat($synthese['volume_restant_max']); ?><small>&nbsp;hl</small><?php endif; ?>
+                        <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant_max']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
                       </td>
                       </tr>
                   <?php endforeach; ?>
@@ -115,7 +121,8 @@
                           <?php echo showProduitCepagesLot($lot) ?>
                           <?php if($lot->isProduitValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?>
                           <?php if($lot->isInElevage()):?>
-                            <p><small class="text-muted"> en élevage </small></p>
+                            <br>
+                            <small class="text-muted"> en élevage </small>
                           <?php endif; ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>

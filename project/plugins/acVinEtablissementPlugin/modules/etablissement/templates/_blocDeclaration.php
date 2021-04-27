@@ -11,7 +11,7 @@
             <div style="margin-bottom: 5px" class="col-xs-9">
                 <address style="margin-bottom: 0;">
                     <?php echo $compte->getAdresse(); ?><?php echo ($compte->getAdresseComplementaire())? " ".$compte->getAdresseComplementaire() : ''; ?>
-                    <span><?php echo ' '.$compte->getCodePostal(); ?></span><?php echo ' '.$compte->getCommune(); ?><small class="text-muted">(<?php echo ' '.$compte->getPays(); ?>)</small>
+                    <span><?php echo $compte->getCodePostal(); ?></span> <?php echo $compte->getCommune(); ?> <small class="text-muted">(<?php echo $compte->getPays(); ?>)</small>
                 </address>
             </div>
         </div>
