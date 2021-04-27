@@ -40,7 +40,7 @@
                           </div>
                       </div>
                     </div>
-
+                    <?php if (isset($form['table'])): ?>
                     <div class="row">
                       <div class="col-md-10">
                           <div class="form-group">
@@ -52,11 +52,16 @@
                           </div>
                       </div>
                     </div>
+                  <?php endif; ?>
                 </div>
             </div>
   				</div>
   				<div class="modal-footer">
-  					<a href="<?php echo url_for('degustation_presences', array('id' => $degustation->_id, 'numero_table' => 1)) ?>" class="pull-left btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+            <?php if (isset($form['table'])): ?>
+  					  <a href="<?php echo url_for('degustation_presences', array('id' => $degustation->_id, 'numero_table' => 1)) ?>" class="pull-left btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+            <?php else: ?>
+              <a href="<?php echo url_for('degustation_degustateurs_confirmation', array('id' => $degustation->_id)) ?>" class="pull-left btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+            <?php endif; ?>
   					<button type="submit" class="btn btn-success btn pull-right">Valider</button>
   				</div>
   			</form>
