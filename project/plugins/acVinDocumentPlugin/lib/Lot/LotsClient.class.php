@@ -31,13 +31,40 @@ class LotsClient
         return $doc->get($mouvement->value->lot_hash);
     }
 
+    public function getDocumentsIds($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive) {
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive);
+
+        $documents = array();
+        foreach($mouvements->rows as $mouvement) {
+            $documents[$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
+        }
+
+        ksort($documents);
+
+        return $documents;
+    }
+
     public function modifyAndSave($lot) {
-        $docM = $lot->getDocument()->generateModificative();
-        $lotM = $docM->getLot($lot->unique_id);
-        $lotM->volume = $lot->volume;
-        $docM->validate();
-        $docM->validateOdg();
-        $docM->save();
+        $ids = $this->getDocumentsIds($lot->declarant_identifiant, $lot->campagne, $lot->numero_dossier, $lot->numero_archive);
+
+        foreach($ids as $id) {
+            $doc = DeclarationClient::getInstance()->find($id);
+
+            if($doc instanceof InterfaceVersionDocument) {
+                $doc = $doc->generateModificative();
+            }
+
+            $lotM = $doc->getLot($lot->unique_id);
+            $lotM->id_document = $doc->_id;
+            $lotM->volume = $lot->volume;
+
+            if($doc instanceof InterfaceVersionDocument) {
+                $doc->validate();
+                $doc->validateOdg();
+            }
+
+            $doc->save();
+        }
     }
 
 }
