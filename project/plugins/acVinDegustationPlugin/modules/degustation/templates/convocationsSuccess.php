@@ -1,5 +1,4 @@
 <?php use_helper('Float') ?>
-
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_CONVOCATIONS)); ?>
 <?php $degustateur = null; $college = null; ?>
@@ -24,7 +23,11 @@
                 Envoyer une convocation <strong>aux dégustateurs</strong> suivants :
                 <br/>
             </div>
-          <div class="col-xs-12 text-right">
+            <div class="col-xs-6" >
+            <br/>
+            <?php echo include_partial('global/flash'); ?>
+            </div>
+          <div class="col-xs-6 text-right">
             <br/>
               <br/>
               <a class="btn btn-default btn-sm" style="" href="<?php echo url_for('degustation_convocations_mails', $degustation); ?>" onclick="confirm('Voulez-vous envoyer les emails aux dégustateurs?')" >&nbsp;Convoquer les dégustateurs&nbsp;<span class="glyphicon glyphicon-send"></span></a>
