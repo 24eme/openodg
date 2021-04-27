@@ -32,8 +32,8 @@
 <?php if ($sf_user->hasFlash('notice')): ?>
   <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
-<?php if ($sf_user->hasFlash('erreur')): ?>
-  <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+<?php if ($sf_user->hasFlash('error')): ?>
+  <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
 <?php endif; ?>
 <?php if(!$habilitation->isLastOne()): ?>
   <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
