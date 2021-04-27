@@ -250,12 +250,7 @@ class degustationActions extends sfActions {
     public function executeConvocationsMails(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         Email::getInstance()->sendConfirmationDegustateursMails($this->degustation);
-<<<<<<< HEAD
         $this->getUser()->setFlash("notice", "Les mails de convocations ont été envoyés aux dégustateurs.");
-=======
-        $this->getUser()->setFlash("success", "Les mails de convocations ont été envoyés aux dégustateurs.");
-        $this->degustation->save(false);
->>>>>>> fb575d0a276f0c2ae77dde8cc950559565f3cc3c
         return $this->redirect('degustation_convocations', $this->degustation);
     }
 
