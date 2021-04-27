@@ -53,6 +53,9 @@ p, div {
           <span><strong>Nom :</strong> <?php echo $adresseLgt['nom'] ?></span>
         </p>
         <p>
+          &nbsp;
+        </p>
+        <p>
           <span><strong>Adresse :</strong> <?php echo $adresseLgt['adresse'] ?></span>
         </p>
         <p>
