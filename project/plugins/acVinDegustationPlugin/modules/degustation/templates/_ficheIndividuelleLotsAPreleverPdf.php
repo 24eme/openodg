@@ -73,10 +73,10 @@ p, div {
 <br />
 <table class="table" cellspacing=0 cellpadding=0 style="border-collapse:collapse;" scope="colgroup">
   <tr>
-    <th border="1px" class="border" style="width: 10%; text-align: center;"><strong>Date</strong></th>
-    <th border="1px" class="border" style="width: 10%; text-align: center;"><strong>Heure</strong></th>
-    <th border="1px" class="border" style="width: 40%; text-align: center;"><strong>Nom et signature préleveur</strong></th>
-    <th border="1px" class="border" style="width: 40%; text-align: center;"><strong>Nom et signature personne présente</strong></th>
+    <th border="1px" class="border" style="width: 12%; text-align: center;"><strong>Date</strong></th>
+    <th border="1px" class="border" style="width: 12%; text-align: center;"><strong>Heure</strong></th>
+    <th border="1px" class="border" style="width: 38%; text-align: center;"><strong>Nom et signature préleveur</strong></th>
+    <th border="1px" class="border" style="width: 38%; text-align: center;"><strong>Nom et signature personne présente</strong></th>
   </tr>
   <tr>
     <td border="1px" class="border"><br/><br/></td>
