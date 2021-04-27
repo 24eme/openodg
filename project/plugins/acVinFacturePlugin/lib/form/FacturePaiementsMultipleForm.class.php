@@ -4,6 +4,7 @@ class FacturePaiementsMultipleForm extends acCouchdbObjectForm {
 
     public function configure()
     {
+      $this->getObject()->add('paiements');
       $this->getObject()->paiements->add();
       $this->embedForm('paiements', new FacturePaiementsForm($this->getObject()));
       $this->widgetSchema->setNameFormat('facture_paiements_multiple[%s]');
