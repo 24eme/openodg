@@ -32,19 +32,19 @@ p, div {
     <td border="1px" class="border">
         <p><span>&nbsp;&nbsp;<strong>Raison sociale :</strong> <?php echo truncate_text($etablissement->getRawValue()->raison_sociale, 43, '...') ?></span></p>
         <p>
-          <span><strong>Siret :</strong> <?php echo $etablissement->siret ?></span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>N° CVI :</strong> <?php echo $etablissement->cvi ?></span>
-        </p>
-        <p>
           <span><strong>Adresse :</strong> <?php echo $etablissement->adresse ?></span>
         </p>
         <p>
           <span><strong>Code postal :</strong> <?php echo $etablissement->code_postal ?></span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ville :</strong> <?php echo $etablissement->commune ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ville :</strong> <?php echo $etablissement->commune ?></span>
         </p>
         <p>
           <span><strong>Téléphone :</strong> <?php echo $etablissement->telephone_bureau ?></span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Portable :</strong> <?php echo $etablissement->telephone_mobile ?></span>
+        </p>
+        <p>
+          <span><strong>Siret :</strong> <?php echo $etablissement->siret ?></span>
+          <span><?php for($i=strlen($etablissement->siret); $i <= 25; $i++): ?>&nbsp;<?php endfor; ?><strong>N° CVI :</strong> <?php echo $etablissement->cvi ?></span>
           <br />
         </p>
     </td>
@@ -53,18 +53,19 @@ p, div {
           <span><strong>Nom :</strong> <?php echo $adresseLgt['nom'] ?></span>
         </p>
         <p>
-          &nbsp;
-        </p>
-        <p>
           <span><strong>Adresse :</strong> <?php echo $adresseLgt['adresse'] ?></span>
         </p>
         <p>
           <span><strong>Code postal : </strong><?php echo $adresseLgt['code_postal'] ?></span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ville</strong> : <?php echo $adresseLgt['commune'] ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ville</strong> : <?php echo $adresseLgt['commune'] ?></span>
         </p>
         <p>
           <span><strong>Téléphone :</strong> <?php echo $etablissement->telephone_bureau ?></span>
-      </p>
+        </p>
+        <p>
+            <strong>Laboratoire :</strong> <?php echo $etablissement->getLaboLibelle(); ?>
+            <br />
+        </p>
     </td>
   </tr>
 </table>
