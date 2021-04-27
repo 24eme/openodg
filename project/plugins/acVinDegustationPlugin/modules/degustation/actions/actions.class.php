@@ -184,6 +184,10 @@ class degustationActions extends sfActions {
 
         $this->table = $this->form->getValues()['table'];
 
+        if (!$this->table) {
+          $this->redirect('degustation_degustateurs_confirmation', array('id' =>$this->degustation->_id));
+        }
+
         return $this->redirect('degustation_presences', array('id' =>$this->degustation->_id, 'numero_table' => $this->table));
     }
 
