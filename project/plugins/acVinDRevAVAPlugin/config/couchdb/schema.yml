@@ -127,15 +127,15 @@ DRev:
                                                   type: collection
                                                   definition:
                                                     fields:
-                                                      volume_sur_place: { type: float }
-                                                      volume_sur_place_revendique: { type: float }
-                                                      usages_industriels_sur_place: { type: float }
-                                                      usages_industriels_total: { type: float }
-                                                      volume_total: { type: float }
-                                                      superficie_total: { type: float }
-                                                      superficie_vinifiee: { type: float, required: false }
-                                                      vci_sur_place: { type: float }
-                                                      vci_total: { type: float }
+                                                      volume_sur_place: { type: float } #L9
+                                                      volume_sur_place_revendique: { type: float } #calculé sur L15 si pas livraison à une cave coop ayant des lie
+                                                      usages_industriels_sur_place: { type: float } #calculé
+                                                      usages_industriels_total: { type: float } #L16
+                                                      volume_total: { type: float } #L5
+                                                      superficie_total: { type: float } #L4
+                                                      superficie_vinifiee: { type: float, required: false } #calculée
+                                                      vci_sur_place: { type: float } #calculé
+                                                      vci_total: { type: float } #L19
                                                 detail_vtsgn:
                                                   type: collection
                                                   required: false
