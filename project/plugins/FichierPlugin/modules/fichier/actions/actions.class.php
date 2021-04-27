@@ -265,11 +265,15 @@ class fichierActions extends sfActions
 		$this->type = $request->getParameter('type');
 
 		if ($request->isMethod(sfWebRequest::POST)) {
-			$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
-			$drev = DRevClient::getInstance()->find("DREV-".$this->etablissement->identifiant."-".$this->periode);
-			if ($fichiers && $drev) {
-				$drev->importFromDocumentDouanier();
-                $drev->save();
+			try {
+				$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
+				$drev = DRevClient::getInstance()->find("DREV-".$this->etablissement->identifiant."-".$this->periode);
+				if ($fichiers && $drev) {
+					$drev->importFromDocumentDouanier();
+                	$drev->save();
+				}
+			}catch(sfException $e ) {
+				$this->getUser()->setFlash('error', $e->getMessage());
 			}
 			return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
 		}
