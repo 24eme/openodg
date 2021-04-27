@@ -117,20 +117,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduitsLots() as $h => $p) {
             $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
-                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0,
+                $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
+                                            'volume_total' => 0, 'volume_sur_place' => 0,
                                             'volume_max' => 0, 'volume_lots' => 0,
                                             'volume_restant' => 0, 'nb_lots' => 0,
                                             'nb_lots_degustables' => 0
                                            );
             }
             $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' Total';
-            if(isset($couleurs[$couleur]['volume_total']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
-                $couleurs[$couleur]['volume_total'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
+            $couleurs[$couleur]['volume_total'] += $p->recolte->volume_total;
+            if(isset($couleurs[$couleur]['volume_sur_place']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
+                $couleurs[$couleur]['volume_sur_place'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
             } else {
-                unset($couleurs[$couleur]['volume_total']);
+                unset($couleurs[$couleur]['volume_sur_place']);
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
-            $couleurs[$couleur]['superficie_totale'] += $p->superficie_revendique;
+            $couleurs[$couleur]['superficie_revendiquee'] += $p->superficie_revendique;
+            $couleurs[$couleur]['superficie_totale'] += $p->recolte->superficie_total;
         }
 
         // Parcours dans les lots
@@ -140,7 +143,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleur = $lot->getConfig()->getCouleur()->getLibelleComplet();
             if (!isset($couleurs[$couleur])) {
-                $couleurs[$couleur] = array('volume_total' => 0, 'superficie_totale' => 0,
+                $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
+                                            'superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_max' => 0, 'volume_lots' => 0,
                                             'volume_restant' => 0, 'nb_lots' => 0,
                                             'nb_lots_degustables' => 0
@@ -159,25 +163,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if ($with_total) {
             $total_appellations = array();
             foreach($couleurs as $k => $couleur) {
-                if (!isset($couleur['volume_total'])) {
+                if (!isset($couleur['volume_sur_place'])) {
+                    $couleur['volume_sur_place'] = 0;
                     $couleur['volume_total'] = 0;
                 }
                 if (isset($couleur['volume_lots'])) {
-                    $couleur['volume_restant'] = $couleur['volume_total'] - $couleur['volume_lots'];
+                    $couleur['volume_restant'] = $couleur['volume_sur_place'] - $couleur['volume_lots'];
                     $couleur['volume_restant_max'] = $couleur['volume_max'] - $couleur['volume_lots'];
                     $couleurs[$k]['volume_restant'] = $couleur['volume_restant'];
                     $couleurs[$k]['volume_restant_max'] = $couleur['volume_restant_max'];
                 }
                 if (!isset($total_appellations[$couleur['appellation']])) {
                     $total_appellations[$couleur['appellation']] = array(
-                        'volume_total' => 0, 'superficie_totale' => 0,
+                        'superficie_totale' => 0, 'superficie_revendiquee' => 0,
+                        'volume_sur_place' => 0, 'volume_total' => 0,
                         'volume_max' => 0, 'volume_lots' => 0,
                         'volume_restant' => 0, 'volume_restant_max' => 0,
                         'nb_lots' => 0, 'nb_lots_degustables' => 0
                     );
                 }
                 $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
+                $total_appellations[$couleur['appellation']]['volume_sur_place'] += $couleur['volume_sur_place'];
                 $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
+                $total_appellations[$couleur['appellation']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
                 $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
                 $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
                 $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
@@ -699,22 +707,32 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $produitRecolte = $produit->recolte;
 
-            if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE) {
+            if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5) {
             	$produitRecolte->volume_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16) {
             	$produitRecolte->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                if (!$has_coop_l8) {
+                    $produitRecolte->usages_industriels_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                }
             }
-            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4) {
             	$produitRecolte->superficie_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                $has_coop_l8 = false;
             }
-            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME)  {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_COOPERATIVE_L8 && $line[DRCsvFile::CSV_VALEUR])  {
+                $has_coop_l8 = true;
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME_L9)  {
             	$produitRecolte->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTENETTE) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15) {
             	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                if (!$has_coop_l8){
+                    $produitRecolte->volume_sur_place_revendique += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                }
             }
-            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI_L19) {
                 $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
