@@ -20,6 +20,13 @@
 </table>
 <br/>
 
+<table style="width:1100px;" >
+  <tr style="text-decoration: underline;"><td>Vos coordonnées :</td></tr>
+  <tr><td>Email : <?php echo $etablissement->email ?></td></tr>
+  <?php echo ($etablissement->telephone_bureau) ? '<tr><td>Bureau : '. $etablissement->telephone_bureau .'</td></tr>' : '' ?>
+  <?php echo ($etablissement->telephone_mobile) ? '<tr><td>Mobile : '. $etablissement->telephone_mobile .'</td></tr>' : '' ?>
+</table>
+
 <br/>
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
