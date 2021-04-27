@@ -24,6 +24,8 @@ class FacturePaiementsMultipleForm extends acCouchdbObjectForm {
         foreach($paiementsToDelete as $key => $void) {
             $this->getObject()->paiements->remove($key);
         }
+
+        $this->getObject()->updateMontantPaiement();
     }
 
 }
