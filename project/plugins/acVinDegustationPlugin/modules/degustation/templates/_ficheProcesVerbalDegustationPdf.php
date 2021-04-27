@@ -102,9 +102,9 @@ th {
             </tr>
             <tr>
               <th><small>Volumes total (hl)</small></th>
-              <td style="text-align: right"><small><?php echo $vc + vnc ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echo $vc ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echo $vnc ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echo $vc + $vnc ?> hl</small></td>
+              <td style="text-align: right"><small><?php echo $vc ?> hl</small></td>
+              <td style="text-align: right"><small><?php echo $vnc ?> hl</small></td>
             </tr>
             <tr>
               <th><small>Nombre d'opérateurs</small></th>
