@@ -176,6 +176,58 @@ $b->click('#btn_suivant');
 $b->isForwardedTo('degustation', 'anonymatsEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape d'anonymat");
 
+$b->click('ul.navbar-nav li a.commission')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.resultats')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.notifications')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('#btn_suivant')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape commission");
+
+$b->click('ul.navbar-nav li a.lots')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.degustateurs')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.prelevements')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.tables')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.anonymats');
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "On revient à l'anonymat");
+
+$b->click('a.desanonymat')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape anonymat : On a désanonymisé");
+
+$b->click('ul.navbar-nav li a.commission')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.resultats')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.notifications')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
 $b->click('#btn_suivant')->followRedirect();
 $b->isForwardedTo('degustation', 'commissionEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape commission");

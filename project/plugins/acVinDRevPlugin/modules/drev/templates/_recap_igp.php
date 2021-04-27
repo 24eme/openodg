@@ -113,8 +113,8 @@
                           <?php if($drevDocOrigine): ?></a><?php endif; ?>
                         </td>
                         <?php if($drev->isValidee()): ?>
-                        <td class="text-center"><?php echo $lot->numero_dossier; ?></td>
-                        <td class="text-center"><?php echo $lot->numero_archive; ?></td>
+                        <td class="text-center"><a title="Historique du lot" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>"><?php echo $lot->numero_dossier; ?></a></td>
+                        <td class="text-center"><a title="Historique du lot" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>"><?php echo $lot->numero_archive; ?></a></td>
                         <?php endif;?>
                         <td class="text-right"><?php echo $lot->numero_logement_operateur; ?></td>
                         <td>

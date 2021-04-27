@@ -93,6 +93,10 @@ class facturationActions extends sfActions
             $this->societe = $this->compte->getSociete();
             $this->form = new FactureGenerationForm();
 
+            if(class_exists("EtablissementChoiceForm")) {
+                $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->compte->identifiant), true);
+            }
+
             $this->identifiant = $request->getParameter('identifiant');
 
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);

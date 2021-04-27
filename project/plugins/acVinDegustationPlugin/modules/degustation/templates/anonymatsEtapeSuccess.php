@@ -51,7 +51,7 @@
             <br/>
             <?php if($degustation->isAnonymized()): ?>
               <br/>
-              <a class="btn btn-default btn-sm" style="opacity:0.5" href="<?php echo url_for('degustation_desanonymize', $degustation) ?>" onclick="return confirm('Voulez-vous retirer l\'anonymat?');" >&nbsp;Retirer l'anonymat&nbsp;<span class="glyphicon glyphicon-eye-open"></span></a>
+              <a class="btn btn-default btn-sm desanonymat" style="opacity:0.5" href="<?php echo url_for('degustation_desanonymize', $degustation) ?>" onclick="return confirm('Voulez-vous retirer l\'anonymat?');" >&nbsp;Retirer l'anonymat&nbsp;<span class="glyphicon glyphicon-eye-open"></span></a>
             <?php endif; ?>
           </div>
         </div>
