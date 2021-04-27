@@ -17,6 +17,11 @@
       <tr>
         <td style="border: none;">Volume : <strong><?php echo echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
       </tr>
+    <?php if ($lot->adresse_logement): ?>
+      <tr>
+        <td style="border: none;">Adresse de prélèvement : <strong><?php echo $lot->adresse_logement; ?></strong></td>
+      </tr>
+    <?php endif; ?>
     </tbody>
   </table>
 </div>
