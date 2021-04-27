@@ -67,13 +67,12 @@ th {
   </table>
 
 <p></p>
-<hr>
 
 <div>
-  <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse; margin-top: 1px" scope="colgroup" >
+  <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
     <tr>
-      <td><div><p>Tableau des échantillons de vin IGP <?php echo $appellation ?> présentés à la commission</p></div></td>
-      <td>
+      <td style="width: 50%">Tableau des échantillons de vin IGP <?php echo $appellation ?> présentés à la commission</td>
+      <td style="width: 50%">
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <thead>
             <tr>
