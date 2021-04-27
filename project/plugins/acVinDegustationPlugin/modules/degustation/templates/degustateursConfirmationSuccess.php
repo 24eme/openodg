@@ -69,8 +69,9 @@
 </div>
 	<div class="row row-button">
 				<div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
-				<div class="col-xs-4 text-center">
-				</div>
+        <div class="col-xs-4 text-center">
+          <a href="<?php echo url_for("degustation_ajout_degustateurPresence", array('id' => $degustation->_id, "table" => 0)) ?>" class="btn btn-default btn-upper">Ajouter un dégustateur</a>
+        </div>
 				<div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
 		</div>
 </form>
