@@ -67,6 +67,8 @@ th {
   </table>
 
 <p></p>
+<hr/>
+<p></p>
 
 <div>
   <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
