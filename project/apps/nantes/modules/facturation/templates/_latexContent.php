@@ -189,9 +189,9 @@
 				\tabularnewline
         \hline
 		<?php endforeach; ?>
-    \multicolumn{2}{|c}{~} & \textbf{Déjà réglé: <?php echo formatFloat($facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+    \multicolumn{2}{|c}{~} & \textbf{Déjà réglé: <?php echo formatFloat($facture->paiements->getPaiementsTotal(),',').' €' ?>}\tabularnewline
 		\hline
-		\multicolumn{2}{|c}{~} & \textbf{NET A PAYER : <?php echo formatFloat($facture->total_ttc - $facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+		\multicolumn{2}{|c}{~} & \textbf{NET A PAYER : <?php echo formatFloat($facture->total_ttc - $facture->paiements->getPaiementsTotal(),',').' €' ?>}\tabularnewline
     \hline
   \end{tabular}
 	\begin{minipage}{0.5\textwidth}
