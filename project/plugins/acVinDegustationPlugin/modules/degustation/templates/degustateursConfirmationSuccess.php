@@ -25,9 +25,10 @@
         <table class="table table-bordered table-condensed table-striped">
         	<thead>
             	<tr>
-            		<th class="col-xs-3">Collège</th>
-        				<th class="col-xs-7">Membre</th>
+            		<th class="col-xs-2">Collège</th>
+        				<th class="col-xs-6">Membre</th>
                 <th class="col-xs-2">Confirmation présence</th>
+                <th class="col-xs-1">Convocation</th>
               </tr>
         	</thead>
         	<tbody>
@@ -50,6 +51,15 @@
                     </div>
 									</div>
 	  						</td>
+                <td class="text-center edit">
+                  <?php
+                    if($degustateur->exist('email_convocation') && $degustateur->email_convocation):
+                      echo format_date($degustateur->email_convocation, "dd/MM/yyyy");
+                    elseif (!$degustateur->exist('confirmation') || $degustateur->confirmation !== false) :
+                  ?>
+                  <a href="<?php echo url_for('degustation_convocations_mail_degustateur', array('id' => $degustation->_id, 'college_key' => $college, 'id_compte' => $id)) ?>" class="small" onclick="return confirm('Voulez-vous envoyer l\'email de convocation au dégustateur?')">convoquer</a>
+                  <?php endif; ?>
+                </td>
 							</tr>
         		<?php endforeach;?>
         		<?php endforeach; ?>
