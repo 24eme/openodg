@@ -33,11 +33,16 @@ class ExportDegustationAllNotificationsPDF extends ExportDeclarationLotsPDF {
 
             if (isset($lots_declarant['nonconforme']) && count($lots_declarant['nonconforme'])) {
                 foreach ($lots_declarant['nonconforme'] as $lot_nonconforme) {
-                    $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], "lot" => $lot_nonconforme, 'courrierInfos' => $this->courrierInfos)));
-                    $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page2', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], "lot" => $lot_nonconforme)));
+                    if ($lot_nonconforme->conformite === Lot::CONFORMITE_NONTYPICITE_CEPAGE) {
+                        $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_typiciteCepage', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], 'lot' => $lot_nonconforme, 'courrierInfos' => $this->courrierInfos)));
+                    } elseif ($lot_nonconforme->conformite === Lot::CONFORMITE_NONCONFORME_ANALYTIQUE) {
+                        $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_analytique', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], 'lot' => $lot_nonconforme, 'courrierInfos' => $this->courrierInfos)));
+                    } else {
+                        $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], "lot" => $lot_nonconforme, 'courrierInfos' => $this->courrierInfos)));
+                        $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page2', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], "lot" => $lot_nonconforme )));
                     }
                 }
-
+            }
         }
     }
 
