@@ -165,8 +165,7 @@ class degustationActions extends sfActions {
 
     public function executeAjoutDegustateurPresence(sfWebRequest $request){
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->redirectIfIsNotAnonymized();
-        $this->table = $request->getParameter('table');
+        $this->table = $request->getParameter('table', null);
 
         $this->form = new DegustationAjoutDegustateurForm($this->degustation, array(), array('table' => $this->table));
 
@@ -182,8 +181,6 @@ class degustationActions extends sfActions {
         }
 
         $this->form->save();
-
-        $this->table = $this->form->getValues()['table'];
 
         if (!$this->table) {
           $this->redirect('degustation_degustateurs_confirmation', array('id' =>$this->degustation->_id));

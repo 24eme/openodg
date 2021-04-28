@@ -20,34 +20,16 @@ class DegustationAjoutDegustateurForm extends acCouchdbForm {
     $this->setWidget('college', new bsWidgetFormChoice(array('choices' => $this->colleges)));
     $this->setValidator('college', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->colleges))));
 
-    if ($this->table) {
-      $this->setWidget('table', new bsWidgetFormChoice(array('choices' => $this->getTables())));
-      $this->widgetSchema['table']->setDefault($this->table);
-      $this->setValidator('table', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getTables()))));
-    }
-
     $this->widgetSchema->setNameFormat('lot_form[%s]');
   }
-
-  public function getTables(){
-    $tables =  $this->getDocument()->getTablesWithFreeLots();
-    $nbTables = count($tables);
-    $arrayNumTable =[];
-    for ($i=0; $i < $nbTables; $i++) {
-      $arrayNumTable[$i+1] = DegustationClient::getNumeroTableStr($i+1);
-    }
-    return $arrayNumTable;
-  }
-
 
   public function save() {
     $values = $this->getValues();
     $doc = $this->getDocument();
     $college = $values['college'];
     $compteId = $values['nom'];
-    $table = (isset($values['table']))? $values['table'] : null;
+    $table = ($this->table)? $this->table : null;
     $doc->addDegustateur($compteId, $college, $table);
-
     $doc->save();
   }
 
