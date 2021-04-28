@@ -35,6 +35,10 @@ class ChgtDenomLot extends BaseChgtDenomLot
             return false;
         }
 
+        if ($chgt->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+            return false;
+        }
+
         if (count($chgt->lots) === 1) {
             return true;
         }
