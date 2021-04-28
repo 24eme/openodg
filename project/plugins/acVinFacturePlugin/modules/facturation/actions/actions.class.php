@@ -9,8 +9,8 @@ class facturationActions extends sfActions
 
         $this->form = new LoginForm();
 
-        if(class_exists("EtablissementChoiceForm")) {
-            $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => ""), true);
+        if(class_exists("SocieteChoiceForm")) {
+            $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => ""), true);
 
             $this->generation = new Generation();
             $this->generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
@@ -22,12 +22,12 @@ class facturationActions extends sfActions
 
             return sfView::SUCCESS;
         }
-         $this->formEtablissement->bind($request->getParameter($this->formEtablissement->getName()));
+         $this->formSociete->bind($request->getParameter($this->formSociete->getName()));
          $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
          $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
-         if($this->formEtablissement->isValid()) {
-              $etb = EtablissementClient::getInstance()->find($this->formEtablissement->getValue('identifiant'));
-              return $this->redirect('facturation_declarant', array('id' => $etb->getMasterCompte()->_id));
+         if($this->formSociete->isValid()) {
+              $soc = SocieteClient::getInstance()->find($this->formSociete->getValue('identifiant'));
+              return $this->redirect('facturation_declarant', array('id' => $soc->getMasterCompte()->_id));
           }
           if($this->formFacturationMassive->isValid()) {
 
@@ -93,8 +93,8 @@ class facturationActions extends sfActions
             $this->societe = $this->compte->getSociete();
             $this->form = new FactureGenerationForm();
 
-            if(class_exists("EtablissementChoiceForm")) {
-                $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->compte->identifiant), true);
+            if(class_exists("SocieteChoiceForm")) {
+                $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => $this->compte->getSociete()->identifiant), true);
             }
 
             $this->identifiant = $request->getParameter('identifiant');

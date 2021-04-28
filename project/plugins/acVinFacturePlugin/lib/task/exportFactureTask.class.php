@@ -35,7 +35,7 @@ EOF;
 
         }
         $app = $options['application'];
-        $classExportFactureCsv = 'ExportFactureCSV_'.$app;
+        $classExportFactureCsv = 'ExportFactureCSV';
 
         echo $classExportFactureCsv::getHeaderCsv();
         $ids = array();
