@@ -204,6 +204,10 @@ $b->click('ul.navbar-nav li a.prelevements')->followRedirect();
 $b->isForwardedTo('degustation', 'commissionEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
 
+$b->click('ul.navbar-nav li a.convocations')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
 $b->click('ul.navbar-nav li a.tables')->followRedirect();
 $b->isForwardedTo('degustation', 'commissionEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
