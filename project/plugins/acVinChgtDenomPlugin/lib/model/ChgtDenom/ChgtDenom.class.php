@@ -347,6 +347,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           if ($this->exist('changement_affectable')) {
               $lot->affectable = $this->changement_affectable;
           }
+
+          if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
+              $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
+          }
       } else {
           $lot->produit_hash = $this->origine_produit_hash;
           $lot->produit_libelle = $this->origine_produit_libelle;
@@ -360,10 +364,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot = $this->lots->add(null, $l);
         $lot->id_document = $this->_id;
         $lot->updateDocumentDependances();
-      }
-
-      if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
-          $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
       }
     }
 

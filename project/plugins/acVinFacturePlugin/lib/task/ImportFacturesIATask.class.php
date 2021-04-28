@@ -75,7 +75,7 @@ EOF;
             $detail->montant_ht = $data[self::CSV_FACTURE_MONTANT_FACTURE] / 1.2;
             $detail->taux_tva = 0.2;
             $detail->montant_tva = ($data[self::CSV_FACTURE_MONTANT_FACTURE] * 1) - $detail->montant_ht;
-            $detail->prix_unitaire = $detail->montant_ht / $detail->quantite;
+            $detail->prix_unitaire = ($detail->quantite)? $detail->montant_ht / $detail->quantite : 0;
             $detail->libelle = $data[self::CSV_FACTURE_IGP];
             $facture->updateTotaux();
             $facture->montant_paiement += 0;
