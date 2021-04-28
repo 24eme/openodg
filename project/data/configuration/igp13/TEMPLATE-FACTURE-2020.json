@@ -105,7 +105,7 @@
           "prix": 70,
           "tva": 0.2,
           "unite": "",
-          "libelle": "Nouveau passage en dégustation - N° %detail_identifiant%",
+          "libelle": "Nouveau passage suite à NC - N° %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "Degustation"
