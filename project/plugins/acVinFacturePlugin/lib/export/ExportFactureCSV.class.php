@@ -24,7 +24,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-        return "Crée le;Nom relation;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;id facture\n";
+        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;id facture\n";
     }
 
     public function export() {
@@ -45,10 +45,12 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $societe = $this->facture->getSociete();
 
         $csv_line = $this->facture->date_facturation.";"
+              .$societe->identifiant.";"
+              .$societe->code_comptable_client.";"
               .$declarant->nom.";"
-              .$declarant->adresse.";"
-              .$declarant->code_postal.";"
-              .$declarant->commune.";"
+              .$societe->adresse.";"
+              .$societe->code_postal.";"
+              .$societe->commune.";"
               .$societe->telephone_bureau.";"
               .$societe->telephone_mobile.";"
               .$societe->email.";"
