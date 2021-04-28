@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(141);
+$t = new lime_test(143);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -364,20 +364,31 @@ $chgtDenom->devalidate();
 $chgtDenom->save();
 $t->ok(!$chgtDenom->isValidee(), "Le changement est maintenant dévalidé.");
 
-$t->comment('Edition d\'un logement');
-$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom n'a pas de logement editable");
-$t->is($chgtDenom->lots->get(1)->isLogementEditable(), true, "Le lot changé d'un chgt denom a un logement editable");
+$t->comment("Édition d'un logement");
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement n'a pas de logement editable");
+$t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a pas de logement editable");
 $chgtDenom->validate();
-$t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un chgt denom n'a plus de logement editable après la validation");
+$t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a plus de logement editable après la validation");
+
+$chgtDenom->clearMouvementsLots();
+$chgtDenom->clearLots();
+$chgtDenom->devalidate();
+
+$chgtDenom->changement_volume = $lotFromDegust->volume;
+$chgtDenom->changement_specificite = "HVE";
+$chgtDenom->generateLots();
+
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement total n'a pas de logement editable");
+$chgtDenom->validate();
+$chgtDenom->save();
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement total après validation n'a pas de logement editable");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 $chgtDenom->devalidate();
 
 $chgtDenom->setLotOrigine($lotFromDegust);
-$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
-$chgtDenom->changement_volume = $lotFromDegust->volume;
-$chgtDenom->changement_specificite = "HVE";
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
 
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un chgt denom total a un logement editable");
