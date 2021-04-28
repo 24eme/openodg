@@ -356,7 +356,7 @@ $t->is($chgtDenom->getLotOrigine()->id_document_affectation, $chgtDenom->_id, "l
 $t->ok($chgtDenom->getLotOrigine()->isChange(), "statut des mvt du lot origine a bien isChange()");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE_SRC), "statut des mvt du lot origine a bien un mouvement changé src");
 
-$t->comment("Dévalivation d'un ChgtDenom");
+$t->comment("Dévalidation d'un ChgtDenom");
 $t->ok(!$chgtDenom->isApprouve(), "Le changement n'est pas approuvé.");
 $chgtDenom->validateOdg();
 $t->ok($chgtDenom->isApprouve(), "Le changement est bien validé et approuvé : ".$chgtDenom->validation_odg);
@@ -365,7 +365,7 @@ $chgtDenom->save();
 $t->ok(!$chgtDenom->isValidee(), "Le changement est maintenant dévalidé.");
 
 $t->comment("Édition d'un logement");
-$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement n'a pas de logement editable");
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un déclassement a un logement editable");
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a pas de logement editable");
 $chgtDenom->validate();
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a plus de logement editable après la validation");
