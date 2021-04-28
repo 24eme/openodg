@@ -365,7 +365,7 @@ $chgtDenom->save();
 $t->ok(!$chgtDenom->isValidee(), "Le changement est maintenant dévalidé.");
 
 $t->comment("Édition d'un logement");
-$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement n'a pas de logement editable");
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un déclassement a un logement editable");
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a pas de logement editable");
 $chgtDenom->validate();
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a plus de logement editable après la validation");
