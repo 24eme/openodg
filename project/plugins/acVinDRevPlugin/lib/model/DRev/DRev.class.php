@@ -1694,8 +1694,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-            if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && !$this->getMaster()->getLot($lot->unique_id)) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE));
+            if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && (!$this->getMaster()->getLot($lot->unique_id) || $this->getMaster()->getLot($lot->unique_id)->id_document != $lot->id_document)) {
                 continue;
             }
 

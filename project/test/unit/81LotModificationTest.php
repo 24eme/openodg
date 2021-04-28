@@ -23,11 +23,6 @@ function countMouvements($degustation) {
 $t = new lime_test();
 
 $campagne = (date('Y')-1)."";
-$degust1_date_fr = '09/09/'.$campagne;
-$degust2_date_fr = '11/11/'.$campagne;
-$degust1_time_fr = '09:09';
-$degust2_time_fr = '11:11';
-$degust1_date = $campagne.'-09-01 '.$degust1_time_fr;
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
 
@@ -72,7 +67,7 @@ foreach($config->getProduits() as $produitconfig) {
 $produitconfig_hash1 = $produitconfig1->getHash();
 $commissions = DegustationClient::getInstance()->getHistoryLieux();
 
-$t->comment("Prépartion d'une DRev");
+$t->comment("Préparation de la DRev");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -92,19 +87,41 @@ $drev->save();
 
 $lotDrev = $drev->lots[0];
 
-$t->comment('Modification du lot');
+$degustation = DegustationClient::getInstance()->createDoc(date('Y-m-d').' 09:24:00');
+$degustation->setLots(array($lotDrev));
+$degustation->save();
 
-$lot = LotsClient::getInstance()->find($drev->identifiant, $drev->lots[0]->campagne, $drev->lots[0]->numero_dossier, $drev->lots[0]->numero_archive);
+$t->comment('Récupération du lot');
+
+$lot = LotsClient::getInstance()->find($drev->lots[0]->declarant_identifiant, $drev->lots[0]->campagne, $drev->lots[0]->numero_dossier, $drev->lots[0]->numero_archive);
 
 $t->is($lot->unique_id, $drev->lots[0]->unique_id, "Le lot récupéré à le même unique id");
 $t->is($lot->id_document, $drev->_id, "Le lot récupéré provient de la drev");
 $t->is($lot->document_ordre, "01", "Le lot récupéré a le numéro d'ordre 01");
 
+$t->comment('Modification du lot');
+
+$lot->volume += 10;
+
 LotsClient::getInstance()->modifyAndSave($lot);
 
+$drev = DRevClient::getInstance()->find($drev->_id);
+$lotDrev = $drev->getLot($lot->unique_id);
 $drevM01 = $drev->findMaster();
 $lotDrevM01 = $drevM01->getLot($lot->unique_id);
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+$lotDegustation = $degustation->getLot($lot->unique_id);
 
-$t->is(DRevClient::getInstance()->find($drev->_id)->_rev, $drev->_rev,"La DRev d'origine n'a pas été modifiée");
+$t->is($lotDrev->volume, 1,"Le volume de la drev d'origine n'a pas été modifiée");
+$t->is(count($lotDrev->getMouvements()), 0, "Le lot de la drev d'origine n'a aucun mouvement");
 $t->is($drevM01->_id, $drev->_id.'-M01',"La modification du lot a créé une modificatrice");
+$t->is($lotDrevM01->id_document, $drevM01->_id, "L'id document du lot de la modificatrice est celui de la modificatrice");
 $t->is($lotDrevM01->volume, $lot->volume, "Le lot de la modificatrice a le nouveau volume");
+$t->is($lotDegustation->volume, $lot->volume, "Le lot de la dégusation a le nouveau volume");
+$t->is($lotDegustation->id_document_provenance, $drevM01->_id, "Le document de provenance du lot de dégustation est la drev modificatrice");
+
+$lot = LotsClient::getInstance()->find($lot->declarant_identifiant, $lot->campagne, $lot->numero_dossier, $lot->numero_archive);
+
+$t->is($lot->unique_id, $lot->unique_id, "Le lot récupéré à le même unique id");
+$t->is($lot->id_document, $drevM01->_id, "Le lot récupéré provient de la drev modificatrice");
+$t->is($lot->document_ordre, "01", "Le lot récupéré a le numéro d'ordre 01");
