@@ -356,7 +356,7 @@ $t->is($chgtDenom->getLotOrigine()->id_document_affectation, $chgtDenom->_id, "l
 $t->ok($chgtDenom->getLotOrigine()->isChange(), "statut des mvt du lot origine a bien isChange()");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE_SRC), "statut des mvt du lot origine a bien un mouvement changé src");
 
-$t->comment("Dévalivation d'un ChgtDenom");
+$t->comment("Dévalidation d'un ChgtDenom");
 $t->ok(!$chgtDenom->isApprouve(), "Le changement n'est pas approuvé.");
 $chgtDenom->validateOdg();
 $t->ok($chgtDenom->isApprouve(), "Le changement est bien validé et approuvé : ".$chgtDenom->validation_odg);
