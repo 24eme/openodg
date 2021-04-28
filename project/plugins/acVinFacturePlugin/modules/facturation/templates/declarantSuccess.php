@@ -24,9 +24,9 @@
 
 <?php if ($sf_user->isAdmin()): ?>
 <div class="row row-margin">
-    <?php if (isset($formEtablissement)): ?>
+    <?php if (isset($formSociete)): ?>
     <div class="col-xs-12">
-          <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
+          <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
     </div>
     <?php endif; ?>
 </div>

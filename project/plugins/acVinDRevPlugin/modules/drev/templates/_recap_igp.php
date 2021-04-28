@@ -37,7 +37,7 @@
                           </td>
                          <?php elseif(isset($synthese['volume_max']) && $synthese['volume_max']): ?>
                           <td class="text-right alert-danger">
-                              <abbr title="Volume max : les lies n'ont pas été retirées car il y a des livraisons à des tiers sans détails">⚠</abbr> <?php echoFloat($synthese['volume_max']); ?><small class="text-muted">&nbsp;hl</small></span>
+                              <abbr title="Volume max : cet opérateur est apporteur et a du volume en cave. On ne peut pas connaitre précisemment son volume hors lies">⚠</abbr> <?php echoFloat($synthese['volume_max']); ?><small class="text-muted">&nbsp;hl</small></span>
                           </td>
                          <?php else: ?>
                           <td></td>
