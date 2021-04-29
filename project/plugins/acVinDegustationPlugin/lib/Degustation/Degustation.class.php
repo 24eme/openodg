@@ -538,7 +538,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	 }
 
 	 public function getNbLotsRestantAPreleve(){
-		 return $this->getNbLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT,false);
+		 return (count($this->getLots()) - $this->getNbLotsPreleves());
 	 }
 
 	 public function getLotsDegustes(){
