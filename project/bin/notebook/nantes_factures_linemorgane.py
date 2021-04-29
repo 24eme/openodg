@@ -5,12 +5,12 @@
 
 
 import pandas as pd
-factures = pd.read_csv("/tmp/factures_nantes_new.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant Analytique': 'str'}, low_memory=False)
+factures = pd.read_csv("../../web/exports/factures.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant Analytique': 'str'}, low_memory=False)
 factures = factures.fillna('')
 factures['identifiant_ligne'] = factures.index
 factures = factures[factures['Pièce'] > 2000001]
 
-factures_meta = factures[['identifiant_ligne', 'Crée le', 'Nom relation', 'Adresse', 'Code Postal', 'Ville', 'Téléphone fixe', 'Téléphone Portable', 'eMail', 'Pièce', 'id facture']]
+factures_meta = factures[['identifiant_ligne', 'Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Telephone fixe', 'Telephone Portable', 'eMail', 'Piece', 'id facture']]
 factures_id = factures[['identifiant_ligne', 'id facture']]
 factures_lignes = factures[['identifiant_ligne', 'Identifiant Analytique','Nom Cotisation', 'Cotisation Prix unitaire', 'Quantite Cotisation', 'Prix HT', 'TVA', 'Prix TTC']]
 
@@ -67,13 +67,13 @@ factures_meta['Total facture TTC'] = factures_pivot[('Prix TTC', 'Total facture'
 # In[ ]:
 
 
-factures_meta[['Crée le', 'Nom relation', 'Adresse', 'Code Postal', 'Ville', 'Téléphone fixe', 'Téléphone Portable', 'eMail', 'Pièce',
+factures_meta[['Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Telephone fixe', 'Telephone Portable', 'eMail', 'Piece',
                'Cotisation valorisation HT', 'Cotisation valorisation TVA',
                'Remboursement valorisation covid HT', 'Remboursement valorisation covid TVA', 
                'Total valoriation TVA', 'Total valoriation HT', 'Total valoriation TTC',
                'Cotisation ODG TOTAL ou forfait', 'Remboursement ODG covid', 'ODG TOTAL + remise',
                'Droits I.N.A.O.',
-               'TOTAL ODG + INAO', 'Total facture TTC',]].to_csv('../../web/exports/factures_linemorgane.csv')
+               'TOTAL ODG + INAO', 'Total facture TTC',]].to_csv('../../web/exports/factures_linemorgane.csv', encoding="iso8859_15", sep=";", decimal=",")
 
 
 # In[ ]:
