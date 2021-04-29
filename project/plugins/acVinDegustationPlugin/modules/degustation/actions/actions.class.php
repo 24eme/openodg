@@ -589,6 +589,12 @@ class degustationActions extends sfActions {
         $uniqueId = $request->getParameter('unique_id');
 
         $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
+
+        if(!$this->lot) {
+
+            throw new sfError404Exception("Lot non trouvé");
+        }
+
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
         $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($identifiant, $uniqueId)->rows;
     }
