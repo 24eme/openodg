@@ -70,6 +70,13 @@ class LotsClient
         $ids = $this->getDocumentsIds($lot->declarant_identifiant, $lot->unique_id);
 
         foreach($ids as $id) {
+            if(preg_match('/(TRANSACTION|CONDITIONNEMENT|CHGTDENOM)/', $id)) {
+
+                throw new Exception("La modification de lot n'est pas encore implémentée pour les documents de TRANSACTION, CONDITIONNEMENT et CHGTDENOM");
+            }
+        }
+
+        foreach($ids as $id) {
             $doc = DeclarationClient::getInstance()->find($id);
 
             if($doc instanceof InterfaceVersionDocument) {
