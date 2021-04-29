@@ -585,16 +585,21 @@ class degustationActions extends sfActions {
     }
 
     public function executeLotHistorique(sfWebRequest $request){
-        $etablissement_identifiant = $request->getParameter('identifiant');
-        $params = explode('-', $request->getParameter('unique_id'));
-        $this->campagne = $params[0].'-'.$params[1];
-        $this->numero_dossier = $params[2];
-        $this->numero_archive = $params[3];
-        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($etablissement_identifiant);
-        $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant, $this->campagne, $this->numero_dossier,$this->numero_archive)->rows;
+        $identifiant = $request->getParameter('identifiant');
+        $uniqueId = $request->getParameter('unique_id');
+
+        $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
+
+        if(!$this->lot) {
+
+            throw new sfError404Exception("Lot non trouvé");
+        }
+
+        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
+        $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($identifiant, $uniqueId)->rows;
     }
 
-    public function executeList(sfWebRequest $request) {
+    public function executeLotsListe(sfWebRequest $request) {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
         $this->forward404Unless($this->etablissement);
@@ -603,11 +608,11 @@ class degustationActions extends sfActions {
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
     }
 
-    public function executeLot(sfWebRequest $request) {
-        $periode = $request->getParameter('periode');
-        $lot_id = $request->getParameter('id');
-        $this->lotsStepsHistory = array();
+    public function executeLotModification(sfWebRequest $request){
+        $request->getParameter('identifiant');
+        $request->getParameter('unique_id');
 
+        return sfView::NONE;
     }
 
     public function executeManquements(sfWebRequest $request) {

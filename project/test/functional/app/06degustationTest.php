@@ -345,6 +345,18 @@ $t->is($b->getResponse()->getStatuscode(), 200, "PDF de conformités (par url au
 
 $uriConformiteAuthentifiante = $b->getRequest()->getUri();
 
+$b->get('/degustation/declarant/'.$etablissement->identifiant);
+$b->isForwardedTo('degustation', 'lotsListe');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page d'historique des lots d'un opérateur");
+
+$b->click("a.btn-historique");
+$b->isForwardedTo('degustation', 'lotHistorique');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page d'historique d'un lot");
+
+$b->click("a.btn-modifier-lot");
+$b->isForwardedTo('degustation', 'lotModification');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de modification d'un lot");
+
 $t->comment('En mode télédéclarant');
 
 $b->get('/logout');
