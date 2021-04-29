@@ -99,35 +99,35 @@
                 <?php echo $form['elevage']->renderLabel('Lot prévu en élevage') ?>
             </div>
         </div>
-        <div class="modal fade modal_lot_cepages" id="<?php echo $lotHtmlId ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Mention de cépages</h4>
-                        <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
-                    </div>
-                    <div class="modal-body">
-                        <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
-                            <div class="form-group ligne_lot_cepage">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-7">
-                                    <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="input-group">
-                                        <?php echo $form['repartition_'.$i]->render(); ?>
-                                        <div class="input-group-addon">hl</div>
-                                    </div>
-                                </div>
+    </div>
+</div>
+<div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $form['volume']->renderId() ?>" id="<?php echo $lotHtmlId ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Mention de cépages</h4>
+                <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
+            </div>
+            <div class="modal-body">
+                <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
+                    <div class="form-group ligne_lot_cepage">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-7">
+                            <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <?php echo $form['repartition_'.$i]->render(); ?>
+                                <div class="input-group-addon">hl</div>
                             </div>
-                        <?php endfor; ?>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-default btn pull-left" data-dismiss="modal">Fermer</a>
-                        <a class="btn btn-success btn pull-right" data-dismiss="modal">Valider</a>
-                    </div>
-                </div>
+                <?php endfor; ?>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default btn pull-left" data-dismiss="modal">Fermer</a>
+                <a class="btn btn-success btn pull-right" data-dismiss="modal">Valider</a>
             </div>
         </div>
     </div>
