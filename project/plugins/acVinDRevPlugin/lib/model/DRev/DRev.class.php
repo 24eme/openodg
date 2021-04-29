@@ -1033,6 +1033,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->validation_odg = $date;
 
+        if(!$this->numero_archive) {
+            $this->save();
+        }
+
         if(!$this->isFactures()){
             $this->clearMouvementsFactures();
             $this->generateMouvementsFactures();
