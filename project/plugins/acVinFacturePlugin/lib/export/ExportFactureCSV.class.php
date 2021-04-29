@@ -24,7 +24,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;id facture\n";
+        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;id facture\n";
     }
 
     public function export() {
