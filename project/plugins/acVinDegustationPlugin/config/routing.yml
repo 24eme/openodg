@@ -44,6 +44,16 @@ degustation_lot_historique:
   requirements:
     sf_method: [get]
 
+degustation_lot_modification:
+  url: /historique/:identifiant/:unique_id/modification
+  param: { module: degustation, action: lotModification }
+  class: DegustationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_prelevements_etape:
   url: /degustation/:id/prelevements
   param: { module: degustation, action: prelevementsEtape }

@@ -97,7 +97,7 @@ $degustation->save();
 
 $t->comment('Récupération du lot');
 
-$lot = LotsClient::getInstance()->find($drev->lots[0]->declarant_identifiant, $drev->lots[0]->campagne, $drev->lots[0]->numero_dossier, $drev->lots[0]->numero_archive);
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id);
 
 $t->is($lot->unique_id, $drev->lots[0]->unique_id, "Le lot récupéré à le même unique id");
 $t->is($lot->id_document, $drev->_id, "Le lot récupéré provient de la drev");
