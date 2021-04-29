@@ -51,10 +51,6 @@ class ChgtDenomLot extends BaseChgtDenomLot
             return true;
         }
 
-        if ($this->numero_archive === $chgt->lots->get(1)->numero_archive) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 }

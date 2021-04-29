@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(143);
+$t = new lime_test(154);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -123,7 +123,7 @@ $t->is($chgtDenomFromDrev->periode, $year, "le chgt de denom a la bonne periode 
 $lotFromDrev = array_shift($lots);
 $chgtDenomFromDrev->setLotOrigine($lotFromDrev);
 
-$t->is($chgtDenom->changement_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur par defaut est le numero logement du lot origine');
+$t->is($chgtDenom->changement_numero_logement_operateur_origine, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur_origine par defaut est le numero logement du lot origine');
 $t->cmp_ok($chgtDenomFromDrev->origine_affectable, '===', $lotFromDrev->affectable, "L'affectation du lot origine reprends l'affectation du lot d'origine");
 $t->cmp_ok($chgtDenomFromDrev->changement_affectable, '===', $lotFromDrev->affectable, "L'affectation du lot changé reprends l'affectation du lot d'origine comme le changement est total");
 
@@ -222,14 +222,15 @@ $t->comment("Création d'un Changement de Denom Total");
 
 $chgtDenom->setLotOrigine($lotFromDegust);
 
-$t->is($chgtDenom->changement_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur par defaut est le numero logement du lot origine');
+$t->is($chgtDenom->changement_numero_logement_operateur_origine, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur_origine par defaut est le numero logement du lot origine');
+$t->is($chgtDenom->changement_numero_logement_operateur_change, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur_change par defaut est le numero logement du lot origine');
 $t->cmp_ok($chgtDenomFromDrev->origine_affectable, '===', $lotFromDegust->affectable, "L'affectation du lot origine reprends l'affectation du lot d'origine");
 $t->cmp_ok($chgtDenomFromDrev->changement_affectable, '===', $lotFromDegust->affectable, "L'affectation du lot changé reprends l'affectation du lot d'origine comme le changement est total");
 
 $chgtDenom->changement_cepages = array('CABERNET' => $volume);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
-$chgtDenom->changement_numero_logement_operateur = "2(ex1)";
+$chgtDenom->changement_numero_logement_operateur_change = "2(ex1)";
 $chgtDenom->validate();
 $chgtDenom->save();
 
@@ -250,7 +251,7 @@ $t->is($lotFromChgmt->volume, $volume, "Le volume de $volume hl est bien appliqu
 $t->is($lotFromChgmt->cepages->toArray(), array('CABERNET' => $volume), "Le 100% cepage est bien appliqué dans dans le lot");
 $t->is($lotFromChgmt->document_ordre, '03', "Le numéro d'ordre est bien 03");
 $t->is($lotFromChgmt->id_document_provenance, $degustation->_id, "Le lot généré provient bien de la dégustation ".$degustation->_id);
-$t->is($lotFromChgmt->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur, "Le lot changé a changé de logement");
+$t->is($lotFromChgmt->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur_change, "Le lot changé a changé de logement");
 
 $t->ok($lotFromChgmt->getMouvement(Lot::STATUT_CHANGE_DEST), "statut du lot change dest");
 $t->ok($lotFromChgmt->getMouvement(Lot::STATUT_NONAFFECTABLE), "statut du lot affectable (provenant d'une non conformité)");
@@ -268,7 +269,7 @@ $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenom->changement_volume = round($volume / 2, 2);
-$chgtDenom->changement_numero_logement_operateur = "2(ex1)";
+$chgtDenom->changement_numero_logement_operateur_change = "3(ex2)";
 $chgtDenom->changement_affectable = true;
 $chgtDenom->validate();
 $chgtDenom->save();
@@ -285,7 +286,7 @@ $t->is($chgtDenom->lots[1]->document_ordre, '03', "Le lot 1 a bien 03 comme num�
 $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "Le lot 1 généré provient bien de la dégustation ".$degustation->_id);
 $t->is($chgtDenom->lots[1]->id_document_provenance, $degustation->_id, "Le lot 2 généré provient bien de la dégustation ".$degustation->_id);
 $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement opérateur n'a pas changé pour le lot origine");
-$t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur, "Le logement lot 2 a changé");
+$t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur_change, "Le logement lot 2 a changé");
 $t->is($chgtDenom->lots[0]->affectable, $chgtDenom->origine_affectable, "L'affectation du lot origine n'a pas changé");
 $t->is($chgtDenom->lots[1]->affectable, $chgtDenom->changement_affectable, "L'affectation lot 2 a changé");
 
@@ -367,8 +368,13 @@ $t->ok(!$chgtDenom->isValidee(), "Le changement est maintenant dévalidé.");
 $t->comment("Édition d'un logement");
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un déclassement a un logement editable");
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a pas de logement editable");
+$chgtDenom->changement_numero_logement_operateur_origine = 'xxx';
 $chgtDenom->validate();
+$chgtDenom->save();
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot origine d'un déclassement n'a plus de logement editable après la validation");
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot changé d'un déclassement n'a plus de logement editable après la validation");
+$t->is($chgtDenom->lots->get(0)->numero_logement_operateur, 'xxx', "Le logement d'origine a changé");
+$t->is($chgtDenom->lots->get(1)->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le logement du lot changé n'a pas changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -382,12 +388,14 @@ $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine 
 $chgtDenom->validate();
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement total après validation n'a pas de logement editable");
+$t->is($chgtDenom->lots->get(0)->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le logement du lot origine n'a pas changé");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 $chgtDenom->devalidate();
 
 $chgtDenom->setLotOrigine($lotFromDegust);
+$chgtDenom->changement_numero_logement_operateur_change = 'xxx';
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
 
@@ -395,3 +403,23 @@ $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d
 $chgtDenom->validate();
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
+$t->is($chgtDenom->lots->get(0)->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur_change, "Le logement du lot origine a changé");
+
+$chgtDenom->clearMouvementsLots();
+$chgtDenom->clearLots();
+$chgtDenom->devalidate();
+
+$chgtDenom->setLotOrigine($lotFromDegust);
+$chgtDenom->changement_numero_logement_operateur_origine = 'xxx';
+$chgtDenom->changement_numero_logement_operateur_change = 'yyy';
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
+$chgtDenom->changement_volume = 2;
+$chgtDenom->generateLots();
+
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un chgt denom a un logement editable");
+$t->is($chgtDenom->lots->get(1)->isLogementEditable(), true, "Le lot changé d'un chgt denom a un logement editable");
+$chgtDenom->validate();
+$chgtDenom->save();
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
+$t->is($chgtDenom->lots->get(0)->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur_origine, "Le logement du lot origine a changé");
+$t->is($chgtDenom->lots->get(1)->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur_change, "Le logement du lot changé a changé");
