@@ -859,7 +859,7 @@ class drevActions extends sfActions {
         $drev_modificative = $drev->generateModificative();
         $drev_modificative->save();
         if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
-          return $this->redirect('drev_lots', $drev_modificative);
+          return $this->redirect('drev_exploitation', $drev_modificative);
         }
 
         return $this->redirect('drev_edit', $drev_modificative);

@@ -8,7 +8,7 @@ import pandas as pd
 factures = pd.read_csv("../../web/exports/factures.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant Analytique': 'str'}, low_memory=False)
 factures = factures.fillna('')
 factures['identifiant_ligne'] = factures.index
-factures = factures[factures['Pièce'] > 2000001]
+factures = factures[factures['Piece'] > 2000001]
 
 factures_meta = factures[['identifiant_ligne', 'Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Telephone fixe', 'Telephone Portable', 'eMail', 'Piece', 'id facture']]
 factures_id = factures[['identifiant_ligne', 'id facture']]

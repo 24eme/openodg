@@ -29,9 +29,7 @@
   </div>
 </div>
 
-<?php
-  foreach($chgtDenom->lots as $k => $lot):
-?>
+<?php foreach($chgtDenom->lots as $k => $lot): ?>
   <div class="alert block-chgtDenom col-sm-<?php if (count($chgtDenom->lots) == 1): ?>12<?php else: ?>6<?php endif; ?>">
   <?php if($chgtDenom->isDeclassement() && $lot->statut == Lot::STATUT_DECLASSE): ?>
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
@@ -61,8 +59,13 @@
               <div style="border: none;" class="m-3">
                 Logement :
                 <?php if($lot->isLogementEditable()): ?>
-                  <a href="#" data-toggle="modal" data-target="#modal_lot_logement">
-                    <strong><?php echo ($chgtDenom->changement_numero_logement_operateur != $lot->numero_logement_operateur) ? $chgtDenom->changement_numero_logement_operateur : $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span>
+                  <a href="#" data-toggle="modal" data-target="#modal_lot_logement_<?php echo ($lot->isLotOrigine()) ? 'origine' : 'change' ?>">
+                    <?php if ($lot->isLotOrigine()) : ?>
+                        <strong><?php echo ($chgtDenom->changement_numero_logement_operateur_origine != $lot->numero_logement_operateur) ? $chgtDenom->changement_numero_logement_operateur_origine : $lot->numero_logement_operateur; ?></strong>
+                    <?php else: ?>
+                        <strong><?php echo ($chgtDenom->changement_numero_logement_operateur_change != $lot->numero_logement_operateur) ? $chgtDenom->changement_numero_logement_operateur_change : $lot->numero_logement_operateur; ?></strong>
+                    <?php endif; ?>
+                    <span class="glyphicon glyphicon-edit"></span>
                   </a>
                 <?php else: ?>
                   <strong><?php echo $lot->numero_logement_operateur; ?></strong>
