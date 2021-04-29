@@ -147,7 +147,19 @@
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <div class="col-md-offset-8 col-md-3 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
+                  <div class="col-md-6">
+                    <?php if ($drev->chais->adresse): ?>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label>Logé :</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <?php echo implode(' - ', $drev->chais->toArray()->getRawValue()) ?>
+                            </div>
+                        </div>
+                    <?php endif ?>
+                  </div>
+                  <div class="col-md-offset-2 col-md-3 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
                       <?php echo $lot['elevage']->render() ?>
                       <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
                   </div>

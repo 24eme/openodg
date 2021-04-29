@@ -44,12 +44,13 @@
     </form>
 
 <?php if(!$chgtDenom->isValide()): ?>
-    <div class="modal fade" id="modal_lot_logement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <?php foreach ($chgtDenom->lots as $lot): ?>
+    <div class="modal fade" id="modal_lot_logement_<?php echo ($lot->isLotOrigine()) ? 'origine' : 'change' ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <form role="form" action="<?php echo url_for("chgtdenom_logement", array("sf_subject" => $chgtDenom)) ?>" method="post" class="form-horizontal">
-            <?php echo $formLogement->renderHiddenFields(); ?>
-            <?php echo $formLogement->renderGlobalErrors(); ?>
+            <?php echo $formLogement[$lot->unique_id]->renderHiddenFields(); ?>
+            <?php echo $formLogement[$lot->unique_id]->renderGlobalErrors(); ?>
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $chgtDenom->changement_numero_logement_operateur ?></strong></h4>
@@ -58,9 +59,9 @@
               <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <?php echo $formLogement['changement_numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $formLogement[$lot->unique_id]['changement_numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-8">
-                                  <?php echo $formLogement['changement_numero_logement_operateur']->render(); ?>
+                                  <?php echo $formLogement[$lot->unique_id]['changement_numero_logement_operateur']->render(); ?>
                             </div>
                         </div>
                     </div>
@@ -74,5 +75,6 @@
         </div>
       </div>
     </div>
+  <?php endforeach ?>
 <?php endif; ?>
 <?php include_partial('chgtdenom/popupConfirmationValidation'); ?>

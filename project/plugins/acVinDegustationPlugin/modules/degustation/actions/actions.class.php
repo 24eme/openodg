@@ -855,7 +855,7 @@ class degustationActions extends sfActions {
       $this->redirectIfIsNotAnonymized();
       $lot_dossier = $request->getParameter('lot_dossier');
       $lot_archive = $request->getParameter('lot_archive');
-      $lot = $degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+      $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
       $this->document = new ExportDegustationNonConformitePDF($this->degustation,$lot, $request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }

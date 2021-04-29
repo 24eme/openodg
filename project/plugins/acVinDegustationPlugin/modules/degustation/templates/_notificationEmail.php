@@ -1,6 +1,6 @@
 <?php use_helper('Lot') ?>
 <?php use_helper('Date') ?>
-Monsieur, Madame,
+Madame, Monsieur,
 
 Nous vous prions de bien vouloir trouver ci-dessous extrait du procès verbal de la séance de dégustation du : <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?>.
 
@@ -58,4 +58,4 @@ Si vous décidez de déclasser, vous pouvez télécharger la déclaration de cha
 </a>
 
 <?php endif; ?>
-Nous vous prions de croire, Monsieur, Madame, en l’expression de nos sentiments les meilleurs.
+Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.
