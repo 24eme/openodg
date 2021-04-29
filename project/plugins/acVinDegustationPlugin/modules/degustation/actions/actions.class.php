@@ -286,6 +286,12 @@ class degustationActions extends sfActions {
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        if ($this->degustation->getNbLotsRestantAPreleve() > 0) {
+            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
+        }
+        if (count($this->degustation->getFreeLots()) > 0) {
+            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_TABLES), $this->degustation);
+        }
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ANONYMATS))) {
             $this->degustation->save(false);
           }
