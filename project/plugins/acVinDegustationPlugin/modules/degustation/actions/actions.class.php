@@ -603,13 +603,6 @@ class degustationActions extends sfActions {
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
     }
 
-    public function executeLot(sfWebRequest $request) {
-        $periode = $request->getParameter('periode');
-        $lot_id = $request->getParameter('id');
-        $this->lotsStepsHistory = array();
-
-    }
-
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
       $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
