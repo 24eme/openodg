@@ -5,7 +5,7 @@
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href=""><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
-  <li><a href="<?php echo url_for('degustation_etablissement_list',array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne)); ?>" ><?php echo $campagne ?></a>
+  <li><a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne)); ?>" ><?php echo $campagne ?></a>
 </ol>
 
 <div class="page-header no-border">
@@ -54,7 +54,7 @@
                       </a>
                   </td>
                   <td><?php  echo showLotStatusCartouche($mouvement->value->statut, null, preg_match("/ème dégustation/", $mouvement->value->libelle));  ?></td>
-                  <td class="text-right"><a class="btn btn-xs btn-default" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
+                  <td class="text-right"><a class="btn btn-xs btn-default btn-historique" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
 
               </tr>
                   <?php endforeach; ?>

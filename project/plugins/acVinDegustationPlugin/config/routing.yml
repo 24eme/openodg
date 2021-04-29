@@ -26,9 +26,9 @@ degustation_prelevables:
     sf_method: [get]
   class: DegustationGeneralRoute
 
-degustation_etablissement_list:
+degustation_declarant_lots_liste:
   url: /degustation/declarant/:identifiant
-  param: { module: degustation, action: list }
+  param: { module: degustation, action: lotsListe }
   class: DegustationDeclarantRoute
   options:
     model:    Etablissement

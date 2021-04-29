@@ -594,7 +594,7 @@ class degustationActions extends sfActions {
         $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvements($etablissement_identifiant, $this->campagne, $this->numero_dossier,$this->numero_archive)->rows;
     }
 
-    public function executeList(sfWebRequest $request) {
+    public function executeLotsListe(sfWebRequest $request) {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
         $this->forward404Unless($this->etablissement);
