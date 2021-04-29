@@ -56,7 +56,14 @@ class LotsClient
 
             $lotM = $doc->getLot($lot->unique_id);
             $lotM->id_document = $doc->_id;
+            $lotM->produit_hash = $lot->produit_hash;
+            $lotM->cepages = $lot->cepages;
             $lotM->volume = $lot->volume;
+            $lotM->numero_logement_operateur = $lot->numero_logement_operateur;
+            $lotM->millesime = $lot->millesime;
+            $lotM->destination_type = $lot->destination_type;
+            $lotM->destination_date = $lot->destination_date;
+            $lotM->specificite = $lot->specificite;
 
             if($doc instanceof InterfaceVersionDocument) {
                 $doc->validate();
