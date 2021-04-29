@@ -73,7 +73,7 @@ class LotsClient
             $doc = DeclarationClient::getInstance()->find($id);
 
             if($doc instanceof InterfaceVersionDocument) {
-                $doc = $doc->generateModificative();
+                $doc = $doc->getMaster()->generateModificative();
             }
 
             $lotM = $doc->getLot($lot->unique_id);
