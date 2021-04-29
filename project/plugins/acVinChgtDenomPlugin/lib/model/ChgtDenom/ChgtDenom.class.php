@@ -152,8 +152,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->changement_millesime = $lot->millesime;
         $this->changement_volume = $lot->volume;
         $this->changement_specificite = $lot->specificite;
-        $this->changement_numero_logement_operateur_origine = $lot->numero_logement_operateur;
-        $this->changement_numero_logement_operateur_change = $lot->numero_logement_operateur;
+        $this->changement_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->changement_affectable = $lot->affectable;
         $this->origine_millesime = $lot->millesime;
         $this->origine_volume = $lot->volume;
@@ -323,25 +322,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lotOrig->volume -= $this->changement_volume;
         $lotOrig->numero_archive .= 'a';
         $lotOrig->unique_id .= 'a';
-
-        if ($this->exist('changement_numero_logement_operateur_origine') && $this->changement_numero_logement_operateur_origine) {
-            $lotOrig->numero_logement_operateur = $this->changement_numero_logement_operateur_origine;
-        }
-
         $lots[] = $lotOrig;
         $lot->numero_archive .= 'b';
         $lot->unique_id .= 'b';
-
-        if ($this->exist('changement_numero_logement_operateur_change') && $this->changement_numero_logement_operateur_change) {
-            $lot->numero_logement_operateur = $this->changement_numero_logement_operateur_change;
-        }
       }else{
           $lot->numero_archive .= 'a';
           $lot->unique_id .= 'a';
-
-          if ($this->exist('changement_numero_logement_operateur_change') && $this->changement_numero_logement_operateur_change) {
-              $lot->numero_logement_operateur = $this->changement_numero_logement_operateur_change;
-          }
       }
 
       $lot->volume = $this->changement_volume;
@@ -361,13 +347,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           if ($this->exist('changement_affectable')) {
               $lot->affectable = $this->changement_affectable;
           }
+
+          if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
+              $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
+          }
       } else {
           $lot->produit_hash = $this->origine_produit_hash;
           $lot->produit_libelle = $this->origine_produit_libelle;
           $lot->cepages = $this->origine_cepages;
           $lot->specificite .= " DECLASSÉ en VSIG";
       }
-
 
       $lots[] = $lot;
 
