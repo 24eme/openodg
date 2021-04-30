@@ -245,7 +245,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement) {
-            $ligne = $this->lignes->add($mouvement->value->categorie);
+            $keyLigne = str_replace("%numero_dossier%",$mouvement->value->detail_identifiant,$mouvement->value->categorie);
+            $ligne = $this->lignes->add($keyLigne);
             $ligne->libelle = $mouvement->value->type_libelle;
             $ligne->origine_mouvements->add($mouvement->id)->add(null, $mouvement->key[MouvementFactureView::KEY_ORIGIN]);
 
@@ -279,6 +280,17 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $detail->quantite += $mouvement->value->quantite;
             $ligne->updateTotaux();
 
+    }
+
+    public function orderLignesByCotisationsKeys() {
+        $lignes = $this->_get('lignes')->toArray();
+        ksort($lignes);
+
+        $this->remove('lignes');
+        $factureLignes = $this->add('lignes');
+        foreach ($lignes as $cotisName => $l) {
+            $factureLignes->add($cotisName,$l);
+        }
     }
 
     public function storePapillons() {
