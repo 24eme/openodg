@@ -7,6 +7,7 @@ all:
       degustation: true
       contenances:
         bouteille:
+          "Contenant inconnu": ""
           "Bouteille 10 cl":  0.001
           "Bouteille 12,5 cl": 0.00125
           "Bouteille 18,7 cl": 0.00187
