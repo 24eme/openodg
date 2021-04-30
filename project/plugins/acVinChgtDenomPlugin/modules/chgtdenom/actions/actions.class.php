@@ -81,11 +81,7 @@ class chgtdenomActions extends sfActions
         $this->isAdmin = $this->getUser()->isAdmin();
 
         if (! $this->chgtDenom->isValide()) {
-            $this->formLogement = [];
-            foreach ($this->chgtDenom->lots as $lot) {
-                $type = ($lot->isLotOrigine()) ? 'origine' : 'change';
-                $this->formLogement[$lot->unique_id] = new ChgtDenomLogementForm($this->chgtDenom, ['logement' => $type]);
-            }
+            $this->formLogement = new ChgtDenomLogementForm($this->chgtDenom);
         }
 
         $this->validation = new ChgtDenomValidation($this->chgtDenom);
