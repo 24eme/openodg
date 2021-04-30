@@ -420,6 +420,10 @@ foreach ($degustation2->getMouvementsFactures() as $mvtsOp) {
     break;
 }
 
+$t->is($mvtRedegust->date, $degustation2->getDateFormat(), "Date du mouvement");
+$t->is($mvtRedegust->date_version, $degustation2->getDateFormat(), "Date version du mouvement");
+$t->is($mvtRedegust->facture, 0, "Mouvement non facturé");
+$t->is($mvtRedegust->facturable, 1, "Mouvement facturable");
 $t->is($mvtRedegust->detail_identifiant,$lot2->numero_dossier, "Degustation 2 : Le mouvements de facture a bien le numéro de dossier du lot redégusté");
 
 $t->comment("Conformité du lot de la degustation 2 ");

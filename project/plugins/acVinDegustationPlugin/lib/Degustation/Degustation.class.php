@@ -21,7 +21,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if (!$this->date) {
             return date($format);
         }
-        return date ($format, strtotime($this->date));
+        return date($format, strtotime($this->date));
     }
 
 		public function getMaster() {
@@ -1361,9 +1361,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
 			$mouvement->detail_identifiant = $lot->numero_dossier;
-            $mouvement->date_version = $this->getDateFormat();
-            $mouvement->date = $this->getDateFormat();
             $mouvement->createFromCotisationAndDoc($cotisation, $this);
+            $mouvement->date = $this->getDateFormat();
+            $mouvement->date_version = $this->getDateFormat();
             $mouvement->facture = intval($mouvement->date_version < "2021-04-01");
 
             return $mouvement;
