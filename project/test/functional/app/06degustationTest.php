@@ -357,6 +357,10 @@ $b->click("a.btn-modifier-lot");
 $b->isForwardedTo('degustation', 'lotModification');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de modification d'un lot");
 
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'lotHistorique');
+$t->is($b->getResponse()->getStatuscode(), 200, "Validation du formulaire de modification d'un lot");
+
 $t->comment('En mode télédéclarant');
 
 $b->get('/logout');

@@ -589,8 +589,44 @@ class degustationActions extends sfActions {
         $uniqueId = $request->getParameter('unique_id');
 
         $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
+
+        if(!$this->lot) {
+
+            throw new sfError404Exception("Lot non trouvé");
+        }
+
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
         $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($identifiant, $uniqueId)->rows;
+    }
+
+    public function executeLotModification(sfWebRequest $request){
+        $identifiant = $request->getParameter('identifiant');
+        $uniqueId = $request->getParameter('unique_id');
+
+        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
+        $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
+
+        if(!$this->lot) {
+
+            throw new sfError404Exception("Lot non trouvé");
+        }
+
+        $this->form = new LotModificationForm($this->lot);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
     }
 
     public function executeLotsListe(sfWebRequest $request) {
@@ -600,13 +636,6 @@ class degustationActions extends sfActions {
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
 
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
-    }
-
-    public function executeLotModification(sfWebRequest $request){
-        $request->getParameter('identifiant');
-        $request->getParameter('unique_id');
-
-        return sfView::NONE;
     }
 
     public function executeManquements(sfWebRequest $request) {
@@ -826,7 +855,7 @@ class degustationActions extends sfActions {
       $this->redirectIfIsNotAnonymized();
       $lot_dossier = $request->getParameter('lot_dossier');
       $lot_archive = $request->getParameter('lot_archive');
-      $lot = $degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+      $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
       $this->document = new ExportDegustationNonConformitePDF($this->degustation,$lot, $request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }

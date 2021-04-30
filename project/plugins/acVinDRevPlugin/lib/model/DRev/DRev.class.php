@@ -991,7 +991,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->specificite == Lot::SPECIFICITE_UNDEFINED) {
                 $lot->specificite = null;
             }
+            if(!$lot->date) {
             $lot->date = $date;
+            }
         }
 
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
@@ -1030,6 +1032,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+
+        if(!$this->numero_archive) {
+            $this->save();
+        }
 
         if(!$this->isFactures()){
             $this->clearMouvementsFactures();

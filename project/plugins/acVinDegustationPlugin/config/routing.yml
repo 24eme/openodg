@@ -52,7 +52,7 @@ degustation_lot_modification:
     model:    Etablissement
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 degustation_prelevements_etape:
   url: /degustation/:id/prelevements

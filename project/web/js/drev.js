@@ -270,7 +270,7 @@
                   modal = modal.parentElement
               }
 
-              var lot = modal.dataset.lot
+              var input_volume_id = modal.dataset.inputvolumeid;
 
               inputs = modal.querySelectorAll('input.input-hl')
               var nbRempli = 0;
@@ -281,7 +281,7 @@
                   }
               })
 
-              var vol_total = document.getElementById(type+'_lots_lots_'+lot+'_volume')
+              var vol_total = document.getElementById(input_volume_id)
               if(!nbRempli) {
                 vol_total.readOnly = false;
                 return;
@@ -289,7 +289,7 @@
 
               vol_total.value = parseFloat(total)
 
-              $('#'+type+'_lots_lots_'+lot+'_volume').blur()
+              $('#'+input_volume_id).blur()
 
               vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
             })

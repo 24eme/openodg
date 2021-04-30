@@ -107,8 +107,8 @@ $t->comment('Modification du lot');
 
 $form = new LotModificationForm($lot);
 
-$values = $form->getValues();
-$values['volume'] += 10;
+$values = array();
+$values['volume'] = 11;
 $values['produit_hash'] = $produitconfig2->getHash();
 $values['numero_logement_operateur'] = "A";
 $values['millesime'] = "2021";
@@ -141,6 +141,7 @@ $t->is($lotDrev->specificite, null,"La spécificité de la drev d'origine n'a pa
 $t->is(count($lotDrev->getMouvements()), 0, "Le lot de la drev d'origine n'a aucun mouvement");
 
 $t->is($drevM01->_id, $drev->_id.'-M01',"La modification du lot a créé une modificatrice");
+$t->is($drevM01->numero_archive, $drev->numero_archive, "La modificatrice a le même numero d'archive que la drev d'origine");
 $t->is($lotDrevM01->id_document, $drevM01->_id, "L'id document du lot de la modificatrice est celui de la modificatrice");
 $t->is($lotDrevM01->volume, $values['volume'], "Le lot de la modificatrice a le nouveau volume");
 $t->is($lotDrevM01->produit_hash, $values['produit_hash'],"Le produit de la drev modificatrice a évolué");
@@ -151,6 +152,7 @@ $t->is($lotDrevM01->destination_type, $values['destination_type'],"La destinatio
 $t->is($lotDrevM01->destination_date, date('Y-m-d'),"La date de destination de la drev modificatrice a évolué");
 $t->is($lotDrevM01->specificite, $values['specificite'],"La specificité de la drev modificatrice a évolué");
 $t->is($lotDrevM01->date, $lotDrev->date, "La date du lot est la même");
+$t->is($lotDrevM01->numero_dossier, $lotDrev->numero_dossier, "Le dossier du lot de la drev M01 est le même que celui de la M00");
 
 $t->is($lotDegustation->volume, $values['volume'], "Le lot de la dégusation a le nouveau volume");
 $t->is($lotDegustation->produit_hash, $values['produit_hash'],"Le produit de la dégustation a évolué");
@@ -163,12 +165,32 @@ $t->is($lotDegustation->specificite, $values['specificite'],"La specificité de 
 $t->is($lotDegustation->date, $degustation->date, "La date du lot est la même");
 $t->is($lotDegustation->id_document_provenance, $drevM01->_id, "Le document de provenance du lot de dégustation est la drev modificatrice");
 
-$lot = LotsClient::getInstance()->find($lot->declarant_identifiant, $lot->campagne, $lot->numero_dossier, $lot->numero_archive);
+$lotFinal = LotsClient::getInstance()->find($lot->declarant_identifiant, $lot->campagne, $lot->numero_dossier, $lot->numero_archive);
 
-$t->is($lot->unique_id, $lot->unique_id, "Le lot récupéré à le même unique id");
-$t->is($lot->id_document, $drevM01->_id, "Le lot récupéré provient de la drev modificatrice");
-$t->is($lot->document_ordre, "01", "Le lot récupéré a le numéro d'ordre 01");
+$t->is($lotFinal->numero_dossier, $lot->numero_dossier, "Le lot récupéré à le même numéro de dossier");
+$t->is($lotFinal->numero_archive, $lot->numero_archive, "Le lot récupéré à le même numéro d'archive");
+$t->is($lotFinal->unique_id, $lot->unique_id, "Le lot récupéré à le même unique id");
+$t->is($lotFinal->id_document, $drevM01->_id, "Le lot récupéré provient de la drev modificatrice");
+$t->is($lotFinal->document_ordre, "01", "Le lot récupéré a le numéro d'ordre 01");
 
+$t->comment('Facturation du lot');
 
+$mouvementINAOM00 = null;
+foreach($drev->mouvements->get($viti->identifiant) as $mouvement) {
+    if($mouvement->categorie == "inao") {
+        $mouvementINAOM00 = $mouvement;
+    }
+}
+$mouvementINAOM01 = null;
+foreach($drevM01->mouvements->get($viti->identifiant) as $mouvement) {
+    if($mouvement->categorie == "inao") {
+        $mouvementINAOM01 = $mouvement;
+    }
+}
+
+$t->is($mouvementINAOM00->quantite, 1, "La quantité du mouvement de facturation de la M00 est de 1");
+$t->is($mouvementINAOM00->detail_identifiant, $lot->numero_dossier, "Le numéro de dossier facturé de la M00 est le même que celui du lot");
+$t->is($mouvementINAOM01->quantite, 10, "La quantité du mouvement de facturation de la M01 est de 10");
+$t->is($mouvementINAOM01->detail_identifiant, $lot->numero_dossier, "Le numéro de dossier facturé de la M01 est le même que celui du lot");
 
 

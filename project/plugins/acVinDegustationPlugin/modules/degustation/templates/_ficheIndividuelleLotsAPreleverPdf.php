@@ -2,7 +2,7 @@
 <?php use_helper('Lot') ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Text') ?>
-<?php $adresseLgt = splitLogementAdresse($adresseLogement); ?>
+<?php $adresseLgt = splitLogementAdresse($adresseLogement, $etablissement); ?>
 <style>
 <?php echo style(); ?>
 .bg-white{
@@ -60,7 +60,7 @@ p, div {
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ville</strong> : <?php echo $adresseLgt['commune'] ?></span>
         </p>
         <p>
-          <span><strong>Téléphone :</strong> <?php echo $etablissement->telephone_bureau ?></span>
+          <span><strong>Téléphone :</strong> <?php echo $adresseLgt['telephone'] ?> <?php echo ($adresseLgt['portable']) ? ' / '.$adresseLgt['portable'] : ''; ?></span>
         </p>
         <p>
             <strong>Laboratoire :</strong> <?php echo $etablissement->getLaboLibelle(); ?>
