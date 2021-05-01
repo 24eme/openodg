@@ -23,3 +23,6 @@ $t->is($organisme->getSiret(), $infosOrganisme['siret'], "siret de l'organisme")
 $t->is($organisme->getOi(), $infosOrganisme['oi'], "oi de l'organisme");
 $t->is($organisme->getLogoPdfWebPath(), 'images/pdf/logo_'.strtolower($region).'.jpg', "Chemin relatif");
 $t->like($organisme->getLogoPdfPath(), '|/[^/]*/web/'.$organisme->getLogoPdfWebPath().'|', "Chemin complet vers le logo");
+
+$t->is($organisme->getInfo('adresse'), $organisme->getAdresse(), "Récupération d'une info par la méthod getInfo");
+$t->is($organisme->getInfos()['adresse'], $organisme->getAdresse(), "Récupération des infos par la méthode getInfos");
