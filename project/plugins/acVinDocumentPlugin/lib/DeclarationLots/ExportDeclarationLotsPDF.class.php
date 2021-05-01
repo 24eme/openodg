@@ -14,8 +14,8 @@ class ExportDeclarationLotsPDF extends ExportPDF {
         $app = strtoupper(sfConfig::get('sf_app'));
         $this->courrierInfos = FactureConfiguration::getInstance()->getInfos();
 
-        if (file_exists(sfConfig::get('sf_web_dir').'/images/signatures/signature_'.$app.'.jpg')) {
-            $this->courrierInfos['signature'] = sfConfig::get('sf_web_dir').'/images/signatures/signature_'.$app.'.jpg';
+        if (file_exists(Organisme::getInstance()->getImageSignaturePath()) {
+            $this->courrierInfos['signature'] = Organisme::getInstance()->getImageSignaturePath();
         } else {
             $this->courrierInfos['signature'] = sfConfig::get('sf_web_dir').'/images/px.gif';
         }

@@ -21,8 +21,10 @@ $t->is($organisme->getIban(), $infosOrganisme['iban'], "Iban de l'organisme");
 $t->is($organisme->getNoTvaIntracommunautaire(), $infosOrganisme['tva_intracom'], "tva intracom de l'organisme");
 $t->is($organisme->getSiret(), $infosOrganisme['siret'], "siret de l'organisme");
 $t->is($organisme->getOi(), $infosOrganisme['oi'], "oi de l'organisme");
-$t->is($organisme->getLogoPdfWebPath(), 'images/pdf/logo_'.strtolower($region).'.jpg', "Chemin relatif");
+$t->is($organisme->getLogoPdfWebPath(), 'images/pdf/logo_'.strtolower($region).'.jpg', "Chemin relatif du logo");
 $t->like($organisme->getLogoPdfPath(), '|/[^/]*/web/'.$organisme->getLogoPdfWebPath().'|', "Chemin complet vers le logo");
+$t->is($organisme->getImageSignatureWebPath(), 'images/signatures/signature_'.$region.'.jpg', "Chemin relatif de la signature");
+$t->like($organisme->getImageSignaturePath(), '|/[^/]*/web/'.$organisme->getImageSignatureWebPath().'|', "Chemin complet vers la signature");
 
 $t->is($organisme->getInfo('adresse'), $organisme->getAdresse(), "Récupération d'une info par la méthod getInfo");
 $t->is($organisme->getInfos()['adresse'], $organisme->getAdresse(), "Récupération des infos par la méthode getInfos");

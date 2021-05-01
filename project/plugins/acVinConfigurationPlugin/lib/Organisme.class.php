@@ -113,4 +113,13 @@ class Organisme
         return 'images/pdf/logo_'.strtolower($this->region).'.jpg';
     }
 
+    public function getImageSignaturePath() {
+
+        return sfConfig::get('sf_web_dir').'/'.$this->getImageSignatureWebPath();
+    }
+
+    public function getImageSignatureWebPath() {
+
+        return 'images/signatures/signature_'.$this->region.'.jpg';
+    }
 }

@@ -9,36 +9,42 @@
     <h2><?php echo $organisme->getNom(); ?></h2>
     <div class="row">
       <div class="col-xs-1">Adresse : </div>
-      <div class="col-xs-5"><?php echo $organisme->getAdresse(); ?><br /><?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?></div>
+      <div class="col-xs-7"><?php echo $organisme->getAdresse(); ?><br /><?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">Téléphone&nbsp;:</div>
-      <div class="col-xs-5"><?php echo $organisme->getTelephone(); ?></div>
+      <div class="col-xs-7"><?php echo $organisme->getTelephone(); ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">Mail : </div>
-      <div class="col-xs-5"><?php echo $organisme->getEmail(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">Responsable&nbsp;:</div>
-      <div class="col-xs-2"><?php echo $organisme->getResponsable(); ?></div>
+      <div class="col-xs-7"><?php echo $organisme->getEmail(); ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">SIRET : </div>
-      <div class="col-xs-2"><?php echo $organisme->getSiret(); ?></div>
+      <div class="col-xs-7"><?php echo $organisme->getSiret(); ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">N°&nbsp;TVA&nbsp;Intra.&nbsp;:</div>
-      <div class="col-xs-2"><?php echo $organisme->getNoTvaIntracommunautaire(); ?></div>
+      <div class="col-xs-7"><?php echo $organisme->getNoTvaIntracommunautaire(); ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">IBAN :</div>
-      <div class="col-xs-2"><?php echo $organisme->getIban(); ?></div>
+      <div class="col-xs-7"><?php echo $organisme->getIban(); ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">OI :</div>
-      <div class="col-xs-2"><?php echo $organisme->getOi(); ?></div>
+      <div class="col-xs-7"><?php echo $organisme->getOi(); ?></div>
     </div>
+    <div class="row">
+      <div class="col-xs-1">Responsable&nbsp;:</div>
+      <div class="col-xs-7"><?php echo $organisme->getResponsable(); ?></div>
+    </div>
+    <?php if (file_exists($organisme->getImageSignaturePath())): ?>
+    <div class="row">
+      <div class="col-xs-1">Signature&nbsp;:</div>
+      <div class="col-xs-7"><img src="/<?php echo $organisme->getImageSignatureWebPath() ?>" /></div>
+    </div>
+    <?php endif; ?>
 </div>
 
 

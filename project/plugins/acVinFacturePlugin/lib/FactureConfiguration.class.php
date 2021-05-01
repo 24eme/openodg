@@ -113,11 +113,13 @@ class FactureConfiguration {
         return $this->configuration['delais_paiement'];
     }
 
+    /* @Deprecated use Organisme::getInstance() */
     public function getInfos($region = null) {
 
         return Organisme::getInstance($region)->getInfos();
     }
 
+    /* @Deprecated use Organisme::getInstance() */
     public function getInfo($key, $region = null) {
 
         return Organisme::getInstance($region)->getInfo($key);
