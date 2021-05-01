@@ -24,7 +24,7 @@
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
                       <?php echo tdStart() ?><strong>&nbsp;
                       <?php if ($i != 2 || !$anonymat4labo): ?>
-                      <?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->getRawValue()->lot->declarant_nom, 49, '.') : "Leurre";  ?>
+                      <?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->getRawValue()->lot->declarant_nom, 43, '...') : "Leurre";  ?>
                       <?php endif; ?></strong>
                     </td>
                   </tr>
@@ -42,7 +42,7 @@
                   </tr>
                   <tr style="line-height:12px;">
                     <td colspan="2" style="overflow-wrap:break-word; text-align: center;">
-                      <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo truncate_text($lotInfo->getRawValue()->lot->produit_libelle, 41, '.') .' '.  $lotInfo->lot->millesime;  ?></strong>
+                      <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo truncate_text($lotInfo->getRawValue()->lot->produit_libelle, 41, '...', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr style="line-height:12px;">
