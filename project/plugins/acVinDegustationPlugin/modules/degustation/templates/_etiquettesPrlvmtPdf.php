@@ -42,7 +42,7 @@
                   </tr>
                   <tr style="line-height:12px;">
                     <td colspan="2" style="overflow-wrap:break-word; text-align: center;">
-                      <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo truncate_text($lotInfo->getRawValue()->lot->produit_libelle, 41, '...', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+                      <?php echo tdStart() ?><strong><?php echo truncate_text("IGP ".$lotInfo->getRawValue()->lot->produit_libelle, 46, '...', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr style="line-height:12px;">
