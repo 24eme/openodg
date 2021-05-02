@@ -8,8 +8,6 @@ class ExportConditionnementPDF extends ExportPDF {
         $this->declaration = $declaration;
         $this->etablissement = $declaration->getEtablissementObject();
         $app = strtoupper(sfConfig::get('sf_app'));
-        $courrierInfos = sfConfig::get('app_facture_emetteur');
-        $this->courrierInfos = $courrierInfos[$app];
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -60,7 +58,7 @@ class ExportConditionnementPDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
+        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
     }
 
     protected function getHeaderSubtitle() {

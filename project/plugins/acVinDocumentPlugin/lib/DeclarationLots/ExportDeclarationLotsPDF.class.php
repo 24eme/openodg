@@ -2,22 +2,12 @@
 class ExportDeclarationLotsPDF extends ExportPDF {
 
     protected $declaration = null;
-    protected $courrierInfos = null;
 
     public function __construct($declaration, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
 
         $this->declaration = $declaration;
         if (!$filename) {
             $filename = $this->getFileName(true);
-        }
-
-        $app = strtoupper(sfConfig::get('sf_app'));
-        $this->courrierInfos = FactureConfiguration::getInstance()->getInfos();
-
-        if (file_exists(Organisme::getInstance()->getImageSignaturePath()) {
-            $this->courrierInfos['signature'] = Organisme::getInstance()->getImageSignaturePath();
-        } else {
-            $this->courrierInfos['signature'] = sfConfig::get('sf_web_dir').'/images/px.gif';
         }
 
         parent::__construct($type, $use_cache, $file_dir, $filename);
@@ -54,7 +44,7 @@ class ExportDeclarationLotsPDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
+        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
     }
 
     protected function getHeaderSubtitle() {

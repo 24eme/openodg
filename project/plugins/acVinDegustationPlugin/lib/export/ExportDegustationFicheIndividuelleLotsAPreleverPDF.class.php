@@ -3,7 +3,6 @@
 class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
     protected $degustation = null;
-    protected $courrierInfos = null;
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
@@ -11,8 +10,6 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
-
-        $this->courrierInfos = FactureConfiguration::getInstance()->getInfos();
 
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
@@ -70,7 +67,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = $this->courrierInfos["service_facturation"];
+        $titre = Organisme::getInstance()->getNom();
         return $titre;
     }
 
@@ -84,7 +81,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
 
     protected function getFooterText() {
-        return sprintf("\n%s     %s - %s - %s   %s    %s\n", $this->courrierInfos['service_facturation'], $this->courrierInfos['adresse'], $this->courrierInfos['code_postal'], $this->courrierInfos['ville'], $this->courrierInfos['telephone'], $this->courrierInfos['email']);
+        return sprintf("\n%s     %s - %s - %s   %s    %s\n", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
         return $footer;
     }
 

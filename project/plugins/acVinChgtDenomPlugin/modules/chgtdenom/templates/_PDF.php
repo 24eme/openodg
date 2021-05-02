@@ -115,6 +115,6 @@ N° Lot OP : <?php echo $lot2->numero_logement_operateur; ?><br/>
 <br/><br/>
 <br/><br/>
 <table style="width:1100px;padding-left:400px;" >
-  <tr><td><?php echo $courrierInfos['responsable'] ?></td></tr>
-  <tr><td><img src="<?php echo $courrierInfos['signature'] ?>"/></td></tr>
+  <tr><td><?php echo Organisme::getInstance()->getResponsable() ?></td></tr>
+  <tr><td><?php if(file_exists(Organisme::getInstance()->getImageSignaturePath())): ?><img src="<?php echo Organisme::getInstance()->getImageSignaturePath() ?>"/><?php endif; ?></td></tr>
 </table>
