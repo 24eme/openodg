@@ -61,8 +61,8 @@
               <div style="border: none;" class="m-3">
                 Logement :
                 <?php if($lot->isLogementEditable()): ?>
-                  <a href="#" data-toggle="modal" data-target="#modal_lot_logement">
-                    <strong><?php echo ($chgtDenom->changement_numero_logement_operateur != $lot->numero_logement_operateur) ? $chgtDenom->changement_numero_logement_operateur : $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span>
+                  <a href="#" data-toggle="modal" data-target="#modal_lot_logement_<?= ($lot->isLotOrigine()) ? 'origine' : 'change' ?>">
+                    <strong><?php echo ($lot->isLotOrigine()) ? $chgtDenom->origine_numero_logement_operateur : $chgtDenom->changement_numero_logement_operateur ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span>
                   </a>
                 <?php else: ?>
                   <strong><?php echo $lot->numero_logement_operateur; ?></strong>

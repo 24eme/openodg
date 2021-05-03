@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(143);
+$t = new lime_test(147);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -328,6 +328,7 @@ $t->comment("Création d'un Declassement Partiel");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = round($volume / 2, 2);
+$chgtDenom->origine_numero_logement_operateur = "(ex1)";
 $chgtDenom->validate();
 $chgtDenom->save();
 
@@ -347,6 +348,8 @@ $t->is($chgtDenom->lots[0]->volume, $volume - round($volume / 2, 2), "le volume 
 $t->is($chgtDenom->lots[1]->volume, round($volume / 2, 2), "volume du lot changé est bon");
 $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "la provenance du lot 1 est bien ".$degustation->_id);
 $t->is($chgtDenom->lots[1]->id_document_provenance, $degustation->_id, "la provenance du lot 2 est bien ".$degustation->_id);
+$t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement operateur d'origine a changé");
+$t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->getLotOrigine()->numero_logement_operateur, "L'autre partie du chgt denom n'a pas bougé de logement");
 
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "le mouvement du lot d'origine a un statut changé dest");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGEABLE), "le mouvement du lot d'origine reste changeable");
@@ -392,6 +395,18 @@ $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenom->generateLots();
 
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un chgt denom total a un logement editable");
+$chgtDenom->validate();
+$chgtDenom->save();
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
+
+$chgtDenom->clearMouvementsLots();
+$chgtDenom->clearLots();
+$chgtDenom->devalidate();
+
+$chgtDenom->changement_volume = round($volume / 2, 2);
+$chgtDenom->generateLots();
+
+$t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un chgt denom partiel a un logement editable");
 $chgtDenom->validate();
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");

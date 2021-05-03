@@ -44,24 +44,34 @@
     </form>
 
 <?php if(!$chgtDenom->isValide()): ?>
-    <div class="modal fade" id="modal_lot_logement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <form role="form" action="<?php echo url_for("chgtdenom_logement", array("sf_subject" => $chgtDenom)) ?>" method="post" class="form-horizontal">
+    <?php echo $formLogement->renderHiddenFields(); ?>
+    <?php echo $formLogement->renderGlobalErrors(); ?>
+
+    <?php foreach ($chgtDenom->lots as $lot): ?>
+    <?php if ($lot->isLogementEditable()): ?>
+    <div class="modal fade" id="modal_lot_logement_<?= ($lot->isLotOrigine()) ? 'origine' : 'change' ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_<?= ($lot->isLotOrigine()) ? 'origine' : 'change' ?>">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <form role="form" action="<?php echo url_for("chgtdenom_logement", array("sf_subject" => $chgtDenom)) ?>" method="post" class="form-horizontal">
-            <?php echo $formLogement->renderHiddenFields(); ?>
-            <?php echo $formLogement->renderGlobalErrors(); ?>
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo $chgtDenom->changement_numero_logement_operateur ?></strong></h4>
+              <h4 class="modal-title" id="myModalLabel">Modification du logement <strong><?php echo ($lot->isLotOrigine()) ? $chgtDenom->origine_numero_logement_operateur : $chgtDenom->changement_numero_logement_operateur ?></strong></h4>
             </div>
             <div class="modal-body">
               <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <?php echo $formLogement['changement_numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-8">
-                                  <?php echo $formLogement['changement_numero_logement_operateur']->render(); ?>
-                            </div>
+                            <?php if ($lot->isLotOrigine()): ?>
+                                <?php echo $formLogement['origine_numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                                <div class="col-sm-8">
+                                      <?php echo $formLogement['origine_numero_logement_operateur']->render(); ?>
+                                </div>
+                            <?php else : ?>
+                                <?php echo $formLogement['changement_numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                                <div class="col-sm-8">
+                                      <?php echo $formLogement['changement_numero_logement_operateur']->render(); ?>
+                                </div>
+                            <?php endif ?>
                         </div>
                     </div>
               </div>
@@ -70,9 +80,12 @@
               <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fermer</button>
               <button type="submit" class="btn btn-success pull-right">Enregistrer</button>
             </div>
-          </form>
         </div>
       </div>
     </div>
+    <?php endif ?>
+    <?php endforeach ?>
+
+  </form>
 <?php endif; ?>
 <?php include_partial('chgtdenom/popupConfirmationValidation'); ?>
