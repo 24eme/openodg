@@ -7,9 +7,9 @@ default:
     X-UA-Compatible: IE=edge
 
   metas:
-    title:            "Plateforme de télédéclaration du syndicat des Bouches-du-Rhône"
+    title:            "Plateforme de télédéclaration du syndicat des IGP Ardèche"
     charset:          "utf-8"
-    description:      "Plateforme de télédéclaration du syndicat des Bouches-du-Rhône"
+    description:      "Plateforme de télédéclaration du syndicat des IGP Ardèche"
     robots:           "index,follow"
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"

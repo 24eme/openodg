@@ -32,6 +32,15 @@
         <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
+    <?php if ($sf_user->hasFlash('notice')): ?>
+    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('error')): ?>
+    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('warning')): ?>
+    <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
+    <?php endif; ?>
     <?php  if(!$sf_user->isAdmin() && ($etablissement->getSociete() && count($etablissement->getSociete()->getEtablissementsObj(false)) > 1)): ?>
       <section id="principal">
           <form id="choix_etablissement" method="post" action="<?php echo url_for('drev_societe_choix_etablissement', array('identifiant' => $etablissement->identifiant)) ?>">
@@ -108,14 +117,14 @@
 </div>
 <div class="row">
     <div class="col-sm-6 col-md-4 col-xs-12">
-        <div class="block_declaration panel panel-info">
+        <div class="block_declaration panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Vos factures</h3>
             </div>
             <div class="panel-body">
                 <p class="explications">Accéder à l'espace de mise à disposition de vos factures en téléchargement</p>
                 <div class="actions">
-                    <a class="btn btn-block btn-info" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
+                    <a class="btn btn-block btn-default" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
                 </div>
             </div>
         </div>

@@ -561,37 +561,43 @@ class Email {
 
 
     public function sendConfirmationDegustateursMails($degustation) {
-        $app = strtoupper(sfConfig::get('sf_app'));
-
-        $from = FactureConfiguration::getInstance()->getInfo('email');
-        $reply_to = $from;
-
         foreach ($degustation->degustateurs as $college_key => $collegeComptes) {
             foreach ($collegeComptes as $id_compte => $degustateur) {
-                $compte = CompteClient::getInstance()->find($id_compte);
-                $to = $compte->email;
-                $subject = FactureConfiguration::getInstance()->getInfo('service_facturation')." - Convocation pour une dégustation le " . ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm");
-
-                $body = $this->getBodyFromPartial('send_convocation_degustateur', array('degustation' => $degustation, 'identifiant' => $id_compte, 'college' => $college_key));
-
-                if (!$compte->email) {
-                    $to = $reply_to;
-                    $subject = "[$compte->nom : EMAIL NON ENVOYE] " . $subject;
-                    $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $degustateur->get('libelle',''), $this->getAction()->generateUrl('compte_visualisation', array('identifiant' => $identifiant), true), $body);
-                }
-
-                $message = Swift_Message::newInstance()
-                        ->setFrom($from)
-                        ->setReplyTo($reply_to)
-                        ->setTo($to)
-                        ->setSubject($subject)
-                        ->setBody($body)
-                        ->setContentType('text/plain');
-                $this->getMailer()->send($message);
+              $this->sendConfirmationDegustateurMail($degustation, $id_compte, $college_key);
             }
         }
-
         return true;
+    }
+
+    public function sendConfirmationDegustateurMail($degustation, $id_compte, $college_key) {
+      $from = Organisme::getInstance()->getEmail();
+      $reply_to = $from;
+
+      $compte = CompteClient::getInstance()->find($id_compte);
+
+      $to = $compte->email;
+      $subject = Organisme::getInstance()->getNom()." - Convocation pour une dégustation le " . ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm");
+
+      $body = $this->getBodyFromPartial('send_convocation_degustateur', array('degustation' => $degustation, 'identifiant' => $id_compte, 'college' => $college_key));
+
+      if (!$compte->email) {
+          $to = $reply_to;
+          $subject = "[$compte->nom : EMAIL NON ENVOYE] " . $subject;
+          $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $compte->getLibelleWithAdresse(), $this->getAction()->generateUrl('compte_visualisation', array('identifiant' => $compte->identifiant), true), $body);
+      } else {
+        $degustation->setDateEmailConvocationDegustateur(date('Y-m-d'), $id_compte, $college_key);
+        $degustation->save(false);
+      }
+
+      $message = Swift_Message::newInstance()
+              ->setFrom($from)
+              ->setReplyTo($reply_to)
+              ->setTo($to)
+              ->setSubject($subject)
+              ->setBody($body)
+              ->setContentType('text/plain');
+
+      return $this->getMailer()->send($message);
     }
 
     protected function getMailer() {

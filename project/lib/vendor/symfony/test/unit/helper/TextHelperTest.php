@@ -13,7 +13,7 @@ require_once(dirname(__FILE__).'/../../../test/bootstrap/unit.php');
 require_once(dirname(__FILE__).'/../../../lib/helper/TagHelper.php');
 require_once(dirname(__FILE__).'/../../../lib/helper/TextHelper.php');
 
-$t = new lime_test(56);
+$t = new lime_test(59);
 
 // truncate_text()
 $t->diag('truncate_text()');
@@ -34,10 +34,14 @@ $truncated = str_repeat('A', 21).'BBBB';
 $t->is(truncate_text($text, 25, 'BBBB'), $truncated, 'text_truncate() takes the ... text as its third argument');
 
 $text = str_repeat('A', 10).str_repeat(' ', 10).str_repeat('A', 10);
-$truncated_true = str_repeat('A', 10).'...';
-$truncated_false = str_repeat('A', 10).str_repeat(' ', 2).'...';
-$t->is(truncate_text($text, 15, '...', false), $truncated_false, 'text_truncate() accepts a truncate lastspace boolean as its fourth argument');
-$t->is(truncate_text($text, 15, '...', true), $truncated_true, 'text_truncate() accepts a truncate lastspace boolean as its fourth argument');
+$truncated_end = str_repeat('A', 10).str_repeat(' ', 2).'...';
+$truncated_lastspace = str_repeat('A', 10).'...';
+$truncated_middle = str_repeat('A', 6).'...'.str_repeat('A', 6);
+$t->is(truncate_text($text, 15, '...', false), $truncated_end, 'text_truncate() accepts a truncate "false" as its fourth argument');
+$t->is(truncate_text($text, 15, '...', 'end'), $truncated_end, 'text_truncate() accepts a truncate "end" as its fourth argument');
+$t->is(truncate_text($text, 15, '...', true), $truncated_lastspace, 'text_truncate() accepts a truncate "true" as its fourth argument');
+$t->is(truncate_text($text, 15, '...', 'lastspace'), $truncated_lastspace, 'text_truncate() accepts a truncate "lastspace" as its fourth argument');
+$t->is(truncate_text($text, 15, '...', 'middle'), $truncated_middle, 'text_truncate() accepts a truncate "middle" as its fourth argument');
 
 if(extension_loaded('mbstring'))
 {

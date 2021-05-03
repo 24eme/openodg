@@ -11,7 +11,7 @@
                 <?php echo $form["login"]->renderError(); ?>
                 <div class="col-xs-12">
                   <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
-                          <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('declaration_etablissement_selection'), 'noautofocus' => true)); ?>
+                          <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
                   <?php endif; ?>
                 </div>
             </div>

@@ -318,7 +318,7 @@ class habilitationActions extends sfActions {
         try {
             $this->formDemandeCreation->save();
         } catch (Exception $e) {
-            $this->getUser()->setFlash('erreur', $e->getMessage());
+            $this->getUser()->setFlash('error', $e->getMessage());
 
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
@@ -368,7 +368,7 @@ class habilitationActions extends sfActions {
         try {
             $this->formDemandeEdition->save();
         } catch (Exception $e) {
-            $this->getUser()->setFlash('erreur', $e->getMessage());
+            $this->getUser()->setFlash('error', $e->getMessage());
 
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }

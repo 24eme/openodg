@@ -1,187 +1,331 @@
 {
-    "_id": "TEMPLATE-FACTURE-2020",
-    "type": "TemplateFacture",
-    "campagne": 2020,
-    "template": "IGP",
-    "libelle": "2020 - IGP Var",
-    "docs": [
-        "DR","DRev"
-    ],
-    "cotisations": {
+  "_id": "TEMPLATE-FACTURE-2020",
+  "_rev": "12-120f778392a120dabe03d74665f0f982",
+  "type": "TemplateFacture",
+  "campagne": 2020,
+  "template": "IGP",
+  "libelle": "2020 - IGP Var",
+  "docs": [
+    "DR",
+    "DRev",
+    "Degustation",
+    "Conditionnement",
+    "ChgtDenom"
+  ],
+  "cotisations": {
+    "cotisationSyndicale": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation",
+      "code_comptable": "",
+      "details": {
         "superficie": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "IGP Var",
-            "code_comptable": "706100",
-            "details": {
-                "superficie": {
-                    "modele": "CotisationVariable",
-                    "prix": 10,
-                    "tva": 0.2,
-                    "unite": "ha",
-                    "libelle": "Superficie",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DR"
-                    ],
-                    "callback": "calcul",
-                    "callback_parameters": [
-                      "L4"
-                    ]
-                }
-            }
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0.2,
+          "unite": "ha",
+          "libelle": "Cotisation technique et syndicale récolte 2020",
+          "complement_libelle": "",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
         },
-        "forfait": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "IGP Var",
-            "code_comptable": "706100",
-            "details": {
-                "forfait": {
-                    "modele": "CotisationFixe",
-                    "prix": 35,
-                    "tva": 0.2,
-                    "unite": "hl",
-                    "libelle": "Forfait sur DRev",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "isDeclarantFamille",
-                    "callback_parameters": [
-                        "NOT NEGOCIANT_VINIFICATEUR"
-                    ]
-                }
-            }
-        },
-        "forfaitnegociant": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "IGP Var",
-            "code_comptable": "706100",
-            "details": {
-                "forfait": {
-                    "modele": "CotisationFixe",
-                    "prix": 200,
-                    "tva": 0.2,
-                    "unite": "hl",
-                    "libelle": "Forfait sur DRev négociant",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "isDeclarantFamille",
-                    "callback_parameters": [
-                        "NEGOCIANT_VINIFICATEUR"
-                    ]
-                }
-            }
+        "promotion": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "libelle": "Promotion",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "'NOT /appellations/MED'"
+          ]
         },
         "oi": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "Cotisation reversée à l'OI",
-            "code_comptable": "706102",
-            "details": {
-                "cotisation": {
-                    "modele": "CotisationVariable",
-                    "prix": 0.05,
-                    "tva": 0.2,
-                    "libelle": "Cotisation reversée à l'OI",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "getVolumeLotsFacturables"
-                }
-            }
-        },
-        "inao": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "INAO",
-            "code_comptable": "706102",
-            "details": {
-                "cotisation": {
-                    "modele": "CotisationVariable",
-                    "prix": 0.03,
-                    "tva": 0,
-                    "libelle": "Cotisation reversée à l'INAO",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "getVolumeLotsFacturables"
-                }
-            }
-        },
-        "promotion":{
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "Promotion",
-            "code_comptable": "706102",
-            "details": {
-                "cotisation": {
-                    "modele": "CotisationVariable",
-                    "prix": 0.7,
-                    "tva": 0.2,
-                    "libelle": "",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "getVolumeLotsFacturables",
-                    "callback_parameters": [
-                    ]
-                }
-
-            }
-        },
-        "controleIgp":{
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "Contrôle IGP",
-            "code_comptable": "706102",
-            "details": {
-                "cotisation": {
-                    "modele": "CotisationVariable",
-                    "prix": 0.7,
-                    "tva": 0.2,
-                    "libelle": "Contrôle lots IGP",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "getVolumeLotsFacturables",
-                    "callback_parameters": [
-                        "NOT /appellations/MED"
-                    ]
-                }
-
-            }
-        },
-        "controleMed": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "Contrôle Méditerrannée",
-            "code_comptable": "706102",
-            "details": {
-                "cotisation": {
-                    "modele": "CotisationVariable",
-                    "prix": 0.09,
-                    "tva": 0,
-                    "libelle": "Contrôle lots Méditerrannée",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "getVolumeLotsFacturables",
-                    "callback_parameters": [
-                        "/appellations/MED"
-                    ]
-                }
-            }
+          "modele": "CotisationVariable",
+          "prix": 0.05,
+          "tva": 0.2,
+          "libelle": "Cotisation reversée à l'OI",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "'NOT /appellations/MED'"
+          ]
         }
-
+      }
+    },
+    "fraisGestion": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Frais de gestion",
+      "code_comptable": "",
+      "details": {
+        "fraisgestion": {
+          "modele": "CotisationFixe",
+          "prix": 35,
+          "tva": 0.2,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "",
+          "callback_parameters": ""
+        }
+      }
+    },
+    "inao": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "INAO",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "libelle": "Cotisation reversée à l'INAO",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        }
+      }
+    },
+    "fallbackIgp": {
+      "fallback": true,
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Contrôle lots IGP",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationFixe",
+          "prix": 70,
+          "tva": 0.2,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": ""
+        }
+      }
+    },
+    "fallbackMed": {
+      "fallback": true,
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Contrôle lots Med",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationFixe",
+          "prix": 90,
+          "tva": 0.2,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": ""
+        }
+      }
+    },
+    "controleIgp": {
+      "minimum": 100,
+      "minimum_fallback": "fallbackIgp",
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Contrôle IGP",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle lots IGP",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "NOT /appellations/MED"
+          ]
+        }
+      }
+    },
+    "controleMed": {
+      "minimum": 100,
+      "minimum_fallback": "fallbackMed",
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Contrôle Méditerrannée",
+      "code_comptable": "706102",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.9,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle lots Méditerrannée",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        }
+      }
+    },
+    "changementdenom": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "706100",
+      "details": {
+        "frais": {
+          "modele": "CotisationFixe",
+          "prix": 60,
+          "tva": 0.2,
+          "libelle": "Frais changement dénomination",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "getVolumeDestFacturable",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        },
+        "forfaitNegociant": {
+          "modele": "CotisationFixe",
+          "prix": 200,
+          "tva": 0.2,
+          "libelle": "Forfait negociant changement dénomination",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NEGOCIANT"
+          ]
+        },
+        "chgtdenommed": {
+          "modele": "CotisationVariable",
+          "prix": 0.2,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Méditerranée",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "getVolumeDestFacturable",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        },
+        "chgtdenomigp": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "getVolumeDestFacturable",
+          "callback_parameters": [
+            "NOT /appellations/MED"
+          ]
+        }
+      }
+    },
+    "conditionnement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Forfait conditionneur IGP",
+      "code_comptable": "706100",
+      "details": {
+        "frais": {
+          "modele": "CotisationFixe",
+          "prix": 200,
+          "tva": 0.2,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Conditionnement"
+          ],
+          "callback": "",
+          "callback_parameters": []
+        }
+      }
+    },
+    "redegustationIgp": {
+      "minimum": 100,
+      "minimum_fallback": "fallbackIGp",
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "2nd dégustation",
+      "code_comptable": "706100",
+      "details": {
+        "degustation": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "libelle": "Contrôle IGP",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationLotRedeguste",
+          "callback_parameters": [
+            "NOT /appellations/MED"
+          ]
+        }
+      }
+    },
+    "redegustationMed": {
+      "minimum": 100,
+      "minimum_fallback": "fallbackMed",
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "2nd dégustation",
+      "code_comptable": "706100",
+      "details": {
+        "degustation": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "libelle": "Contrôle Méditerannée",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationLotRedeguste",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        }
+      }
     }
+  }
 }

@@ -20,6 +20,13 @@
 </table>
 <br/>
 
+<table style="width:1100px;" >
+  <tr style="text-decoration: underline;"><td>Vos coordonnées :</td></tr>
+  <tr><td>Email : <?php echo $etablissement->email ?></td></tr>
+  <?php echo ($etablissement->telephone_bureau) ? '<tr><td>Bureau : '. $etablissement->telephone_bureau .'</td></tr>' : '' ?>
+  <?php echo ($etablissement->telephone_mobile) ? '<tr><td>Mobile : '. $etablissement->telephone_mobile .'</td></tr>' : '' ?>
+</table>
+
 <br/>
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
@@ -51,6 +58,6 @@
 <br/><br/>
 <br/><br/>
 <table style="width:1100px;padding-left:400px;" >
-  <tr><td><?php echo $courrierInfos['responsable'] ?></td></tr>
-  <tr><td><img src="<?php echo $courrierInfos['signature'] ?>"/></td></tr>
+  <tr><td><?php echo Organisme::getInstance()->getResponsable() ?></td></tr>
+  <tr><td><?php if(file_exists(Organisme::getInstance()->getImageSignaturePath())): ?><img src="<?php echo Organisme::getInstance()->getImageSignaturePath() ?>"/><?php endif; ?></td></tr>
 </table>

@@ -40,8 +40,8 @@ endif;
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
-    <?php if ($sf_user->hasFlash('erreur')): ?>
-    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php if ($sf_user->hasFlash('error')): ?>
+    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
     <?php endif; ?>
     <p>Dans le cadre de la DRev, vous devez indiquer ici l'utilisation de votre VCI stocké en <?php echo($drev->campagne - 1) ?>. Les informations présentée ici ont été initialisées depuis votre registre VCI.</p>
     <table class="table table-striped table-condensed" id="table-revendication">

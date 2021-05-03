@@ -1,5 +1,6 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot') ?>
+<?php use_helper('Text') ?>
 <style>
   .font-1-3em{
     font-size: 1.3em;
@@ -23,7 +24,7 @@
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
                       <?php echo tdStart() ?><strong>&nbsp;
                       <?php if ($i != 2 || !$anonymat4labo): ?>
-                      <?php echo ($lotInfo->lot->declarant_nom)? substr($lotInfo->lot->declarant_nom, 0, 50) : "Leurre";  ?>
+                      <?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->getRawValue()->lot->declarant_nom, 43, '...') : "Leurre";  ?>
                       <?php endif; ?></strong>
                     </td>
                   </tr>
@@ -41,7 +42,7 @@
                   </tr>
                   <tr style="line-height:12px;">
                     <td colspan="2" style="overflow-wrap:break-word; text-align: center;">
-                      <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo substr($lotInfo->lot->produit_libelle, 0, 45) .' '.  $lotInfo->lot->millesime;  ?></strong>
+                      <?php echo tdStart() ?><strong><?php echo truncate_text("IGP ".$lotInfo->getRawValue()->lot->produit_libelle, 46, '...', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr style="line-height:12px;">

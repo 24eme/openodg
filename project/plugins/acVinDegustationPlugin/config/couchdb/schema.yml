@@ -10,7 +10,7 @@ Degustation:
       lieu: {  }
       max_lots: {  }
       etape: {  }
-      validation: {  }
+      validation: { required: false }
       tri : { }
       provenance: { required: false }
       numero_archive: {  }

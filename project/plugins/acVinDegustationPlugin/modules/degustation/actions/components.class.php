@@ -24,10 +24,8 @@ class degustationComponents extends sfComponents {
 
         $email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
 
-        $courrierInfos = FactureConfiguration::getInstance()->getInfos();
-
-        $cc = $courrierInfos['email'];
-        $subject = sprintf("%s - Résultat de dégustation du %s", $courrierInfos['service_facturation'], ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
+        $cc = Organisme::getInstance()->getEmail();
+        $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance()->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
         $body = rawurlencode(strip_tags(get_partial('degustation/notificationEmail', [
             'degustation' => $this->degustation,
             'identifiant' => $this->identifiant,
@@ -53,10 +51,9 @@ class degustationComponents extends sfComponents {
                     break;
             }
         }
-        $courrierInfos = FactureConfiguration::getInstance()->getInfos();
 
-        $this->subject = sprintf("%s - Résultat de dégustation du %s",$courrierInfos['service_facturation'], ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
+        $this->subject = sprintf("%s - Résultat de dégustation du %s",Organisme::getInstance()->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
         $this->email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
-        $this->cc = $courrierInfos['email'];
+        $this->cc = Organisme::getInstance()->getEmail();
     }
 }

@@ -18,10 +18,19 @@
     <div class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></div>
 <?php endif; ?>
 
-
 <div class="page-header">
     <h2>Espace Facture</h2>
 </div>
+
+<?php if ($sf_user->isAdmin()): ?>
+<div class="row row-margin">
+    <?php if (isset($formSociete)): ?>
+    <div class="col-xs-12">
+          <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
+    </div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
 
 <h3>Liste des factures</h3>
 <table class="table table-bordered table-striped">

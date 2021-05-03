@@ -26,15 +26,9 @@ degustation_prelevables:
     sf_method: [get]
   class: DegustationGeneralRoute
 
-degustation_lot:
-  url: /degustation/lot/:campagne/:id
-  param: { module: degustation, action: lot }
-  requirements:
-    sf_method: [get]
-
-degustation_etablissement_list:
+degustation_declarant_lots_liste:
   url: /degustation/declarant/:identifiant
-  param: { module: degustation, action: list }
+  param: { module: degustation, action: lotsListe }
   class: DegustationDeclarantRoute
   options:
     model:    Etablissement
@@ -49,6 +43,16 @@ degustation_lot_historique:
     type:     object
   requirements:
     sf_method: [get]
+
+degustation_lot_modification:
+  url: /historique/:identifiant/:unique_id/modification
+  param: { module: degustation, action: lotModification }
+  class: DegustationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 degustation_prelevements_etape:
   url: /degustation/:id/prelevements
@@ -132,7 +136,7 @@ degustation_selection_degustateurs:
 
 degustation_ajout_degustateurPresence:
   url: /degustation/:id/ajout-degustateur-presence/:table
-  param: { module: degustation, action: ajoutDegustateurPresence, table: 1}
+  param: { module: degustation, action: ajoutDegustateurPresence, table: null}
   class: DegustationRoute
   options:
     model:    Degustation
@@ -153,6 +157,16 @@ degustation_convocations:
 degustation_convocations_mails:
   url: /degustation/:id/convocations/mails
   param: { module: degustation, action: convocationsMails }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_convocations_mail_degustateur:
+  url: /degustation/:id/convocations/mail/:college_key/degustateur/:id_compte
+  param: { module: degustation, action: convocationDegustateurMail }
   class: DegustationRoute
   options:
     model:    Degustation

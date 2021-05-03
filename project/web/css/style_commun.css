@@ -141,3 +141,9 @@
 .lots-by-table li:not(:last-child)::after {
     content: ", ";
 }
+
+/* Affichage des messages d'erreur dans les formulaires */
+.error_list li {
+    color: red;
+    list-style: none;
+}

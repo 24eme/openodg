@@ -21,7 +21,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if (!$this->date) {
             return date($format);
         }
-        return date ($format, strtotime($this->date));
+        return date($format, strtotime($this->date));
     }
 
 		public function getMaster() {
@@ -538,7 +538,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	 }
 
 	 public function getNbLotsRestantAPreleve(){
-		 return $this->getNbLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT,false);
+		 return (count($this->getLots()) - $this->getNbLotsPreleves());
 	 }
 
 	 public function getLotsDegustes(){
@@ -997,12 +997,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$degustateur->libelle = $compte->getLibelleWithAdresse();
 
 			if($numTab !== false){
-				$degustateur->getOrAdd('numero_table');
-				$degustateur->numero_table = $numTab;
+				if($numTab !== null){
+					$degustateur->getOrAdd('numero_table');
+					$degustateur->numero_table = $numTab;
+				}
 				$degustateur->getOrAdd('confirmation');
 				$degustateur->confirmation = true;
 			}
 
+		}
+
+		public function setDateEmailConvocationDegustateur($date, $compteId, $college) {
+			$this->getOrAdd('degustateurs');
+			$degustateur = $this->degustateurs->getOrAdd($college)->getOrAdd($compteId);
+			$degustateur->getOrAdd('email_convocation');
+			$degustateur->email_convocation = $date;
 		}
 
 		public function hasAllDegustateursConfirmation(){
@@ -1352,10 +1361,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
 			$mouvement->detail_identifiant = $lot->numero_dossier;
-            $mouvement->date_version = $this->getDateFormat();
-            $mouvement->date = $this->getDateFormat();
             $mouvement->createFromCotisationAndDoc($cotisation, $this);
-            $mouvement->facture = intval($mouvement->date_version < "2021-04-01");
+            $mouvement->date = $this->getDateFormat();
+            $mouvement->date_version = $this->getDateFormat();
 
             return $mouvement;
         }

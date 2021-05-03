@@ -176,6 +176,62 @@ $b->click('#btn_suivant');
 $b->isForwardedTo('degustation', 'anonymatsEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape d'anonymat");
 
+$b->click('ul.navbar-nav li a.commission')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.resultats')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.notifications')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('#btn_suivant')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Étape commission");
+
+$b->click('ul.navbar-nav li a.lots')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.degustateurs')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.prelevements')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.convocations')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.tables')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
+$b->click('ul.navbar-nav li a.anonymats');
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "On revient à l'anonymat");
+
+$b->click('a.desanonymat')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape anonymat : On a désanonymisé");
+
+$b->click('ul.navbar-nav li a.commission')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.resultats')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
+$b->click('ul.navbar-nav li a.notifications')->followRedirect();
+$b->isForwardedTo('degustation', 'anonymatsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape d'anonymat");
+
 $b->click('#btn_suivant')->followRedirect();
 $b->isForwardedTo('degustation', 'commissionEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape commission");
@@ -288,6 +344,22 @@ $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en 
 $t->is($b->getResponse()->getStatuscode(), 200, "PDF de conformités (par url authentifiante)");
 
 $uriConformiteAuthentifiante = $b->getRequest()->getUri();
+
+$b->get('/degustation/declarant/'.$etablissement->identifiant);
+$b->isForwardedTo('degustation', 'lotsListe');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page d'historique des lots d'un opérateur");
+
+$b->click("a.btn-historique");
+$b->isForwardedTo('degustation', 'lotHistorique');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page d'historique d'un lot");
+
+$b->click("a.btn-modifier-lot");
+$b->isForwardedTo('degustation', 'lotModification');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de modification d'un lot");
+
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'lotHistorique');
+$t->is($b->getResponse()->getStatuscode(), 200, "Validation du formulaire de modification d'un lot");
 
 $t->comment('En mode télédéclarant');
 

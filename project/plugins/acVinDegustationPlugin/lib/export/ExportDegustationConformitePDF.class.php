@@ -20,7 +20,7 @@ class ExportDegustationConformitePDF extends ExportDeclarationLotsPDF {
             }
         }
         $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
-        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots, 'courrierInfos' => $this->courrierInfos)));
+        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots)));
       }
 
 
@@ -29,7 +29,7 @@ class ExportDegustationConformitePDF extends ExportDeclarationLotsPDF {
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("%s\n%s\n\n", $this->etablissement->nom, $this->etablissement->email);
+        $header_subtitle = sprintf("%s\n\n", $this->etablissement->nom);
         $header_subtitle .= sprintf("Dégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
         return $header_subtitle;
     }
