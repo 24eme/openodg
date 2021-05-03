@@ -213,6 +213,20 @@
             "/appellations/MED"
           ]
         },
+        "forfaitNegociant": {
+          "modele": "CotisationFixe",
+          "prix": 200,
+          "tva": 0.2,
+          "libelle": "Forfait negociant changement dénomination",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NEGOCIANT"
+          ]
+        },
         "chgtdenommed": {
           "modele": "CotisationVariable",
           "prix": 0.2,
