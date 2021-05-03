@@ -1,13 +1,18 @@
 #!/bin/bash
 
-. bin/config.inc
-
-ODG=$1
-
-if test "$1"; then
-    . bin/config_$ODG.inc
+# Mode multi app
+if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
+    done
+    exit 0;
 fi
 
+if ! test $1 ; then
+    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+else
+    . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
+fi
 
 mkdir $EXPORTDIR 2> /dev/null
 
