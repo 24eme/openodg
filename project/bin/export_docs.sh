@@ -2,7 +2,11 @@
 
 cd $(dirname $0)/..
 
-. bin/config.inc
+if test $3 && test -f $(echo $0 | sed 's/[^\/]*$//')config_"$3".inc ; then
+    . $(echo $0 | sed 's/[^\/]*$//')config_"$3".inc
+else
+    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+fi
 
 DOC_TYPE=$1
 WAITSLEEP=$2

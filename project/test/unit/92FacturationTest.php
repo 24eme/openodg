@@ -192,13 +192,20 @@ $t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
 $t->is($facture->getNumeroOdg(),$facture->campagne."00001", "Numéro odg de la facture");
 $t->is($facture->date_echeance , $facture->date_facturation, "Date d'échéance à récéption");
 
-$t->is($facture->lignes->igp13->libelle, "IGP13", "Libellé de la ligne");
-$t->ok($facture->lignes->igp13->details[0]->unite, "hl", "Unité du détail");
-$t->ok($facture->lignes->igp13->details[0]->libelle, "Libellé du détail de la ligne");
-$t->like($facture->lignes->igp13->details[0]->libelle, "/N° ".$drev->numero_archive."/", "Libellé du détail de la ligne avec le numéro d'archive");
-$t->is($facture->lignes->igp13->details[0]->getLibelleComplet(), $facture->lignes->igp13->libelle." ".$facture->lignes->igp13->details[0]->libelle, "Libellé complet de la ligne");
+$keyCotis = null;
+foreach ($facture->lignes as $keyCotis => $cotis) {
+    if(preg_match("/igp13/", $keyCotis)){
+        break;
+    }
+}
 
-$t->is($facture->lignes->igp13->produit_identifiant_analytique, $templateFacture->cotisations->igp13->code_comptable, "Le code comptable est bien renseigné");
+$t->is($facture->lignes->$keyCotis->libelle, "IGP13", "Libellé de la ligne");
+$t->ok($facture->lignes->$keyCotis->details[0]->unite, "hl", "Unité du détail");
+$t->ok($facture->lignes->$keyCotis->details[0]->libelle, "Libellé du détail de la ligne");
+$t->like($facture->lignes->$keyCotis->details[0]->libelle, "/N° ".$drev->numero_archive."/", "Libellé du détail de la ligne avec le numéro d'archive");
+$t->is($facture->lignes->$keyCotis->details[0]->getLibelleComplet(), $facture->lignes->$keyCotis->libelle." ".$facture->lignes->$keyCotis->details[0]->libelle, "Libellé complet de la ligne");
+
+$t->is($facture->lignes->$keyCotis->produit_identifiant_analytique, $templateFacture->cotisations->$keyCotis->code_comptable, "Le code comptable est bien renseigné");
 
 $t->comment("Modificatrice DREV, on ajoute un lot volume 100 et on supprime le dernier lot");
 
