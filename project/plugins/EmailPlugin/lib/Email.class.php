@@ -570,13 +570,13 @@ class Email {
     }
 
     public function sendConfirmationDegustateurMail($degustation, $id_compte, $college_key) {
-      $from = FactureConfiguration::getInstance()->getInfo('email');
+      $from = Organisme::getInstance()->getEmail();
       $reply_to = $from;
 
       $compte = CompteClient::getInstance()->find($id_compte);
 
       $to = $compte->email;
-      $subject = FactureConfiguration::getInstance()->getInfo('service_facturation')." - Convocation pour une dégustation le " . ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm");
+      $subject = Organisme::getInstance()->getNom()." - Convocation pour une dégustation le " . ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm");
 
       $body = $this->getBodyFromPartial('send_convocation_degustateur', array('degustation' => $degustation, 'identifiant' => $id_compte, 'college' => $college_key));
 

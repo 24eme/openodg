@@ -23,6 +23,7 @@ class produitActions extends sfActions
       }
       set_time_limit(0);
 
+      $this->organisme = Organisme::getInstance();
       $this->date = $request->getParameter('date');
       $this->config = ConfigurationClient::getConfiguration($this->date);
       $this->produits = $this->config->declaration->getProduits($this->date);

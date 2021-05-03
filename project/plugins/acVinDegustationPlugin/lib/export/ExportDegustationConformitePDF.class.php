@@ -20,7 +20,7 @@ class ExportDegustationConformitePDF extends ExportDeclarationLotsPDF {
             }
         }
         $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
-        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots, 'courrierInfos' => $this->courrierInfos)));
+        $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots)));
       }
 
 
