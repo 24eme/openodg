@@ -17,7 +17,8 @@ class DRevLotForm extends acCouchdbObjectForm
         $i=0;
         foreach($this->getObject()->cepages as $cepage => $repartition) {
             $this->setDefault('cepage_'.$i, $cepage);
-            $this->setDefault('repartition_'.$i, $repartition);
+            $this->setDefault('repartition_hl_'.$i, $repartition);
+            $this->setDefault('repartition_pc_'.$i, $repartition);
             $i++;
         }
         $this->setDefault("millesime", preg_replace('/-.*/', '', $this->getObject()->campagne));
@@ -61,8 +62,8 @@ class DRevLotForm extends acCouchdbObjectForm
                 $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
                 $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
             }
-            $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
-            $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
+            $this->setWidget('repartition_hl_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
+            $this->setValidator('repartition_hl_'.$i, new sfValidatorNumber(array('required' => false)));
         }
 
         $this->setWidget('elevage', new sfWidgetFormInputCheckbox());
@@ -77,11 +78,11 @@ class DRevLotForm extends acCouchdbObjectForm
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
+            if(!$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
                 continue;
             }
 
-            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_hl_'.$i]);
         }
         if (!empty($values['elevage'])) {
           $this->getObject()->statut = Lot::STATUT_ELEVAGE;
