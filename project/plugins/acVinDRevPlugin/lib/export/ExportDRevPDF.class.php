@@ -98,10 +98,7 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getFooterText() {
         if(!$this->getRegion()) {
-            $courrierInfos = FactureConfiguration::getInstance()->getInfos();
-            if(isset($courrierInfos)){
-                return sprintf("<span style='color:#ff0000;'>%s     %s - %s - %s - %s - %s</span>", $courrierInfos['service_facturation'], $courrierInfos['adresse'], $courrierInfos['code_postal'], $courrierInfos['ville'], $courrierInfos['telephone'], $courrierInfos['email']);
-            }
+            return sprintf("<span style='color:#ff0000;'>%s     %s - %s - %s - %s - %s</span>", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
         }
 
         $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());

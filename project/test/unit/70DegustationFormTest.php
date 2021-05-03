@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(116);
+$t = new lime_test(117);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -162,6 +162,7 @@ $t->is($degustation->_id, $docid, "doc id");
 
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->date, $degust_date.":00", "La date de la degustation est la bonne");
+$t->is($degustation->getDateFormat(), $date, "La méthode getDateFormat renvoi la date");
 $t->is($degustation->lieu, $lieu, "Lieu de la dégustation");
 $t->is($degustation->getLieuNom(), "Lieu test", "Nom du lieu de la dégustation");
 

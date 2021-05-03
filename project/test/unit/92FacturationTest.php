@@ -7,8 +7,8 @@ if ($application != 'igp13') {
     $t->ok(true, "Pass AOC");
     return;
 }
-
-$emetteurs["IGP13"] = array(
+$region = "IGP13";
+$emetteurs[$region] = array(
     "adresse" => "rue",
     "code_postal" => "cp",
     "ville" => "ville cedex 1",
@@ -420,8 +420,11 @@ foreach ($degustation2->getMouvementsFactures() as $mvtsOp) {
     break;
 }
 
+$t->is($mvtRedegust->date, $degustation2->getDateFormat(), "Date du mouvement");
+$t->is($mvtRedegust->date_version, $degustation2->getDateFormat(), "Date version du mouvement");
+$t->is($mvtRedegust->facture, 0, "Mouvement non facturé");
+$t->is($mvtRedegust->facturable, 1, "Mouvement facturable");
 $t->is($mvtRedegust->detail_identifiant,$lot2->numero_dossier, "Degustation 2 : Le mouvements de facture a bien le numéro de dossier du lot redégusté");
-
 
 $t->comment("Conformité du lot de la degustation 2 ");
 $degustation2->lots[0]->statut = Lot::STATUT_CONFORME;
@@ -445,13 +448,13 @@ $chgtDenom->generateLots();
 $chgtDenom->generateMouvementsLots(1);
 $chgtDenom->save();
 
-$t->ok(!count($chgtDenom->getMouvementsFactures())," Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
+$t->ok(!count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
 
 $chgtDenom->validate();
 $chgtDenom->validateOdg();
 $chgtDenom->save();
 
-$t->ok(!count($chgtDenom->getMouvementsFactures())," Changement Deno : on a pas de mouvement de facture parce qu'on fait un chgt vers D13");
+$t->ok(!count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a pas de mouvement de facture parce qu'on fait un chgt vers D13");
 
 $t->comment('Création chgt Deno vers MED');
 
@@ -472,13 +475,13 @@ $chgtDenom->generateLots();
 $chgtDenom->generateMouvementsLots(1);
 $chgtDenom->save();
 
-$t->ok(!count($chgtDenom->getMouvementsFactures())," Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
+$t->ok(!count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
 
 $chgtDenom->validate();
 $chgtDenom->validateOdg();
 $chgtDenom->save();
 
-$t->ok(count($chgtDenom->getMouvementsFactures())," Changement Deno : on a un mouvement de facture car on est valideOdg et MED");
+$t->ok(count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a un mouvement de facture car on est valideOdg et MED");
 
 $mvtChgtDenom = null;
 foreach ($chgtDenom->getMouvementsFactures() as $mvtsOp) {
@@ -490,3 +493,11 @@ foreach ($chgtDenom->getMouvementsFactures() as $mvtsOp) {
 }
 
 $t->is($mvtChgtDenom->detail_identifiant, $lot->numero_dossier."b" ,"Changement Deno :le mouvement de facture du changement a le numéro de dossier correspondant à celui du chgtDenom");
+
+$mouvementsFacturables = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte);
+$f = FactureClient::getInstance()->createDocFromView($mouvementsFacturables, $socVitiCompte, date('Y-m-d'), null, $region, $templateFacture);
+
+$keyLignes = array_keys($f->getLignes()->toArray());
+$keyLignesSorted = $keyLignes;
+sort($keyLignesSorted);
+$t->is($keyLignes,$keyLignesSorted, "Dans les factures les noms de cotisations servent pour le trie quel que soit l'ordre de sortie des mouvements de facture ou de l'ordre dans le template");

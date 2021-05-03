@@ -1,6 +1,6 @@
-<?php echo FactureConfiguration::getInstance()->getInfo('service_facturation'); ?>
+<?php echo Organisme::getInstance()->getNom() ?>
 
 --
-mailto:<?php echo FactureConfiguration::getInstance()->getInfo('email'); ?>
+mailto:<?php echo Organisme::getInstance()->getEmail(); ?>
 
-<?php echo FactureConfiguration::getInstance()->getInfo('telephone'); ?>
+<?php echo Organisme::getInstance()->getTelephone(); ?>

@@ -133,10 +133,10 @@
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                                 <div class="col-xs-12">
-                                  <?php if ($sf_user->isAdmin() && !$drev->validation_odg): ?>
-                                  	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "drev bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                  <?php if ($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id)): ?>
+                                  <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "drev bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                                   <?php else: ?>
-                                      <?php echo pictoDegustable($lot); ?>
+                                      <?php echo pictoDegustable($lot->getLotInDrevOrigine()); ?>
                                   <?php endif; ?>
                                 </div>
                             </div>

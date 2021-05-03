@@ -1,8 +1,8 @@
 <table class="table table-condensed table-striped">
 <thead>
     <th class="col-xs-1">Date</th>
-    <th class="col-xs-2 text-center">Dossier / Archive / Prov.</th>
-    <th class="col-xs-2">Opérateur</th>
+    <th class="col-xs-2 text-center">N°Dos. / Archive / Prov.</th>
+    <th class="col-xs-3">Opérateur</th>
     <th class="col-xs-1 text-right">Volume</th>
     <th class="col-xs-4">Produit</th>
     <th class="col-xs-1">&nbsp;</th>
@@ -20,8 +20,9 @@
       <td><?php echo $lot->declarant_nom; ?></td>
       <td class="text-right"><?php echo $lot->volume; ?>&nbsp;hl</td>
       <td>
-          <?php echo showProduitCepagesLot($lot->getRawValue(), false) ?><br/>
-          <span class="text-muted">Lot opérateur n°&nbsp;<?php echo $lot->numero_logement_operateur; ?></span>
+          <?php echo showOnlyProduit($lot->getRawValue(), false) ?>
+          <span class="text-muted">N°&nbsp;<?php echo $lot->numero_logement_operateur; ?></span><br/>
+          <span class="text-muted"><?php echo showOnlyCepages($lot->getRawValue(), false) ?>&nbsp;</span>
       </td>
       <td>
           <?php echo showLotStatusCartouche($lot->statut); ?>

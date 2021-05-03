@@ -210,6 +210,7 @@ class FactureClient extends acCouchdbClient {
             $facture->storeLignesByMouvementsView($mvt);
         }
 
+        $facture->orderLignesByCotisationsKeys();
         $facture->updateTotaux();
 
         if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {

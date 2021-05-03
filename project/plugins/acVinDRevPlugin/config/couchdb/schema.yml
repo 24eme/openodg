@@ -207,8 +207,6 @@ DRev:
                         unite: { required: false }
                         taux: { }
                         tva: { }
-                        facture: { type: integer }
-                        facturable: { type: integer }
                         date: {  }
                         date_version: {  }
                         version: {  }

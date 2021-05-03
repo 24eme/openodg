@@ -29,7 +29,7 @@ class GenerationFactureMail extends GenerationAbstract {
 
     public static function getSujet($numero) {
 
-        return "Facture n°$numero - ".FactureConfiguration::getInstance()->getInfo('service_facturation');
+        return "Facture n°$numero - ".Organisme::getInstance()->getNom();
     }
 
     public static function getActionLibelle() {
