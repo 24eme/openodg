@@ -1,5 +1,6 @@
 {
   "_id": "TEMPLATE-FACTURE-2020",
+  "_rev": "12-120f778392a120dabe03d74665f0f982",
   "type": "TemplateFacture",
   "campagne": 2020,
   "template": "IGP",
@@ -241,6 +242,26 @@
           "callback_parameters": [
             "NOT /appellations/MED"
           ]
+        }
+      }
+    },
+    "conditionnement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Forfait conditionneur IGP",
+      "code_comptable": "706100",
+      "details": {
+        "frais": {
+          "modele": "CotisationFixe",
+          "prix": 200,
+          "tva": 0.2,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Conditionnement"
+          ],
+          "callback": "",
+          "callback_parameters": []
         }
       }
     }
