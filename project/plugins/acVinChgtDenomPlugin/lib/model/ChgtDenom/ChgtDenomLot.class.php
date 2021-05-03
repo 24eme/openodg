@@ -47,14 +47,22 @@ class ChgtDenomLot extends BaseChgtDenomLot
             return true;
         }
 
-        if (count($chgt->lots) === 1) {
-            return true;
+        return true;
+    }
+
+    public function isLotOrigine()
+    {
+        $chgt = $this->getDocument();
+
+        if ($chgt->isTotal()) {
+            return false;
         }
 
         if ($this->numero_archive === $chgt->lots->get(1)->numero_archive) {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
+
 }
