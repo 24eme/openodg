@@ -344,7 +344,6 @@
               $(this).parents('.ligne_lot_cepage').find('select.selectCepage').trigger('change');
             }
           });
-          //si !swicth %, on sort
 
           //si pas de hl et pas de %, on set les %
           var nbligneaveccepage = 0;
@@ -366,8 +365,10 @@
               return;
             }
             $(this).val((100 - sumpc).toFixed(2));
-          });
+            $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').prop("checked", true);
+            $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').trigger("change");
 
+          });
 
           //si % sélectionné, on rempli les hl
           var total = $(this).parents('.modal_lot_cepages').find('.input-total').val();
