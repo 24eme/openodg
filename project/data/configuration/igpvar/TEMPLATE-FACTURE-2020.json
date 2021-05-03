@@ -278,6 +278,54 @@
           "callback_parameters": []
         }
       }
+    },
+    "redegustationIgp": {
+      "minimum": 100,
+      "minimum_fallback": "fallbackIGp",
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "2nd dégustation",
+      "code_comptable": "706100",
+      "details": {
+        "degustation": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "libelle": "Contrôle IGP",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationLotRedeguste",
+          "callback_parameters": [
+            "NOT /appellations/MED"
+          ]
+        }
+      }
+    },
+    "redegustationMed": {
+      "minimum": 100,
+      "minimum_fallback": "fallbackMed",
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "2nd dégustation",
+      "code_comptable": "706100",
+      "details": {
+        "degustation": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "libelle": "Contrôle Méditerannée",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationLotRedeguste",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
+        }
+      }
     }
   }
 }
