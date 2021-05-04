@@ -61,8 +61,11 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
                 $csv .= $csv_line;
                 $csv .= $ligne->produit_identifiant_analytique.";";
                 $csv .= $ligne->libelle;
-                if ($detail->libelle) {
-                    $csv .= " - ".$detail->libelle;
+                if ($ligne->libelle && $detail->libelle) {
+                    $csv .= " ";
+                }
+                if($detail->libelle) {
+                    $csv .= $detail->libelle;
                 }
                 $csv .= ";";
                 $csv .= $this->floatHelper->formatFr($detail->prix_unitaire).";";
