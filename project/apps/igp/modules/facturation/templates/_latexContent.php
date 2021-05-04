@@ -40,9 +40,9 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\EMETTEURIBAN{<?php echo FactureConfiguration::getInstance()->getInfo('iban', $facture->region) ?>}
-\def\EMETTEURTVAINTRACOM{<?php echo FactureConfiguration::getInstance()->getInfo('tva_intracom', $facture->region) ?>}
-\def\EMETTEURSIRET{<?php echo FactureConfiguration::getInstance()->getInfo('siret', $facture->region) ?>}
+\def\EMETTEURIBAN{<?php echo Organisme::getInstance($facture->region)->getIban() ?>}
+\def\EMETTEURTVAINTRACOM{<?php echo Organisme::getInstance($facture->region)->getNoTvaIntracommunautaire() ?>}
+\def\EMETTEURSIRET{<?php echo Organisme::getInstance($facture->region)->getSiret() ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
@@ -76,11 +76,11 @@
 	\EMETTEURADRESSE \\
 	\EMETTEURCP~\EMETTEURVILLE \\ \\
     \small{
-    <?php if(FactureConfiguration::getInstance()->getInfo('tva_intracom', $facture->region)): ?>
+    <?php if(Organisme::getInstance($facture->region)->getNoTvaIntracommunautaire()): ?>
 	N°~TVA~:~\EMETTEURTVAINTRACOM \\
     <?php endif; ?>
     SIRET~:~\EMETTEURSIRET \\
-    <?php if(FactureConfiguration::getInstance()->getInfo('iban', $facture->region)): ?>
+    <?php if(Organisme::getInstance($facture->region)->getIban()): ?>
     IBAN~:~\EMETTEURIBAN
     <?php endif; ?>
     }

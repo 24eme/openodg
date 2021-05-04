@@ -18,7 +18,7 @@ class ExportChgtDenomPDF extends ExportDeclarationLotsPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('chgtdenom/PDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'courrierInfos' => $this->courrierInfos, 'changement' => $this->changement, 'total' => (bool) $this->total)));
+        $this->printable_document->addPage($this->getPartial('chgtdenom/PDF', array('chgtdenom' => $this->chgtdenom, 'etablissement' => $this->etablissement, 'changement' => $this->changement, 'total' => (bool) $this->total)));
       }
 
 

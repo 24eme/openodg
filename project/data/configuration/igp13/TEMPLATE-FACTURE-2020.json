@@ -1,5 +1,6 @@
 {
   "_id": "TEMPLATE-FACTURE-2020",
+  "_rev": "16-5f2db5072fcb977f0c4196f7a38ac415",
   "type": "TemplateFacture",
   "campagne": 2020,
   "template": "IGP",
@@ -10,7 +11,27 @@
     "Degustation"
   ],
   "cotisations": {
-    "igp13": {
+    "01_cotisationSyndicale": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.245,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation syndicale - N° %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        }
+      }
+    },
+    "02_igp13": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "IGP13",
@@ -54,27 +75,7 @@
         }
       }
     },
-    "cotisationSyndicale": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "",
-      "code_comptable": "",
-      "details": {
-        "cotisation": {
-          "modele": "CotisationVariable",
-          "prix": 0.245,
-          "tva": 0,
-          "unite": "hl",
-          "libelle": "Cotisation syndicale - N° %detail_identifiant%",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeRevendiqueLots"
-        }
-      }
-    },
-    "conditionnement": {
+    "03_conditionnement": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "IGP13",
@@ -94,7 +95,7 @@
         }
       }
     },
-    "redegustation": {
+    "04_redegustation": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "IGP13",
@@ -115,7 +116,7 @@
         }
       }
     },
-    "alpilles": {
+    "05_alpilles": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation Alpilles - N° %detail_identifiant%",
@@ -138,7 +139,7 @@
         }
       }
     },
-    "terreDeCamargue": {
+    "06_terreDeCamargue": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation Terre de Camargue - N° %detail_identifiant%",
@@ -161,7 +162,7 @@
         }
       }
     },
-    "mediterrannee": {
+    "07_mediterrannee": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation Méditerrannée - N° %detail_identifiant%",
@@ -199,7 +200,7 @@
         }
       }
     },
-    "inao": {
+    "08_inao": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO - N° %detail_identifiant%",
