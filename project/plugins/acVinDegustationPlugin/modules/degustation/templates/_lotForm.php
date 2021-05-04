@@ -112,9 +112,13 @@
             <div class="modal-body">
                       <div class="form-group">
                         <div class="col-sm-2 col-sm-offset-10">
-                          <div class="form-check">
-                            <input class="form-check-input switch_hl_to_pc" type="checkbox" value="">
-                            <label class="form-check-label" for="flexCheckDefault">%</label>
+                          <div class="form-group">
+                              <label class="checkbox-inline checbox-switch">
+                                  hl
+                                  <input class="form-check-input switch_hl_to_pc" type="checkbox" name="" />
+                                  <span></span>
+                                  %
+                              </label>
                           </div>
                         </div>
                       </div>
