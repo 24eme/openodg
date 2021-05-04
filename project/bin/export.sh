@@ -106,6 +106,10 @@ php symfony compte:export-all-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes.csv.
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes.csv
 rm $EXPORTDIR/comptes.csv.part
 
+php symfony export:facture $SYMFONYTASKOPTIONS >  $EXPORTDIR/factures.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/factures.csv.part > $EXPORTDIR/factures.csv
+rm $EXPORTDIR/factures.csv.part
+
 echo "id;identifiant;campagne;statut;region;date;origine_document_id;produit_hash;produit_libelle;produit_couleur;volume;date lot;elevage;millesime;region;numero_dossier;numero_archive;numero_logement_operateur;version;origine_hash;origine_type;origine_document_id lot;origine_mouvement;declarant_identifiant;declarant_nom;destination_type;destination_date;details;campagne lot;id_document;statut lot;specificite;centilisation;conformite;motif" > $EXPORTDIR/lots.csv.part
 curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHBASE/_design/mouvement/_view/lot" | grep id | grep -v '"key":\[null' | sed 's/{"id"://' | sed 's/,"key":\[/,/' | sed 's/null//g' | sed 's/"value":{//' | sed -r 's/,"[a-z_]+":/,/g' | sed 's/}},//' | sed 's/\],/,/' | sed 's/","/";"/g' | sed 's/,,,/;;;/g' | sed 's/,,/;;/g' | sed -r 's/",/";/g'| sed 's/,"/;"/g' | grep --color "," | sed -r 's/(false|true),/\1;/g' | sed -r 's/,(false|true)/;\1/g' >> $EXPORTDIR/lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv

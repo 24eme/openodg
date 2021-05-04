@@ -294,7 +294,7 @@
 
               vol_total.value = total;
 
-              $('#'+modal.id).find('.input-total').val(total);
+              $('#'+modal.id).find('.input-total').val(total.toFixed(2));
 
               $('#'+input_volume_id).blur()
 
@@ -395,7 +395,6 @@
         });
         //Au switch, on remet à Zero les inputs non visibles et on affiche la bonne colonne
         $('.switch_hl_to_pc').on('change',function(){
-          console.log($(this));
           var is_pc = $(this).is(':checked');
 
           if(is_pc){

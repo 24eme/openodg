@@ -1,6 +1,5 @@
 {
   "_id": "TEMPLATE-FACTURE-2020",
-  "_rev": "16-5f2db5072fcb977f0c4196f7a38ac415",
   "type": "TemplateFacture",
   "campagne": 2020,
   "template": "IGP",

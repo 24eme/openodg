@@ -110,7 +110,7 @@
 <script type="text/javascript" src="/js/lib/leaflet/leaflet.js"></script>
 <script type="text/javascript" src="/js/global.js?201802221732"></script>
 <script type="text/javascript" src="/js/compte.js"></script>
-<script type="text/javascript" src="/js/drev.js?201709251013"></script>
+<script type="text/javascript" src="/js/drev.js?202105041230"></script>
 <script type="text/javascript" src="/js/drevmarc.js"></script>
 <script type="text/javascript" src="/js/form.js?201801171851"></script>
 <script type="text/javascript" src="/js/parcellaire.js"></script>
