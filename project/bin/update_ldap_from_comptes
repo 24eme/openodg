@@ -1,7 +1,21 @@
 #!/bin/bash
 
-SEQ_FILE=log/update_compte.seq
-LOCK_FILE=/tmp/update_compte.lock
+# Mode multi app
+if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        bash $(echo $0 | sed 's/[^\/]*$//')update_ldap_from_comptes.sh $app;
+    done
+    exit 0;
+fi
+
+if ! test $1 ; then
+    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+else
+    . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
+fi
+
+SEQ_FILE=log/update_compte.$COUCHBASE.seq
+LOCK_FILE=/tmp/update_compte.$COUCHBASE.lock
 
 cd $(dirname $0)/.. > /dev/null 2>&1
 if test -f $LOCK_FILE; then

@@ -15,14 +15,16 @@ else
     . $(echo $0 | sed 's/[^\/]*$//')../config_"$1".inc
 fi
 
-if test -e /tmp/cron_generation_pdf.$PROJET.pid ; then
+LOCK_FILE=/tmp/cron_generation_pdf.$COUCHBASE.pid
+
+if test -e $LOCK_FILE ; then
 exit 1;
 fi
 
-echo $$ > /tmp/cron_generation_pdf.$PROJET.pid
+echo $$ > $LOCK_FILE
 
 cd $WORKINGDIR
 
 php symfony generation:generate $SYMFONYTASKOPTIONS
 
-rm /tmp/cron_generation_pdf.$PROJET.pid
+rm $LOCK_FILE
