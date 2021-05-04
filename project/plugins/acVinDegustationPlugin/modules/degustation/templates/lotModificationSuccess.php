@@ -8,7 +8,7 @@
 
 <h2><?php echo $etablissement->getNom(); ?> - Modification du lot n° <?php echo $lot->numero_archive; ?></h2>
 
-<form style="margin-top: 20px;" role="form" action="" method="post" id="form_lot_modification" class="form-horizontal">
+<form style="margin-top: 20px;" role="form" action="" method="post" id="form_modification_lots" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <?php include_partial('degustation/lotForm', array('form' => $form, 'lot' => $lot)); ?>
