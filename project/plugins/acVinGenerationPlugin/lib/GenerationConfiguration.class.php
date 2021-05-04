@@ -51,6 +51,11 @@ class GenerationConfiguration
         return true;
     }
 
+    public function getOrdreFacture()
+    {
+        return ($this->configuration['ordre_facture'])? $this->configuration['ordre_facture'] : null;
+    }
+
     public function getSousGeneration($type)
     {
         return $this->hasSousGeneration($type) && ($type) ? $this->configuration['sousgeneration'][$type] : array();

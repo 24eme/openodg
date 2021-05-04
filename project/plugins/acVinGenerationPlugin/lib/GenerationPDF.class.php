@@ -25,8 +25,12 @@ class GenerationPDF extends GenerationAbstract {
     }
 
     uasort($pdffiles, function($a, $b) {
-        $aCompare = preg_replace('/(facture|avoir)_[0-9]+_/', "", $a);
-        $bCompare = preg_replace('/(facture|avoir)_[0-9]+_/', "", $b);
+        $filtreOrdre = '(facture|avoir)_';
+        if(GenerationConfiguration::getInstance()->getOrdreFacture() == "commune"){
+            $filtreOrdre = '(facture|avoir)_[0-9]+_';
+        }
+        $aCompare = preg_replace("/$filtreOrdre/", "", $a);
+        $bCompare = preg_replace("/$filtreOrdre/", "", $b);
 
         return $aCompare > $bCompare;
     });
