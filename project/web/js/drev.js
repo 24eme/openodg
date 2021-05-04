@@ -273,8 +273,9 @@
               while (! modal.classList.contains('modal')) {
                   modal = modal.parentElement
               }
-
               var input_volume_id = modal.dataset.inputvolumeid;
+
+              $('#'+modal.id).find('.input-total').val(document.getElementById(input_volume_id).value);
 
               inputs = modal.querySelectorAll('input.input-hl')
               var nbRempli = 0;
