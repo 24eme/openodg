@@ -105,6 +105,9 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
         if($this->drev->exist('lots') && count($this->drev->lots) && (is_null($this->region) || $this->region == DeclarationClient::REGION_LOT)){
           foreach($this->drev->lots as $lot) {
             $configProduit = $lot->getConfig();
+            if(!$configProduit){
+                continue;
+            }
             $certification = $configProduit->getCertification()->getKey();
             $genre = $configProduit->getGenre()->getKey();
             $appellation = $configProduit->getAppellation()->getKey();
@@ -116,12 +119,12 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
             $libelle_complet = $lot->getProduitLibelle();
 
-            $numLot = $lot->numero_logement_operateur();
+            $numLot = ($lot->exist('numero_logement_operateur'))? $lot->numero_logement_operateur : $lot->numero_cuve;
             $dateRev = $lot->date;
             $destination = $lot->getDestinationType()." ".$lot->getDestinationDate();
 
             $csv .= $ligneBase;
-            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;s\n",
+            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,null,
                 trim($libelle_complet), null, $this->formatFloat($lot->volume), null, null, $this->formatFloat($lot->volume), null,null,null, null, null, null, null,
                 $mode, $date_envoi_oi, $this->protectStr($numLot), $dateRev, $this->protectStr($lot->millesime),$destination, $date_declarant, $date_odg, $this->drev->_id
