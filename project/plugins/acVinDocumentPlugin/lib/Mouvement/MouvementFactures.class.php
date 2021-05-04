@@ -12,7 +12,7 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
         if($doc->exist('version')) {
             $this->version = $doc->version;
         }
-        if($doc->exist('validation')) {
+        if($doc->exist('validation') && $doc->validation) {
             $this->date = $doc->validation;
             $this->date_version = $doc->validation;
         }

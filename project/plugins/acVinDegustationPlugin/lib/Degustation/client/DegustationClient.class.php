@@ -68,8 +68,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
                 $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $nb_passage);
             }
 	    }
-        uasort($lots, array("DegustationClient", "sortLotByDate"));
-
+        ksort($lots);
         return $lots;
 	}
 
@@ -89,6 +88,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
             $item->value->id_document = $item->id;
             $elevages[$item->value->unique_id] = $this->cleanLotForDegustation($item->value);
         }
+        ksort($elevages);
         return $elevages;
     }
 
@@ -97,22 +97,15 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         $manquements = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
             $item->value->id_document = $item->id;
-            $manquements[$item->value->unique_id] = $this->cleanLotForDegustation($item->value);
+            $manquement = $this->cleanLotForDegustation($item->value);
+            if ($campagne && $manquement->campagne != $campagne) {
+                continue;
+            }
+            $manquements[$item->value->unique_id] = $manquement;
         }
 
-        $manquements_tries = $manquements;
-        if ($campagne) {
-            $manquements_tries = array_filter($manquements, function ($manquement) use ($campagne) {
-                return $manquement->campagne === $campagne;
-            });
-        }
-
-        uasort($manquements_tries, function ($manquement1, $manquement2) {
-            $a_millesime = substr($manquement1->destination_date, 0, 4);
-            $b_millesime = substr($manquement2->destination_date, 0, 4);
-            return strcmp($a_millesime, $b_millesime);
-        });
-        return $manquements_tries;
+        ksort($manquements);
+        return $manquements;
     }
 
     public function findFacturable($identifiant, $campagne) {

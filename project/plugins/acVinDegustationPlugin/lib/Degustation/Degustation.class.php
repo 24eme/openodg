@@ -21,7 +21,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if (!$this->date) {
             return date($format);
         }
-        return date ($format, strtotime($this->date));
+        return date($format, strtotime($this->date));
     }
 
 		public function getMaster() {
@@ -372,6 +372,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->affectable = false;
         $lot->numero_anonymat = null;
 		$lot->email_envoye = null;
+        $lot->preleve = null;
+        $lot->motif = null;
+        $lot->conformite = null;
         if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) ||
                 isset($lotOrig->document_ordre)) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
@@ -1361,10 +1364,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
 			$mouvement->detail_identifiant = $lot->numero_dossier;
-            $mouvement->date_version = $this->getDateFormat();
-            $mouvement->date = $this->getDateFormat();
             $mouvement->createFromCotisationAndDoc($cotisation, $this);
-            $mouvement->facture = intval($mouvement->date_version < "2021-04-01");
+            $mouvement->date = $this->getDateFormat();
+            $mouvement->date_version = $this->getDateFormat();
 
             return $mouvement;
         }

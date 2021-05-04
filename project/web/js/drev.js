@@ -229,12 +229,19 @@
                 var volume = 0.0;
                 var total = 0.0;
                 $(this).find('.ligne_lot_cepage').each(function() {
-                    total += ($(this).find('.input-float').val())? parseFloat($(this).find('.input-float').val()) : 0;
+                  if ($(this).find('select.selectCepage').val()) {
+                    total += ($(this).find('.input-hl').val())? parseFloat($(this).find('.input-hl').val()) : 0;
+                  }
                 });
                 $(this).find('.ligne_lot_cepage').each(function() {
                     var ligne = $(this);
                     var cepage = $(this).find('.select2 option:selected').text();
-                    var volume = parseFloat($(this).find('.input-float').val());
+                    var volume = parseFloat($(this).find('.input-hl').val());
+                    if(cepage) {
+                      $(this).removeClass('transparence-sm');
+                  } else {
+                      $(this).addClass('transparence-sm');
+                    }
                     if(cepage && volume > 0) {
                         if(libelle) {
                             libelle = libelle + ", ";
@@ -243,9 +250,6 @@
                         }
                         var p = (total)? Math.round((volume/total) * 100) : 0;
                         libelle = libelle + cepage + "&nbsp;("+p+"%)";
-                        $(this).removeClass('transparence-sm');
-                    } else {
-                        $(this).addClass('transparence-sm');
                     }
 
                     $(this).find('input, select').each(function() {
@@ -269,27 +273,28 @@
               while (! modal.classList.contains('modal')) {
                   modal = modal.parentElement
               }
-
-              var lot = modal.dataset.lot
+              var input_volume_id = modal.dataset.inputvolumeid;
 
               inputs = modal.querySelectorAll('input.input-hl')
               var nbRempli = 0;
               inputs.forEach(function (input) {
-                  if (! isNaN(parseFloat(input.value))) {
+                  if (! isNaN(parseFloat(input.value)) && $('#'+input.id).parents('.ligne_lot_cepage').find('select.selectCepage').val() ) {
                       total += parseFloat(input.value)
                       nbRempli++;
                   }
               })
 
-              var vol_total = document.getElementById(type+'_lots_lots_'+lot+'_volume')
+              var vol_total = document.getElementById(input_volume_id)
               if(!nbRempli) {
                 vol_total.readOnly = false;
                 return;
               }
 
-              vol_total.value = parseFloat(total)
+              vol_total.value = total;
 
-              $('#'+type+'_lots_lots_'+lot+'_volume').blur()
+              $('#'+modal.id).find('.input-total').val(total.toFixed(2));
+
+              $('#'+input_volume_id).blur()
 
               vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
             })
@@ -310,6 +315,114 @@
         $('#form_'+type+'_lots .ligne_lot_cepage select').on('focus', function() { checkBlocsLotCepages(); });
         $('#form_'+type+'_lots .ligne_lot_cepage input').on('blur', function() { checkBlocsLotCepages(); });
         $('#form_'+type+'_lots .ligne_lot_cepage select').on('blur', function() { checkBlocsLotCepages(); });
+
+
+        //Vérification de la cohérence des saisies dans la popup modal_lot_cepages
+        $('.modal_lot_cepages a.btn-success').on('click',function(e){
+          if(!$(this).parents('.modal_lot_cepages').find('.input-total').val()){  //recupere le volume total.
+            $(this).parents('.modal_lot_cepages').find('.input-total').parents('.form-group').addClass('has-error');
+            return false;
+          }
+          $(this).parents('.modal_lot_cepages').find('.input-total').parents('.form-group').removeClass('has-error');
+          //RaZ des lignes sans cepages
+          var nbinputavecvaleurs = 0;
+          $(this).parents('.modal-dialog').find('.input-hl').each(function(){
+            if($(this).val()){
+              nbinputavecvaleurs += 1;
+            }
+          });
+          $(this).parents('.modal-dialog').find('.input-pc').each(function(){
+            if($(this).val()){
+              nbinputavecvaleurs += 1;
+            }
+          });
+
+          $(this).parents('.modal-dialog').find('.input-hl').each(function(){
+            if (!$(this).val() && !$(this).parents('.ligne_lot_cepage').find('.input-pc').val() && nbinputavecvaleurs) {
+              $(this).parents('.ligne_lot_cepage').find('select.selectCepage').val('');
+              $(this).parents('.ligne_lot_cepage').find('select.selectCepage').trigger('change');
+            }
+          });
+
+          //si pas de hl et pas de %, on set les %
+          var nbligneaveccepage = 0;
+          var nbligneaveccepageetpcouhl = 0;
+          $(this).parents('.modal-dialog').find('select.selectCepage').each(function(){
+            if($(this).val()) {
+              nbligneaveccepage ++;
+            }
+            line = $(this).parents('.ligne_lot_cepage')
+            if (line.find('.input-pc').val() || line.find('.input-hl').val()) {
+              nbligneaveccepageetpcouhl ++;
+            }
+          });
+          var i = 0;
+          var sumpc = 0;
+          console.log("nbligneaveccepageetpcouhl "+nbligneaveccepageetpcouhl);
+          if (!nbligneaveccepageetpcouhl) {
+            $(this).parents('.modal-dialog').find('.input-pc').each(function(){
+              if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
+                return ;
+              }
+              i ++;
+              if (i < nbligneaveccepage) {
+                $(this).val((100 / nbligneaveccepage).toFixed(2));
+                sumpc += parseFloat($(this).val());
+                return;
+              }
+              $(this).val((100 - sumpc).toFixed(2));
+              $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').prop("checked", true);
+              $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').trigger("change");
+
+            });
+          }
+
+          //si % sélectionné, on rempli les hl
+          if ($('.switch_hl_to_pc').is(':checked')) {
+            var total = $(this).parents('.modal_lot_cepages').find('.input-total').val();
+            var i = 0;
+            var sumhl = 0;
+            $(this).parents('.modal-dialog').find('.input-hl').each(function(){
+
+              if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
+                return ;
+              }
+              i ++;
+              if (i < nbligneaveccepage) {
+                $(this).val(( $(this).parents('.ligne_lot_cepage').find('.input-pc').val() * total / 100).toFixed(2));
+                sumhl += parseFloat($(this).val());
+                return;
+              }
+              $(this).val((total-sumhl).toFixed(2));
+              $(this).trigger('change')
+            });
+          }
+          checkBlocsLotCepages();
+
+        });
+        //Au switch, on remet à Zero les inputs non visibles et on affiche la bonne colonne
+        var set_switch = function(){
+          var is_pc = $('.switch_hl_to_pc').is(':checked');
+
+          if(is_pc){
+            $(this).parents('.modal_lot_cepages').find('.input-group-pc').show();
+            $(this).parents('.modal_lot_cepages').find('.input-group-hl').hide();
+            $(this).parents('.modal_lot_cepages').find('.input-hl').each(function(){ $(this).val(''); });
+          } else {
+            $(this).parents('.modal_lot_cepages').find('.input-group-hl').show();
+            $(this).parents('.modal_lot_cepages').find('.input-group-pc').hide();
+            $(this).parents('.modal_lot_cepages').find('.input-pc').each(function(){ $(this).val(''); });
+          }
+
+        };
+
+        $('.switch_hl_to_pc').on('change', set_switch);
+        $('.input-total').on('change', set_switch);
+
+        //on recupere le vol-total dans la popup
+        $('input.input-float').on('change',function(){
+          $('.input-total').val($(this).val());
+        });
 
         $('#form_'+type+'_lots input.input-float').on('click', function(e) {
             if (! e.target.readOnly) {

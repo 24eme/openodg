@@ -59,7 +59,7 @@ th {
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale; ?></small></strong></td>
            <td>
              <small><?php
-                if($adresseLogement):
+              if($adresseLogement):
                 if ($adresseLogement['nom'] != $etablissement->raison_sociale) {
                     echo substr($adresseLogement['nom'], 0, 32).'<br/>';
                 }?>

@@ -160,39 +160,42 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $couleurs[$couleur]['nb_lots_degustables']++;
             }
         }
-        if ($with_total) {
-            $total_appellations = array();
-            foreach($couleurs as $k => $couleur) {
-                if (!isset($couleur['volume_sur_place'])) {
-                    $couleur['volume_sur_place'] = 0;
-                    $couleur['volume_total'] = 0;
-                }
-                if (isset($couleur['volume_lots'])) {
-                    $couleur['volume_restant'] = $couleur['volume_sur_place'] - $couleur['volume_lots'];
-                    $couleur['volume_restant_max'] = $couleur['volume_max'] - $couleur['volume_lots'];
-                    $couleurs[$k]['volume_restant'] = $couleur['volume_restant'];
-                    $couleurs[$k]['volume_restant_max'] = $couleur['volume_restant_max'];
-                }
-                if (!isset($total_appellations[$couleur['appellation']])) {
-                    $total_appellations[$couleur['appellation']] = array(
-                        'superficie_totale' => 0, 'superficie_revendiquee' => 0,
-                        'volume_sur_place' => 0, 'volume_total' => 0,
-                        'volume_max' => 0, 'volume_lots' => 0,
-                        'volume_restant' => 0, 'volume_restant_max' => 0,
-                        'nb_lots' => 0, 'nb_lots_degustables' => 0
-                    );
-                }
-                $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
-                $total_appellations[$couleur['appellation']]['volume_sur_place'] += $couleur['volume_sur_place'];
-                $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
-                $total_appellations[$couleur['appellation']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
-                $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
-                $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
-                $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
-                $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
-                $total_appellations[$couleur['appellation']]['nb_lots'] += $couleur['nb_lots'];
-                $total_appellations[$couleur['appellation']]['nb_lots_degustables'] += $couleur['nb_lots_degustables'];
+        $total_appellations = array();
+        foreach($couleurs as $k => $couleur) {
+            if (!isset($couleur['volume_sur_place'])) {
+                $couleur['volume_sur_place'] = 0;
+                $couleur['volume_total'] = 0;
             }
+            if (isset($couleur['volume_lots'])) {
+                $couleur['volume_restant'] = $couleur['volume_sur_place'] - $couleur['volume_lots'];
+                $couleur['volume_restant_max'] = $couleur['volume_max'] - $couleur['volume_lots'];
+                $couleurs[$k]['volume_restant'] = $couleur['volume_restant'];
+                $couleurs[$k]['volume_restant_max'] = $couleur['volume_restant_max'];
+            }
+            if (!$with_total) {
+                continue;
+            }
+            if (!isset($total_appellations[$couleur['appellation']])) {
+                $total_appellations[$couleur['appellation']] = array(
+                    'superficie_totale' => 0, 'superficie_revendiquee' => 0,
+                    'volume_sur_place' => 0, 'volume_total' => 0,
+                    'volume_max' => 0, 'volume_lots' => 0,
+                    'volume_restant' => 0, 'volume_restant_max' => 0,
+                    'nb_lots' => 0, 'nb_lots_degustables' => 0
+                );
+            }
+            $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
+            $total_appellations[$couleur['appellation']]['volume_sur_place'] += $couleur['volume_sur_place'];
+            $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
+            $total_appellations[$couleur['appellation']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
+            $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
+            $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
+            $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
+            $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
+            $total_appellations[$couleur['appellation']]['nb_lots'] += $couleur['nb_lots'];
+            $total_appellations[$couleur['appellation']]['nb_lots_degustables'] += $couleur['nb_lots_degustables'];
+        }
+        if ($with_total) {
             $couleurs = array_merge($couleurs, $total_appellations);
         }
         ksort($couleurs);
@@ -991,7 +994,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->specificite == Lot::SPECIFICITE_UNDEFINED) {
                 $lot->specificite = null;
             }
+            if(!$lot->date) {
             $lot->date = $date;
+            }
         }
 
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
@@ -1030,6 +1035,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+
+        if(!$this->numero_archive) {
+            $this->save();
+        }
 
         if(!$this->isFactures()){
             $this->clearMouvementsFactures();
@@ -1710,7 +1719,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
             }
 
-            if (!$lot->isChange()) {
+            if (! $lot->isChange() && ! $lot->isAffecte()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
             }else{
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));

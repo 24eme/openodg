@@ -1,13 +1,18 @@
 #!/bin/bash
 
-. bin/config.inc
-
-ODG=$1
-
-if test "$1"; then
-    . bin/config_$ODG.inc
+# Mode multi app
+if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
+    done
+    exit 0;
 fi
 
+if ! test $1 ; then
+    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+else
+    . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
+fi
 
 mkdir $EXPORTDIR 2> /dev/null
 
@@ -39,11 +44,11 @@ mv -f $EXPORTDIR/societe.iso.csv $EXPORTDIR/societe.csv
 
 sleep 60
 
-bash bin/export_docs.sh DRev 30 > $EXPORTDIR/drev.csv.part
+bash bin/export_docs.sh DRev 30 $1 > $EXPORTDIR/drev.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev.csv.part > $EXPORTDIR/drev.csv
 rm $EXPORTDIR/drev.csv.part
 
-bash bin/export_docs.sh Habilitation 30 > $EXPORTDIR/habilitation.csv.part
+bash bin/export_docs.sh Habilitation 30 $1 > $EXPORTDIR/habilitation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
 rm $EXPORTDIR/habilitation.csv.part
 
@@ -55,31 +60,31 @@ rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_in
 
 sleep 60
 
-bash bin/export_docs.sh DR 30 > $EXPORTDIR/dr.csv.part
+bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
 rm $EXPORTDIR/dr.csv.part
 
-bash bin/export_docs.sh SV12 30 > $EXPORTDIR/sv12.csv.part
+bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
 rm $EXPORTDIR/sv12.csv.part
 
-bash bin/export_docs.sh SV11 30 > $EXPORTDIR/sv11.csv.part
+bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
 rm $EXPORTDIR/sv11.csv.part
 
-bash bin/export_docs.sh ParcellaireIrrigable > $EXPORTDIR/parcellaireirrigable.csv.part
+bash bin/export_docs.sh ParcellaireIrrigable 30 $1 > $EXPORTDIR/parcellaireirrigable.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigable.csv.part > $EXPORTDIR/parcellaireirrigable.csv
 rm $EXPORTDIR/parcellaireirrigable.csv.part
 
-bash bin/export_docs.sh ParcellaireIrrigue > $EXPORTDIR/parcellaireirrigue.csv.part
+bash bin/export_docs.sh ParcellaireIrrigue 30 $1 > $EXPORTDIR/parcellaireirrigue.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigue.csv.part > $EXPORTDIR/parcellaireirrigue.csv
 rm $EXPORTDIR/parcellaireirrigue.csv.part
 
-bash bin/export_docs.sh ParcellaireIntentionAffectation > $EXPORTDIR/parcellaireintentionaffectation.csv.part
+bash bin/export_docs.sh ParcellaireIntentionAffectation 30 $1 > $EXPORTDIR/parcellaireintentionaffectation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireintentionaffectation.csv.part > $EXPORTDIR/parcellaireintentionaffectation.csv
 rm $EXPORTDIR/parcellaireintentionaffectation.csv.part
 
-bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaireaffectation.csv.part
+bash bin/export_docs.sh ParcellaireAffectation 30 $1 > $EXPORTDIR/parcellaireaffectation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireaffectation.csv.part > $EXPORTDIR/parcellaireaffectation.csv
 rm $EXPORTDIR/parcellaireaffectation.csv.part
 
@@ -100,6 +105,11 @@ rm $EXPORTDIR/liaisons.csv.part
 php symfony compte:export-all-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes.csv
 rm $EXPORTDIR/comptes.csv.part
+
+
+php symfony export:facture $SYMFONYTASKOPTIONS >  $EXPORTDIR/factures.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/factures.csv.part > $EXPORTDIR/factures.csv
+rm $EXPORTDIR/factures.csv.part
 
 php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv

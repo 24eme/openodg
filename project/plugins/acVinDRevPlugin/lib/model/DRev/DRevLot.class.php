@@ -136,4 +136,9 @@ class DRevLot extends BaseDRevLot
         return DRevMouvementLots::freeInstance($this->getDocument());
     }
 
+    public function getLotInDrevOrigine(){
+        $drevSource = DRevClient::getInstance()->find($this->id_document);
+        return $drevSource->getLotByNumArchive($this->numero_archive);
+    }
+
 }

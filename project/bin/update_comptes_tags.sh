@@ -1,13 +1,11 @@
 #!/bin/bash
 
-cd $(dirname $0)/.. > /dev/null 2>&1
-
 # Mode multi app
 if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
-        bash $(echo $0 | sed 's/[^\/]*$//')is_master $app || exit 1;
-    done || exit 1
-    exit 0
+        bash $(echo $0 | sed 's/[^\/]*$//')update_comptes_tags.sh $app;
+    done
+    exit 0;
 fi
 
 if ! test $1 ; then
@@ -16,10 +14,4 @@ else
     . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
 fi
 
-echo $PROJETURL"/master.php"
-
-if test $(hostname) = "$(torsocks curl -s $PROJETURL"/master.php")" ; then
-	exit 0;
-else
-	exit 1;
-fi
+php symfony compte:updateTagsFromHabilitations $SYMFONYTASKOPTIONS
