@@ -125,7 +125,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="input-group input-group-pc" style='display:none;'>
-                                        <input class='form-control text-right input-pc'id='<?php echo $form->renderId() ?>_repartition_pc_<?php echo($i) ?>'></input>
+                                        <input class='form-control text-right input-pc'></input>
                                         <div class="input-group-addon">%</div>
                                     </div>
                                     <div class="input-group input-group-hl" >
@@ -142,7 +142,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="input-group volume-total">
-                                  <input class='form-control text-right input-total' id='<?php echo $form->renderId() ?>_volume_total'></input>
+                                  <input class='form-control text-right input-total'></input>
                                   <div class="input-group-addon">hl</div>
                                 </div>
                             </div>

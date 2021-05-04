@@ -394,7 +394,6 @@
         });
         //Au switch, on remet à Zero les inputs non visibles et on affiche la bonne colonne
         $('.switch_hl_to_pc').on('change',function(){
-          console.log($(this));
           var is_pc = $(this).is(':checked');
 
           if(is_pc){
