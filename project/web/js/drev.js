@@ -275,8 +275,6 @@
               }
               var input_volume_id = modal.dataset.inputvolumeid;
 
-              $('#'+modal.id).find('.input-total').val(document.getElementById(input_volume_id).value);
-
               inputs = modal.querySelectorAll('input.input-hl')
               var nbRempli = 0;
               inputs.forEach(function (input) {
@@ -348,54 +346,63 @@
 
           //si pas de hl et pas de %, on set les %
           var nbligneaveccepage = 0;
+          var nbligneaveccepageetpcouhl = 0;
           $(this).parents('.modal-dialog').find('select.selectCepage').each(function(){
             if($(this).val()) {
               nbligneaveccepage ++;
             }
+            line = $(this).parents('.ligne_lot_cepage')
+            if (line.find('.input-pc').val() || line.find('.input-hl').val()) {
+              nbligneaveccepageetpcouhl ++;
+            }
           });
           var i = 0;
           var sumpc = 0;
-          $(this).parents('.modal-dialog').find('.input-pc').each(function(){
-            if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
-              return ;
-            }
-            i ++;
-            if (i < nbligneaveccepage) {
-              $(this).val((100 / nbligneaveccepage).toFixed(2));
-              sumpc += parseFloat($(this).val());
-              return;
-            }
-            $(this).val((100 - sumpc).toFixed(2));
-            $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').prop("checked", true);
-            $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').trigger("change");
+          console.log("nbligneaveccepageetpcouhl "+nbligneaveccepageetpcouhl);
+          if (!nbligneaveccepageetpcouhl) {
+            $(this).parents('.modal-dialog').find('.input-pc').each(function(){
+              if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
+                return ;
+              }
+              i ++;
+              if (i < nbligneaveccepage) {
+                $(this).val((100 / nbligneaveccepage).toFixed(2));
+                sumpc += parseFloat($(this).val());
+                return;
+              }
+              $(this).val((100 - sumpc).toFixed(2));
+              $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').prop("checked", true);
+              $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').trigger("change");
 
-          });
+            });
+          }
 
           //si % sélectionné, on rempli les hl
-          var total = $(this).parents('.modal_lot_cepages').find('.input-total').val();
-          var i = 0;
-          var sumhl = 0;
-          $(this).parents('.modal-dialog').find('.input-hl').each(function(){
+          if ($('.switch_hl_to_pc').is(':checked')) {
+            var total = $(this).parents('.modal_lot_cepages').find('.input-total').val();
+            var i = 0;
+            var sumhl = 0;
+            $(this).parents('.modal-dialog').find('.input-hl').each(function(){
 
-            if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
-              return ;
-            }
-            i ++;
-            if (i < nbligneaveccepage) {
-              $(this).val(( $(this).parents('.ligne_lot_cepage').find('.input-pc').val() * total / 100).toFixed(2));
-              sumhl += parseFloat($(this).val());
-              return;
-            }
-            $(this).val((total-sumhl).toFixed(2));
-          });
-
-
+              if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
+                return ;
+              }
+              i ++;
+              if (i < nbligneaveccepage) {
+                $(this).val(( $(this).parents('.ligne_lot_cepage').find('.input-pc').val() * total / 100).toFixed(2));
+                sumhl += parseFloat($(this).val());
+                return;
+              }
+              $(this).val((total-sumhl).toFixed(2));
+              $(this).trigger('change')
+            });
+          }
           checkBlocsLotCepages();
 
         });
         //Au switch, on remet à Zero les inputs non visibles et on affiche la bonne colonne
-        $('.switch_hl_to_pc').on('change',function(){
-          var is_pc = $(this).is(':checked');
+        var set_switch = function(){
+          var is_pc = $('.switch_hl_to_pc').is(':checked');
 
           if(is_pc){
             $(this).parents('.modal_lot_cepages').find('.input-group-pc').show();
@@ -407,6 +414,14 @@
             $(this).parents('.modal_lot_cepages').find('.input-pc').each(function(){ $(this).val(''); });
           }
 
+        };
+
+        $('.switch_hl_to_pc').on('change', set_switch);
+        $('.input-total').on('change', set_switch);
+
+        //on recupere le vol-total dans la popup
+        $('input.input-float').on('change',function(){
+          $('.input-total').val($(this).val());
         });
 
         $('#form_'+type+'_lots input.input-float').on('click', function(e) {
