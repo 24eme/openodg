@@ -91,11 +91,6 @@ class ParcellaireClient extends acCouchdbClient {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique : $status");
         }
 
-        if (empty($file) || $status != 0) {
-            $contextInstance->getLogger()->info("scrapeParcellaireCSV() ".implode(' - ', $output));
-            throw new Exception("Le scraping n'a retourné aucun résultat.");
-        }
-
         return $file;
     }
     /**
