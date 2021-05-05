@@ -68,7 +68,7 @@ $list_idu = [];
     <?php if(!empty($import)): ?>
      <div class="row" id="jump">
             <div class="col-xs-12">
-                <a name="carte"/><h3>Filtrer</h3>
+                <a name="carte"></a><h3>Filtrer</h3>
                 <div class="form-group">
                     <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
                 </div>
