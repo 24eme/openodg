@@ -137,14 +137,8 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
-        
-        if($scrapping) {
-            $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
-        }
+        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
         $filePdf = str_replace('.csv', '.pdf', $fileCsv);
-
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
         
@@ -219,9 +213,10 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function saveParcellairePDF(Etablissement $etablissement, $file, &$error, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
+        $message = "";
 
-        if (!is_file($file) || empty($file)) {
-            $message = "Le fichier PDF des parcelles ($file) n'existe pas ou est vide.";
+        if (empty($path)) {
+            $message = "Le PDF des parcelles n'existe pas.";
             $contextInstance->getLogger()->info("saveParcellairePDF: error: ".$message);
             throw new Exception($message);
         }
