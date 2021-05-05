@@ -18,7 +18,7 @@ class ProdouaneScrappyClient {
 
         $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments RUNNING");
         exec($scrapybin."/$scriptname $arguments", $output, $status);
-        $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments".implode(' - ', $output));
+        $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments FIN ($status) ".implode(' - ', $output));
         return $status;
     }
 
