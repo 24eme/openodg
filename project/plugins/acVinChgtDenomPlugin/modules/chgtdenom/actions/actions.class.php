@@ -2,7 +2,7 @@
 
 class chgtdenomActions extends sfActions
 {
-    public function executeCreateLot(sfWebRequest $request) {
+    public function executeCreateFromLot(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $lot = $request->getParameter('lot');
         $this->secureEtablissement(null, $etablissement);
