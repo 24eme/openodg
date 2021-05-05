@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(48);
+$t = new lime_test(51);
 
 $campagne = (date('Y')-1)."";
 $degust1_date_fr = '09/09/'.$campagne;
@@ -122,8 +122,15 @@ $form->save();
 $t->comment("Conformité des lots");
 $degustation1->lots[0]->statut = Lot::STATUT_CONFORME;
 $degustation1->lots[0]->email_envoye = date('Y-m-d');
+$degustation1->lots[0]->preleve = date('Y-m-d');
+$degustation1->lots[0]->motif = "très bon";
+
 $degustation1->lots[1]->statut = Lot::STATUT_NONCONFORME;
 $degustation1->lots[1]->email_envoye = date('Y-m-d');
+$degustation1->lots[1]->preleve = date('Y-m-d');
+$degustation1->lots[1]->conformite = Lot::CONFORMITE_NONCONFORME_MAJEUR;
+$degustation1->lots[1]->motif = "oeuf pourri";
+
 $degustation1->save();
 
 $degustation1 = DegustationClient::getInstance()->find($iddegust1);
@@ -186,10 +193,14 @@ $lot_degust1 = $degustation1->lots[1];
 $lot_degust2 = $degustation2->lots[0];
 $drev = DRevClient::getInstance()->find($drev->_id);
 
-$t->is(count($lot_degust2->getMouvements()), 2, "Le lot a deux mouvements");
+$t->is(array_keys($lot_degust2->getMouvements()), array('2020-2021-00001-00002-02-ATTENTE-PRELEVEMENT', '2020-2021-00001-00002-01-AFFECTE-DEST'), "Le lot a deux mouvements (effecté et attente de prlvmt) vu qu'il n'a pas été encore prélevé");
 $t->is($lot_degust2->numero_archive, $lot_degust1->numero_archive, "Le numero archive de la dégustation 2 n'a pas changé par rapport à la dégustation 1");
 $t->is($lot_degust2->numero_dossier, $lot_degust1->numero_dossier, "Le numero dossier de la dégustation 2 n'a pas changé à la dégustation 1");
 $t->is($lot_degust2->email_envoye, null, "La date d'envoi de mail a été réinitialisée");
+$t->is($lot_degust2->preleve, null, "La date de prélèvement a été réinitialisée");
+$t->is($lot_degust2->conformite, null, "La Conformité a été réinitialisée");
+$t->is($lot_degust2->motif, null, "Le motif a été réinitialisé");
+
 
 $t->is($lot_degust2->id_document, $degustation2->_id, "L'id du doc du mouvement est la même degustation");
 $t->ok($lot_degust2->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Le lot a le mouvement ".Lot::STATUT_ATTENTE_PRELEVEMENT);
