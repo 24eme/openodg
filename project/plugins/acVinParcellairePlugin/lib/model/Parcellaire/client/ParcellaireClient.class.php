@@ -257,18 +257,16 @@ class ParcellaireClient extends acCouchdbClient {
             $date = date('Ymd');
         }
         $parcellaire = $this->getLast($identifiant);
-        $declaration = $parcellaire->getDeclaration();
 
-        if ($parcellaire && $parcellaire->date == $date) {
-            if($path){
-                $parcellaire->storeAttachment($path, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
-                $parcellaire->setDeclaration($declaration);
-
-                $parcellaire->save();
-            }
-
-            return $parcellaire;
+        if (!$parcellaire || $parcellaire->date != $date) {
+            $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
+        
+        if($path){
+            $parcellaire->storeAttachment($path, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
+            $parcellaire->save();
+        }
+        return $parcellaire;
 
     }
 
@@ -277,19 +275,16 @@ class ParcellaireClient extends acCouchdbClient {
             $date = date('Ymd');
         }
         $parcellaire = $this->getLast($identifiant);
-        $declaration = $parcellaire->getDeclaration();
 
-        if ($parcellaire && $parcellaire->date == $date) {
-            if($path){
-                $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
-                $parcellaire->setDeclaration($declaration);
-                
-                $parcellaire->save();
-            }
-            
-            return $parcellaire;
+        if (!$parcellaire || $parcellaire->date != $date) {
+            $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
-    
+        
+        if($path){
+            $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
+            $parcellaire->save();
+        }
+        return $parcellaire;    
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
