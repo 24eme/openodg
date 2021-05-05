@@ -5,8 +5,8 @@
 mkdir $EXPORTDIR 2> /dev/null
 
 php symfony export:etablissements-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/etablissements.csv.part
-cat $EXPORTDIR/etablissements.csv.part | sort | grep -E "^Identifiant" > $EXPORTDIR/etablissements.csv.sorted.part
-cat $EXPORTDIR/etablissements.csv.part | sort | grep -Ev "^Identifiant" >> $EXPORTDIR/etablissements.csv.sorted.part
+cat $EXPORTDIR/etablissements.csv.part | sort | grep -E "^Login" > $EXPORTDIR/etablissements.csv.sorted.part
+cat $EXPORTDIR/etablissements.csv.part | sort | grep -Ev "^Login" >> $EXPORTDIR/etablissements.csv.sorted.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/etablissements.csv.sorted.part > $EXPORTDIR/etablissements.en.csv
 cat $EXPORTDIR/etablissements.en.csv | sed 's/;/ø/g' | awk -F ',' 'BEGIN { OFS=";" }{ $1=$1; print $0 }' | sed 's/ø/,/g' > $EXPORTDIR/etablissements.csv
 rm $EXPORTDIR/etablissements.csv.part $EXPORTDIR/etablissements.csv.sorted.part
