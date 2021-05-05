@@ -143,8 +143,7 @@ class ParcellaireClient extends acCouchdbClient {
         if($scrapping) {
             $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
         }
-        $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv)
-        
+        $filePdf = str_replace('.csv', '.pdf', $fileCsv);
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
         
