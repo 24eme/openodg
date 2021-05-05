@@ -219,17 +219,16 @@ class ParcellaireClient extends acCouchdbClient {
         return true;
     }
 
-    public function saveParcellairePDF(Etablissement $etablissement, $path, &$error, $contextInstance = null) {
+    public function saveParcellairePDF(Etablissement $etablissement, $file, &$error, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $message = "";
 
-        if (empty($path)) {
-            $message = "Le PDF des parcelles n'existe pas.";
+        if (empty($file)) {
+            $message = "Le fichier PDF des parcelles ($file) n'existe pas ou est vide.";
             $contextInstance->getLogger()->info("saveParcellairePDF: error: ".$message);
             throw new Exception($message);
         }
 
-        $this->findOrCreateDocPDF($etablissement->identifiant, date('Y-m-d'), 'PRODOUANE', $file, $cvi);
+        $this->findOrCreateDocPDF($etablissement->identifiant, date('Y-m-d'), 'PRODOUANE', $file, $etablissement->cvi);
 
         return $file;
 
