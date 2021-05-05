@@ -143,7 +143,8 @@ class ParcellaireClient extends acCouchdbClient {
     public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null)
     {
         $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
-        $return = $this->saveParcellairePDF($etablissement, $fileJson, $errors['pdf']);
+        $filePdf = str_replace('.csv', '.pdf', $fileCsv);
+        $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
         $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
         return $return && $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
@@ -212,12 +213,9 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function saveParcellairePDF(Etablissement $etablissement, $path, &$error, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
-        $cvi = $etablissement->getCvi();
-        $file = $scrapydocs.'/parcellaire-'.$cvi.'-parcellaire.pdf';
         $message = "";
 
-        if (empty($file)) {
+        if (empty($path)) {
             $message = "Le PDF des parcelles n'existe pas.";
             $contextInstance->getLogger()->info("saveParcellairePDF: error: ".$message);
             throw new Exception($message);
