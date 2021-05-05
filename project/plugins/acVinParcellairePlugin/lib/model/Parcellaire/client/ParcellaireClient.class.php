@@ -155,21 +155,22 @@ class ParcellaireClient extends acCouchdbClient {
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
         $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
-        return $return && $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
+        $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
+        return $return;
     }
 
     public function getParcellaireGeoJson($identifiant, $cvi){
         $file_name = "import-cadastre-".$cvi."-parcelles.json";
 
         $parcellaire = $this->getLast($identifiant);
-        
+
         $uri = $parcellaire->getAttachmentUri($file_name);
-        
+
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $uri);
 
-    
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $import = curl_exec($ch);
