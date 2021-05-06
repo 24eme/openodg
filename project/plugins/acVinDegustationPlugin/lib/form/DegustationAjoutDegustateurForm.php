@@ -44,7 +44,6 @@ class DegustationAjoutDegustateurForm extends acCouchdbForm {
           if (count($comptes) > 0) {
               $result = array();
               foreach ($comptes as $compte) {
-                  $degustateur = CompteClient::getInstance()->find($compte->id);
                   $libelle = (isset($compte->key[CompteTagsView::KEY_LIBELLEWITHADRESSE_COMPTE]))? $compte->key[CompteTagsView::KEY_LIBELLEWITHADRESSE_COMPTE] : null;
                   if (!$libelle) {
                     $degustateur = CompteClient::getInstance()->find($compte->id);
