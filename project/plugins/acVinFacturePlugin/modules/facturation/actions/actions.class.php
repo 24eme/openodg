@@ -415,4 +415,12 @@ class facturationActions extends sfActions
           return $this->forwardSecure();
       }
     }
+
+    public function executeXml(sfWebRequest $request){
+      $facture = FactureClient::getInstance()->find($request->getParameter('id'));
+      // $f = FactureClient::getInstance()->regenerate($facture);
+      var_dump($facture->getXml());
+      // return;
+      exit;
+    }
 }

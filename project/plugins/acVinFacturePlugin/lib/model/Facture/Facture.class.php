@@ -680,4 +680,44 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->_set('date_telechargement', $date);
     }
 
+    public function getXml(){
+      // ! mettre la condition que le execute vaut 0 sinon ils sont deja passe par le xml
+      $xml = new SimpleXMLElement('<xml/>');
+
+      $pmtInf = $xml->addChild('PmtInf');
+      $pmtInf->addChild('PmtInfId', $this->_id);
+      $pmtInf->addChild('PmtMtd', "DD");
+      $pmtInf->addChild('NbOfTxs', "1");
+      $pmtInf->addChild('CtrlSum', "DD");
+
+      $pmtTpInf = $pmtInf->addChild('PmtTpInf');
+      $svcLvl = $pmtTpInf->addChild('SvcLvl');
+      $svcLvl->addChild('Cd','SEPA');
+      $lclInstrm = $pmtTpInf->addChild('LclInstrum');
+      $lclInstrm->addChild('Cd','CORE');
+      $pmtTpInf->addChild('SeqTp','RCUR');
+
+      $pmtInf->addChild('ReqdColltnDt',"2021-04-20");
+
+      $cdtr = $pmtInf->addChild('Cdtr');
+      $cdtr->addChild('Nm','ETABLISSEMENTS JULIEN AUROUZE');
+
+      $cdtrAcct = $pmtInf->addChild('CdtrAcct');
+      $id = $cdtrAcct->addChild('Id');
+      $id->addChild('IBAN','FR7630066107710001055950153');
+
+      $cdtrAgt = $pmtinf->addChild('CdtrAgt');
+      $finInstnID = $cdtrAgt->addChild('FinInstnId');
+      $finInstnID->addChild('BIC','CMCIFRPP');
+
+      $pmtInf->addChild('ChrgBr','SLEV');
+
+      $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
+      $idcdtrschemeid = $cdtrschemeid->addChild('id');
+
+      Header('Content-type: text/xml');
+      print($xml->asXML());
+      exit;
+    }
+
 }
