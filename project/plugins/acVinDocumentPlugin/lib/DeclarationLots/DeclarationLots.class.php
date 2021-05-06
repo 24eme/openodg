@@ -515,14 +515,27 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                   continue;
               }
 
-              if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && !$this->getMaster()->getLot($lot->unique_id)) {
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE));
+              if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && (!$this->getMaster()->getLot($lot->unique_id) || $this->getMaster()->getLot($lot->unique_id)->id_document != $lot->id_document)) {
                   continue;
               }
 
               $lot->updateDocumentDependances();
 
-              $this->addMouvementLot($lot->buildMouvement($this->getStatutRevendique()));
+              $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+
+              if ($lot->elevage === true) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
+                  continue;
+              }
+              if ($lot->eleve) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
+              }
+
+              if (! $lot->isChange() && ! $lot->isAffecte()) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+              }else{
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+              }
 
               if($lot->isAffecte()) {
                   $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
@@ -535,15 +548,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               }else{
                   $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
               }
-              if (!$lot->isChange()) {
-                  if (!$lot->isAffectable()) {
-                      $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
-                  }
-              }else{
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
-              }
           }
-      }
-
-      /**** FIN DES MOUVEMENTS LOTS ****/
+      }      /**** FIN DES MOUVEMENTS LOTS ****/
 }
