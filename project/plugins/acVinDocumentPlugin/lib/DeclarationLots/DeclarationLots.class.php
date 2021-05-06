@@ -527,7 +527,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                   $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
                   continue;
               }
-              if ($lot->eleve) {
+              if ($lot->exist('eleve') && $lot->eleve) {
                   $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
               }
 
