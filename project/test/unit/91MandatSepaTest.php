@@ -59,6 +59,41 @@ $t->is($mandatSepa->debiteur->adresse, $societe->siege->adresse, 'adresse confor
 $t->is($mandatSepa->debiteur->code_postal, $societe->siege->code_postal, 'cp conforme à la societe');
 $t->is($mandatSepa->debiteur->commune, $societe->siege->commune, 'commune conforme à la societe');
 
-$mandatSepa->constructId();
 $id = 'MANDATSEPA-'.$societe->getIdentifiant().'-'.date('Ymd');
 $t->is($mandatSepa->_id, $id, 'identifiant de mandat SEPA conforme');
+
+//Switch des prélèvement actif et mandat signé voir si ils sont cochés.
+
+$t->is($mandatSepa->is_signe,0,'le mandat n\'est pas signé');
+$mandatSepa->switchIsSigne();
+$t->is($mandatSepa->is_signe,1,'le mandat est signé');
+$t->is($mandatSepa->is_actif,1,'le prélevement est actif');
+
+$mandatSepa->switchIsActif();
+$t->is($mandatSepa->is_actif,0,'le prélevement n\'est plus actif');
+$mandatSepa->switchIsActif();
+
+$mandatSepa->save();
+
+//Création de la facture
+$societe->add('region',"IGP13");
+$societe->save();
+$facture = FactureClient::getInstance()->createEmptyDoc($societe->getMasterCompte());
+$line = $facture->add('lignes')->add('ligne_import_'.count($facture->lignes));
+$line->libelle = 'Ligne de test';
+$detail = $line->add('details')->add();
+$detail->quantite = 2;
+$detail->montant_ht = 100;
+$detail->taux_tva = 0.2;
+$detail->montant_tva = 120;
+$detail->prix_unitaire = 50;
+$detail->libelle = 'produit fictif';
+$facture->updateTotaux();
+$facture->save();
+
+$t->is(count($facture->paiements), 1, "La facture générée a bien un paiement");
+
+$t->is($facture->paiements[0]->type_reglement, FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO, "Le paiement est bien un prélèvement automatique");
+$t->is($facture->paiements[0]->montant, 120, "La montant du prélèvement automatique est bien de 120 TTC");
+$t->is($facture->paiements[0]->execute, false, "Le prélèvement n'est pas encore executé");
+$t->is($facture->paiements[0]->date, date('Y-m-d', strtotime('+15 days')), "Le prélèvement est bien inscrit pour dans 15 jours");

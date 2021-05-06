@@ -349,6 +349,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->updateTotalHT();
         $this->updateTotalTaxe();
         $this->updateTotalTTC();
+        $this->updatePrelevement();
     }
 
     public function updateTotalHT()
@@ -372,6 +373,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         	$this->total_taxe += $ligne->montant_tva;
         }
         $this->total_taxe = round($this->total_taxe, 2);
+    }
+
+    public function updatePrelevement()
+    {
+      $paiement = $this->add('paiements')->add();
+      $paiement->montant =  $this->total_ttc;
+      $paiement->type_reglement = FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO;
+      $paiement->add('execute',false);
+      $paiement->date = date('Y-m-d',strtotime($this->date_facturation.'+15 days'));
     }
 
     public function getNbLignesMouvements() {
