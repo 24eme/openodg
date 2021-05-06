@@ -407,19 +407,16 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_organisation_table_recap', array('id' => $this->degustation->_id, 'tri' => $this->tri));
     }
 
-    public function executeUpPositionLot(sfWebRequest $request) {
+    public function executeChangePositionLot(sfWebRequest $request) {
         $degustation = $this->getRoute()->getDegustation();
         $index = $request->getParameter('index');
-        $tri = $request->getParameter('tri');
+        $tri = $degustation->tri;
+        $sens = $request->getParameter('sens');
         $numero_table = $request->getParameter('numero_table');
 
         $this->forward404Unless($degustation->lots->exist($index));
         $lot = $degustation->lots->get($index);
-        $lot->upPosition();
-
-        $tri = array_merge(['Manuel'], explode('|', $tri));
-        $tri = array_unique($tri);
-        $tri = implode('|', $tri);
+        $lot->changePosition($sens);
 
         $degustation->save(false);
         return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
