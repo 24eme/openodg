@@ -786,6 +786,22 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
+		public function setTri($t) {
+			$this->_set('tri', $t);
+			$this->updatePositionLots();
+		}
+
+		public function updatePositionLots() {
+            $t = 0; $i = 0;
+            foreach($this->getTablesWithFreeLots() as $table) {
+                $t++;
+                foreach($this->getLotsTableOrFreeLotsCustomSort($t) as $lot) {
+                    $i++;
+                    $lot->position = sprintf("%d0%02d0", $t, $i);
+                }
+            }
+		}
+
 		public function hasFreeLots(){
 			foreach ($this->getLotsPreleves() as $lot) {
 				if(!$lot->exist("numero_table") || is_null($lot->numero_table)){
