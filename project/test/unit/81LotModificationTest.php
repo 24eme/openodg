@@ -116,7 +116,7 @@ $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
 $values['specificite'] = 'bio';
 $values['cepage_0'] = 'CHENIN B';
-$values['repartition_0'] = 11;
+$values['repartition_hl_0'] = 11;
 $values['_revision'] = $lot->getDocument()->_rev;
 
 $form->bind($values);
