@@ -349,6 +349,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->updateTotalHT();
         $this->updateTotalTaxe();
         $this->updateTotalTTC();
+        $this->updatePrelevement();
     }
 
     public function updateTotalHT()
@@ -372,6 +373,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         	$this->total_taxe += $ligne->montant_tva;
         }
         $this->total_taxe = round($this->total_taxe, 2);
+    }
+
+    public function updatePrelevement()
+    {
+      $paiement = $this->add('paiements')->add();
+      $paiement->montant =  $this->total_ttc;
+      $paiement->type_reglement = FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO;
+      $paiement->add('execute',false);
+      $paiement->date = date('Y-m-d',strtotime($this->date_facturation.'+15 days'));
     }
 
     public function getNbLignesMouvements() {
@@ -668,6 +678,44 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
 
         $this->_set('date_telechargement', $date);
+    }
+
+    public function getXml(){
+      // ! mettre la condition que le execute vaut 0 sinon ils sont deja passe par le xml
+      $xml = new SimpleXMLElement('<xml/>');
+
+      $pmtInf = $xml->addChild('PmtInf');
+      $pmtInf->addChild('PmtInfId', $this->_id);
+      $pmtInf->addChild('PmtMtd', "DD");
+      $pmtInf->addChild('NbOfTxs', "1");
+      $pmtInf->addChild('CtrlSum', "DD");
+
+      $pmtTpInf = $pmtInf->addChild('PmtTpInf');
+      $svcLvl = $pmtTpInf->addChild('SvcLvl');
+      $svcLvl->addChild('Cd','SEPA');
+      $lclInstrm = $pmtTpInf->addChild('LclInstrum');
+      $lclInstrm->addChild('Cd','CORE');
+      $pmtTpInf->addChild('SeqTp','RCUR');
+
+      $pmtInf->addChild('ReqdColltnDt',"2021-04-20"); //date d'execution demandée du prélèmemtn
+
+      $cdtr = $pmtInf->addChild('Cdtr');
+      $cdtr->addChild('Nm',''); //nom de l'odg
+
+      $cdtrAcct = $pmtInf->addChild('CdtrAcct');
+      $id = $cdtrAcct->addChild('Id');
+      $id->addChild('IBAN','');
+
+      $cdtrAgt = $pmtInf->addChild('CdtrAgt');
+      $finInstnID = $cdtrAgt->addChild('FinInstnId');
+      $finInstnID->addChild('BIC','');
+
+      $pmtInf->addChild('ChrgBr','SLEV');
+
+      $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
+      $idcdtrschemeid = $cdtrschemeid->addChild('id');
+
+      return $xml->asXML();
     }
 
 }
