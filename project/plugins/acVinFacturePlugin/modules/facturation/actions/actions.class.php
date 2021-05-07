@@ -418,9 +418,9 @@ class facturationActions extends sfActions
 
     public function executeXml(sfWebRequest $request){
       $facture = FactureClient::getInstance()->find($request->getParameter('id'));
-      // $f = FactureClient::getInstance()->regenerate($facture);
-      var_dump($facture->getXml());
-      // return;
-      exit;
+      $this->getResponse()->setContentType('text/xml');
+      $this->setLayout(false);
+      $this->xml = $facture->getXml();
+
     }
 }

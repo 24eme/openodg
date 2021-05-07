@@ -697,27 +697,25 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
       $lclInstrm->addChild('Cd','CORE');
       $pmtTpInf->addChild('SeqTp','RCUR');
 
-      $pmtInf->addChild('ReqdColltnDt',"2021-04-20");
+      $pmtInf->addChild('ReqdColltnDt',"2021-04-20"); //date d'execution demandée du prélèmemtn
 
       $cdtr = $pmtInf->addChild('Cdtr');
-      $cdtr->addChild('Nm','ETABLISSEMENTS JULIEN AUROUZE');
+      $cdtr->addChild('Nm',''); //nom de l'odg
 
       $cdtrAcct = $pmtInf->addChild('CdtrAcct');
       $id = $cdtrAcct->addChild('Id');
-      $id->addChild('IBAN','FR7630066107710001055950153');
+      $id->addChild('IBAN','');
 
-      $cdtrAgt = $pmtinf->addChild('CdtrAgt');
+      $cdtrAgt = $pmtInf->addChild('CdtrAgt');
       $finInstnID = $cdtrAgt->addChild('FinInstnId');
-      $finInstnID->addChild('BIC','CMCIFRPP');
+      $finInstnID->addChild('BIC','');
 
       $pmtInf->addChild('ChrgBr','SLEV');
 
       $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
       $idcdtrschemeid = $cdtrschemeid->addChild('id');
 
-      Header('Content-type: text/xml');
-      print($xml->asXML());
-      exit;
+      return $xml->asXML();
     }
 
 }
