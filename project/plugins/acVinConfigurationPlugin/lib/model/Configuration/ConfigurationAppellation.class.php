@@ -12,6 +12,10 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
 
       return $this->mentions;
     }
+	
+	public function getAppellation() {
+		return $this;
+	}
 
     public function getGenre() {
 
