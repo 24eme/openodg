@@ -27,19 +27,19 @@ class ConfigurationMention extends BaseConfigurationMention {
         return $this->getParentNode();
     }
 
-		public function getNodeCahierDesCharges() {
+	public function getNodeCahierDesCharges() {
 
         return $this->getAppellation();
     }
 
-    public function getCertification() {
-
-        return $this->getAppellation()->getCertification();
-    }
-
-		public function getGenre() {
+    public function getGenre() {
 
         return $this->getAppellation()->getGenre();
+    }
+
+    public function getCertification() {
+
+        return $this->getGenre()->getCertification();
     }
 
     public function getLabels($interpro) {
