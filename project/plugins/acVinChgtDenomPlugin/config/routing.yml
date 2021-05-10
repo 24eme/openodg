@@ -38,6 +38,16 @@ chgtdenom_lots:
   requirements:
     sf_method: [get, post]
 
+chgtdenom_ajout_lot:
+  url: /changement-denomination/lots/:identifiant/:campagne/ajout
+  param: { module: chgtdenom, action: ajoutLot }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 chgtdenom_edition:
   url: /changement-denomination/edition/:id
   param: { module: chgtdenom, action: edition }
