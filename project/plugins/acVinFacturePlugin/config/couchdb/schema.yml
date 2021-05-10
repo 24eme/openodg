@@ -134,6 +134,7 @@ Facture:
                   montant: { }
                   type_reglement: { }
                   commentaire: { }
+                  execute: {required: false}
       pieces:
         type: array_collection
         definition:

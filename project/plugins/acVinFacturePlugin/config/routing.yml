@@ -116,3 +116,11 @@ facturation_tempalte:
   requirements:
     sf_method: [get, post]
   class: FacturationRoute
+
+facturation_xml:
+  url : /facture/xml/:id
+  param: { module:facturation, action: xml }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
