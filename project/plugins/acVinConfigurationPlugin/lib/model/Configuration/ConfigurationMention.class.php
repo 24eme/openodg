@@ -18,10 +18,11 @@ class ConfigurationMention extends BaseConfigurationMention {
       return $this->lieux;
     }
 
-	/**
-     *
-     * @return ConfigurationAppellation
-     */
+    public function getMention() {
+
+        return $this;
+    }
+
     public function getAppellation() {
 
         return $this->getParentNode();
