@@ -41,4 +41,8 @@
         <div class="col-xs-5">
             <a tabindex="-1" href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
         </div>
+        <div class="col-xs-5">
+            <a tabindex="-1" href="<?php echo url_for('chgtdenom_ajout_lot',array('identifiant' => $etablissement->identifiant,'campagne' => $campagne)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-plus"></span>Ajouter un lot</a>
+        </div>
+    </div>
 </div>
