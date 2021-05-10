@@ -1376,7 +1376,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Fonctions de facturation ****/
 
-        public function creationMouvementFactureFromLot($cotisation, $lot){
+        private function creationMouvementFactureFromLot($cotisation, $lot){
 
             $mouvement = DegustationMouvementFactures::freeInstance($this);
 			$mouvement->detail_identifiant = $lot->numero_dossier;
@@ -1387,7 +1387,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvement;
         }
 
-	    public function getRedegustationForfait($cotisation,$filters = null){
+        public function getRedegustationForfait($cotisation,$filters = null){
+            return $this->buildMouvementsFacturesRedegustationForfait($cotisation,$filters);
+        }
+	    public function buildMouvementsFacturesRedegustationForfait($cotisation,$filters = null){
             $mouvements = array();
 			foreach ($this->getLots() as $lot) {
                 if(!$lot->isSecondPassage()){
@@ -1399,6 +1402,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	    }
 
         public function getFacturationLotRedeguste($cotisation,$filters = null){
+            return $this->buildMouvementsFacturesLotRedeguste($cotisation, $filters);
+        }
+        public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
@@ -1413,7 +1419,32 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-		public function getForfaitConditionnement($cotisation){
+		public function getFacturationVolumeRedeguste($cotisation,$filters = null){
+            return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
+        }
+        public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
+			$mouvements = array();
+			$keyCumul = $cotisation->getDetailKey();
+			foreach ($this->getLotsPreleves() as $lot) {
+				if(!$lot->isSecondPassage()){
+					continue;
+				}
+				$mvtFacture = DegustationMouvementFactures::freeInstance($this);
+				$mvtFacture->detail_identifiant = $lot->numero_dossier;
+				$mvtFacture->createFromCotisationAndDoc($cotisation, $this);
+				$mvtFacture->date = $this->getDateFormat();
+				$mvtFacture->date_version = $this->getDateFormat();
+				$mvtFacture->quantite = $lot->volume;
+				$mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+			}
+
+			return $mouvements;
+		}
+
+        public function getForfaitConditionnement($cotisation){
+            return $this->buildMouvementsFacturesForfaitConditionnement($cotisation);
+        }
+		public function buildMouvementsFacturesForfaitConditionnement($cotisation){
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
@@ -1428,9 +1459,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-
-        public function getFacturationNonConforme($cotisation,$filters = null)
-        {
+        public function getFacturationNonConforme($cotisation,$filters = null) {
+            return $this->buildMouvementsFacturesNonConforme($cotisation,$filters);
+        }
+        public function buildMouvementsFacturesNonConforme($cotisation,$filters = null) {
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLots() as $lot) {
