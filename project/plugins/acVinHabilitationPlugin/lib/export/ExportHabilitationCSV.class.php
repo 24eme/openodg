@@ -108,8 +108,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                       $activite->statut,
                       $activite->date,
                       $this->habilitation->_id,
-                      $activite->commentaire,
-                        );
+                      $activite->commentaire);
             }
         }
         return $csv;
