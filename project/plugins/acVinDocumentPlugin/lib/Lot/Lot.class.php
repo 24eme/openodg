@@ -224,29 +224,29 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getValueForTri($type) {
         $type = strtolower($type);
         $type = str_replace('é', 'e', $type);
-        if ($type == 'millesime') {
+        if ($type == DegustationClient::DEGUSTATION_TRI_MILLESIME) {
             return ($this->millesime) ? $this->millesime : 'XXXX';
          }
-         if (!$this->getConfig()||$type == 'numero_anonymat') {
+         if (!$this->getConfig()||$type == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT) {
            $numero= intval(substr($this->numero_anonymat, 1));
            return $numero;
          }
-        if ($type == 'appellation') {
+        if ($type == DegustationClient::DEGUSTATION_TRI_APPELLATION) {
             return $this->getConfig()->getAppellation()->getKey();
         }
-        if ($type == 'couleur') {
+        if ($type == DegustationClient::DEGUSTATION_TRI_COULEUR) {
             return $this->getConfig()->getCouleur()->getKey();
         }
-        if ($type == 'genre') {
+        if ($type == DegustationClient::DEGUSTATION_TRI_GENRE) {
             return $this->getConfig()->getGenre()->getKey();
         }
-        if ($type == 'cepage') {
+        if ($type == DegustationClient::DEGUSTATION_TRI_CEPAGE) {
             return $this->getCepagesToStr();
         }
-        if ($type == 'produit') {
+        if ($type == DegustationClient::DEGUSTATION_TRI_PRODUIT) {
             return $this->_get('produit_hash').$this->_get('details');
         }
-        if ($type == 'manuel') {
+        if ($type == DegustationClient::DEGUSTATION_TRI_MANUEL) {
             return $this->position;
         }
         throw new sfException('unknown type of value : '.$type);
@@ -357,20 +357,20 @@ abstract class Lot extends acCouchdbDocumentTree
             return $this->produit_libelle;
         }
         $format = '';
-        if (in_array('appellation', $tri)) {
+        if (in_array(DegustationClient::DEGUSTATION_TRI_APPELLATION, $tri)) {
             $format .= '%a% ';
         }
-        if (in_array('genre', $tri)) {
+        if (in_array(DegustationClient::DEGUSTATION_TRI_GENRE, $tri)) {
             $format .= '%g% ';
         }
-        if (in_array('couleur', $tri)) {
+        if (in_array(DegustationClient::DEGUSTATION_TRI_COULEUR, $tri)) {
             $format .= '%co% ';
         }
         $libelle = $this->getConfig()->getLibelleFormat(null, $format)." ";
-        if (in_array('millesime', $tri)) {
+        if (in_array(DegustationClient::DEGUSTATION_TRI_MILLESIME, $tri)) {
             $libelle .= $this->millesime.' ';
         }
-        if (in_array('cépage', $tri)) {
+        if (in_array(DegustationClient::DEGUSTATION_TRI_CEPAGE, $tri)) {
             $libelle .= "- ".$this->details.' ';
         }
         return $libelle;
@@ -507,7 +507,7 @@ abstract class Lot extends acCouchdbDocumentTree
       if (!$this->numero_table) {
         return;
       }
-      $this->getDocument()->tri = "Manuel";
+      $this->getDocument()->tri = DegustationClient::DEGUSTATION_TRI_MANUEL;
       if ($sens > 0) {
           return $this->switchPosition($this, $this->getLotInPrevPosition());
       }else {

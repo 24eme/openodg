@@ -3,7 +3,14 @@
 class DegustationTriTableForm extends BaseForm
 {
     private $tri = array();
-    private $elements = array('' => '', 'Appellation' => 'Appellation', 'Genre' => 'Genre', 'Couleur' => 'Couleur', 'Cépage' => 'Cépage', 'Millesime' => 'Millesime', 'Manuel' => 'Manuel');
+    private $elements = array('' => '',
+        DegustationClient::DEGUSTATION_TRI_APPELLATION => 'Appellation',
+        DegustationClient::DEGUSTATION_TRI_GENRE => 'Genre',
+        DegustationClient::DEGUSTATION_TRI_COULEUR => 'Couleur',
+        DegustationClient::DEGUSTATION_TRI_CEPAGE => 'Cépage',
+        DegustationClient::DEGUSTATION_TRI_MILLESIME => 'Millesime',
+        DegustationClient::DEGUSTATION_TRI_MANUEL => 'Manuel'
+    );
 
     public function __construct(array $tri, bool $recap = false, $options = array(), $CSRFSecret = null)
     {

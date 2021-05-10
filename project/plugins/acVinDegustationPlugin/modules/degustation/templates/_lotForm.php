@@ -1,4 +1,4 @@
-<?php $lotHtmlId = ($lot->numero_archive) ? $lot->unique_id : $form->renderId(); ?>
+<?php $lotHtmlId =  str_replace('volume', '', $form['volume']->renderId()); ?>
 <div class="panel panel-default bloc-lot">
     <div class="panel-body" style="padding-bottom: 0;">
         <div class="row">

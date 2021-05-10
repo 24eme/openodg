@@ -6,6 +6,16 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     const TYPE_COUCHDB = "DEGUSTATION";
     const SPECIFICITE_PASSAGES = "Xème passage";
 
+    const DEGUSTATION_TRI_APPELLATION = "appellation";
+    const DEGUSTATION_TRI_GENRE = "genre";
+    const DEGUSTATION_TRI_COULEUR = "couleur";
+    const DEGUSTATION_TRI_CEPAGE = "cepage";
+    const DEGUSTATION_TRI_MILLESIME = "millesime";
+    const DEGUSTATION_TRI_MANUEL = "manuel";
+    const DEGUSTATION_TRI_NUMERO_ANONYMAT = "numero_anonymat";
+    const DEGUSTATION_TRI_PRODUIT = "produit";
+
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Degustation");

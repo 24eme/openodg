@@ -31,15 +31,18 @@
             <td><?php echo showProduitCepagesLot($lot->getRawValue()) ?></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
-            <td><a href="<?php echo url_for("chgtdenom_create_lot", array("sf_subject" => $etablissement, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
+            <td><a href="<?php echo url_for("chgtdenom_create_from_lot", array("sf_subject" => $etablissement, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
         </tr>
         <?php endforeach; ?>
         </tbody>
       </table>
   <?php endif; ?>
     <div style="margin-top: 20px;" class="row row-margin row-button">
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <a tabindex="-1" href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
+        </div>
+        <div class="col-xs-5">
+            <a tabindex="-1" href="<?php echo url_for('chgtdenom_ajout_lot',array('identifiant' => $etablissement->identifiant,'campagne' => $campagne)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-plus"></span>Ajouter un lot</a>
         </div>
     </div>
 </div>
