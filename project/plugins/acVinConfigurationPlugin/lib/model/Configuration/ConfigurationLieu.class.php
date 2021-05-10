@@ -34,7 +34,7 @@ class ConfigurationLieu extends BaseConfigurationLieu {
 
     public function getCertification() {
 
-        return $this->getAppellation()->getCertification();
+        return $this->getGenre()->getCertification();
     }
 
     public function getGenre() {
