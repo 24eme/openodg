@@ -202,7 +202,28 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return null;
         }
 
+        if (!$doc->getLot($this->changement_origine_lot_unique_id)) {
+           $lot = ChgtDenomLot::freeInstance($this);
+           $lot->id_document = $this->changement_origine_id_document;
+           $lot->unique_id = $this->changement_origine_lot_unique_id;
+           $lot->millesime = $this->changement_millesime;
+           $lot->volume = $this->changement_volume;
+           $lot->specificite = $this->changement_specificite;
+           $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
+           $lot->affectable = $this->changement_affectable;
+           $lot->millesime = $this->origine_millesime;
+           $lot->volume = $this->origine_volume;
+           $lot->specificite = $this->origine_specificite;
+           $lot->produit_hash = $this->origine_produit_hash;
+           $lot->cepages = $this->origine_cepages;
+           $lot->produit_libelle = $this->origine_produit_libelle;
+           $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
+           $lot->affectable = $this->origine_affectable;
+           return $lot ;
+        }
+
         return $doc->getLot($this->changement_origine_lot_unique_id);
+
     }
 
     public function getLotKey() {
