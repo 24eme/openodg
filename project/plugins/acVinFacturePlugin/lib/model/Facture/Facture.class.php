@@ -349,7 +349,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->updateTotalHT();
         $this->updateTotalTaxe();
         $this->updateTotalTTC();
-        $this->updatePrelevement();
+
+        if($this->getSociete()->hasMandatSepa()){
+            $this->updatePrelevement();
+        }
     }
 
     public function updateTotalHT()
