@@ -249,6 +249,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
+    public function hasDocumentOrigine() {
+
+      $doc = acCouchdbManager::getClient()->find($this->changement_origine_id_document);
+
+      if (!$doc->getLot($this->changement_origine_lot_unique_id)) {
+        return false;
+      }
+
+      return true;
+    }
+
 	protected function doSave() {
           $this->piece_document->generatePieces();
     	}
