@@ -271,7 +271,14 @@ abstract class Lot extends acCouchdbDocumentTree
     public function hasVolumeAndHashProduit(){
       return $this->volume && $this->produit_hash;
     }
+    public function hasDocumentOrigine() {
 
+      if (!$this->getDocOrigine()) {
+        return false;
+      }
+
+      return true;
+    }
     public function getDateVersionfr(){
 
       if($this->date && !preg_match("/\d{4}\-\d{2}-\d{2}$/", $this->date)){

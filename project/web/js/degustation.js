@@ -2,8 +2,17 @@
   $(document).ready(function(){
 
     $('#mailPreviewModal').modal('show');
-    $('.link-mail-auto').click(function(){
-      var retour = $(this).attr("data-retour");
+
+    $('.link-mail-auto').click(function(e){
+      e.preventDefault(); // Le clic sur le lien est annulé
+
+      var link = $(this);
+      var retour = link.attr("data-retour");
+      var mail = document.createElement('a');
+
+      mail.href = link.attr('href');
+      mail.click();
+
       if(retour){
          window.location = retour;
       }
