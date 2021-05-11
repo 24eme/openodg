@@ -345,9 +345,9 @@ drev_send_oi:
   requirements:
     sf_method: [get]
 
-drev_eleve:
+drev_switch_eleve:
   url: /drev/:id/:unique_id/eleve
-  param: {module: drev, action: eleve}
+  param: {module: drev, action: switchEleve}
   class: DRevRoute
   options:
     model:    DRev

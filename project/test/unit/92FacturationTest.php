@@ -61,7 +61,11 @@ foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDR
     $degustation->delete(false);
 }
 
-
+//Suppression MandatSepa
+$mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($socVitiCompte->identifiant);
+if($mandatSepa){
+    $mandatSepa->delete(true);
+}
 
 // Selection des produits
 $path = dirname(__FILE__).'/../data/facturation_produits_'.$application.'.csv';
@@ -499,7 +503,7 @@ foreach ($chgtDenom->getMouvementsFactures() as $mvtsOp) {
     break;
 }
 
-$t->is($mvtChgtDenom->detail_identifiant, $lot->numero_dossier."b" ,"Changement Deno :le mouvement de facture du changement a le numéro de dossier correspondant à celui du chgtDenom");
+$t->is($mvtChgtDenom->detail_identifiant, $lot->numero_dossier."ab" ,"Changement Deno :le mouvement de facture du changement a le numéro de dossier correspondant à celui du 2nd chgtDenom");
 
 $mouvementsFacturables = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte);
 $f = FactureClient::getInstance()->createDocFromView($mouvementsFacturables, $socVitiCompte, date('Y-m-d'), null, $region, $templateFacture);

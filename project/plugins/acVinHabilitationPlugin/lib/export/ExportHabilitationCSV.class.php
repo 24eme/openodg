@@ -7,7 +7,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Nom Opérateur (Raison Sociale);Identifiant;Produit (libellé appellation);CVI Opérateur;Siret Opérateur;Adresse (etablissement);Adresse complémentaire (etablissement);Adresse complémentaire 2 (etablissement);Code postal  (etablissement);Commune (etablissement);Téléphone fixe (etablissement);Téléphone mobile (etablissement);Email (etablissement);Adresse (société);Adresse complémentaire (société);Adresse complémentaire 2 (société);Code postal (société);Commune (société);Téléphone fixe (société);Téléphone mobile (société);Email (société);Activité;Statut;Date;Id du doc;Commentaire\n";
+        return "Nom Opérateur (Raison Sociale);Identifiant;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cépage;Produit (libellé appellation);CVI Opérateur;Siret Opérateur;Adresse (etablissement);Adresse complémentaire (etablissement);Adresse complémentaire 2 (etablissement);Code postal  (etablissement);Commune (etablissement);Téléphone fixe (etablissement);Téléphone mobile (etablissement);Email (etablissement);Adresse (société);Adresse complémentaire (société);Adresse complémentaire 2 (société);Code postal (société);Commune (société);Téléphone fixe (société);Téléphone mobile (société);Email (société);Activité;Statut;Date;Id du doc;Commentaire\n";
     }
 
     public function __construct($habilitation, $header = true) {
@@ -70,10 +70,18 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                 if(!$activite->statut) {
                     continue;
                 }
+                $configProduit = $produit->getConfig();
 
-                $csv .= sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+                $csv .= sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
                       $raison_sociale,
                       $identifiant,
+                      method_exists($configProduit, "getCertification") ? $configProduit->getCertification()->getKey() : null,
+                      method_exists($configProduit, "getGenre") ? $configProduit->getGenre()->getKey() : null,
+                      method_exists($configProduit, "getAppellation") ? $configProduit->getAppellation()->getKey() : null,
+                      method_exists($configProduit, "getMention") ? $configProduit->getMention()->getKey() : null,
+                      method_exists($configProduit, "getLieu") ? $configProduit->getLieu()->getKey() : null,
+                      method_exists($configProduit, "getCouleur") ? $configProduit->getCouleur()->getKey() : null,
+                      method_exists($configProduit, "getCepage") ? $configProduit->getCepage()->getKey() : null,
                       $produit->libelle,
                       $cvi,
                       $siret,
