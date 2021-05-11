@@ -276,7 +276,7 @@ EOF;
 
           if(isset($lot->elevage) && $lot->elevage && !$lot->eleve) {
               $document = DeclarationClient::getInstance()->find($lot->id_document);
-              $document->getLot($lot->unique_id)->eleve(preg_replace('/ .*/', '', $date));
+              $document->getLot($lot->unique_id)->switchEleve(preg_replace('/ .*/', '', $date));
               $document->save();
           }
 

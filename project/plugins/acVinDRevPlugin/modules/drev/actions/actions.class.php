@@ -836,15 +836,15 @@ class drevActions extends sfActions {
     }
 
 
-        public function executeEleve(sfWebRequest $request) {
+        public function executeSwitchEleve(sfWebRequest $request) {
             $docid = $request->getParameter('id');
-            $doc = DRevClient::getInstance()->find($docid);
+            $doc = acCouchdbManager::getClient()->find($docid);
             $this->forward404Unless($doc);
             $lot_unique_id = $request->getParameter('unique_id');
             $lot = $doc->getLot($lot_unique_id);
             $this->forward404Unless($lot);
 
-            $lot->eleve();
+            $lot->switchEleve();
 
             $doc->generateMouvementsLots();
             $doc->save();

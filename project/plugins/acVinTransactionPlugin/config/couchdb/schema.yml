@@ -80,6 +80,7 @@ Transaction:
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
+                  eleve: { }
                   elevage: { }
                   statut: {}
                   adresse_logement: {}
