@@ -1398,11 +1398,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 	    public function buildMouvementsFacturesRedegustationForfait($cotisation,$filters = null){
             $mouvements = array();
+            $detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLots() as $lot) {
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-                $mouvements[$lot->declarant_identifiant]["NUMERO_PASSAGE_".$lot->getNombrePassage()] = $this->creationMouvementFactureFromLot($cotisation, $lot);
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $this->creationMouvementFactureFromLot($cotisation, $lot);
             }
             return $mouvements;
 	    }
@@ -1412,14 +1413,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
         public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
             $mouvements = array();
-            $keyCumul = $cotisation->getDetailKey();
+            $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
                 $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
-                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
             }
 
             return $mouvements;
@@ -1430,7 +1431,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
         public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
 			$mouvements = array();
-			$keyCumul = $cotisation->getDetailKey();
+			$detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLotsPreleves() as $lot) {
 				if(!$lot->isSecondPassage()){
 					continue;
@@ -1441,7 +1442,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$mvtFacture->date = $this->getDateFormat();
 				$mvtFacture->date_version = $this->getDateFormat();
 				$mvtFacture->quantite = $lot->volume;
-				$mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+				$mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
 			}
 
 			return $mouvements;
@@ -1452,14 +1453,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 		public function buildMouvementsFacturesForfaitConditionnement($cotisation){
             $mouvements = array();
-            $keyCumul = $cotisation->getDetailKey();
+            $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
                 if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
                 $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
-                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
             }
 
             return $mouvements;
