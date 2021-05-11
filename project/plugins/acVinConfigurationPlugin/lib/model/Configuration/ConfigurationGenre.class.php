@@ -12,6 +12,11 @@ class ConfigurationGenre extends BaseConfigurationGenre {
         return $this->appellations;
     }
 
+    public function getGenre() {
+
+ 	  return $this;
+    }
+
     public function getCertification() {
 
  	  return $this->getParentNode();

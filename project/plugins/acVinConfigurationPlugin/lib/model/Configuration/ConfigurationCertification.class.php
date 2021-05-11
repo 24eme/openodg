@@ -13,6 +13,11 @@ class ConfigurationCertification extends BaseConfigurationCertification {
       return $this->genres;
     }
 
+    public function getCertification() {
+
+        return null;
+    }
+
     public function getLibelles() {
 
         return array($this->libelle);
