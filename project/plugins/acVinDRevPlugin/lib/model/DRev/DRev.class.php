@@ -1489,6 +1489,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $total;
     }
 
+    public function getVolumeL15FromDRPrecedente($produitFilter = null) {
+        $dr = $this->getDocumentDouanier();
+        if (!$dr){
+            throw new sfException("Pas de DR pour ".$this->_id);
+        }
+        return $dr->getTotalValeur("15");
+    }
+
     /**
     * @deprecated use getVolumeRevendiqueLots instead
     */
