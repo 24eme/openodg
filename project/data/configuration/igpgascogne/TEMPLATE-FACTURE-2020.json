@@ -1,5 +1,6 @@
 {
   "_id": "TEMPLATE-FACTURE-2020",
+  "_rev": "16-a38c0e667455927a13b99c9e756cdc8c",
   "type": "TemplateFacture",
   "campagne": 2020,
   "template": "IGP",
@@ -160,7 +161,7 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": [
             "/appellations/CDG"
           ]
@@ -183,7 +184,7 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": [
             "/appellations/GER"
           ]
@@ -206,7 +207,7 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": [
             "/appellations/COT"
           ]

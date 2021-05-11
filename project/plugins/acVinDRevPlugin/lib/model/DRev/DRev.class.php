@@ -382,16 +382,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ($this->getDR());
     }
 
-    public function getDR() {
+    public function getDR($periode = null) {
 
-        return $this->getDocumentDouanier();
+        return $this->getDocumentDouanier(null, $periode);
     }
 
     public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $etablissements = $this->getEtablissementObject()->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
         $fichiers = array();
         foreach($etablissements as $e) {
-            $f = $this->getDocumentDouanier($ext, $e->identifiant, $hydrate);
+            $f = $this->getDocumentDouanierEtablissement($ext, null, $e->identifiant, $hydrate);
             if ($f) {
                 $fichiers[] = $f;
             }
@@ -399,13 +399,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $fichiers;
     }
 
-    public function getDocumentDouanier($ext = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    protected function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $identifiant);
+    }
+
+    protected function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         if (!$identifiant) {
             $identifiant = $this->identifiant;
         }
 
+        if (!$periode) {
+            $periode = $this->periode;
+        }
+
         foreach(array("DR", "SV12", "SV11") as $type) {
-            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $this->periode);
+            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $periode);
             if (!$fichier) {
                 continue;
             }
@@ -1487,6 +1495,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total += $lot->volume;
         }
         return $total;
+    }
+
+    public function getVolumeL15FromDRPrecedente($produitFilter = null) {
+        $dr = $this->getDR($this->getPeriode()-1);
+        if (!$dr){
+            throw new sfException("Pas de DR ".($this->getPeriode()-1)." pour ".$this->_id);
+        }
+        return $dr->getTotalValeur("15");
     }
 
     /**

@@ -5,22 +5,21 @@
   "template": "IGP",
   "libelle": "2020 - IGP",
   "docs": [
-    "DRev",
-    "Degustation"
+    "DR",
+    "DRev"
   ],
   "cotisations": {
-    "00_cotisationSyndicale": {
+    "00_forfait": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisations",
-      "code_comptable": "75101000",
+      "libelle": "Adhésion ODG",
+      "code_comptable": "706100",
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "prix": 5,
-          "tva": 0,
-          "unite": null,
-          "libelle": "syndicale annuelle",
+          "prix": 11,
+          "tva": 0.2,
+          "libelle": "Forfait annuelle",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -32,183 +31,250 @@
         }
       }
     },
-    "00_forfaitOdg": {
+    "00_forfaitnegociantcave": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisations",
-      "code_comptable": "75102000",
+      "libelle": "Adhésion ODG",
+      "code_comptable": "",
       "details": {
-        "forfaitOdg": {
+        "forfaitnegociantcave": {
           "modele": "CotisationFixe",
-          "prix": 10,
+          "prix": 110,
           "tva": 0.2,
-          "unite": null,
-          "libelle": "Adhésion ODG",
+          "libelle": "Forfait annuel (Coop. - négoce)",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
           "callback": "isDeclarantFamille",
           "callback_parameters": [
-            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+            "NEGOCIANT_VINIFICATEUR,COOPERATIVE"
           ]
         }
       }
     },
-    "55_%detail_identifiant%_00_CDG_revendicationLotCDG": {
-      "modele": "CotisationsCollection",
-      "callback": "70600000",
-      "libelle": "Volumes",
-      "code_comptable": "",
-      "details": {
-        "revendication": {
-          "modele": "CotisationVariable",
-          "prix": 0.46,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Gascogne (%detail_identifiant%)",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "/appellations/CDG"
-          ]
-        }
-      }
-    },
-    "55_%detail_identifiant%_00_GER_revendicationLotGER": {
-      "modele": "CotisationsCollection",
-      "callback": "70600000",
-      "libelle": "Volumes",
-      "code_comptable": "",
-      "details": {
-        "revendication": {
-          "modele": "CotisationVariable",
-          "prix": 0.46,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Gers (%detail_identifiant%)",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "/appellations/GER"
-          ]
-        }
-      }
-    },
-    "55_%detail_identifiant%_00_COT_revendicationLotCOT": {
-      "modele": "CotisationsCollection",
-      "callback": "70610000",
-      "libelle": "Volumes",
-      "code_comptable": "",
-      "details": {
-        "revendication": {
-          "modele": "CotisationVariable",
-          "prix": 0.46,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Comté Tolosan (%detail_identifiant%)",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "/appellations/COT"
-          ]
-        }
-      }
-    },
-    "55_%detail_identifiant%_55_inao": {
+    "05_DRCampagnePrecdente": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Droits INAO",
-      "code_comptable": "70630000",
+      "libelle": "Adhésion ODG",
+      "code_comptable": "706100",
       "details": {
-        "cotisation": {
+        "forfait": {
           "modele": "CotisationVariable",
-          "prix": 0.03,
-          "tva": 0,
+          "prix": 0.12,
+          "tva": 0.2,
           "unite": "hl",
-          "libelle": "(%detail_identifiant%)",
+          "libelle": "DR L15 campagne précédente",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeL15FromDRPrecedente",
+          "callback_parameters": []
+        }
+      }
+    },
+    "10_%detail_identifiant%_01_cotisationOdg": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "",
+      "details": {
+        "forfaitLieuxPrelevements": {
+          "modele": "CotisationFixe",
+          "prix": 20,
+          "tva": 0.2,
+          "libelle": "Forfait - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbLieuxPrelevements"
+        },
+        "volumeRevendique": {
+          "modele": "CotisationVariable",
+          "prix": 0.1,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Base - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables"
+        },
+        "communication": {
+          "modele": "CotisationVariable",
+          "prix": 0.1,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Communication - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        },
+        "controleexterne": {
+          "modele": "CotisationVariable",
+          "prix": 0.05,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle externe - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        },
+        "controleinterne": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle interne - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueLots"
         }
       }
     },
-    "77_%detail_identifiant%_00_CDG_redegustationCDG": {
+    "10_%detail_identifiant%_02_cotisationMed": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Nouvelle dégustation",
-      "code_comptable": "70600200",
+      "libelle": "Redevance Méditerrannée",
+      "code_comptable": "706100",
       "details": {
-        "forfait": {
-          "modele": "Cotisation",
-          "prix": 30,
+        "redevanceMed": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
           "tva": 0.2,
-          "unite": "",
-          "libelle": "",
-          "complement_libelle": "(%detail_identifiant%)",
+          "unite": "hl",
+          "libelle": "- %detail_identifiant%",
+          "complement_libelle": "",
           "docs": [
-            "Degustation"
+            "DRev"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": [
-            "/appellations/CDG"
+            "/appellations/MED"
           ]
         }
       }
     },
-    "77_%detail_identifiant%_00_GER_redegustationGER": {
+    "10_%detail_identifiant%_11_INAO": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Nouvelle dégustation",
-      "code_comptable": "70600200",
+      "libelle": "Cotisation INAO",
+      "code_comptable": "",
       "details": {
-        "forfait": {
-          "modele": "Cotisation",
-          "prix": 30,
-          "tva": 0.2,
-          "unite": "",
-          "libelle": "",
-          "complement_libelle": "(%detail_identifiant%)",
+        "inao": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "- %detail_identifiant%",
+          "complement_libelle": "",
           "docs": [
-            "Degustation"
+            "DRev"
           ],
-          "callback": "getFacturationLotRedeguste",
-          "callback_parameters": [
-            "/appellations/GER"
-          ]
+          "callback": "getVolumeRevendiqueLots"
         }
       }
     },
-    "77_%detail_identifiant%_00_COT_redegustationCOT": {
+    "20_%detail_identifiant%_01_cotisationOdg": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Forfait nouvelle dégustation",
-      "code_comptable": "70610200",
+      "libelle": "Cotisation ODG nouvelle dégustation",
+      "code_comptable": "",
       "details": {
-        "forfait": {
+        "forfaitLieuxPrelevements": {
           "modele": "Cotisation",
-          "prix": 30,
+          "prix": 20,
           "tva": 0.2,
-          "unite": "",
-          "libelle": "",
-          "complement_libelle": "(%detail_identifiant%)",
+          "libelle": "Forfait - %detail_identifiant%",
+          "complement_libelle": "",
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesLotRedeguste",
+          "callback_parameters": []
+        },
+        "volumeRevendique": {
+          "modele": "Cotisation",
+          "prix": 0.1,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Base - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeRedeguste",
+          "callback_parameters": []
+        },
+        "communication": {
+          "modele": "Cotisation",
+          "prix": 0.1,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Communication - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeRedeguste",
+          "callback_parameters": []
+        },
+        "controleexterne": {
+          "modele": "Cotisation",
+          "prix": 0.05,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle externe - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeRedeguste",
+          "callback_parameters": []
+        },
+        "controleinterne": {
+          "modele": "Cotisation",
+          "prix": 0.15,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Contrôle interne - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeRedeguste",
+          "callback_parameters": []
+        }
+      }
+    },
+    "20_%detail_identifiant%_02_cotisationMed": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation MED nouvelle dégustation",
+      "code_comptable": "706100",
+      "details": {
+        "redevanceMed": {
+          "modele": "Cotisation",
+          "prix": 0.15,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "- %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "/appellations/COT"
+            "/appellations/MED"
           ]
         }
       }

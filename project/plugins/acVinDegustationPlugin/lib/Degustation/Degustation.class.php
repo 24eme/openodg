@@ -255,6 +255,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
 
                 case Lot::STATUT_AFFECTE_DEST:
+                    if ($lot->document_ordre < 2) {
+                        throw new sfException("Le numéro d'ordre d'un lot de dégustation ne peut être inférieur à 2 : ".$lot->unique_id);
+                    }
 					$ordre = intval($lot->document_ordre) - 1;
 					$detail = sprintf("%dme passage", $ordre);
 					if ($ordre == 1) {
@@ -378,6 +381,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) ||
                 isset($lotOrig->document_ordre)) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
+            if ($lot->document_ordre < 2) {
+                throw new sfException("On ne peut ajouter un lot qui n'a pas de numéro d'ordre : ".$lotOrig->unique_id);
+            }
         }
         if($update) {
             $lot->updateSpecificiteWithDegustationNumber();
@@ -1392,11 +1398,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 	    public function buildMouvementsFacturesRedegustationForfait($cotisation,$filters = null){
             $mouvements = array();
+            $detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLots() as $lot) {
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-                $mouvements[$lot->declarant_identifiant]["NUMERO_PASSAGE_".$lot->getNombrePassage()] = $this->creationMouvementFactureFromLot($cotisation, $lot);
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $this->creationMouvementFactureFromLot($cotisation, $lot);
             }
             return $mouvements;
 	    }
@@ -1406,14 +1413,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
         public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
             $mouvements = array();
-            $keyCumul = $cotisation->getDetailKey();
+            $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
                 $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
-                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
             }
 
             return $mouvements;
@@ -1424,7 +1431,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
         public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
 			$mouvements = array();
-			$keyCumul = $cotisation->getDetailKey();
+			$detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLotsPreleves() as $lot) {
 				if(!$lot->isSecondPassage()){
 					continue;
@@ -1435,7 +1442,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$mvtFacture->date = $this->getDateFormat();
 				$mvtFacture->date_version = $this->getDateFormat();
 				$mvtFacture->quantite = $lot->volume;
-				$mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+				$mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
 			}
 
 			return $mouvements;
@@ -1446,14 +1453,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 		public function buildMouvementsFacturesForfaitConditionnement($cotisation){
             $mouvements = array();
-            $keyCumul = $cotisation->getDetailKey();
+            $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsPreleves() as $lot) {
                 if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
                 $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
-                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey()] = $mvtFacture;
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
             }
 
             return $mouvements;
