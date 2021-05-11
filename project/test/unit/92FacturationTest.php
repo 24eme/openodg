@@ -503,7 +503,7 @@ foreach ($chgtDenom->getMouvementsFactures() as $mvtsOp) {
     break;
 }
 
-$t->is($mvtChgtDenom->detail_identifiant, $lot->numero_dossier."b" ,"Changement Deno :le mouvement de facture du changement a le numéro de dossier correspondant à celui du chgtDenom");
+$t->is($mvtChgtDenom->detail_identifiant, $lot->numero_dossier."ab" ,"Changement Deno :le mouvement de facture du changement a le numéro de dossier correspondant à celui du 2nd chgtDenom");
 
 $mouvementsFacturables = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte);
 $f = FactureClient::getInstance()->createDocFromView($mouvementsFacturables, $socVitiCompte, date('Y-m-d'), null, $region, $templateFacture);
