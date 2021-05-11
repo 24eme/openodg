@@ -75,7 +75,7 @@ EOF;
 
           $oldreporting = error_reporting(0);
 	  if (($csv[self::DRCIVA_LIEU] == 'TOTAL') || (preg_match("/^TOTAL/", $csv[self::DRCIVA_CEPAGE]))) {
-              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][''][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['DONTVCI'] = $csv[self::DRCIVA_DONT_VCI];
+              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][''][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['DONTVCI'] += $csv[self::DRCIVA_DONT_VCI];
               $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] += $csv[self::DRCIVA_DONT_VCI];
           }
 	  if (($csv[self::DRCIVA_LIEU] != 'TOTAL') && !preg_match("/^TOTAL/", $csv[self::DRCIVA_CEPAGE])) {
@@ -98,7 +98,7 @@ EOF;
               foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
                 foreach($vciacheteur as $cviacheteur => $vcicepage) {
                   foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
+                      if(preg_match("/^TOTAL/", $cepage ) && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
                           $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] -= $unvci['VOLUME_TOTAL'];
                           unset($vci[$recoltant][$appellation]['LIEU'][$lieu][$cviacheteur]);
                           break;
