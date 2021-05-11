@@ -69,11 +69,19 @@ class LotsClient
     public function modifyAndSave($lot) {
         $ids = $this->getDocumentsIds($lot->declarant_identifiant, $lot->unique_id);
 
+        $nbDegustation = 0;
         foreach($ids as $id) {
             if(preg_match('/(TRANSACTION|CONDITIONNEMENT|CHGTDENOM)/', $id)) {
 
                 throw new Exception("La modification de lot n'est pas encore implémentée pour les documents de TRANSACTION, CONDITIONNEMENT et CHGTDENOM");
             }
+
+            if(strpos($id, "DEGUSTATION") !== false) {
+                $nbDegustation++;
+            }
+        }
+        if($nbDegustation > 1) {
+            throw new Exception("La modification de lot n'est pas possible lorsque que lot a été dégusté plusieurs fois.");
         }
 
         foreach($ids as $id) {
