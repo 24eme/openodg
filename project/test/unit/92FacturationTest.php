@@ -61,7 +61,11 @@ foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDR
     $degustation->delete(false);
 }
 
-
+//Suppression MandatSepa
+$mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($socVitiCompte->identifiant);
+if($mandatSepa){
+    $mandatSepa->delete(true);
+}
 
 // Selection des produits
 $path = dirname(__FILE__).'/../data/facturation_produits_'.$application.'.csv';
