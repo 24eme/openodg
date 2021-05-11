@@ -3,20 +3,18 @@
 class chgtdenomActions extends sfActions
 {
     public function executeAjoutLot(sfWebRequest $request) {
-
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
 
         $drev = DRevClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne);
-        $drev->addLot();
-        $drev->lots[0]->numero_archive = sprintf("%05d", "9999");
-        $drev->lots[0]->numero_dossier = sprintf("%05d", "9999");
+        $drev->addLot(); 
         $this->lot = $drev->lots[0] ;
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
-        $this->chgtDenom = ChgtDenomClient::getInstance()->createDoc($this->etablissement->identifiant,null, $papier);
 
-        $this->form = new ChgtDenomNewLotForm($drev->lots[0]);
+        $this->form = new ChgtDenomNewLotForm($this->lot);
+        $this->chgtDenom = ChgtDenomClient::getInstance()->createDoc($this->etablissement->identifiant,null, $papier);
+        $this->chgtDenom->constructId();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -29,16 +27,19 @@ class chgtdenomActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        $this->chgtDenom->origine_millesime = $this->form->getValue('millesime');
-        $this->chgtDenom->origine_volume = $this->form->getValue('volume');
-        $this->chgtDenom->origine_specificite = $this->form->getValue('specificite');
-        $this->chgtDenom->origine_produit_hash = $this->form->getValue('produit_hash');
-        $this->chgtDenom->origine_cepages = array($this->form->getValue('cepage_0'),$this->form->getValue('cepage_1'),$this->form->getValue('cepage_2'),$this->form->getValue('cepage_3'),$this->form->getValue('cepage_4'));
-        $this->chgtDenom->origine_numero_logement_operateur = $this->form->getValue('numero_logement_operateur');
-        $this->chgtDenom->constructId();
-        $this->chgtDenom->save();
+        $hash = $this->form->getValue('produit_hash');
 
+        foreach($this->form->getProduits() as $key => $cepage) {
+            if($hash == $key) {
+                $this->lot->produit_libelle = $cepage;
+            }
+        }
+        $this->lot->millesime = $this->form->getValue('millesime');
+        $this->lot->numero_logement_operateur = $this->form->getValue('numero_logement_operateur');
         $this->form->save();
+
+        $this->chgtDenom->setLotOrigine($this->lot);
+        $this->chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', array('id' => $this->chgtDenom->_id));
     }
