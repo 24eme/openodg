@@ -255,6 +255,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
 
                 case Lot::STATUT_AFFECTE_DEST:
+                    if ($lot->document_ordre < 2) {
+                        throw new sfException("Le numéro d'ordre d'un lot de dégustation ne peut être inférieur à 2 : ".$lot->unique_id);
+                    }
 					$ordre = intval($lot->document_ordre) - 1;
 					$detail = sprintf("%dme passage", $ordre);
 					if ($ordre == 1) {
@@ -378,6 +381,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) ||
                 isset($lotOrig->document_ordre)) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
+            if ($lot->document_ordre < 2) {
+                throw new sfException("On ne peut ajouter un lot qui n'a pas de numéro d'ordre : ".$lotOrig->unique_id);
+            }
         }
         if($update) {
             $lot->updateSpecificiteWithDegustationNumber();
