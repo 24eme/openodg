@@ -43,4 +43,9 @@ class DegustationConfiguration {
     {
         return isset($this->configuration['notation']) && boolval($this->configuration['notation']);
     }
+
+    public function hasSpecificiteEtiquette()
+    {
+        return isset($this->configuration['specificite_etiquette']) && boolval($this->configuration['specificite_etiquette']);
+    }
 }
