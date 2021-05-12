@@ -1,6 +1,6 @@
 <?php
 
-class ExportFacturePaiementsCSV_nantes implements InterfaceDeclarationExportCsv {
+class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
@@ -24,7 +24,7 @@ class ExportFacturePaiementsCSV_nantes implements InterfaceDeclarationExportCsv 
     }
 
     public static function getHeaderCsv() {
-        return "Raison Sociale;Numéro facture;Mode de paiement;Date de paiement;Montant\n";
+        return "Identifiant;Raison Sociale;Code comptable client;Numéro facture;Date de paiement;Montant;Type de reglement;Commentaire;Montant restant a payer;Execute;Exporte;Facture doc ID;paiement ID\n";
     }
 
     public function export() {
@@ -41,22 +41,29 @@ class ExportFacturePaiementsCSV_nantes implements InterfaceDeclarationExportCsv 
 
     public function exportFacturePaiements() {
 
-        $declarant = $this->facture->declarant;
         $societe = $this->facture->getSociete();
 
         $date_facturation = DateTime::createFromFormat("Y-m-d",$this->facture->date_facturation)->format("d/m/Y");
         $facture = $this->facture;
-        $csv = $declarant->nom.";".$facture->numero_facture.";";
-        $csvPaiements = "";
-        if($facture->exist('paiements') && $facture->paiements && count($facture->paiements)){
+        $csv = '';
+        $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->numero_facture.";";
+        if($facture->exist('paiements')) {
           foreach ($facture->paiements as $paiement) {
-            $csvPaiements.=$csv.FactureClient::$types_paiements[$paiement->type_reglement].";".DateTime::createFromformat("Y-m-d",$paiement->date)->format('d/m/Y').";".$this->floatHelper->formatFr($paiement->montant,2,2)."\n";
+              $csv .= $csv_prefix;
+              $csv .= $paiement->date.";";
+              $csv .= $this->floatHelper->formatFr($paiement->montant,2,2).";";
+              $csv .= $paiement->type_reglement.";";
+              $csv .= $paiement->commentaire.";";
+              $csv .= $this->floatHelper->formatFr($facture->total_ttc - $facture->montant_paiement,2,2).';';
+              $csv .= $paiement->exist('execute') ? $paiement->execute.";" : ";";
+              $csv .= $facture->versement_comptable_paiement.";";
+              $csv .= $facture->_id.";";
+              $csv .= $paiement->getHash().';';
+              $csv .= "\n";
           }
-        }else{
-          $csvPaiements.=$csv.";;\n";
         }
 
-        return $csvPaiements;
+        return $csv;
     }
 
 }

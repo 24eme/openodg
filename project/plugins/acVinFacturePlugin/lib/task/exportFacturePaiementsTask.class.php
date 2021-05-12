@@ -34,9 +34,7 @@ EOF;
 
         }
         $app = $options['application'];
-        $classExportFactureCsv = 'ExportFacturePaiementsCSV_'.$app;
-
-        echo $classExportFactureCsv::getHeaderCsv();
+        echo ExportFacturePaiementsCSV::getHeaderCsv();
         $all_factures = acCouchdbManager::getClient()
                     ->startkey(array("Facture"))
                     ->endkey(array("Facture", array()))
@@ -48,7 +46,7 @@ EOF;
           if(!$facture) {
               throw new sfException(sprintf("Document %s introuvable", $vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]));
           }
-          $export = new $classExportFactureCsv($facture, false);
+          $export = new ExportFacturePaiementsCSV($facture, false);
           echo $export->exportFacturePaiements();
         }
     }
