@@ -10,6 +10,7 @@ class exportFactureTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('factureid', null, sfCommandOption::PARAMETER_REQUIRED, 'L\'id de la facture', null),
+            new sfCommandOption('non_verse_comptablement', null, sfCommandOption::PARAMETER_REQUIRED, 'Que les versements comptable non réalisé (par defaut: false)', false),
             // add your own options here
         ));
 
@@ -35,9 +36,7 @@ EOF;
 
         }
         $app = $options['application'];
-        $classExportFactureCsv = 'ExportFactureCSV';
-
-        echo $classExportFactureCsv::getHeaderCsv();
+        echo ExportFactureCSV::getHeaderCsv();
         $ids = array();
         if (!$options['factureid']) {
             $all_factures = acCouchdbManager::getClient()
@@ -56,7 +55,10 @@ EOF;
           if(!$facture) {
               throw new sfException(sprintf("Document %s introuvable", $id));
           }
-          $export = new $classExportFactureCsv($facture, false);
+          if ($options['non_verse_comptablement'] && $facture->versement_comptable) {
+              continue;
+          }
+          $export = new ExportFactureCSV($facture, false);
           echo $export->exportFacture();
         }
     }
