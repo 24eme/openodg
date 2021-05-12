@@ -54,7 +54,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
               .$societe->telephone_bureau.";"
               .$societe->telephone_mobile.";"
               .$societe->email.";"
-              .$this->facture->numero_facture.";";
+              .$this->facture->numero_archive.";";
 
         foreach ($this->facture->lignes as $type => $ligne) {
             foreach($ligne->details as $detail) {
