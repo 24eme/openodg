@@ -7,7 +7,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
 
     protected $floatHelper = null;
 
-    public function __construct($doc_or_id, $header = true) {
+    public function __construct($doc_or_id, $header = true, $que_les_non_verses_comptablement = false;) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
@@ -21,6 +21,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
        $this->floatHelper = FloatHelper::getInstance();
 
         $this->header = $header;
+        $this->que_les_non_verses_comptablement = $que_les_non_verses_comptablement;
     }
 
     public static function getHeaderCsv() {
@@ -49,6 +50,10 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
         $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->numero_facture.";";
         if($facture->exist('paiements')) {
           foreach ($facture->paiements as $paiement) {
+              //on est d'accord que ca na rien a faire ici mais l'objectif est d'avoir un flag dans le paiement
+              if ($this->que_les_non_verses_comptablement && $facture->versement_comptable_paiement) {
+                  continue;
+              }
               $csv .= $csv_prefix;
               $csv .= $paiement->date.";";
               $csv .= $this->floatHelper->formatFr($paiement->montant,2,2).";";
