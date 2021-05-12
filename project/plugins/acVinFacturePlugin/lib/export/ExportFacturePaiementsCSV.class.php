@@ -47,7 +47,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
         $date_facturation = DateTime::createFromFormat("Y-m-d",$this->facture->date_facturation)->format("d/m/Y");
         $facture = $this->facture;
         $csv = '';
-        $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->numero_facture.";";
+        $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->numero_archive.";";
         if($facture->exist('paiements')) {
           foreach ($facture->paiements as $paiement) {
               //on est d'accord que ca na rien a faire ici mais l'objectif est d'avoir un flag dans le paiement
