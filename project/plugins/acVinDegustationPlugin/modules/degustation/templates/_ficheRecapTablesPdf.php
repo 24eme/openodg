@@ -63,9 +63,9 @@ th {
     </div>
 
     <div>
-      <?php  $ligne=13; $table_header = true;
+      <?php  $ligne=12; $table_header = true;
       foreach($lots as $numAnonyme => $lotInfo): ?>
-      <?php if($ligne % 19 == 0): $table_header = true; ?>
+      <?php if($ligne % 20 == 0): $table_header = true; ?>
         </table>
           <br pagebreak="true" />
           <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?><p/>
@@ -92,9 +92,9 @@ th {
               <th class="empty bg-white"></th>
             </tr>
       <?php endif; ?>
-         <tr style="line-height:25px;">
+         <tr style="line-height:15px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
-           <td><?php echo tdStart() ?><small><?php echo showProduitCepagesLot($lotInfo);?></small></td>
+           <td><?php echo tdStart() ?><small><?php echo substr(strip_tags(showOnlyProduit($lotInfo)), 0, 40) ?></small><br/><small><?php echo showOnlyCepages($lotInfo, 45);?></small></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
