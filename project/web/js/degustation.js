@@ -3,21 +3,6 @@
 
     $('#mailPreviewModal').modal('show');
 
-    $('.link-mail-auto').click(function(e){
-      e.preventDefault(); // Le clic sur le lien est annulé
-
-      var link = $(this);
-      var retour = link.attr("data-retour");
-      var mail = document.createElement('a');
-
-      mail.href = link.attr('href');
-      mail.click();
-
-      if(retour){
-         window.location = retour;
-      }
-    });
-
     $('#btn-preleve-all').on('click', function (event) {
       $('.bsswitch').each(function(index, element) {
         $(element).bootstrapSwitch('state', true)

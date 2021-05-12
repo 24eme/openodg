@@ -23,6 +23,7 @@ class degustationComponents extends sfComponents {
         }
 
         $email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
+        $email = trim($email);
 
         $cc = Organisme::getInstance()->getEmail();
         $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance()->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
@@ -34,6 +35,11 @@ class degustationComponents extends sfComponents {
         ])));
 
         $this->mailto = "mailto:$email?cc=$cc&subject=$subject&body=$body";
+
+        if (isset($this->notemplate) && $this->notemplate === true) {
+            echo $this->mailto;
+            return sfView::NONE;
+        }
     }
 
     public function executePreviewMailPopup(sfWebRequest $request)

@@ -321,6 +321,8 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
+
+        $this->mailto = $request->getParameter('mailto', null);
     }
 
 
@@ -749,14 +751,24 @@ class degustationActions extends sfActions {
     public function executeSetEnvoiMail(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
       $this->redirectIfIsNotAnonymized();
-      $date = $request->getParameter('envoye',date('Y-m-d H:i:s'));
-      if(!boolval($date)){ $date = null; }
 
-      $this->setTemplate('notificationsEtape');
-      $this->degustation->setMailEnvoyeEtablissement($request->getParameter('identifiant'),$date);
+      $identifiant = $request->getParameter('identifiant');
+      $mailto = $identifiant;
+      $date = $request->getParameter('envoye', date('Y-m-d H:i:s'));
+
+      if(!boolval($date)) {
+          $date = null;
+          $mailto = null;
+      }
+
+      $this->degustation->setMailEnvoyeEtablissement($identifiant, $date);
       $this->degustation->save();
 
-      return $this->redirect('degustation_notifications_etape', $this->degustation);
+      if ($mailto) {
+          return $this->redirect('degustation_notifications_etape', ['id' => $this->degustation->_id, 'mailto' => $mailto]);
+      } else {
+          return $this->redirect('degustation_notifications_etape', $this->degustation);
+      }
     }
 
     public function executeTriTable(sfWebRequest $request) {
