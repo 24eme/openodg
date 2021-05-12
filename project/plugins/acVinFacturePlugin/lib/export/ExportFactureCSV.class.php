@@ -24,7 +24,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;id facture\n";
+        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;Export comptable;id facture\n";
     }
 
     public function export() {
@@ -88,6 +88,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->floatHelper->formatFr($this->facture->total_taxe).";";
         $csv .= $this->floatHelper->formatFr($this->facture->total_ttc).";";
         $csv .= $this->floatHelper->formatFr($this->facture->getMontantPaiement()).";";
+        $csv .= $this->facture->versement_comptable.';';
         $csv .= $this->facture->_id;
         $csv .= "\n";
 
