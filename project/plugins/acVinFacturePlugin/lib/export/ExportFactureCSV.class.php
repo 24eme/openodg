@@ -43,7 +43,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
         $declarant = $this->facture->declarant;
         $societe = $this->facture->getSociete();
-
+        $csv = '';
         $csv_line = $this->facture->date_facturation.";"
               .$societe->identifiant.";"
               .$societe->code_comptable_client.";"
