@@ -31,7 +31,8 @@ class ChgtDenomValidation extends DocumentValidation
         foreach ($this->document->lots as $key => $lot) {
           $lot_origine = $this->getLotDocById_unique();
           $volume = sprintf("%01.02f",$lot->getVolume());
-          if($lot->volume > $lot_origine->volume){
+
+          if($lot->volume > $lot_origine->volume && $lot_origine !== null ){ 
             $this->addPoint(self::TYPE_ERROR, 'lot_volume', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id, "appellation" => $key)));
           }
       }
@@ -44,6 +45,7 @@ class ChgtDenomValidation extends DocumentValidation
       if($this->document->changement_origine_lot_unique_id == $lot_origine->unique_id)
         return $lot_origine;
     }
+
   }
 
 }
