@@ -1,6 +1,6 @@
 {
   "_id": "TEMPLATE-FACTURE-2020",
-  "_rev": "12-120f778392a120dabe03d74665f0f982",
+  "_rev": "26-3642da483bb3974e4605c7693635fee9",
   "type": "TemplateFacture",
   "campagne": 2020,
   "template": "IGP",
@@ -13,10 +13,10 @@
     "ChgtDenom"
   ],
   "cotisations": {
-    "cotisationSyndicale": {
+    "00_cotisationSyndicale": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisation",
+      "libelle": "",
       "code_comptable": "",
       "details": {
         "superficie": {
@@ -34,24 +34,26 @@
             "L4"
           ]
         },
-        "promotion": {
+        "03_promotion": {
           "modele": "CotisationVariable",
           "prix": 0.7,
           "tva": 0.2,
-          "libelle": "Promotion",
+          "unite": "hl",
+          "libelle": "Cotisation promotion",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
-            "'NOT /appellations/MED'"
+            "NOT /appellations/MED"
           ]
         },
-        "oi": {
+        "04_oi": {
           "modele": "CotisationVariable",
           "prix": 0.05,
           "tva": 0.2,
+          "unite": "hl",
           "libelle": "Cotisation reversée à l'OI",
           "complement_libelle": "",
           "docs": [
@@ -59,12 +61,12 @@
           ],
           "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
-            "'NOT /appellations/MED'"
+            "NOT /appellations/MED"
           ]
         }
       }
     },
-    "fraisGestion": {
+    "01_fraisGestion": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Frais de gestion",
@@ -79,22 +81,25 @@
           "docs": [
             "DRev"
           ],
-          "callback": "",
-          "callback_parameters": ""
+          "callback": "isDeclarantFamille",
+          "callback_parameters": [
+            "NOT NEGOCIANT"
+          ]
         }
       }
     },
-    "inao": {
+    "99_inao": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "INAO",
+      "libelle": "Droit INAO",
       "code_comptable": "706102",
       "details": {
         "cotisation": {
           "modele": "CotisationVariable",
           "prix": 0.03,
           "tva": 0,
-          "libelle": "Cotisation reversée à l'INAO",
+          "unite": "hl",
+          "libelle": "- N° %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -143,7 +148,7 @@
         }
       }
     },
-    "controleIgp": {
+    "02_controleIgp": {
       "minimum": 100,
       "minimum_fallback": "fallbackIgp",
       "modele": "CotisationsCollection",
@@ -156,7 +161,7 @@
           "prix": 0.7,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Contrôle lots IGP",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -181,7 +186,7 @@
           "prix": 0.9,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Contrôle lots Méditerrannée",
+          "libelle": "Méditerrannée",
           "complement_libelle": "",
           "docs": [
             "DRev"
