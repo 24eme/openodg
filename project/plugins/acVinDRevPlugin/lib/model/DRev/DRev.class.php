@@ -1484,9 +1484,26 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
+    public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
+    {
+        $lots = [];
+
+        foreach ($this->getLots() as $lot) {
+            if ($lot->numero_dossier === $this->numero_archive) {
+                $lots[] = $lot;
+            }
+        }
+
+        return $this->getInternalVolumeRevendique($lots, $produitFilter);
+    }
+
     public function getVolumeRevendiqueLots($produitFilter = null){
+        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
+    }
+
+    private function getInternalVolumeRevendique($lots, $produitFilter) {
         $total = 0;
-        foreach($this->getLots() as $lot) {
+        foreach($lots as $lot) {
             $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
   		    $isExcludeMode = (bool) $produitExclude;
             $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
@@ -1583,8 +1600,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
-          if(isset($cotisationsPrec[$cotisation->getHash()])) {
-              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+          $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
+          if(isset($cotisationsPrec[$cle])) {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
 
           if($this->hasVersion() && !$mouvement->quantite) {
