@@ -221,12 +221,12 @@
           "modele": "CotisationFixe",
           "prix": 60,
           "tva": 0.2,
-          "libelle": "Frais changement dénomination",
+          "libelle": "Frais IGP Méditerranée",
           "complement_libelle": "",
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "getVolumeDestFacturable",
+          "callback": "getVolumeFacturable",
           "callback_parameters": [
             "/appellations/MED"
           ]
@@ -235,7 +235,7 @@
           "modele": "CotisationFixe",
           "prix": 200,
           "tva": 0.2,
-          "libelle": "Forfait negociant changement dénomination",
+          "libelle": "Forfait negociant",
           "complement_libelle": "",
           "docs": [
             "ChgtDenom"
@@ -255,7 +255,7 @@
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "getVolumeDestFacturable",
+          "callback": "getVolumeFacturable",
           "callback_parameters": [
             "/appellations/MED"
           ]
@@ -265,12 +265,12 @@
           "prix": 0.7,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "",
+          "libelle": "IGP",
           "complement_libelle": "",
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "getVolumeDestFacturable",
+          "callback": "getVolumeFacturable",
           "callback_parameters": [
             "NOT /appellations/MED"
           ]
