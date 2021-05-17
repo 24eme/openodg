@@ -1575,8 +1575,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
-          if(isset($cotisationsPrec[$cotisation->getHash()])) {
-              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+          $cle = $cotisation->getHash();
+          if(isset($cotisationsPrec[$cle])) {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
 
           if($this->hasVersion() && !$mouvement->quantite) {
