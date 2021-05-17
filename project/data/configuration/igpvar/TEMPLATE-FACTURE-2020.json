@@ -1,6 +1,5 @@
 {
   "_id": "TEMPLATE-FACTURE-2020",
-  "_rev": "26-3642da483bb3974e4605c7693635fee9",
   "type": "TemplateFacture",
   "campagne": 2020,
   "template": "IGP",
@@ -13,7 +12,7 @@
     "ChgtDenom"
   ],
   "cotisations": {
-    "00_cotisationSyndicale": {
+    "00_cotisationSyndicaleRecolte": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -33,40 +32,10 @@
           "callback_parameters": [
             "L4"
           ]
-        },
-        "03_promotion": {
-          "modele": "CotisationVariable",
-          "prix": 0.7,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Cotisation promotion",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "NOT /appellations/MED"
-          ]
-        },
-        "04_oi": {
-          "modele": "CotisationVariable",
-          "prix": 0.05,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Cotisation reversée à l'OI",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "NOT /appellations/MED"
-          ]
         }
       }
     },
-    "01_fraisGestion": {
+    "10_%detail_identifiant%_10_fraisGestion": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Frais de gestion",
@@ -81,45 +50,23 @@
           "docs": [
             "DRev"
           ],
-          "callback": "isDeclarantFamille",
-          "callback_parameters": [
-            "NOT NEGOCIANT"
-          ]
+          "callback": null,
+          "callback_parameters": []
         }
       }
     },
-    "99_inao": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Droit INAO",
-      "code_comptable": "706102",
-      "details": {
-        "cotisation": {
-          "modele": "CotisationVariable",
-          "prix": 0.03,
-          "tva": 0,
-          "unite": "hl",
-          "libelle": "- N° %detail_identifiant%",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeLotsFacturables"
-        }
-      }
-    },
-    "fallbackIgp": {
+    "10_%detail_identifiant%_20_fallbackIgp": {
       "fallback": true,
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle lots IGP",
-      "code_comptable": "706102",
+      "code_comptable": "",
       "details": {
-        "cotisation": {
+        "fallbackIgp": {
           "modele": "CotisationFixe",
           "prix": 70,
           "tva": 0.2,
-          "libelle": "",
+          "libelle": "inférieur à 100",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -128,14 +75,39 @@
         }
       }
     },
-    "fallbackMed": {
+    "10_%detail_identifiant%_20_controleIgp": {
+      "minimum": 70,
+      "minimum_fallback": "20_fallbackIgp",
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Contrôle IGP",
+      "code_comptable": "",
+      "details": {
+        "cotisationIgp": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "IGP plus de 100",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": [
+            "NOT /appellations/MED"
+          ]
+        }
+      }
+    },
+    "10_%detail_identifiant%_20_fallbackMed": {
       "fallback": true,
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle lots Med",
-      "code_comptable": "706102",
+      "code_comptable": "",
       "details": {
-        "cotisation": {
+        "fallbackMed": {
           "modele": "CotisationFixe",
           "prix": 90,
           "tva": 0.2,
@@ -148,40 +120,15 @@
         }
       }
     },
-    "02_controleIgp": {
-      "minimum": 100,
-      "minimum_fallback": "fallbackIgp",
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Contrôle IGP",
-      "code_comptable": "706102",
-      "details": {
-        "cotisation": {
-          "modele": "CotisationVariable",
-          "prix": 0.7,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "NOT /appellations/MED"
-          ]
-        }
-      }
-    },
-    "controleMed": {
-      "minimum": 100,
-      "minimum_fallback": "fallbackMed",
+    "10_%detail_identifiant%_20_controleMed": {
+      "minimum": 90,
+      "minimum_fallback": "20_fallbackMed",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle Méditerrannée",
-      "code_comptable": "706102",
+      "code_comptable": "",
       "details": {
-        "cotisation": {
+        "cotisationMed": {
           "modele": "CotisationVariable",
           "prix": 0.9,
           "tva": 0.2,
@@ -191,10 +138,76 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueNumeroDossier",
           "callback_parameters": [
             "/appellations/MED"
           ]
+        }
+      }
+    },
+    "10_%detail_identifiant%_30_promotion": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation promotion",
+      "code_comptable": "",
+      "details": {
+        "promotion": {
+          "modele": "CotisationVariable",
+          "prix": 0.7,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": [
+            "NOT /appellations/MED"
+          ]
+        }
+      }
+    },
+    "10_%detail_identifiant%_40_oi": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "oi": {
+          "modele": "CotisationVariable",
+          "prix": 0.05,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Cotisation reversée à l'OI",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": [
+            "NOT /appellations/MED"
+          ]
+        }
+      }
+    },
+    "99_%detail_identifiant%_99_inao": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Droit INAO",
+      "code_comptable": "",
+      "details": {
+        "inao": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "- N° %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
@@ -202,7 +215,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
-      "code_comptable": "706100",
+      "code_comptable": "",
       "details": {
         "frais": {
           "modele": "CotisationFixe",
@@ -268,7 +281,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Forfait conditionneur IGP",
-      "code_comptable": "706100",
+      "code_comptable": "",
       "details": {
         "frais": {
           "modele": "CotisationFixe",
@@ -286,11 +299,11 @@
     },
     "redegustationIgp": {
       "minimum": 100,
-      "minimum_fallback": "fallbackIGp",
+      "minimum_fallback": "20_fallbackIgp",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
-      "code_comptable": "706100",
+      "code_comptable": "",
       "details": {
         "degustation": {
           "modele": "CotisationVariable",
@@ -310,11 +323,11 @@
     },
     "redegustationMed": {
       "minimum": 100,
-      "minimum_fallback": "fallbackMed",
+      "minimum_fallback": "20_fallbackMed",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
-      "code_comptable": "706100",
+      "code_comptable": "",
       "details": {
         "degustation": {
           "modele": "CotisationVariable",
