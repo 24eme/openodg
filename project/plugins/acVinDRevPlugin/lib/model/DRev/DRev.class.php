@@ -1326,10 +1326,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function isAllDossiersHaveSameAddress(){
       $adresse = $this->constructAdresseLogement();
       foreach ($this->getLotsByNumeroDossier() as $lot){
-        if($lot->adresse_logement !== $adresse)
+        if($this->getAdresseLogement($lot) !== $adresse)
           return false;
       }
       return true;
+    }
+
+    public function getLotsByAdresse(){
+      $lotsAdresse = array();
+      foreach ($this->getLotsByNumeroDossier() as $lot){
+        $lotsAdresse[$this->getAdresseLogement($lot)][] = $lot;
+      }
+      return $lotsAdresse;
     }
 
     public function constructAdresseLogement(){
