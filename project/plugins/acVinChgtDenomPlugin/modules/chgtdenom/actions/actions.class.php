@@ -70,7 +70,7 @@ class chgtdenomActions extends sfActions
     public function executeLots(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant, $this->campagne);
     }
 
     public function executeEdition(sfWebRequest $request) {

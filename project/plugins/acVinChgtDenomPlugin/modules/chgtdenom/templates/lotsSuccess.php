@@ -31,7 +31,7 @@
             <td><?php echo showProduitCepagesLot($lot->getRawValue()) ?></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
-            <td><a href="<?php echo url_for("chgtdenom_create_from_lot", array("sf_subject" => $etablissement, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
+            <td><a href="<?php echo url_for("chgtdenom_create_from_lot", array("sf_subject" => $etablissement, 'campagne' => $campagne, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
         </tr>
         <?php endforeach; ?>
         </tbody>
