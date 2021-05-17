@@ -400,7 +400,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     protected function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $identifiant);
+        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
     }
 
     protected function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
