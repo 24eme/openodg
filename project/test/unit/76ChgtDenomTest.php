@@ -38,12 +38,12 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $chgtdenom->delete(false);
 }
 
-$campagne = (date('Y')-1)."";
+$periode = (date('Y')-1)."";
 
 //Début des tests
 $t->comment("Création d'une DRev");
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->constructId();
 $drev->storeDeclarant();
 
@@ -62,12 +62,12 @@ foreach($produits as $produit) {
 $i=1;
 foreach($drev->lots as $lot) {
 $lot->id_document = $drev->_id;
-$lot->millesime = $campagne;
+$lot->millesime = $periode;
 $lot->numero_logement_operateur = $i;
 $lot->volume = 50;
 $lot->affectable = true;
 $lot->destination_type = null;
-$lot->destination_date = ($campagne+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d", 1);
+$lot->destination_date = ($periode+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d", 1);
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
 $i++;
 }
@@ -95,9 +95,9 @@ $t->ok(!$drev->hasLotsUtilises(), "La drev n'a pas de lots utilisés");
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 2, "2 mouvements de lot prelevables ont été générés");
 $lots = array();
-$t->is(count(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant)), 3, "Les 3 lots sont cheageable");
+$t->is(count(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null)), 3, "Les 3 lots sont cheageable");
 
-foreach(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant) as $key => $lot) {
+foreach(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null) as $key => $lot) {
     if($lot->affectable) {
         continue;
     }
@@ -110,7 +110,8 @@ $campagne = $year.'-'.($year + 1);
 $t->comment("Changement de dénom sur DREV");
 
 $date = $year.'-10-10 10:10:10';
-$chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
+$chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
+
 $chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 $t->comment($chgtDenomFromDrev->_id);
@@ -179,7 +180,7 @@ $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le ch
 $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le changement a bien un mouvement changé dest");
 $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le changement a bien un mouvement changeable");
 
-$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
+$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null);
 $t->is(count($lots), 3, "3 lots disponible au changement de denomination (celui provenant du chgement de denom)");
 
 $t->comment("Test via une desgustation");
@@ -201,7 +202,7 @@ $degustation->lots[1]->statut = Lot::STATUT_CONFORME;
 $degustation->lots[2]->statut = Lot::STATUT_CONFORME;
 $degustation->save();
 
-$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
+$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null);
 $t->is(count($lots), 3, "3 mouvements disponibles au changement de dénomination");
 
 $lotFromDegust = current($lots);
@@ -211,7 +212,7 @@ $volume = $lot->volume;
 $autreLot = next($lots);
 
 $date = $year.'-11-11 11:11:11';
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
 $chgtDenom->save();
 $t->comment($chgtDenom->_id);
 $t->is($chgtDenom->_id, "CHGTDENOM-".$viti->identifiant."-".preg_replace("/[-\ :]+/", "", $date), "id du document");
