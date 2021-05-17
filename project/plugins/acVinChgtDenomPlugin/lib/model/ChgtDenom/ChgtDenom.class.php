@@ -703,4 +703,30 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $this->changement_volume;
     }
 
+    public function isDeclarantFamille($familleFilter = null)
+    {
+        if(!$familleFilter){
+            return false;
+        }
+
+        if(!$this->declarant->famille){
+            return false;
+        }
+
+        $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
+        $exclude = (bool) $exclude;
+        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+
+        if(!$exclude && preg_match($regexpFilter, $this->declarant->famille)) {
+
+            return true;
+        }
+
+        if($exclude && !preg_match($regexpFilter, $this->declarant->famille)) {
+
+            return true;
+        }
+
+        return false;
+    }
 }
