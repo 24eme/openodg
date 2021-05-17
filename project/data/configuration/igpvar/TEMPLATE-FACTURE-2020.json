@@ -35,7 +35,7 @@
         }
       }
     },
-    "10_%detail_identifiant%_10_fraisGestion": {
+    "10_fraisGestion": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Frais de gestion",
@@ -59,14 +59,14 @@
       "fallback": true,
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Contrôle lots IGP",
+      "libelle": "Contrôle IGP",
       "code_comptable": "",
       "details": {
         "fallbackIgp": {
           "modele": "CotisationFixe",
           "prix": 70,
           "tva": 0.2,
-          "libelle": "inférieur à 100",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -88,7 +88,7 @@
           "prix": 0.7,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "IGP plus de 100",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -104,7 +104,7 @@
       "fallback": true,
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Contrôle lots Med",
+      "libelle": "Contrôle Meditérannée",
       "code_comptable": "",
       "details": {
         "fallbackMed": {
@@ -133,7 +133,7 @@
           "prix": 0.9,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Méditerrannée",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -171,7 +171,7 @@
     "10_%detail_identifiant%_40_oi": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "",
+      "libelle": "Cotisation organisme d'inspection",
       "code_comptable": "",
       "details": {
         "oi": {
@@ -179,7 +179,7 @@
           "prix": 0.05,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Cotisation reversée à l'OI",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "DRev"
