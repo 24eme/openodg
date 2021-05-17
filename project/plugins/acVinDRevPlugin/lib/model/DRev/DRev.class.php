@@ -400,7 +400,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     protected function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $identifiant);
+        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
     }
 
     protected function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -1326,10 +1326,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function isAllDossiersHaveSameAddress(){
       $adresse = $this->constructAdresseLogement();
       foreach ($this->getLotsByNumeroDossier() as $lot){
-        if($lot->adresse_logement !== $adresse)
+        if($this->getAdresseLogement($lot) !== $adresse)
           return false;
       }
       return true;
+    }
+
+    public function getLotsByAdresse(){
+      $lotsAdresse = array();
+      foreach ($this->getLotsByNumeroDossier() as $lot){
+        $lotsAdresse[$this->getAdresseLogement($lot)][] = $lot;
+      }
+      return $lotsAdresse;
     }
 
     public function constructAdresseLogement(){

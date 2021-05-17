@@ -182,14 +182,20 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($drev->getLotsByNumeroDossier() as $lot) : ?>
+              <?php foreach ($drev->getLotsByAdresse() as $lots) : ?>
+                <?php $first_time = true; foreach($lots as $lot) : ?>
                 <tr>
+
                   <td class="text-center"><?php echo $lot->numero_dossier; ?></td>
-                  <td class="text-left">
+
+                  <?php if($first_time): ?>
+                  <td style="vertical-align : middle;" rowspan="<?php $first_time = false; echo count($lots); ?>" class="text-left">
                     <?php echo $drev->getAdresseLogement($lot);
                     ?>
                   </td>
+                <?php endif; ?>
                 </tr>
+                <?php endforeach; ?>
               <?php endforeach; ?>
             </tbody>
           </table>
