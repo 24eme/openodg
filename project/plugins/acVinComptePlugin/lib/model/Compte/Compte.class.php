@@ -21,7 +21,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         return $this->societe;
     }
-    
+
     public function getLibelleWithAdresse() {
         $libelle = $this->nom_a_afficher;
         if ($this->adresse || $this->adresse_complementaire || $this->code_postal || $this->commune || $this->pays) {
@@ -32,12 +32,12 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         if ($this->adresse_complementaire) {
             $libelle .=  ' '.$this->adresse_complementaire;
-        } 
+        }
         if ($this->code_postal) {
             $libelle .= ' '.$this->code_postal;
         }
         if ($this->commune) {
-            $libelle .= ' '.$this->commune; 
+            $libelle .= ' '.$this->commune;
         }
         if ($this->pays) {
         	 $libelle .= ' ('.$this->pays.')';
@@ -664,16 +664,17 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
             return false;
         }
-        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
+        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse."&postcode=".$code_postal);
+
         $file = file_get_contents($url);
         $result = json_decode($file);
-        if(!$result || !count($result->response->docs)){
+        if(!$result || !count($result->features)){
             return false;
         }
-        if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
+        if(KeyInflector::slugify($result->features[0]->properties->city) != KeyInflector::slugify($commune)) {
             //echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
         }
-        return array("lat" => $result->response->docs[0]->lat, "lon" => $result->response->docs[0]->lng);
+        return array("lat" => $result->features[0]->geometry->coordinates[1], "lon" => $result->features[0]->geometry->coordinates[0]);
     }
 
     public function updateCoordonneesLongLatByNoeud($noeud,$latCompare = false,$lonCompare = false) {

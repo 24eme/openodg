@@ -21,8 +21,8 @@ $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
 $societe->pays = "FR";
-$societe->adresse = "42 rue dulud";
-$societe->code_postal = "92100";
+$societe->adresse = "42 rue Jacques dulud";
+$societe->code_postal = "92200";
 $societe->commune = "Neuilly sur seine";
 $societe->email = 'email@example.org';
 $societe->save();
