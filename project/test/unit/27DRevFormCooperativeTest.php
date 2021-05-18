@@ -19,6 +19,30 @@ foreach(DRevClient::getInstance()->getHistory($coop->identifiant, acCouchdbClien
 
 $campagne = (date('Y')-1)."";
 
+$csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv11_douane.csv');
+
+$config = ConfigurationClient::getCurrent();
+$produit1 = null;
+$produit2 = null;
+foreach($config->getProduits() as $produit) {
+    if($produit->getRendement() <= 0) {
+        continue;
+    }
+    if(!$produit1) {
+        $produit1 = $produit;
+        continue;
+    } elseif(!$produit2) {
+        $produit2 = $produit;
+        continue;
+    }
+    break;
+}
+$csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
+file_put_contents($csvTmpFile, str_replace(array("%cvi_1%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($viti->cvi, $produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
+$t->comment("utilise le fichier test/data/sv11_douane.csv");
+$t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
+$t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());
+
 $dr = SV11Client::getInstance()->createDoc($coop->identifiant, $campagne);
 $dr->setLibelle("SV11 $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");

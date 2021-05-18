@@ -4,4 +4,92 @@ n°CVI: %cvi% - Commune: NEUILLY,,,,,,,,,,,,,
 Apporteur,,Apport,,,,Production,,,,,,,
 Nom,N° CVI,Zone de production,Superficie de récolte (Ha),Récolte,Vigne conduite pour,Code produit,Libellé du produit,Mention valorisante,Volume produit apte à,Vol à livrer à distillation ou usages indistriels,Eau éliminée,VSI/VCI,VCI
 Commune de AUBIGNAN,,,,,,,,,,,,,
-ACTUALYS JEAN,%cvi%,C2,1.4885,56.29,%code_inao%,"%code_inao%","%libelle_produit%",,53.59,2.7,0,0,0
+ACTUALYS JEAN,%cvi_1%,C2,1.4885,56.29,%code_inao_1%  ,%code_inao_1%  ,%libelle_produit_1%,,53.59,2.7,0,0,0
+ACTUALYS JEAN,%cvi_1%,C2,2.293,86.84,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,82.55,4.29,0,0,0
+ACTUALYS JEAN,%cvi_1%,C2,2.5818,103.87,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,87.78,16.09,0,0,0
+ACTUALYS JEAN,%cvi_1%,C2,26.7305,932.85,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,908.84,24.01,0,0,0
+TOTAL sur AUBIGNAN,,,47.0596,2079.79,,,,,2004.76,75.03,0,0,0
+Commune de BEAUMES-DE-VENISE,,,,,,,,,,,,,
+ACTUALYS JEAN 1,%cvi_2%,C2,1,38.36,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,36,2.36,0,0,0
+ACTUALYS JEAN 1,%cvi_2%,C2,0.598,21.25,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,20.82,0.43,0,0,0
+ACTUALYS JEAN 1,%cvi_2%,C2,9.6057,335.2,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,316.14,19.06,0,0,0
+ACTUALYS JEAN 1,%cvi_2%,C2,2.9645,79.1,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,77.52,1.58,0,0,0
+ACTUALYS JEAN 1,%cvi_2%,C2,9.467,321.88,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,304.69,17.19,0,0,0
+TOTAL sur BEAUMES-DE-VENISE,,,53.9636,1774.18,,,,,1714,60.18,0,0,0
+Commune de SABLET,,,,,,,,,,,,,
+ACTUALYS JEAN 4,%cvi_3%,C2,0.8181,32.3,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,29.45,2.85,0,0,0
+ACTUALYS JEAN 4,%cvi_3%,C2,0.606,24.1,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,21.82,2.28,0,0,0
+ACTUALYS JEAN 4,%cvi_3%,C2,5.3368,186.6,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,181.45,5.15,0,0,0
+TOTAL sur SABLET,,,13.3875,725.06,,,,,704.56,20.5,0,0,0
+Commune de SARRIANS,,,,,,,,,,,,,
+ACTUALYS JEAN 6,%cvi_4%,C2,1.9135,72.11,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,68.89,3.22,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,11.3535,405.31,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,386.02,19.29,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,0.7681,25,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,24.5,0.5,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,4.4453,165.82,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,151.14,14.68,0,0,11
+ACTUALYS JEAN 6,%cvi_4%,C2,0.6597,24.61,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,23.75,0.86,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,8.1,280.7,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,BIO,275.09,5.61,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,10.7873,378.05,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,363.28,14.77,0,0,7
+ACTUALYS JEAN 6,%cvi_4%,C2,15.6076,570.86,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,530.66,40.2,0,0,23
+ACTUALYS JEAN 6,%cvi_4%,C2,9.1009,335.2,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,309.43,25.77,0,0,19
+ACTUALYS JEAN 6,%cvi_4%,C2,0.3744,14.3,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,13.48,0.82,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,12.1562,418.95,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,410.57,8.38,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,1.383,50.7,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,47.02,3.68,0,0,2
+ACTUALYS JEAN 6,%cvi_4%,C2,9.051,322.23,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,307.73,14.5,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,0.528,19.18,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,18.8,0.38,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,13.9459,476.21,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,466.68,9.53,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,6.1042,215.78,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,207.54,8.24,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,26.9937,994.61,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,917.79,76.82,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,1.164,39.92,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,39.12,0.8,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,3.7607,128.24,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,125.68,2.56,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,12.0721,388.13,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,374.93,13.2,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,4.9864,186.45,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,179.51,6.94,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,14.858,518.98,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,471.94,47.04,0,0,28
+ACTUALYS JEAN 6,%cvi_4%,C2,15.9945,559.65,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,507.98,51.67,0,0,35
+ACTUALYS JEAN 6,%cvi_4%,C2,0.329,12.54,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,11.84,0.7,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,0.4115,14.49,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,13.99,0.5,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,2.7669,95.47,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,93.56,1.91,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,16.3771,565.08,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,536.19,28.89,0,0,9
+ACTUALYS JEAN 6,%cvi_4%,C2,1.1634,40.51,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,39.56,0.95,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,2.4865,85.2,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,83.5,1.7,0,0,0
+ACTUALYS JEAN 6,%cvi_4%,C2,13.6379,482.46,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,463.69,18.77,0,0,0
+TOTAL sur SARRIANS,,,329.5631,16373.46,,,,,15705.31,668.15,0,0,134
+Commune de VACQUEYRAS,,,,,,,,,,,,,
+ACTUALYS JEAN 7,%cvi_5%,C2,6.74,240.12,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,235.32,4.8,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,6.5932,226.68,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,222.15,4.53,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,16.1505,595.35,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,581.42,13.93,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,4.1855,144.3,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,141.41,2.89,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,2.3315,89.18,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,83.94,5.24,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,4.9364,183.71,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,BIO,177.71,6,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.16,5.74,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,5.44,0.3,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,28.3692,1068.79,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,BIO + Volume VCI,964.55,104.24,0,0,53
+ACTUALYS JEAN 7,%cvi_5%,C2,14.3421,545.47,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,475.63,69.84,0,0,39
+ACTUALYS JEAN 7,%cvi_5%,C2,0.375,14.61,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,13.5,1.11,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,5.2135,190.47,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,186.66,3.81,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,5.0631,177.07,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,172.15,4.92,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.565,20.94,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,20.34,0.6,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.787,27.23,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,26.69,0.54,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.956,26.76,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,26.22,0.54,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.6557,60.47,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,59.26,1.21,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.4439,50.31,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,49.09,1.22,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.3635,51.88,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,49.09,2.79,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,17.8406,632.89,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,Volume VCI,606.58,26.31,0,0,13
+ACTUALYS JEAN 7,%cvi_5%,C2,1.8839,66.45,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,64.05,2.4,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,2.2914,78.98,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,77.4,1.58,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.786,26.05,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,25.53,0.52,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,4.0701,142.62,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,138.38,4.24,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,5.383,184.92,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,181.22,3.7,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.176,41.02,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,39.98,1.04,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.87,29.14,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,28.56,0.58,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.529,15.86,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,15.54,0.32,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.0035,35.43,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,34.12,1.31,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.049,17.07,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,16.73,0.34,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,3.344,113.75,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,111.47,2.28,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.1581,44.02,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,39.38,4.64,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.9088,31.45,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,30.82,0.63,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,4.0872,113.16,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,110.9,2.26,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,0.2625,9.73,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,8.93,0.8,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,1.24,44.3,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,42.16,2.14,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,6.337,221.6,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,BIO,215.46,6.14,0,0,0
+ACTUALYS JEAN 7,%cvi_5%,C2,6.2197,214.53,%code_inao_2%  ,%code_inao_2%  ,%libelle_produit_2%,,210.24,4.29,0,0,0
+TOTAL sur VACQUEYRAS,,,244.5537,9097.03,,,,,8729.87,367.16,0,0,105
+TOTAL,,,716.1173,31781.52,,,,,30522.36,1259.16,0,0,239
