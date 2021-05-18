@@ -400,7 +400,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     protected function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $identifiant);
+        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
     }
 
     protected function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -1326,10 +1326,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function isAllDossiersHaveSameAddress(){
       $adresse = $this->constructAdresseLogement();
       foreach ($this->getLotsByNumeroDossier() as $lot){
-        if($lot->adresse_logement !== $adresse)
+        if($this->getAdresseLogement($lot) !== $adresse)
           return false;
       }
       return true;
+    }
+
+    public function getLotsByAdresse(){
+      $lotsAdresse = array();
+      foreach ($this->getLotsByNumeroDossier() as $lot){
+        $lotsAdresse[$this->getAdresseLogement($lot)][] = $lot;
+      }
+      return $lotsAdresse;
     }
 
     public function constructAdresseLogement(){
@@ -1476,9 +1484,26 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
+    public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
+    {
+        $lots = [];
+
+        foreach ($this->getLots() as $lot) {
+            if ($lot->numero_dossier === $this->numero_archive) {
+                $lots[] = $lot;
+            }
+        }
+
+        return $this->getInternalVolumeRevendique($lots, $produitFilter);
+    }
+
     public function getVolumeRevendiqueLots($produitFilter = null){
+        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
+    }
+
+    private function getInternalVolumeRevendique($lots, $produitFilter) {
         $total = 0;
-        foreach($this->getLots() as $lot) {
+        foreach($lots as $lot) {
             $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
   		    $isExcludeMode = (bool) $produitExclude;
             $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
@@ -1575,8 +1600,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
-          if(isset($cotisationsPrec[$cotisation->getHash()])) {
-              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+          $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
+          if(isset($cotisationsPrec[$cle])) {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
 
           if($this->hasVersion() && !$mouvement->quantite) {
