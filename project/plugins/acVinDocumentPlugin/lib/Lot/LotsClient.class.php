@@ -84,6 +84,16 @@ class LotsClient
             throw new Exception("La modification de lot n'est pas possible lorsque que lot a été dégusté plusieurs fois.");
         }
 
+        //On vérifie qu'il est bien possible d'avoir des modificatrices pour tous les id
+        foreach($ids as $id) {
+            $doc = DeclarationClient::getInstance()->find($id);
+            if($doc instanceof InterfaceVersionDocument) {
+                if (!$doc->getMaster()->verifyGenerateModificative()) {
+                    throw new sfException("il n'est pas possible d'avoir une modificatrice pour le doc ".$id);
+                }
+            }
+        }
+
         foreach($ids as $id) {
             $doc = DeclarationClient::getInstance()->find($id);
 

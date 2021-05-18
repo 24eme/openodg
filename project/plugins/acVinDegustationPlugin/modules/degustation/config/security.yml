@@ -8,3 +8,11 @@ getCourrierWithAuth:
 convocationWithAuth:
   is_secure: false
   credentials: []
+
+degustationConformitePDF:
+  is_secure: true
+  credentials: []
+
+degustationNonConformitePDF:
+  is_secure: true
+  credentials: []

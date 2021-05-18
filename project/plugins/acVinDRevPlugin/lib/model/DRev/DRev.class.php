@@ -2003,6 +2003,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->version_document->generateModificative();
     }
 
+    public function verifyGenerateModificative() {
+
+        return $this->version_document->verifyGenerateModificative();
+    }
+
+
     public function listenerGenerateVersion($document) {
         $document->constructId();
         $document->clearMouvementsLots();
