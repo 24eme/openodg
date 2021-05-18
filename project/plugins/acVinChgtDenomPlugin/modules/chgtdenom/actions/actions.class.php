@@ -5,9 +5,10 @@ class chgtdenomActions extends sfActions
     public function executeAjoutLot(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
+        $this->periode = ConfigurationClient::getInstance()->getCampagneManager()->getCurrentYearPeriode();
 
-        $drev = DRevClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne);
-        $drev->addLot(); 
+        $drev = DRevClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
+        $drev->addLot();
         $this->lot = $drev->lots[0] ;
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
@@ -69,7 +70,7 @@ class chgtdenomActions extends sfActions
     public function executeLots(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant, $this->campagne);
     }
 
     public function executeEdition(sfWebRequest $request) {

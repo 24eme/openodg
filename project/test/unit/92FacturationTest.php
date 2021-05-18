@@ -445,10 +445,10 @@ $t->comment('Création chgt Deno vers D13');
 
 $dateDeno = $campagne.'-12-15 11:00:00';
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $dateDeno);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $dateDeno, null);
 $chgtDenom->constructId();
 $chgtDenom->save();
-$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
+$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null);
 
 $lot = current($lots);
 $chgtDenom->setLotOrigine($lot);
@@ -471,11 +471,11 @@ $t->comment('Création chgt Deno vers MED');
 
 $dateDeno = $campagne.'-12-25 12:00:00';
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $dateDeno);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $dateDeno, null);
 $chgtDenom->constructId();
 $chgtDenom->save();
 
-$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant);
+$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null);
 
 $lot = current($lots);
 $chgtDenom->setLotOrigine($lot);
