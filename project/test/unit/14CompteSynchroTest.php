@@ -16,7 +16,7 @@ $nomModifieSociete = "société viti test contacts modifiées";
 $nomEtablissement = "établissement viti test contacts";
 $nomModifieEtablissement = "établissement viti test contacts modifiés";
 
-$t = new lime_test(37);
+$t = new lime_test(39);
 $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
@@ -40,6 +40,23 @@ $t->is($compteStandalone->nom, $societe->raison_sociale, "Le nom du compte et de
 $t->is($compteStandalone->nom, $compteStandalone->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte sont identiques");
 $t->is($compteStandalone->code_postal, $societe->code_postal, "Le code postal du compte et de la société sont identiques");
 $t->ok(in_array("societe", $compteStandalone->tags->automatique->toArray(true, false)),  "Le compte de la société possède le tag \"societe\"");
+
+$t->comment("Localisation");
+
+$adresse = $compte01->adresse;
+$commune = $compte01->commune;
+$code_postal = $compte01->code_postal;
+$coordonnees = $compte01->calculCoordonnees($adresse, $commune, $code_postal);
+$t->ok(number_format($coordonnees['lat'], 2) == 48.88 &&  number_format($coordonnees['lon'], 2) == 2.27, "Les coordonnées de l'adresse a été trouvé");
+
+$updatedLatLon = $compte01->updateCoordonneesLongLat(true);
+
+if(!$updatedLatLon)
+  throw new \Exception("Error Processing in updating latlon", 1);
+
+$coordonnees = array_values($compte01->getCoordonneesLatLon())[0];
+
+$t->is(number_format($coordonnees[0], 2) == 48.88 &&  number_format($coordonnees[1], 2) == 2.27, "Les champs des coordonnées (lat, lon) du compte ont été mises à jours");
 
 $t->comment("Modification des informations de la société");
 $societe->code_postal = "75014";
