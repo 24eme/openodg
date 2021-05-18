@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PAIEMENT_CSV_FILE=$2
+PAIEMENT_CSV_FILE=$1
 
 echo "date;identifiant analytique;journal;piece;raison sociale;libelle ligne;;quantite;debit;credit;;igp";
 cat $PAIEMENT_CSV_FILE  | sed 's/\([0-9]*\)-\([0-9]*\)-\([0-9]*\);/\3\/\2\/\1;/' | awk -F ';' '{

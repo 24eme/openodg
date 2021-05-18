@@ -10,7 +10,7 @@
                 <?php echo $form["modele"]->renderError() ?>
                 <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
-                <?php echo $form["modele"]->render(array("class" => "form-control")); ?>
+                <?php echo $form["modele"]->render(array("class" => "control-label")); ?>
                 </div>
             </div>
           <?php endif; ?>

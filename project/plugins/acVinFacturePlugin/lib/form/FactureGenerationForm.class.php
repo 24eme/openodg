@@ -37,7 +37,11 @@ class FactureGenerationForm extends BaseForm {
     public function save() {
         $values = $this->getValues();
         $generation = new Generation();
-        $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+        if (isset($values['modele'])) {
+            $generation->type_document = $values['modele'];
+        }else{
+            $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+        }
         $generation->arguments->add('date_facturation', $values['date_facturation']);
         $generation->arguments->add('date_mouvement', $values['date_mouvement']);
         $generation->arguments->add('type_document', $values['type_document']);
