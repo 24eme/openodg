@@ -297,16 +297,16 @@
         }
       }
     },
-    "redegustationIgp": {
-      "minimum": 100,
-      "minimum_fallback": "20_fallbackIgp",
+    "20_%detail_identifiant%_10_redegustationIgp": {
+      "minimum": 70,
+      "minimum_fallback": "10_%detail_identifiant%_20_fallbackIgp",
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "2nd dégustation",
+      "libelle": "2nd dégustation %detail_identifiant%",
       "code_comptable": "",
       "details": {
         "degustation": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.7,
           "tva": 0.2,
           "libelle": "Contrôle IGP",
@@ -314,23 +314,23 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
             "NOT /appellations/MED"
           ]
         }
       }
     },
-    "redegustationMed": {
-      "minimum": 100,
-      "minimum_fallback": "20_fallbackMed",
+    "20_%detail_identifiant%_10_redegustationMed": {
+      "minimum": 90,
+      "minimum_fallback": "10_%detail_identifiant%_20_fallbackMed",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
       "code_comptable": "",
       "details": {
         "degustation": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.7,
           "tva": 0.2,
           "libelle": "Contrôle Méditerannée",
@@ -338,7 +338,7 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
             "/appellations/MED"
           ]
