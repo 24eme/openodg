@@ -16,12 +16,12 @@ $nomModifieSociete = "société viti test contacts modifiées";
 $nomEtablissement = "établissement viti test contacts";
 $nomModifieEtablissement = "établissement viti test contacts modifiés";
 
-$t = new lime_test(39);
+$t = new lime_test(40);
 $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
 $societe->pays = "FR";
-$societe->adresse = "42 rue dulud";
+$societe->adresse = "48 rue dulud";
 $societe->code_postal = "92100";
 $societe->commune = "Neuilly sur seine";
 $societe->email = 'email@example.org';
@@ -48,7 +48,8 @@ $commune = $compte01->commune;
 $code_postal = $compte01->code_postal;
 $coordonnees = $compte01->calculCoordonnees($adresse, $commune, $code_postal);
 
-$t->ok(number_format($coordonnees['lat'], 2) == 48.88 &&  number_format($coordonnees['lon'], 2) == 2.27, "Les coordonnées de l'adresse a été trouvé.");
+$t->is($coordonnees['lat'], 48.880861, "La latitude retournée par BANO est correcte");
+$t->is($coordonnees['lon'], 2.266949, "La longitude retournée par BANO est correcte");
 
 $updatedLatLon = $compte01->updateCoordonneesLongLat(true);
 
