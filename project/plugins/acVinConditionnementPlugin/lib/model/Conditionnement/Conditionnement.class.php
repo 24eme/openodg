@@ -58,4 +58,20 @@ class Conditionnement extends BaseConditionnement
     {
         return $this->version_document->verifyGenerateModificative();
     }
+
+    /** Facturation **/
+    public function aFacturer()
+    {
+        $conditionnements = ConditionnementClient::getInstance()->findConditionnementsByCampagne($this->identifiant, $this->campagne);
+
+        uasort($conditionnements, function ($a, $b) {
+            return $a->_id > $b->_id;
+        });
+
+        if (current($conditionnements)->_id === $this->_id) {
+            return true;
+        }
+
+        return false;
+    }
 }
