@@ -32,7 +32,8 @@ class fichierActions extends sfActions
 
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
-    	$fileParam = $request->getParameter('file');
+    	$fileParam = $request->getParameter('file', 'pdf');
+
 		$this->secureEtablissement($fichier->getEtablissementObject());
 		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 

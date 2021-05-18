@@ -244,6 +244,15 @@ class VersionDocument
         return $document_modificative;
     }
 
+    public function verifyGenerateModificative() {
+        try {
+            $this->generateModificative();
+        }catch(sfException $e){
+            return false;
+        }
+        return true;
+    }
+
     public function generateNextVersion()
     {
         if($this->document->isModificative()) {

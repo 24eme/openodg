@@ -610,6 +610,11 @@ class degustationActions extends sfActions {
             throw new sfError404Exception("Lot non trouvé");
         }
 
+        if (!$this->lot->getDocument()->getMaster()->verifyGenerateModificative()) {
+            $this->getUser()->setFlash('error', "Le lot n'est pas modifiable : un document est sans doute en cours d'édition");
+            return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
+        }
+
         $this->form = new LotModificationForm($this->lot);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -855,6 +860,10 @@ class degustationActions extends sfActions {
       $this->degustation = $this->getRoute()->getDegustation();
       $this->redirectIfIsNotAnonymized();
       $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
+      $this->forward404Unless(
+            $this->getUser()->isAdmin() ||
+            $this->getUser()->getCompte()->getSociete()->identifiant == $etablissement->getSociete()->identifiant
+      );
       $this->document = new ExportDegustationConformitePDF($this->degustation,$etablissement,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
@@ -865,6 +874,10 @@ class degustationActions extends sfActions {
       $lot_dossier = $request->getParameter('lot_dossier');
       $lot_archive = $request->getParameter('lot_archive');
       $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+      $this->forward404Unless(
+          $this->getUser()->isAdmin() ||
+          strpos($lot->declarant_identifiant, $this->getUser()->getCompte()->getSociete()->identifiant) === 0
+      );
       $this->document = new ExportDegustationNonConformitePDF($this->degustation,$lot, $request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }

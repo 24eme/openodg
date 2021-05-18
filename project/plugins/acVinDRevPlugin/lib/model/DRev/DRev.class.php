@@ -399,7 +399,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $fichiers;
     }
 
-    protected function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
     }
 
@@ -2005,6 +2005,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->version_document->generateModificative();
     }
+
+    public function verifyGenerateModificative() {
+
+        return $this->version_document->verifyGenerateModificative();
+    }
+
 
     public function listenerGenerateVersion($document) {
         $document->constructId();
