@@ -4,11 +4,15 @@ class DouaneFichier extends Fichier {
     public function generateDonnees() {
         $classExport = DeclarationClient::getExportCsvClassName($this->type);
         $export = new $classExport($this, false);
-        $csv = explode(PHP_EOL, $export->export());
+
+        return $export->getCsv();
+    }
+
+    public function generateDonnees() {
         if (!$this->exist('donnees') || count($this->donnees) < 1) {
             $this->add('donnees');
             $generate = false;
-            foreach ($csv as $datas) {
+            foreach ($this->getCsv() as $datas) {
                 $this->addDonnee(str_getcsv($datas, ";"));
             }
         }
