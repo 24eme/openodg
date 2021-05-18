@@ -16,7 +16,7 @@ $nomModifieSociete = "société viti test contacts modifiées";
 $nomEtablissement = "établissement viti test contacts";
 $nomModifieEtablissement = "établissement viti test contacts modifiés";
 
-$t = new lime_test(40);
+$t = new lime_test(41);
 $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
