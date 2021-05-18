@@ -651,14 +651,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getVolumeDestFacturable($produitFilter = null)
-    {
-        if(preg_match("#$produitFilter#",$this->changement_produit_hash)){
-            return $this->changement_volume;
-        }
-        return 0.0;
-    }
-
     public function getFirstChgtDenomFacturable()
     {
 
