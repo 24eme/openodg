@@ -58,7 +58,8 @@ if(!$updatedLatLon)
 
 $coordonnees = array_values($compte01->getCoordonneesLatLon())[0];
 
-$t->ok(number_format($coordonnees[0], 2) == 48.88 &&  number_format($coordonnees[1], 2) == 2.27, "Les champs des coordonnées (lat, lon) du compte ont été mises à jours.");
+$t->is($coordonnees[0], 48.880861, "La latitude de l'adresse du compte a été mise à jour.");
+$t->is($coordonnees[1], 2.266949, "La longitude de l'adresse du compte a été mise à jour.");
 
 $t->comment("Modification des informations de la société");
 $societe->code_postal = "75014";
