@@ -22,7 +22,13 @@ class SV11 extends BaseSV11 {
             if(!$cvi) {
                 continue;
             }
-            $cvis[$cvi] = $cvi;
+            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, acCouchdbClient::HYDRATE_JSON);
+
+            if(!$etablissement) {
+                continue;
+            }
+
+            $cvis[$etablissement->_id] = $etablissement;
         }
 
         return $cvis;
