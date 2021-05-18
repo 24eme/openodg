@@ -150,14 +150,18 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return null;
     }
 
-    public function generateDonnees() {
+    public function getCsv() {
         $classExport = DeclarationClient::getInstance()->getExportCsvClassName($this->type);
         $export = new $classExport($this, false);
-        $csv = explode(PHP_EOL, $export->export());
+
+        return $export->getCsv();
+    }
+
+    public function generateDonnees() {
         if (!$this->exist('donnees') || count($this->donnees) < 1) {
             $this->add('donnees');
             $generate = false;
-            foreach ($csv as $datas) {
+            foreach ($this->getCsv() as $datas) {
                 $this->addDonnee(str_getcsv($datas, ";"));
             }
         }
