@@ -380,31 +380,12 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         $this->tags->$nodeType->add(null, $value);
     }
 
-    public function calculCoordonnees($adresse, $commune, $code_postal) {
-        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
-
-        if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
-		return false;
-	}
-        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
-
-        $file = file_get_contents($url);
-
-        $result = json_decode($file);
-
-        if(!count($result)){
-            return false;
-        }
-
-        if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
-            echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
-        }
-
-        return array("lat" => $result->response->docs[0]->lat, "lon" => $result->response->docs[0]->lng);
+    public function calculCoordonnees() {
+      return CompteClient::getInstance()->calculCoordonnees($this->adresse, $this->commune, $this->code_postal);
     }
 
     public function updateCoordonneesLongLatByNoeud($noeud) {
-        $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
+        $coordonnees = CompteClient::getInstance()->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
 
         if(!$coordonnees) {
 
