@@ -664,7 +664,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
             return false;
         }
-        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse."&postcode=".$code_postal);
+        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
 
         $file = file_get_contents($url);
         $result = json_decode($file);

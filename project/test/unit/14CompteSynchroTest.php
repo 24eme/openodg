@@ -21,8 +21,8 @@ $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
 $societe->pays = "FR";
-$societe->adresse = "42 rue Jacques dulud";
-$societe->code_postal = "92200";
+$societe->adresse = "42 rue dulud";
+$societe->code_postal = "92100";
 $societe->commune = "Neuilly sur seine";
 $societe->email = 'email@example.org';
 $societe->save();
@@ -47,7 +47,8 @@ $adresse = $compte01->adresse;
 $commune = $compte01->commune;
 $code_postal = $compte01->code_postal;
 $coordonnees = $compte01->calculCoordonnees($adresse, $commune, $code_postal);
-$t->ok(number_format($coordonnees['lat'], 2) == 48.88 &&  number_format($coordonnees['lon'], 2) == 2.27, "Les coordonnées de l'adresse a été trouvé");
+
+$t->ok(number_format($coordonnees['lat'], 2) == 48.88 &&  number_format($coordonnees['lon'], 2) == 2.27, "Les coordonnées de l'adresse a été trouvé.");
 
 $updatedLatLon = $compte01->updateCoordonneesLongLat(true);
 
@@ -56,7 +57,7 @@ if(!$updatedLatLon)
 
 $coordonnees = array_values($compte01->getCoordonneesLatLon())[0];
 
-$t->is(number_format($coordonnees[0], 2) == 48.88 &&  number_format($coordonnees[1], 2) == 2.27, "Les champs des coordonnées (lat, lon) du compte ont été mises à jours");
+$t->ok(number_format($coordonnees[0], 2) == 48.88 &&  number_format($coordonnees[1], 2) == 2.27, "Les champs des coordonnées (lat, lon) du compte ont été mises à jours.");
 
 $t->comment("Modification des informations de la société");
 $societe->code_postal = "75014";
