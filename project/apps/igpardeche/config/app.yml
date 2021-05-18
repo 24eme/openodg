@@ -4,7 +4,7 @@
 # default values
 all:
   organisme:
-    nom: Syndicat des vins de pays des coteaux de l'Ardèche
+    nom: Syndicat des Vins IGP d'Ardèche
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
