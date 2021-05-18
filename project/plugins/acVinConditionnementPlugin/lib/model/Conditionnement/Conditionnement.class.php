@@ -1,4 +1,5 @@
 <?php
+
 class Conditionnement extends BaseConditionnement
 {
     public function constructId() {

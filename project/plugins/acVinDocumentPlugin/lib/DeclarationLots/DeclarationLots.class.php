@@ -1,10 +1,11 @@
 <?php
-abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument
+abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument, InterfaceMouvementFacturesDocument
 {
       protected $declarant_document = null;
       protected $piece_document = null;
       protected $archivage_document = null;
       protected $etablissement = null;
+      protected $mouvement_document = null;
 
       public function __construct() {
           parent::__construct();
@@ -20,6 +21,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           $this->declarant_document = new DeclarantDocument($this);
           $this->piece_document = new PieceDocument($this);
           $this->archivage_document = new ArchivageDocument($this);
+          $this->mouvement_document = new MouvementFacturesDocument($this);
       }
 
       public function initDoc($identifiant, $campagne, $date = null) {
@@ -550,4 +552,91 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               }
           }
       }      /**** FIN DES MOUVEMENTS LOTS ****/
+
+    /** MOUVEMENTS FACTURES **/
+
+    public function getTemplateFacture() {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    }
+
+    public function getMouvementsFactures() {
+
+        return $this->_get('mouvements');
+    }
+
+    public function getMouvementsFacturesCalcule() {
+
+      $templateFacture = $this->getTemplateFacture();
+      if(!$templateFacture) {
+          return array();
+      }
+
+      $cotisations = $templateFacture->generateCotisations($this);
+
+      $identifiantCompte = $this->getIdentifiant();
+
+      $mouvements = array();
+
+      $rienAFacturer = true;
+
+      foreach($cotisations as $cotisation) {
+          $mouvement = ConditionnementMouvementFactures::freeInstance($this);
+          $mouvement->detail_identifiant = $this->numero_archive;
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
+
+          $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
+          if(isset($cotisationsPrec[$cle])) {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
+          }
+
+          if($mouvement->quantite) {
+              $rienAFacturer = false;
+          }
+
+          $mouvements[$mouvement->getMD5Key()] = $mouvement;
+      }
+
+      if($rienAFacturer) {
+          return array();
+
+      }
+
+      return array($identifiantCompte => $mouvements);
+    }
+
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+    }
+
+    public function generateMouvementsFactures() {
+
+        return $this->mouvement_document->generateMouvementsFactures();
+    }
+
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvementsFactures(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }
+
+    /** FIN MOUVEMENTS FACTURES **/
 }
