@@ -3,7 +3,7 @@
 FACTURE_CSV_FILE=$2
 
 echo "date;identifiant analytique;journal;piece;raison sociale;libelle ligne;;quantite;debit;credit;v4?;igp";
-cat $FACTURE_CSV_FILE | awk -F ';' '{
+cat $FACTURE_CSV_FILE | sed 's/\([0-9]*\)-\([0-9]*\)-\([0-9]*\);/\3\/\2\/\1;/' | awk -F ';' '{
 	if ($14 && $15) {
 		//Credit ligne
 		print $1";"$12";"70";"$11";"$4";"$13";0;"$15";;"$16";v4;"$13;
