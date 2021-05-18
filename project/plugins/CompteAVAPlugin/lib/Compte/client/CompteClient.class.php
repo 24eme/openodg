@@ -270,4 +270,24 @@ class CompteClient extends acCouchdbClient {
 
         return sprintf("%s (%s) à %s (%s)", $compte->nom_a_afficher, ($compte->cvi) ? $compte->cvi : (($compte->siren) ? $compte->siren : $compte->identifiant_interne), $compte->commune, $compte->code_postal);
     }
+
+    public function calculCoordonnees($adresse, $commune, $code_postal) {
+        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
+        if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
+            return false;
+        }
+        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
+
+        $file = file_get_contents($url);
+        $result = json_decode($file);
+        if(!$result || !count($result->features)){
+            return false;
+        }
+        if(KeyInflector::slugify($result->features[0]->properties->city) != KeyInflector::slugify($commune)) {
+            //echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
+        }
+        return array("lat" => $result->features[0]->geometry->coordinates[1], "lon" => $result->features[0]->geometry->coordinates[0]);
+    }
+
+
 }
