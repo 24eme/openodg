@@ -16,12 +16,12 @@ $nomModifieSociete = "société viti test contacts modifiées";
 $nomEtablissement = "établissement viti test contacts";
 $nomModifieEtablissement = "établissement viti test contacts modifiés";
 
-$t = new lime_test(37);
+$t = new lime_test(41);
 $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
 $societe->pays = "FR";
-$societe->adresse = "42 rue dulud";
+$societe->adresse = "48 rue dulud";
 $societe->code_postal = "92100";
 $societe->commune = "Neuilly sur seine";
 $societe->email = 'email@example.org';
@@ -40,6 +40,26 @@ $t->is($compteStandalone->nom, $societe->raison_sociale, "Le nom du compte et de
 $t->is($compteStandalone->nom, $compteStandalone->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte sont identiques");
 $t->is($compteStandalone->code_postal, $societe->code_postal, "Le code postal du compte et de la société sont identiques");
 $t->ok(in_array("societe", $compteStandalone->tags->automatique->toArray(true, false)),  "Le compte de la société possède le tag \"societe\"");
+
+$t->comment("Localisation");
+
+$adresse = $compte01->adresse;
+$commune = $compte01->commune;
+$code_postal = $compte01->code_postal;
+$coordonnees = $compte01->calculCoordonnees();
+
+$t->is($coordonnees['lat'], 48.880861, "La latitude retournée par BANO est correcte");
+$t->is($coordonnees['lon'], 2.266949, "La longitude retournée par BANO est correcte");
+
+$updatedLatLon = $compte01->updateCoordonneesLongLat(true);
+
+if(!$updatedLatLon)
+  throw new \Exception("Error Processing in updating latlon", 1);
+
+$coordonnees = array_values($compte01->getCoordonneesLatLon())[0];
+
+$t->is($coordonnees[0], 48.880861, "La latitude de l'adresse du compte a été mise à jour.");
+$t->is($coordonnees[1], 2.266949, "La longitude de l'adresse du compte a été mise à jour.");
 
 $t->comment("Modification des informations de la société");
 $societe->code_postal = "75014";
