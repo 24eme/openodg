@@ -46,7 +46,7 @@ $t->comment("Localisation");
 $adresse = $compte01->adresse;
 $commune = $compte01->commune;
 $code_postal = $compte01->code_postal;
-$coordonnees = $compte01->calculCoordonnees($adresse, $commune, $code_postal);
+$coordonnees = $compte01->calculCoordonnees();
 
 $t->is($coordonnees['lat'], 48.880861, "La latitude retournée par BANO est correcte");
 $t->is($coordonnees['lon'], 2.266949, "La longitude retournée par BANO est correcte");

@@ -659,34 +659,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     	return (6378137 * $d);
     }
 
-    public function calculCoordonnees($adresse, $commune, $code_postal) {
-        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
-        if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
-            return false;
-        }
-        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
-
-        $file = file_get_contents($url);
-        $result = json_decode($file);
-        if(!$result || !count($result->features)){
-            return false;
-        }
-        if(KeyInflector::slugify($result->features[0]->properties->city) != KeyInflector::slugify($commune)) {
-            //echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
-        }
-        return array("lat" => $result->features[0]->geometry->coordinates[1], "lon" => $result->features[0]->geometry->coordinates[0]);
+    public function calculCoordonnees() {
+      return CompteClient::getInstance()->calculCoordonnees($this->adresse, $this->commune, $this->code_postal);
     }
 
     public function updateCoordonneesLongLatByNoeud($noeud,$latCompare = false,$lonCompare = false) {
 
-        $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
+        $coordonnees = CompteClient::getInstance()->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
 
         if(!$coordonnees) {
             return false;
         }
         if($latCompare && $lonCompare){
           if(round($this->getDistances($coordonnees["lat"], $coordonnees["lon"],$latCompare,$lonCompare)) > 20000){
-            $coordonnees = $this->calculCoordonnees("", $noeud->commune, $noeud->code_postal);
+            $coordonnees = CompteClient::getInstance()->calculCoordonnees("", $noeud->commune, $noeud->code_postal);
           }
           if(round($this->getDistances($coordonnees["lat"], $coordonnees["lon"],$latCompare,$lonCompare)) > 20000){
             $coordonnees["lon"] = null;
