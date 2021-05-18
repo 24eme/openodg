@@ -610,6 +610,11 @@ class degustationActions extends sfActions {
             throw new sfError404Exception("Lot non trouvé");
         }
 
+        if (!$this->lot->getDocument()->getMaster()->verifyGenerateModificative()) {
+            $this->getUser()->setFlash('error', "Le lot n'est pas modifiable : un document est sans doute en cours d'édition");
+            return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
+        }
+
         $this->form = new LotModificationForm($this->lot);
 
         if (!$request->isMethod(sfWebRequest::POST)) {

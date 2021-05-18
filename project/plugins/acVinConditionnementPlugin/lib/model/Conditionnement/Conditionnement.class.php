@@ -52,4 +52,9 @@ class Conditionnement extends BaseConditionnement
     {
         return $this->version_document->generateModificative();
     }
+
+    public function verifyGenerateModificative()
+    {
+        return $this->version_document->verifyGenerateModificative();
+    }
 }
