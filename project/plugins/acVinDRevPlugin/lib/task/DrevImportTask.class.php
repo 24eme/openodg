@@ -3,6 +3,13 @@
 class DrevImportTask extends sfBaseTask
 {
 
+    protected $byLots = false;
+    protected $configurationProduits = array();
+    protected $csv = null;
+    protected static $destinationsTypes = array("VRAC_FRANCE_ET_CONDITIONNEMENT" => DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT,
+                                           "VRAC_FRANCE_ET_VRAC_EXPORT" => DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT,
+                                           "VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT" => DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT);
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -13,6 +20,7 @@ class DrevImportTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('byLots', null, sfCommandOption::PARAMETER_OPTIONAL, 'Import de la DRev avec un ensemble de lots', false),
         ));
 
         $this->namespace = 'drev';
@@ -28,16 +36,15 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        if(!file_exists($arguments['csv'])) {
-            //echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['doc_id']);
+        $this->byLots = $options['byLots'];
 
-            //return;
-        }
+        $this->configurationProduits = ConfigurationClient::getInstance()->getConfiguration()->getProduits();
+
 
         $csvFile = new CsvFile($arguments['csv']);
-        $csv = $csvFile->getCsv();
+        $this->csv = $csvFile->getCsv();
         $cvis = array();
-        foreach($csv as $ligne => $data) {
+        foreach($this->csv as $ligne => $data) {
             if(!$data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
                 continue;
             }
@@ -45,8 +52,8 @@ EOF;
             $campagne = $data[ExportDRevCSV::CSV_CAMPAGNE];
             $cvis[$cvi."_".$campagne][] = $ligne;
         }
-
         foreach($cvis as $cviCampagne => $lignes) {
+
                 $cviParts = explode('_', $cviCampagne);
                 $cvi = $cviParts[0];
                 $campagne = $cviParts[1];
@@ -65,24 +72,29 @@ EOF;
                     continue;
                 }
                 if($etablissement->isSuspendu()){
-                  echo "DREV;ERROR;$cvi;cvi opérateur archivé, pas de reprise\n";
+                  echo "DREV;ERREUR;$cvi;cvi opérateur archivé, pas de reprise\n";
                   continue;
                 }
-                $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($etablissement->identifiant, $campagne);
+
+                $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($etablissement->identifiant, $campagne);
+                $hash = "/declaration/certifications/".$data[ExportDRevCSV::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[ExportDRevCSV::CSV_PRODUIT_GENRE]."/appellations/".$data[ExportDRevCSV::CSV_PRODUIT_APPELLATION]."/mentions/".$data[ExportDRevCSV::CSV_PRODUIT_MENTION]."/lieux/".$data[ExportDRevCSV::CSV_PRODUIT_LIEU]."/couleurs/".$data[ExportDRevCSV::CSV_PRODUIT_COULEUR]."/cepages/".$data[ExportDRevCSV::CSV_PRODUIT_CEPAGE];
+
+                if($this->byLots){
+
+                    $this->importDRevByLots($drev,  $lignes, $etablissement->identifiant, $campagne);
+
+                }else{
 
                 if($drev) {
                     continue;
                 }
-
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
                 if(!$drev->getDocumentDouanier()) {
-                    echo "ERROR;$etablissement->_id ($etablissement->cvi);pas de document douanier\n";
+                    echo "ERREUR;$etablissement->_id ($etablissement->cvi);pas de document douanier\n";
                     continue;
                 }
-
                 foreach($lignes as $ligne) {
-                    $data = $csv[$ligne];
-                    $hash = "/declaration/certifications/".$data[ExportDRevCSV::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[ExportDRevCSV::CSV_PRODUIT_GENRE]."/appellations/".$data[ExportDRevCSV::CSV_PRODUIT_APPELLATION]."/mentions/".$data[ExportDRevCSV::CSV_PRODUIT_MENTION]."/lieux/".$data[ExportDRevCSV::CSV_PRODUIT_LIEU]."/couleurs/".$data[ExportDRevCSV::CSV_PRODUIT_COULEUR]."/cepages/".$data[ExportDRevCSV::CSV_PRODUIT_CEPAGE];
+                    $data = $this->csv[$ligne];
 
                     if(!$drev->getConfiguration()->exist($hash)) {
                         continue;
@@ -121,7 +133,103 @@ EOF;
                 $drev->save();
 
                 echo "IMPORTE;$drev->_id\n";
+            }
+
         }
+    }
+
+    protected function importDRevByLots($drev, $lignes, $identifiant, $campagne){
+        if(!$drev) {
+            $drev = DRevClient::getInstance()->createDoc($identifiant, $campagne, false, false);
+            $drev->cleanLots();
+        }else{
+            $drev = $drev->getDocument()->generateModificative();
+        }
+
+        $lotsAdded = false;
+        foreach($lignes as $ligne) {
+            $data = $this->csv[$ligne];
+            if(!trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]) || !trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG])){
+                $cvi = $data[ExportDRevCSV::CSV_CVI];
+                $campagne = $data[ExportDRevCSV::CSV_CAMPAGNE];
+                echo "ERREUR;$cvi;$campagne;pas d'import, pas de validation declarant ou odg\n";
+            }
+            $volume = trim($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE]);
+            $numero_cuve = trim($data[ExportDRevCSV::CSV_LOT_NUMERO_CUVE]);
+            $type_destination = self::$destinationsTypes[preg_replace("/([A-Z_]+).+/","$1",$data[ExportDRevCSV::CSV_LOT_DESTINATION])];
+            $date_destination = preg_replace("/([A-Z_]* )?([0-9\/]+)/","$2",$data[ExportDRevCSV::CSV_LOT_DESTINATION]);
+            $code_inao = trim($data[ExportDRevCSV::CSV_PRODUIT_INAO]);
+            $produit_line = null;
+
+            foreach ($this->configurationProduits as $key => $produit) {
+                if($produit->getCodeDouane() == $code_inao){
+                    $produit_line = $produit;
+                    break;
+                }
+            }
+            if(!$code_inao || !$produit_line){
+                echo "DREV;ERREUR;$code_inao;$produit_line;Produit non trouvé\n";
+                continue;
+            }
+
+
+            if($volume){
+                if($this->isLotInDrev($drev, $volume, $produit_line->getHash(), $code_inao,  $numero_cuve, $type_destination, $date_destination)){
+                    $libelleProduit = $produit_line->getLibelleComplet();
+                    echo "WARNING;PAS D'IMPORT lot existe : $drev->_id;$campagne;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
+                    continue;
+                }
+                $lot = $drev->addLot();
+                $lot->date = trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]);
+                $lot->numero_logement_operateur = $numero_cuve;
+                $lot->destination_type = $type_destination;
+                $lot->destination_date = $date_destination;
+                $lot->volume = floatval($volume);
+                $lot->produit_hash = $produit_line->getHash();
+                $libelleProduit = $produit_line->getLibelle();
+                $lotsAdded = true;
+                echo "Ajout d'un lot;$drev->_id;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
+            }
+        }
+        $papier = ($data[ExportDRevCSV::CSV_TYPE_DREV] != "TELEDECLARATION");
+        if($papier){
+            $drev->add('papier', 1);
+        }
+        $dateValidation = null;
+        if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]){
+            $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]);
+            $dateValidation = $dt->modify('+1 minute')->format('c');
+        }
+        $dateValidation = null;
+        if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]){
+            $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]);
+            $dateValidation = $dt->modify('+1 minute')->format('c');
+        }
+
+        if($lotsAdded){
+            $drev->validate($dateValidation);
+            $drev->validateOdg($dateValidation);
+            $drev->save();
+            echo "DREV SAUVE;$drev->_id\n";
+        }
+    }
+
+    protected function isLotInDrev($drev, $volume, $produit_hash, $code_inao, $numero_cuve, $type_destination, $date_destination){
+        foreach ($drev->getLots() as $lot) {
+            $drevLotProduit = null;
+            foreach ($this->configurationProduits as $key => $produit) {
+                if($key == $lot->produit_hash){
+                    $drevLotProduit = $produit;
+                    break;
+                }
+            }
+            $sameProduit = ($drevLotProduit->getCodeDouane() == $code_inao) || ($drevLotProduit->getCodeDouane() == preg_replace('/([0-9A-Z]+) ([0-9A-Z]*)/',"$1", $code_inao));
+            $sameVolume = ($volume == $lot->getVolume());
+            if($sameProduit && $sameVolume){
+                return true;
+            }
+        }
+        return false;
     }
 
     protected function formatFloat($value) {
