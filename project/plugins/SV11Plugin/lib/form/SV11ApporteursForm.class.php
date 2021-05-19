@@ -4,11 +4,18 @@ class SV11ApporteursForm extends BaseForm {
 
     protected $apporteurs = null;
     protected $sv11 = null;
+    protected $coop = null;
 
     public function __construct($sv11)
     {
         $this->sv11 = $sv11;
         $this->apporteurs = $sv11->getApporteurs();
+        foreach($this->sv11->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
+            if(isset($this->apporteurs[$liaison->id_etablissement])) {
+                continue;
+            }
+            $this->apporteurs[$liaison->id_etablissement] = $liaison->getEtablissement();
+        }
         $defaults = array();
         foreach($this->apporteurs as $apporteur) {
             $defaults[$apporteur->_id] = 1;
@@ -29,6 +36,9 @@ class SV11ApporteursForm extends BaseForm {
 
         foreach($this->getValues() as $id => $check) {
             if(!$check) {
+                $apporteur = EtablissementClient::getInstance()->find($id);
+                $apporteur->removeLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE . '_' . $coop->_id);
+                $apporteur->save();
                 continue;
             }
 
