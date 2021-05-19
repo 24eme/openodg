@@ -126,6 +126,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return ($this->nom) ? $this->nom : $this->raison_sociale;
     }
 
+    public function existLiaison($type, $etablissementId) {
+
+        return $this->liaisons_operateurs->exist($type . '_' . $etablissementId);
+    }
+
     public function addLiaison($type, $etablissement,$saveOther = true, $chai = null, $attributsChai = array()) {
 
         if(!$etablissement instanceof Etablissement) {

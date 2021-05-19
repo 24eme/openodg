@@ -15,14 +15,14 @@ class SV11 extends BaseSV11 {
 		return ConfigurationClient::getConfiguration($this->campagne.'-12-10');
 	}
 
-    public function getApporteurs() {
+    public function getApporteurs($hydrate = acCouchdbClient::HYDRATE_JSON) {
         $cvis = array();
         foreach($this->getCsv() as $data) {
             $cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
             if(!$cvi) {
                 continue;
             }
-            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, acCouchdbClient::HYDRATE_JSON);
+            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, $hydrate);
 
             if(!$etablissement) {
                 continue;
