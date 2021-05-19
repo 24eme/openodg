@@ -4,6 +4,8 @@ include dirname(__FILE__).'/../../bootstrap/functional.php';
 
 $etablissement = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_etablissement')->getEtablissement();
 $societe = $etablissement->getSociete();
+$societeAutre = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_societe_autre')->getSociete();
+
 
 $application = getenv('APPLICATION');
 
@@ -372,6 +374,23 @@ $t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
 
 $b->get('/degustation');
 $t->is($b->getResponse()->getStatuscode(), 403, "Accueil des dégustations interdite");
+
+$b->get($uriConformiteProtege);
+$b->isForwardedTo('degustation', 'degustationConformitePDF');
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF de conformités du viti autorisée");
+
+$t->comment('En mode télédéclarant autre');
+
+$b->get('/logout');
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array(), 'app_facture_emetteur' => $facture_emetteur_test));
+$b->restart();
+
+$b->post('/login_no_cas', array('admin' => array('login' => $societeAutre->getIdentifiant())));
+$t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
+
+$b->get($uriConformiteProtege);
+$b->isForwardedTo('degustation', 'degustationConformitePDF');
+$t->is($b->getResponse()->getStatuscode(), 404, "PDF de conformités d'une autre societe non autorisée");
 
 $t->comment('En mode non connecté');
 
