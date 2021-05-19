@@ -187,9 +187,9 @@
               <?php if(!$drev->isValidee() || count($drev->getLotsByAdresse()) === 1): ?>
                 <tr>
                   <td style="vertical-align : middle;" class="text-left">
-                    <?php echo $drev->getAdresseLogement($lot);
+                    <?php echo $drev->constructAdresseLogement();
                     ?>
-                    <?php if(!$drev->isValidee() && !$lot->numero_dossier): ?>
+                    <?php if(!$drev->isValidee()): ?>
                       <a href="<?php echo url_for("drev_exploitation", $drev) ?>">(éditer)</a>
                     <?php endif; ?>
                   </td>
@@ -203,7 +203,7 @@
                     $str = "";
                     foreach($lots as $lot) :
                       if(!$first_time):
-                        $str .= ";  ";
+                        $str .= " ; ";
                       else:
                         $first_time = false;
                       endif;
