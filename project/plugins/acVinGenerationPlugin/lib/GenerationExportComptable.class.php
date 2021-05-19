@@ -5,7 +5,7 @@ class GenerationExportComptable extends GenerationAbstract
     public function generate() {
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS);
         $facturesfile = "generation/".$this->generation->date_emission."_factures.csv";
-        $isafile = "generation/".$this->generation->date_emission."_factures_isa.csv";
+        $isafile = "generation/".$this->generation->date_emission."_factures_isa.txt";
 
 
         $handle_factures = fopen(sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", 'a');
