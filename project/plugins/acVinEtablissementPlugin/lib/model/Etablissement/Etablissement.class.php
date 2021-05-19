@@ -189,15 +189,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         }
 
         $liaison = $this->liaisons_operateurs->get($key);
-        if($removeOther && $liaison->type_liaison == EtablissementClient::TYPE_LIAISON_BAILLEUR) {
-            $etablissement = EtablissementClient::getInstance()->find($liaison->id_etablissement);
-            $etablissement->removeLiaison(EtablissementClient::TYPE_LIAISON_METAYER."_".$this->_id, false);
-            $etablissement->save();
-        }
 
-        if($removeOther && $liaison->type_liaison == EtablissementClient::TYPE_LIAISON_METAYER) {
-            $etablissement = EtablissementClient::getInstance()->find($liaison->id_etablissement);
-            $etablissement->removeLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR."_".$this->_id, false);
+        $typeLiaisonOpposee = EtablissementClient::getTypeLiaisonOpposee($liaison->type_liaison);
+
+        if($removeOther && $typeLiaisonOpposee) {
+            $etablissement = $liaison->getEtablissement();
+            $etablissement->removeLiaison($typeLiaisonOpposee."_".$this->_id, false);
             $etablissement->save();
         }
 
