@@ -11,6 +11,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') a
 
 $societe = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_societe')->getSociete();
 $societeAnnexe = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_societe_2')->getSociete();
+$societeCaveCoop = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_functionnal_societe_coop')->getSociete();
 
 $b = new sfTestFunctional(new Browser());
 $t = $b->test();
@@ -52,6 +53,22 @@ $etablissement->save();
 $b->get('/etablissement/'.$etablissementIdentifiant.'/chai-ajout');
 $b->click('#btn_valider')->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'ajout d'un chai");
+
+$t->comment("Création d'une cave coop");
+
+$b->get('/etablissement/'.$societeCaveCoop->getIdentifiant().'/nouveau');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de création d'un établisement");
+$b->click('#btn_valider', array('etablissement_modification' => array('cvi' => '7523700200')))->followRedirect();
+$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire de création d'un établissement");
+
+$etablissementCoop = EtablissementClient::getInstance()->find($matches[1]);
+$compteEtablissementCoop = $etablissementCoop->getMasterCompte();
+$compteEtablissementCoop->addTag('test', 'test_functionnal');
+$compteEtablissementCoop->addTag('test', 'test_functionnal_etablissement_coop');
+$compteEtablissementCoop->save();
+
+$etablissementCoop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement);
+$etablissementCoop->save();
 
 $t->comment('En mode stalker');
 
