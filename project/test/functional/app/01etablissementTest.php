@@ -56,10 +56,8 @@ $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'ajout d'un chai");
 
 $t->comment("Création d'une cave coop");
 
-$b->get('/etablissement/'.$societeCaveCoop->getIdentifiant().'/nouveau');
-$t->is($b->getResponse()->getStatuscode(), 200, "Page de création d'un établisement");
-$b->click('#btn_valider', array('etablissement_modification' => array('cvi' => '7523700200')))->followRedirect();
-$t->is($b->getResponse()->getStatuscode(), 200, "Formulaire de création d'un établissement");
+$b->get('/etablissement/'.$societeAnnexe->getIdentifiant().'/nouveau')->click('#btn_valider')->followRedirect();
+preg_match("|/etablissement/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
 
 $etablissementCoop = EtablissementClient::getInstance()->find($matches[1]);
 $compteEtablissementCoop = $etablissementCoop->getMasterCompte();
@@ -67,7 +65,8 @@ $compteEtablissementCoop->addTag('test', 'test_functionnal');
 $compteEtablissementCoop->addTag('test', 'test_functionnal_etablissement_coop');
 $compteEtablissementCoop->save();
 
-$etablissementCoop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement);
+$etablissementCoop->famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+$etablissementCoop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement->_id);
 $etablissementCoop->save();
 
 $t->comment('En mode stalker');
