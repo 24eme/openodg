@@ -3,7 +3,7 @@
 PAIEMENT_CSV_FILE=$1
 
 #echo "date;identifiant analytique;journal;piece;raison sociale;libelle ligne;;quantite;debit;credit;;igp";
-cat $PAIEMENT_CSV_FILE | tail -n +2 | awk -F ';' '{
+cat $PAIEMENT_CSV_FILE | sed 's/_REV_/R/' | tail -n +2 | awk -F ';' '{
 	//compte client
 	print $5";411"$3";22;"$4";"$2";"$7";;;;"$6";;";
 	//depot
