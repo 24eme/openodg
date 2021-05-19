@@ -7,7 +7,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
 
     protected $floatHelper = null;
 
-    public function __construct($doc_or_id, $header = true, $que_les_non_verses_comptablement = false;) {
+    public function __construct($doc_or_id, $header = true, $que_les_non_verses_comptablement = false) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
