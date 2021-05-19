@@ -7,6 +7,7 @@ class GenerationExportComptable extends GenerationAbstract
         $facturesfile = "generation/".$this->generation->date_emission."_factures.csv";
         $isafile = "generation/".$this->generation->date_emission."_factures_isa.txt";
 
+        $date_facturation = $this->generation->arguments->exist('date_facturation') ? Date::getIsoDateFromFrenchDate($this->generation->arguments->get('date_facturation')) : null;
 
         $handle_factures = fopen(sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", 'a');
 
@@ -24,6 +25,10 @@ class GenerationExportComptable extends GenerationAbstract
 
             if(!$facture) {
                 throw new sfException(sprintf("Document %s introuvable", $vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]));
+            }
+
+            if ($facture->date > $date_facturation) {
+                continue;
             }
 
             $export = new ExportFactureCSV($facture, false);
