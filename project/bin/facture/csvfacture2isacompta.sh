@@ -2,13 +2,17 @@
 
 FACTURE_CSV_FILE=$1
 
-echo "date;identifiant analytique;journal;piece;raison sociale;libelle ligne;;quantite;debit;credit;v4?;igp";
+echo "date;identifiant analytique;journal;piece;raison sociale;libelle mouvement;;quantite;debit;credit;code tva;igp";
 cat $FACTURE_CSV_FILE | sed 's/\([0-9]*\)-\([0-9]*\)-\([0-9]*\);/\3\/\2\/\1;/' | awk -F ';' '{
 	if ($14 && $15) {
+        tva = ""
+        if ($17 * 1 > 0) {
+            tva = "r5"
+        }
 		//Credit ligne
-		print $1";"$12";"70";"$11";"$4";"$13";0;"$15";;"$16";v4;"$13;
+		print $1";"$12";"70";"$11";"$4";"$13";0;"$15";;"$16";"tva";"$13;
 		if ($17 * 1 > 0) {
-			print $1";445710;"70";"$11";"$4";TVA "$13";0;"$15";;"$17";v4;"$13;
+			print $1";44571251;"70";"$11";"$4";TVA "$13";0;"$15";;"$17";"tva";"$13;
 		}
 	} else {
 		//export debit client
