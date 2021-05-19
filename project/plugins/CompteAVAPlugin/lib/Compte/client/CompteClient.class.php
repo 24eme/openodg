@@ -44,6 +44,8 @@ class CompteClient extends acCouchdbClient {
 
     const REGION_VITICOLE = 'ALSACE';
 
+    const API_ADRESSE_URL = "https://api-adresse.data.gouv.fr/search/";
+
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_APPORTEUR => 'Producteur en structure collective',
         self::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS => 'Producteur de raisin',
@@ -273,10 +275,10 @@ class CompteClient extends acCouchdbClient {
 
     public function calculCoordonnees($adresse, $commune, $code_postal) {
         $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
-        if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
+        if (!preg_match('/^http.*\./', CompteClient::API_ADRESSE_URL)) {
             return false;
         }
-        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
+        $url = CompteClient::API_ADRESSE_URL.'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
 
         $file = file_get_contents($url);
         $result = json_decode($file);
