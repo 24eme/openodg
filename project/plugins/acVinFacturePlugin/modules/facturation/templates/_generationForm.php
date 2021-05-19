@@ -1,5 +1,5 @@
 
-<h3><?php if($massive): ?>Génération massive des factures<?php else: ?>Génération de facture<?php endif; ?></h3>
+<h3><?php if($massive): ?>Génération massive<?php else: ?>Génération de facture<?php endif; ?></h3>
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -8,7 +8,7 @@
           <?php if(isset($form["modele"])): ?>
             <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["modele"]->renderError() ?>
-                <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
+                <?php echo $form["modele"]->renderLabel("Type de génération", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                 <?php echo $form["modele"]->render(array("class" => "control-label")); ?>
                 </div>
@@ -70,7 +70,7 @@
 
             <div class="form-group text-right">
                 <div class="col-xs-6 col-xs-offset-6">
-                    <button class="btn btn-default btn-block btn-upper" type="submit"><?php if($massive): ?>Générer les factures<?php else: ?>Générer la facture<?php endif; ?></button>
+                    <button class="btn btn-default btn-block btn-upper" type="submit"><?php if($massive): ?>Générer<?php else: ?>Générer la facture<?php endif; ?></button>
                 </div>
             </div>
         </div>
