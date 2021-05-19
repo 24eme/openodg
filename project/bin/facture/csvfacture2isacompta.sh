@@ -8,12 +8,12 @@ cat $FACTURE_CSV_FILE | tail -n +2 | sed 's/\([0-9]*\)-\([0-9]*\)-\([0-9]*\);/\3
         tva = ""
         tva_prix = $17
         sub(",", ".", tva_prix) * 1.0
-        if (tva_prix != 0) {
+        if (tva_prix * 1 != 0.00) {
             tva = "r5"
         }
 		//Credit ligne
 		print $1";"$12";"70";"$11";"$4";"$13";0;"$15";;"$16";"tva";"$13;
-		if (tva_prix != 0) {
+		if (tva_prix * 1 != 0.00) {
 			print $1";44571251;"70";"$11";"$4";TVA "$13";0;"$15";;"$17";"tva";"$13;
 		}
 	} else {
