@@ -109,8 +109,27 @@ foreach($vitis as $viti) {
 
 $formApporteurs = new SV11ApporteursForm($sv11);
 
-$t->is(count($formApporteurs['apporteurs']), count($sv11->getApporteurs()), "Il y a les 4 apporteurs dans le form");
-$values = array("apporteurs" => array_fill_keys(array_flip(array_keys($sv11->getApporteurs())), 1));
+$t->is(count($formApporteurs->getFormFieldSchema()), count($apporteurs), "Il y a les 5 apporteurs dans le form");
+$t->is($formApporteurs->getDefaults(), array_fill_keys(array_keys($apporteurs), 1), "Tous les apporteurs sont cochés par défaut");
+$values = $formApporteurs->getDefaults();
+unset($values[$vitis[0]->_id]);
 $formApporteurs->bind($values);
+
 $t->ok($formApporteurs->isValid(), "Le formulaire est valide");
 
+$formApporteurs->save();
+
+$coop = EtablissementClient::getInstance()->find($coop->_id);
+
+foreach($vitis as $viti) {
+    if($vitis[0]->_id == $viti->_id) {
+        $viti = EtablissementClient::getInstance()->find($viti->_id);
+        $t->ok(!$viti->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $coop->_id), "La liaison entre le viti ".$viti->_id." et la cave coop ".$coop->_id." n'a pas été créé");
+        $t->ok(!$coop->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $viti->_id), "La liaison entre la cave coop ".$coop->_id." et le viti ".$viti->_id." n'a pas été créé");
+        continue;
+    }
+
+    $viti = EtablissementClient::getInstance()->find($viti->_id);
+    $t->ok($viti->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $coop->_id), "La liaison entre le viti ".$viti->_id." et la cave coop ".$coop->_id." a été créé");
+    $t->ok($coop->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $viti->_id), "La liaison entre la cave coop ".$coop->_id." et le viti ".$viti->_id." a été créé");
+}
