@@ -12,7 +12,7 @@ import argparse
 
 
 campagne = "2020"
-appellation = "AOC Crémant blanc"
+appellation = "AOC Crémant d'Alsace"
 exports_path = "../../web/exports"
 output_path = exports_path + "/bilan_vci_"+campagne+"_aoc_alsace_blanc.csv"
 parser = argparse.ArgumentParser()
@@ -230,6 +230,7 @@ bilan_infos.describe()
 
 bilan_infos['campagne'] = campagne
 bilan_infos['appellation'] = appellation
+bilan_infos['CVI'] = bilan_infos["CVI Opérateur"]
 bilan_infos['titre'] = ""
 bilan_infos['raison_sociale'] = bilan_infos["Raison sociale"]
 bilan_infos['adresse'] = bilan_infos["Adresse"]
@@ -254,7 +255,7 @@ bilan_infos['stock_vci_n'] = round(bilan_infos["Stock_y"].fillna(0), 2)
 
 
 bilan_infos = bilan_infos.query("stock_vci_n-1 > 0 or vci_constitue > 0 or vci_complement > 0 or vci_substitution > 0 or vci_rafraichi > 0 or vci_desctruction > 0 or stock_vci_n > 0 ").reset_index(drop=True);
-bilan_final = bilan_infos.sort_values(['campagne', 'CVI Opérateur', 'Produit']).reindex(columns=["campagne","Produit","titre", "raison_sociale", "adresse", "commune", "code_postal", "CVI Opérateur", "siret", "stock_vci_n-1", "dr_surface", "dr_volume", "dr_vci", "vci_constitue", "vci_complement", "vci_substitution", "vci_rafraichi", "vci_desctruction", "drev_revendique_n", "drev_revendique_n-1", "stock_vci_n"]).drop_duplicates().reset_index(drop=True);
+bilan_final = bilan_infos.sort_values(['campagne', 'CVI', 'Produit']).reindex(columns=["campagne","Produit","titre", "raison_sociale", "adresse", "commune", "code_postal", "CVI", "siret", "stock_vci_n-1", "dr_surface", "dr_volume", "dr_vci", "vci_constitue", "vci_complement", "vci_substitution", "vci_rafraichi", "vci_desctruction", "drev_revendique_n", "drev_revendique_n-1", "stock_vci_n"]).drop_duplicates().reset_index(drop=True);
 
 
 # In[ ]:
