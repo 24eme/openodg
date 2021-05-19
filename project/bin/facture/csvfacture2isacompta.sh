@@ -3,7 +3,7 @@
 FACTURE_CSV_FILE=$1
 
 echo "date;identifiant analytique;journal;piece;raison sociale;libelle mouvement;;quantite;debit;credit;code tva;igp";
-cat $FACTURE_CSV_FILE | sed 's/\([0-9]*\)-\([0-9]*\)-\([0-9]*\);/\3\/\2\/\1;/' | awk -F ';' '{
+cat $FACTURE_CSV_FILE | tail -n +2 | sed 's/\([0-9]*\)-\([0-9]*\)-\([0-9]*\);/\3\/\2\/\1;/' | awk -F ';' '{
 	if ($14 && $15) {
         tva = ""
         if ($17 * 1 > 0) {
