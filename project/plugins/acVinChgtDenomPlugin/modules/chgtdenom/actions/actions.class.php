@@ -10,6 +10,7 @@ class chgtdenomActions extends sfActions
         $drev = DRevClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
         $drev->addLot();
         $this->lot = $drev->lots[0] ;
+        $this->lot->getUniqueId();
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
 
@@ -35,11 +36,11 @@ class chgtdenomActions extends sfActions
                 $this->lot->produit_libelle = $cepage;
             }
         }
-        $this->lot->millesime = $this->form->getValue('millesime');
-        $this->lot->numero_logement_operateur = $this->form->getValue('numero_logement_operateur');
+
         $this->form->save();
 
         $this->chgtDenom->setLotOrigine($this->lot);
+        $this->chgtDenom->changement_origine_id_document = null;
         $this->chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', array('id' => $this->chgtDenom->_id));
@@ -77,7 +78,7 @@ class chgtdenomActions extends sfActions
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
 
-        if(!$this->chgtDenom->getLotOrigine()) {
+        if($this->chgtDenom->getLotOrigine() === null) {
             return $this->redirect('chgtdenom_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
         }
 

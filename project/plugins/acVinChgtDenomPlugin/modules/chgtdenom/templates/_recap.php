@@ -1,3 +1,5 @@
+<?php use_helper('Lot'); ?>
+
 <style>
   #declassement_filigrane{
     position:absolute;

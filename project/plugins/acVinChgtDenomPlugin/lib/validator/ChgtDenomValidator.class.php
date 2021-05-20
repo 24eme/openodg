@@ -12,7 +12,11 @@ class ChgtDenomValidator extends sfValidatorSchema
 
 		public function configure($options = array(), $messages = array()) {
 				parent::configure($options, $messages);
-        $this->addMessage('impossible_volume', "Le volume ne peut excéder ".$this->obj->getLotOrigine()->volume." hl");
+                if (! $this->obj->getLotOrigine()) {
+                    $this->addMessage('impossible_volume', "Le volume ne peut excéder ".$this->obj->origine_volume." hl");
+                } else {
+                    $this->addMessage('impossible_volume', "Le volume ne peut excéder ".$this->obj->getLotOrigine()->volume." hl");
+                }
 				$this->addMessage('impossible_numero', "Le numéro du logement ne peut pas être identique à l'original");
     }
 
