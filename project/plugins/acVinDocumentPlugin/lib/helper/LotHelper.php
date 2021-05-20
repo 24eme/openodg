@@ -182,3 +182,7 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
 
     return $adresse;
 }
+
+function substrUtf8($str, $offset, $length) {
+  return utf8_encode(substr(utf8_decode($str), $offset, $length));
+}
