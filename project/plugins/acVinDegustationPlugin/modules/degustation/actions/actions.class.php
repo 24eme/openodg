@@ -428,7 +428,6 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->tri = $this->degustation->tri;
-        $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
         $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), true);
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
@@ -437,14 +436,6 @@ class degustationActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-        $this->form->save();
 
         return $this->redirect('degustation_tables_etape', $this->degustation);
     }
