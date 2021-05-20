@@ -287,9 +287,11 @@ class degustationActions extends sfActions {
     public function executeAnonymatsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         if ($this->degustation->getNbLotsRestantAPreleve() > 0) {
+            $this->getUser()->setFlash('error', 'Il reste des lots à prélever');
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
         }
         if (count($this->degustation->getFreeLots()) > 0) {
+            $this->getUser()->setFlash('error', 'Il reste des lots à non attablés');
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_TABLES), $this->degustation);
         }
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ANONYMATS))) {
@@ -428,7 +430,6 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->tri = $this->degustation->tri;
-        $this->form = new DegustationOrganisationTableRecapForm($this->degustation);
         $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), true);
 
         $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
@@ -437,14 +438,6 @@ class degustationActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-        $this->form->save();
 
         return $this->redirect('degustation_tables_etape', $this->degustation);
     }

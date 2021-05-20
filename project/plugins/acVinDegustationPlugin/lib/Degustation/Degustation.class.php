@@ -556,7 +556,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 
 	 public function getNbLotsPreleves(){
-		 return count($this->getLotsPreleves());
+		 return count($this->getLotsPreleves()) + count($this->getLotsSansVolume());
 	 }
 
 	 public function getNbLotsConformes(){
@@ -603,6 +603,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	   		}
 			return $lots;
 		}
+
+        public function getLotsSansVolume() {
+            $lots = array();
+	   		foreach ($this->getLots() as $lot) {
+                if (!$lot->volume) {
+                    $lots[] = $lot;
+                }
+            }
+            return $lots;
+        }
 
 		public function getLotsPrelevesCustomSort(array $tri = null) {
 			$lots = $this->getLotsPreleves();
