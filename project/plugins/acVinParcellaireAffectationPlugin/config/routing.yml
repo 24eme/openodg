@@ -107,3 +107,13 @@ parcellaireaffectation_export_pdf:
     type:     object
   requirements:
     sf_method: [get]
+
+parcellaireaffectationcoop_apporteurs:
+  url: /parcellaire-affectation-coop/apporteurs/:identifiant/:periode
+  param: { module: parcellaireAffectationCoop, action: apporteurs }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]

@@ -118,7 +118,7 @@ foreach($vitis as $viti) {
     if($viti->_id == $vitis[5]->_id) {
         continue;
     }
-    $t->is($apporteurs[$viti->_id]->_id, $viti->_id, "L'apporteur ".$viti->_id." est présent");
+    $t->ok($apporteurs[$viti->_id], "L'apporteur ".$viti->_id." est présent");
 }
 
 $formApporteurs = new SV11ApporteursForm($sv11);
