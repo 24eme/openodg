@@ -145,7 +145,7 @@ th {
               <td><small><?php $etablissement = $etablissements[$lotDeguste->declarant_identifiant]; echo $etablissement->nom."<br/>".$etablissement->commune."<br/>".$etablissement->cvi ?></small></td>
               <td><small><?php echo $lotDeguste->numero_anonymat ?></small></td>
               <td><small><?php echo $lotDeguste->numero_logement_operateur ?></small></td>
-              <td><small><?php echo $lotDeguste->produit_libelle . ' ' . $lotDeguste->millesime . ' ' . showOnlyCepages($lotDeguste) ?></small></td>
+              <td><small><?php echo showProduitCepagesLot($lotDeguste, false) ?></small></td>
               <td style="float:right; text-align:right;"><small><?php echo number_format($lotDeguste->volume, 2) ?> hl</small></td>
               <td><small><?php echo $lotDeguste->getTextPassage() ?></small></td>
               <td><small><?php echo $lotDeguste->statut == Lot::STATUT_CONFORME ? "C" : "NC" ?></small></td>
