@@ -48,7 +48,7 @@
           "libelle": "",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "DR"
           ],
           "callback": null,
           "callback_parameters": []
@@ -125,7 +125,7 @@
       "minimum_fallback": "10_%detail_identifiant%_20_fallbackMed",
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Contrôle Méditerrannée",
+      "libelle": "Contrôle Méditerranée",
       "code_comptable": "",
       "details": {
         "cotisationMed": {
@@ -331,9 +331,9 @@
       "details": {
         "degustation": {
           "modele": "Cotisation",
-          "prix": 0.7,
+          "prix": 0.9,
           "tva": 0.2,
-          "libelle": "Contrôle Méditerannée",
+          "libelle": "Contrôle Méditerranée",
           "complement_libelle": "",
           "docs": [
             "Degustation"
