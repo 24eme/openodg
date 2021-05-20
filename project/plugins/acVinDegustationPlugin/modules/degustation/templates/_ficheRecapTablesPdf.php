@@ -94,7 +94,7 @@ th {
       <?php endif; ?>
          <tr style="line-height:15px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
-           <td><?php echo tdStart() ?><small><?php echo mb_substr(strip_tags(showOnlyProduit($lotInfo)), 0, 40, "utf-8") ?></small><br/><small><?php echo showOnlyCepages($lotInfo, 45);?></small></td>
+           <td><?php echo tdStart() ?><small><?php echo strip_tags(showOnlyProduit($lotInfo)); ?></small><br/><small><?php echo showOnlyCepages($lotInfo, 45);?></small></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
