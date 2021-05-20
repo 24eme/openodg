@@ -11,9 +11,15 @@
       <h3><small></small></h3>
     </div>
 
-    <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => false)); ?>
+    <?php if ($lotOrigine = $chgtDenom->getLotOrigine()) : ?>
+        <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => false)); ?>
+    <?php else : ?>
+        <div class="well">
+            Déclare posséder un lot de <strong><?php echo $chgtDenom->getOrigineProduitLibelle() ?></strong> de <strong><?php echoFloat($chgtDenom->getOrigineVolume()) ?></strong> <span class="text-muted">hl</span>
+        </div>
+    <?php endif; ?>
 
-    <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom, 'key' => $chgtDenom->getLotKey())) ?>" method="post" class="form-horizontal" id="form_drev_lots">
+    <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom)) ?>" method="post" class="form-horizontal" id="form_drev_lots">
 
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>

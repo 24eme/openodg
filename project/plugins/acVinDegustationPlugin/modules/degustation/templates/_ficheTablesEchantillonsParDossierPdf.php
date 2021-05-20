@@ -80,7 +80,7 @@
               }
               ?>
               <td rowspan="<?php echo $affiche; ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
-              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle;"><small><?php echo substr($lot->getRawValue()->declarant_nom, 0, 20)."<br>".$lot->declarant_identifiant;?></small></td>
+              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle;"><small><?php echo substrUtf8($lot->getRawValue()->declarant_nom, 0, 20)."<br>".$lot->declarant_identifiant;?></small></td>
             <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_anonymat?></small></td>
