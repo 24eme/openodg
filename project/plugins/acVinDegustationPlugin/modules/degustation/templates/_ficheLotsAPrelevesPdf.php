@@ -61,9 +61,9 @@ th {
              <small><?php
               if($adresseLogement):
                 if ($adresseLogement['nom'] != $etablissement->raison_sociale) {
-                    echo substr($adresseLogement['nom'], 0, 32).'<br/>';
+                    echo substrUtf8($adresseLogement['nom'], 0, 32).'<br/>';
                 }?>
-                <?php echo substr($adresseLogement['adresse'], 0, 32).'<br/>'.substr($adresseLogement['code_postal'].' '.$adresseLogement['commune'], 0, 32).'<br/>'; ?>
+                <?php echo substrUtf8($adresseLogement['adresse'], 0, 32).'<br/>'.substrUtf8($adresseLogement['code_postal'].' '.$adresseLogement['commune'], 0, 32).'<br/>'; ?>
               <?php else: ?>
                 <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
               <?php endif; ?>
