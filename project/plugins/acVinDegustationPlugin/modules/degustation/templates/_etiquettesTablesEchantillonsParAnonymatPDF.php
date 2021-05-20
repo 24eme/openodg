@@ -28,7 +28,7 @@
               </tr>
               <tr style="line-height:14px;">
                 <td colspan="2" style="overflow-wrap:break-word;text-align:center;">
-                  <?php if (DegustationConfiguration::getInstance()->hasSpecificiteEtiquette() && $lotInfo->specificite): ?>
+                  <?php if (DegustationConfiguration::getInstance()->hasSpecificiteLotPdf() && $lotInfo->specificite): ?>
                       <strong><?php echo $lotInfo->specificite; ?></strong>
                   <?php endif; ?>
                   &nbsp;
