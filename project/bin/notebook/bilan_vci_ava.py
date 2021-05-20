@@ -14,7 +14,7 @@ import argparse
 campagne = "2020"
 appellation = "AOC Crémant d'Alsace"
 exports_path = "../../web/exports"
-output_path = exports_path + "/bilan_vci_"+campagne+"_aoc_cremant_alsace.csv"
+output_path = exports_path + "/bilan_vci_"+campagne+"_aoc_alsace_blanc.csv"
 parser = argparse.ArgumentParser()
 parser.add_argument("campagne", help="Année de récolte", default=campagne, nargs='?')
 parser.add_argument("appellation", help="Libellé de l'appellation", default=appellation, nargs='?')
@@ -31,7 +31,6 @@ except:
     print("Arguments pas défaut")
 
 
-
 # In[ ]:
 
 
@@ -44,7 +43,7 @@ drev_curr.head(5)
 
 
 dr = pd.read_csv(exports_path + "/"+ campagne + "/" + campagne + "_dr.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'CVI recoltant': 'str'}, low_memory=False)
-dr = dr.query("type_ligne == \"total_cave_particuliere\" and cepage != \"TOTAL\"").reset_index(drop=True)
+dr = dr.query("type_ligne == \"total_cave_particuliere\" and cepage != \"TOTAL\" and vtsgn != vtsgn").reset_index(drop=True)
 dr["Type de ligne"] = "Revendication"
 dr["volume"].fillna(0)
 dr["volume"] = dr["volume"].astype("float64")
@@ -62,6 +61,7 @@ dr["Produit"] = dr["Produit"].replace(regex=r'Cremant', value='Crémant')
 dr["Produit"] = dr["Produit"].replace(regex=r'Gewurztraminer', value='Gewurzt.')
 dr["Produit"] = dr["Produit"].replace(regex=r'Assemblage', value='Assemblage/Edelzwicker')
 dr["CVI Opérateur"] = dr["CVI recoltant"]
+
 dr.head(10)
 
 
@@ -230,6 +230,7 @@ bilan_infos.describe()
 
 bilan_infos['campagne'] = campagne
 bilan_infos['appellation'] = appellation
+bilan_infos['CVI'] = bilan_infos["CVI Opérateur"]
 bilan_infos['titre'] = ""
 bilan_infos['raison_sociale'] = bilan_infos["Raison sociale"]
 bilan_infos['adresse'] = bilan_infos["Adresse"]
@@ -253,7 +254,8 @@ bilan_infos['stock_vci_n'] = round(bilan_infos["Stock_y"].fillna(0), 2)
 # In[ ]:
 
 
-bilan_final = bilan_infos.sort_values(['campagne', 'CVI Opérateur', 'Produit']).reindex(columns=["campagne","Produit","titre", "raison_sociale", "adresse", "commune", "code_postal", "CVI Opérateur", "siret", "stock_vci_n-1", "dr_surface", "dr_volume", "dr_vci", "vci_constitue", "vci_complement", "vci_substitution", "vci_rafraichi", "vci_desctruction", "drev_revendique_n", "drev_revendique_n-1", "stock_vci_n"]).drop_duplicates().reset_index(drop=True);
+bilan_infos = bilan_infos.query("stock_vci_n-1 > 0 or vci_constitue > 0 or vci_complement > 0 or vci_substitution > 0 or vci_rafraichi > 0 or vci_desctruction > 0 or stock_vci_n > 0 ").reset_index(drop=True);
+bilan_final = bilan_infos.sort_values(['campagne', 'CVI', 'Produit']).reindex(columns=["campagne","Produit","titre", "raison_sociale", "adresse", "commune", "code_postal", "CVI", "siret", "stock_vci_n-1", "dr_surface", "dr_volume", "dr_vci", "vci_constitue", "vci_complement", "vci_substitution", "vci_rafraichi", "vci_desctruction", "drev_revendique_n", "drev_revendique_n-1", "stock_vci_n"]).drop_duplicates().reset_index(drop=True);
 
 
 # In[ ]:
@@ -272,16 +274,4 @@ bilan_final.head(100)
 
 
 bilan_final.to_csv(output_path, encoding="iso8859_15", sep=";", index=False, decimal=",")
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 

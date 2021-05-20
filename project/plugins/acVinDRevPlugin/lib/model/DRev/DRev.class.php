@@ -1359,10 +1359,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
      }
 
-     public function getAdresseLogement($lot){
-     $drev = DRevClient::getInstance()->find($lot->id_document);
-     return $drev->constructAdresseLogement();
-  }
+    public function getAdresseLogement($lot){
+        if ($lot && $lot->id_document) {
+            $drev = DRevClient::getInstance()->find($lot->id_document);
+            return $drev->constructAdresseLogement();
+        }
+        return '';
+    }
 
 
 	protected function doSave() {
