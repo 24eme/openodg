@@ -51,16 +51,21 @@ class SV11ApporteursForm extends BaseForm {
         $coop = $this->sv11->getEtablissementObject();
 
         foreach($this->getValues() as $id => $check) {
+            if(!$check && $coop->liaisons_operateurs->exist(EtablissementClient::TYPE_LIAISON_COOPERATEUR. '_' . $id)) {
+                $coop->removeLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR . '_' . $id);
+            }
+
             if(!$check) {
-                $apporteur = EtablissementClient::getInstance()->find($id);
-                $apporteur->removeLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE . '_' . $coop->_id);
-                $apporteur->save();
                 continue;
             }
 
-            $apporteur = EtablissementClient::getInstance()->find($id);
-            $apporteur->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $coop);
-            $apporteur->save();
+            if($coop->liaisons_operateurs->exist(EtablissementClient::TYPE_LIAISON_COOPERATEUR. '_' . $id)) {
+                continue;
+            }
+
+            $coop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $id);
         }
+
+        $coop->save();
     }
 }
