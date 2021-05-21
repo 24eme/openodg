@@ -35,8 +35,9 @@
     <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
       <thead>
       <tr>
-        <th style="width:60%;">Nom et prénom<br/>Téléphone / portable</th>
+        <th style="width:50%;">Nom et prénom<br/>Téléphones</th>
         <th style="width:20%;">Collège</th>
+        <th style="width:10%;">Table</th>
         <th style="width:20%;">Signature</th>
       </tr>
       </thead>
@@ -44,11 +45,12 @@
         <?php foreach ($degustateurs as $degustateur): ?>
           <?php if ($degustateur['confirme']): ?>
             <tr>
-                <td style="width: 60%">
-                    <?php echo tdStart() ?>
-                    <?php echo $degustateur['degustateur']->nom_a_afficher ?>
+                <td style="width: 50%">
+                    <?php echo $degustateur['degustateur']->nom_a_afficher ?><br/>
+                    <?php echo join(' - ', array_filter([$degustateur['degustateur']->telephone_bureau, $degustateur['degustateur']->telephone_mobile, $degustateur['degustateur']->telephone_perso])); ?>
                 </td>
                 <td style="width: 20%"><?= DegustationConfiguration::getInstance()->getLibelleCollege($degustateur['college']) ?></td>
+                <td style="width: 10%"></td>
                 <td style="width: 20%"></td>
             </tr>
           <?php endif ?>
