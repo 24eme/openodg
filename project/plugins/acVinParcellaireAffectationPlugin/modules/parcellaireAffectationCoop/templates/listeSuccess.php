@@ -17,7 +17,7 @@
             <td style="<?php if(isset($documents[$liaison->id_etablissement])): ?>background-color: rgba(169, 197, 50, 0.4) ;<?php endif; ?>" class="text-center <?php if(isset($documents[$liaison->id_etablissement])): ?>bg-success text-success<?php endif; ?>"><?php if(isset($documents[$liaison->id_etablissement])): ?><span class="glyphicon glyphicon-ok-sign"></span> Validé<?php else: ?>À saisir<?php endif; ?></a></td>
             <td class="text-center">
                 <?php if(isset($documents[$liaison->id_etablissement])): ?>
-                    <a href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $etablissement, 'periode' => $periode, 'id_document' => $documents[$liaison->id_etablissement])) ?>">Voir la déclaration</a>
+                    <a class="text-success" href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $etablissement, 'periode' => $periode, 'id_document' => $documents[$liaison->id_etablissement])) ?>">Voir la déclaration</a>
                 <?php else: ?>
                     <a href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $etablissement, 'apporteur' => $liaison->getEtablissementIdentifiant(), 'periode' => $periode)) ?>">Saisir la déclaration</a>
                 <?php endif; ?>
