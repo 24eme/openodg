@@ -33,9 +33,9 @@
 
     </table>
     <div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("degustation") ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("parcellaireaffectationcoop_sv11", array("sf_subject" => $etablissement, "periode" => $periode)) ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
-        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer<span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
 </form>

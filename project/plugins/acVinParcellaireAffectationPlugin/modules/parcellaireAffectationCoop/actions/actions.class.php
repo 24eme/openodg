@@ -2,6 +2,11 @@
 
 class parcellaireAffectationCoopActions extends sfActions {
 
+    public function executeSv11(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getObject();
+        $this->periode = $request->getParameter('periode');
+    }
+
     public function executeApporteurs(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getObject();
         $this->periode = $request->getParameter('periode');
