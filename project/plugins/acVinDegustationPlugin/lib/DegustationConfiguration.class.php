@@ -31,7 +31,7 @@ class DegustationConfiguration {
     }
 
     public function hasSpecificiteLotPdf(){
-      return isset($this->configuration['specificite_lot_pdf']) && boolval($this->configuration['specificite_lot_pdf']);
+      return isset($this->configuration['specificite_lot_pdf']) && $this->configuration['specificite_lot_pdf'];
     }
 
     public function hasAnonymat4labo()
@@ -44,8 +44,4 @@ class DegustationConfiguration {
         return isset($this->configuration['notation']) && boolval($this->configuration['notation']);
     }
 
-    public function hasSpecificiteEtiquette()
-    {
-        return isset($this->configuration['specificite_etiquette']) && boolval($this->configuration['specificite_etiquette']);
-    }
 }

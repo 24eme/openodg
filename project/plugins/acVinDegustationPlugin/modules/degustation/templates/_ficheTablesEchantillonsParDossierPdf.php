@@ -86,7 +86,7 @@
             <td><small><?php echo $lot->numero_anonymat?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2, ',', ' ') ?>&nbsp;hl </small></td>
-            <td style="height:25px;"><small><?php echo showProduitCepagesLot($lot); ?></small></td>
+            <td style="height:25px;"><small><?php echo showProduitCepagesLot($lot, false); ?></small></td>
           </tr>
           <?php $i++; ?>
       <?php endforeach; ?>

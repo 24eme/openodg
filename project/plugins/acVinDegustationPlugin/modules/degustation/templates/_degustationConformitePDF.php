@@ -55,7 +55,7 @@
     <tr>
       <td><?php echo $lot->numero_dossier ?> / <?php echo $lot->numero_archive ?></td>
       <td><?php echo $lot->numero_logement_operateur?></td>
-      <td><?php echo showProduitCepagesLot($lot) ?></td>
+      <td><?php echo showProduitCepagesLot($lot, false) ?></td>
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lot->volume); ?></td>
       <td><?php echo $lot->observation ?></td>
     </tr>
