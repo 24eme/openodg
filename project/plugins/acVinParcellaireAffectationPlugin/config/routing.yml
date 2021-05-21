@@ -147,3 +147,13 @@ parcellaireaffectationcoop_visualisation:
     type:     object
   requirements:
     sf_method: [get]
+
+parcellaireaffectationcoop_exportcsv:
+  url: /parcellaire-affectation-coop/exportcsv/:identifiant/:periode
+  param: { module: parcellaireAffectationCoop, action: exportcsv }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
