@@ -45,6 +45,7 @@
         <div style="margin-bottom: 0;" class="<?php if($form->hasErrors()): ?>has-error<?php endif; ?>">
           <?php echo $form['affectable']->renderError() ?>
           <div class="col-xs-12">
+              dégustable :
               <?php echo $form['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
           </div>
         </div>
