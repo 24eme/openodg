@@ -116,4 +116,34 @@ parcellaireaffectationcoop_apporteurs:
     model:    Etablissement
     type:     object
   requirements:
+    sf_method: [get, post]
+
+parcellaireaffectationcoop_liste:
+  url: /parcellaire-affectation-coop/liste/:identifiant/:periode
+  param: { module: parcellaireAffectationCoop, action: liste }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectationcoop_saisie:
+  url: /parcellaire-affectation-coop/saisie/:identifiant/:periode/:apporteur
+  param: { module: parcellaireAffectationCoop, action: saisie }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireaffectationcoop_visualisation:
+  url: /parcellaire-affectation-coop/visualisation/:identifiant/:periode/:id_document
+  param: { module: parcellaireAffectationCoop, action: visualisation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
     sf_method: [get]

@@ -21,6 +21,7 @@ class SV11ApporteursForm extends BaseForm {
             }
             $this->apporteurs[$idApporteur] = $nom;
         }
+        asort($this->apporteurs);
         $defaults = array();
         foreach($this->apporteurs as $id => $apporteur) {
             $defaults[$id] = 1;
