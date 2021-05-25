@@ -40,7 +40,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
     }
 
 
-    public function exportFacturePaiements() {
+    public function exportFacturePaiements($date_max = null, $set_verse = false) {
 
         $societe = $this->facture->getSociete();
 
@@ -50,8 +50,10 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
         $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->numero_archive.";";
         if($facture->exist('paiements')) {
           foreach ($facture->paiements as $paiement) {
-              //on est d'accord que ca na rien a faire ici mais l'objectif est d'avoir un flag dans le paiement
-              if ($this->que_les_non_verses_comptablement && $facture->versement_comptable_paiement) {
+              if ($this->que_les_non_verses_comptablement && $paiement->versement_comptable) {
+                  continue;
+              }
+              if ($date_max && $date_max < $paiement->date) {
                   continue;
               }
               $csv .= $csv_prefix;
@@ -65,6 +67,9 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
               $csv .= $facture->_id.";";
               $csv .= $paiement->getHash().';';
               $csv .= "\n";
+              if ($set_verse) {
+                  $paiement->versement_comptable = true;
+              }
           }
         }
 
