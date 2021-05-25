@@ -90,7 +90,29 @@ ParcellaireAffectation:
                     definition:
                       fields:
                         '*': { }
-#PARCELLAIREAFFECTATION
+#PARCELLAIREAFFECTATIONCOOP
+ParcellaireAffectationCoop:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      etape: { }
+      apporteurs:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  apporteur: { }
+                  intention: { }
+                  nom: { }
+                  cvi: { }
+#PARCELLAIREINTENTIONAFFECTATION
 ParcellaireIntentionAffectation:
   definition:
     fields:
