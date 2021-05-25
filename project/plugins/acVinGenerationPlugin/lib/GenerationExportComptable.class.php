@@ -19,7 +19,7 @@ class GenerationExportComptable extends GenerationAbstract
         }
 
         $with_headers = !count($this->generation->documents);
-        if ($with_headers)) {
+        if ($with_headers) {
             fwrite($handle_factures, ExportFactureCSV::getHeaderCsv());
         }
 
@@ -71,7 +71,7 @@ class GenerationExportComptable extends GenerationAbstract
             throw new sfException("La classe ExportFacturePaiementsCSV n'existe pas");
         }
 
-        if ($with_headers)) {
+        if ($with_headers) {
             fwrite($handle_paiements, ExportFacturePaiementsCSV::getHeaderCsv());
         }
 
