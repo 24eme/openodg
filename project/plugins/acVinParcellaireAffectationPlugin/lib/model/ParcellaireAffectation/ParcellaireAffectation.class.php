@@ -70,15 +70,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return;
     }
     $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant);
-<<<<<<< HEAD
     $previous = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
-=======
->>>>>>> ec21c635d (Prise en compte des liaisons déjà existante dans le formulaire des)
     if(!$intention) {
         return;
     }
 	foreach ($intention->getParcelles() as $parcelle) {
-<<<<<<< HEAD
 	    $produit = $parcelle->getProduit();
         $hash = str_replace('/declaration/', '', $produit->getHash());
         if (!$parcelle->affectation) {
@@ -93,32 +89,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if($previous && $previous->exist($detail->getHash()) && $previous->get($detail->getHash())->affectee) {
             $detail->affectee = 1;
         }
-  	}
-=======
-	    $prod = $parcelle->getProduit();
-        $hash = str_replace('/declaration/', '', $prod->getHash());
-        if ($parcelle->affectation) {
-	        if ($this->declaration->exist($hash)) {
-            $item = $this->declaration->get($hash);
-          foreach ($item->getDetail() as $key => $detail) {
-            $parcelle->affectation = $detail->affectation;
-          }
-
-	        } else {
-            $item = $this->declaration->add($hash);
-            $item->libelle = $prod->libelle;
-	        }
-	        $parcelle->origine_doc = $intention->_id;
-	        unset($parcelle['origine_hash']);
-	        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
-	    } elseif($isUpDate && $this->declaration->exist($hash)){
-            $item = $this->declaration->get($hash);
-            $parcelle->origine_doc = $intention->_id;
-            unset($parcelle['origine_hash']);
-            $detail = $item->detail->remove($parcelle->getKey(), $parcelle);
-        }
 	}
->>>>>>> ec21c635d (Prise en compte des liaisons déjà existante dans le formulaire des)
   }
 
   public function getConfiguration() {
