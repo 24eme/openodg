@@ -25,8 +25,8 @@ class degustationComponents extends sfComponents {
         $email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
         $email = trim($email);
 
-        $cc = Organisme::getInstance()->getEmail();
-        $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance()->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
+        $cc = Organisme::getInstance(null, 'degustation')->getEmail();
+        $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
         $body = rawurlencode(strip_tags(get_partial('degustation/notificationEmail', [
             'degustation' => $this->degustation,
             'identifiant' => $this->identifiant,
@@ -58,8 +58,8 @@ class degustationComponents extends sfComponents {
             }
         }
 
-        $this->subject = sprintf("%s - Résultat de dégustation du %s",Organisme::getInstance()->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
+        $this->subject = sprintf("%s - Résultat de dégustation du %s",Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
         $this->email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
-        $this->cc = Organisme::getInstance()->getEmail();
+        $this->cc = Organisme::getInstance(null, 'degustation')->getEmail();
     }
 }
