@@ -25,18 +25,9 @@ class ParcellaireAffectationClient extends acCouchdbClient {
           return sprintf($id, $identifiant, $campagne);
       }
 
-      public function createDoc($identifiant, $campagne, $papier = false, $type = self::TYPE_COUCHDB) {
-          $previous = $this->findPreviousByIdentifiantAndDate($identifiant, $campagne-1);
-          if ($previous && $previous->isValidee()) {
-              $previous->devalidate();
-              $previous->campagne = $campagne;
-              $parcellaireAffectation = clone $previous;
-              $parcellaireAffectation->constructId();
-              $parcellaireAffectation->updateParcellesAffectation();
-          } else {
-            $parcellaireAffectation = new ParcellaireAffectation();
-            $parcellaireAffectation->initDoc($identifiant, $campagne, $type);
-          }
+      public function createDoc($identifiant, $periode, $papier = false, $type = self::TYPE_COUCHDB) {
+          $parcellaireAffectation = new ParcellaireAffectation();
+          $parcellaireAffectation->initDoc($identifiant, $periode, $type);
           $parcellaireAffectation->add('papier', ($papier) * 1);
           return $parcellaireAffectation;
       }
@@ -55,17 +46,17 @@ class ParcellaireAffectationClient extends acCouchdbClient {
           $doc = $h[key($h)];
           return $doc;
       }
-      
+
       public function getHistory($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
           $campagne_from = "0000";
           $campagne_to = $max_annee;
-      
+
           $id = self::TYPE_COUCHDB.'-%s-%s';
           return $this->startkey(sprintf($id, $identifiant, $campagne_from))
           ->endkey(sprintf($id, $identifiant, $campagne_to))
           ->execute($hydrate);
       }
-      
+
       public function getDateOuverture($type = self::TYPE_COUCHDB) {
           if ($type == self::TYPE_COUCHDB) {
               $dates = sfConfig::get('app_dates_ouverture_parcellaire_affectation');
@@ -75,18 +66,18 @@ class ParcellaireAffectationClient extends acCouchdbClient {
           }
           return $dates;
       }
-      
-      
+
+
       public function getDateOuvertureDebut($type = self::TYPE_COUCHDB) {
           $dates = $this->getDateOuverture($type);
           return $dates['debut'];
       }
-      
+
       public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
           $dates = $this->getDateOuverture($type);
           return $dates['fin'];
       }
-      
+
       public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
           if (is_null($date)) {
               $date = date('Y-m-d');
