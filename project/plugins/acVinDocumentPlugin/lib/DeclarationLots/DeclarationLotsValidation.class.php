@@ -23,6 +23,9 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             if($lot->isEmpty()){
               continue;
             }
+            if ($lot->hasBeenEdited()){
+                continue;
+            }
 
             if(!$lot->produit_hash){
               $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." - Produit", $this->generateUrl($routeName, array("id" => $this->document->_id)));
