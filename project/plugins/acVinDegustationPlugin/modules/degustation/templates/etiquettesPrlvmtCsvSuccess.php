@@ -12,7 +12,7 @@ foreach ($degustation->getEtiquettesFromLots(7) as $plancheLots) {
         echo str_replace(';', ' ', $lotInfo->etablissement->siret).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->code_postal).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->commune).";";
-        echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->produit_libelle)).";";
+        echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->produit_libelle).' '.str_replace(';', ' ', $lotInfo->lot->getCepagesLibelle(false))).";";
         echo str_replace(';', ' ', $lotInfo->lot->millesime).";";
         echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->details)).";";
         echo str_replace(';', ' ', $lotInfo->lot->centilisation).";";
