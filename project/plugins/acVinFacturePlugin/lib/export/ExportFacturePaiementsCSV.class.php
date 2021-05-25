@@ -56,6 +56,9 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
               if ($date_max && $date_max < $paiement->date) {
                   continue;
               }
+              if ($set_verse) {
+                  $paiement->versement_comptable = true;
+              }
               $csv .= $csv_prefix;
               $csv .= $paiement->date.";";
               $csv .= $this->floatHelper->formatFr($paiement->montant,2,2).";";
@@ -63,13 +66,10 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
               $csv .= $paiement->commentaire.";";
               $csv .= $this->floatHelper->formatFr($facture->total_ttc - $facture->montant_paiement,2,2).';';
               $csv .= $paiement->exist('execute') ? $paiement->execute.";" : ";";
-              $csv .= $facture->versement_comptable_paiement.";";
+              $csv .= $paiement->versement_comptable.";";
               $csv .= $facture->_id.";";
               $csv .= $paiement->getHash().';';
               $csv .= "\n";
-              if ($set_verse) {
-                  $paiement->versement_comptable = true;
-              }
           }
         }
 
