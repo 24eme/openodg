@@ -1328,17 +1328,52 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $adresse .= $this->declarant->telephone_mobile ? " — ".$this->declarant->telephone_mobile : "";
       $adresse .= $this->declarant->telephone_bureau ? " — ".$this->declarant->telephone_bureau : "";
       $adresse = trim($adresse);
-      foreach ($this->getLotsByNumeroDossier() as $lot){
+      foreach ($this->getLots() as $lot){
         if($this->getAdresseLogement($lot) !== $adresse)
           return false;
       }
       return true;
     }
 
+    public function updateAddressLot(){
+      $lots = array();
+      $newLot = false;
+      $addressSame = $this->isAllDossiersHaveSameAddress();
+      $previewDrevId = null;
+      $listLots = array();
+
+      foreach($this->lots as $lot) {
+        if($lot->id_document === $this->_id){
+          $newLot = true;
+        }
+      }
+
+      foreach($this->lots as $lot) {
+        $lots[$lot->id_document][] = $lot;
+      }
+      $previewDrevId = array_key_last($lots);
+
+      if(!$newLot && $addressSame){
+        foreach($this->lots as $lot) {
+          $listLots[] = $lot->unique_id;
+          $lot->adresse_logement = $this->getAdresseLogement($lot);
+        }
+      }else{
+        foreach($this->lots as $lot) {
+          if($lot->id_document === $previewDrevId){
+            $listLots[$lot->unique_id] = $lot->unique_id;
+            $lot->adresse_logement = $this->constructAdresseLogement();
+          }
+        }
+      }
+      $this->save();
+      return $listLots;
+    }
+
     public function getLotsByAdresse(){
       $lotsAdresse = array();
       foreach ($this->getLotsByNumeroDossier() as $lot){
-        $lotsAdresse[$this->getAdresseLogement($lot)][] = $lot;
+        $lotsAdresse[$lot->adresse_logement][] = $lot;
       }
       return $lotsAdresse;
     }

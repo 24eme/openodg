@@ -635,6 +635,7 @@ class drevActions extends sfActions {
         }
 
         $this->drev->cleanDoc();
+        $this->drev->updateAddressLot();
 
         $this->validation = new DRevValidation($this->drev);
 

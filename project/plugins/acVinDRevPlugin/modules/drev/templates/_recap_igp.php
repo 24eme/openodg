@@ -195,7 +195,7 @@
                   </td>
                 </tr>
               <?php else:
-                foreach ($drev->getLotsByAdresse() as $lots) : ?>
+                foreach ($drev->getLotsByAdresse() as $address => $lots) : ?>
                 <tr>
                   <td class="text-center">
                     <?php
@@ -214,7 +214,7 @@
                   </td>
 
                   <td style="vertical-align : middle;" class="text-left">
-                    <?php echo $drev->getAdresseLogement($lot);
+                    <?php echo $address;
                     ?>
                     <?php if(!$drev->isValidee() && !$lot->numero_dossier): ?>
                       <a href="<?php echo url_for("drev_exploitation", $drev) ?>">(éditer)</a>
