@@ -272,7 +272,7 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "/appellations/VAR,/appellations/MAU,/appellations/MCA"
           ]
         }
       }

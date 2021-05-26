@@ -21,7 +21,7 @@ class FacturePaiementEmbedForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        if(!$this->getObject()->date) {
+        if($this->getObject()->date) {
             $date = new DateTime($this->getObject()->date);
             $this->setDefault('date', $date->format('d/m/Y'));
         }else{

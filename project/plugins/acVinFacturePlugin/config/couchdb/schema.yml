@@ -135,6 +135,7 @@ Facture:
                   type_reglement: { }
                   commentaire: { }
                   execute: {required: false}
+                  versement_comptable: { }
       pieces:
         type: array_collection
         definition:

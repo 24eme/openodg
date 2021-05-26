@@ -721,4 +721,17 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
       return $xml->asXML();
     }
 
+    public function updateVersementComptablePaiement() {
+        $versement = true;
+        $date = null;
+        foreach ($this->paiements as $p) {
+            $versement = $versement && $p->versement_comptable;
+            if ($p->date > $date) {
+                $date = $p->date;
+            }
+        }
+        $this->versement_comptable_paiement = $versement * 1;
+        $this->date_paiement = $date;
+    }
+
 }
