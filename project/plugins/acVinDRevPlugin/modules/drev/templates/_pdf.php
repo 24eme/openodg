@@ -44,7 +44,7 @@
         <tr>
           <td class="td" style="text-align: center; width: 20%"><?php echo $lot->numero_dossier; ?></td>
           <td class="td" style="text-align: left; width: 80%">
-            <?php echo $drev->getAdresseLogement($lot);
+            <?php echo $lot->adresse_logement;
             ?>
           </td>
         </tr>

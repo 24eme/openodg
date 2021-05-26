@@ -1335,50 +1335,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function isAllDossiersHaveSameAddress(){
-      $adresse = sprintf("%s — %s  %s  %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
-      $adresse .= $this->declarant->telephone_mobile ? " — ".$this->declarant->telephone_mobile : "";
-      $adresse .= $this->declarant->telephone_bureau ? " — ".$this->declarant->telephone_bureau : "";
-      $adresse = trim($adresse);
-      foreach ($this->getLots() as $lot){
-        if($this->getAdresseLogement($lot) !== $adresse)
-          return false;
-      }
-      return true;
+        return (count($this->getLotsByAdresse()) === 1);
     }
 
-    public function updateAddressLot(){
-      $lots = array();
-      $newLot = false;
-      $addressSame = $this->isAllDossiersHaveSameAddress();
-      $previewDrevId = null;
-      $listLots = array();
-
-      foreach($this->lots as $lot) {
-        if($lot->id_document === $this->_id){
-          $newLot = true;
-        }
+    public function updateAddressCurrentLots(){
+      foreach($this->getCurrentLots() as $lot) {
+        $lot->adresse_logement = $this->constructAdresseLogement();
       }
-
-      foreach($this->lots as $lot) {
-        $lots[$lot->id_document][] = $lot;
-      }
-      $previewDrevId = array_key_last($lots);
-
-      if(!$newLot && $addressSame){
-        foreach($this->lots as $lot) {
-          $listLots[] = $lot->unique_id;
-          $lot->adresse_logement = $this->getAdresseLogement($lot);
-        }
-      }else{
-        foreach($this->lots as $lot) {
-          if($lot->id_document === $previewDrevId){
-            $listLots[$lot->unique_id] = $lot->unique_id;
-            $lot->adresse_logement = $this->constructAdresseLogement();
-          }
-        }
-      }
-      $this->save();
-      return $listLots;
     }
 
     public function getLotsByAdresse(){
@@ -1405,15 +1368,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
      }
 
-    public function getAdresseLogement($lot){
-        if ($lot && $lot->id_document) {
-            $drev = DRevClient::getInstance()->find($lot->id_document);
-            return $drev->constructAdresseLogement();
-        }
-        return '';
-    }
-
-
 	protected function doSave() {
         $this->piece_document->generatePieces();
         foreach ($this->declaration->getProduits() as $key => $produit) {
@@ -1435,6 +1389,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function save($saveDependants = true) {
         $this->archiver();
+        $this->updateAddressCurrentLots();
         $this->generateMouvementsLots();
 
         parent::save();
