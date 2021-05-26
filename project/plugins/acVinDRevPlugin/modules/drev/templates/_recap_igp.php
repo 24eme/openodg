@@ -205,17 +205,11 @@
                 <tr>
                   <td class="text-center">
                     <?php
-                    $first_time = true;
-                    $str = "";
-                    foreach($lots as $lot) :
-                      if(!$first_time):
-                        $str .= " ; ";
-                      else:
-                        $first_time = false;
-                      endif;
-                      $str .= $lot->numero_dossier;
-                    endforeach;
-                    echo $str;
+                    $dossiers = array();
+                    foreach($lots as $lot){
+                      $dossiers[] = $lot->numero_dossier;
+                    }
+                    echo join(' ; ', $dossiers);
                     ?>
                   </td>
                   <td style="vertical-align : middle;" class="text-left">
