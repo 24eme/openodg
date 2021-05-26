@@ -35,7 +35,7 @@ EOF;
             return;
         }
 
-
+        $compte->updateCoordonneesLongLat();
         $compte->save();
 
         echo sprintf("UPDATE;%s;%s;%s\n", $compte->_id, $compte->region, $compte->societe_informations->siret);
