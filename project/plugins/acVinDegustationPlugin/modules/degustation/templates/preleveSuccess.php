@@ -64,13 +64,9 @@
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
               &nbsp;
-              <?php if($lot->isOrigineEditable()): ?>
-              <a title="Modifier le lot dans la déclaration originale" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>">
-                <i class="glyphicon glyphicon-pencil"></i>
+              <a title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
+                <i class="glyphicon glyphicon-share-alt"></i>
               </a>
-              <?php else: ?>
-              <i class="glyphicon glyphicon-pencil" style="opacity:0.0"></i>
-          <?php endif; ?>
         </td>
       	<td class="text-center">
               <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">

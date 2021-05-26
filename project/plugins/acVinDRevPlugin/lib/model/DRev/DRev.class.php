@@ -382,16 +382,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ($this->getDR());
     }
 
-    public function getDR() {
+    public function getDR($periode = null) {
 
-        return $this->getDocumentDouanier();
+        return $this->getDocumentDouanier(null, $periode);
     }
 
     public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $etablissements = $this->getEtablissementObject()->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
         $fichiers = array();
         foreach($etablissements as $e) {
-            $f = $this->getDocumentDouanier($ext, $e->identifiant, $hydrate);
+            $f = $this->getDocumentDouanierEtablissement($ext, null, $e->identifiant, $hydrate);
             if ($f) {
                 $fichiers[] = $f;
             }
@@ -399,13 +399,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $fichiers;
     }
 
-    public function getDocumentDouanier($ext = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
+    }
+
+    protected function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         if (!$identifiant) {
             $identifiant = $this->identifiant;
         }
 
+        if (!$periode) {
+            $periode = $this->periode;
+        }
+
         foreach(array("DR", "SV12", "SV11") as $type) {
-            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $this->periode);
+            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $periode);
             if (!$fichier) {
                 continue;
             }
@@ -1316,12 +1324,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function isAllDossiersHaveSameAddress(){
-      $adresse = $this->constructAdresseLogement();
+      $adresse = sprintf("%s — %s  %s  %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+      $adresse .= $this->declarant->telephone_mobile ? " — ".$this->declarant->telephone_mobile : "";
+      $adresse .= $this->declarant->telephone_bureau ? " — ".$this->declarant->telephone_bureau : "";
+      $adresse = trim($adresse);
       foreach ($this->getLotsByNumeroDossier() as $lot){
-        if($lot->adresse_logement !== $adresse)
+        if($this->getAdresseLogement($lot) !== $adresse)
           return false;
       }
       return true;
+    }
+
+    public function getLotsByAdresse(){
+      $lotsAdresse = array();
+      foreach ($this->getLotsByNumeroDossier() as $lot){
+        $lotsAdresse[$this->getAdresseLogement($lot)][] = $lot;
+      }
+      return $lotsAdresse;
     }
 
     public function constructAdresseLogement(){
@@ -1340,10 +1359,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
      }
 
-     public function getAdresseLogement($lot){
-     $drev = DRevClient::getInstance()->find($lot->id_document);
-     return $drev->constructAdresseLogement();
-  }
+    public function getAdresseLogement($lot){
+        if ($lot && $lot->id_document) {
+            $drev = DRevClient::getInstance()->find($lot->id_document);
+            return $drev->constructAdresseLogement();
+        }
+        return '';
+    }
 
 
 	protected function doSave() {
@@ -1468,9 +1490,26 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
+    public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
+    {
+        $lots = [];
+
+        foreach ($this->getLots() as $lot) {
+            if ($lot->numero_dossier === $this->numero_archive) {
+                $lots[] = $lot;
+            }
+        }
+
+        return $this->getInternalVolumeRevendique($lots, $produitFilter);
+    }
+
     public function getVolumeRevendiqueLots($produitFilter = null){
+        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
+    }
+
+    private function getInternalVolumeRevendique($lots, $produitFilter) {
         $total = 0;
-        foreach($this->getLots() as $lot) {
+        foreach($lots as $lot) {
             $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
   		    $isExcludeMode = (bool) $produitExclude;
             $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
@@ -1487,6 +1526,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total += $lot->volume;
         }
         return $total;
+    }
+
+    public function getVolumeL15FromDRPrecedente($produitFilter = null) {
+        $dr = $this->getDR($this->getPeriode()-1);
+        if (!$dr){
+            throw new sfException("Pas de DR ".($this->getPeriode()-1)." pour ".$this->_id);
+        }
+        return $dr->getTotalValeur("15");
     }
 
     /**
@@ -1559,8 +1606,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
-          if(isset($cotisationsPrec[$cotisation->getHash()])) {
-              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+          $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
+          if(isset($cotisationsPrec[$cle])) {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
 
           if($this->hasVersion() && !$mouvement->quantite) {
@@ -1960,6 +2008,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->version_document->generateModificative();
     }
+
+    public function verifyGenerateModificative() {
+
+        return $this->version_document->verifyGenerateModificative();
+    }
+
 
     public function listenerGenerateVersion($document) {
         $document->constructId();

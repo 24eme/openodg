@@ -2,12 +2,6 @@
   $(document).ready(function(){
 
     $('#mailPreviewModal').modal('show');
-    $('.link-mail-auto').click(function(){
-      var retour = $(this).attr("data-retour");
-      if(retour){
-         window.location = retour;
-      }
-    });
 
     $('#btn-preleve-all').on('click', function (event) {
       $('.bsswitch').each(function(index, element) {

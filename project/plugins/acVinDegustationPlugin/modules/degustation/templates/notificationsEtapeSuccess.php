@@ -102,3 +102,12 @@
     include_component('degustation','previewMailPopup', array('degustation' => $degustation, 'identifiant' => $identifiant_operateur, 'lots' => $lotsOperateur));
  endif;
   ?>
+  <?php // mailto si param dans la requete ?>
+  <?php if ($mailto): ?>
+  <script>
+      var mailto = document.createElement('a');
+      mailto.href = "<?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $mailto, 'lots' => $degustation->getLotsByOperateurs($mailto)[$mailto], 'notemplate' => true]); ?>";
+      mailto.click();
+  </script>
+  <?php endif ?>
+

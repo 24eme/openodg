@@ -9,10 +9,10 @@
     "Degustation"
   ],
   "cotisations": {
-    "cotisationSyndicale": {
+    "00_cotisationSyndicale": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisations",
+      "libelle": "Cotisation",
       "code_comptable": "75101000",
       "details": {
         "forfait": {
@@ -32,10 +32,10 @@
         }
       }
     },
-    "forfaitOdg": {
+    "00_forfaitOdg": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisations",
+      "libelle": "Cotisation",
       "code_comptable": "75102000",
       "details": {
         "forfaitOdg": {
@@ -55,18 +55,18 @@
         }
       }
     },
-    "revendicationLotCDG": {
+    "55_%detail_identifiant%_00_CDG_revendicationLotCDG": {
       "modele": "CotisationsCollection",
-      "callback": "70600000",
+      "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "",
+      "code_comptable": "70600000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
           "prix": 0.46,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Gascogne (%detail_identifiant%)",
+          "libelle": "IGP Gascogne - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -78,18 +78,18 @@
         }
       }
     },
-    "revendicationLotGER": {
+    "55_%detail_identifiant%_10_GER_revendicationLotGER": {
       "modele": "CotisationsCollection",
-      "callback": "70600000",
+      "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "",
+      "code_comptable": "70600000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
           "prix": 0.46,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Gers (%detail_identifiant%)",
+          "libelle": "IGP Gers - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -101,18 +101,18 @@
         }
       }
     },
-    "revendicationLotCOT": {
+    "55_%detail_identifiant%_20_COT_revendicationLotCOT": {
       "modele": "CotisationsCollection",
-      "callback": "70610000",
+      "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "",
+      "code_comptable": "70610000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
           "prix": 0.46,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Comté Tolosan (%detail_identifiant%)",
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -124,7 +124,7 @@
         }
       }
     },
-    "inao": {
+    "55_%detail_identifiant%_55_inao": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",
@@ -135,7 +135,7 @@
           "prix": 0.03,
           "tva": 0,
           "unite": "hl",
-          "libelle": "(%detail_identifiant%)",
+          "libelle": "- %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -144,7 +144,7 @@
         }
       }
     },
-    "redegustationCDG": {
+    "77_%detail_identifiant%_00_CDG_redegustationCDG": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation",
@@ -156,18 +156,18 @@
           "tva": 0.2,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "(%detail_identifiant%)",
+          "complement_libelle": "- %detail_identifiant%",
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": [
             "/appellations/CDG"
           ]
         }
       }
     },
-    "redegustationGER": {
+    "77_%detail_identifiant%_10_GER_redegustationGER": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation",
@@ -179,21 +179,21 @@
           "tva": 0.2,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "(%detail_identifiant%)",
+          "complement_libelle": "- %detail_identifiant%",
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": [
             "/appellations/GER"
           ]
         }
       }
     },
-    "redegustationCOT": {
+    "77_%detail_identifiant%_20_COT_redegustationCOT": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Forfait nouvelle dégustation",
+      "libelle": "Nouvelle dégustation",
       "code_comptable": "70610200",
       "details": {
         "forfait": {
@@ -202,11 +202,11 @@
           "tva": 0.2,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "(%detail_identifiant%)",
+          "complement_libelle": "- %detail_identifiant%",
           "docs": [
             "Degustation"
           ],
-          "callback": "getFacturationLotRedeguste",
+          "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": [
             "/appellations/COT"
           ]

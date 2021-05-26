@@ -5,7 +5,7 @@ class facturationActions extends sfActions
 
     public function executeIndex(sfWebRequest $request)
     {
-        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,200);
+        $this->generations = GenerationClient::getInstance()->findHistory(200);
 
         $this->form = new LoginForm();
 
@@ -16,7 +16,7 @@ class facturationActions extends sfActions
             $this->generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
             $this->generation->somme = 0;
         }
-        $this->formFacturationMassive = new FactureGenerationForm();
+        $this->formFacturationMassive = new FactureGenerationMasseForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

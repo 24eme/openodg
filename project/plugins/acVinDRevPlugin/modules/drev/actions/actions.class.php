@@ -727,8 +727,19 @@ class drevActions extends sfActions {
         $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
         $this->regionParam = $request->getParameter('region',null);
 
-        $this->drev->validateOdg(null,$this->regionParam);
-        $this->drev->save();
+        $service = $request->getParameter("service", null);
+        $params = array('sf_subject' => $this->drev, 'service' => $service);
+        if($this->regionParam){
+          $params = array_merge($params,array('region' => $this->regionParam));
+        }
+
+        try {
+            $this->drev->validateOdg(null,$this->regionParam);
+            $this->drev->save();
+        }catch(sfException $s) {
+            $this->getUser()->setFlash('error', $s->getMessage());
+            return $this->redirect('drev_visualisation', $params);
+        }
 
         $mother = $this->drev->getMother();
         while ($mother) {
@@ -742,11 +753,6 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
         }
 
-        $service = $request->getParameter("service", null);
-        $params = array('sf_subject' => $this->drev, 'service' => $service);
-        if($this->regionParam){
-          $params = array_merge($params,array('region' => $this->regionParam));
-        }
         return $this->redirect('drev_visualisation', $params);
     }
 

@@ -86,13 +86,13 @@
           <tr class="<?php echo $class; ?>" >
             <td><small><?php echo $lot->numero_anonymat ?></small></td>
             <td><small><?php echo DegustationClient::getNumeroTableStr($table) ?></small></td>
-            <td><small><?php echo substr($lot->declarant_nom, 0, 33)."<br>".$lot->declarant_identifiant;?></small></td>
+            <td><small><?php echo substrUtf8($lot->declarant_nom, 0, 33)."<br>".$lot->declarant_identifiant;?></small></td>
 
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="text-align: right;"><small><?php echo number_format($lot->volume, 2) ?>&nbsp;hl &nbsp;</small></td>
-            <td><small><?php echo showOnlyProduit($lot) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>
+            <td><small><?php echo showOnlyProduit($lot, false) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>
           </tr>
           <?php $i++; endforeach; ?>
         <?php endforeach; ?>

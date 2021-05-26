@@ -39,7 +39,7 @@
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot <?php echo $lot->getLibelle() ?> a fait l'objet d'un absence de typicité cépage revendiqué.</td></tr>
+  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot <?php showProduitCepagesLot($lot, false) ?> a fait l'objet d'un absence de typicité cépage revendiqué.</td></tr>
   <tr><td>Compte tenu de ce résultat, vous pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
@@ -58,6 +58,6 @@
 <br/><br/>
 <br/><br/>
 <table style="width:1100px;padding-left:400px;" >
-  <tr><td><?php echo Organisme::getInstance()->getResponsable() ?></td></tr>
-  <tr><td><?php if(file_exists(Organisme::getInstance()->getImageSignaturePath())): ?><img src="<?php echo Organisme::getInstance()->getImageSignaturePath() ?>"/><?php endif; ?></td></tr>
+  <tr><td><?php echo Organisme::getInstance(null, 'degustation')->getResponsable() ?></td></tr>
+  <tr><td><?php if(file_exists(Organisme::getInstance(null, 'degustation')->getImageSignaturePath())): ?><img src="<?php echo Organisme::getInstance(null, 'degustation')->getImageSignaturePath() ?>"/><?php endif; ?></td></tr>
 </table>

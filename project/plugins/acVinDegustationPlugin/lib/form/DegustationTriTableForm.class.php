@@ -14,13 +14,13 @@ class DegustationTriTableForm extends BaseForm
 
     public function __construct(array $tri, bool $recap = false, $options = array(), $CSRFSecret = null)
     {
-        $defaults = array();
+        $this->defaults = array();
         foreach ($tri as $t) {
-            $defaults['tri_'.count($defaults)] = ucFirst($t);
+            $this->defaults['tri_'.count($this->defaults)] = $t;
         }
-        $defaults['recap'] = $recap;
+        $this->defaults['recap'] = $recap;
         $this->recap = $recap;
-        parent::__construct($defaults, $options, $CSRFSecret);
+        parent::__construct($this->defaults, $options, $CSRFSecret);
     }
 
     public function configure()
@@ -33,7 +33,10 @@ class DegustationTriTableForm extends BaseForm
 
         $this->setWidget('recap', new sfWidgetFormInputHidden());
         $this->setValidator('recap', new sfValidatorPass());
-
+        foreach($this->defaults as $id => $d) {
+            $this->widgetSchema[$id]->setDefault($d);
+        }
         $this->widgetSchema->setNameFormat('tritable[%s]');
     }
+
 }

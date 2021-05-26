@@ -41,7 +41,7 @@
   <br/>
   <tr><td>Dans le cadre du contrôle interne analytique réalisé sur les échantillons prélevés dans votre cave, nous avons relevé le manquement suivant :</td></tr>
   <tr><td><strong>Manquement MAJEUR : <?php echo $lot->motif ?></strong></td></tr>
-  <tr><td>Pour : <strong><?php echo showProduitCepagesLot($lot) ?> de <?php echo $lot->volume ?> hl</strong></td></tr>
+  <tr><td>Pour : <strong><?php echo showProduitCepagesLot($lot, false) ?> de <?php echo $lot->volume ?> hl</strong></td></tr>
   <tr><td>Conformément à la grille de traitement des manquements (CP03), la sanction est <strong>retrait du bénéfice de l'IGP pour le lot concerné</strong>.</td></tr>
 </table><br/><br/>
 
@@ -53,6 +53,6 @@
 <br/><br/>
 <br/><br/>
 <table style="width:1100px;padding-left:400px;" >
-  <tr><td><?php echo Organisme::getInstance()->getResponsable() ?></td></tr>
-  <tr><td><?php if(file_exists(Organisme::getInstance()->getImageSignaturePath())): ?><img src="<?php echo Organisme::getInstance()->getImageSignaturePath() ?>"/><?php endif; ?></td></tr>
+  <tr><td><?php echo Organisme::getInstance(null, 'degustation')->getResponsable() ?></td></tr>
+  <tr><td><?php if(file_exists(Organisme::getInstance(null, 'degustation')->getImageSignaturePath())): ?><img src="<?php echo Organisme::getInstance(null, 'degustation')->getImageSignaturePath() ?>"/><?php endif; ?></td></tr>
 </table>

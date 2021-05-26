@@ -28,8 +28,8 @@
               </tr>
               <tr style="line-height:14px;">
                 <td colspan="2" style="overflow-wrap:break-word;text-align:center;">
-                  <?php if ($lotInfo->details): ?>
-                  <strong><?php echo $lotInfo->details;  ?></strong>
+                  <?php if (DegustationConfiguration::getInstance()->hasSpecificiteLotPdf() && $lotInfo->specificite): ?>
+                      <strong><?php echo $lotInfo->specificite; ?></strong>
                   <?php endif; ?>
                   &nbsp;
                 </td>

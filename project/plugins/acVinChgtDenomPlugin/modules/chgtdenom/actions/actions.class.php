@@ -5,10 +5,12 @@ class chgtdenomActions extends sfActions
     public function executeAjoutLot(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
+        $this->periode = ConfigurationClient::getInstance()->getCampagneManager()->getCurrentYearPeriode();
 
-        $drev = DRevClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne);
-        $drev->addLot(); 
+        $drev = DRevClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
+        $drev->addLot();
         $this->lot = $drev->lots[0] ;
+        $this->lot->getUniqueId();
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
 
@@ -34,11 +36,11 @@ class chgtdenomActions extends sfActions
                 $this->lot->produit_libelle = $cepage;
             }
         }
-        $this->lot->millesime = $this->form->getValue('millesime');
-        $this->lot->numero_logement_operateur = $this->form->getValue('numero_logement_operateur');
+
         $this->form->save();
 
         $this->chgtDenom->setLotOrigine($this->lot);
+        $this->chgtDenom->changement_origine_id_document = null;
         $this->chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', array('id' => $this->chgtDenom->_id));
@@ -69,14 +71,14 @@ class chgtdenomActions extends sfActions
     public function executeLots(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant);
+        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant, $this->campagne);
     }
 
     public function executeEdition(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($this->chgtDenom);
 
-        if(!$this->chgtDenom->getLotOrigine()) {
+        if($this->chgtDenom->getLotOrigine() === null) {
             return $this->redirect('chgtdenom_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
         }
 

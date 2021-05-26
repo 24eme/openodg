@@ -192,7 +192,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getLotOrigine() {
         if(!$this->changement_origine_id_document) {
-            return null;
+            return false;
         }
 
         $doc = acCouchdbManager::getClient()->find($this->changement_origine_id_document);
@@ -330,19 +330,34 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       $lots = array();
       $lot = $this->getLotOrigine();
-      if (!$lot) {
+      if ($lot === null) {
           return;
       }
-      $lot = $lot->getData();
-      unset($lot->numero_anonymat);
 
-      $lotDef = ChgtDenomLot::freeInstance($this);
-      foreach($lot as $key => $value) {
-          if($lotDef->getDefinition()->exist($key)) {
-              continue;
+      if ($lot !== false) { // Lot d'origine
+          $lot = $lot->getData();
+          unset($lot->numero_anonymat);
+
+          $lotDef = ChgtDenomLot::freeInstance($this);
+          foreach($lot as $key => $value) {
+              if($lotDef->getDefinition()->exist($key)) {
+                  continue;
+              }
+
+              unset($lot->{$key});
           }
-
-          unset($lot->{$key});
+      } else { // Lot de négociant créé
+        $lot = new stdClass;
+        $lot->document_ordre = "00";
+        $lot->volume = $this->origine_volume;
+        $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
+        $lot->millesime = $this->origine_millesime;
+        $lot->produit_libelle = $this->origine_produit_libelle;
+        $lot->produit_hash = $this->origine_produit_hash;
+        $lot->date = $this->date;
+        $lot->campagne = $this->campagne;
+        $lot->declarant_nom = $this->declarant->raison_sociale;
+        $lot->declarant_identifiant = $this->identifiant;
       }
 
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
@@ -651,13 +666,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getVolumeDestFacturable($produitFilter = null){
-      if(preg_match("#$produitFilter#",$this->changement_produit_hash)){
-          return $this->changement_volume;
-      }
-      return 0.0;
-    }
-
     public function getFirstChgtDenomFacturable()
     {
 
@@ -703,4 +711,30 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $this->changement_volume;
     }
 
+    public function isDeclarantFamille($familleFilter = null)
+    {
+        if(!$familleFilter){
+            return false;
+        }
+
+        if(!$this->declarant->famille){
+            return false;
+        }
+
+        $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
+        $exclude = (bool) $exclude;
+        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+
+        if(!$exclude && preg_match($regexpFilter, $this->declarant->famille)) {
+
+            return true;
+        }
+
+        if($exclude && !preg_match($regexpFilter, $this->declarant->famille)) {
+
+            return true;
+        }
+
+        return false;
+    }
 }

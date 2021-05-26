@@ -80,13 +80,13 @@
               }
               ?>
               <td rowspan="<?php echo $affiche; ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
-              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle;"><small><?php echo substr($lot->getRawValue()->declarant_nom, 0, 20)."<br>".$lot->declarant_identifiant;?></small></td>
+              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle;"><small><?php echo substrUtf8($lot->getRawValue()->declarant_nom, 0, 20)."<br>".$lot->declarant_identifiant;?></small></td>
             <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_anonymat?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2, ',', ' ') ?>&nbsp;hl </small></td>
-            <td style="height:25px;"><small><?php echo showProduitCepagesLot($lot); ?></small></td>
+            <td style="height:25px;"><small><?php echo showProduitCepagesLot($lot, false); ?></small></td>
           </tr>
           <?php $i++; ?>
       <?php endforeach; ?>

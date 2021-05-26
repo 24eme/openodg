@@ -30,13 +30,14 @@ class LotsClient
         return $params[3];
     }
 
-    public function findByUniqueId($declarantIdentifiant, $uniqueId, $documentOrdre = "01") {
+    public function findByUniqueId($declarantIdentifiant, $uniqueId, $documentOrdre = null) {
 
         return $this->find($declarantIdentifiant, self::getCampagneFromUniqueId($uniqueId), self::getNumeroDossierFromUniqueId($uniqueId), self::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre);
     }
 
-    public function find($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $documentOrdre = "01") {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, sprintf("%02d", $documentOrdre));
+    public function find($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $documentOrdre = null) {
+        $numOrdre = ($documentOrdre)? sprintf("%02d", $documentOrdre) : null;
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $numOrdre);
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;
@@ -69,10 +70,28 @@ class LotsClient
     public function modifyAndSave($lot) {
         $ids = $this->getDocumentsIds($lot->declarant_identifiant, $lot->unique_id);
 
+        $nbDegustation = 0;
         foreach($ids as $id) {
             if(preg_match('/(TRANSACTION|CONDITIONNEMENT|CHGTDENOM)/', $id)) {
 
                 throw new Exception("La modification de lot n'est pas encore implémentée pour les documents de TRANSACTION, CONDITIONNEMENT et CHGTDENOM");
+            }
+
+            if(strpos($id, "DEGUSTATION") !== false) {
+                $nbDegustation++;
+            }
+        }
+        if($nbDegustation > 1) {
+            throw new Exception("La modification de lot n'est pas possible lorsque que lot a été dégusté plusieurs fois.");
+        }
+
+        //On vérifie qu'il est bien possible d'avoir des modificatrices pour tous les id
+        foreach($ids as $id) {
+            $doc = DeclarationClient::getInstance()->find($id);
+            if($doc instanceof InterfaceVersionDocument) {
+                if (!$doc->getMaster()->verifyGenerateModificative()) {
+                    throw new sfException("il n'est pas possible d'avoir une modificatrice pour le doc ".$id);
+                }
             }
         }
 

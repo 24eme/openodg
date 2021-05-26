@@ -51,13 +51,25 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
-    public function getLotsChangeable($identifiant) {
+    public function getLotsChangeable($identifiant, $campagne) {
         $lots = array();
+        $lots_filtre = array();
         foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant, Lot::STATUT_CHANGEABLE)->rows as $row_lot) {
             $lots[$row_lot->value->unique_id] = $row_lot->value;
             $lots[$row_lot->value->unique_id]->type_document = substr($row_lot->value->id_document, 0, 4);
         }
-        return $lots;
+
+        if($campagne){
+          foreach ($lots as $unique_id => $lot) {
+            if($campagne && $campagne == $lot->campagne){
+              $lots_filtre[$unique_id] = $lot;
+            }
+          }
+        }else{
+          $lots_filtre = $lots;
+        }
+
+        return $lots_filtre;
     }
 
     public function createDoc($identifiant, $date = null, $papier = false) {
@@ -77,6 +89,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         }
         $chgtdenom->changement_type = self::CHANGEMENT_TYPE_DECLASSEMENT;
         $chgtdenom->storeDeclarant();
+
         return $chgtdenom;
     }
 

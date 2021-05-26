@@ -67,7 +67,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = Organisme::getInstance()->getNom();
+        $titre = Organisme::getInstance(null, 'degustation')->getNom();
         return $titre;
     }
 
@@ -81,7 +81,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
 
     protected function getFooterText() {
-        return sprintf("\n%s     %s - %s - %s   %s    %s\n", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
+        return sprintf("\n%s     %s - %s - %s   %s    %s\n", Organisme::getInstance(null, 'degustation')->getNom(), Organisme::getInstance(null, 'degustation')->getAdresse(), Organisme::getInstance(null, 'degustation')->getCodePostal(), Organisme::getInstance(null, 'degustation')->getCommune(), Organisme::getInstance(null, 'degustation')->getTelephone(), Organisme::getInstance(null, 'degustation')->getEmail());
         return $footer;
     }
 

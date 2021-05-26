@@ -257,11 +257,6 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->isEmpty();
     }
 
-    public function isOrigineEditable()
-    {
-      return $this->getDocOrigine()->getMaster()->isLotsEditable();
-    }
-
     public function getDestinationDateFr()
     {
 
@@ -292,7 +287,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDocOrigine(){
-      if(!$this->exist('id_document_provenance') || !$this->id_document_provenance){
+      if(!$this->exist('id_document') || !$this->id_document){
         return null;
       }
       return DeclarationClient::getInstance()->findCache($this->id_document);

@@ -1,6 +1,7 @@
 <?php use_helper('Date') ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
+<?php include_partial('global/flash'); ?>
 <?php if (isset($form)): ?>
     <form role="form" class="form-inline" action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>

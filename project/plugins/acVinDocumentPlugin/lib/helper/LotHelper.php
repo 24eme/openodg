@@ -1,11 +1,11 @@
 <?php
 
-function showOnlyProduit($lot, $specificite_protection = true)
+function showOnlyProduit($lot, $show_always_specificite = true)
 {
 
   $text = $lot->produit_libelle." <small>";
   $text .= ($lot->millesime) ? $lot->millesime : "";
-  if (!$specificite_protection || DrevConfiguration::getInstance()->hasSpecificiteLot()) {
+  if ($show_always_specificite || DegustationConfiguration::getInstance()->hasSpecificiteLotPdf()) {
       if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
           $text .= ' - '.$lot->specificite;
       }
@@ -15,9 +15,9 @@ function showOnlyProduit($lot, $specificite_protection = true)
   return $text;
 }
 
-function showProduitCepagesLot($lot, $specificite_protection = true)
+function showProduitCepagesLot($lot, $show_always_specificite = true)
 {   $text = "";
-    $text .= showOnlyProduit($lot);
+    $text .= showOnlyProduit($lot, $show_always_specificite);
     $text .= showOnlyCepages($lot);
     return $text;
 }
@@ -181,4 +181,8 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
     }
 
     return $adresse;
+}
+
+function substrUtf8($str, $offset, $length) {
+  return utf8_encode(substr(utf8_decode($str), $offset, $length));
 }
