@@ -174,24 +174,30 @@
 
 
           <h3 id="table_igp_title">Prélèvement</h3>
+          <?php if(!$drev->isValidee()): ?>
+            <table class="table table-bordered table-striped table_igp">
+              <tr>
+                <td style="vertical-align : middle;" class="text-left">
+                  <?php echo $drev->constructAdresseLogement(); ?>
+                  <a href="<?php echo url_for("drev_exploitation", $drev) ?>">(éditer)</a>
+                </td>
+              </tr>
+            </table>
+          <?php else: ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
-              <?php if($drev->isValidee() && count($drev->getLotsByAdresse()) > 1): ?>
+              <?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
                 <th class="col-xs-3 text-center">Num. Dossier</th>
               <?php endif; ?>
                 <th class="col-xs-8 text-center">Lieu de prélèvement</th>
               </tr>
             </thead>
             <tbody>
-              <?php if(!$drev->isValidee() || count($drev->getLotsByAdresse()) === 1): ?>
+              <?php if($drev->isAllDossiersHaveSameAddress()): ?>
                 <tr>
                   <td style="vertical-align : middle;" class="text-left">
-                    <?php echo $drev->constructAdresseLogement();
-                    ?>
-                    <?php if(!$drev->isValidee()): ?>
-                      <a href="<?php echo url_for("drev_exploitation", $drev) ?>">(éditer)</a>
-                    <?php endif; ?>
+                    <?php echo $drev->constructAdresseLogement(); ?>
                   </td>
                 </tr>
               <?php else:
@@ -199,26 +205,15 @@
                 <tr>
                   <td class="text-center">
                     <?php
-                    $first_time = true;
-                    $str = "";
-                    foreach($lots as $lot) :
-                      if(!$first_time):
-                        $str .= " ; ";
-                      else:
-                        $first_time = false;
-                      endif;
-                      $str .= $lot->numero_dossier;
-                    endforeach;
-                    echo $str;
+                    $dossiers = array();
+                    foreach($lots as $lot){
+                      $dossiers[] = $lot->numero_dossier;
+                    }
+                    echo join(' ; ', $dossiers);
                     ?>
                   </td>
-
                   <td style="vertical-align : middle;" class="text-left">
-                    <?php echo $drev->getAdresseLogement($lot);
-                    ?>
-                    <?php if(!$drev->isValidee() && !$lot->numero_dossier): ?>
-                      <a href="<?php echo url_for("drev_exploitation", $drev) ?>">(éditer)</a>
-                    <?php endif; ?>
+                    <?php echo $address; ?>
                   </td>
 
                 </tr>
@@ -226,6 +221,7 @@
               endif; ?>
             </tbody>
           </table>
+        <?php endif; ?>
         <br/>
 
         <?php
