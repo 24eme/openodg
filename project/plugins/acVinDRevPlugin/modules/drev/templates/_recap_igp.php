@@ -201,7 +201,7 @@
                   </td>
                 </tr>
               <?php else:
-                foreach ($drev->getLotsByAdresse() as $address => $lots) : ?>
+                foreach ($drev->getLotsByAdresse() as $lots) : ?>
                 <tr>
                   <td class="text-center">
                     <?php
