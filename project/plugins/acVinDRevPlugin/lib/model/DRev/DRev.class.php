@@ -275,6 +275,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lots;
     }
 
+    public function getCurrentLots() {
+      $lots = array();
+      foreach($this->getLots() as $lot) {
+        if ($lot->numero_dossier != $this->numero_archive) {
+          continue;
+        }
+        $lots[] = $lot;
+      }
+      return $lots;
+    }
+
     public function getLotsByNumeroDossier(){
       $lots = array();
       $i=0;
