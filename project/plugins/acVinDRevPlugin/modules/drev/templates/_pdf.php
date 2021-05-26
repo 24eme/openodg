@@ -91,10 +91,10 @@ Les produits déclarés sont du millésime du VCI
 <?php if (count($drev->getLotsRevendiques())): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr style="line-height:20em;">
-        <th class="th" style="text-align: left; width: 9%">&nbsp;Date</th>
-        <th class="th" style="text-align: left; width: 13%">&nbsp;Lot</th>
-        <th class="th" style="text-align: left; width: 50%">&nbsp;Produit (millésime)</th>
-        <th class="th" style="text-align: center; width: 8%">Volume</th>
+        <th class="th" style="text-align: left; width: 10%">&nbsp;Date</th>
+        <th class="th" style="text-align: left; width: 20%">&nbsp;Lot</th>
+        <th class="th" style="text-align: left; width: 40%">&nbsp;Produit (millésime)</th>
+        <th class="th" style="text-align: center; width: 10%">Volume</th>
         <th class="th" style="text-align: center; width: 20%">&nbsp;Destination (date)</th>
     </tr>
 <?php foreach($drev->getLotsByUniqueAndDate() as $lot): ?>
