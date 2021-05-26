@@ -84,16 +84,16 @@
       "code_comptable": "",
       "details": {
         "cotisationIgp": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.7,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "Degustation"
           ],
-          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
             "NOT /appellations/MED"
           ]
@@ -129,16 +129,16 @@
       "code_comptable": "",
       "details": {
         "cotisationMed": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.9,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "Degustation"
           ],
-          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
             "/appellations/MED"
           ]
