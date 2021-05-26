@@ -152,16 +152,16 @@
       "code_comptable": "",
       "details": {
         "promotion": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.7,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "Degustation"
           ],
-          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
             "NOT /appellations/MED"
           ]
@@ -175,16 +175,16 @@
       "code_comptable": "",
       "details": {
         "oi": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.05,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "Degustation"
           ],
-          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
             "NOT /appellations/MED"
           ]
@@ -198,16 +198,16 @@
       "code_comptable": "",
       "details": {
         "inao": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.03,
           "tva": 0,
           "unite": "hl",
-          "libelle": "- N° %detail_identifiant%",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "Degustation"
           ],
-          "callback": "getVolumeRevendiqueNumeroDossier"
+          "callback": "buildMouvementsFacturesVolumeDeguste"
         }
       }
     },
@@ -302,13 +302,14 @@
       "minimum_fallback": "10_%detail_identifiant%_20_fallbackIgp",
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "2nd dégustation %detail_identifiant%",
+      "libelle": "2nd dégustation",
       "code_comptable": "",
       "details": {
-        "degustation": {
+        "redegustation": {
           "modele": "Cotisation",
           "prix": 0.7,
           "tva": 0.2,
+          "unite": "hl",
           "libelle": "Contrôle IGP",
           "complement_libelle": "",
           "docs": [
@@ -329,10 +330,11 @@
       "libelle": "2nd dégustation",
       "code_comptable": "",
       "details": {
-        "degustation": {
+        "redegustation": {
           "modele": "Cotisation",
           "prix": 0.9,
           "tva": 0.2,
+          "unite": "hl",
           "libelle": "Contrôle Méditerranée",
           "complement_libelle": "",
           "docs": [
