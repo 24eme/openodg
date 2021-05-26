@@ -67,12 +67,15 @@ $dateDegustation = new DateTime();
 $dateDegustation = $dateDegustation->modify('+5 days')->format('Y-m-d');
 $degustation = DegustationClient::getInstance()->createDoc($dateDegustation.' 09:24:00');
 $degustation->save();
+$degustationTerminee = DegustationClient::getInstance()->createDoc($dateDegustation.' 10:48:00');
+$degustationTerminee->etape = DegustationEtapes::ETAPE_RESULTATS;
+$degustationTerminee->save();
 
 $t->comment('Récupération du lot');
 
 $lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id);
 
-$degustations = DegustationClient::getInstance()->getDegustationsEnCours();
+$degustations = DegustationClient::getInstance()->getHistoryEncours();
 
 $t->comment('Récupération de la dégustation');
 
