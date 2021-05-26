@@ -83,3 +83,21 @@ $t->is(count($degustations),1,"Il y a une dégustation en cours");
 $degustationTeste = $degustations[0];
 $t->is($degustationTeste->_id,$degustation->_id,"La dégustation récupérée correspond à celle crée");
 
+$t->comment('Création du formulaire');
+
+$form = new DegustationAffectionLotForm($lot,$degustationTeste);
+
+$values = array();
+$values['prelevement'] = false;
+$values['table'] = 2;
+
+$form->bind($values);
+$form->save();
+
+$t->ok($form->isValid(),"Le formulaire est valide");
+$t->is(count($degustationTeste->lots),1,"La dégustation à un lot");
+$t->is($lots[0]->unique_id,$degustationTeste->lots->getFirst()->unique_id,"Le lot de la dégustation correspond au lot crée");
+$lotAjoutee = $degustationTeste->lots->getFirst();
+$t->is($lotAjoutee->prelevee,null,"Le lot n'a pas été prelevé");
+$t->is($lotAjoutee->numero_table,2,"Le lot est bien assigné à la table 2");
+
