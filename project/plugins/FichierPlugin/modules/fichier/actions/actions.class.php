@@ -49,7 +49,7 @@ class fichierActions extends sfActions
     		return $this->forward404("Aucun fichier pour ".$fichier->_id);
     	}
     	$filename = null;
-		foreach ( array($fileParam, 'pdf', 'csv') as $fileParam_test) {
+		foreach ( array_filter([$fileParam, 'pdf', 'xls', 'csv'], 'is_string') as $fileParam_test) {
     		foreach ($fichier->_attachments as $key => $attachment) {
             	if (!$fileParam_test || strpos($key, $fileParam_test) !== false ) {
     				$filename = $key;
