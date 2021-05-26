@@ -1446,6 +1446,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!$lot->isSecondPassage()){
 					continue;
 				}
+                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+                    continue;
+                }
 				$mvtFacture = DegustationMouvementFactures::freeInstance($this);
 				$mvtFacture->detail_identifiant = $lot->numero_dossier;
 				$mvtFacture->createFromCotisationAndDoc($cotisation, $this);
