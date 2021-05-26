@@ -39,6 +39,10 @@ class Organisme
                     : sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
 
         if (!array_key_exists($this->region, $infos)) {
+            $infos = sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
+        }
+
+        if (!array_key_exists($this->region, $infos)) {
             throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
         }
 
