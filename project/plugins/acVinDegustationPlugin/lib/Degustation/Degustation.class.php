@@ -1470,6 +1470,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
 
+                if ($lot->isSecondPassage()) {
+                    continue;
+                }
                 $volumes_operateurs[$lot->declarant_identifiant] += $lot->volume;
             }
             foreach ($volumes_operateurs as $operateur => $volume) {
