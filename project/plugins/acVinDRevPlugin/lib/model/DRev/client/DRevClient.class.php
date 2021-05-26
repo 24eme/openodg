@@ -207,4 +207,20 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
       return null;
     }
 
+    public function matchFilter($lot, $produitFilter)
+    {
+        $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+        $isExcludeMode = (bool) $produitExclude;
+        $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
+
+        if($produitFilter && !$isExcludeMode && !preg_match($regexpFilter, $lot->getProduitHash())) {
+            return false;
+        }
+
+        if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
+            return false;
+        }
+
+        return true;
+    }
 }

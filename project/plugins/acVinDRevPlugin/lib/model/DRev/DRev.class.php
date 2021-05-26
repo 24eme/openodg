@@ -1510,18 +1510,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     private function getInternalVolumeRevendique($lots, $produitFilter) {
         $total = 0;
         foreach($lots as $lot) {
-            $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-  		    $isExcludeMode = (bool) $produitExclude;
-            $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
-
-            if($produitFilter && !$isExcludeMode && !preg_match($regexpFilter, $lot->getProduitHash())) {
-
-      			continue;
-      		}
-
-            if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
-      			continue;
-  		    }
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
 
             $total += $lot->volume;
         }
