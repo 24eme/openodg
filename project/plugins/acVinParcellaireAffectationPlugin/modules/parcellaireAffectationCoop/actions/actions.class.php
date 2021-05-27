@@ -2,24 +2,36 @@
 
 class parcellaireAffectationCoopActions extends sfActions {
 
-    public function executeSv11(sfWebRequest $request) {
+    public function executeCreate(sfWebRequest $request) {
+
         $this->etablissement = $this->getRoute()->getObject();
         $this->periode = $request->getParameter('periode');
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+    		return sfView::SUCCESS;
+    	}
+
+        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);
+        $parcellaireAffectationCoop->save();
+        return $this->redirect('parcellaireaffectationcoop_apporteurs', array('identifiant' => $this->etablissement->identifiant, 'periode' => $this->periode));
     }
 
     public function executeApporteurs(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getObject();
         $this->periode = $request->getParameter('periode');
-
+        $this->parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);
         $sv11 = SV11Client::getInstance()->find("SV11-".$this->etablissement->identifiant."-".$this->periode);
 
         if(!$sv11) {
             $sv11 = SV11Client::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
         }
 
-        $this->form = new SV11ApporteursForm($sv11);
-        $this->apporteurs = $this->form->getApporteurs();
-        $this->apporteursSV11 = $this->form->getApporteursSV11();
+
+         $this->parcellaireAffectationCoop->buildApporteurs($sv11);
+         $this->parcellaireAffectationCoop->save();
+
+        $this->form = new ParcellaireAffectationCoopApporteursForm($this->parcellaireAffectationCoop);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -27,7 +39,6 @@ class parcellaireAffectationCoopActions extends sfActions {
     	}
 
     	$this->form->bind($request->getParameter($this->form->getName()));
-
     	if (!$this->form->isValid()) {
 
     		return sfView::SUCCESS;
