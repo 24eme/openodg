@@ -67,9 +67,13 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $this->form->save();
 
-        $this->parcellaireAffectation->validate();
-        $this->parcellaireAffectation->save();
+        if(array_key_exists('retour', $_POST)) {
+            $this->parcellaireAffectation->signataire = null;
+        } else {
+            $this->parcellaireAffectation->validate();
+        }
 
+        $this->parcellaireAffectation->save();
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
