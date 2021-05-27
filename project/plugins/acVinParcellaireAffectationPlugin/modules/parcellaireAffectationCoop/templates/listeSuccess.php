@@ -29,7 +29,7 @@
                 <?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
                     <a class="text-success" href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $parcellaireAffectationCoop, 'id_document' => $apporteur->getAffectationParcellaire()->_id)) ?>">Voir la déclaration</a>
                 <?php elseif($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_EN_COURS): ?>
-                    <a href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $parcellaireAffectationCoop, 'id_document' => $apporteur->getAffectationParcellaire()->_id)) ?>">Continuer la déclaration</a>
+                    <a href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Continuer la déclaration</a>
                 <?php elseif($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR): ?>
                     <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Saisir la déclaration</a>
                 <?php else: ?>
