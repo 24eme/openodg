@@ -153,17 +153,21 @@ $t->is(count($formFields), count($vitis)+1, "Il y a les 6 apporteurs dans le for
 
 $values = array(
     '_revision' => $parcellaireAffectationCoop->_rev
-
 );
 foreach($vitis as $viti) {
-    $values[$viti->_id] = false;
+    $values[$viti->_id] = 1;
 }
+
+unset($values[$vitis[0]->_id]);
+unset($values[$vitis[1]->_id]);
 
 $formApporteurs->bind($values);
 
 $t->ok($formApporteurs->isValid(), "Le formulaire est valide");
 
 $formApporteurs->save();
+
+$t->is(count($parcellaireAffectationCoop->getApporteursChoisis()), 4, "4 apporteurs choisis");
 
 $coop = EtablissementClient::getInstance()->find($coop->_id);
 
@@ -183,9 +187,9 @@ $liaisons = $coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEU
 
 $t->comment("Mise à jour des infos provenant des affectations parcellaires");
 
-$parcellaireAffectationCoop->update();
+$parcellaireAffectationCoop->updateApporteurs();
 
-foreach($parcellaireAffectationCoop->apporteurs as $apporteur) {
+foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
     $t->is($apporteur->intention, false, "L'apporteur \"".$apporteur->nom."\" est indiqué comme n'ayant pas de parcelles dans le parcellaire d'intention d'affectation");
 }
 

@@ -106,6 +106,7 @@ ParcellaireAffectationCoop:
           fields:
             '*':
               type: collection
+              class: ParcellaireAffectationCoopApporteur
               definition:
                 fields:
                   provenance: { }

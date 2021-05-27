@@ -26,6 +26,18 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
           return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
+    public function getApporteursChoisis() {
+        $apporteurs = array();
+        foreach($this->apporteurs as $apporteur) {
+            if(!$apporteur->apporteur) {
+                continue;
+            }
+            $apporteurs[$apporteur->getKey()] = $apporteur;
+        }
+
+        return $apporteurs;
+    }
+
     protected function addApporteur($id_etablissement) {
         if($this->apporteurs->exist($id_etablissement)) {
 
@@ -68,6 +80,23 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             }
             $apporteur = $this->addApporteur($id);
             $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
+        }
+    }
+
+    public function updateApporteurs() {
+        foreach($this->getApporteursChoisis() as $apporteur) {
+            if($apporteur->getAffectationParcellaire()) {
+                continue;
+            }
+
+            $apporteur->intention = true;
+            $affectation = $apporteur->createAffectationParcellaire();
+
+            if(count($affectation->getParcelles())) {
+                continue;
+            }
+
+            $apporteur->intention = false;
         }
     }
 
