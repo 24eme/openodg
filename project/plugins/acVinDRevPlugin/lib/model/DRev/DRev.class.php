@@ -1520,12 +1520,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $total;
     }
 
-    public function getVolumeL15FromDRPrecedente($produitFilter = null) {
+    public function getVolumeVinFromDRPrecedente($produitFilter = null) {
         $dr = $this->getDR($this->getPeriode()-1);
         if (!$dr){
             throw new sfException("Pas de DR ".($this->getPeriode()-1)." pour ".$this->_id);
         }
-        return $dr->getTotalValeur("15");
+        return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
 
     /**

@@ -69,7 +69,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeL15FromDRPrecedente",
+          "callback": "getVolumeVinFromDRPrecedente",
           "callback_parameters": []
         }
       }
