@@ -186,11 +186,18 @@ foreach($liaisons as $liaison) {
     $t->is($affectationParcellaire->_id, "PARCELLAIREAFFECTATION-".$identifiant."-".$campagneAffectation, "L'id de l'affectation parcellaire de l'apporteur ".$affectationParcellaire->_id);
     $t->ok(!$affectationParcellaire->_rev, "Le document est nouveau et n'a pas de révision");
 
-    $form = new ParcellaireAffectationProduitsForm($affectationParcellaire);
-    $form->bind(array('_revision' => $affectationParcellaire->_rev));
+    $form = new ParcellaireAffectationCoopSaisieForm($affectationParcellaire, $coop);
+    if (sfConfig::get('app_document_validation_signataire')) {
+        $t->is($form->getDefaults()['signataire'], $coop->raison_sociale, "Le signataire est initialisé par défaut");
+    }
+
+    $form->bind(array('_revision' => $affectationParcellaire->_rev, 'signataire' => "Cave coopérative"));
     $form->save();
 
     $affectationParcellaire->validate();
     $affectationParcellaire->save();
     $t->ok($affectationParcellaire->isValidee(), "L'affectation parcellaire est validé");
+    if (sfConfig::get('app_document_validation_signataire')) {
+        $t->is($affectationParcellaire->signataire, "Cave coopérative", "Le signataire a été enregistré");
+    }
 }
