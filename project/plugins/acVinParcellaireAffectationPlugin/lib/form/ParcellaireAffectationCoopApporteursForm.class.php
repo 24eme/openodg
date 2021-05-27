@@ -19,6 +19,7 @@ class ParcellaireAffectationCoopApporteursForm extends acCouchdbObjectForm {
       foreach ($this->getObject()->getApporteurs() as $id => $apporteur) {
           $apporteur->apporteur = boolval($values[$id]);
       }
+      $this->getObject()->updateApporteurs();
     }
 
     protected function doSave($con = null) {
