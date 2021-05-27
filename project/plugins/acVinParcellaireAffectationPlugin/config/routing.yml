@@ -119,9 +119,9 @@ parcellaireaffectationcoop_create:
     sf_method: [get, post]
 
 parcellaireaffectationcoop_apporteurs:
-  url: /parcellaire-affectation-coop/apporteurs/:identifiant/:periode
+  url: /parcellaire-affectation-coop/apporteurs/:id
   param: { module: parcellaireAffectationCoop, action: apporteurs }
-  class: EtablissementRoute
+  class: ParcellaireAffectationCoopRoute
   options:
     model:    Etablissement
     type:     object
@@ -129,9 +129,9 @@ parcellaireaffectationcoop_apporteurs:
     sf_method: [get, post]
 
 parcellaireaffectationcoop_liste:
-  url: /parcellaire-affectation-coop/liste/:identifiant/:periode
+  url: /parcellaire-affectation-coop/liste/:id
   param: { module: parcellaireAffectationCoop, action: liste }
-  class: EtablissementRoute
+  class: ParcellaireAffectationCoopRoute
   options:
     model:    Etablissement
     type:     object
@@ -139,31 +139,31 @@ parcellaireaffectationcoop_liste:
     sf_method: [get]
 
 parcellaireaffectationcoop_saisie:
-  url: /parcellaire-affectation-coop/saisie/:identifiant/:periode/:apporteur
+  url: /parcellaire-affectation-coop/saisie/:id/:apporteur
   param: { module: parcellaireAffectationCoop, action: saisie }
-  class: EtablissementRoute
+  class: ParcellaireAffectationCoopRoute
   options:
-    model:    Etablissement
+    model:    ParcellaireAffectationCoop
     type:     object
   requirements:
     sf_method: [get, post]
 
 parcellaireaffectationcoop_visualisation:
-  url: /parcellaire-affectation-coop/visualisation/:identifiant/:periode/:id_document
+  url: /parcellaire-affectation-coop/visualisation/:id/:id_document
   param: { module: parcellaireAffectationCoop, action: visualisation }
-  class: EtablissementRoute
+  class: ParcellaireAffectationCoopRoute
   options:
-    model:    Etablissement
+    model:    ParcellaireAffectationCoop
     type:     object
   requirements:
     sf_method: [get]
 
 parcellaireaffectationcoop_exportcsv:
-  url: /parcellaire-affectation-coop/exportcsv/:identifiant/:periode
+  url: /parcellaire-affectation-coop/exportcsv/:id
   param: { module: parcellaireAffectationCoop, action: exportcsv }
-  class: EtablissementRoute
+  class: ParcellaireAffectationCoopRoute
   options:
-    model:    Etablissement
+    model:    ParcellaireAffectationCoop
     type:     object
   requirements:
     sf_method: [get]
