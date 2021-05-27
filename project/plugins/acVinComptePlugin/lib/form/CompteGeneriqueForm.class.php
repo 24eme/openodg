@@ -159,6 +159,7 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
             $compte->add('alternative_logins', explode(',', $values['alternative_logins']));
         }
 
+        $compte->updateCoordonneesLongLat();
         $compte->save();
       }
 

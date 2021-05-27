@@ -29,29 +29,6 @@
 </table>
 </td></tr></table>
 
-<?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
-    <br/><br/>
-    <span class="h3">&nbsp;Logement du vin&nbsp;</span><br/>
-    <table class="tableAlt" border="0" cellspacing=0 cellpadding=0 style="text-align: right;" >
-      <thead>
-        <tr style="line-height:20em;">
-          <th class="th" style="text-align: center; width: 20%">Num. Dossier</th>
-          <th class="th" style="text-align: center; width: 80%">Détails du chais</th>
-        </tr>
-      </thead>
-      <tbody>
-      <?php foreach ($drev->getLotsByNumeroDossier() as $lot) : ?>
-        <tr>
-          <td class="td" style="text-align: center; width: 20%"><?php echo $lot->numero_dossier; ?></td>
-          <td class="td" style="text-align: left; width: 80%">
-            <?php echo $drev->getAdresseLogement($lot);
-            ?>
-          </td>
-        </tr>
-      <?php endforeach; ?>
-    </tbody>
-    </table>
-<?php endif; ?>
 <?php if(count($drev->declaration->getProduitsWithoutLots($region))): ?>
 <br />
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
@@ -114,10 +91,10 @@ Les produits déclarés sont du millésime du VCI
 <?php if (count($drev->getLotsRevendiques())): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr style="line-height:20em;">
-        <th class="th" style="text-align: left; width: 9%">&nbsp;Date</th>
-        <th class="th" style="text-align: left; width: 13%">&nbsp;Lot</th>
-        <th class="th" style="text-align: left; width: 50%">&nbsp;Produit (millésime)</th>
-        <th class="th" style="text-align: center; width: 8%">Volume</th>
+        <th class="th" style="text-align: left; width: 10%">&nbsp;Date</th>
+        <th class="th" style="text-align: left; width: 20%">&nbsp;Lot</th>
+        <th class="th" style="text-align: left; width: 40%">&nbsp;Produit (millésime)</th>
+        <th class="th" style="text-align: center; width: 10%">Volume</th>
         <th class="th" style="text-align: center; width: 20%">&nbsp;Destination (date)</th>
     </tr>
 <?php foreach($drev->getLotsByUniqueAndDate() as $lot): ?>
@@ -153,6 +130,30 @@ Les produits déclarés sont du millésime du VCI
     </tr>
 <?php endforeach; ?>
 </table>
+<?php endif; ?>
+
+<?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
+    <br/><br/>
+    <span class="h3">&nbsp;Logement du vin&nbsp;</span><br/>
+    <table class="tableAlt" border="0" cellspacing=0 cellpadding=0 style="text-align: right;" >
+      <thead>
+        <tr style="line-height:20em;">
+          <th class="th" style="text-align: center; width: 20%">Num. Dossier</th>
+          <th class="th" style="text-align: center; width: 80%">Détails du chais</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($drev->getLotsByNumeroDossier() as $lot) : ?>
+        <tr>
+          <td class="td" style="text-align: center; width: 20%"><?php echo $lot->numero_dossier; ?></td>
+          <td class="td" style="text-align: left; width: 80%">
+            <?php echo $lot->adresse_logement;
+            ?>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+    </table>
 <?php endif; ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) && DRevConfiguration::getInstance()->hasEngagementsPdf()): ?>
