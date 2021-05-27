@@ -14,12 +14,13 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);
         $parcellaireAffectationCoop->save();
-        return $this->redirect('parcellaireaffectationcoop_apporteurs', array('identifiant' => $this->etablissement->identifiant, 'periode' => $this->periode));
+        return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
     }
 
     public function executeApporteurs(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->periode = $this->parcellaireAffectationCoop->getPeriode();
         $sv11 = SV11Client::getInstance()->find("SV11-".$this->etablissement->identifiant."-".$this->periode);
 
         if(!$sv11) {
