@@ -212,7 +212,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations['Total global']['nb_lots'] += $couleur['nb_lots'];
             $total_appellations['Total global']['nb_lots_degustables'] += $couleur['nb_lots_degustables'];
         }
-        if (array_keys($total_appellations) < 3) {
+        if (count(array_keys($total_appellations)) < 3) {
             unset($total_appellations['Total global']);
         }
         if ($with_total) {
