@@ -34,7 +34,6 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             $apporteur = $apporteurs->getOrAdd($liaison->id_etablissement);
             $apporteur->nom = $liaison->libelle_etablissement;
             $apporteur->cvi = $liaison->cvi;
-            $apporteur->provenance = "liaison";
         }
 
         // Depuis la SV11
@@ -43,7 +42,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             $apporteur = $apporteurs->getOrAdd($idApporteur);
             $apporteur->nom = $nom;
             $apporteur->cvi = $etb->cvi;
-            $apporteur->provenance = "sv11";
+            $apporteur->provenance = SV11Client::TYPE_MODEL ;
         }
 
     }

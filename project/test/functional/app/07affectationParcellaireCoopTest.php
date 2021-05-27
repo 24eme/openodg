@@ -17,13 +17,17 @@ $t = $b->test();
 
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null, 'app_facture_emetteur' => $facture_emetteur_test));
 
-$t->comment("Saisie des affectations parcellaires des apporteur d'une d'une cave coop");
+$t->comment("Saisie des affectations parcellaires des apporteurs d'une d'une cave coop");
 
 $b->get('/declarations/'.$etablissementCoop->identifiant);
 $b->isForwardedTo('declaration', 'etablissement');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page declaration");
 
-$b->click('a#btn_affection_parcellaire_coop')->followRedirect();
+$b->click('a#btn_affection_parcellaire_coop');
+$b->isForwardedTo('parcellaireAffectationCoop', 'create');
+$t->is($b->getResponse()->getStatuscode(), 200, "Création du document");
+
+$b->click('button#btn_creation_affection_parcellaire_coop')->followRedirect();
 $b->isForwardedTo('parcellaireAffectationCoop', 'apporteurs');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape apporteurs");
 

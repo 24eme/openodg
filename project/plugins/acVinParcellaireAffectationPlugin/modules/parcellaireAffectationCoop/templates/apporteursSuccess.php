@@ -11,7 +11,8 @@
         <tr>
             <th style="width: 0;"></th>
             <th class="text-right col-xs-1">Provenance</th>
-            <th>Apporteur</th>
+            <th class="col-xs-1">CVI</th>
+            <th>Nom</th>
         </tr>
 
 
@@ -29,7 +30,10 @@
             <td class="text-center">
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->provenance; ?>
             </td>
-            <td class="text-center">
+            <td class="">
+                <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->cvi; ?>
+            </td>
+            <td class="">
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?>
             </td>
 
