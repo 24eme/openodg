@@ -16,12 +16,17 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_parcellaire_coo
     if (preg_match('/SOCIETE-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
       $soc = SocieteClient::getInstance()->findByIdentifiantSociete($m[1]);
       $soc->delete();
-      foreach(ParcellaireAffectationClient::getInstance()->getHistory(str_replace("COMPTE-", "", $v->id)."01", '9999', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+      foreach(ParcellaireAffectationClient::getInstance()->getHistory(str_replace("COMPTE-", "", $v->id)."01", '9999', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $val) {
           $affectationParcellaire = ParcellaireAffectationClient::getInstance()->find($k);
+          $affectationParcellaire->delete(false);
+      }
+      foreach(ParcellaireAffectationCoopClient::getInstance()->getHistory(str_replace("COMPTE-", "", $v->id)."01", '9999', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $val) {
+          $affectationParcellaire = ParcellaireAffectationCoopClient::getInstance()->find($k);
           $affectationParcellaire->delete(false);
       }
     }
 }
+
 
 $societe = SocieteClient::getInstance()->createSociete("société coop test", SocieteClient::TYPE_OPERATEUR);
 $societe->save();
@@ -121,17 +126,32 @@ foreach($vitis as $viti) {
     $t->ok($apporteurs[$viti->_id], "L'apporteur ".$viti->_id." est présent");
 }
 
-$formApporteurs = new SV11ApporteursForm($sv11);
+$t->comment("Création du document d'affectation parcellaire cave coop");
 
-$t->is(count($formApporteurs->getFormFieldSchema()), count($vitis), "Il y a les 6 apporteurs dans le form");
-$defaults = array();
+$parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($coop->identifiant, $campagne);
+$t->ok($parcellaireAffectationCoop, "Un document d'affectation parcellaire cave coop a été créé : ".$parcellaireAffectationCoop->_id);
+
+
+$t->is(count($parcellaireAffectationCoop->apporteurs),0, "Le document d'affectation parcellaire cave coop n'a pas d'apporteur ");
+
+$parcellaireAffectationCoop->buildApporteurs($sv11);
+
+$t->is(count($parcellaireAffectationCoop->apporteurs), count($vitis), "Le document d'affectation parcellaire cave coop a 6 apporteurs ");
+
+$formApporteurs = new ParcellaireAffectationCoopApporteursForm($parcellaireAffectationCoop);
+
+$formFields = $formApporteurs->getFormFieldSchema();
+
+$t->is(count($formFields), count($vitis)+1, "Il y a les 6 apporteurs dans le form et un champs _rev");
+
+$values = array(
+    '_revision' => $parcellaireAffectationCoop->_rev
+
+);
 foreach($vitis as $viti) {
-    $defaults[$viti->_id] = 1;
+    $values[$viti->_id] = false;
 }
-$t->is($formApporteurs->getDefaults(), $defaults, "Tous les apporteurs sont cochés par défaut");
-$values = $defaults;
-unset($values[$vitis[0]->_id]);
-unset($values[$vitis[1]->_id]);
+
 $formApporteurs->bind($values);
 
 $t->ok($formApporteurs->isValid(), "Le formulaire est valide");
@@ -143,24 +163,14 @@ $coop = EtablissementClient::getInstance()->find($coop->_id);
 foreach($vitis as $viti) {
     if($viti->_id == $vitis[0]->_id) {
         $viti = EtablissementClient::getInstance()->find($viti->_id);
-        $t->ok(!$viti->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $coop->_id), "La liaison entre le viti ".$viti->_id." et la cave coop ".$coop->_id." a été supprimé");
-        $t->ok(!$coop->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $viti->_id), "La liaison entre la cave coop ".$coop->_id." et le viti ".$viti->_id." a été supprimé");
+        $t->ok($viti->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $coop->_id), "La liaison entre le viti ".$viti->_id." et la cave coop ".$coop->_id." n'a pas évoluée ");
+        $t->ok($coop->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $viti->_id), "La liaison entre la cave coop ".$coop->_id." et le viti ".$viti->_id." n'a pas évoluée ");
         continue;
     }
-    if($viti->_id == $vitis[1]->_id) {
-        $viti = EtablissementClient::getInstance()->find($viti->_id);
-        $t->ok(!$viti->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $coop->_id), "La liaison entre le viti ".$viti->_id." et la cave coop ".$coop->_id." n'a pas été créé");
-        $t->ok(!$coop->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $viti->_id), "La liaison entre la cave coop ".$coop->_id." et le viti ".$viti->_id." n'a pas été créé");
-        continue;
-    }
-
-    $viti = EtablissementClient::getInstance()->find($viti->_id);
-    $t->ok($viti->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $coop->_id), "La liaison entre le viti ".$viti->_id." et la cave coop ".$coop->_id." a été créé");
-    $t->ok($coop->existLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $viti->_id), "La liaison entre la cave coop ".$coop->_id." et le viti ".$viti->_id." a été créé");
 }
 
 $coop = EtablissementClient::getInstance()->find($coop->_id);
-$t->is(count($coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR)), count($vitis) - 2, "La coopérative a ".(count($vitis) - 2)." coopérateurs");
+$t->is(count($coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR)), count($vitis) - 4, "La coopérative a toujours ".(count($vitis) - 4)." coopérateurs");
 
 $liaisons = $coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
 
@@ -184,5 +194,3 @@ foreach($liaisons as $liaison) {
     $affectationParcellaire->save();
     $t->ok($affectationParcellaire->isValidee(), "L'affectation parcellaire est validé");
 }
-
-
