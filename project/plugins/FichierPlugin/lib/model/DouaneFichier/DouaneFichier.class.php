@@ -162,7 +162,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
             $this->add('donnees');
             $generate = false;
             foreach ($this->getCsv() as $datas) {
-                $this->addDonnee(str_getcsv($datas, ";"));
+                $this->addDonnee($datas);
             }
         }
         return false;
