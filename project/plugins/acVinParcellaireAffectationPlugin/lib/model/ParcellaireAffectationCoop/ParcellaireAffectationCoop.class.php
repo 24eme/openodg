@@ -58,16 +58,28 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function buildApporteurs($sv11){
         $apporteurs = $this->apporteurs;
+        $sv11Apporteurs = $sv11->getApporteurs();
+        $apporteursArray = array();
 
         // Depuis les liaisons
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
-            $apporteur = $this->addApporteur($liaison->id_etablissement);
+            $apporteursArray[$liaison->id_etablissement] = $liaison->libelle_etablissement;
         }
 
         // Depuis la SV11
-        foreach($sv11->getApporteurs() as $idApporteur => $nom) {
-            $apporteur = $this->addApporteur($idApporteur);
-            $apporteur->provenance = SV11Client::TYPE_MODEL ;
+        foreach($sv11Apporteurs as $idApporteur => $nom) {
+            $apporteursArray[$idApporteur] = $nom;
+        }
+
+        asort($apporteursArray);
+
+        foreach ($apporteursArray as $id => $nom ) {
+            $etb = EtablissementClient::getInstance()->find($id, acCouchdbClient::HYDRATE_JSON);
+            if(!$etb->cvi){
+                continue;
+            }
+            $apporteur = $this->addApporteur($id);
+            $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
         }
     }
 
