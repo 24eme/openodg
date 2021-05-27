@@ -79,8 +79,8 @@ class parcellaireAffectationCoopActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getObject();
-        $this->periode = $request->getParameter('periode');
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
 
         $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($request->getParameter('id_document'));
     }
