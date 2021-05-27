@@ -26,25 +26,37 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
           return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
+    protected function addApporteur($id_etablissement) {
+        if($this->apporteurs->exist($id_etablissement)) {
+
+            return $this->apporteurs->get($id_etablissement);
+        }
+        $etablissement = EtablissementClient::getInstance()->find($id_etablissement, acCouchdbClient::HYDRATE_JSON);
+        if(!$etablissement) {
+            return;
+        }
+        $apporteur = $this->apporteurs->add($etablissement->_id);
+        $apporteur->nom = $etablissement->nom;
+        $apporteur->cvi = $etablissement->cvi;
+        $apporteur->intention = true;
+        $apporteur->apporteur = true;
+
+        return $apporteur;
+    }
+
     public function buildApporteurs($sv11){
         $apporteurs = $this->apporteurs;
 
         // Depuis les liaisons
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
-            $apporteur = $apporteurs->getOrAdd($liaison->id_etablissement);
-            $apporteur->nom = $liaison->libelle_etablissement;
-            $apporteur->cvi = $liaison->cvi;
+            $apporteur = $this->addApporteur($liaison->id_etablissement);
         }
 
         // Depuis la SV11
         foreach($sv11->getApporteurs() as $idApporteur => $nom) {
-            $etb = EtablissementClient::getInstance()->find($idApporteur);
-            $apporteur = $apporteurs->getOrAdd($idApporteur);
-            $apporteur->nom = $nom;
-            $apporteur->cvi = $etb->cvi;
+            $apporteur = $this->addApporteur($idApporteur);
             $apporteur->provenance = SV11Client::TYPE_MODEL ;
         }
-
     }
 
 }
