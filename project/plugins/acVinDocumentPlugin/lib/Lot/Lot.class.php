@@ -386,6 +386,10 @@ abstract class Lot extends acCouchdbDocumentTree
         return $libelle;
     }
 
+    public function isControle(){
+        return ($this->affectable || $this->id_document_affectation);
+    }
+
     public function isSecondPassage()
     {
         return $this->getNombrePassage() > 1;

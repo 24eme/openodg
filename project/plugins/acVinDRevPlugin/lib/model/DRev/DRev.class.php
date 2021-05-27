@@ -156,7 +156,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleurs[$couleur]['volume_lots'] += $lot->volume;
             $couleurs[$couleur]['nb_lots']++;
-            if ($lot->affectable) {
+            if ($lot->isControle()) {
                 $couleurs[$couleur]['nb_lots_degustables']++;
             }
         }
