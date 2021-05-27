@@ -19,6 +19,8 @@ class ParcellaireAffectationCoopSaisieForm extends ParcellaireAffectationProduit
     		$this->getWidget('signataire')->setLabel("Nom et prénom :");
             $this->getValidator('signataire')->setMessage("required", "Le nom et prénom du signataire est requise");
         }
+        $this->setWidget('observations',new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
+        $this->setValidator('observations',new sfValidatorString(array('required' => false)));
     }
 
 
