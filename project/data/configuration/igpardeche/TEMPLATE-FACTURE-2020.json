@@ -87,15 +87,15 @@
                     ]
                 },
                 "lots": {
-                    "modele": "CotisationVariable",
+                    "modele": "Cotisation",
                     "prix": 8,
                     "tva": 0.2,
-                    "libelle": "Nombre de lots presentés - N° %detail_identifiant%",
+                    "libelle": "Nombre de lots presentés",
                     "complement_libelle": "",
                     "docs": [
-                        "DRev"
+                        "Degustation"
                     ],
-                    "callback": "getNbLotsPreleves",
+                    "callback": "buildMouvementsNbLotsDegustes",
                     "callback_parameters": [
                     ]
                 },
