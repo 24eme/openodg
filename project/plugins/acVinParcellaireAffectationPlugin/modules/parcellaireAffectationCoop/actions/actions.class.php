@@ -18,9 +18,8 @@ class parcellaireAffectationCoopActions extends sfActions {
     }
 
     public function executeApporteurs(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getObject();
-        $this->periode = $request->getParameter('periode');
-        $this->parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
         $sv11 = SV11Client::getInstance()->find("SV11-".$this->etablissement->identifiant."-".$this->periode);
 
         if(!$sv11) {
@@ -46,12 +45,12 @@ class parcellaireAffectationCoopActions extends sfActions {
 
     	$this->form->save();
 
-        return $this->redirect('parcellaireaffectationcoop_liste', array('sf_subject' => $this->etablissement, 'periode' => $this->periode));
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
     public function executeListe(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getObject();
-        $this->periode = $request->getParameter('periode');
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
 
         $this->apporteurs = $this->etablissement->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
         uasort($this->apporteurs, function($e1, $e2) { return $e1->libelle_etablissement > $e2->libelle_etablissement; });
@@ -66,10 +65,10 @@ class parcellaireAffectationCoopActions extends sfActions {
     }
 
     public function executeSaisie(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getObject();
-        $this->periode = $request->getParameter('periode');
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
 
-        $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($request->getParameter('apporteur'), $this->periode);
+        $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($request->getParameter('apporteur'), substr($this->parcellaireAffectationCoop->campagne, 0, 4));
 
 		$this->form = new ParcellaireAffectationCoopSaisieForm($this->parcellaireAffectation, $this->etablissement);
 
@@ -90,7 +89,7 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectation->validate();
         $this->parcellaireAffectation->save();
 
-        return $this->redirect('parcellaireaffectationcoop_liste', array('sf_subject' => $this->etablissement, 'periode' => $this->periode));
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
