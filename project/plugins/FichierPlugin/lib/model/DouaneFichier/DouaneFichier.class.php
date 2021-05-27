@@ -13,7 +13,7 @@ class DouaneFichier extends Fichier {
             $this->add('donnees');
             $generate = false;
             foreach ($this->getCsv() as $datas) {
-                $this->addDonnee(str_getcsv($datas, ";"));
+                $this->addDonnee($datas);
             }
         }
         return false;
