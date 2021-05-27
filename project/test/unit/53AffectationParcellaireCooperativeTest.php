@@ -128,14 +128,8 @@ foreach($vitis as $viti) {
 
 $t->comment("Création du document d'affectation parcellaire cave coop");
 
-$parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($coop->identifiant, $campagne);
+$parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->createDoc($coop->identifiant, $campagne);
 $t->ok($parcellaireAffectationCoop, "Un document d'affectation parcellaire cave coop a été créé : ".$parcellaireAffectationCoop->_id);
-
-
-$t->is(count($parcellaireAffectationCoop->apporteurs),0, "Le document d'affectation parcellaire cave coop n'a pas d'apporteur ");
-
-$parcellaireAffectationCoop->buildApporteurs($sv11);
-
 $t->is(count($parcellaireAffectationCoop->apporteurs), count($vitis), "Le document d'affectation parcellaire cave coop a 6 apporteurs ");
 
 foreach($parcellaireAffectationCoop->apporteurs as $apporteur) {

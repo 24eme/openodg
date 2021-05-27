@@ -12,24 +12,15 @@ class parcellaireAffectationCoopActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
-        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);
+        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
         $parcellaireAffectationCoop->save();
+
         return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
     }
 
     public function executeApporteurs(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->periode = $this->parcellaireAffectationCoop->getPeriode();
-        $sv11 = SV11Client::getInstance()->find("SV11-".$this->etablissement->identifiant."-".$this->periode);
-
-        if(!$sv11) {
-            $sv11 = SV11Client::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
-        }
-
-
-         $this->parcellaireAffectationCoop->buildApporteurs($sv11);
-         $this->parcellaireAffectationCoop->save();
 
         $this->form = new ParcellaireAffectationCoopApporteursForm($this->parcellaireAffectationCoop);
 

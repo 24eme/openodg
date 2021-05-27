@@ -27,11 +27,14 @@ class ParcellaireAffectationCoopClient extends acCouchdbClient {
     }
 
     public function createDoc($identifiant, $periode, $type = self::TYPE_COUCHDB) {
+        $parcellaireAffectationCoop = new ParcellaireAffectationCoop();
+        $parcellaireAffectationCoop->initDoc($identifiant, $periode, $type);
 
-          $parcellaireAffectationCoop = new ParcellaireAffectationCoop();
-          $parcellaireAffectationCoop->initDoc($identifiant, $periode, $type);
+        $sv11 = SV11Client::getInstance()->find("SV11-".$identifiant."-".$periode);
+
+        $parcellaireAffectationCoop->buildApporteurs($sv11);
+
         return $parcellaireAffectationCoop;
-
     }
 
     public function getHistory($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
