@@ -6,7 +6,9 @@
   "libelle": "2020 - IGP",
   "docs": [
     "DR",
-    "DRev"
+    "DRev",
+    "ChgtDenom",
+    "Degustation"
   ],
   "cotisations": {
     "00_forfait": {
@@ -317,6 +319,28 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
+        }
+      }
+    },
+    "30_changementdenom": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "",
+      "details": {
+        "frais": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "libelle": "Redevance Méditerrannée",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "getVolumeFacturable",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
         }
       }
     }
