@@ -43,25 +43,6 @@ class parcellaireAffectationCoopActions extends sfActions {
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->periode = $this->parcellaireAffectationCoop->periode;
-
-        $this->apporteurs = array();
-
-        foreach($this->parcellaireAffectationCoop->apporteurs as $id_etablissement => $apporteur) {
-            if(!$apporteur->apporteur){
-                continue;
-            }
-            $this->apporteurs[$id_etablissement] = $apporteur;
-        }
-
-        $this->documents = array();
-        foreach ($this->apporteurs as $id_etablissement => $apporteur) {
-            $id = ParcellaireAffectationClient::TYPE_COUCHDB."-".str_replace("ETABLISSEMENT-", "", $id_etablissement)."-".$this->periode;
-            if(!ParcellaireAffectationClient::getInstance()->find($id, acCouchdbClient::HYDRATE_JSON)) {
-                continue;
-            }
-            $this->documents[$id_etablissement] = $id;
-        }
     }
 
     public function executeSaisie(sfWebRequest $request) {
