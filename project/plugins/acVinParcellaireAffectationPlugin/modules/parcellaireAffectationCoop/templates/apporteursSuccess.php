@@ -27,7 +27,7 @@
             <td class="text-center">
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->provenance; ?>
             </td>
-            <td class="text-center">
+            <td class="">
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?>
             </td>
 
