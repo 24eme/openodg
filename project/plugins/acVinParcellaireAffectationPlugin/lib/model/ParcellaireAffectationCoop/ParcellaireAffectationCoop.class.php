@@ -26,25 +26,34 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
           return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function buildApporteurs($sv11){
+    public function buildApporteurs($sv11 = null){
+
         $apporteurs = $this->apporteurs;
+        $sv11Apporteurs = $sv11->getApporteurs();
+        $apporteursArray = array();
 
         // Depuis les liaisons
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
-            $apporteur = $apporteurs->getOrAdd($liaison->id_etablissement);
-            $apporteur->nom = $liaison->libelle_etablissement;
-            $apporteur->cvi = $liaison->cvi;
+            $apporteursArray[$liaison->id_etablissement] = $liaison->libelle_etablissement;
         }
 
         // Depuis la SV11
-        foreach($sv11->getApporteurs() as $idApporteur => $nom) {
-            $etb = EtablissementClient::getInstance()->find($idApporteur);
-            $apporteur = $apporteurs->getOrAdd($idApporteur);
-            $apporteur->nom = $nom;
-            $apporteur->cvi = $etb->cvi;
-            $apporteur->provenance = SV11Client::TYPE_MODEL ;
+        foreach($sv11Apporteurs as $idApporteur => $nom) {
+            $apporteursArray[$idApporteur] = $nom;
         }
 
+        asort($apporteursArray);
+
+        foreach ($apporteursArray as $id => $nom ) {
+            $etb = EtablissementClient::getInstance()->find($id);
+            if(!$etb->cvi){
+                continue;
+            }
+            $apporteur = $apporteurs->getOrAdd($id);
+            $apporteur->nom = $etb->nom;
+            $apporteur->cvi = $etb->cvi;
+            $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
+        }
     }
 
 }
