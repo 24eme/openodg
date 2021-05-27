@@ -108,6 +108,7 @@ ParcellaireAffectationCoop:
               type: collection
               definition:
                 fields:
+                  provenance: { }
                   apporteur: { }
                   intention: { }
                   nom: { }
