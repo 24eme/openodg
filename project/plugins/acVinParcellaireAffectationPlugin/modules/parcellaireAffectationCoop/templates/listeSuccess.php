@@ -19,7 +19,7 @@
                 <?php if(isset($documents[$liaison->id_etablissement])): ?>
                     <a class="text-success" href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $etablissement, 'periode' => $periode, 'id_document' => $documents[$liaison->id_etablissement])) ?>">Voir la déclaration</a>
                 <?php else: ?>
-                    <a href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $etablissement, 'apporteur' => $liaison->getEtablissementIdentifiant(), 'periode' => $periode)) ?>">Saisir la déclaration</a>
+                    <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $etablissement, 'apporteur' => $liaison->getEtablissementIdentifiant(), 'periode' => $periode)) ?>">Saisir la déclaration</a>
                 <?php endif; ?>
             </td>
         </tr>

@@ -57,7 +57,7 @@ parcellaireaffectation_devalidation:
     type:     object
   requirements:
     sf_method: [get]
-    
+
 parcellaireaffectation_exploitation:
   url: /parcellaire-affectation/exploitation/:id
   param: { module: parcellaireAffectation, action: exploitation }
@@ -67,7 +67,7 @@ parcellaireaffectation_exploitation:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 parcellaireaffectation_affectations:
   url: /parcellaire-affectation/affectations/:id
   param: { module: parcellaireAffectation, action: affectations }
@@ -97,7 +97,7 @@ parcellaireaffectation_visualisation:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 parcellaireaffectation_export_pdf:
   url: /parcellaire-affectation/pdf/:id
   param: { module: parcellaireAffectation, action: PDF }
@@ -108,9 +108,9 @@ parcellaireaffectation_export_pdf:
   requirements:
     sf_method: [get]
 
-parcellaireaffectationcoop_sv11:
-  url: /parcellaire-affectation-coop/sv11/:identifiant/:periode
-  param: { module: parcellaireAffectationCoop, action: sv11 }
+parcellaireaffectationcoop_create:
+  url: /parcellaire-affectation-coop/create/:identifiant/:periode
+  param: { module: parcellaireAffectationCoop, action: create }
   class: EtablissementRoute
   options:
     model:    Etablissement
