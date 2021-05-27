@@ -86,15 +86,16 @@ class parcellaireAffectationCoopActions extends sfActions {
     }
 
     public function executeExportcsv(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getObject();
-        $this->periode = $request->getParameter('periode');
+        $parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $etablissement = $this->getRoute()->getEtablissement();
 
-        $this->apporteurs = $this->etablissement->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
         $header = true;
-
-        foreach($this->apporteurs as $liaison) {
-            $doc = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::TYPE_COUCHDB."-".$liaison->getEtablissementIdentifiant()."-".$this->periode);
+        foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
+            $doc = $apporteur->getAffectationParcellaire(acCouchdbClient::HYDRATE_DOCUMENT);
             if(!$doc) {
+                continue;
+            }
+            if(!$doc->isValidee()) {
                 continue;
             }
             $export = new ExportParcellaireAffectationCSV($doc, $header);
@@ -102,7 +103,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             $header = false;
         }
 
-        $attachement = sprintf("attachment; filename=export_affectation_parcellaire_%s_%s_%s.csv", $this->etablissement->identifiant, $this->periode, date('YmdHis'));
+        $attachement = sprintf("attachment; filename=export_affectation_parcellaire_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
 
