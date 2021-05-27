@@ -206,12 +206,15 @@ foreach($liaisons as $liaison) {
         $t->is($form->getDefaults()['signataire'], $coop->raison_sociale, "Le signataire est initialisé par défaut");
     }
 
-    $form->bind(array('_revision' => $affectationParcellaire->_rev, 'signataire' => "Cave coopérative"));
+    $values = array('_revision' => $affectationParcellaire->_rev, 'signataire' => "Cave coopérative", "observations" => "Viticulteur sur plusieurs caves" );
+
+    $form->bind($values);
     $form->save();
 
     $affectationParcellaire->validate();
     $affectationParcellaire->save();
     $t->ok($affectationParcellaire->isValidee(), "L'affectation parcellaire est validé");
+    $t->ok($affectationParcellaire->observations, "L'affectation parcellaire a des observations");
     if (sfConfig::get('app_document_validation_signataire')) {
         $t->is($affectationParcellaire->signataire, "Cave coopérative", "Le signataire a été enregistré");
     }
