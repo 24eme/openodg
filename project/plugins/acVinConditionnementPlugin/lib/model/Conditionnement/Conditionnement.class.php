@@ -56,7 +56,7 @@ class Conditionnement extends BaseConditionnement
 
     public function verifyGenerateModificative()
     {
-        return $this->version_document->verifyGenerateModificative();
+        return false;
     }
 
     /** Facturation **/
