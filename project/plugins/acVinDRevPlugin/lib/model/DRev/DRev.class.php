@@ -275,6 +275,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lots;
     }
 
+    public function getCurrentLots() {
+      $lots = array();
+      foreach($this->getLots() as $lot) {
+        if ($lot->numero_dossier != $this->numero_archive) {
+          continue;
+        }
+        $lots[] = $lot;
+      }
+      return $lots;
+    }
+
     public function getLotsByNumeroDossier(){
       $lots = array();
       $i=0;
@@ -1324,15 +1335,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function isAllDossiersHaveSameAddress(){
-      $adresse = sprintf("%s — %s  %s  %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
-      $adresse .= $this->declarant->telephone_mobile ? " — ".$this->declarant->telephone_mobile : "";
-      $adresse .= $this->declarant->telephone_bureau ? " — ".$this->declarant->telephone_bureau : "";
-      $adresse = trim($adresse);
-      foreach ($this->getLotsByNumeroDossier() as $lot){
-        if($this->getAdresseLogement($lot) !== $adresse)
-          return false;
+        return (count($this->getLotsByAdresse()) === 1);
+    }
+
+    public function updateAddressCurrentLots(){
+      foreach($this->getCurrentLots() as $lot) {
+        $lot->adresse_logement = $this->constructAdresseLogement();
       }
-      return true;
     }
 
     public function getLotsByAdresse(){
@@ -1359,15 +1368,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
      }
 
-    public function getAdresseLogement($lot){
-        if ($lot && $lot->id_document) {
-            $drev = DRevClient::getInstance()->find($lot->id_document);
-            return $drev->constructAdresseLogement();
-        }
-        return '';
-    }
-
-
 	protected function doSave() {
         $this->piece_document->generatePieces();
         foreach ($this->declaration->getProduits() as $key => $produit) {
@@ -1389,6 +1389,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function save($saveDependants = true) {
         $this->archiver();
+        $this->updateAddressCurrentLots();
         $this->generateMouvementsLots();
 
         parent::save();
@@ -1510,18 +1511,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     private function getInternalVolumeRevendique($lots, $produitFilter) {
         $total = 0;
         foreach($lots as $lot) {
-            $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-  		    $isExcludeMode = (bool) $produitExclude;
-            $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
-
-            if($produitFilter && !$isExcludeMode && !preg_match($regexpFilter, $lot->getProduitHash())) {
-
-      			continue;
-      		}
-
-            if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
-      			continue;
-  		    }
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
 
             $total += $lot->volume;
         }
