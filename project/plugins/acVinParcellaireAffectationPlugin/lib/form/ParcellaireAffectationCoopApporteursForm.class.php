@@ -12,11 +12,6 @@ class ParcellaireAffectationCoopApporteursForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        foreach ($this->getObject()->apporteurs as $id => $apporteur) {
-            if(is_null($apporteur->apporteur) || $apporteur->apporteur){
-                $this->setDefault($id, true);
-            }
-        }
     }
 
     protected function doUpdateObject($values) {

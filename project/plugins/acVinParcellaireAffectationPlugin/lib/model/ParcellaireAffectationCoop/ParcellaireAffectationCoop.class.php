@@ -26,8 +26,25 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
           return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function buildApporteurs($sv11 = null){
+    protected function addApporteur($id_etablissement) {
+        if($this->apporteurs->exist($id_etablissement)) {
 
+            return $this->apporteurs->get($id_etablissement);
+        }
+        $etablissement = EtablissementClient::getInstance()->find($id_etablissement, acCouchdbClient::HYDRATE_JSON);
+        if(!$etablissement) {
+            return;
+        }
+        $apporteur = $this->apporteurs->add($etablissement->_id);
+        $apporteur->nom = $etablissement->nom;
+        $apporteur->cvi = $etablissement->cvi;
+        $apporteur->intention = true;
+        $apporteur->apporteur = true;
+
+        return $apporteur;
+    }
+
+    public function buildApporteurs($sv11){
         $apporteurs = $this->apporteurs;
         $sv11Apporteurs = $sv11->getApporteurs();
         $apporteursArray = array();
@@ -45,13 +62,11 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         asort($apporteursArray);
 
         foreach ($apporteursArray as $id => $nom ) {
-            $etb = EtablissementClient::getInstance()->find($id);
+            $etb = EtablissementClient::getInstance()->find($id, acCouchdbClient::HYDRATE_JSON);
             if(!$etb->cvi){
                 continue;
             }
-            $apporteur = $apporteurs->getOrAdd($id);
-            $apporteur->nom = $etb->nom;
-            $apporteur->cvi = $etb->cvi;
+            $apporteur = $this->addApporteur($id);
             $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
         }
     }

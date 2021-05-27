@@ -138,6 +138,13 @@ $parcellaireAffectationCoop->buildApporteurs($sv11);
 
 $t->is(count($parcellaireAffectationCoop->apporteurs), count($vitis), "Le document d'affectation parcellaire cave coop a 6 apporteurs ");
 
+foreach($parcellaireAffectationCoop->apporteurs as $apporteur) {
+    $t->is($apporteur->nom, $vitis[0]->nom, "L'apporteur a le nom \"".$vitis[0]->nom."\"");
+    $t->like($apporteur->cvi, "/752370030[0-9]{1}/", "L'apporteur \"".$vitis[0]->nom."\" a un cvi");
+    $t->is($apporteur->intention, true, "L'apporteur \"".$vitis[0]->nom."\" indiqués comme ayant des parcelles dans le parcellaire d'intention d'affectation par défaut");
+    $t->is($apporteur->apporteur, true, "L'apporteur \"".$vitis[0]->nom."\" indiqués comme apporteur par défaut");
+}
+
 $formApporteurs = new ParcellaireAffectationCoopApporteursForm($parcellaireAffectationCoop);
 
 $formFields = $formApporteurs->getFormFieldSchema();
@@ -173,6 +180,14 @@ $coop = EtablissementClient::getInstance()->find($coop->_id);
 $t->is(count($coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR)), count($vitis) - 4, "La coopérative a toujours ".(count($vitis) - 4)." coopérateurs");
 
 $liaisons = $coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
+
+$t->comment("Mise à jour des infos provenant des affectations parcellaires");
+
+$parcellaireAffectationCoop->update();
+
+foreach($parcellaireAffectationCoop->apporteurs as $apporteur) {
+    $t->is($apporteur->intention, false, "L'apporteur \"".$apporteur->nom."\" est indiqué comme n'ayant pas de parcelles dans le parcellaire d'intention d'affectation");
+}
 
 $t->comment("Saisie des affectations parcellaire des coopérateurs");
 
