@@ -71,6 +71,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             $this->parcellaireAffectation->signataire = null;
         } else {
             $this->parcellaireAffectation->validate();
+            $this->parcellaireAffectation->validateOdg();
         }
 
         $this->parcellaireAffectation->save();
