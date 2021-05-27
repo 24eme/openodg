@@ -64,7 +64,7 @@
           "prix": 0.12,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "DR L15 N-1 VSIG+IGP",
+          "libelle": "DR N-1 VSIG+IGP",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -74,13 +74,13 @@
         }
       }
     },
-    "10_%detail_identifiant%_01_cotisationOdg": {
+    "10_%detail_identifiant%_01_cotisationOdg_01": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "ODG",
       "code_comptable": "",
       "details": {
-        "forfaitLieuxPrelevements": {
+        "01_forfaitLieuxPrelevements": {
           "modele": "CotisationFixe",
           "prix": 20,
           "tva": 0.2,
@@ -90,8 +90,16 @@
             "DRev"
           ],
           "callback": "getNbLieuxPrelevements"
-        },
-        "volumeRevendique": {
+        }
+      }
+    },
+    "10_%detail_identifiant%_01_cotisationOdg_02": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "ODG",
+      "code_comptable": "",
+      "details": {
+        "02_volumeRevendique": {
           "modele": "CotisationVariable",
           "prix": 0.1,
           "tva": 0.2,
@@ -102,8 +110,16 @@
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables"
-        },
-        "communication": {
+        }
+      }
+    },
+    "10_%detail_identifiant%_01_cotisationOdg_05": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "ODG",
+      "code_comptable": "",
+      "details": {
+        "05_communication": {
           "modele": "CotisationVariable",
           "prix": 0.1,
           "tva": 0.2,
@@ -114,8 +130,16 @@
             "DRev"
           ],
           "callback": "getVolumeRevendiqueLots"
-        },
-        "controleexterne": {
+        }
+      }
+    },
+    "10_%detail_identifiant%_01_cotisationOdg_04": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "ODG",
+      "code_comptable": "",
+      "details": {
+        "04_controleexterne": {
           "modele": "CotisationVariable",
           "prix": 0.05,
           "tva": 0.2,
@@ -126,8 +150,16 @@
             "DRev"
           ],
           "callback": "getVolumeRevendiqueLots"
-        },
-        "controleinterne": {
+        }
+      }
+    },
+    "10_%detail_identifiant%_01_cotisationOdg_03": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "ODG",
+      "code_comptable": "",
+      "details": {
+        "03_controleinterne": {
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0.2,
@@ -190,7 +222,7 @@
       "libelle": "Cotisation ODG 2nd passage",
       "code_comptable": "",
       "details": {
-        "forfaitLieuxPrelevements": {
+        "01_forfaitLieuxPrelevements": {
           "modele": "Cotisation",
           "prix": 20,
           "tva": 0.2,
@@ -202,7 +234,7 @@
           "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": []
         },
-        "volumeRevendique": {
+        "02_volumeRevendique": {
           "modele": "Cotisation",
           "prix": 0.1,
           "tva": 0.2,
@@ -215,7 +247,7 @@
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
         },
-        "communication": {
+        "05_communication": {
           "modele": "Cotisation",
           "prix": 0.1,
           "tva": 0.2,
@@ -228,7 +260,7 @@
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
         },
-        "controleexterne": {
+        "04_controleexterne": {
           "modele": "Cotisation",
           "prix": 0.05,
           "tva": 0.2,
@@ -241,7 +273,7 @@
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
         },
-        "controleinterne": {
+        "03_controleinterne": {
           "modele": "Cotisation",
           "prix": 0.15,
           "tva": 0.2,
