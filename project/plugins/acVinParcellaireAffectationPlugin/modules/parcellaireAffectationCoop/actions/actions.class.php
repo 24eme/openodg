@@ -52,16 +52,24 @@ class parcellaireAffectationCoopActions extends sfActions {
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->periode = $this->parcellaireAffectationCoop->periode;
 
-        $this->apporteurs = $this->etablissement->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
-        uasort($this->apporteurs, function($e1, $e2) { return $e1->libelle_etablissement > $e2->libelle_etablissement; });
+        $this->apporteurs = array();
+
+        foreach($this->parcellaireAffectationCoop->apporteurs as $id_etablissement => $apporteur) {
+            if(!$apporteur->apporteur){
+                continue;
+            }
+            $this->apporteurs[$id_etablissement] = $apporteur;
+        }
+
         $this->documents = array();
-        foreach($this->apporteurs as $liaison) {
-            $id = ParcellaireAffectationClient::TYPE_COUCHDB."-".$liaison->getEtablissementIdentifiant()."-".$this->periode;
+        foreach ($this->apporteurs as $id_etablissement => $apporteur) {
+            $id = ParcellaireAffectationClient::TYPE_COUCHDB."-".str_replace("ETABLISSEMENT-", "", $id_etablissement)."-".$this->periode;
             if(!ParcellaireAffectationClient::getInstance()->find($id, acCouchdbClient::HYDRATE_JSON)) {
                 continue;
             }
-            $this->documents[$liaison->id_etablissement] = $id;
+            $this->documents[$id_etablissement] = $id;
         }
     }
 
