@@ -71,7 +71,7 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($request->getParameter('apporteur'), $this->periode);
 
-		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation);
+		$this->form = new ParcellaireAffectationCoopSaisieForm($this->parcellaireAffectation, $this->etablissement);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
