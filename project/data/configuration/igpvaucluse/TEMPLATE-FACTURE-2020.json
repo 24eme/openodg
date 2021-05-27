@@ -12,14 +12,14 @@
     "00_forfait": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Adhésion ODG",
+      "libelle": "Adhésion",
       "code_comptable": "706100",
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
           "prix": 11,
           "tva": 0.2,
-          "libelle": "Forfait annuelle",
+          "libelle": "annuelle",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -34,14 +34,14 @@
     "00_forfaitnegociantcave": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Adhésion ODG",
+      "libelle": "Adhésion",
       "code_comptable": "",
       "details": {
         "forfaitnegociantcave": {
           "modele": "CotisationFixe",
           "prix": 110,
           "tva": 0.2,
-          "libelle": "Forfait annuel (Coop. - négoce)",
+          "libelle": "annuelle (Coop. - négoce)",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -64,7 +64,7 @@
           "prix": 0.12,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "DR L15 campagne précédente",
+          "libelle": "DR L15 N-1 VSIG+IGP",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -77,14 +77,14 @@
     "10_%detail_identifiant%_01_cotisationOdg": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisation ODG",
+      "libelle": "ODG",
       "code_comptable": "",
       "details": {
         "forfaitLieuxPrelevements": {
           "modele": "CotisationFixe",
           "prix": 20,
           "tva": 0.2,
-          "libelle": "Forfait - %detail_identifiant%",
+          "libelle": "Frais de passage - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -96,7 +96,7 @@
           "prix": 0.1,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Base - %detail_identifiant%",
+          "libelle": "Cotisation - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -187,7 +187,7 @@
     "20_%detail_identifiant%_01_cotisationOdg": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Cotisation ODG nouvelle dégustation",
+      "libelle": "Cotisation ODG 2nd passage",
       "code_comptable": "",
       "details": {
         "forfaitLieuxPrelevements": {
@@ -207,7 +207,7 @@
           "prix": 0.1,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Base - %detail_identifiant%",
+          "libelle": "- %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "Degustation"
@@ -253,29 +253,6 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
-        }
-      }
-    },
-    "20_%detail_identifiant%_02_cotisationMed": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Cotisation MED nouvelle dégustation",
-      "code_comptable": "706100",
-      "details": {
-        "redevanceMed": {
-          "modele": "Cotisation",
-          "prix": 0.15,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "- %detail_identifiant%",
-          "complement_libelle": "",
-          "docs": [
-            "Degustation"
-          ],
-          "callback": "buildMouvementsFacturesVolumeRedeguste",
-          "callback_parameters": [
-            "/appellations/MED"
-          ]
         }
       }
     }
