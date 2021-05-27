@@ -13,7 +13,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Adhésion",
-      "code_comptable": "706100",
+      "code_comptable": "75600000",
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
@@ -35,7 +35,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Adhésion",
-      "code_comptable": "",
+      "code_comptable": "75600000",
       "details": {
         "forfaitnegociantcave": {
           "modele": "CotisationFixe",
@@ -57,7 +57,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Adhésion ODG",
-      "code_comptable": "706100",
+      "code_comptable": "75600000",
       "details": {
         "forfait": {
           "modele": "CotisationVariable",
@@ -78,7 +78,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "ODG",
-      "code_comptable": "",
+      "code_comptable": "70610000",
       "details": {
         "01_forfaitLieuxPrelevements": {
           "modele": "CotisationFixe",
@@ -97,7 +97,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "ODG",
-      "code_comptable": "",
+      "code_comptable": "70610000",
       "details": {
         "02_volumeRevendique": {
           "modele": "CotisationVariable",
@@ -117,7 +117,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "ODG",
-      "code_comptable": "",
+      "code_comptable": "75000000",
       "details": {
         "05_communication": {
           "modele": "CotisationVariable",
@@ -137,7 +137,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "ODG",
-      "code_comptable": "",
+      "code_comptable": "70620000",
       "details": {
         "04_controleexterne": {
           "modele": "CotisationVariable",
@@ -157,7 +157,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "ODG",
-      "code_comptable": "",
+      "code_comptable": "70610000",
       "details": {
         "03_controleinterne": {
           "modele": "CotisationVariable",
@@ -200,7 +200,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation INAO",
-      "code_comptable": "",
+      "code_comptable": "46700005",
       "details": {
         "inao": {
           "modele": "CotisationVariable",
@@ -216,24 +216,32 @@
         }
       }
     },
-    "20_%detail_identifiant%_01_cotisationOdg": {
+    "20_%detail_identifiant%_01_cotisationOdg_01": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation ODG 2nd passage",
-      "code_comptable": "",
+      "code_comptable": "70610000",
       "details": {
         "01_forfaitLieuxPrelevements": {
           "modele": "Cotisation",
           "prix": 20,
           "tva": 0.2,
-          "libelle": "Forfait - %detail_identifiant%",
-          "complement_libelle": "",
+          "libelle": "Frais - %detail_identifiant%",
+          "complement_libelle": "70610000",
           "docs": [
             "Degustation"
           ],
           "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": []
-        },
+        }
+      }
+    },
+    "20_%detail_identifiant%_01_cotisationOdg_02": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG 2nd passage",
+      "code_comptable": "70610000",
+      "details": {
         "02_volumeRevendique": {
           "modele": "Cotisation",
           "prix": 0.1,
@@ -246,7 +254,15 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
-        },
+        }
+      }
+    },
+    "20_%detail_identifiant%_01_cotisationOdg": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG 2nd passage",
+      "code_comptable": "75000000",
+      "details": {
         "05_communication": {
           "modele": "Cotisation",
           "prix": 0.1,
@@ -259,7 +275,15 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
-        },
+        }
+      }
+    },
+    "20_%detail_identifiant%_01_cotisationOdg_04": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG 2nd passage",
+      "code_comptable": "70620000",
+      "details": {
         "04_controleexterne": {
           "modele": "Cotisation",
           "prix": 0.05,
@@ -272,7 +296,15 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": []
-        },
+        }
+      }
+    },
+    "20_%detail_identifiant%_01_cotisationOdg_03": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG 2nd passage",
+      "code_comptable": "70610000",
+      "details": {
         "03_controleinterne": {
           "modele": "Cotisation",
           "prix": 0.15,
