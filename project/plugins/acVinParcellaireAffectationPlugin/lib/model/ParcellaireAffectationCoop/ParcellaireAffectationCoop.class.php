@@ -46,6 +46,8 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function buildApporteurs($sv11){
         $apporteurs = $this->apporteurs;
+        $sv11Apporteurs = $sv11->getApporteurs();
+        $apporteursArray = array();
 
         // Depuis les liaisons
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
