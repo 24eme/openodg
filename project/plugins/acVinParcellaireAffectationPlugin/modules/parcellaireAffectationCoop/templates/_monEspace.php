@@ -8,7 +8,7 @@
         </div>
         <div class="panel-body">
             <p class="explications">Vous pouvez déclarer les affectations parcellaires de vos apporteurs.</p>
-            <div class="actions">
+            <div class="actions" style="margin-top: 76px;">
                 <a id="btn_affection_parcellaire_coop" class="btn btn-block <?php if($parcellaireAffectationCoop): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>" href="<?php echo url_for('parcellaireaffectationcoop_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if($parcellaireAffectationCoop): ?>Continuer à déclarer pour vos apporteurs<?php else: ?>Déclarer pour vos apporteurs<?php endif; ?></a>
             </div>
         </div>
