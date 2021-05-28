@@ -316,6 +316,9 @@ $t->ok($paiementForm->isValid(), "Le formulaire est valide");
 
 $facture = $paiementForm->save();
 $t->is(count($facture->paiements),1,"Le nombre de paiements de la facture est 1 ");
+$t->is($facture->paiements[0]->date, ($drev->getCampagne()+1).'-01-01', "Le paiement a la bonne date au format iso");
+$t->is($facture->paiements[0]->versement_comptable, false,"Le paiement n'a pas été versé comptablement");
+$t->is($facture->date_paiement, ($drev->getCampagne()+1).'-01-01', "La date de paiement est bien appliquée");
 
 // Affichage Cotisations
 $cptCotisTotal = 0;
