@@ -47,6 +47,9 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         if(!$etablissement) {
             return;
         }
+        if(!$etablissement->cvi) {
+            return;
+        }
         $apporteur = $this->apporteurs->add($etablissement->_id);
         $apporteur->nom = $etablissement->nom;
         $apporteur->cvi = $etablissement->cvi;
@@ -74,11 +77,10 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         asort($apporteursArray);
 
         foreach ($apporteursArray as $id => $nom ) {
-            $etb = EtablissementClient::getInstance()->find($id, acCouchdbClient::HYDRATE_JSON);
-            if(!$etb->cvi){
+            $apporteur = $this->addApporteur($id);
+            if(!$apporteur) {
                 continue;
             }
-            $apporteur = $this->addApporteur($id);
             $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
         }
     }
