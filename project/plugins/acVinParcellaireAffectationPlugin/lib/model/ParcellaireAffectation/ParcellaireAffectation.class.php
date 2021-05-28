@@ -188,6 +188,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $find;
     }
 
+    public function isMultiApporteur(){
+        return count($this->getCaveCooperatives()) > 1;
+    }
+
+    public function getCaveCooperatives(){
+        return $this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE);
+    }
+
   /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {
