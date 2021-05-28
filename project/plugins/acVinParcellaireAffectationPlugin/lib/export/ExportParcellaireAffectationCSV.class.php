@@ -68,7 +68,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
             	$this->formatFloat($parcelle->superficie),
                 $this->protectStr(strtoupper(str_replace("-", " ", $dgc))),
             	$this->formatFloat($parcelle->superficie_affectation),
-            	$this->protectStr($this->doc->signataire),
+                $this->doc->exist('signataire') ? $this->protectStr($this->doc->signataire) : null,
             	$this->doc->validation,
             	$mode);
         	}
