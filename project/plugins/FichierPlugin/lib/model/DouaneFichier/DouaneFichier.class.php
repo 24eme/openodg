@@ -1,8 +1,8 @@
 <?php
 
 class DouaneFichier extends Fichier {
-    public function generateDonnees() {
-        $classExport = DeclarationClient::getExportCsvClassName($this->type);
+    public function getCsv() {
+        $classExport = DeclarationClient::getInstance()->getExportCsvClassName($this->type);
         $export = new $classExport($this, false);
 
         return $export->getCsv();

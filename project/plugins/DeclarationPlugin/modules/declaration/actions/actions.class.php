@@ -160,6 +160,8 @@ class declarationActions extends sfActions {
         }
 
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->periode = preg_replace('/-.*/', '', $this->campagne);
+
         if(!$this->getUser()->hasDrevAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
 
             return $this->forwardSecure();
