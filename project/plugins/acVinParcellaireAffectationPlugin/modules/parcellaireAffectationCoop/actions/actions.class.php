@@ -14,7 +14,13 @@ class parcellaireAffectationCoopActions extends sfActions {
             return $this->redirect('parcellaireaffectationcoop_create', array('identifiant' => $etablissement->identifiant, 'periode' => $periode));
         }
 
-        return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
+
+        if (!$parcellaireAffectationCoop->exist('etape') || !$parcellaireAffectationCoop->etape) {
+
+            return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
+        }
+
+        return $this->redirect(ParcellaireAffectationCoopEtapes::getInstance()->getRouteLink($parcellaireAffectationCoop->etape), $parcellaireAffectationCoop);
     }
 
     public function executeCreate(sfWebRequest $request) {
@@ -37,6 +43,10 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
 
+        if($this->parcellaireAffectationCoop->storeEtape($this->getEtape($this->parcellaireAffectationCoop, ParcellaireAffectationCoopEtapes::ETAPE_APPORTEURS))) {
+            $this->parcellaireAffectationCoop->save();
+    	}
+
         $this->form = new ParcellaireAffectationCoopApporteursForm($this->parcellaireAffectationCoop);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
@@ -58,6 +68,10 @@ class parcellaireAffectationCoopActions extends sfActions {
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
+        
+        if($this->parcellaireAffectationCoop->storeEtape($this->getEtape($this->parcellaireAffectationCoop, ParcellaireAffectationCoopEtapes::ETAPE_SAISIES))) {
+            $this->parcellaireAffectationCoop->save();
+    	}
     }
 
     public function executeSaisie(sfWebRequest $request) {
@@ -123,6 +137,14 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->response->setHttpHeader('Content-Disposition',$attachement );
 
         return sfView::NONE;
+    }
+    
+    protected function getEtape($parcellaireAffectationCoop, $etape) {
+        $parcellaireAffectationCoopEtapes = ParcellaireAffectationCoopEtapes::getInstance();
+        if (!$parcellaireAffectationCoopEtapes->exist('etape')) {
+            return $etape;
+        }
+        return ($parcellaireAffectationCoopEtapes->isLt($parcellaireAffectationCoopEtapes->etape, $etape)) ? $etape : $parcellaireAffectationCoopEtapes->etape;
     }
 
 }
