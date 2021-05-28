@@ -178,8 +178,8 @@ class EtablissementClient extends acCouchdbClient {
         return $this->findByCvi($no_accises, $with_suspendu);
     }
 
-    public function findByCvi($cvi, $with_suspendu = false) {
-      return $this->findByCviOrAcciseOrPPM($cvi, $with_suspendu);
+    public function findByCvi($cvi, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+      return $this->findByCviOrAcciseOrPPM($cvi, $with_suspendu, $hydrate);
     }
 
     public function findByPPM($ppm, $with_suspendu = false) {
@@ -190,10 +190,10 @@ class EtablissementClient extends acCouchdbClient {
       return $this->findByCviOrAcciseOrPPM($accise, $with_suspendu);
     }
 
-    public function findByCviOrAcciseOrPPM($accise, $with_suspendu = false) {
-      return $this->findByCviOrAcciseOrPPMOrSiren($accise, $with_suspendu);
+    public function findByCviOrAcciseOrPPM($accise, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+      return $this->findByCviOrAcciseOrPPMOrSiren($accise, $with_suspendu, $hydrate);
     }
-    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
+    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
       $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi_or_accise_or_ppm));
 
       if (!count($rows)) {
@@ -201,7 +201,7 @@ class EtablissementClient extends acCouchdbClient {
       }
 
       foreach ($rows as $r) {
-          $e = $this->find($r->id);
+          $e = $this->find($r->id, $hydrate);
           if (!$with_suspendu && $e->isSuspendu()) {
               continue;
           }

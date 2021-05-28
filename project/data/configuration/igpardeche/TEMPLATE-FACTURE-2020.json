@@ -98,20 +98,6 @@
                     "callback": "buildMouvementsNbLotsDegustes",
                     "callback_parameters": [
                     ]
-                },
-                "redegustation": {
-                    "modele": "Cotisation",
-                    "prix": 8,
-                    "tva": 0.2,
-                    "unite": "",
-                    "libelle": "Second passage non conformité - N° %detail_identifiant%",
-                    "complement_libelle": "",
-                    "docs": [
-                        "Degustation"
-                    ],
-                    "callback": "getFacturationLotRedeguste",
-                    "callback_parameters": [
-                    ]
                 }
             }
         },
