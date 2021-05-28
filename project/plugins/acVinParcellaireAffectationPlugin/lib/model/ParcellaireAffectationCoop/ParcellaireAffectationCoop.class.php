@@ -102,4 +102,15 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         }
     }
 
+    public function storeEtape($etape) {
+        if ($etape == $this->etape) {
+
+            return false;
+        }
+
+        $this->add('etape', $etape);
+
+        return true;
+    }
+
 }
