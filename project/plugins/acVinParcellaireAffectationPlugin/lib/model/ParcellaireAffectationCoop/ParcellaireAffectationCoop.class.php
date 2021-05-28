@@ -47,6 +47,9 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         if(!$etablissement) {
             return;
         }
+        if(!$etablissement->cvi) {
+            return;
+        }
         $apporteur = $this->apporteurs->add($etablissement->_id);
         $apporteur->nom = $etablissement->nom;
         $apporteur->cvi = $etablissement->cvi;
@@ -63,13 +66,22 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
         // Depuis les liaisons
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
-            $apporteur = $this->addApporteur($liaison->id_etablissement);
+            $apporteursArray[$liaison->id_etablissement] = $liaison->libelle_etablissement;
         }
 
         // Depuis la SV11
-        foreach($sv11->getApporteurs() as $idApporteur => $nom) {
-            $apporteur = $this->addApporteur($idApporteur);
-            $apporteur->provenance = SV11Client::TYPE_MODEL ;
+        foreach($sv11Apporteurs as $idApporteur => $nom) {
+            $apporteursArray[$idApporteur] = $nom;
+        }
+
+        asort($apporteursArray);
+
+        foreach ($apporteursArray as $id => $nom ) {
+            $apporteur = $this->addApporteur($id);
+            if(!$apporteur) {
+                continue;
+            }
+            $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
         }
     }
 
