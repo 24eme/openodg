@@ -65,6 +65,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     $this->storeParcellesAffectation(true);
   }
 
+  public function getPeriode() {
+      return preg_replace('/-.*/', '', $this->campagne);
+  }
+
   public function storeParcellesAffectation($isUpDate=false) {
     if($this->validation){
         return;
