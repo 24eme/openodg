@@ -2,6 +2,21 @@
 
 class parcellaireAffectationCoopActions extends sfActions {
 
+    public function executeEdit(sfWebRequest $request) {
+
+        $etablissement = $this->getRoute()->getObject();
+        $periode = $request->getParameter('periode');
+
+        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->find(ParcellaireAffectationCoopClient::getInstance()->buildId($etablissement->identifiant, $periode));
+
+        if(!$parcellaireAffectationCoop) {
+
+            return $this->redirect('parcellaireaffectationcoop_create', array('identifiant' => $etablissement->identifiant, 'periode' => $periode));
+        }
+
+        return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
+    }
+
     public function executeCreate(sfWebRequest $request) {
 
         $this->etablissement = $this->getRoute()->getObject();

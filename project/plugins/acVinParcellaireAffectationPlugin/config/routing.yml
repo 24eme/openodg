@@ -108,6 +108,16 @@ parcellaireaffectation_export_pdf:
   requirements:
     sf_method: [get]
 
+parcellaireaffectationcoop_edit:
+  url: /parcellaire-affectation-coop/edit/:identifiant/:periode
+  param: { module: parcellaireAffectationCoop, action: edit }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireaffectationcoop_create:
   url: /parcellaire-affectation-coop/create/:identifiant/:periode
   param: { module: parcellaireAffectationCoop, action: create }
