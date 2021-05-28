@@ -1,3 +1,4 @@
+<?php if($etablissement->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)): return; endif; ?>
 <?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel  <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>panel-success<?php elseif (($parcellaireAffectation) || ($intentionParcellaireAffectation && ParcellaireAffectationClient::getInstance()->isOpen())): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">

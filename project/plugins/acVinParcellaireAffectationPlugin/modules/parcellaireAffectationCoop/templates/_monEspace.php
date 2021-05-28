@@ -1,3 +1,4 @@
+<?php if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)): return; endif; ?>
 <?php use_helper('Date'); ?>
 <?php $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->find(ParcellaireAffectationCoopClient::getInstance()->buildId($etablissement->identifiant, $periode), acCouchdbClient::HYDRATE_JSON); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
