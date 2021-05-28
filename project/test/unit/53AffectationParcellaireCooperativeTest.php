@@ -128,14 +128,8 @@ foreach($vitis as $viti) {
 
 $t->comment("Création du document d'affectation parcellaire cave coop");
 
-$parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($coop->identifiant, $campagne);
+$parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->createDoc($coop->identifiant, $campagne);
 $t->ok($parcellaireAffectationCoop, "Un document d'affectation parcellaire cave coop a été créé : ".$parcellaireAffectationCoop->_id);
-
-
-$t->is(count($parcellaireAffectationCoop->apporteurs),0, "Le document d'affectation parcellaire cave coop n'a pas d'apporteur ");
-
-$parcellaireAffectationCoop->buildApporteurs($sv11);
-
 $t->is(count($parcellaireAffectationCoop->apporteurs), count($vitis), "Le document d'affectation parcellaire cave coop a 6 apporteurs ");
 
 foreach($parcellaireAffectationCoop->apporteurs as $apporteur) {
@@ -199,11 +193,22 @@ $communes = CommunesConfiguration::getInstance()->getByCodeCommune();
 $commune = current($communes);
 $code_commune = key($communes);
 
-foreach($liaisons as $liaison) {
-    $identifiant = str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement);
-    $affectationParcellaire = ParcellaireAffectationClient::getInstance()->findOrCreate($identifiant, $campagneAffectation);
-    $t->is($affectationParcellaire->_id, "PARCELLAIREAFFECTATION-".$identifiant."-".$campagneAffectation, "L'id de l'affectation parcellaire de l'apporteur ".$affectationParcellaire->_id);
-    $t->ok(!$affectationParcellaire->_rev, "Le document est nouveau et n'a pas de révision");
+$parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->find($parcellaireAffectationCoop->_id);
+
+foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
+    $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_NON_IDENTIFIEE, "Statut \"NON_IDENTIFIEE\" ".$affectationParcellaire->_id);
+    $t->is($apporteur->getStatutLibelle(), "Aucune parcelle identifiée", "Statut libellé \"Aucune parcelle identifiée\" ".$affectationParcellaire->_id);
+
+    $apporteur->intention = true;
+
+    $t->ok(!$apporteur->getAffectationParcellaire(), "Affectation parcellaire non existante ".$apporteur->getKey());
+
+    $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR, "Statut \"A_SAISIR\" ".$affectationParcellaire->_id);
+    $t->is($apporteur->getStatutLibelle(), "À saisir", "Statut libellé \"À saisir\" ".$affectationParcellaire->_id);
+
+    $affectationParcellaire = $apporteur->createAffectationParcellaire();
+    $t->ok($affectationParcellaire->_id, "Affectation parcellaire créé ".$affectationParcellaire->_id);
+    $t->ok(!$affectationParcellaire->_rev, "Pas encore de révision ".$affectationParcellaire->_id);
 
     $form = new ParcellaireAffectationCoopSaisieForm($affectationParcellaire, $coop);
     if (sfConfig::get('app_document_validation_signataire')) {
@@ -215,6 +220,9 @@ foreach($liaisons as $liaison) {
     $form->bind($values);
     $form->save();
 
+    $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_EN_COURS, "Statut \"EN COURS\" ".$affectationParcellaire->_id);
+    $t->is($apporteur->getStatutLibelle(), "En cours de saisie", "Statut libellé \"En cours de saisie\" ".$affectationParcellaire->_id);
+
     $affectationParcellaire->validate();
     $affectationParcellaire->save();
     $t->ok($affectationParcellaire->isValidee(), "L'affectation parcellaire est validé");
@@ -222,4 +230,8 @@ foreach($liaisons as $liaison) {
     if (sfConfig::get('app_document_validation_signataire')) {
         $t->is($affectationParcellaire->signataire, "Cave coopérative", "Le signataire a été enregistré");
     }
+
+    $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_VALIDE, "Statut \"VALIDE\" ".$affectationParcellaire->_id);
+    $t->is($apporteur->getStatutLibelle(), "Validé", "Statut libellé \"Validé\" ".$affectationParcellaire->_id);
+    break;
 }

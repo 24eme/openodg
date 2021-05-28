@@ -12,24 +12,15 @@ class parcellaireAffectationCoopActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
-        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);
+        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
         $parcellaireAffectationCoop->save();
+
         return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
     }
 
     public function executeApporteurs(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->periode = $this->parcellaireAffectationCoop->getPeriode();
-        $sv11 = SV11Client::getInstance()->find("SV11-".$this->etablissement->identifiant."-".$this->periode);
-
-        if(!$sv11) {
-            $sv11 = SV11Client::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
-        }
-
-
-         $this->parcellaireAffectationCoop->buildApporteurs($sv11);
-         $this->parcellaireAffectationCoop->save();
 
         $this->form = new ParcellaireAffectationCoopApporteursForm($this->parcellaireAffectationCoop);
 
@@ -52,25 +43,6 @@ class parcellaireAffectationCoopActions extends sfActions {
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->periode = $this->parcellaireAffectationCoop->periode;
-
-        $this->apporteurs = array();
-
-        foreach($this->parcellaireAffectationCoop->apporteurs as $id_etablissement => $apporteur) {
-            if(!$apporteur->apporteur){
-                continue;
-            }
-            $this->apporteurs[$id_etablissement] = $apporteur;
-        }
-
-        $this->documents = array();
-        foreach ($this->apporteurs as $id_etablissement => $apporteur) {
-            $id = ParcellaireAffectationClient::TYPE_COUCHDB."-".str_replace("ETABLISSEMENT-", "", $id_etablissement)."-".$this->periode;
-            if(!ParcellaireAffectationClient::getInstance()->find($id, acCouchdbClient::HYDRATE_JSON)) {
-                continue;
-            }
-            $this->documents[$id_etablissement] = $id;
-        }
     }
 
     public function executeSaisie(sfWebRequest $request) {
@@ -95,29 +67,35 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $this->form->save();
 
-        $this->parcellaireAffectation->validate();
-        $this->parcellaireAffectation->save();
+        if(array_key_exists('retour', $_POST)) {
+            $this->parcellaireAffectation->signataire = null;
+        } else {
+            $this->parcellaireAffectation->validate();
+            $this->parcellaireAffectation->validateOdg();
+        }
 
+        $this->parcellaireAffectation->save();
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getObject();
-        $this->periode = $request->getParameter('periode');
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
 
         $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($request->getParameter('id_document'));
     }
 
     public function executeExportcsv(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getObject();
-        $this->periode = $request->getParameter('periode');
+        $parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $etablissement = $this->getRoute()->getEtablissement();
 
-        $this->apporteurs = $this->etablissement->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
         $header = true;
-
-        foreach($this->apporteurs as $liaison) {
-            $doc = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::TYPE_COUCHDB."-".$liaison->getEtablissementIdentifiant()."-".$this->periode);
+        foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
+            $doc = $apporteur->getAffectationParcellaire(acCouchdbClient::HYDRATE_DOCUMENT);
             if(!$doc) {
+                continue;
+            }
+            if(!$doc->isValidee()) {
                 continue;
             }
             $export = new ExportParcellaireAffectationCSV($doc, $header);
@@ -125,7 +103,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             $header = false;
         }
 
-        $attachement = sprintf("attachment; filename=export_affectation_parcellaire_%s_%s_%s.csv", $this->etablissement->identifiant, $this->periode, date('YmdHis'));
+        $attachement = sprintf("attachment; filename=export_affectation_parcellaire_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
 

@@ -8,14 +8,16 @@
 				<div class="modal-body">
                     <?php if(isset($form["signataire"])): ?>
 					<p>Pour confirmer la validation, merci de nous indiquer votre nom pour la signature : </p>
-			        <div class="form-group <?php if ($form["signataire"]->hasError()): ?>has-error<?php endif; ?>">
-			            <?php if ($form["signataire"]->hasError()): ?>
-			                <div class="alert alert-danger" role="alert"><?php echo $form["signataire"]->getError(); ?></div>
-			            <?php endif; ?>
-			            <div class="col-xs-12">
-							<?php echo $form["signataire"]->render(array("class" => "form-control", "placeholder" => "Votre nom pour la signature")); ?>
-			            </div>
-			        </div>
+                    <div class="row">
+    			        <div class="form-group <?php if ($form["signataire"]->hasError()): ?>has-error<?php endif; ?>">
+    			            <?php if ($form["signataire"]->hasError()): ?>
+    			                <div class="alert alert-danger" role="alert"><?php echo $form["signataire"]->getError(); ?></div>
+    			            <?php endif; ?>
+    			            <div class="col-xs-12">
+    							<?php echo $form["signataire"]->render(array("class" => "form-control", "placeholder" => "Votre nom pour la signature")); ?>
+    			            </div>
+    			        </div>
+                    </div>
                     <?php else: ?>
                     Confirmez-vous la validation de l'affectation parcellaire de <?php echo $parcellaireAffectation->declarant->raison_sociale ?> ?
 				    <?php endif; ?>

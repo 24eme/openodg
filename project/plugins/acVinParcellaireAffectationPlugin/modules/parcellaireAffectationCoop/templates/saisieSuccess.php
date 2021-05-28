@@ -1,3 +1,4 @@
+<?php include_partial('parcellaireAffectationCoop/breadcrumb', array('parcellaireAffectationCoop' => $parcellaireAffectationCoop)); ?>
 <?php include_partial('parcellaireAffectationCoop/step', array('step' => 'saisies', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
 
 <div class="page-header no-border">
@@ -43,7 +44,7 @@
             </div>
     </div>
     <div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("parcellaireaffectationcoop_liste", $parcellaireAffectationCoop) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><button type="submit" name="retour" value="1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
         <div class="col-xs-4 text-right"><button id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span> Valider</button></div>
