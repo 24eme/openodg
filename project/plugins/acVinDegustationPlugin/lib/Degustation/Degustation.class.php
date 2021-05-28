@@ -807,16 +807,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$this->updatePositionLots();
 		}
 
-		public function updatePositionLots() {
-            $t = 0; $i = 0;
+        public function updatePositionLots() {
+            if ($this->getTri() == DegustationClient::DEGUSTATION_TRI_MANUEL) {
+                return;
+            }
+            $t = 0;
             foreach($this->getTablesWithFreeLots() as $table) {
                 $t++;
                 foreach($this->getLotsTableOrFreeLotsCustomSort($t) as $lot) {
-                    $i++;
-                    $lot->position = sprintf("%d0%02d0", $t, $i);
+                    $lot->generateAndSetPosition();
                 }
             }
-		}
+        }
 
 		public function hasFreeLots(){
 			foreach ($this->getLotsPreleves() as $lot) {
@@ -841,7 +843,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getSyntheseLotsTableCustomTri($numero_table = null){
             $tri_array = $this->getTriArray();
-            if (($key = array_search('manuel', $tri_array)) !== false) {
+            if (($key = array_search(DegustationClient::DEGUSTATION_TRI_MANUEL, $tri_array)) !== false) {
                 unset($tri_array[$key]);
             }
             $lots = $this->getLotsPrelevesCustomSort($tri_array);
@@ -920,6 +922,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $leurre->details = $cepages;
             $leurre->declarant_nom = "LEURRE";
             $leurre->statut = Lot::STATUT_NONPRELEVABLE;
+			$this->updatePositionLots();
 
             return $leurre;
         }
