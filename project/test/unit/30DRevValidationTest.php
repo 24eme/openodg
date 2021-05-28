@@ -92,7 +92,7 @@ $date_validation_odg_1 = $campagne."-11-05";
 $t->comment("Point de vigilance DRev");
 $validation = new DRevValidation($drev);
 $vigilance = $validation->getVigilances();
-$t->is(count($vigilance), 2, "Il ya deux points de vigilance dont un dû au millésime absent.");
+$t->ok(preg_match('/Millésime/', $vigilance[0]->getInfo()), "Il y a une vigilance dû au millésime absent.");
 
 $drev->validate($date_validation_1);
 $drev->save();
@@ -154,7 +154,8 @@ if ($has_lot) {
 $t->comment("Point de vigilance DRev modificatrice");
 $validation = new DRevValidation($drev_modificative);
 $vigilance = $validation->getVigilances();
-$t->is(count($vigilance), 3, "Il ya trois points de vigilance, deux repris de la DRev et un autre dans la DRev modificatrice");
+//$t->is(count($vigilance), 3, "Il ya trois points de vigilance, deux repris de la DRev et un autre dans la DRev modificatrice");
+$t->is(count($vigilance), 1, "Il y a un point de vigilance la DRev modificatrice");
 
 $drev_modificative->validate($date_validation_2);
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
