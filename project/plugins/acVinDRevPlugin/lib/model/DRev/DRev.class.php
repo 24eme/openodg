@@ -156,11 +156,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleurs[$couleur]['volume_lots'] += $lot->volume;
             $couleurs[$couleur]['nb_lots']++;
-            if ($lot->affectable) {
+            if ($lot->isControle()) {
                 $couleurs[$couleur]['nb_lots_degustables']++;
             }
         }
-        $total_appellations = array();
+        $total_appellations = array("Total global" =>  array(
+            'superficie_totale' => 0, 'superficie_revendiquee' => 0,
+            'volume_sur_place' => 0, 'volume_total' => 0,
+            'volume_max' => 0, 'volume_lots' => 0,
+            'volume_restant' => 0, 'volume_restant_max' => 0,
+            'nb_lots' => 0, 'nb_lots_degustables' => 0
+        ));
         foreach($couleurs as $k => $couleur) {
             if (!isset($couleur['volume_sur_place'])) {
                 $couleur['volume_sur_place'] = 0;
@@ -194,6 +200,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
             $total_appellations[$couleur['appellation']]['nb_lots'] += $couleur['nb_lots'];
             $total_appellations[$couleur['appellation']]['nb_lots_degustables'] += $couleur['nb_lots_degustables'];
+
+            $total_appellations['Total global']['volume_total'] += $couleur['volume_total'];
+            $total_appellations['Total global']['volume_sur_place'] += $couleur['volume_sur_place'];
+            $total_appellations['Total global']['superficie_totale'] += $couleur['superficie_totale'];
+            $total_appellations['Total global']['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
+            $total_appellations['Total global']['volume_max'] += $couleur['volume_max'];
+            $total_appellations['Total global']['volume_lots'] += $couleur['volume_lots'];
+            $total_appellations['Total global']['volume_restant'] += $couleur['volume_restant'];
+            $total_appellations['Total global']['volume_restant_max'] += $couleur['volume_restant_max'];
+            $total_appellations['Total global']['nb_lots'] += $couleur['nb_lots'];
+            $total_appellations['Total global']['nb_lots_degustables'] += $couleur['nb_lots_degustables'];
+        }
+        if (count(array_keys($total_appellations)) < 3) {
+            unset($total_appellations['Total global']);
         }
         if ($with_total) {
             $couleurs = array_merge($couleurs, $total_appellations);
@@ -1520,12 +1540,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $total;
     }
 
-    public function getVolumeL15FromDRPrecedente($produitFilter = null) {
+    public function getVolumeVinFromDRPrecedente($produitFilter = null) {
         $dr = $this->getDR($this->getPeriode()-1);
         if (!$dr){
             throw new sfException("Pas de DR ".($this->getPeriode()-1)." pour ".$this->_id);
         }
-        return $dr->getTotalValeur("15");
+        return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
 
     /**

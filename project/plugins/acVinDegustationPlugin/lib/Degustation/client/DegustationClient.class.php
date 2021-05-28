@@ -42,6 +42,21 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
     }
 
+    public function getHistoryEncours() {
+
+        $history = $this->getHistory(20);
+        $degustations = array();
+        foreach($history as $degustation) {
+            if(in_array($degustation->etape, array(DegustationEtapes::ETAPE_RESULTATS, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
+                continue;
+            }
+
+            $degustations[] = $degustation;
+        }
+
+        return $degustations;
+    }
+
     public function getHistoryLieux($limit = 50) {
         $degusts = $this->getHistory($limit, acCouchdbClient::HYDRATE_JSON);
         $lieux = array();
