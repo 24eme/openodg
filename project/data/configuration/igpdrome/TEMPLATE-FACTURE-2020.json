@@ -123,16 +123,16 @@
           "callback_parameters": []
         },
         "lots": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 10,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Nombre lots preleves DRev",
+          "libelle": "Nombre lots prelevés",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "Degustation"
           ],
-          "callback": "getNbLotsPreleves",
+          "callback": "buildMouvementsNbLotsDegustes",
           "callback_parameters": []
         },
         "cotisation": {

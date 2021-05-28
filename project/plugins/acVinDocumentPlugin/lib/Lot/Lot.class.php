@@ -386,9 +386,22 @@ abstract class Lot extends acCouchdbDocumentTree
         return $libelle;
     }
 
+    public function isControle(){
+        return ($this->affectable || $this->id_document_affectation);
+    }
+
     public function isSecondPassage()
     {
         return $this->getNombrePassage() > 1;
+    }
+
+    public function isRedegustationDejaConforme() {
+        foreach(MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($lot->declarant_identifiant, $lot->unique_id, null, LotClient::STATUT_CONFORME) as $mvt){
+            if ($mvt->keys[MouvementLotHistoryView::KEY_ORIGINE_DOCUMENT_ID] != $this->getDocument()->_id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasSpecificitePassage()

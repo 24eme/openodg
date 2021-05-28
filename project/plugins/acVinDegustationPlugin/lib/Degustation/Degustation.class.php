@@ -1417,6 +1417,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
             return $mouvements;
 	    }
+		public function buildMouvementsFacturesRedegustationDejaConformeForfait($cotisation,$filters = null){
+            $mouvements = array();
+            $detailKey = $cotisation->getDetailKey();
+			foreach ($this->getLots() as $lot) {
+                if(!$lot->isRedegustationDejaConforme()){
+                    continue;
+                }
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $this->creationMouvementFactureFromLot($cotisation, $lot);
+            }
+            return $mouvements;
+	    }
 
         public function getFacturationLotRedeguste($cotisation,$filters = null){
             return $this->buildMouvementsFacturesLotRedeguste($cotisation, $filters);
@@ -1446,6 +1457,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!$lot->isSecondPassage()){
 					continue;
 				}
+                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+                    continue;
+                }
 				$mvtFacture = DegustationMouvementFactures::freeInstance($this);
 				$mvtFacture->detail_identifiant = $lot->numero_dossier;
 				$mvtFacture->createFromCotisationAndDoc($cotisation, $this);
@@ -1457,6 +1471,53 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 			return $mouvements;
 		}
+
+        public function buildMouvementsFacturesVolumeDeguste($cotisation, $filters = null){
+            $mouvements = array();
+            $detailKey = $cotisation->getDetailKey();
+            $volumes_operateurs = [];
+            foreach ($this->getLotsPreleves() as $lot) {
+                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+                    continue;
+                }
+
+                if ($lot->isSecondPassage()) {
+                    continue;
+                }
+                $volumes_operateurs[$lot->declarant_identifiant] += $lot->volume;
+            }
+            foreach ($volumes_operateurs as $operateur => $volume) {
+                $mvtFacture = DegustationMouvementFactures::freeInstance($this);
+                $mvtFacture->createFromCotisationAndDoc($cotisation, $this);
+                $mvtFacture->date = $this->getDateFormat();
+                $mvtFacture->date_version = $this->getDateFormat();
+                $mvtFacture->quantite = $volume;
+                $mouvements[$operateur][$detailKey] = $mvtFacture;
+            }
+
+            return $mouvements;
+        }
+
+        public function buildMouvementsNbLotsDegustes($cotisation, $filters = null){
+            $mouvements = array();
+            $detailKey = $cotisation->getDetailKey();
+            $nblots_operateurs = [];
+            foreach ($this->getLotsPreleves() as $lot) {
+                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+                    continue;
+                }
+                $nblots_operateurs[$lot->declarant_identifiant] += 1;
+            }
+            foreach ($nblots_operateurs as $operateur => $quantite) {
+                $mvtFacture = DegustationMouvementFactures::freeInstance($this);
+                $mvtFacture->createFromCotisationAndDoc($cotisation, $this);
+                $mvtFacture->date = $this->getDateFormat();
+                $mvtFacture->date_version = $this->getDateFormat();
+                $mvtFacture->quantite = $quantite;
+                $mouvements[$operateur][$detailKey] = $mvtFacture;
+            }
+            return $mouvements;
+        }
 
         public function getForfaitConditionnement($cotisation){
             return $this->buildMouvementsFacturesForfaitConditionnement($cotisation);
